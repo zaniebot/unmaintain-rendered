@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Infer list type from list expression - astral-sh/ruff #18402</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Infer list type from list expression</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/18402">#18402</a>
+        opened by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a>
+        on 2025-05-31 12:12
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on 2025-05-31 12:12</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title? (Please prefix with `[ty]` for ty pull
+  requests.)
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>Part of https://github.com/astral-sh/ty/issues/543</p>
+<p>I have made an assumption to use <code>Type::literal_fallback_instance</code> here.</p>
+<p>So we make this inference</p>
+<pre><code class="language-py">a[: list[int]] = [1, 2, 3]
+</code></pre>
+<p>instead of</p>
+<pre><code class="language-py">a[: list[Literal[1, 2, 3]] = [1, 2, 3]
+</code></pre>
+<h2>Test Plan</h2>
+<p>Update todos in mdtests</p>
+<p>There are still failing tests to do with</p>
+<pre><code class="language-py">def iterable() -&gt; list[object]:
+    return [1, &quot;&quot;]
+</code></pre>
+<p>Maybe i could change the return type to list[Any]?</p>
+<p>We also fail here</p>
+<pre><code class="language-py">x: list[object] = [1, &quot;a&quot;, ()]
+</code></pre>
+<p>which makes sense, but it seems we should allow the user to assert that this is the type of x</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @MatthewMckee4 on 2025-05-31 12:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @MatthewMckee4 on 2025-05-31 12:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @MatthewMckee4 on 2025-05-31 12:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @MatthewMckee4 on 2025-05-31 12:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @MichaReiser on 2025-05-31 12:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Infer list type from list expression" to "[ty] Infer list type from list expression" by @MichaReiser on 2025-05-31 12:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-05-31 12:17</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">pytest-robotframework (https://github.com/detachhead/pytest-robotframework)
++ error[invalid-argument-type] pytest_robotframework/_internal/pytest/plugin.py:344:26: Argument to bound method `append` is incorrect: Expected `ErrorDetector | AnsiLogger`, found `KeywordUnwrapper`
++ error[invalid-argument-type] pytest_robotframework/_internal/pytest/plugin.py:374:26: Argument to bound method `append` is incorrect: Expected `ErrorDetector | AnsiLogger`, found `PytestRuntestProtocolHooks`
++ error[no-matching-overload] tests/test_robot.py:177:5: No overload of bound method `run_and_assert_assert_pytest_result` matches arguments
++ error[no-matching-overload] tests/test_robot.py:280:9: No overload of bound method `run_pytest` matches arguments
+- Found 186 diagnostics
++ Found 190 diagnostics
+
+mypy_primer (https://github.com/hauntsaninja/mypy_primer)
+- error[unsupported-operator] mypy_primer/main.py:168:23: Operator `*` is unsupported between objects of type `list[Unknown]` and `int | None`
++ error[unsupported-operator] mypy_primer/main.py:168:23: Operator `*` is unsupported between objects of type `list[int]` and `int | None`
++ error[not-iterable] mypy_primer/projects.py:1633:47: Object of type `list[str] | None` may not be iterable
+- Found 17 diagnostics
++ Found 18 diagnostics
+
+python-chess (https://github.com/niklasf/python-chess)
++ error[invalid-assignment] chess/engine.py:1157:13: Object of type `list[(str &amp; ~list[Unknown]) | (list[str] &amp; ~list[Unknown])]` is not assignable to `str | list[str]`
++ error[invalid-return-type] chess/pgn.py:141:12: Return type does not match returned value: expected `list[str]`, found `list[Unknown] | list[str &amp; ~AlwaysFalsy] | (list[str] &amp; ~AlwaysFalsy &amp; ~str)`
++ error[invalid-assignment] chess/variant.py:1091:1: Object of type `list[&lt;class 'Board'&gt; | &lt;class 'SuicideBoard'&gt; | &lt;class 'GiveawayBoard'&gt; | &lt;class 'AntichessBoard'&gt; | &lt;class 'AtomicBoard'&gt; | &lt;class 'KingOfTheHillBoard'&gt; | &lt;class 'RacingKingsBoard'&gt; | &lt;class 'HordeBoard'&gt; | &lt;class 'ThreeCheckBoard'&gt; | &lt;class 'CrazyhouseBoard'&gt;]` is not assignable to `list[type[Board]]`
+- Found 36 diagnostics
++ Found 39 diagnostics
+
+beartype (https://github.com/beartype/beartype)
++ error[invalid-argument-type] beartype/_util/hint/pep/proposal/pep484585/generic/pep484585genget.py:725:18: Argument to function `__new__` is incorrect: Expected `Iterable[Unknown]`, found `list[Unknown] | (@Todo(map_with_boundness: intersections with negative contributions) &amp; ~None) | Unknown | None`
++ error[invalid-argument-type] beartype/claw/_ast/pep/clawastpep695.py:238:13: Argument to function `make_node_call` is incorrect: Expected `list[expr]`, found `list[Name]`
++ error[invalid-argument-type] beartype/claw/_ast/pep/clawastpep695.py:272:13: Argument to bound method `__init__` is incorrect: Expected `list[expr]`, found `list[Subscript]`
++ error[invalid-argument-type] beartype/claw/_ast/pep/clawastpep695.py:289:13: Argument to bound method `__init__` is incorrect: Expected `list[stmt]`, found `list[Assign]`
+- Found 581 diagnostics
++ Found 585 diagnostics
+
+pegen (https://github.com/we-like-parsers/pegen)
++ error[invalid-argument-type] src/pegen/grammar_parser.py:181:24: Argument to bound method `__init__` is incorrect: Expected `list[Alt]`, found `list[Unknown &amp; ~AlwaysFalsy]`
+- Found 53 diagnostics
++ Found 54 diagnostics
+
+aioredis (https://github.com/aio-libs/aioredis)
++ error[invalid-assignment] aioredis/client.py:1280:9: Object of type `list[str]` is not assignable to `list[str | bytes]`
++ error[invalid-argument-type] aioredis/client.py:1470:25: Argument to bound method `append` is incorrect: Expected `str | int`, found `Literal[b&quot;ERROR&quot;]`
++ error[invalid-argument-type] aioredis/client.py:1722:25: Argument to bound method `append` is incorrect: Expected `str`, found `int`
++ error[invalid-argument-type] aioredis/client.py:3051:23: Argument to bound method `append` is incorrect: Expected `bytes`, found `int`
+- Found 25 diagnostics
++ Found 29 diagnostics
+
+attrs (https://github.com/python-attrs/attrs)
+- error[invalid-assignment] src/attr/exceptions.py:20:5: Object of type `list[Unknown]` is not assignable to `tuple[str]`
++ error[invalid-assignment] src/attr/exceptions.py:20:5: Object of type `list[str]` is not assignable to `tuple[str]`
+
+pyinstrument (https://github.com/joerick/pyinstrument)
++ error[invalid-argument-type] pyinstrument/magic/_utils.py:84:37: Argument to bound method `__init__` is incorrect: Expected `list[expr]`, found `list[Name]`
++ error[invalid-argument-type] pyinstrument/magic/_utils.py:89:27: Argument to bound method `__init__` is incorrect: Expected `list[expr]`, found `list[Name]`
+- Found 86 diagnostics
++ Found 88 diagnostics
+
+pyp (https://github.com/hauntsaninja/pyp)
++ error[invalid-argument-type] pyp.py:439:21: Argument to bound method `__init__` is incorrect: Expected `list[expr]`, found `list[Name]`
+- Found 10 diagnostics
++ Found 11 diagnostics
+
+anyio (https://github.com/agronholm/anyio)
++ error[invalid-assignment] src/anyio/_core/_subprocesses.py:107:9: Object of type `list[None]` is not assignable to `list[bytes | None]`
++ error[invalid-return-type] src/anyio/_core/_subprocesses.py:125:12: Return type does not match returned value: expected `CompletedProcess[bytes]`, found `CompletedProcess[bytes | None]`
+- Found 110 diagnostics
++ Found 112 diagnostics
+
+starlette (https://github.com/encode/starlette)
++ error[invalid-argument-type] tests/test_datastructures.py:365:21: Argument to bound method `__init__` is incorrect: Expected `Mapping[str, str | UploadFile] | list[tuple[str, str | UploadFile]]`, found `list[tuple[str, str] | tuple[str, UploadFile]]`
++ error[invalid-argument-type] tests/test_datastructures.py:381:59: Argument to bound method `__init__` is incorrect: Expected `Mapping[str, str | UploadFile] | list[tuple[str, str | UploadFile]]`, found `list[tuple[str, str]]`
++ error[invalid-assignment] tests/test_requests.py:561:5: Object of type `list[dict[Unknown, Unknown]]` is not assignable to `list[Unknown | MutableMapping[str, Any]]`
++ error[invalid-argument-type] tests/test_staticfiles.py:69:23: Argument to bound method `__init__` is incorrect: Expected `list[str | tuple[str, str]] | None`, found `list[str]`
++ error[invalid-argument-type] tests/test_staticfiles.py:75:23: Argument to bound method `__init__` is incorrect: Expected `list[str | tuple[str, str]] | None`, found `list[tuple[str, str]]`
++ error[no-matching-overload] tests/test_templates.py:53:17: No overload of bound method `__init__` matches arguments
+- Found 172 diagnostics
++ Found 178 diagnostics
+
+kornia (https://github.com/kornia/kornia)
++ error[invalid-argument-type] kornia/augmentation/_2d/intensity/planckian_jitter.py:184:61: Argument to bound method `__init__` is incorrect: Expected `list[int | float]`, found `list[float]`
++ error[invalid-assignment] kornia/contrib/diamond_square.py:30:1: Object of type `list[list[float]]` is not assignable to `list[list[int | float]]`
++ error[invalid-assignment] kornia/contrib/diamond_square.py:31:1: Object of type `list[list[float]]` is not assignable to `list[list[int | float]]`
++ error[invalid-argument-type] kornia/contrib/models/rt_detr/model.py:214:17: Argument to bound method `__init__` is incorrect: Expected `list[int]`, found `list[int &amp; ~AlwaysFalsy]`
++ error[invalid-assignment] kornia/contrib/models/tiny_vit.py:127:13: Object of type `list[(int &amp; ~list[Unknown]) | (float &amp; ~list[Unknown]) | (list[int | float] &amp; ~list[Unknown])]` is not assignable to `int | float | list[int | float]`
++ warning[possibly-unbound-implicit-call] kornia/contrib/models/tiny_vit.py:129:62: Method `__getitem__` of type `int | float | list[int | float]` is possibly unbound
++ error[invalid-assignment] kornia/feature/mkd.py:32:1: Object of type `list[float]` is not assignable to `list[int | float]`
++ error[invalid-assignment] kornia/feature/mkd.py:33:1: Object of type `list[float]` is not assignable to `list[int | float]`
++ error[invalid-assignment] kornia/feature/mkd.py:34:1: Object of type `list[float]` is not assignable to `list[int | float]`
++ error[invalid-assignment] kornia/filters/kernels.py:901:9: Object of type `list[float]` is not assignable to `list[int | float]`
+- Found 948 diagnostics
++ Found 958 diagnostics
+
+operator (https://github.com/canonical/operator)
++ error[invalid-argument-type] ops/_main.py:84:25: Argument to bound method `append` is incorrect: Expected `str | None`, found `int | None`
+- Found 117 diagnostics
++ Found 118 diagnostics
+
+aiortc (https://github.com/aiortc/aiortc)
++ error[invalid-argument-type] src/aiortc/rtcpeerconnection.py:558:50: Argument is incorrect: Expected `list[int | str]`, found `list[str]`
++ error[invalid-argument-type] src/aiortc/rtcpeerconnection.py:651:50: Argument is incorrect: Expected `list[int | str]`, found `list[str]`
++ error[invalid-argument-type] src/aiortc/rtcrtpsender.py:450:25: Argument to bound method `append` is incorrect: Expected `RtcpSrPacket`, found `RtcpSdesPacket`
+- Found 128 diagnostics
++ Found 131 diagnostics
+
+comtypes (https://github.com/enthought/comtypes)
++ error[unsupported-operator] comtypes/server/automation.py:38:17: Operator `+=` is unsupported between objects of type `None` and `Literal[1]`
++ error[invalid-argument-type] comtypes/test/test_inout_args.py:315:17: Argument is incorrect: Expected `list[tuple[type[Any], (Any, /) -&gt; Any, Any]]`, found `list[tuple[&lt;class 'MagicMock'&gt;, (x) -&gt; Unknown, Any] | tuple[&lt;class 'c_ulong'&gt;, (x) -&gt; Unknown, int] | tuple[Unknown | &lt;class 'c_wchar_p'&gt;, (x) -&gt; Unknown, str]]`
++ error[invalid-argument-type] comtypes/test/test_inout_args.py:322:17: Argument is incorrect: Expected `list[tuple[type[Any], (Any, /) -&gt; Any, Any]]`, found `list[tuple[&lt;class 'MagicMock'&gt;, (x) -&gt; Unknown, Any] | tuple[Unknown | &lt;class 'c_wchar_p'&gt;, (x) -&gt; Unknown, str] | tuple[&lt;class 'c_ulong'&gt;, (x) -&gt; Unknown, int]]`
++ error[invalid-argument-type] comtypes/test/test_inout_args.py:329:17: Argument is incorrect: Expected `list[tuple[type[Any], (Any, /) -&gt; Any, Any]]`, found `list[tuple[&lt;class 'MagicMock'&gt;, (x) -&gt; Unknown, Any] | tuple[&lt;class 'c_ulong'&gt;, (x) -&gt; Unknown, int] | tuple[Unknown | &lt;class 'c_wchar_p'&gt;, (x) -&gt; Unknown, str]]`
++ error[invalid-argument-type] comtypes/test/test_inout_args.py:336:17: Argument is incorrect: Expected `list[tuple[type[Any], (Any, /) -&gt; Any, Any]]`, found `list[tuple[&lt;class 'MagicMock'&gt;, (x) -&gt; Unknown, Any] | tuple[&lt;class 'c_ulong'&gt;, (x) -&gt; Unknown, int] | tuple[Unknown | &lt;class 'c_wchar_p'&gt;, (x) -&gt; Unknown, str]]`
++ error[invalid-argument-type] comtypes/test/test_inout_args.py:343:17: Argument is incorrect: Expected `list[tuple[type[Any], (Any, /) -&gt; Any, Any]]`, found `list[tuple[&lt;class 'MagicMock'&gt;, (x) -&gt; Unknown, Any] | tuple[Unknown | &lt;class 'c_wchar_p'&gt;, (x) -&gt; Unknown, str] | tuple[&lt;class 'c_ulong'&gt;, (x) -&gt; Unknown, int]]`
++ error[invalid-argument-type] comtypes/test/test_inout_args.py:350:17: Argument is incorrect: Expected `list[tuple[type[Any], (Any, /) -&gt; Any, Any]]`, found `list[tuple[&lt;class 'MagicMock'&gt;, (x) -&gt; Unknown, Any] | tuple[Unknown | &lt;class 'c_wchar_p'&gt;, (x) -&gt; Unknown, str] | tuple[&lt;class 'c_ulong'&gt;, (x) -&gt; Unknown, int]]`
++ error[invalid-argument-type] comtypes/test/test_inout_args.py:357:17: Argument is incorrect: Expected `list[tuple[type[Any], (Any, /) -&gt; Any, Any]]`, found `list[tuple[&lt;class 'MagicMock'&gt;, (x) -&gt; Unknown, Any] | tuple[&lt;class 'c_ulong'&gt;, (x) -&gt; Unknown, int] | tuple[Unknown | &lt;class 'c_wchar_p'&gt;, (x) -&gt; Unknown, str]]`
++ error[invalid-argument-type] comtypes/test/test_inout_args.py:364:17: Argument is incorrect: Expected `list[tuple[type[Any], (Any, /) -&gt; Any, Any]]`, found `list[tuple[&lt;class 'MagicMock'&gt;, (x) -&gt; Unknown, Any] | tuple[Unknown | &lt;class 'c_wchar_p'&gt;, (x) -&gt; Unknown, str] | tuple[&lt;class 'c_ulong'&gt;, (x) -&gt; Unknown, int]]`
++ error[invalid-argument-type] comtypes/test/test_inout_args.py:371:17: Argument is incorrect: Expected `list[tuple[type[Any], (Any, /) -&gt; Any, Any]]`, found `list[tuple[&lt;class 'c_ulong'&gt;, (x) -&gt; Unknown, int] | tuple[&lt;class 'MagicMock'&gt;, (x) -&gt; Unknown, Any] | tuple[Unknown | &lt;class 'c_wchar_p'&gt;, (x) -&gt; Unknown, str]]`
++ error[invalid-argument-type] comtypes/test/test_inout_args.py:378:17: Argument is incorrect: Expected `list[tuple[type[Any], (Any, /) -&gt; Any, Any]]`, found `list[tuple[&lt;class 'c_ulong'&gt;, (x) -&gt; Unknown, int] | tuple[Unknown | &lt;class 'c_wchar_p'&gt;, (x) -&gt; Unknown, str] | tuple[&lt;class 'MagicMock'&gt;, (x) -&gt; Unknown, Any]]`
++ error[invalid-argument-type] comtypes/test/test_inout_args.py:385:17: Argument is incorrect: Expected `list[tuple[type[Any], (Any, /) -&gt; Any, Any]]`, found `list[tuple[Unknown | &lt;class 'c_wchar_p'&gt;, (x) -&gt; Unknown, str] | tuple[&lt;class 'MagicMock'&gt;, (x) -&gt; Unknown, Any] | tuple[&lt;class 'c_ulong'&gt;, (x) -&gt; Unknown, int]]`
++ error[invalid-argument-type] comtypes/test/test_inout_args.py:392:17: Argument is incorrect: Expected `list[tuple[type[Any], (Any, /) -&gt; Any, Any]]`, found `list[tuple[Unknown | &lt;class 'c_wchar_p'&gt;, (x) -&gt; Unknown, str] | tuple[&lt;class 'c_ulong'&gt;, (x) -&gt; Unknown, int] | tuple[&lt;class 'MagicMock'&gt;, (x) -&gt; Unknown, Any]]`
++ error[invalid-argument-type] comtypes/test/test_inout_args.py:399:17: Argument is incorrect: Expected `list[tuple[type[Any], (Any, /) -&gt; Any, Any]]`, found `list[tuple[&lt;class 'c_ulong'&gt;, (x) -&gt; Unknown, int] | tuple[&lt;class 'MagicMock'&gt;, (x) -&gt; Unknown, Any] | tuple[Unknown | &lt;class 'c_wchar_p'&gt;, (x) -&gt; Unknown, str]]`
++ error[invalid-argument-type] comtypes/test/test_inout_args.py:406:17: Argument is incorrect: Expected `list[tuple[type[Any], (Any, /) -&gt; Any, Any]]`, found `list[tuple[&lt;class 'c_ulong'&gt;, (x) -&gt; Unknown, int] | tuple[&lt;class 'MagicMock'&gt;, (x) -&gt; Unknown, Any] | tuple[Unknown | &lt;class 'c_wchar_p'&gt;, (x) -&gt; Unknown, str]]`
++ error[invalid-argument-type] comtypes/test/test_inout_args.py:413:17: Argument is incorrect: Expected `list[tuple[type[Any], (Any, /) -&gt; Any, Any]]`, found `list[tuple[&lt;class 'c_ulong'&gt;, (x) -&gt; Unknown, int] | tuple[&lt;class 'MagicMock'&gt;, (x) -&gt; Unknown, Any] | tuple[Unknown | &lt;class 'c_wchar_p'&gt;, (x) -&gt; Unknown, str]]`
++ error[invalid-argument-type] comtypes/test/test_inout_args.py:420:17: Argument is incorrect: Expected `list[tuple[type[Any], (Any, /) -&gt; Any, Any]]`, found `list[tuple[&lt;class 'c_ulong'&gt;, (x) -&gt; Unknown, int] | tuple[Unknown | &lt;class 'c_wchar_p'&gt;, (x) -&gt; Unknown, str] | tuple[&lt;class 'MagicMock'&gt;, (x) -&gt; Unknown, Any]]`
++ error[invalid-argument-type] comtypes/test/test_inout_args.py:427:17: Argument is incorrect: Expected `list[tuple[type[Any], (Any, /) -&gt; Any, Any]]`, found `list[tuple[&lt;class 'c_ulong'&gt;, (x) -&gt; Unknown, int] | tuple[Unknown | &lt;class 'c_wchar_p'&gt;, (x) -&gt; Unknown, str] | tuple[&lt;class 'MagicMock'&gt;, (x) -&gt; Unknown, Any]]`
++ error[invalid-argument-type] comtypes/test/test_inout_args.py:434:17: Argument is incorrect: Expected `list[tuple[type[Any], (Any, /) -&gt; Any, Any]]`, found `list[tuple[&lt;class 'c_ulong'&gt;, (x) -&gt; Unknown, int] | tuple[Unknown | &lt;class 'c_wchar_p'&gt;, (x) -&gt; Unknown, str] | tuple[&lt;class 'MagicMock'&gt;, (x) -&gt; Unknown, Any]]`
++ error[invalid-argument-type] comtypes/test/test_inout_args.py:441:17: Argument is incorrect: Expected `list[tuple[type[Any], (Any, /) -&gt; Any, Any]]`, found `list[tuple[Unknown | &lt;class 'c_wchar_p'&gt;, (x) -&gt; Unknown, str] | tuple[&lt;class 'MagicMock'&gt;, (x) -&gt; Unknown, Any] | tuple[&lt;class 'c_ulong'&gt;, (x) -&gt; Unknown, int]]`
++ error[invalid-argument-type] comtypes/test/test_inout_args.py:448:17: Argument is incorrect: Expected `list[tuple[type[Any], (Any, /) -&gt; Any, Any]]`, found `list[tuple[Unknown | &lt;class 'c_wchar_p'&gt;, (x) -&gt; Unknown, str] | tuple[&lt;class 'MagicMock'&gt;, (x) -&gt; Unknown, Any] | tuple[&lt;class 'c_ulong'&gt;, (x) -&gt; Unknown, int]]`
++ error[invalid-argument-type] comtypes/test/test_inout_args.py:455:17: Argument is incorrect: Expected `list[tuple[type[Any], (Any, /) -&gt; Any, Any]]`, found `list[tuple[Unknown | &lt;class 'c_wchar_p'&gt;, (x) -&gt; Unknown, str] | tuple[&lt;class 'MagicMock'&gt;, (x) -&gt; Unknown, Any] | tuple[&lt;class 'c_ulong'&gt;, (x) -&gt; Unknown, int]]`
++ error[invalid-argument-type] comtypes/test/test_inout_args.py:462:17: Argument is incorrect: Expected `list[tuple[type[Any], (Any, /) -&gt; Any, Any]]`, found `list[tuple[Unknown | &lt;class 'c_wchar_p'&gt;, (x) -&gt; Unknown, str] | tuple[&lt;class 'c_ulong'&gt;, (x) -&gt; Unknown, int] | tuple[&lt;class 'MagicMock'&gt;, (x) -&gt; Unknown, Any]]`
++ error[invalid-argument-type] comtypes/test/test_inout_args.py:469:17: Argument is incorrect: Expected `list[tuple[type[Any], (Any, /) -&gt; Any, Any]]`, found `list[tuple[Unknown | &lt;class 'c_wchar_p'&gt;, (x) -&gt; Unknown, str] | tuple[&lt;class 'c_ulong'&gt;, (x) -&gt; Unknown, int] | tuple[&lt;class 'MagicMock'&gt;, (x) -&gt; Unknown, Any]]`
++ error[invalid-argument-type] comtypes/test/test_inout_args.py:476:17: Argument is incorrect: Expected `list[tuple[type[Any], (Any, /) -&gt; Any, Any]]`, found `list[tuple[Unknown | &lt;class 'c_wchar_p'&gt;, (x) -&gt; Unknown, str] | tuple[&lt;class 'c_ulong'&gt;, (x) -&gt; Unknown, int] | tuple[&lt;class 'MagicMock'&gt;, (x) -&gt; Unknown, Any]]`
+- error[invalid-argument-type] comtypes/test/test_w_getopt.py:17:37: Argument to function `w_getopt` is incorrect: Expected `str`, found `list[Unknown]`
++ error[invalid-argument-type] comtypes/test/test_w_getopt.py:17:37: Argument to function `w_getopt` is incorrect: Expected `str`, found `list[str]`
+- error[invalid-argument-type] comtypes/test/test_w_getopt.py:17:37: Argument to function `w_getopt` is incorrect: Expected `str`, found `list[Unknown]`
++ error[invalid-argument-type] comtypes/test/test_w_getopt.py:17:37: Argument to function `w_getopt` is incorrect: Expected `str`, found `list[str]`
+- error[invalid-argument-type] comtypes/test/test_w_getopt.py:17:37: Argument to function `w_getopt` is incorrect: Expected `str`, found `list[Unknown]`
++ error[invalid-argument-type] comtypes/test/test_w_getopt.py:17:37: Argument to function `w_getopt` is incorrect: Expected `str`, found `list[str]`
+- error[invalid-argument-type] comtypes/test/test_w_getopt.py:24:59: Argument to function `w_getopt` is incorrect: Expected `str`, found `list[Unknown]`
++ error[invalid-argument-type] comtypes/test/test_w_getopt.py:24:59: Argument to function `w_getopt` is incorrect: Expected `str`, found `list[str]`
+- error[invalid-argument-type] comtypes/test/test_w_getopt.py:29:38: Argument to function `w_getopt` is incorrect: Expected `str`, found `list[Unknown]`
++ error[invalid-argument-type] comtypes/test/test_w_getopt.py:29:38: Argument to function `w_getopt` is incorrect: Expected `str`, found `list[str]`
+- Found 568 diagnostics
++ Found 593 diagnostics
+
+alerta (https://github.com/alerta/alerta)
++ error[invalid-argument-type] alerta/auth/basic.py:31:48: Argument to function `not_authorized` is incorrect: Expected `list[str]`, found `list[str | None]`
++ error[invalid-argument-type] alerta/auth/github.py:85:115: Argument to function `not_authorized` is incorrect: Expected `list[str]`, found `list[@Todo(map_with_boundness: intersections with negative contributions) | str | None]`
++ error[invalid-argument-type] alerta/auth/oidc.py:192:95: Argument to function `not_authorized` is incorrect: Expected `list[str]`, found `list[@Todo(map_with_boundness: intersections with negative contributions) | str | None]`
++ error[invalid-argument-type] alerta/auth/saml.py:100:98: Argument to function `not_authorized` is incorrect: Expected `list[str]`, found `list[@Todo(map_with_boundness: intersections with negative contributions) | str | None]`
++ error[invalid-argument-type] alerta/views/permissions.py:77:9: Argument to bound method `__init__` is incorrect: Expected `list[Scope]`, found `Unknown | list[Unknown | str]`
++ error[invalid-argument-type] alerta/views/users.py:33:48: Argument to function `not_authorized` is incorrect: Expected `list[str]`, found `list[str | None]`
++ error[invalid-argument-type] tests/test_scopes.py:81:71: Argument to bound method `is_in_scope` is incorrect: Expected `list[Scope]`, found `list[Unknown | str]`
++ error[invalid-argument-type] tests/test_scopes.py:82:71: Argument to bound method `is_in_scope` is incorrect: Expected `list[Scope]`, found `list[Unknown | str]`
++ error[invalid-argument-type] tests/test_scopes.py:83:71: Argument to bound method `is_in_scope` is incorrect: Expected `list[Scope]`, found `list[Unknown | str]`
++ error[invalid-argument-type] tests/test_scopes.py:85:72: Argument to bound method `is_in_scope` is incorrect: Expected `list[Scope]`, found `list[Unknown | str]`
++ error[invalid-argument-type] tests/test_scopes.py:86:72: Argument to bound method `is_in_scope` is incorrect: Expected `list[Scope]`, found `list[Unknown | str]`
++ error[invalid-argument-type] tests/test_scopes.py:87:72: Argument to bound method `is_in_scope` is incorrect: Expected `list[Scope]`, found `list[Unknown | str]`
++ error[invalid-argument-type] tests/test_scopes.py:89:72: Argument to bound method `is_in_scope` is incorrect: Expected `list[Scope]`, found `list[Unknown | str]`
++ error[invalid-argument-type] tests/test_scopes.py:90:72: Argument to bound method `is_in_scope` is incorrect: Expected `list[Scope]`, found `list[Unknown | str]`
++ error[invalid-argument-type] tests/test_scopes.py:92:59: Argument to bound method `is_in_scope` is incorrect: Expected `list[Scope]`, found `list[Unknown | str]`
++ error[invalid-argument-type] tests/test_scopes.py:93:72: Argument to bound method `is_in_scope` is incorrect: Expected `list[Scope]`, found `list[Unknown | str]`
++ error[invalid-argument-type] tests/test_scopes.py:94:72: Argument to bound method `is_in_scope` is incorrect: Expected `list[Scope]`, found `list[Unknown | str]`
++ error[invalid-argument-type] tests/test_scopes.py:95:72: Argument to bound method `is_in_scope` is incorrect: Expected `list[Scope]`, found `list[Unknown | str]`
++ error[invalid-argument-type] tests/test_scopes.py:96:72: Argument to bound method `is_in_scope` is incorrect: Expected `list[Scope]`, found `list[Unknown | str]`
++ error[invalid-argument-type] tests/test_scopes.py:97:72: Argument to bound method `is_in_scope` is incorrect: Expected `list[Scope]`, found `list[Unknown | str]`
++ error[invalid-argument-type] tests/test_scopes.py:99:62: Argument to bound method `is_in_scope` is incorrect: Expected `list[Scope]`, found `list[Unknown | str]`
++ error[invalid-argument-type] tests/test_scopes.py:100:62: Argument to bound method `is_in_scope` is incorrect: Expected `list[Scope]`, found `list[Unknown | str]`
++ error[invalid-argument-type] tests/test_scopes.py:101:72: Argument to bound method `is_in_scope` is incorrect: Expected `list[Scope]`, found `list[Unknown | str]`
+- Found 477 diagnostics
++ Found 500 diagnostics
+
+graphql-core (https://github.com/graphql-python/graphql-core)
++ error[invalid-argument-type] src/graphql/pyutils/is_iterable.py:18:29: Argument to bound method `append` is incorrect: Expected `&lt;class 'Collection'&gt;`, found `&lt;class 'ValuesView'&gt;`
++ error[invalid-argument-type] src/graphql/pyutils/is_iterable.py:20:29: Argument to bound method `append` is incorrect: Expected `&lt;class 'Collection'&gt;`, found `&lt;class 'array'&gt;`
++ error[invalid-argument-type] tests/execution/test_defer.py:320:43: Argument to bound method `__init__` is incorrect: Expected `list[str | int]`, found `list[str]`
++ error[invalid-argument-type] tests/execution/test_defer.py:342:46: Argument to bound method `__init__` is incorrect: Expected `list[str | int]`, found `list[str]`
++ error[invalid-argument-type] tests/execution/test_defer.py:374:46: Argument to bound method `__init__` is incorrect: Expected `list[str | int]`, found `list[str]`
++ error[invalid-argument-type] tests/execution/test_defer.py:380:46: Argument to bound method `__init__` is incorrect: Expected `list[str | int]`, found `list[str]`
++ error[invalid-argument-type] tests/execution/test_defer.py:386:46: Argument to bound method `__init__` is incorrect: Expected `list[str | int]`, found `list[str]`
++ error[invalid-argument-type] tests/execution/test_defer.py:399:46: Argument to bound method `__init__` is incorrect: Expected `list[str | int]`, found `list[str]`
++ error[invalid-argument-type] tests/execution/test_defer.py:405:46: Argument to bound method `__init__` is incorrect: Expected `list[str | int]`, found `list[str]`
++ error[invalid-argument-type] tests/execution/test_defer.py:418:41: Argument to bound method `__init__` is incorrect: Expected `list[str | int]`, found `list[str]`
++ error[invalid-argument-type] tests/execution/test_defer.py:443:41: Argument to bound method `__init__` is incorrect: Expected `list[str | int]`, found `list[str]`
++ error[invalid-argument-type] tests/execution/test_union_interface.py:144:41: Argument to bound method `__init__` is incorrect: Expected `list[Dog | Cat | Person] | None`, found `list[Person | Dog]`
+- Found 438 diagnostics
++ Found 450 diagnostics
+
+trio (https://github.com/python-trio/trio)
++ error[invalid-argument-type] src/trio/_core/_tests/test_exceptiongroup_gc.py:88:34: Argument to bound method `__init__` is incorrect: Expected `Sequence[_ExceptionT_co]`, found `list[Exception]`
++ error[invalid-return-type] src/trio/_core/_tests/test_io.py:67:12: Return type does not match returned value: expected `list[(socket, /) -&gt; RetT]`, found `list[((socket | int, /) -&gt; RetT) | (def fileno_wrapper(fileobj: socket) -&gt; RetT)]`
++ error[invalid-argument-type] src/trio/_core/_tests/test_run.py:2691:42: Argument to bound method `__init__` is incorrect: Expected `Sequence[_ExceptionT_co]`, found `list[RuntimeError]`
++ error[invalid-assignment] src/trio/_core/_tests/test_run.py:2720:9: Object of type `ExceptionGroup[Exception]` is not assignable to `ValueError | ExceptionGroup[ValueError]`
++ error[invalid-argument-type] src/trio/_core/_tests/test_run.py:2720:49: Argument to bound method `__init__` is incorrect: Expected `Sequence[_ExceptionT_co]`, found `list[ValueError]`
++ error[invalid-return-type] src/trio/_core/_tests/test_run.py:2796:16: Return type does not match returned value: expected `list[object]`, found `list[FrameType]`
++ error[invalid-return-type] src/trio/_core/_tests/type_tests/run.py:13:12: Return type does not match returned value: expected `list[int | float]`, found `list[int]`
++ error[invalid-argument-type] src/trio/_tests/test_channel.py:575:41: Argument to bound method `__init__` is incorrect: Expected `Sequence[_ExceptionT_co]`, found `list[ValueError]`
++ error[invalid-argument-type] src/trio/_tests/test_testing_raisesgroup.py:138:34: Argument to bound method `__init__` is incorrect: Expected `Sequence[_ExceptionT_co]`, found `list[ValueError | SyntaxError]`
++ error[invalid-argument-type] src/trio/_tests/test_testing_raisesgroup.py:149:34: Argument to bound method `__init__` is incorrect: Expected `Sequence[_ExceptionT_co]`, found `list[ExceptionGroup[Exception] | TypeError]`
++ error[invalid-argument-type] src/trio/_tests/test_testing_raisesgroup.py:149:54: Argument to bound method `__init__` is incorrect: Expected `Sequence[_ExceptionT_co]`, found `list[ValueError]`
++ error[invalid-argument-type] src/trio/_tests/test_testing_raisesgroup.py:199:34: Argument to bound method `__init__` is incorrect: Expected `Sequence[_ExceptionT_co]`, found `list[ExceptionGroup[Exception]]`
++ error[invalid-argument-type] src/trio/_tests/test_testing_raisesgroup.py:199:54: Argument to bound method `__init__` is incorrect: Expected `Sequence[_ExceptionT_co]`, found `list[ValueError | TypeError]`
++ error[invalid-argument-type] src/trio/_tests/test_testing_raisesgroup.py:220:34: Argument to bound method `__init__` is incorrect: Expected `Sequence[_ExceptionT_co]`, found `list[ExceptionGroup[Exception]]`
++ error[invalid-argument-type] src/trio/_tests/test_testing_raisesgroup.py:220:54: Argument to bound method `__init__` is incorrect: Expected `Sequence[_ExceptionT_co]`, found `list[ValueError | TypeError]`
++ error[invalid-argument-type] src/trio/_tests/test_testing_raisesgroup.py:231:34: Argument to bound method `__init__` is incorrect: Expected `Sequence[_ExceptionT_co]`, found `list[ExceptionGroup[Exception]]`
++ error[invalid-argument-type] src/trio/_tests/test_testing_raisesgroup.py:231:54: Argument to bound method `__init__` is incorrect: Expected `Sequence[_ExceptionT_co]`, found `list[ValueError]`
++ error[invalid-argument-type] src/trio/_tests/test_testing_raisesgroup.py:237:34: Argument to bound method `__init__` is incorrect: Expected `Sequence[_ExceptionT_co]`, found `list[ExceptionGroup[Exception]]`
++ error[invalid-argument-type] src/trio/_tests/test_testing_raisesgroup.py:237:54: Argument to bound method `__init__` is incorrect: Expected `Sequence[_ExceptionT_co]`, found `list[TypeError]`
++ error[invalid-argument-type] src/trio/_tests/test_testing_raisesgroup.py:251:13: Argument to bound method `__init__` is incorrect: Expected `Sequence[_ExceptionT_co]`, found `list[ExceptionGroup[Exception]]`
++ error[invalid-argument-type] src/trio/_tests/test_testing_raisesgroup.py:251:33: Argument to bound method `__init__` is incorrect: Expected `Sequence[_ExceptionT_co]`, found `list[ExceptionGroup[Exception]]`
++ error[invalid-argument-type] src/trio/_tests/test_testing_raisesgroup.py:251:53: Argument to bound method `__init__` is incorrect: Expected `Sequence[_ExceptionT_co]`, found `list[ValueError]`
++ error[invalid-argument-type] src/trio/_tests/test_testing_raisesgroup.py:291:34: Argument to bound method `__init__` is incorrect: Expected `Sequence[_ExceptionT_co]`, found `list[ExceptionGroup[Exception]]`
++ error[invalid-argument-type] src/trio/_tests/test_testing_raisesgroup.py:291:54: Argument to bound method `__init__` is incorrect: Expected `Sequence[_ExceptionT_co]`, found `list[ValueError]`
++ error[invalid-argument-type] src/trio/_tests/test_testing_raisesgroup.py:293:34: Argument to bound method `__init__` is incorrect: Expected `Sequence[_ExceptionT_co]`, found `list[ValueError]`
++ error[invalid-argument-type] src/trio/_tests/test_testing_raisesgroup.py:312:37: Argument to bound method `__init__` is incorrect: Expected `Sequence[_ExceptionT_co]`, found `list[ExceptionGroup[Exception]]`
++ error[invalid-argument-type] src/trio/_tests/test_testing_raisesgroup.py:312:60: Argument to bound method `__init__` is incorrect: Expected `Sequence[_ExceptionT_co]`, found `list[ValueError]`
++ error[invalid-argument-type] src/trio/_tests/test_testing_raisesgroup.py:316:34: Argument to bound method `__init__` is incorrect: Expected `Sequence[_ExceptionT_co]`, found `list[ExceptionGroup[Exception]]`
++ error[invalid-argument-type] src/trio/_tests/test_testing_raisesgroup.py:316:54: Argument to bound method `__init__` is incorrect: Expected `Sequence[_ExceptionT_co]`, found `list[ValueError]`
++ error[invalid-argument-type] src/trio/_tests/test_testing_raisesgroup.py:384:37: Argument to bound method `__init__` is incorrect: Expected `Sequence[_ExceptionT_co]`, found `list[ValueError]`
++ error[invalid-argument-type] src/trio/_tests/test_testing_raisesgroup.py:426:34: Argument to bound method `__init__` is incorrect: Expected `Sequence[_ExceptionT_co]`, found `list[ValueError]`
++ error[invalid-argument-type] src/trio/_tests/test_testing_raisesgroup.py:430:37: Argument to bound method `__init__` is incorrect: Expected `Sequence[_ExceptionT_co]`, found `list[ValueError]`
++ error[invalid-argument-type] src/trio/_tests/test_testing_raisesgroup.py:509:35: Argument to bound method `__init__` is incorrect: Expected `Sequence[_ExceptionT_co]`, found `list[TypeError]`
++ error[invalid-argument-type] src/trio/_tests/test_testing_raisesgroup.py:529:13: Argument to bound method `__init__` is incorrect: Expected `Sequence[_ExceptionT_co]`, found `list[ExceptionGroup[Exception] | RuntimeError]`
++ error[invalid-argument-type] src/trio/_tests/test_testing_raisesgroup.py:529:33: Argument to bound method `__init__` is incorrect: Expected `Sequence[_ExceptionT_co]`, found `list[RuntimeError]`
++ error[invalid-argument-type] src/trio/_tests/test_testing_raisesgroup.py:560:13: Argument to bound method `__init__` is incorrect: Expected `Sequence[_ExceptionT_co]`, found `list[RuntimeError | TypeError | ValueError]`
++ error[invalid-argument-type] src/trio/_tests/test_testing_raisesgroup.py:569:35: Argument to bound method `__init__` is incorrect: Expected `Sequence[_ExceptionT_co]`, found `list[ValueError | AssertionError]`
++ error[invalid-argument-type] src/trio/_tests/test_testing_raisesgroup.py:577:35: Argument to bound method `__init__` is incorrect: Expected `Sequence[_ExceptionT_co]`, found `list[TypeError]`
++ error[invalid-argument-type] src/trio/_tests/test_testing_raisesgroup.py:588:41: Argument to bound method `__init__` is incorrect: Expected `Sequence[_ExceptionT_co]`, found `list[ValueError]`
++ error[invalid-argument-type] src/trio/_tests/test_testing_raisesgroup.py:596:34: Argument to bound method `__init__` is incorrect: Expected `Sequence[_ExceptionT_co]`, found `list[ValueError]`
++ error[invalid-argument-type] src/trio/_tests/test_testing_raisesgroup.py:616:34: Argument to bound method `__init__` is incorrect: Expected `Sequence[_ExceptionT_co]`, found `list[ExceptionGroup[Exception]]`
++ error[invalid-argument-type] src/trio/_tests/test_testing_raisesgroup.py:616:54: Argument to bound method `__init__` is incorrect: Expected `Sequence[_ExceptionT_co]`, found `list[ValueError | TypeError]`
++ error[invalid-argument-type] src/trio/_tests/test_testing_raisesgroup.py:654:13: Argument to bound method `__init__` is incorrect: Expected `Sequence[_ExceptionT_co]`, found `list[ExceptionGroup[Exception] | TypeError]`
++ error[invalid-argument-type] src/trio/_tests/test_testing_raisesgroup.py:655:36: Argument to bound method `__init__` is incorrect: Expected `Sequence[_ExceptionT_co]`, found `list[TypeError | RuntimeError]`
++ error[invalid-argument-type] src/trio/_tests/test_testing_raisesgroup.py:681:13: Argument to bound method `__init__` is incorrect: Expected `Sequence[_ExceptionT_co]`, found `list[ExceptionGroup[Exception]]`
++ error[invalid-argument-type] src/trio/_tests/test_testing_raisesgroup.py:682:36: Argument to bound method `__init__` is incorrect: Expected `Sequence[_ExceptionT_co]`, found `list[TypeError | RuntimeError]`
++ error[invalid-argument-type] src/trio/_tests/test_testing_raisesgroup.py:705:13: Argument to bound method `__init__` is incorrect: Expected `Sequence[_ExceptionT_co]`, found `list[ExceptionGroup[Exception]]`
++ error[invalid-argument-type] src/trio/_tests/test_testing_raisesgroup.py:705:33: Argument to bound method `__init__` is incorrect: Expected `Sequence[_ExceptionT_co]`, found `list[ExceptionGroup[Exception]]`
++ error[invalid-argument-type] src/trio/_tests/test_testing_raisesgroup.py:705:53: Argument to bound method `__init__` is incorrect: Expected `Sequence[_ExceptionT_co]`, found `list[ValueError]`
++ error[invalid-argument-type] src/trio/_tests/test_testing_raisesgroup.py:731:13: Argument to bound method `__init__` is incorrect: Expected `Sequence[_ExceptionT_co]`, found `list[ExceptionGroup[Exception]]`
++ error[invalid-argument-type] src/trio/_tests/test_testing_raisesgroup.py:731:33: Argument to bound method `__init__` is incorrect: Expected `Sequence[_ExceptionT_co]`, found `list[ValueError | ExceptionGroup[Exception]]`
++ error[invalid-argument-type] src/trio/_tests/test_testing_raisesgroup.py:731:67: Argument to bound method `__init__` is incorrect: Expected `Sequence[_ExceptionT_co]`, found `list[ValueError]`
++ error[invalid-argument-type] src/trio/_tests/test_testing_raisesgroup.py:749:34: Argument to bound method `__init__` is incorrect: Expected `Sequence[_ExceptionT_co]`, found `list[ExceptionGroup[Exception]]`
++ error[invalid-argument-type] src/trio/_tests/test_testing_raisesgroup.py:749:60: Argument to bound method `__init__` is incorrect: Expected `Sequence[_ExceptionT_co]`, found `list[Exception]`
++ error[invalid-argument-type] src/trio/_tests/test_testing_raisesgroup.py:818:13: Argument to bound method `__init__` is incorrect: Expected `Sequence[_ExceptionT_co]`, found `list[TypeError | ExceptionGroup[Exception]]`
++ error[invalid-argument-type] src/trio/_tests/test_testing_raisesgroup.py:822:21: Argument to bound method `__init__` is incorrect: Expected `Sequence[_ExceptionT_co]`, found `list[TypeError]`
++ error[invalid-argument-type] src/trio/_tests/test_testing_raisesgroup.py:826:21: Argument to bound method `__init__` is incorrect: Expected `Sequence[_ExceptionT_co]`, found `list[TypeError]`
++ error[invalid-argument-type] src/trio/_tests/test_testing_raisesgroup.py:863:34: Argument to bound method `__init__` is incorrect: Expected `Sequence[_ExceptionT_co]`, found `list[ValueError]`
++ error[invalid-argument-type] src/trio/_tests/test_testing_raisesgroup.py:890:13: Argument to bound method `__init__` is incorrect: Expected `Sequence[_ExceptionT_co]`, found `list[ValueError]`
++ error[invalid-argument-type] src/trio/_tests/test_testing_raisesgroup.py:909:34: Argument to bound method `__init__` is incorrect: Expected `Sequence[_ExceptionT_co]`, found `list[ValueError | TypeError]`
++ error[invalid-argument-type] src/trio/_tests/test_testing_raisesgroup.py:925:34: Argument to bound method `__init__` is incorrect: Expected `Sequence[_ExceptionT_co]`, found `list[ValueError | TypeError]`
++ error[invalid-argument-type] src/trio/_tests/test_testing_raisesgroup.py:941:34: Argument to bound method `__init__` is incorrect: Expected `Sequence[_ExceptionT_co]`, found `list[ValueError | TypeError]`
++ error[invalid-argument-type] src/trio/_tests/test_testing_raisesgroup.py:956:17: Argument to bound method `__init__` is incorrect: Expected `Sequence[_ExceptionT_co]`, found `list[ValueError | RuntimeError]`
++ error[invalid-argument-type] src/trio/_tests/test_testing_raisesgroup.py:1034:34: Argument to bound method `__init__` is incorrect: Expected `Sequence[_ExceptionT_co]`, found `list[ValueError]`
++ error[invalid-argument-type] src/trio/_tests/test_testing_raisesgroup.py:1041:34: Argument to bound method `__init__` is incorrect: Expected `Sequence[_ExceptionT_co]`, found `list[ValueError]`
++ error[invalid-argument-type] src/trio/_tests/test_testing_raisesgroup.py:1075:34: Argument to bound method `__init__` is incorrect: Expected `Sequence[_ExceptionT_co]`, found `list[ExceptionGroup[Exception]]`
++ error[invalid-argument-type] src/trio/_tests/test_testing_raisesgroup.py:1075:54: Argument to bound method `__init__` is incorrect: Expected `Sequence[_ExceptionT_co]`, found `list[OSError]`
++ error[invalid-assignment] src/trio/_tests/test_threads.py:344:5: Object of type `list[None]` is not assignable to `list[str | None]`
++ error[invalid-argument-type] src/trio/_tests/test_util.py:288:62: Argument to bound method `__init__` is incorrect: Expected `Sequence[_ExceptionT_co]`, found `list[ValueError]`
++ error[invalid-argument-type] src/trio/_tests/test_util.py:293:43: Argument to bound method `__init__` is incorrect: Expected `Sequence[_ExceptionT_co]`, found `list[ValueError]`
++ error[invalid-argument-type] src/trio/_tests/test_util.py:299:62: Argument to bound method `__init__` is incorrect: Expected `Sequence[_ExceptionT_co]`, found `list[ExceptionGroup[Exception]]`
++ error[invalid-argument-type] src/trio/_tests/test_util.py:311:29: Argument to bound method `__init__` is incorrect: Expected `Sequence[_ExceptionT_co]`, found `list[ValueError]`
++ error[invalid-assignment] src/trio/_threads.py:357:5: Object of type `list[Task]` is not assignable to `list[Task | None]`
++ error[invalid-assignment] src/trio/_tools/gen_exports.py:228:9: Object of type `list[Name]` is not assignable to attribute `decorator_list` on type `FunctionDef | AsyncFunctionDef`
+- Found 1107 diagnostics
++ Found 1181 diagnostics
+
+paasta (https://github.com/yelp/paasta)
++ error[invalid-assignment] paasta_tools/cli/cmds/status.py:447:5: Object of type `list[tuple[str, str, str, str]]` is not assignable to `list[tuple[Unknown, ...] | str]`
++ error[invalid-assignment] paasta_tools/cli/cmds/status.py:546:5: Object of type `list[tuple[str, str, str, str]]` is not assignable to `list[tuple[str, ...]]`
++ error[invalid-assignment] paasta_tools/cli/cmds/status.py:616:5: Object of type `list[tuple[str, str, str]]` is not assignable to `list[tuple[str, ...]]`
++ error[invalid-assignment] paasta_tools/cli/cmds/status.py:735:5: Object of type `list[tuple[str, str, str, str]]` is not assignable to `list[str | tuple[str, str, str, str]]`
++ error[invalid-assignment] paasta_tools/cli/cmds/status.py:1470:5: Object of type `list[list[str]]` is not assignable to `list[list[str] | str]`
++ error[invalid-assignment] paasta_tools/cli/cmds/validate.py:987:5: Object of type `list[(def validate_all_schemas(service_path: str) -&gt; bool) | partial[Unknown] | (def validate_paasta_objects(service_path) -&gt; Unknown) | (def validate_unique_instance_names(service_path) -&gt; Unknown) | (def validate_autoscaling_configs(service_path: str) -&gt; bool) | (def validate_secrets(service_path) -&gt; Unknown) | (def validate_min_max_instances(service_path) -&gt; Unknown) | (def validate_cpu_burst(service_path: str) -&gt; bool)]` is not assignable to `list[(str, /) -&gt; bool]`
++ warning[redundant-cast] paasta_tools/kubernetes_tools.py:684:26: Value is already of type `NodeSelectorInNotIn`
++ error[invalid-assignment] paasta_tools/utils.py:593:9: Object of type `list[dict[Unknown, Unknown]]` is not assignable to `list[DockerParameter]`
++ error[invalid-argument-type] paasta_tools/utils.py:600:17: Argument to bound method `append` is incorrect: Expected `DockerParameter`, found `dict[Unknown, Unknown]`
++ error[invalid-return-type] paasta_tools/utils.py:1005:16: Return type does not match returned value: expected `list[Sequence[str]]`, found `list[list[str | Unknown]]`
++ error[invalid-return-type] paasta_tools/utils.py:3897:16: Return type does not match returned value: expected `list[Sequence[str]]`, found `list[list[@Todo(map_with_boundness: intersections with negative contributions) | str]]`
++ error[invalid-assignment] paasta_tools/utils.py:3958:5: Object of type `list[tuple[_DeepMergeT, _DeepMergeT]]` is not assignable to `list[tuple[dict[Unknown, Unknown], dict[Unknown, Unknown]]]`
+- Found 963 diagnostics
++ Found 975 diagnostics
+
+pybind11 (https://github.com/pybind/pybind11)
++ error[invalid-argument-type] tests/test_call_policies.py:153:16: Argument to bound method `append` is incorrect: Expected `Derived`, found `list[Derived]`
++ error[invalid-argument-type] tests/test_call_policies.py:179:16: Argument to bound method `append` is incorrect: Expected `Derived`, found `list[Derived]`
+- Found 228 diagnostics
++ Found 230 diagnostics
+
+rich (https://github.com/Textualize/rich)
++ error[invalid-argument-type] examples/exception.py:41:12: Argument to function `divide_all` is incorrect: Expected `list[tuple[int | float, int | float]]`, found `list[tuple[int, int] | tuple[float, int]]`
++ error[invalid-assignment] rich/progress.py:149:5: Object of type `list[TextColumn] | list[Unknown]` is not assignable to `list[ProgressColumn]`
++ error[invalid-assignment] rich/progress.py:344:5: Object of type `list[TextColumn] | list[Unknown]` is not assignable to `list[ProgressColumn]`
++ error[invalid-assignment] rich/progress.py:471:5: Object of type `list[TextColumn] | list[Unknown]` is not assignable to `list[ProgressColumn]`
+- error[invalid-argument-type] tests/test_console.py:225:28: Argument to bound method `print_json` is incorrect: Expected `str | None`, found `list[Unknown]`
++ error[invalid-argument-type] tests/test_console.py:225:28: Argument to bound method `print_json` is incorrect: Expected `str | None`, found `list[str]`
++ warning[possibly-unbound-attribute] tests/test_pretty.py:315:5: Attribute `append` on type `int | list[Unknown]` is possibly unbound
+- Found 392 diagnostics
++ Found 397 diagnostics
+
+pydantic (https://github.com/pydantic/pydantic)
++ error[invalid-assignment] pydantic/_internal/_generate_schema.py:126:1: Object of type `list[typing.Tuple | &lt;class 'tuple'&gt;]` is not assignable to `list[type]`
++ error[invalid-assignment] pydantic/_internal/_generate_schema.py:127:1: Object of type `list[typing.List | &lt;class 'list'&gt; | &lt;class 'MutableSequence'&gt;]` is not assignable to `list[type]`
++ error[invalid-assignment] pydantic/_internal/_generate_schema.py:128:1: Object of type `list[typing.Set | &lt;class 'set'&gt; | &lt;class 'MutableSet'&gt;]` is not assignable to `list[type]`
++ error[invalid-assignment] pydantic/_internal/_generate_schema.py:129:1: Object of type `list[typing.FrozenSet | &lt;class 'frozenset'&gt; | &lt;class 'AbstractSet'&gt;]` is not assignable to `list[type]`
++ error[invalid-assignment] pydantic/_internal/_generate_schema.py:130:1: Object of type `list[typing.Dict | &lt;class 'dict'&gt;]` is not assignable to `list[type]`
++ error[invalid-assignment] pydantic/_internal/_generate_schema.py:131:1: Object of type `list[&lt;class 'IPv4Address'&gt; | &lt;class 'IPv4Interface'&gt; | &lt;class 'IPv4Network'&gt; | &lt;class 'IPv6Address'&gt; | &lt;class 'IPv6Interface'&gt; | &lt;class 'IPv6Network'&gt;]` is not assignable to `list[type]`
++ error[invalid-assignment] pydantic/_internal/_generate_schema.py:132:1: Object of type `list[&lt;class 'Sequence'&gt;]` is not assignable to `list[type]`
++ error[invalid-assignment] pydantic/_internal/_generate_schema.py:133:1: Object of type `list[&lt;class 'Iterable'&gt; | &lt;class 'Generator'&gt;]` is not assignable to `list[type]`
++ error[invalid-assignment] pydantic/_internal/_generate_schema.py:134:1: Object of type `list[typing.Type | &lt;class 'type'&gt;]` is not assignable to `list[type]`
++ error[invalid-assignment] pydantic/_internal/_generate_schema.py:135:1: Object of type `list[&lt;class 'Pattern'&gt;]` is not assignable to `list[type]`
++ error[invalid-assignment] pydantic/_internal/_generate_schema.py:136:1: Object of type `list[&lt;class 'PathLike'&gt; | &lt;class 'Path'&gt; | &lt;class 'PurePath'&gt; | &lt;class 'PosixPath'&gt; | &lt;class 'PurePosixPath'&gt; | &lt;class 'PureWindowsPath'&gt;]` is not assignable to `list[type]`
++ error[invalid-assignment] pydantic/_internal/_generate_schema.py:155:1: Object of type `list[&lt;class 'deque'&gt; | typing.Deque]` is not assignable to `list[type]`
++ error[invalid-argument-type] pydantic/_internal/_generate_schema.py:522:17: Argument to function `union_schema` is incorrect: Expected `list[@Todo(Inference of subscript on special form) | tuple[@Todo(Inference of subscript on special form), str]]`, found `list[JsonOrPythonSchema | AfterValidatorFunctionSchema]`
++ error[invalid-assignment] pydantic/_internal/_known_annotated_metadata.py:72:1: Object of type `list[tuple[set[Unknown], tuple[str, str, str, str]] | tuple[set[Unknown], tuple[str]] | tuple[set[Unknown], tuple[str, str]] | tuple[set[Unknown], tuple[@Todo(starred expression), @Todo(starred expression), @Todo(starred expression), str, str]]]` is not assignable to `list[tuple[set[str], tuple[str, ...]]]`
++ error[invalid-argument-type] pydantic/main.py:93:29: Argument to bound method `from_exception_data` is incorrect: Expected `list[InitErrorDetails]`, found `list[dict[Unknown, Unknown]]`
++ error[invalid-argument-type] pydantic/networks.py:1068:21: Argument to function `union_schema` is incorrect: Expected `list[@Todo(Inference of subscript on special form) | tuple[@Todo(Inference of subscript on special form), str]]`, found `list[IsInstanceSchema | StringSchema]`
++ error[invalid-argument-type] pydantic/types.py:1770:21: Argument to function `union_schema` is incorrect: Expected `list[@Todo(Inference of subscript on special form) | tuple[@Todo(Inference of subscript on special form), str]]`, found `list[IsInstanceSchema | AfterValidatorFunctionSchema]`
++ error[invalid-argument-type] pydantic/types.py:2100:17: Argument to function `union_schema` is incorrect: Expected `list[@Todo(Inference of subscript on special form) | tuple[@Todo(Inference of subscript on special form), str]]`, found `list[StringSchema | IntSchema]`
+- Found 763 diagnostics
++ Found 781 diagnostics
+
+sockeye (https://github.com/awslabs/sockeye)
++ error[invalid-assignment] sockeye/model.py:812:9: Object of type `list[None]` is not assignable to `list[int] | None`
++ error[no-matching-overload] sockeye/model.py:816:37: No overload of function `__new__` matches arguments
++ error[no-matching-overload] sockeye/model.py:816:37: No overload of function `__new__` matches arguments
++ error[no-matching-overload] sockeye/model.py:816:37: No overload of function `__new__` matches arguments
+- error[invalid-argument-type] sockeye/output_handler.py:254:80: Argument to function `__new__` is incorrect: Expected `Iterable[Unknown]`, found `list[Any] | None`
++ error[invalid-argument-type] sockeye/output_handler.py:254:80: Argument to function `__new__` is incorrect: Expected `Iterable[Any]`, found `list[Any] | None`
++ error[invalid-argument-type] test/unit/test_data_io.py:237:60: Argument to function `define_bucket_batch_sizes` is incorrect: Expected `list[int | float | None]`, found `list[None]`
++ error[invalid-argument-type] test/unit/test_data_io.py:256:60: Argument to function `define_bucket_batch_sizes` is incorrect: Expected `list[int | float | None]`, found `list[None]`
++ error[invalid-argument-type] test/unit/test_data_io.py:277:60: Argument to function `define_bucket_batch_sizes` is incorrect: Expected `list[int | float | None]`, found `list[None]`
++ error[invalid-argument-type] test/unit/test_data_io.py:352:60: Argument to function `define_bucket_batch_sizes` is incorrect: Expected `list[int | float | None]`, found `list[None]`
++ error[invalid-argument-type] test/unit/test_data_io.py:397:60: Argument to function `define_bucket_batch_sizes` is incorrect: Expected `list[int | float | None]`, found `list[None]`
++ error[invalid-argument-type] test/unit/test_data_io.py:430:60: Argument to function `define_bucket_batch_sizes` is incorrect: Expected `list[int | float | None]`, found `list[None]`
++ error[invalid-argument-type] test/unit/test_data_io.py:530:13: Argument to function `get_training_data_iters` is incorrect: Expected `list[str | None]`, found `list[None]`
++ error[invalid-argument-type] test/unit/test_data_io.py:530:13: Argument to function `get_training_data_iters` is incorrect: Expected `list[str | None]`, found `list[None]`
++ error[invalid-argument-type] test/unit/test_data_io.py:530:13: Argument to function `get_training_data_iters` is incorrect: Expected `list[str | None]`, found `list[None]`
++ error[invalid-argument-type] test/unit/test_data_io.py:530:13: Argument to function `get_training_data_iters` is incorrect: Expected `list[str | None]`, found `list[None]`
++ error[invalid-argument-type] test/unit/test_data_io.py:530:13: Argument to function `get_training_data_iters` is incorrect: Expected `list[str | None]`, found `list[None]`
++ error[invalid-argument-type] test/unit/test_data_io.py:531:13: Argument to function `get_training_data_iters` is incorrect: Expected `list[str | None]`, found `list[None]`
++ error[invalid-argument-type] test/unit/test_data_io.py:531:13: Argument to function `get_training_data_iters` is incorrect: Expected `list[str | None]`, found `list[None]`
++ error[invalid-argument-type] test/unit/test_data_io.py:531:13: Argument to function `get_training_data_iters` is incorrect: Expected `list[str | None]`, found `list[None]`
++ error[invalid-argument-type] test/unit/test_data_io.py:531:13: Argument to function `get_training_data_iters` is incorrect: Expected `list[str | None]`, found `list[None]`
++ error[invalid-argument-type] test/unit/test_data_io.py:531:13: Argument to function `get_training_data_iters` is incorrect: Expected `list[str | None]`, found `list[None]`
++ error[invalid-argument-type] test/unit/test_data_io.py:601:60: Argument to function `define_bucket_batch_sizes` is incorrect: Expected `list[int | float | None]`, found `list[None]`
++ error[invalid-argument-type] test/unit/test_data_io.py:658:60: Argument to function `define_bucket_batch_sizes` is incorrect: Expected `list[int | float | None]`, found `list[None]`
++ error[invalid-argument-type] test/unit/test_data_io.py:727:60: Argument to function `define_bucket_batch_sizes` is incorrect: Expected `list[int | float | None]`, found `list[None]`
++ error[invalid-argument-type] test/unit/test_data_io.py:760:60: Argument to function `define_bucket_batch_sizes` is incorrect: Expected `list[int | float | None]`, found `list[None]`
++ error[invalid-argument-type] test/unit/test_output_handler.py:46:43: Argument is incorrect: Expected `list[list[int | float]] | None`, found `list[float]`
++ error[invalid-argument-type] test/unit/test_output_handler.py:48:43: Argument is incorrect: Expected `list[int | float] | None`, found `list[float]`
+- Found 356 diagnostics
++ Found 382 diagnostics
+
+porcupine (https://github.com/Akuli/porcupine)
++ error[invalid-assignment] porcupine/plugins/longlinemarker.py:56:17: Object of type `list[str]` is not assignable to `list[Literal[&quot;bgcolor&quot;, &quot;color&quot;, &quot;border&quot;]]`
+- Found 80 diagnostics
++ Found 81 diagnostics
+
+check-jsonschema (https://github.com/python-jsonschema/check-jsonschema)
+- warning[unused-ignore-comment] src/check_jsonschema/utils.py:114:54: Unused blanket `type: ignore` directive
+- Found 65 diagnostics
++ Found 64 diagnostics
+
+nox (https://github.com/wntrblm/nox)
++ error[invalid-assignment] nox/_parametrize.py:153:13: Object of type `list[(Iterable[@Todo(Inference of subscript on special form)] &amp; ~tuple[Unknown, ...] &amp; ~list[Unknown]) | (@Todo(Inference of subscript on special form) &amp; ~tuple[Unknown, ...] &amp; ~list[Unknown])]` is not assignable to `list[Param | Iterable[Any]]`
++ error[invalid-assignment] nox/_parametrize.py:159:9: Object of type `list[(Iterable[@Todo(Inference of subscript on special form)] &amp; Param) | (@Todo(Inference of subscript on special form) &amp; Param)]` is not assignable to `list[Param | Iterable[Any]]`
+- Found 32 diagnostics
++ Found 34 diagnostics
+
+hydra-zen (https://github.com/mit-ll-responsible-ai/hydra-zen)
++ error[invalid-assignment] src/hydra_zen/structured_configs/_implementations.py:2392:13: Object of type `list[tuple[str, &lt;class 'str'&gt;, Field[Any]] | tuple[str, &lt;class 'bool'&gt;, Field[Any]]]` is not assignable to `list[tuple[str, Any] | tuple[str, Any, Any]]`
++ error[invalid-assignment] src/hydra_zen/structured_configs/_implementations.py:2406:13: Object of type `list[tuple[str, &lt;class 'str'&gt;, Field[Any]]]` is not assignable to `list[tuple[str, Any] | tuple[str, Any, Any]]`
++ error[invalid-assignment] src/hydra_zen/structured_configs/_implementations.py:2478:13: Object of type `list[tuple[str, &lt;class 'str'&gt;, Field[Any]]]` is not assignable to `list[tuple[str, Any] | tuple[str, Any, Any]]`
+- Found 604 diagnostics
++ Found 607 diagnostics
+
+mkosi (https://github.com/systemd/mkosi)
++ error[invalid-argument-type] mkosi/config.py:3087:45: Argument to function `make_simple_config_parser` is incorrect: Expected `Sequence[ConfigSetting[object]]`, found `list[ConfigSetting[Unknown] | ConfigSetting[bool]]`
+- Found 224 diagnostics
++ Found 225 diagnostics
+
+ignite (https://github.com/pytorch/ignite)
++ error[invalid-argument-type] examples/notebooks/Cifar10_Ax_hyperparam_tuning.ipynb:245:9: Argument to bound method `__init__` is incorrect: Expected `list[ParamScheduler]`, found `list[PiecewiseLinear]`
+- error[invalid-argument-type] examples/notebooks/Cifar10_Ax_hyperparam_tuning.ipynb:256:58: Argument to bound method `plot_values` is incorrect: Expected `Mapping[Unknown, Unknown]`, found `list[Unknown]`
++ error[invalid-argument-type] examples/notebooks/Cifar10_Ax_hyperparam_tuning.ipynb:256:58: Argument to bound method `plot_values` is incorrect: Expected `Mapping[Unknown, Unknown]`, found `list[tuple[int, float]]`
++ error[invalid-argument-type] examples/notebooks/CycleGAN_with_nvidia_apex.ipynb:598:66: Argument to bound method `__init__` is incorrect: Expected `list[tuple[int, int | float]]`, found `list[tuple[int, float]]`
++ error[invalid-argument-type] examples/notebooks/CycleGAN_with_nvidia_apex.ipynb:599:67: Argument to bound method `__init__` is incorrect: Expected `list[tuple[int, int | float]]`, found `list[tuple[int, float]]`
++ error[invalid-argument-type] examples/notebooks/CycleGAN_with_nvidia_apex.ipynb:601:36: Argument to bound method `__init__` is incorrect: Expected `list[ParamScheduler]`, found `list[PiecewiseLinear]`
++ error[invalid-argument-type] examples/notebooks/CycleGAN_with_torch_cuda_amp.ipynb:579:66: Argument to bound method `__init__` is incorrect: Expected `list[tuple[int, int | float]]`, found `list[tuple[int, float]]`
++ error[invalid-argument-type] examples/notebooks/CycleGAN_with_torch_cuda_amp.ipynb:580:67: Argument to bound method `__init__` is incorrect: Expected `list[tuple[int, int | float]]`, found `list[tuple[int, float]]`
++ error[invalid-argument-type] examples/notebooks/CycleGAN_with_torch_cuda_amp.ipynb:582:36: Argument to bound method `__init__` is incorrect: Expected `list[ParamScheduler]`, found `list[PiecewiseLinear]`
++ error[invalid-assignment] ignite/distributed/comp_models/__init__.py:17:5: Object of type `list[&lt;class '_SerialModel'&gt;]` is not assignable to `list[type[_SerialModel] | @Todo(unsupported type[X] special form)]`
++ error[invalid-argument-type] ignite/handlers/param_scheduler.py:1179:42: Argument to bound method `__init__` is incorrect: Expected `list[ParamScheduler]`, found `list[ParamGroupScheduler | ParamScheduler | Unknown]`
++ error[invalid-argument-type] ignite/handlers/param_scheduler.py:1188:73: Argument to bound method `simulate_values` is incorrect: Expected `list[ParamScheduler]`, found `list[ParamGroupScheduler | ParamScheduler | Unknown]`
++ error[invalid-argument-type] tests/ignite/contrib/engines/test_common.py:72:68: Argument to bound method `__init__` is incorrect: Expected `list[tuple[int, int | float]]`, found `list[tuple[int, float]]`
++ error[invalid-argument-type] tests/ignite/distributed/utils/__init__.py:433:25: Argument to function `new_group` is incorrect: Expected `list[int]`, found `list[str]`
++ warning[possibly-unbound-attribute] tests/ignite/engine/test_deterministic.py:880:12: Attribute `device` on type `tuple[Any, ...] | Unknown` is possibly unbound
++ error[invalid-assignment] tests/ignite/handlers/test_base_logger.py:265:5: Object of type `list[str]` is not assignable to attribute `_events` of type `list[CallableEventWithFilter]`
+- error[invalid-argument-type] tests/ignite/handlers/test_checkpoint.py:52:20: Argument to bound method `__init__` is incorrect: Expected `Mapping[Unknown, Unknown]`, found `list[Unknown]`
++ error[invalid-argument-type] tests/ignite/handlers/test_checkpoint.py:52:20: Argument to bound method `__init__` is incorrect: Expected `Mapping[Unknown, Unknown]`, found `list[int]`
+- error[invalid-assignment] tests/ignite/handlers/test_fbresearch_logger.py:83:5: Object of type `list[Unknown]` is not assignable to attribute `output` on type `Unknown | State`
++ error[invalid-assignment] tests/ignite/handlers/test_fbresearch_logger.py:83:5: Object of type `list[float]` is not assignable to attribute `output` on type `Unknown | State`
++ error[invalid-argument-type] tests/ignite/handlers/test_param_scheduler.py:344:25: Argument to bound method `__init__` is incorrect: Expected `list[ParamScheduler]`, found `list[LinearCyclicalScheduler]`
++ error[invalid-argument-type] tests/ignite/handlers/test_param_scheduler.py:347:25: Argument to bound method `__init__` is incorrect: Expected `list[ParamScheduler]`, found `list[LinearCyclicalScheduler | int]`
++ error[invalid-argument-type] tests/ignite/handlers/test_param_scheduler.py:350:25: Argument to bound method `__init__` is incorrect: Expected `list[ParamScheduler]`, found `list[LinearCyclicalScheduler | CosineAnnealingScheduler]`
++ error[invalid-argument-type] tests/ignite/handlers/test_param_scheduler.py:353:25: Argument to bound method `__init__` is incorrect: Expected `list[ParamScheduler]`, found `list[LinearCyclicalScheduler | CosineAnnealingScheduler]`
++ error[invalid-argument-type] tests/ignite/handlers/test_param_scheduler.py:353:77: Argument to bound method `__init__` is incorrect: Expected `list[int]`, found `list[int | float]`
++ error[invalid-argument-type] tests/ignite/handlers/test_param_scheduler.py:356:25: Argument to bound method `__init__` is incorrect: Expected `list[ParamScheduler]`, found `list[LinearCyclicalScheduler | CosineAnnealingScheduler]`
++ error[invalid-argument-type] tests/ignite/handlers/test_param_scheduler.py:360:29: Argument to bound method `simulate_values` is incorrect: Expected `list[ParamScheduler]`, found `list[LinearCyclicalScheduler | CosineAnnealingScheduler]`
++ error[invalid-argument-type] tests/ignite/handlers/test_param_scheduler.py:365:29: Argument to bound method `simulate_values` is incorrect: Expected `list[ParamScheduler]`, found `list[LinearCyclicalScheduler | CosineAnnealingScheduler]`
++ error[invalid-argument-type] tests/ignite/handlers/test_param_scheduler.py:365:84: Argument to bound method `simulate_values` is incorrect: Expected `list[str] | tuple[str] | None`, found `list[int]`
++ error[invalid-argument-type] tests/ignite/handlers/test_param_scheduler.py:372:25: Argument to bound method `__init__` is incorrect: Expected `list[ParamScheduler]`, found `list[LinearCyclicalScheduler | CosineAnnealingScheduler]`
++ error[invalid-argument-type] tests/ignite/handlers/test_param_scheduler.py:377:25: Argument to bound method `__init__` is incorrect: Expected `list[ParamScheduler]`, found `list[LinearCyclicalScheduler | CosineAnnealingScheduler]`
++ error[invalid-argument-type] tests/ignite/handlers/test_param_scheduler.py:380:44: Argument to bound method `simulate_values` is incorrect: Expected `list[ParamScheduler]`, found `list[LinearCyclicalScheduler | CosineAnnealingScheduler]`
++ error[invalid-argument-type] tests/ignite/handlers/test_param_scheduler.py:389:40: Argument to bound method `__init__` is incorrect: Expected `list[ParamScheduler]`, found `list[LinearCyclicalScheduler | CosineAnnealingScheduler]`
++ error[invalid-argument-type] tests/ignite/handlers/test_param_scheduler.py:432:40: Argument to bound method `__init__` is incorrect: Expected `list[ParamScheduler]`, found `list[LinearCyclicalScheduler | CosineAnnealingScheduler]`
++ error[invalid-argument-type] tests/ignite/handlers/test_param_scheduler.py:438:44: Argument to bound method `simulate_values` is incorrect: Expected `list[ParamScheduler]`, found `list[LinearCyclicalScheduler | CosineAnnealingScheduler]`
++ error[invalid-argument-type] tests/ignite/handlers/test_param_scheduler.py:500:40: Argument to bound method `__init__` is incorrect: Expected `list[ParamScheduler]`, found `list[LinearCyclicalScheduler]`
++ error[invalid-argument-type] tests/ignite/handlers/test_param_scheduler.py:508:44: Argument to bound method `simulate_values` is incorrect: Expected `list[ParamScheduler]`, found `list[LinearCyclicalScheduler]`
++ error[invalid-argument-type] tests/ignite/handlers/test_param_scheduler.py:573:9: Argument to bound method `__init__` is incorrect: Expected `list[ParamScheduler]`, found `list[LinearCyclicalScheduler]`
++ error[invalid-argument-type] tests/ignite/handlers/test_param_scheduler.py:580:44: Argument to bound method `simulate_values` is incorrect: Expected `list[ParamScheduler]`, found `list[LinearCyclicalScheduler]`
++ error[invalid-argument-type] tests/ignite/handlers/test_param_scheduler.py:761:42: Argument to bound method `__init__` is incorrect: Expected `list[tuple[int, int | float]]`, found `list[tuple[float]]`
++ error[invalid-argument-type] tests/ignite/handlers/test_param_scheduler.py:764:42: Argument to bound method `__init__` is incorrect: Expected `list[tuple[int, int | float]]`, found `list[tuple[int, float] | tuple[float]]`
++ error[invalid-argument-type] tests/ignite/handlers/test_param_scheduler.py:767:42: Argument to bound method `__init__` is incorrect: Expected `list[tuple[int, int | float]]`, found `list[tuple[int, float]]`
++ error[invalid-argument-type] tests/ignite/handlers/test_param_scheduler.py:770:42: Argument to bound method `__init__` is incorrect: Expected `list[tuple[int, int | float]]`, found `list[tuple[float, int]]`
++ error[invalid-argument-type] tests/ignite/handlers/test_param_scheduler.py:782:50: Argument to bound method `__init__` is incorrect: Expected `list[tuple[int, int | float]]`, found `list[tuple[int, float]] | @Todo(list comprehension type)`
++ error[not-iterable] tests/ignite/handlers/test_param_scheduler.py:1044:52: Object of type `None` is not iterable
++ error[invalid-argument-type] tests/ignite/handlers/test_param_scheduler.py:1082:9: Argument to bound method `__init__` is incorrect: Expected `list[ParamScheduler]`, found `list[LinearCyclicalScheduler]`
++ error[not-iterable] tests/ignite/handlers/test_param_scheduler.py:1111:52: Object of type `None` is not iterable
++ error[invalid-argument-type] tests/ignite/handlers/test_param_scheduler.py:1164:29: Argument to bound method `__init__` is incorrect: Expected `list[ParamScheduler]`, found `list[int]`
++ error[invalid-argument-type] tests/ignite/handlers/test_param_scheduler.py:1167:29: Argument to bound method `__init__` is incorrect: Expected `list[ParamScheduler]`, found `list[LinearCyclicalScheduler | str]`
++ error[invalid-argument-type] tests/ignite/handlers/test_param_scheduler.py:1170:29: Argument to bound method `__init__` is incorrect: Expected `list[ParamScheduler]`, found `list[LinearCyclicalScheduler]`
++ error[invalid-argument-type] tests/ignite/handlers/test_param_scheduler.py:1173:29: Argument to bound method `__init__` is incorrect: Expected `list[ParamScheduler]`, found `list[LinearCyclicalScheduler]`
++ error[invalid-argum...*[Comment body truncated]*
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/import/dunder_all.md</code>:787 on 2025-05-31 12:45</div>
+            <div class="timeline-body"><p>Let's keep this second TODO -- I think it's still relevant. We might want to consider <code>__all__</code> implicitly <code>Final</code>, in which case we'd infer the type as <code>list[str]</code> rather <code>Unknown | list[str]</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/infer.rs</code>:4560 on 2025-06-02 13:26</div>
+            <div class="timeline-body"><p>Calling <code>literal_fallback_instance</code> directly will only promote a top-most literal type, so e.g. <code>[(1,2)]</code> will be inferred as <code>list[tuple[Literal[1], Literal[2]]]</code> instead of <code>list[tuple[int, int]]</code>.  To get deep promotion you'll want</p>
+<pre><code class="language-suggestion">                inferred
+                    .apply_type_mapping(self.db(), &amp;TypeMapping::PromoteLiterals)
+</code></pre>
+<p>(that should help with some of the ecosystem results)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-06-02 13:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-06-02 13:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> reviewed on 2025-06-02 13:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on <code>crates/ty_python_semantic/src/types/infer.rs</code>:4560 on 2025-06-02 13:36</div>
+            <div class="timeline-body"><p>Thank you</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> reviewed on 2025-06-02 13:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on <code>crates/ty_python_semantic/resources/mdtest/import/dunder_all.md</code>:787 on 2025-06-02 13:39</div>
+            <div class="timeline-body"><p>Okay got it</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-06-02 14:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/infer.rs</code>:4560 on 2025-06-02 14:32</div>
+            <div class="timeline-body"><p>Looks like my suggestion wasn't enough on its own, getting build failures on CI because you'll also need to import <code>TypeMapping</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> reviewed on 2025-06-02 15:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on <code>crates/ty_python_semantic/src/types/infer.rs</code>:4560 on 2025-06-02 15:09</div>
+            <div class="timeline-body"><p>Yeah, I'm just away from my laptop right now, will fix in a couple hours</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on 2025-06-02 20:44</div>
+            <div class="timeline-body"><p>I was thinking more about this, and depending on our inference of a here, we can create issues on (what i think to be) type safe code. Which does not seem correct.</p>
+<pre><code class="language-py">from typing import Literal
+
+
+def foo(a: list[Literal[1, 2, 3]]): ...
+def bar(a: list[int]): ...
+def baz(a: list[object]): ...
+
+
+a = [1, 2, 3] # inferred as list[int]
+
+foo(a) # error
+bar(a)
+baz(a) # error
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-06-03 17:23</div>
+            <div class="timeline-body"><p>@MatthewMckee4 Yes, this is sort of just the nature of invariant generics. I don't think any current type checker will let you pass that same <code>a</code> list to all three of those functions.</p>
+<p>It actually is technically type safe to do so in this case, but only because you've called them in that particular order (of widening parameter type); if you called <code>baz</code> first, the type of the list would have to become <code>list[object]</code> (because <code>baz</code> itself could add anything to the list), rendering the other two calls wrong.</p>
+<p>The only approach to inferring generic types that I know of that would allow these three calls to all be made with the same list, in this order, would be to infer <code>list[Unknown | Literal[1, 2, 3]]</code> after the creation, refine that to <code>list[Unknown | int]</code> after the call to <code>bar</code>, and refine it to <code>list[object]</code> after the call to <code>baz</code>.</p>
+<p>Our intention for now is to just start with the simple approach you've taken in this PR, of inferring the narrowest type but with literals widened.</p>
+<p>Looking at the primer results for this PR, it seems like we might want to fix some other issues before we land this? E.g. the cases in poetry where we don't allow assigning <code>list[SomeError]</code> to <code>Sequence[_ExceptionT_co]</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on 2025-06-03 17:44</div>
+            <div class="timeline-body"><p>Okay sounds good, I'll have a look later</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on 2025-06-04 10:58</div>
+            <div class="timeline-body"><p>i cant reproduce this locally</p>
+<pre><code class="language-diff">+ error[invalid-argument-type] src/trio/_tests/test_testing_raisesgroup.py:138:34: Argument to bound method `__init__` is incorrect: Expected `Sequence[_ExceptionT_co]`, found `list[ValueError | SyntaxError]`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-06-23 19:19</div>
+            <div class="timeline-body"><p>This was a hard one to reproduce! I only get the diagnostic for <code>trio</code> when using Python &lt;3.11.</p>
+<p>The failing MRE is:</p>
+<pre><code class="language-py">$ mkdir foo
+$ cd foo
+$ uv init --python 3.10
+$ uv add exceptiongroup
+$ cat &lt;&lt;EOF &gt;foo.py
+from typing_extensions import reveal_type
+from exceptiongroup import ExceptionGroup
+reveal_type(ExceptionGroup(&quot;hi&quot;, (ValueError(), SyntaxError())))
+EOF
+$ ty check foo.py
+</code></pre>
+<p>And the succeeding version is:</p>
+<pre><code class="language-py">$ mkdir bar
+$ cd bar
+$ uv init --python 3.13
+$ cat &lt;&lt;EOF &gt;bar.py
+from typing_extensions import reveal_type
+reveal_type(ExceptionGroup(&quot;hi&quot;, (ValueError(), SyntaxError())))
+EOF
+$ ty check bar.py
+</code></pre>
+<p>It looks like the <code>exceptiongroup</code> polyfill is defined slightly differently than the version that was accepted into the stdlib.  In the failing version, <code>ExceptionGroup</code> inherits its <code>__init__</code> from <code>BaseExceptionGroup</code>, and the two classes use different typevars. This seems to confuse our constructor typevar inference logic.  In the succeeding version, <code>ExceptionGroup</code> overrides <code>__init__</code> to use the same typevar as its <code>__new__</code> method, and everything seems to work fine.</p>
+<p>(This is the same root cause as https://github.com/astral-sh/ty/issues/588)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MatthewMckee4 on 2025-07-16 21:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-07-16 21:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch restored on 2025-07-16 21:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @MatthewMckee4 on 2025-07-16 21:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MatthewMckee4 on 2025-07-16 21:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-07-16 21:13</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:58:38 UTC
+    </footer>
+</body>
+</html>

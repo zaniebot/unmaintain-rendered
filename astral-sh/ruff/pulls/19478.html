@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Infer types for `Callable` in the invalid arguments case - astral-sh/ruff #19478</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Infer types for <code>Callable</code> in the invalid arguments case</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19478">#19478</a>
+        opened by <a href="https://github.com/lipefree">@lipefree</a>
+        on 2025-07-22 07:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/lipefree">@lipefree</a> on 2025-07-22 07:32</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title? (Please prefix with `[ty]` for ty pull
+  requests.)
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>Fixes https://github.com/astral-sh/ty/issues/815.</p>
+<p>Previously a snippet of the form :</p>
+<pre><code class="language-py"># fmt: off
+
+def _(c: Callable[ 
+            {1, 2}  
+        ]
+    ):
+    reveal_type(c)  # revealed: (...) -&gt; Unknown
+</code></pre>
+<p>or</p>
+<p>caused a panic in mdtests because no type was stored for argument <code>{1, 2}</code>. Now we store a type for the single argument case with <code>CallableType::unknown(..)</code> if it is a valid first argument to <code>Callable</code> (list of types, <code>ParamSpec</code>, Concatenate or <code>...</code>) or we infer it otherwise. For the tuple case, we make sure to infer the types in case the first argument is not valid.</p>
+<h2>Test Plan</h2>
+<!-- How was it tested? -->
+
+<p>Removed the <code>pull-types:skip</code> directive and added an additional error in the relevant test.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-22 07:38</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅
+No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @AlexWaygood on 2025-07-22 07:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-07-22 07:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[ty] Correctly infer types for `Callable` in the single argument case" to "[ty] Infer types for `Callable` in the invalid arguments case" by @lipefree on 2025-07-22 09:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @lipefree on 2025-07-22 09:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @lipefree on 2025-07-22 09:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @lipefree on 2025-07-22 09:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @lipefree on 2025-07-22 09:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @lipefree on 2025-07-22 09:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2025-07-22 10:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/annotations/callable.md</code>:45 on 2025-07-22 21:03</div>
+            <div class="timeline-body"><p>I think <em>ideally</em> the first error here is sufficient and we don't need the second one, too. But if that's really difficult, it's not a big deal.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/annotations/callable.md</code>:86 on 2025-07-22 21:04</div>
+            <div class="timeline-body"><p>Similarly here, I think the below error sort of covers this already?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/infer.rs</code>:9615 on 2025-07-22 21:32</div>
+            <div class="timeline-body"><p>This doesn't feel right (and it's the cause of the &quot;unnecessary&quot; extra diagnostics I mentioned in the tests). We know that whatever expression is here, it's not valid in this context. It doesn't make sense to then try to infer it as a type expression (when an arbitrary type expression is not valid here, even if its a valid type expression!). We are only doing this because it's the most convenient way to ensure a type is assigned to every sub-expression. If we had a &quot;walk expression tree and store Unknown for every sub-expression&quot; it would make more sense to use that here -- but we haven't built that utility. And really even that seems wasteful.</p>
+<p>I feel like this is pushing me over the edge where I am really ready to just implement a blanket fallback to Unknown (at query time) for any expression we didn't store a type for, and be done with the &quot;no type stored for this expression&quot; panics once and for all. I think it's fine if we occasionally miss an expression, end up with Unknown, and eventually get a bug report. And it can save us so much useless work (here I mean partially runtime work, but also development work) in error cases, where it would just become fine/correct to return early and not bother with storing types.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-07-22 21:33</div>
+            <div class="timeline-body"><p>Thanks for working on this! I'm not quite happy with this approach, though -- see inline comment. Would like to take this to the team because IMO this is really an argument for just changing our whole approach to missing stored expression types.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/lipefree">@lipefree</a> reviewed on 2025-07-23 06:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/lipefree">@lipefree</a> on <code>crates/ty_python_semantic/src/types/infer.rs</code>:9615 on 2025-07-23 06:09</div>
+            <div class="timeline-body"><p>I totally understand your opinion on this ! I have learn quite a few tricks in rust playing around with this PR so it is ok if it doesn't get merge at all. I will be happy on working on the refactoring of &quot;no type stored for this expression&quot; if a new mechanism for handling such cases is introduced.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-07-23 06:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types/infer.rs</code>:9615 on 2025-07-23 06:37</div>
+            <div class="timeline-body"><blockquote>
+<p>If we had a &quot;walk expression tree and store Unknown for every sub-expression&quot; it would make more sense to use that here -- but we haven't built that utility.</p>
+</blockquote>
+<p>I <a href="https://github.com/astral-sh/ruff/pull/14629">tried that half a year ago</a> when I was fed up with patching a lot of these panics :-)</p>
+<blockquote>
+<p>I feel like this is pushing me over the edge where I am really ready to just implement a blanket fallback to Unknown (at query time) for any expression we didn't store a type for, and be done with the &quot;no type stored for this expression&quot; panics once and for all. I think it's fine if we occasionally miss an expression, end up with Unknown, and eventually get a bug report. And it can save us so much useless work (here I mean partially runtime work, but also development work) in error cases, where it would just become fine/correct to return early and not bother with storing types.</p>
+</blockquote>
+<p>Strong agree (see also my &quot;side remark&quot; in the linked PR). We could maybe still make it a hard error (or at least an error in debug mode) if we fall back to <code>Unknown</code> within valid code, if that information is easy to retrieve/generate?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-07-23 12:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/infer.rs</code>:9615 on 2025-07-23 12:21</div>
+            <div class="timeline-body"><p>I still have concerns about the impact this might have on the ability to use ty as a backend for Ruff in the long-term (https://github.com/astral-sh/ruff/pull/14629#issuecomment-2505930718, https://github.com/astral-sh/ruff/pull/14629#issuecomment-2506271894).</p>
+<p>I agree that we've spent a frustrating amount of time chasing down corpus panics for invalid syntax and/or invalid type expressions. But these corpus tests have also caught some genuine bugs where we weren't storing subexpressions for nodes involving <em>valid</em> type expressions -- https://github.com/astral-sh/ruff/pull/18535 and https://github.com/astral-sh/ruff/pull/18536 were examples. I think it would be really confusing for users if they saw <code>Unknown</code> when hovering over an AST node inside a valid type expression. It would also be hard to figure out why a lint rule that used ty as a backend wasn't getting the correct result when a bug was caused by <code>Unknown</code> being stored for an AST subnode. So I do think the corpus tests are valuable.</p>
+<p>We are definitely too panicky in the server right now, though, and we definitely emit too many cascading diagnostics for invalid type expressions. My preferred solution for the first problem would be to keep the strict corpus tests, but to avoid indexing directly into the expression map from the server code -- instead we should do something like <code>expression_map.get(node).unwrap_or(Type::unknown())</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-07-23 21:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/infer.rs</code>:9615 on 2025-07-23 21:20</div>
+            <div class="timeline-body"><p>I looked back at that prior discussion, and I am not convinced that future-type-aware-Ruff is sufficient motivation for us to work so hard to infer meaningful types for invalid expressions. Invalid expressions aren't common, issue their own errors, and tend to be fixed -- we don't need type-aware-Ruff to issue a cascading diagnostic for every other possible lint issue inside an invalid annotation. (I don't buy that there are any significant numbers of people who care about Ruff emitting a diagnostic for <code>Literal[1, 1]</code> everywhere it is used, but don't care about valid type annotations in the first place.)</p>
+<p>It's still not clear to me how you would actually propose to handle the case in this PR. Should we infer it as a type expression, even though it is not in a context where a type expression is either valid or expected? As a value expression, even though it is not a context where a value expression is valid or expected? Neither option makes semantic sense, and both risk unnecessary/confusing cascading errors. I don't know of any other option that's been suggested, other than &quot;explicitly store Unknown for the whole tree.&quot; That option is significantly more work, and it still doesn't help the Ruff case.</p>
+<p>Yes, it's not ideal if we wrongly reveal <code>Unknown</code> on hover in some valid case where we should reveal some other type. If this happens and it's noticeable, it will eventually be reported as a bug and we will fix it like any other bug. (&quot;Failed to infer a type for an expression&quot; is only one way this can happen; enforcing an explicitly-stored type for every expression doesn't prevent it.) I don't think this is a super high priority category of bug, and I think the cost of this particular method of helping us to prevent it is significantly greater than the benefit.</p>
+<p>I agree that at minimum we must start using a fallback when we pull types in the server, so we don't panic, but I don't think that's sufficient. If we maintain that the corpus tests must find an explicit type for every expression, that means we still (in principle, though we won't catch the bugs as quickly via playground/LSP panics) require ourselves to always find some way to infer and explicitly store a type for every expression, including in all error cases. And I think that is a bad use of our time, and we should stop doing it.</p>
+<p>I think the corpus tests should continue to exist, and should continue to pull a type for every expression, because that helps catch other failures/panics. But the corpus tests should also use a fallback to <code>Unknown</code> and no longer panic if they don't find an explicitly-stored type for some expression.</p>
+<p>@lipefree</p>
+<blockquote>
+<p>I will be happy on working on the refactoring of &quot;no type stored for this expression&quot; if a new mechanism for handling such cases is introduced.</p>
+</blockquote>
+<p>Thank you for your understanding! I think we really already have most of the mechanism, and this is a relatively easy change to <code>TypeInference::expression_type</code> -- instead of using <code>.expect</code> and panicking if <code>try_expression_type</code> returns <code>None</code>, it should instead fallback to <code>Unknown</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-07-23 21:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-07-24 00:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/infer.rs</code>:9615 on 2025-07-24 00:08</div>
+            <div class="timeline-body"><p>I actually just went ahead and put up <a href="https://github.com/astral-sh/ruff/pull/19517">a PR for this</a>, since it was quite simple -- though not quite as simple as I said above, due to https://github.com/astral-sh/ruff/pull/19435. I reused your added test from this PR, so I added you as a co-author.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-07-24 11:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/infer.rs</code>:9615 on 2025-07-24 11:38</div>
+            <div class="timeline-body"><blockquote>
+<p>It's still not clear to me how you would actually propose to handle the case in this PR. Should we infer it as a type expression, even though it is not in a context where a type expression is either valid or expected? As a value expression, even though it is not a context where a value expression is valid or expected? Neither option makes semantic sense, and both risk unnecessary/confusing cascading errors. I don't know of any other option that's been suggested, other than &quot;explicitly store Unknown for the whole tree.&quot; That option is significantly more work, and it still doesn't help the Ruff case.</p>
+</blockquote>
+<p>I'd still like to try out the idea I mentioned in https://github.com/astral-sh/ty/issues/727#issuecomment-3019180248, of refactoring <code>infer_type_expression</code> to return a <code>Result</code> rather than eagerly emitting diagnostics. I think this would have a lot of benefits more broadly. But it wouldn't be an easy refactor; your solution certainly gets us to a no-panic state more quickly.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:58:39 UTC
+    </footer>
+</body>
+</html>

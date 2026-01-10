@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fix name resolution in package __init__.py - astral-sh/ruff #18159</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fix name resolution in package <strong>init</strong>.py</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/18159">#18159</a>
+        opened by <a href="https://github.com/robsdedude">@robsdedude</a>
+        on 2025-05-17 22:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/robsdedude">@robsdedude</a> on 2025-05-17 22:27</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>When resolving the name while linting a package's <code>__init__.py</code> file, ruff was considering <code>__init__</code> to be a proper module name. Whereas it's not really. Classes, functions, and other objects defined in <code>__init__.py</code> will belong to the package. This PR fixes that resolution. In particular, <code>D103</code>, and <code>PLW0406</code> were affected. Maybe more that I couldn't find.</p>
+<h2>Test Plan</h2>
+<p>I've added tests for the two rules I could find were affected by not properly resolving qualified names of objects inside a package's <code>__init__.py</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dylwil3 by @MichaReiser on 2025-05-18 16:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-05-19 13:05</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+1 -0 violations, +0 -0 fixes in 1 projects; 54 projects unchanged)</p>
+<details><summary><a href="https://github.com/ibis-project/ibis">ibis-project/ibis</a> (+1 -0 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/ibis-project/ibis/blob/3e70ace0292744d1210c3488b6577be2b54d2075/ibis/__init__.py#L78'>ibis/__init__.py:78:12:</a> PLW0406 Module `ibis` imports itself
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (1 rules affected)</summary>
+<p>
+
+<p>| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| PLW0406 | 1 | 1 | 0 | 0 | 0 |</p>
+</p>
+</details>
+
+<h3>Linter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+1 -0 violations, +0 -0 fixes in 1 projects; 54 projects unchanged)</p>
+<details><summary><a href="https://github.com/ibis-project/ibis">ibis-project/ibis</a> (+1 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/ibis-project/ibis/blob/3e70ace0292744d1210c3488b6577be2b54d2075/ibis/__init__.py#L78'>ibis/__init__.py:78:12:</a> PLW0406 Module `ibis` imports itself
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (1 rules affected)</summary>
+<p>
+
+<p>| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| PLW0406 | 1 | 1 | 0 | 0 | 0 |</p>
+</p>
+</details>
+
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-05-19 22:31</div>
+            <div class="timeline-body"><p>Thanks for finding this!</p>
+<p>I think it would be good to understand better what the correct fix is here. In the semantic model, <code>self.module.qualified_name()</code> is used in quite a few spots. Is there a particular reason why we would only need to change the output of that method in this one place? Should we make a new method that captures this different usage? Should the output just <em>always</em> omit <code>__init__.py</code>?</p>
+<p>I would have to dive into this a bit to answer those questions but I'm curious to know if you've already considered some of these. (No worries if not!)</p>
+<p>And certainly we would need to add more tests - I think that method is called on a class or function in many different places. One reassurance is that the ecosystem check showed no changes, but we should still do some due diligence.</p>
+<p>Finally, depending on the change, and whether it should always be considered a bug fix, we may want to consider if it's possible to gate this behavior behind preview.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/robsdedude">@robsdedude</a> on 2025-05-20 07:44</div>
+            <div class="timeline-body"><blockquote>
+<p>I would have to dive into this a bit to answer those questions but I'm curious to know if you've already considered some of these. (No worries if not!)</p>
+</blockquote>
+<p>Great question. I should've probably mentioned that in the PR description. I diligently went over all 270 usages of <code>SemanticMode::resolve_qualified_name</code> my IDE found (and again now to compile the below info :sweat_smile:).</p>
+<p>Almost all of them are in one shape or another only matching against a hard-coded identifier external to the code base being analyzed. E.g,</p>
+<pre><code class="language-rust"> match qualified_name.segments() {
+            [&quot;collections&quot;, &quot;namedtuple&quot;]  =&gt; ...
+}
+</code></pre>
+<p>or</p>
+<pre><code class="language-rust">self.semantic
+    .resolve_qualified_name(func)
+    .and_then(|qualified_name| {
+        if self
+            .semantic
+            .match_typing_qualified_name(&amp;qualified_name, &quot;cast&quot;)
+        { ... }
+        else { ... }
+    })
+</code></pre>
+<p>For all of those, this change would me no difference except for if the code base contains a module that shadows these names.</p>
+<details>
+
+<summary>Example</summary>
+
+<p>With and without this patch:</p>
+<pre><code class="language-python"># file: typing.py
+def cast(): ...  # ruff resolves this to qualified name `typing.cast`
+</code></pre>
+<p>Only with this patch:</p>
+<pre><code class="language-python"># file: typing/__init__.py
+def cast(): ...  # ruff resolves this to qualified name `typing.cast`
+</code></pre>
+</details>
+
+<h2>Exceptions to this I found:</h2>
+<h3>Ones similar to <code>settings.pydocstyle.ignore_decorators</code> for which I've added a test:</h3>
+<ul>
+<li><code>unsafe_markup_use.rs</code> compares to <code>settings.flake8_bandit.allowed_markup_calls</code></li>
+<li>the same file similarly compares to <code>settings.flake8_bandit.extend_markup_names</code></li>
+<li><code>flake8_boolean_trap/helpers.rs</code> similarly compares against <code>settings.flake8_boolean_trap.extend_allowed_calls</code></li>
+<li><code>flake8_pytest_style/rules/raises.rs</code> checks against glob patterns in <code>settings.flake8_pytest_style.raises_require_match_for</code> and  <code>settings.flake8_pytest_style.raises_extend_require_match_for</code></li>
+<li><code>flake8_pytest_style/rules/warns.rs</code> matches against <code>settings.flake8_pytest_style.warns_require_match_for</code> and <code>...warns_extend_require_match_for</code></li>
+<li><code>flake8_tidy_imports/rules/banned_api.rs</code> matches against <code>settings.flake8_tidy_imports.banned_api</code></li>
+<li><code>flake8_type_checking/helpers.rs</code> checks against <code>settings.flake8_type_checking.runtime_required_decorators</code></li>
+<li><code>settings.flake8_type_checking.runtime_required_base_classes</code> is checked against indirectly through <code>flake8_type_checking::helpers::runtime_required_class</code> calling <code>runtime_required_base_class</code> calling <code>any_qualified_base_class</code> calling <code>any_base_classany_base_class</code>, finally calling <code>resolve_qualified_name</code></li>
+<li><code>function_call_in_argument_default</code> in <code>flake8_bugbear/rules/function_call_in_argument_default.rs</code> passes <code>settings.flake8_bugbear.extend_immutable_calls</code> down the stack to finally be matched against the result of <code>resolve_qualified_name</code>.</li>
+</ul>
+<p>For all of those settings, I think resolving names in <code>__init__.py</code>s to be part of the parent module improves the clarity of the config options like it does for <code>pydocstyle.ignore_decorators</code>. Admittedly, there is a small risk of this breaking users that have configures some <code>...__init__.my_identifier</code> for one of these config options. Side note: for some of these config options, I don't think there's a reasonable use case to add entries belonging to a user-module. For those, the impact of this PR is negligible.</p>
+<h3>Other</h3>
+<ul>
+<li><code>BodyVisitor::visit_stmt</code> in <code>pydoclint/rules/check_docstring.rs</code> uses it to resolve exceptions being raised to check that the doc string mentions these.</li>
+</ul>
+<p>I'd argue that this PR also improves this situation (test should be written to verify), as you don't want to have to document an exception defined in an <code>__init__.py</code> file as <code>Raises my_package.__init__.MyError</code>.</p>
+<ul>
+<li>In some places, the qualified name is used in the reported diagnostic. So this change would alter the output of ruff in such cases. E.g.,<ul>
+<li><code>future_rewritable_type_annotation</code></li>
+</ul>
+</li>
+</ul>
+<p>Here, I think the PR might make things ever so slightly worse, by changing the output to point to <code>my_package.some_problematic_place</code> instead of <code>my_package.__init__.some_problematic_place</code></p>
+<h3>Unclear impact</h3>
+<ul>
+<li><code>AttributeSearcher</code> in <code>numpy/helper.rs</code> uses <code>resolve_qualified_name</code>. Looking at its usages, I'm not 100% sure about the implications here. I'll leave that to you :innocent:</li>
+<li><code>Callee::try_from_call_expression</code> in <code>pylint/rules/unspecified_encoding.rs</code> uses it. I think I've managed to track all usages and it also only leads to matches against hard-coded external identifiers. But again, I'd ask you to double-check, as this code is less straight forward to follow.</li>
+<li><code>ruff_python_semantic/src/analyze/typing.rs::resolve_assignment</code> calls the function.<ul>
+<li>If I understand it correctly, the PR won't change anything here either, because analysis is limited to a single file. So when resolving an assignment, when before the assignee was names <code>foo.__init__.bar</code> throughout the file, it's now simply called <code>foo.bar</code>throughout the file. N.B. again, if <code>foo</code> happens to be some other shadowed package (e.g., <code>typing</code>) this could actually make a difference.</li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">great writeup</span> added by @dylwil3 on 2025-05-20 12:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-20 06:39</div>
+            <div class="timeline-body"><p>@dylwil3 could you take another look at this PR?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-07-11 21:02</div>
+            <div class="timeline-body"><p>@robsdedude Sorry for the long delay - this was trickier than I expected to sort out. I have made the following changes, and I was hoping you could look them over to see if you agree.</p>
+<ol>
+<li>The main difference in behavior is that I <em>believe</em> that in your new fixture for <a href="https://docs.astral.sh/ruff/rules/import-self/#import-self-plw0406">import-self (PLW0406)</a> we should <em>not</em> emit a lint. I tried making a package with the layout you had there and playing around with it and as far as I can tell there is not a circular import error. But I would not be surprised to learn I was wrong - would it be possible for you to outline what steps I should take to actually get a circular import error from that setup?</li>
+<li>Assuming (1) is correct, I believe the implementation can be simplified and put in a possibly more logical place. I believe the <code>qualified_name</code> method itself should just skip <code>__init__</code> in the path, rather than implementing this logic once we get to the semantic model. This requires some custom logic to be added to the resolution of relative imports. But as far as I can tell that's where that logic belongs - since that more closely models what Python itself does when it sees a relative import: the first leading <code>.</code> turns into &quot;find the package containing this module&quot;. If the module is the package root (e.g. <code>foo/__init__.py</code>)  that would be the parent directory (i.e. <code>foo</code> here).</li>
+</ol>
+<p>If this makes sense to you then the final challenge will be finding a way to gate this behind preview, since it will be a breaking change for various configurations/settings, as you pointed out.</p>
+<p>Let me know what you think, and thanks for your contribution!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">do-not-merge</span> added by @dylwil3 on 2025-07-11 21:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @dylwil3 on 2025-07-11 21:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/robsdedude">@robsdedude</a> on 2025-07-24 21:26</div>
+            <div class="timeline-body"><p>Sorry for the late reply, I have fairly many things going on in life currently, so my availability for OSS contributions is unfortunately pretty limited. This will likely continue for a while just as a heads-up. I'm still interested and happy to contribute as time permits.</p>
+<p>I dug deeper and am left more confused than before... The rule docs sure make it seem that the following set up should fail with an <code>ImportError</code>:</p>
+<pre><code class="language-python"># ~/mod.py
+import mod
+</code></pre>
+<pre><code class="language-bash">~ $ python -c &quot;import mod&quot;
+</code></pre>
+<p>It doesn't. Neither does this fail:</p>
+<pre><code class="language-python"># ~/package/__init__.py exists and is empty
+# this file: ~/package/mod.py
+from . import mod
+</code></pre>
+<pre><code class="language-bash">~ $ python -c &quot;from package import mod&quot;
+</code></pre>
+<p>I tested it with Python 3.3 (oldest 3 I could get running without too much fiddling) and 3.13. Both are fine at runtime, yet the second at least triggers the lint. Can you shed some light on this, please?</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:58:38 UTC
+    </footer>
+</body>
+</html>

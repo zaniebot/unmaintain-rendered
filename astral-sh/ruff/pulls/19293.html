@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Move RDJSON rendering to `ruff_db` - astral-sh/ruff #19293</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Move RDJSON rendering to <code>ruff_db</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19293">#19293</a>
+        opened by <a href="https://github.com/ntBre">@ntBre</a>
+        on 2025-07-11 21:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-11 21:19</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Another output format like #19133. This is the <a href="https://github.com/reviewdog/reviewdog">reviewdog</a> output format, which is somewhat similar to regular JSON. Like #19270, in the first commit I converted from using <code>json!</code> to <code>Serialize</code> structs, then in the second commit I moved the module to <code>ruff_db</code>.</p>
+<p>The reviewdog <a href="https://github.com/reviewdog/reviewdog/blob/320a8e73a94a09248044314d8ca326a6cd710692/proto/rdf/jsonschema/DiagnosticResult.json">schema</a> seems a bit more flexible than our JSON schema, so I'm not sure if we need any preview checks here. I'll flag the places I wasn't sure about as review comments.</p>
+<h2>Test Plan</h2>
+<p>New tests in <code>rdjson.rs</code>, ported from the old <code>rjdson.rs</code> module, as well as the new CLI output tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @ntBre on 2025-07-11 21:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">diagnostics</span> added by @ntBre on 2025-07-11 21:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_db/src/diagnostic/render/rdjson.rs</code>:112 on 2025-07-11 21:22</div>
+            <div class="timeline-body"><p>This is the main preview check I think we could skip, based on this definition of <code>Location</code>:</p>
+<p>https://github.com/reviewdog/reviewdog/blob/320a8e73a94a09248044314d8ca326a6cd710692/proto/rdf/jsonschema/DiagnosticResult.json#L126-L141</p>
+<p>As I mention in the module comment, only the <code>description</code> field says &quot;Optional,&quot; not the <code>type</code> field.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_db/src/diagnostic/render/rdjson.rs</code>:160 on 2025-07-11 21:24</div>
+            <div class="timeline-body"><p>Compare this to <code>main</code>, where we don't include <code>suggestions</code> in the <code>json!</code> call if the fix is <code>None</code>:</p>
+<p>https://github.com/astral-sh/ruff/blob/7154b64248e7d42f277d892f347527a7ec1410d6/crates/ruff_linter/src/message/rdjson.rs#L81-L90</p>
+<p>I think we could probably just serialize this as an empty array or as an <code>Option</code>. It's described as optional in the <a href="https://github.com/reviewdog/reviewdog/blob/320a8e73a94a09248044314d8ca326a6cd710692/proto/rdf/jsonschema/DiagnosticResult.json#L102-L108">schema</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_db/src/diagnostic/render/rdjson.rs</code>:234 on 2025-07-11 21:25</div>
+            <div class="timeline-body"><p>This is probably silly, but <code>json!</code> again seem to have different sorting behavior on the fields. If we can accept some snapshot changes flipping <code>line</code> and <code>column</code> we can just delete this. I didn't think that could be breaking but wanted to be safe.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_db/src/diagnostic/render/rdjson.rs</code>:125 on 2025-07-11 21:30</div>
+            <div class="timeline-body"><p>This one is actually not optional in the <a href="https://github.com/reviewdog/reviewdog/blob/320a8e73a94a09248044314d8ca326a6cd710692/proto/rdf/jsonschema/DiagnosticResult.json#L45-L59">schema</a>, but this is consistent with <code>main</code>. I guess we may need to <code>unwrap_or_default</code> here. The same might be true for <code>url</code>. Both are currently <code>null</code> for syntax errors:</p>
+<p>https://github.com/astral-sh/ruff/blob/7154b64248e7d42f277d892f347527a7ec1410d6/crates/ruff/tests/snapshots/lint__output_format_rdjson.snap#L77-L80</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-11 21:30</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-07-11 21:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @ntBre on 2025-07-11 21:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @ntBre on 2025-07-11 21:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @ntBre on 2025-07-11 21:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @ntBre on 2025-07-11 21:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @ntBre on 2025-07-11 21:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @ntBre on 2025-07-11 21:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @dcreager removed by @ntBre on 2025-07-11 21:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @carljm removed by @ntBre on 2025-07-11 21:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @sharkdp removed by @ntBre on 2025-07-11 21:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @AlexWaygood removed by @ntBre on 2025-07-11 21:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_db/src/diagnostic/render/rdjson.rs</code>:176 on 2025-07-11 21:37</div>
+            <div class="timeline-body"><p>This is also consistent with <code>main</code>. We could use our real severity here, but it would change the default from <code>warning</code> to <code>error</code> for existing Ruff diagnostics.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-07-11 21:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-07-12 10:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/diagnostic/render/rdjson.rs</code>:112 on 2025-07-12 10:34</div>
+            <div class="timeline-body"><p>I suggest using a schema validator to validate our understanding, e.g. https://www.jsonschemavalidator.net/</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-07-12 10:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/diagnostic/render/rdjson.rs</code>:125 on 2025-07-12 10:35</div>
+            <div class="timeline-body"><p>My suggestion here is to use the lint id if the secondary code is missing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-07-12 10:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/diagnostic/render/rdjson.rs</code>:176 on 2025-07-12 10:35</div>
+            <div class="timeline-body"><p>I suggest making this change under preview</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-07-12 10:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/diagnostic/render/rdjson.rs</code>:234 on 2025-07-12 10:37</div>
+            <div class="timeline-body"><p>I wouldn't consider changing the ordering to be a breaking change (as JSON fields aren't ordered)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-07-12 20:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_db/src/diagnostic/render/rdjson.rs</code>:234 on 2025-07-12 20:37</div>
+            <div class="timeline-body"><p>This didn't actually end up changing snapshots either, I guess the <code>json!</code> call in the renderer preserves the original sorting behavior. It must have only mattered in an intermediate version I had locally.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-07-12 20:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_db/src/diagnostic/render/rdjson.rs</code>:176 on 2025-07-12 20:45</div>
+            <div class="timeline-body"><p>I just realized that this is a single severity for the whole collection. I guess we can use the max severity in preview.</p>
+<p>There's also a severity field on individual diagnostics that we aren't using. I'll try that in the schema validator too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_db/src/diagnostic/render/rdjson.rs</code>:125 on 2025-07-12 20:51</div>
+            <div class="timeline-body"><p>Good idea, updated! The <a href="https://www.jsonschemavalidator.net/s/uvGWl3nq">validator</a> is also complaining about the URL. I guess I'll just put the <code>CARGO_PKG_HOMEPAGE</code> if there's no rule-specific page available.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-07-12 20:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-07-12 21:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_db/src/diagnostic/render/rdjson.rs</code>:112 on 2025-07-12 21:01</div>
+            <div class="timeline-body"><p>A <code>null</code> range is invalid according to the validator, so this should just be <code>unwrap_or_default</code> irrespective of preview.</p>
+<p>Actually, completely omitting it from the JSON also passes the validator, so I guess another option is skipping serialization if it's <code>None</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-07-13 12:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/diagnostic/render/rdjson.rs</code>:112 on 2025-07-13 12:04</div>
+            <div class="timeline-body"><p>That makes sense, we should skip it then (which should be easy enough with serde)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-13 14:38</div>
+            <div class="timeline-body"><p>@ntBre is this ready for re-review or are there more changes that you plan on making (I have no particular reason to believe that there's anything that needs changing. I just want to avoid taking a look if you plan on making changes to due the schema discussion we had)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-13 14:44</div>
+            <div class="timeline-body"><p>Yes it's ready again, I just added your suggestion about skipping the <code>range</code> instead of using a default.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/diagnostic/render/rdjson.rs</code>:27 on 2025-07-14 07:18</div>
+            <div class="timeline-body"><p>This comment here seems outdated. I think we should either remove it entirely or change it to say that additional properties are optional?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/diagnostic/render/rdjson.rs</code>:115 on 2025-07-14 07:20</div>
+            <div class="timeline-body"><p><code>location</code> is also an additional property. Can you verify if the JSON is valid if you omit the <code>location</code>?</p>
+<p>If it can be omitted, we then shouldn't call back to <code>unwrap_or_default</code> and instead omit the <code>location</code> when a file is missing (a diagnostic should never have just a range because a range without a file is not very useful)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/diagnostic/render/rdjson.rs</code>:117 on 2025-07-14 07:22</div>
+            <div class="timeline-body"><p>I think we should keep setting <code>WARNING</code> for all diagnostics until we officially support a WARNING severity.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/diagnostic/render/rdjson.rs</code>:132 on 2025-07-14 07:28</div>
+            <div class="timeline-body"><p>I'm inclined to go with what they have in ther protobuf implementation where, as far as I can understand, it's valid to omit the url property when empty</p>
+<p>https://github.com/reviewdog/reviewdog/blob/294118b12c6b85c28d21deb0458703cc7a878608/proto/rdf/reviewdog.pb.go#L660-L669</p>
+<p>I'm inclined to go with that for now (the same with the range on location)</p>
+<p>Even their own tests don't specify a url: https://github.com/reviewdog/reviewdog/blob/master/parser/rdjson_test.go</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/diagnostic/render/rdjson.rs</code>:99 on 2025-07-14 07:30</div>
+            <div class="timeline-body"><p>I think we should add an assertion to <code>Diagnostic::set_fix</code> instead that asserts that it has an associated source files. Edits without a source file aren't very useful.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/diagnostic/render/rdjson.rs</code>:160 on 2025-07-14 07:37</div>
+            <div class="timeline-body"><p>Using <code>skip_serializing_if</code> seems correct to me? What would be the benefit of using an <code>Option</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/diagnostic/render/rdjson.rs</code>:226 on 2025-07-14 07:37</div>
+            <div class="timeline-body"><p>I'm not sure what the benefit is of setting the severity at the file level. I'm also inclined to just keep this <code>None</code> until we add a <code>WARNING</code> severity. Adding severities feels like an unrelated change</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-07-14 07:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @ntBre on 2025-07-14 12:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-07-14 13:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_db/src/diagnostic/render/rdjson.rs</code>:27 on 2025-07-14 13:39</div>
+            <div class="timeline-body"><p>I'll just remove it. I think testing against the schema validator is much better than any notes I could write here. Thanks again for that suggestion!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-07-14 13:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_db/src/diagnostic/render/rdjson.rs</code>:115 on 2025-07-14 13:41</div>
+            <div class="timeline-body"><p>Yeah it's valid to omit the location. I'll do that instead.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_db/src/diagnostic/render/rdjson.rs</code>:160 on 2025-07-14 13:48</div>
+            <div class="timeline-body"><p>I guess I'm not sure, <code>skip_serializing_if</code> makes sense to me too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-07-14 13:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-07-14 13:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_db/src/diagnostic/render/rdjson.rs</code>:117 on 2025-07-14 13:50</div>
+            <div class="timeline-body"><p>We weren't setting the per-diagnostic severity at all before. Would it be better to go back to that, or to set them all to WARNING?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-07-14 13:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_db/src/diagnostic/render/rdjson.rs</code>:226 on 2025-07-14 13:58</div>
+            <div class="timeline-body"><p>Ah okay, I'll revert the per-diagnostic severity and just keep <code>WARNING</code> as the global severity. I agree that this feels unrelated to the rest of the refactor.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-07-14 14:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/diagnostic/render/rdjson.rs</code>:117 on 2025-07-14 14:11</div>
+            <div class="timeline-body"><p>I would probably remove it for now. We can add the severity when introducing a warning severity to ruff</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-07-14 14:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_db/src/diagnostic/render/rdjson.rs</code>:99 on 2025-07-14 14:37</div>
+            <div class="timeline-body"><p>Added a <code>debug_assert!</code> and then updated some tests that were actually setting fixes on diagnostics without files. Happy to upgrade to <code>assert</code> if you prefer.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @ntBre on 2025-07-14 14:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-14 14:39</div>
+            <div class="timeline-body"><p>I think this should be ready for another look. The main thing I'm unsure about is the <code>debug_assert</code> in <code>Diagnostic::set_fix</code> combined  with the runtime <code>unwrap</code> in <code>rdjson_suggestions</code>. Should they both be <code>debug_assert</code> or both full <code>assert</code>/<code>unwrap</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/diagnostic/render/json.rs</code>:311 on 2025-07-14 15:35</div>
+            <div class="timeline-body"><p>Do we have any other test for edits? If not, I think it's worth preserving testing fixes in some test or another.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/diagnostic/render/rdjson.rs</code>:29 on 2025-07-14 16:21</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">            serde_json::json!(RdjsonDiagnostics::new(diagnostics, self.resolver))
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/diagnostic/render/rdjson.rs</code>:78 on 2025-07-14 16:22</div>
+            <div class="timeline-body"><p>Nit: Could we use <code>source_code.name()</code> here? It makes it clearer that <code>range</code> depends on the same value</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/diagnostic/render/rdjson.rs</code>:102 on 2025-07-14 16:24</div>
+            <div class="timeline-body"><p>Nit: You could make this code more error resilient by skipping all edits if <code>source_code</code> is empty (but use a <code>debug_assert</code> to make it fail if that happens).</p>
+<p>It has the benefit that Ruff doesn't panic if we ever fail to set the source file</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/diagnostic/render/rdjson.rs</code>:160 on 2025-07-14 16:25</div>
+            <div class="timeline-body"><p>Can you say more about why? I understand that an empty suggestion or an omitted suggestion are the same. Omitting has the benefit that there's less JSON to serialize / deserialize which is smaller and probably faster.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-07-14 16:26</div>
+            <div class="timeline-body"><p>Thank you.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-07-14 16:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_db/src/diagnostic/render/rdjson.rs</code>:160 on 2025-07-14 16:29</div>
+            <div class="timeline-body"><p>Sorry, I may have phrased that poorly. I agree with you that <code>skip_serializing_if</code> makes more sense. I wasn't sure what my original reasoning was for even mentioning an <code>Option</code> :sweat_smile: I think I was just listing possibilities.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-07-14 16:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_db/src/diagnostic/render/json.rs</code>:311 on 2025-07-14 16:32</div>
+            <div class="timeline-body"><p>Yes, the <code>output</code> and <code>notebook_output</code> unit tests and the CLI integration tests all have fixes/edits.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-07-14 19:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_db/src/diagnostic/render/rdjson.rs</code>:78 on 2025-07-14 19:26</div>
+            <div class="timeline-body"><p>At the risk of missing something obvious here, I don't see a <code>SourceCode::name</code> method. I think the <code>SourceFile</code> has the name but not the <code>SourceCode</code>. The <code>Span</code>  seems like the common ancestor for both <code>range</code> and <code>location</code>, unless I factored out a shared <code>span.file()</code> call.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-07-15 07:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/diagnostic/render/rdjson.rs</code>:78 on 2025-07-15 07:24</div>
+            <div class="timeline-body"><p>Oh, it's <code>SourceCode</code> and not <code>SourceFile</code>...</p>
+<p>I would rewrite this to</p>
+<pre><code class="language-rust">	let source_file = span.map(|span| {
+        let file = span.file();
+        (file.path(resolver), file.diagnostic_source(resolver))
+    });
+
+    let location = source_file.as_ref().map(|(path, source)| {
+        let range = diagnostic.range().map(|range| {
+            let source_code = source.as_source_code();
+            let start = source_code.line_column(range.start());
+            let end = source_code.line_column(range.end());
+            RdjsonRange::new(start, end)
+        });
+
+        RdjsonLocation { path, range }
+    });
+
+    let edits = diagnostic.fix().map(Fix::edits).unwrap_or_default();
+
+    RdjsonDiagnostic {
+        message: diagnostic.body(),
+        location,
+        code: RdjsonCode {
+            value: diagnostic
+                .secondary_code()
+                .map_or_else(|| diagnostic.name(), |code| code.as_str()),
+            url: diagnostic.to_ruff_url(),
+        },
+        suggestions: rdjson_suggestions(edits, source_file.map(|(_, source)| source)),
+    }
+</code></pre>
+<p>It makes it clearer that <code>range</code> can only be set when <code>span</code> isn't <code>None</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-07-15 12:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_db/src/diagnostic/render/rdjson.rs</code>:78 on 2025-07-15 12:36</div>
+            <div class="timeline-body"><p>Thanks! I like this better than the version in this PR with many separate <code>map</code> calls and also better than the mutable version in #19340. I'll try to use this pattern going forward.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ntBre on 2025-07-15 12:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-07-15 12:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-07-15 12:39</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:58:38 UTC
+    </footer>
+</body>
+</html>

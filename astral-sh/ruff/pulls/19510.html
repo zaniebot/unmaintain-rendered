@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Infer single-valuedness for enums based on `int`/`str` - astral-sh/ruff #19510</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Infer single-valuedness for enums based on <code>int</code>/<code>str</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19510">#19510</a>
+        opened by <a href="https://github.com/sharkdp">@sharkdp</a>
+        on 2025-07-23 13:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-23 13:28</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>We previously didn't recognize <code>Literal[Color.RED]</code> as single-valued, if the enum also derived from <code>str</code> or <code>int</code>:</p>
+<pre><code class="language-py">from enum import Enum
+
+class Color(str, Enum):
+    RED = &quot;red&quot;
+    GREEN = &quot;green&quot;
+    BLUE = &quot;blue&quot;
+
+def _(color: Color):
+    if color == Color.RED:
+        reveal_type(color)  # previously: Color, now: Literal[Color.RED]
+</code></pre>
+<p>The reason for that was that <code>int</code> and <code>str</code> have &quot;custom&quot; <code>__eq__</code> and <code>__ne__</code> implementations that return <code>bool</code>. We do not treat enum literals from classes with custom <code>__eq__</code> and <code>__ne__</code> implementations as single-valued, but of course we know that <code>int.__eq__</code> and <code>str.__eq__</code> are well-behaved.</p>
+<h2>Test Plan</h2>
+<p>New Markdown tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @sharkdp on 2025-07-23 13:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[ty] Infer single-valuedness for enums based on int/str" to "[ty] Infer single-valuedness for enums based on `int`/`str`" by @sharkdp on 2025-07-23 13:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-23 13:32</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅
+No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @sharkdp on 2025-07-23 13:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @sharkdp on 2025-07-23 13:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @sharkdp on 2025-07-23 13:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @sharkdp on 2025-07-23 13:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-07-23 13:52</div>
+            <div class="timeline-body"><p>I was also wondering if we could generalize this logic so that it applies to all instances of <code>@final</code> classes that do not override <code>__eq__</code>/<code>__ne__</code> from <code>object</code>/<code>int</code>/<code>str</code> (not just instances of enum classes).</p>
+<p>It's really the finality of enum classes that allows us to safely determine whether instances of enums are single-valued or not: because an enum class is final, we know that there are no possible subclasses of the enum class, therefore there are no possible subtypes of the enum type that could have badly behaved <code>__eq__</code> or <code>__ne__</code> methods. And that reasoning applies to any final class, not just enums</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @sharkdp on 2025-07-23 13:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-07-23 13:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-07-23 13:55</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:58:39 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Added support for &quot;go to definition&quot; for attribute accesses and keyword arguments - astral-sh/ruff #19417</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Added support for &quot;go to definition&quot; for attribute accesses and keyword arguments</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19417">#19417</a>
+        opened by <a href="https://github.com/UnboundVariable">@UnboundVariable</a>
+        on 2025-07-18 02:36
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/UnboundVariable">@UnboundVariable</a> on 2025-07-18 02:36</div>
+            <div class="timeline-body"><p>This PR builds upon #19371. It addresses a few additional code review suggestions and adds support for attribute accesses (expressions of the form <code>x.y</code>) and keyword arguments within call expressions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @UnboundVariable on 2025-07-18 02:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @UnboundVariable on 2025-07-18 02:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @UnboundVariable on 2025-07-18 02:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @UnboundVariable on 2025-07-18 02:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @UnboundVariable on 2025-07-18 02:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-18 02:39</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅
+No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @MichaReiser on 2025-07-18 05:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @MichaReiser on 2025-07-18 05:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-07-18 07:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types/ide_support.rs</code>:531 on 2025-07-18 07:29</div>
+            <div class="timeline-body"><p>Should intersections also be expanded here by adding all positive elements to <code>tys</code>? This way, we could still jump to the definition of <code>method</code> in code like this:</p>
+<pre><code class="language-py">class C:
+    def method(): ...
+
+
+def _(x: C | int):
+    if isinstance(x, int):
+        pass
+    else:
+        # x is now of type `C &amp; ~int`
+        x.method()  # &lt;- click on method here
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-07-18 07:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types/ide_support.rs</code>:616 on 2025-07-18 07:47</div>
+            <div class="timeline-body"><p>I think we could reuse <code>Type::to_meta_type</code> here? Haven't checked if this is identical in all cases, but all tests pass:</p>
+<pre><code class="language-suggestion">        // First, transform the type to its meta type, unless it's already a class-like type.
+        let meta_type = match ty {
+            Type::ClassLiteral(_) | Type::SubclassOf(_) | Type::GenericAlias(_) =&gt; ty,
+            _ =&gt; ty.to_meta_type(db),
+        };
+        let class_literal = match meta_type {
+            Type::ClassLiteral(class_literal) =&gt; class_literal,
+            Type::SubclassOf(subclass) =&gt; match subclass.subclass_of().into_class() {
+                Some(cls) =&gt; cls.class_literal(db).0,
+                None =&gt; continue,
+            },
+            _ =&gt; continue,
+        };
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_ide/src/goto.rs</code>:157 on 2025-07-18 09:06</div>
+            <div class="timeline-body"><p>Nit: I find this comment more confusing than helpful, especially because <code>definitions_for_name</code> isn't a shared helper? It's specific for the name branch (I think)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_ide/src/goto.rs</code>:206 on 2025-07-18 09:11</div>
+            <div class="timeline-body"><p>Hmm, this seems a bit unfortunate that we need to go and search the covering node again. Would it make sense to instead store the <code>CallExpr</code> in <code>KeywordArgument</code> alongside the keyword?</p>
+<p>Getting the function there should be cheaper because <code>CoveringNode</code> allows upward traversal whereas calling <code>covering_node</code> requires an AST traversal</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types/ide_support.rs</code>:512 on 2025-07-18 09:25</div>
+            <div class="timeline-body"><p>Can you extend the comment explaining why. I first assumed the next sentence would but that only suggests merging this into the semantic index in the future.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types/ide_support.rs</code>:652 on 2025-07-18 09:28</div>
+            <div class="timeline-body"><p>Nit: Rust has labeled scopes: This should allow you to remove the <code>!found_attr</code> checks</p>
+<pre><code class="language-suggestion">        'scopes: for ancestor in class_literal
+            .iter_mro(db, None)
+            .filter_map(ClassBase::into_class)
+            .map(|cls| cls.class_literal(db).0)
+        {
+            let class_scope = ancestor.body_scope(db);
+            let class_place_table = crate::semantic_index::place_table(db, class_scope);
+
+            // Look for class-level declarations and bindings
+            if let Some(place_id) = class_place_table.place_id_by_name(name_str) {
+                let use_def = use_def_map(db, class_scope);
+
+                // Check declarations first
+                for decl in use_def.all_reachable_declarations(place_id) {
+                    if let Some(def) = decl.declaration.definition() {
+                        resolved.extend(resolve_definition(db, def, Some(name_str)));
+                        found_attr = true;
+                        break 'scopes;
+                    }
+                }
+
+                // If no declarations found, check bindings
+                for binding in use_def.all_reachable_bindings(place_id) {
+                    if let Some(def) = binding.binding.definition() {
+                        resolved.extend(resolve_definition(db, def, Some(name_str)));
+                        found_attr = true;
+                        break 'scopes;
+                    }
+                }
+                
+            }
+</code></pre>
+<p>... and more places where  <code>if !found_attr</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types/ide_support.rs</code>:692 on 2025-07-18 09:31</div>
+            <div class="timeline-body"><p>Nit: This is not as relevant here because your function isn't a salsa query. But calling <code>semantic_index</code> means that this function is invalidated on every change in <code>file</code>. Using <code>place_table</code> and <code>use_def_map</code> can help isolate invalidations because it only requires the calling function (if it is cached) to re-run if the place table or use def map of a specific scope changed. It remains untouched by changes in other scopes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types/ide_support.rs</code>:843 on 2025-07-18 09:37</div>
+            <div class="timeline-body"><p>Nit: <code>chain</code> and <code>find</code></p>
+<pre><code class="language-suggestion">    // Check regular positional and keyword only parameters
+    parameters
+        .args
+        .iter()
+        .chain(&amp;parameters.kwonlyargs)
+        .find(|param| param.parameter.name.as_str() == parameter_name)
+        .map(|parameter| parameter.name().range())
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types/ide_support.rs</code>:872 on 2025-07-18 09:37</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        FileWithRange(FileRange),
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types/ide_support.rs</code>:871 on 2025-07-18 09:37</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        /// The import resolved to a file with an optional specific range
+</code></pre>
+<p>Should the range be <code>Option&lt;TextRange&gt;</code> or is the comment out dated?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-07-18 09:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/UnboundVariable">@UnboundVariable</a> reviewed on 2025-07-18 17:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/UnboundVariable">@UnboundVariable</a> on <code>crates/ty_ide/src/goto.rs</code>:206 on 2025-07-18 17:41</div>
+            <div class="timeline-body"><p>I'd advise against doing preemptive micro-optimizations here. This is not a hot code path, so using more memory in an attempt to speed it up is probably not the right tradeoff.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/UnboundVariable">@UnboundVariable</a> reviewed on 2025-07-18 17:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/UnboundVariable">@UnboundVariable</a> on <code>crates/ty_python_semantic/src/types/ide_support.rs</code>:616 on 2025-07-18 17:57</div>
+            <div class="timeline-body"><p>Nice! I wasn't aware the <code>to_meta_type</code> existed. Looks like exactly what we need here, and it significantly simplifies the code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/UnboundVariable">@UnboundVariable</a> reviewed on 2025-07-18 18:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/UnboundVariable">@UnboundVariable</a> on <code>crates/ty_python_semantic/src/types/ide_support.rs</code>:652 on 2025-07-18 18:04</div>
+            <div class="timeline-body"><p>Nice! I didn't know about that feature in Rust.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-07-18 18:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_ide/src/goto.rs</code>:206 on 2025-07-18 18:14</div>
+            <div class="timeline-body"><p>I don't think this is a micro optimization. It just seems unnecessary if we can get this information when extracting the GoToDefinitionTarget. It's right there and I find it even less confusing</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @UnboundVariable on 2025-07-18 18:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @UnboundVariable on 2025-07-18 18:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-07-18 18:34</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:58:39 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Move fix suggestion to subdiagnostic - astral-sh/ruff #19464</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Move fix suggestion to subdiagnostic</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19464">#19464</a>
+        opened by <a href="https://github.com/ntBre">@ntBre</a>
+        on 2025-07-21 14:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-21 14:11</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR tweaks Ruff's internal usage of the new diagnostic model to more closely
+match the intended use, as I understand it. Specifically, it moves the fix/help
+suggestion from the primary annotation's message to a subdiagnostic. In turn, it
+adds the secondary/noqa code as the new primary annotation message. As shown in
+the new <code>ruff_db</code> tests, this more closely mirrors Ruff's current diagnostic
+output.</p>
+<p>I also added <code>Severity::Help</code> to render the fix suggestion with a <code>help:</code> prefix
+instead of <code>info:</code>.</p>
+<p>These changes don't have any external impact now but should help a bit with #19415.</p>
+<h2>Test Plan</h2>
+<p>New full output format tests in <code>ruff_db</code></p>
+<h2>Rendered Diagnostics</h2>
+<p>Full diagnostic output from <code>annotate-snippets</code> in this PR:</p>
+<pre><code>error[unused-import]: `os` imported but unused
+  --&gt; fib.py:1:8
+   |
+ 1 | import os
+   |        ^^
+   |
+ help: Remove unused import: `os`
+</code></pre>
+<p>Current Ruff output for the same code:</p>
+<pre><code>fib.py:1:8: F401 [*] `os` imported but unused
+  |
+1 | import os
+  |        ^^ F401
+  |
+  = help: Remove unused import: `os`
+</code></pre>
+<p>Proposed final output after #19415:</p>
+<pre><code>F401 [*] `os` imported but unused
+  --&gt; fib.py:1:8
+   |
+ 1 | import os
+   |        ^^
+   |
+ help: Remove unused import: `os`
+</code></pre>
+<p>These are slightly updated from https://github.com/astral-sh/ruff/pull/19464#issuecomment-3097377634 below to remove the extra noqa codes in the primary annotation messages for the first and third cases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @ntBre on 2025-07-21 14:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">diagnostics</span> added by @ntBre on 2025-07-21 14:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-21 14:16</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅
+No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-07-21 14:21</div>
+            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+
+<!-- __CODSPEED_INSTRUMENTATION_PERFORMANCE_REPORT_COMMENT__ -->
+
+<h2><a href="https://codspeed.io/astral-sh/ruff/branches/brent%2Fnew-diagnostic-suggestion?runnerMode=Instrumentation">CodSpeed Instrumentation Performance Report</a></h2>
+<h3>Merging #19464 will <strong>not alter performance</strong></h3>
+<p><sub>Comparing <code>brent/new-diagnostic-suggestion</code> (10676cb) with <code>main</code> (c82fa94)</sub></p>
+<h3>Summary</h3>
+<p><code>✅ 41</code> untouched benchmarks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-21 14:22</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-21 15:43</div>
+            <div class="timeline-body"><p>I'm not coming up with much to do about the perf regression. At first I thought using a <code>SmallVec</code> for the subdiagnostics might help, as I think we discussed briefly before, but that made things slightly worse. Looking at the flamegraphs on codspeed, the difference is just from the extra <code>IntoDiagnosticMessage</code>/<code>Display</code> call rather than any <code>Vec</code> allocations.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @ntBre on 2025-07-21 15:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @ntBre on 2025-07-21 15:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @ntBre on 2025-07-21 15:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @ntBre on 2025-07-21 15:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @ntBre on 2025-07-21 15:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @ntBre on 2025-07-21 15:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @dcreager removed by @ntBre on 2025-07-21 15:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @carljm removed by @ntBre on 2025-07-21 15:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @sharkdp removed by @ntBre on 2025-07-21 15:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @AlexWaygood removed by @ntBre on 2025-07-21 15:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @ntBre on 2025-07-21 15:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-21 15:49</div>
+            <div class="timeline-body"><blockquote>
+<p>I also added <code>Severity::Help</code> to render the fix suggestion with a <code>help:</code> prefix
+instead of <code>info:</code>.</p>
+</blockquote>
+<p>Nice -- I've wanted this for a while for ty's diagnostics, but never got round to writing up the issue! :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-21 15:54</div>
+            <div class="timeline-body"><blockquote>
+<p>Nice -- I've wanted this for a while for ty's diagnostics, but never got round to writing up the issue! :-)</p>
+</blockquote>
+<p>Was it <code>help</code> or <code>note</code>? Trying to remember...</p>
+<blockquote>
+<p>In turn, it adds the secondary/noqa code as the new primary annotation message.</p>
+</blockquote>
+<p>It's not clear to me if this is indeed better. I find the code mostly redudant as it's already rendered in the diagnostic summary. But it's hard to judge from the changes in this PR. Can you show how the full diagnostic rendering is changing and what you propose to be the final rendering?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-21 15:56</div>
+            <div class="timeline-body"><blockquote>
+<p>It's not clear to me if this is indeed better. I find the code mostly redudant as it's already rendered in the diagnostic summary.</p>
+</blockquote>
+<p>I kind of agree, and that would probably fix the benchmark regression too! I'll revert that part</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/diagnostic/mod.rs</code>:387 on 2025-07-21 15:57</div>
+            <div class="timeline-body"><p>I find it very hard to judge which methods are Ruff specific and which aren't. Can we update the doc comments and ideally prefix the ruff specific methods?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-21 15:58</div>
+            <div class="timeline-body"><blockquote>
+<p>Was it <code>help</code> or <code>note</code>? Trying to remember...</p>
+</blockquote>
+<p><code>note</code> might also be useful in some situations, but <code>help</code> would I think be perfect for things like this, where we're trying to steer the user directly towards a potential solution:</p>
+<p>https://github.com/astral-sh/ruff/blob/5cace28c3ecc29f050aa5a57c8659e3154e3211e/crates/ty_python_semantic/src/types/infer.rs#L4749-L4751</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/diagnostic/mod.rs</code>:1154 on 2025-07-21 16:00</div>
+            <div class="timeline-body"><p>I'm a bit torn if we want <code>Help</code> as a <code>Diagnostic</code> severity or only allow it at the sub-diagnostic level/annotations. Curious what @BurntSushi thinks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-07-21 16:01</div>
+            <div class="timeline-body"><p>I don't think I've the full context to review this PR just yet. My main concern is that we over emphesize on not changing the output format vs picking the format that's most intuitive.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-21 16:09</div>
+            <div class="timeline-body"><blockquote>
+<p>Can you show how the full diagnostic rendering is changing and what you propose to be the final rendering?</p>
+</blockquote>
+<p>Full diagnostic output from <code>annotate-snippets</code> in this PR:</p>
+<pre><code>error[unused-import]: `os` imported but unused
+  --&gt; fib.py:1:8
+   |
+ 1 | import os
+   |        ^^ F401
+   |
+ help: Remove unused import: `os`
+</code></pre>
+<p>Current Ruff output for the same code:</p>
+<pre><code>fib.py:1:8: F401 [*] `os` imported but unused
+  |
+1 | import os
+  |        ^^ F401
+  |
+  = help: Remove unused import: `os`
+</code></pre>
+<p>Proposed final output after #19415:</p>
+<pre><code>F401 [*] `os` imported but unused
+  --&gt; fib.py:1:8
+   |
+ 1 | import os
+   |        ^^ F401
+   |
+ help: Remove unused import: `os`
+</code></pre>
+<p>The main difference from the current Ruff diagnostic is that the filename is on the second line, and the main/only difference from current ty diagnostics is <code>F401 [*]</code> replacing <code>error[unused-import]</code>.</p>
+<p>Maybe it was a bad idea to split this out from #19415 since the final product is a combination of the two. I just thought it might be a little easier to do this mostly-internal rearrangement separately.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-21 16:14</div>
+            <div class="timeline-body"><p>Thanks. I do appreciate this being a separate PR. It just requires a few more details in the PR description to review it.</p>
+<pre><code>F401 [*] `os` imported but unused
+  --&gt; fib.py:1:8
+   |
+ 1 | import os
+   |        ^^ F401
+   |
+ help: Remove unused import: `os`
+</code></pre>
+<p>I think the repeated <code>F401</code> makes ltitle sense. It also prevents any lint to set a more specific message for the primary annotation (which is a very prominent and useful message!).</p>
+<p>Keeping <code>suggestion</code> as a sub diagnostic does make sense to me</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-07-21 16:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_db/src/diagnostic/mod.rs</code>:387 on 2025-07-21 16:19</div>
+            <div class="timeline-body"><p>Hmm, I see what you mean, but this isn't necessarily Ruff-specific, unless we think we would store the fix suggestion in a different part of the <code>Diagnostic</code> for ty (or not have &quot;fix suggestions&quot; in the same way). I can definitely add a note about this only currently being used by Ruff, if that would help, or rename it anyway.</p>
+<p>The only other ambiguous method that I saw was <code>Diagnostic::body</code>, which is just an alias for <code>Diagnostic::primary_message</code>. It might help to delete that one now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-07-21 16:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/diagnostic/mod.rs</code>:387 on 2025-07-21 16:29</div>
+            <div class="timeline-body"><p>I think the method is misleading because the first sub diagnostic isn't guaranteed to always be the fix suggestion. It can also be a second diagnostic that shows a second code frame (e.g. to highlight the definition side of a missing argument).</p>
+<p>Overall, <code>Diagnostic</code> is intentionally unstructured to give rules a very flexible framework on how they want to structure their diagnostics and I suspect that we'll move Ruff into a similar direction.</p>
+<p>This does raise the question on how we'll handle <code>suggestions</code> in the output formats that currently emit them as a separate field. We may need a different way to mark those.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-07-21 16:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/diagnostic/mod.rs</code>:387 on 2025-07-21 16:33</div>
+            <div class="timeline-body"><p>This discussion makes me realize that we'll need to rework the cache before Ruff can make use of the new <code>Diagnostic</code> features. The cache only stores exactly the fields required by <code>ViolationMetadata</code>. This means, any extra field will be lost after deserializing the message again. Instead, what the cache should do is serialize/deserialize the entire <code>Diagnostic</code> as is.</p>
+<p>We also need to review all other places where <code>suggestion</code> is used to ensure they don't make any assumption about how a diagnostic is structured.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-07-21 16:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/diagnostic/mod.rs</code>:387 on 2025-07-21 16:41</div>
+            <div class="timeline-body"><p>I would probably rename the method to <code>first_help_text</code> and clearly document that it is the message of the first sub-diagnostic with a <code>Help</code> severity and that this is used as the fix text in some of Ruff's output formats.</p>
+<p>Making the <code>Caching</code> so that it can restore any diagnostic is a follow up task.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-07-21 17:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_db/src/diagnostic/mod.rs</code>:387 on 2025-07-21 17:09</div>
+            <div class="timeline-body"><p>Thanks, that makes a lot of sense. I'll rename and document it as you suggested and follow up on the caching separately.</p>
+<p>I looked at the references to <code>suggestion</code>, and they all assume that this will be the fix suggestion, but I don't think they make any other assumption about the diagnostic's structure.</p>
+<pre><code>crates/ruff/src/cache.rs
+457:                    suggestion: msg.suggestion().map(ToString::to_string),
+crates/ruff_db/src/diagnostic/mod.rs
+388:    pub fn suggestion(&amp;self) -&gt; Option&lt;&amp;str&gt; {
+crates/ruff_db/src/diagnostic/render/json.rs
+90:        message: diagnostic.suggestion(),
+crates/ruff_linter/src/message/text.rs
+189:        let suggestion = self.message.suggestion();
+crates/ruff_linter/src/test.rs
+275:                !(fixable &amp;&amp; diagnostic.suggestion().is_none()),
+crates/ruff_server/src/lint.rs
+241:    let suggestion = diagnostic.suggestion();
+crates/ruff_wasm/src/lib.rs
+237:                    message: msg.suggestion().map(ToString::to_string),
+</code></pre>
+<p>Fortunately there aren't as many as I expected, and the ones in the cache and <code>text.rs</code> should go away soon, it sounds like.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-07-22 06:14</div>
+            <div class="timeline-body"><p>Thanks. This looks good to me now.</p>
+<p>The only thing I suggest changing is to add a <code>SubDiagnosticSeverity</code> (or similar) which is the same as <code>Severity</code> but it also has a <code>Help</code> variant.</p>
+<p>This is a bit annoying but it allows us to skip the decision if we neeed/want a <code>Help</code> severity at the diagnostic level, which we don't need now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ntBre on 2025-07-22 14:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-07-22 14:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-07-22 14:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-07-22 16:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_db/src/diagnostic/mod.rs</code>:1154 on 2025-07-22 16:27</div>
+            <div class="timeline-body"><p>Ah sorry, just catching up to this now. I would have been fine adding this to <code>Severity</code>. :-) But the extra type gives us a bit more precision, so that's nice.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_db/src/diagnostic/mod.rs</code>:1199 on 2025-07-22 16:29</div>
+            <div class="timeline-body"><p>It might be helpful to add a comment here explaining that this type was added to represent the additional <code>Help</code> variant that <em>isn't</em> present on <code>Severity</code>. And that, in particular, if we wanted to add <code>Severity::Help</code>, it would be fine to delete this type and move back to one type.</p>
+<p>I say this because it clarifies that <code>Help</code> is the only reason for this type's existence, and that there isn't some other need for it. So hopefully it's easier for someone down the line to remove it if we do add <code>Severity::Help</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-07-22 16:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-07-22 16:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_db/src/diagnostic/mod.rs</code>:1199 on 2025-07-22 16:48</div>
+            <div class="timeline-body"><p>Oh good idea. I'll sneak this into #19398 since I haven't merged it yet. Thanks for the reviews!</p>
+<p>Let me know if you find anything else. I'll be working in the same area on <code>full</code> output next.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:58:39 UTC
+    </footer>
+</body>
+</html>

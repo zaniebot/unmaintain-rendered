@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Reduce size of `TypeInference` - astral-sh/ruff #19435</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Reduce size of <code>TypeInference</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19435">#19435</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2025-07-20 08:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-20 08:46</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR shrinks the size of the cached <code>infer_*</code> queries in memory. This PR doesn't change what data we store (with a few exceptions). The main improvement is to shrink the size of <code>TypeInference</code> itself. This is very impactful because ty creates a lot (e.g. from a large project, the count of all <code>infer_</code> queries adds up to 10'929'221) of type inference results. For large projects, even a reduction by 8 bytes can result to a meaningful impact)</p>
+<p>You can go through the individual commits if you're curious how I landed on the current design. If you're not, these are the changes I made in this PR:</p>
+<ul>
+<li>The most important change is to split <code>TypeInference</code> into <code>ExpressionInference</code>, <code>DefinitionInference</code>, and <code>ScopeInference</code>. This has the benefit that each region can store exactly the information it needs. For example, <code>ExpressionInference</code> only needs to store the fallback type, the expression types, diagnostics, and bindings but it doesn't need to store declarations or deferred. This required me to inline all <code>TypeInference</code> fields into <code>TypeInferenceBuilder</code>.</li>
+<li>For each <code>Inference</code> type, split out the less common fields into an <code>Extra</code> struct and store that as a <code>Option&lt;Box&lt;Extra&gt;&gt;</code> on the <code>Inference</code> type. For example, most inference regions have no diagnostics. Therefore, move that field to the <code>Extra</code> type so that we only pay the cost of 24 bytes for the diagnostics <code>Vec</code> if a region has diagnostics. Another example is that <code>bindings</code> are very uncommon in expression scopes, that's why they're stored on the <code>Extra</code> type too.</li>
+<li>Gate <code>scope</code> behind <code>#[cfg(debug_assertions)]</code>. It's only used to ensure that we don't accidentially merge inference results from different scopes during type inference building. We don't need this in production.</li>
+<li>Replace some of the <code>FxHashMap</code> with <code>Box&lt;[(Key, Value)]</code> and use a linear scan. I gathered some numbers on a large project and noticed that <code>declarations</code>, <code>bindings</code>, and <code>deferred</code> all tend to be very small (less than 10 items). In which case a <code>Vec</code> with a linear scan can give very similar performance characteristics as using a <code>HashMap</code> (but is smaller). This might even save us some time during building the data structures because our tree walking guarantees that all inserted keys are unique.</li>
+<li>Change <code>cycle_fallback_type</code> to a <code>bool</code>. We always fallback to <code>Never</code> and a <code>bool</code> is smaller</li>
+</ul>
+<p>The main downside is that this overall leads to more code and some code duplication. The duplicate code is fairly trivial, which is why I don't consider this a concern.</p>
+<p>Besides memory improvements, I do find that different <code>Inference</code> type help clarify which information is needed when (during building, vs for different regions).</p>
+<p>Closes https://github.com/astral-sh/ty/issues/495</p>
+<h2>Test Plan</h2>
+<p>I ran ty on a large project with <code>TY_MEMORY_REPORT=full</code> and compared the numbers between different versions:</p>
+<p><strong>Initial</strong></p>
+<p>These are the numbers from main:</p>
+<pre><code>`infer_definition_types -&gt; ty_python_semantic::types::infer::TypeInference`
+    metadata=850.32MB fields=2307.24MB count=5089303
+`infer_expression_types -&gt; ty_python_semantic::types::infer::TypeInference`
+    metadata=1701.13MB fields=2014.07MB count=4971063
+`infer_scope_types -&gt; ty_python_semantic::types::infer::TypeInference`
+    metadata=400.87MB fields=1738.46MB count=868855
+</code></pre>
+<p><strong>This PR</strong></p>
+<pre><code>`infer_scope_types -&gt; ty_python_semantic::types::infer::ScopeInference`
+    metadata=400.87MB fields=1311.07MB count=868855
+`infer_definition_types -&gt; ty_python_semantic::types::infer::DefinitionInference`
+    metadata=850.35MB fields=1228.67MB count=5089303
+`infer_expression_types -&gt; ty_python_semantic::types::infer::ExpressionInference`
+    metadata=1701.17MB fields=1184.60MB count=4971063
+</code></pre>
+<ul>
+<li><code>infer_scope_types</code>: -430MB</li>
+<li><code>infer_definition_types</code>: -1079MB</li>
+<li><code>infer_expression_types</code>: -550MB</li>
+</ul>
+<p>In total, this is a reduction by almost 2GB. Getting this number down further will be trickier and it might make sense to see if the salsa metadata can be reduced (now larger than the actual data for <code>infer_expression_types</code>) or if some queries can be removed entirely or be reduced in number (see https://github.com/astral-sh/ty/issues/855)</p>
+<details>
+	<summary>Memory reports by change</summary>
+
+<pre><code>// Main
+`infer_definition_types -&gt; ty_python_semantic::types::infer::TypeInference`
+    metadata=850.32MB fields=2307.24MB count=5089303
+`infer_expression_types -&gt; ty_python_semantic::types::infer::TypeInference`
+    metadata=1701.13MB fields=2014.07MB count=4971063
+`infer_scope_types -&gt; ty_python_semantic::types::infer::TypeInference`
+    metadata=400.87MB fields=1738.46MB count=868855
+	
+// Change `TypeCheckDiagnostics` to wrap an `Option&lt;Box&lt;Inner&gt;&gt;` where `Inner` stores diagnostics and used suppressions
+
+`infer_definition_types -&gt; ty_python_semantic::types::infer::TypeInference`
+    metadata=850.28MB fields=2065.54MB count=5089306
+`infer_expression_types -&gt; ty_python_semantic::types::infer::TypeInference`
+    metadata=1701.02MB fields=1779.32MB count=4971063
+`infer_scope_types -&gt; ty_python_semantic::types::infer::TypeInference`
+    metadata=400.87MB fields=1699.84MB count=868855
+
+
+// Single `TypeInference` type with `Extra` struct (without diagnostic change above)
+
+`infer_definition_types -&gt; ty_python_semantic::types::infer::TypeInference`
+    metadata=850.33MB fields=2347.96MB count=5089302 // + 40
+`infer_scope_types -&gt; ty_python_semantic::types::infer::TypeInference`
+    metadata=400.87MB fields=1736.91MB count=868855 // -40
+`infer_expression_types -&gt; ty_python_semantic::types::infer::TypeInference`
+    metadata=1701.12MB fields=1231.07MB count=4971063 // -470
+
+
+
+// Single `TypeInference` type with `Extra` struct and &quot;thin diagnostics&quot;
+`infer_definition_types -&gt; ty_python_semantic::types::infer::TypeInference`
+    metadata=850.35MB fields=2106.26MB count=5089309 // increase by 50 compared to diagnostics alone
+`infer_scope_types -&gt; ty_python_semantic::types::infer::TypeInference`
+    metadata=400.87MB fields=1700.72MB count=868855 // reduced by 80 compared to diagnostics alone
+`infer_expression_types -&gt; ty_python_semantic::types::infer::TypeInference`
+    metadata=1701.16MB fields=1231.41MB count=4971063 // reduction by 470 MB
+	
+	
+// Single `TypeInference` type with `Extra` struct and &quot;thin diagnostics&quot; but the diagnostics aren't stored on extra
+`infer_definition_types -&gt; ty_python_semantic::types::infer::TypeInference`
+    metadata=850.32MB fields=2106.25MB count=5089301 // same
+`infer_scope_types -&gt; ty_python_semantic::types::infer::TypeInference`
+    metadata=400.87MB fields=1701.09MB count=868855 // same
+`infer_expression_types -&gt; ty_python_semantic::types::infer::TypeInference`
+    metadata=1701.10MB fields=1262.85MB count=4971063 // +30mb
+		
+	
+// Two context types, one `FullInference` for scope and definition regions and an `ExpressionInference`
+
+`infer_definition_types -&gt; ty_python_semantic::types::infer::FullInference`
+    metadata=850.31MB fields=1943.77MB count=5089307
+`infer_scope_types -&gt; ty_python_semantic::types::infer::FullInference`
+    metadata=400.87MB fields=1679.43MB count=868855
+`infer_expression_types -&gt; ty_python_semantic::types::infer::ExpressionInference`
+    metadata=1701.05MB fields=1186.00MB count=4971063
+	
+	
+// Same as above, but deferred moved to extra
+`infer_definition_types -&gt; ty_python_semantic::types::infer::FullInference`
+    metadata=850.32MB fields=1791.05MB count=5089313
+`infer_scope_types -&gt; ty_python_semantic::types::infer::FullInference`
+    metadata=400.87MB fields=1653.39MB count=868855
+`infer_expression_types -&gt; ty_python_semantic::types::infer::ExpressionInference`
+    metadata=1701.09MB fields=1186.00MB count=4971063
+	
+	
+// Split `TypeInference` into three inference types
+`infer_definition_types -&gt; ty_python_semantic::types::infer::DefinitionInference`
+    metadata=850.29MB fields=1791.05MB count=5089314
+`infer_scope_types -&gt; ty_python_semantic::types::infer::ScopeInference`
+    metadata=400.87MB fields=1651.62MB count=868855
+`infer_expression_types -&gt; ty_python_semantic::types::infer::ExpressionInference`
+    metadata=1700.99MB fields=1186.00MB count=4971063
+	
+// Use `Slice`s for declarations, remove `declarations` and `bindings` from `ScopeInference`
+`infer_definition_types -&gt; ty_python_semantic::types::infer::DefinitionInference`
+    metadata=850.33MB fields=1554.71MB count=5089303
+`infer_scope_types -&gt; ty_python_semantic::types::infer::ScopeInference`
+    metadata=400.87MB fields=1311.07MB count=868855
+`infer_expression_types -&gt; ty_python_semantic::types::infer::ExpressionInference`
+    metadata=1701.15MB fields=1184.60MB count=4971063
+	
+// Use slice for bindings too:
+`infer_scope_types -&gt; ty_python_semantic::types::infer::ScopeInference`
+    metadata=400.87MB fields=1311.07MB count=868855
+`infer_definition_types -&gt; ty_python_semantic::types::infer::DefinitionInference`
+    metadata=850.29MB fields=1232.32MB count=5089309
+`infer_expression_types -&gt; ty_python_semantic::types::infer::ExpressionInference`
+	metadata=1701.04MB fields=1184.60MB count=4971063
+
+
+// Final
+`infer_scope_types -&gt; ty_python_semantic::types::infer::ScopeInference`
+    metadata=400.87MB fields=1311.07MB count=868855
+`infer_definition_types -&gt; ty_python_semantic::types::infer::DefinitionInference`
+    metadata=850.35MB fields=1228.67MB count=5089303
+`infer_expression_types -&gt; ty_python_semantic::types::infer::ExpressionInference`
+    metadata=1701.17MB fields=1184.60MB count=4971063
+</code></pre>
+</details>
+
+<h2>Performance</h2>
+<p>The change is mostly performance neutral. Codspeed shows a few 1% regressions for instrumented benchmarks but it also shows a 1% improvement for walltime benchmarks... Overall, the change is neutral in performance.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @MichaReiser on 2025-07-20 08:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @MichaReiser on 2025-07-20 08:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @MichaReiser on 2025-07-20 08:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @MichaReiser on 2025-07-20 08:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-20 08:49</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅</p>
+<details>
+<summary>Memory usage changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">trio (https://github.com/python-trio/trio)
+- TOTAL MEMORY USAGE: ~176MB
++ TOTAL MEMORY USAGE: ~167MB
+-     memo fields = ~138MB
++     memo fields = ~131MB
+
+sphinx (https://github.com/sphinx-doc/sphinx)
+- TOTAL MEMORY USAGE: ~301MB
++ TOTAL MEMORY USAGE: ~273MB
+-     memo fields = ~236MB
++     memo fields = ~214MB
+
+prefect (https://github.com/PrefectHQ/prefect)
+- TOTAL MEMORY USAGE: ~626MB
++ TOTAL MEMORY USAGE: ~568MB
+-     memo fields = ~490MB
++     memo fields = ~445MB
+
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> removed by @MichaReiser on 2025-07-20 13:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-07-20 15:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/files.rs</code>:1 on 2025-07-20 15:40</div>
+            <div class="timeline-body"><p>Okay, you got me. I tried to sneak in a change here. I removed <code>countme</code>. I re-added it to <code>ty_python_semantic</code> to gather some statistics and then removed it when cleaning up this PR, which is when I realized that I missed to remove these countme fields in <code>ruff_db</code>. We no longer need to use <code>countme</code> because <code>TY_MEMORY_REPORT</code> exposes the same information (and much more!)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-20 15:50</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>ℹ️ ecosystem check <strong>encountered format errors</strong>. (no format changes; 1 project error)</p>
+<details><summary><a href="https://github.com/openai/openai-cookbook">openai/openai-cookbook</a> (error)</summary>
+<p>
+
+<pre><code>warning: Detected debug build without --no-cache.
+error: Failed to parse examples/mcp/databricks_mcp_cookbook.ipynb:12:1:8: Simple statements must be separated by newlines or semicolons
+</code></pre>
+</p>
+</details>
+
+<h3>Formatter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>encountered format errors</strong>. (no format changes; 1 project error)</p>
+<details><summary><a href="https://github.com/openai/openai-cookbook">openai/openai-cookbook</a> (error)</summary>
+<p>
+<pre>ruff format --preview</pre>
+</p>
+<p>
+
+<pre><code>warning: Detected debug build without --no-cache.
+error: Failed to parse examples/mcp/databricks_mcp_cookbook.ipynb:12:1:8: Simple statements must be separated by newlines or semicolons
+</code></pre>
+</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2025-07-20 15:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @MichaReiser on 2025-07-20 15:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @MichaReiser on 2025-07-20 15:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @MichaReiser on 2025-07-20 15:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @MichaReiser on 2025-07-20 15:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2025-07-21 05:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/ty_python_semantic/src/types/infer.rs</code>:10665 on 2025-07-21 05:24</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">/// that elements are unique. For example, the way we visit definitions
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">great writeup</span> added by @sharkdp on 2025-07-21 07:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types/infer.rs</code>:431 on 2025-07-21 08:06</div>
+            <div class="timeline-body"><p>Does <code>ScopeInference</code> shrink in size when this <code>bool</code> is moved to <code>*Extra</code>, or would it also fit into existing padding space on <code>ScopeInference</code> directly?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types/infer.rs</code>:418 on 2025-07-21 08:18</div>
+            <div class="timeline-body"><p>Wondering if you also considered making <code>TypeInference</code> and <code>TypeInferenceBuilder</code> generic over the inference region kind (scope, expression, definition)? This might avoid some of the code duplication, but could be a bit tricky/annoying to set up without enum support in const generics.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> approved on 2025-07-21 08:37</div>
+            <div class="timeline-body"><p>Thank you very much for the detailed analysis here and the sequence of improvement. Fantastic results!</p>
+<p>My main concern here is not the code duplication, but rather: is this the right point in time for <em>all</em> of these optimizations?</p>
+<p>For example: <code>HashMap</code> =&gt; <code>VecMap</code> change: The analysis you did is correct <em>now</em>, but some of the details may change with future changes to ty's behavior, or future changes to these core data types. Will we re-evaluate this tradeoff in the future?</p>
+<p>Another example: the <code>Box</code>ed <code>extra</code> secitons: Making changes to these code sections now comes with increased friction: do I need to add this new field to the struct itself, or to the <code>extra</code> section? If I add another usage site of an existing field on <code>extra</code>, is the memory-performance tradeoff still correct?</p>
+<p>I realize that these are annoying questions/concerns. Optimizations often have attached maintenance costs. My gut feeling is that some optimizations here may be premature (like the <code>HashMap</code> =&gt; <code>VecMap</code> change), but I might be wrong. And I'm definitely not opposed to introducing any of these optimizations right now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-07-21 08:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types/infer.rs</code>:418 on 2025-07-21 08:45</div>
+            <div class="timeline-body"><p>I wanted to avoid making <code>TypeInferenceBuilder</code> generic because it would lead to a lot of monomorphization and also just complicates the type signature overall.</p>
+<p>My first version had a <code>TypeInference</code> enum but I then realized that it's actually never needed (and we would still need to unwrap at the caller side to get the narrower type that we can put into the queries. But maybe you had something else in mind?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-07-21 08:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types/infer.rs</code>:431 on 2025-07-21 08:47</div>
+            <div class="timeline-body"><p>It does. All <code>Inference</code> types have no padding at the moment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-21 08:53</div>
+            <div class="timeline-body"><p>These are fair concerns. We can definetely decide to defer some of those changes until later. I did take some pre-cautions that hopefully will help us catch potential regressions:</p>
+<blockquote>
+<p>For example: HashMap =&gt; VecMap change: The analysis you did is correct now, but some of the details may change with future changes to ty's behavior, or future changes to these core data types. Will we re-evaluate this tradeoff in the future?</p>
+</blockquote>
+<p>I added <code>debug</code> statements that warn if the <code>VecMap</code> assumption isn't true. Mainly because I think this will help us find the root cause if there are projects with many items in those maps.</p>
+<blockquote>
+<p>Another example: the Boxed extra secitons: Making changes to these code sections now comes with increased friction: do I need to add this new field to the struct itself, or to the extra section?</p>
+</blockquote>
+<p>We can still default to adding them to the main struct if we don't feel certain and defer the decision to move them to extra later. But I suspect that the person adding a new field will often have a good sense for how frequently the feature for which they're adding the field is used (they definetely have a bertter understanding than someone who has to trace through the code).</p>
+<p>If I add another usage site of an existing field on extra, is the memory-performance tradeoff still correct?</p>
+<p>This will hopefully show up both in performance profile and memory usage. Which should then allow us to move the field (from or to extra).</p>
+<p>Overall, I think this sets up the infrastructure we need and moving any field is fairly trivial if a later analysis turns out that some assumptions have changed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-07-21 09:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types/infer.rs</code>:418 on 2025-07-21 09:03</div>
+            <div class="timeline-body"><blockquote>
+<p>I wanted to avoid making <code>TypeInferenceBuilder</code> generic because it would lead to a lot of monomorphization and also just complicates the type signature overall.</p>
+</blockquote>
+<p>Thanks. I figured you already thought about it.</p>
+<blockquote>
+<p>My first version had a <code>TypeInference</code> enum but I then realized that it's actually never needed (and we would still need to unwrap at the caller side to get the narrower type that we can put into the queries. But maybe you had something else in mind?</p>
+</blockquote>
+<p>I only said enum because I would be inclined to make these structs generic over a <code>{ Scope, Expression, Definition }</code> enum. That works in C++, but not (yet?) with Rust const generics. Anyway, thanks for your response.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-21 09:06</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>For example: HashMap =&gt; VecMap change: The analysis you did is correct now, but some of the details may change with future changes to ty's behavior, or future changes to these core data types. Will we re-evaluate this tradeoff in the future?</p>
+</blockquote>
+<p>I added <code>debug</code> statements that warn if the <code>VecMap</code> assumption isn't true. Mainly because I think this will help us find the root cause if there are projects with many items in those maps.</p>
+</blockquote>
+<p>I saw that — I was more concerned about the fact that this change relies on the number of entries being small, because the linear scan would otherwise be slow. But I see that you also added tracing output for this, so you also considered that.</p>
+<blockquote>
+<p>Overall, I think this sets up the infrastructure we need and moving any field is fairly trivial if a later analysis turns out that some assumptions have changed.</p>
+</blockquote>
+<p>That makes sense, thanks.</p>
+<p>I'm fine with merging this PR as-is.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2025-07-22 09:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-07-22 09:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-07-22 09:36</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:58:39 UTC
+    </footer>
+</body>
+</html>

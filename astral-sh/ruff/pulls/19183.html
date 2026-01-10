@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fix `unreachable` panic in parser - astral-sh/ruff #19183</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fix <code>unreachable</code> panic in parser</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19183">#19183</a>
+        opened by <a href="https://github.com/dylwil3">@dylwil3</a>
+        on 2025-07-07 14:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-07-07 14:54</div>
+            <div class="timeline-body"><p>Parsing the (invalid) expression <code>f&quot;{\t&quot;i}&quot;</code> caused a panic because the <code>TStringMiddle</code> character was &quot;unreachable&quot; due the way the parser recovered from the line continuation (it ate the t-string start).</p>
+<p>The cause of the issue is as follows:</p>
+<p>The parser begins parsing the f-string and expects to see a list of objects, essentially alternating between <em>interpolated elements</em> and ordinary strings. It is happy to see the first left brace, but then there is a lexical error caused by the line-continuation character. So instead of the parser seeing a list of elements with just one member, it sees a list that starts like this:</p>
+<ul>
+<li>Interpolated element with an invalid token, stored as a <code>Name</code></li>
+<li>Something else built from tokens beginning with <code>TStringStart</code> and <code>TStringMiddle</code></li>
+</ul>
+<p>When it sees the <code>TStringStart</code> error recovery says &quot;that's a list element I don't know what to do with, let's skip it&quot;. When it sees <code>TStringMiddle</code> it says &quot;oh, that looks like the middle of <em>some interpolated string</em> so let's try to parse it as one of the literal elements of my <code>FString</code>&quot;. Unfortunately, the function being used to parse individual list elements thinks (arguably correctly) that it's not possible to have a <code>TStringMiddle</code> sitting in your <code>FString</code>, and hits <code>unreachable</code>.</p>
+<p>Two potential ways (among many) to solve this issue are:</p>
+<ol>
+<li>Allow a <code>TStringMiddle</code> as a valid &quot;literal&quot; part of an f-string during parsing (with the hope/understanding that this would only occur in an invalid context)</li>
+<li>Skip the <code>TStringMiddle</code> as an &quot;unexpected/invalid list item&quot; in the same way that we skipped <code>TStringStart</code>.</li>
+</ol>
+<p>I have opted for the second approach since it seems somehow more morally correct, even though it loses more information. To implement this, the recovery context needs to know whether we are in an f-string or t-string - hence the changes to that enum. As a bonus we get slightly more specific error messages in some cases.</p>
+<p>Closes #18860</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @dylwil3 on 2025-07-07 14:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">parser</span> added by @dylwil3 on 2025-07-07 14:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dylwil3">@dylwil3</a> reviewed on 2025-07-07 14:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dylwil3">@dylwil3</a> on <code>crates/ruff_python_parser/src/parser/expression.rs</code>:1694 on 2025-07-07 14:55</div>
+            <div class="timeline-body"><p>I'm unsure about this part. If I <em>don't</em> do this, then the parser gets stuck and fails an <code>assert_progressing</code> call. On the other hand it seems weird that I have to essentially bump <em>twice</em>, if I'm following the logic correctly?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-07 15:05</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>ℹ️ ecosystem check <strong>encountered format errors</strong>. (no format changes; 1 project error)</p>
+<details><summary><a href="https://github.com/openai/openai-cookbook">openai/openai-cookbook</a> (error)</summary>
+<p>
+
+<pre><code>warning: Detected debug build without --no-cache.
+error: Failed to parse examples/mcp/databricks_mcp_cookbook.ipynb:12:1:8: Simple statements must be separated by newlines or semicolons
+</code></pre>
+</p>
+</details>
+
+<h3>Formatter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>encountered format errors</strong>. (no format changes; 1 project error)</p>
+<details><summary><a href="https://github.com/openai/openai-cookbook">openai/openai-cookbook</a> (error)</summary>
+<p>
+<pre>ruff format --preview</pre>
+</p>
+<p>
+
+<pre><code>warning: Detected debug build without --no-cache.
+error: Failed to parse examples/mcp/databricks_mcp_cookbook.ipynb:12:1:8: Simple statements must be separated by newlines or semicolons
+</code></pre>
+</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-07-07 15:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/parser/expression.rs</code>:1694 on 2025-07-07 15:51</div>
+            <div class="timeline-body"><p>What are the tokens that you bump with <code>bump_any</code>. What's the token that gets bumped with <code>add_error</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-07-18 21:51</div>
+            <div class="timeline-body"><p>@MichaReiser okay after a more thorough investigation I have a better understanding of what is going on here and have gone with a different fix. I've tried to summarize my reasoning in the updated PR summary. Let me know whether you agree, or whether you'd like me to solve the issue in a different way.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @dylwil3 on 2025-07-18 21:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @dylwil3 on 2025-07-18 21:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/parser/mod.rs</code>:1189 on 2025-07-19 13:54</div>
+            <div class="timeline-body"><p>Do we have a similar problem with the <code>FormatSpec</code> that it accepts both t-string and f-strings.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/parser/mod.rs</code>:1191 on 2025-07-19 13:54</div>
+            <div class="timeline-body"><p>I think the indentation here is off</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/parser/mod.rs</code>:811 on 2025-07-19 13:56</div>
+            <div class="timeline-body"><p>Not really related to your PR, but all those types could implement <code>Eq</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-07-19 13:56</div>
+            <div class="timeline-body"><p>Makes sense. Thank you</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dylwil3">@dylwil3</a> on <code>crates/ruff_python_parser/src/parser/mod.rs</code>:1189 on 2025-07-20 21:58</div>
+            <div class="timeline-body"><p>I don't think so because the <code>FormatSpec</code> doesn't contain an analog of <code>T/FStringMiddle</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dylwil3">@dylwil3</a> reviewed on 2025-07-20 21:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dylwil3 on 2025-07-20 22:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dylwil3 on 2025-07-20 22:04</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:58:38 UTC
+    </footer>
+</body>
+</html>

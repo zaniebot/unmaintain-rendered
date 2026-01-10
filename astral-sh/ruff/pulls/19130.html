@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Add into_callable method for Type - astral-sh/ruff #19130</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Add into_callable method for Type</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19130">#19130</a>
+        opened by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a>
+        on 2025-07-03 18:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on 2025-07-03 18:28</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title? (Please prefix with `[ty]` for ty pull
+  requests.)
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>Was just playing around with this, there's definitely more to do with this function, but it seems like maybe a better option than having so many arms in has_relation_to for (_, Callable).</p>
+<p>Not super invested in this but wanting to hear opinions if people have time</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @MatthewMckee4 on 2025-07-03 18:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @MatthewMckee4 on 2025-07-03 18:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @MatthewMckee4 on 2025-07-03 18:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @MatthewMckee4 on 2025-07-03 18:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Add into_callable method for Type" to "[ty] Add into_callable method for Type" by @MatthewMckee4 on 2025-07-03 18:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-03 18:32</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">mypy_primer (https://github.com/hauntsaninja/mypy_primer)
+-     memo fields = ~45MB
++     memo fields = ~41MB
+
+aioredis (https://github.com/aio-libs/aioredis)
+-     memo fields = ~54MB
++     memo fields = ~60MB
+
+operator (https://github.com/canonical/operator)
+- TOTAL MEMORY USAGE: ~106MB
++ TOTAL MEMORY USAGE: ~97MB
+-     memo fields = ~88MB
++     memo fields = ~80MB
+
+pydantic (https://github.com/pydantic/pydantic)
+- TOTAL MEMORY USAGE: ~142MB
++ TOTAL MEMORY USAGE: ~156MB
+
+mkdocs (https://github.com/mkdocs/mkdocs)
+- TOTAL MEMORY USAGE: ~129MB
++ TOTAL MEMORY USAGE: ~117MB
+
+tornado (https://github.com/tornadoweb/tornado)
+- TOTAL MEMORY USAGE: ~156MB
++ TOTAL MEMORY USAGE: ~171MB
+
+werkzeug (https://github.com/pallets/werkzeug)
+-     memo fields = ~129MB
++     memo fields = ~142MB
+
+psycopg (https://github.com/psycopg/psycopg)
+- TOTAL MEMORY USAGE: ~207MB
++ TOTAL MEMORY USAGE: ~228MB
+
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-07-03 18:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:1246 on 2025-07-03 19:37</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">            Type::Union(union) =&gt; union.try_map(db, |element| element.into_callable(db)),
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:1470 on 2025-07-03 19:39</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">            (_, Type::Callable(_)) =&gt; self.into_callable(db).is_some_and(|callable| callable.has_relation_to(db, target, relation)),
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:1248 on 2025-07-03 19:40</div>
+            <div class="timeline-body"><p>Could you make this an exhaustive match, so that we don't forget to add branches to it in the future when we add new <code>Type</code> variants?</p>
+<p>I think there are some branches that we're obviously missing currently too which should return <code>Some()</code>, such as <code>DataclassDecorator</code>, <code>TypeVar</code> and <code>Intersection</code>. These don't seem to have any ecosystem hits or mdtest failures so I think it's okay to leave them out for now, but adding a TODO for them would be good, I think.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-07-03 19:44</div>
+            <div class="timeline-body"><p>This is great! I think it's exactly the direction we want to head in, as it will make subtyping/assignability between various types and protocols with <code>__call__</code> methods easier too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-07-03 19:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:1229 on 2025-07-03 19:49</div>
+            <div class="timeline-body"><p>I think for <code>type[Any]</code>, <code>type[Unknown]</code> and <code>type[Todo]</code>, we actually want to return <code>Some(ty)</code>, where <code>ty</code> is <code>Callable[..., &lt;that dynamic type&gt;]</code>. <code>type[Any]</code> represents a gradual, unknown subclass of type that we need to treat as permissively as possible. So that would imply:</p>
+<pre><code class="language-suggestion">            Type::SubclassOf(subclass_of_ty) =&gt; match subclass_of_ty.subclass_of() {
+                SubclassOfInner::Class(class) =&gt; class.into_callable(db),
+                SubclassOfInner::Dynamic(dynamic) =&gt; Callable::single(db, Signature::new(Parameters::unknown(), dynamic))
+            }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> reviewed on 2025-07-03 19:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on <code>crates/ty_python_semantic/src/types.rs</code>:1248 on 2025-07-03 19:59</div>
+            <div class="timeline-body"><p>Do you want me to add todo in all arms? or the ones im unsure about at least?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on 2025-07-03 20:11</div>
+            <div class="timeline-body"><p>Seems like they're caught in mypy primer, ill make them return None but add a todo comment</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types.rs</code>:1195 on 2025-07-04 01:43</div>
+            <div class="timeline-body"><p>I don't think this is the right signature for the dynamic callable type. We should use <code>Signature::dynamic(self)</code> here.</p>
+<pre><code class="language-suggestion">                Signature::dynamic(self),
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-07-04 01:47</div>
+            <div class="timeline-body"><p>This looks great, thank you!</p>
+<p>cc @abhijeetbodas2001, I think my review comments on your returns-Never PR mentioned wanting this method.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @carljm on 2025-07-04 02:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-07-04 02:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-07-16 21:12</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:58:38 UTC
+    </footer>
+</body>
+</html>

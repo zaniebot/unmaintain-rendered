@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Support `async`/`await`, `async with` and `yield from` - astral-sh/ruff #19595</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Support <code>async</code>/<code>await</code>, <code>async with</code> and <code>yield from</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19595">#19595</a>
+        opened by <a href="https://github.com/sharkdp">@sharkdp</a>
+        on 2025-07-28 11:58
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-28 11:58</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<ul>
+<li>Add support for the return types of <code>async</code> functions</li>
+<li>Add type inference for <code>await</code> expressions</li>
+<li>Add support for <code>async with</code> / async context managers</li>
+<li>Add support for <code>yield from</code> expressions</li>
+</ul>
+<p>This PR is generally lacking proper error handling in some cases (e.g. illegal <code>__await__</code> attributes). I'm planning to work on this in a follow-up.</p>
+<p>part of https://github.com/astral-sh/ty/issues/151</p>
+<p>closes https://github.com/astral-sh/ty/issues/736</p>
+<h2>Ecosystem</h2>
+<p>There are a lot of true positives on <code>prefect</code> which look similar to:</p>
+<pre><code class="language-diff">prefect (https://github.com/PrefectHQ/prefect)
++ src/integrations/prefect-aws/tests/workers/test_ecs_worker.py:406:12: error[unresolved-attribute] Type `str` has no attribute `status_code`
+</code></pre>
+<p>This is due to a wrong return type annotation <a href="https://github.com/PrefectHQ/prefect/blob/e926b8c4c114e74533e7bd75d83e7f205c774645/src/integrations/prefect-aws/tests/workers/test_ecs_worker.py#L355-L391">here</a>.</p>
+<pre><code class="language-diff">mitmproxy (https://github.com/mitmproxy/mitmproxy)
++ test/mitmproxy/addons/test_clientplayback.py:18:1: error[invalid-argument-type] Argument to function `asynccontextmanager` is incorrect: Expected `(...) -&gt; AsyncIterator[Unknown]`, found `def tcp_server(handle_conn, **server_args) -&gt; Unknown | tuple[str, int]`
+</code></pre>
+<p><a href="https://github.com/mitmproxy/mitmproxy/blob/a4d794c59a27472d193a592d8037505a1cf6ae93/test/mitmproxy/addons/test_clientplayback.py#L18-L19">This</a> is a true positive. That function should return <code>AsyncIterator[Address]</code>, not <code>Address</code>.</p>
+<p>I looked through almost all of the other new diagnostics and they all look like known problems or true positives.</p>
+<h2>Typing conformance</h2>
+<p>The typing conformance diff looks good.</p>
+<h2>Test Plan</h2>
+<p>New Markdown tests</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @sharkdp on 2025-07-28 11:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-07-28 11:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-07-28 11:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/resources/mdtest/function/return_type.md</code>:458 on 2025-07-28 11:59</div>
+            <div class="timeline-body"><p>??</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-28 12:00</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on typing conformance tests</h2>
+<details>
+<summary>Changes were detected when running ty on typing conformance tests</summary>
+
+<pre><code class="language-diff">--- old-output.txt	2025-07-30 08:56:13.250732152 +0000
++++ new-output.txt	2025-07-30 08:56:13.314732684 +0000
+@@ -87,7 +87,6 @@
+ aliases_variance.py:18:24: error[non-subscriptable] Cannot subscript object of type `&lt;class 'ClassA[T_co]'&gt;` with no `__class_getitem__` method
+ aliases_variance.py:28:16: error[non-subscriptable] Cannot subscript object of type `&lt;class 'ClassA[T_co]'&gt;` with no `__class_getitem__` method
+ aliases_variance.py:44:16: error[non-subscriptable] Cannot subscript object of type `&lt;class 'ClassB[T_co, T_contra]'&gt;` with no `__class_getitem__` method
+-annotations_coroutines.py:27:5: error[type-assertion-failure] Argument does not have asserted type `str`
+ annotations_forward_refs.py:22:7: error[unresolved-reference] Name `ClassA` used when not defined
+ annotations_forward_refs.py:23:12: error[unresolved-reference] Name `ClassA` used when not defined
+ annotations_forward_refs.py:49:10: error[invalid-type-form] Variable of type `Literal[1]` is not allowed in a type expression
+@@ -102,8 +101,6 @@
+ annotations_forward_refs.py:96:1: error[type-assertion-failure] Argument does not have asserted type `int`
+ annotations_generators.py:86:21: error[invalid-return-type] Return type does not match returned value: expected `int`, found `types.GeneratorType`
+ annotations_generators.py:91:27: error[invalid-return-type] Return type does not match returned value: expected `int`, found `types.AsyncGeneratorType`
+-annotations_generators.py:167:5: error[type-assertion-failure] Argument does not have asserted type `AsyncGenerator[str, None]`
+-annotations_generators.py:174:5: error[type-assertion-failure] Argument does not have asserted type `AsyncGenerator[str, None]`
+ annotations_generators.py:193:1: error[type-assertion-failure] Argument does not have asserted type `() -&gt; AsyncIterator[int]`
+ annotations_methods.py:31:1: error[type-assertion-failure] Argument does not have asserted type `A`
+ annotations_methods.py:36:1: error[type-assertion-failure] Argument does not have asserted type `B`
+@@ -892,4 +889,4 @@
+ tuples_type_form.py:36:1: error[invalid-assignment] Object of type `tuple[Literal[1], Literal[2], Literal[3], Literal[&quot;&quot;]]` is not assignable to `tuple[int, ...]`
+ typeddicts_operations.py:60:1: error[type-assertion-failure] Argument does not have asserted type `str | None`
+ typeddicts_type_consistency.py:101:1: error[invalid-assignment] Object of type `Unknown | None` is not assignable to `str`
+-Found 893 diagnostics
++Found 890 diagnostics
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-28 12:02</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">mypy_primer (https://github.com/hauntsaninja/mypy_primer)
+- mypy_primer/utils.py:114:12: error[invalid-return-type] Return type does not match returned value: expected `tuple[CompletedProcess[str], int | float]`, found `tuple[CompletedProcess[@Todo(generic `typing.Awaitable` type) | None], int | float]`
+- Found 9 diagnostics
++ Found 8 diagnostics
+
+anyio (https://github.com/agronholm/anyio)
++ src/anyio/_core/_contextmanagers.py:165:16: error[invalid-return-type] Return type does not match returned value: expected `_T_co`, found `object`
++ src/anyio/_core/_sockets.py:596:64: error[invalid-argument-type] Argument to function `convert_ipv6_sockaddr` is incorrect: Expected `tuple[str, int, int, int] | tuple[str, int]`, found `tuple[str, int] | tuple[str, int, int, int] | tuple[int, bytes]`
+- Found 83 diagnostics
++ Found 85 diagnostics
+
+graphql-core (https://github.com/graphql-python/graphql-core)
++ src/graphql/pyutils/gather_with_cancel.py:28:16: error[invalid-return-type] Return type does not match returned value: expected `list[Any]`, found `tuple[Unknown]`
++ src/graphql/pyutils/gather_with_cancel.py:30:16: error[invalid-return-type] Return type does not match returned value: expected `list[Any]`, found `tuple[Unknown]`
+- Found 327 diagnostics
++ Found 329 diagnostics
+
+trio (https://github.com/python-trio/trio)
+- src/trio/_core/_tests/test_run.py:1736:28: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- src/trio/_core/_tests/test_run.py:1746:30: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- src/trio/_tests/test_highlevel_open_tcp_listeners.py:408:57: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- src/trio/_tests/test_subprocess.py:370:32: error[invalid-argument-type] Argument to function `run_process` is incorrect: Expected `bytes | bytearray | memoryview[Unknown] | int | HasFileno | None`, found `Literal[&quot;oh no, it's text&quot;]`
++ src/trio/_tests/test_testing.py:423:20: error[invalid-return-type] Return type does not match returned value: expected `bytes`, found `bytearray`
+- src/trio/_tests/test_util.py:109:38: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ src/trio/_tests/test_util.py:120:28: error[not-iterable] Object of type `CoroutineType[Any, Any, None]` is not iterable
+- src/trio/_tests/test_util.py:154:49: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- src/trio/testing/_fake_net.py:330:56: error[invalid-argument-type] Argument to bound method `from_python_sockaddr` is incorrect: Expected `tuple[str, int] | tuple[str, int, int, int]`, found `None | @Todo(generic `typing.Awaitable` type)`
++ src/trio/testing/_fake_net.py:330:56: error[invalid-argument-type] Argument to bound method `from_python_sockaddr` is incorrect: Expected `tuple[str, int] | tuple[str, int, int, int]`, found `None | Unknown`
+- Found 738 diagnostics
++ Found 734 diagnostics
+
+mongo-python-driver (https://github.com/mongodb/mongo-python-driver)
+- pymongo/asynchronous/server.py:273:94: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- pymongo/synchronous/helpers.py:86:56: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 412 diagnostics
++ Found 410 diagnostics
+
+discord.py (https://github.com/Rapptz/discord.py)
+- discord/webhook/async_.py:212:71: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 519 diagnostics
++ Found 518 diagnostics
+
+strawberry (https://github.com/strawberry-graphql/strawberry)
++ strawberry/http/async_base_view.py:213:20: error[invalid-return-type] Return type does not match returned value: expected `ExecutionResult | list[ExecutionResult] | SubscriptionExecutionResult`, found `tuple[Unknown]`
+- Found 368 diagnostics
++ Found 369 diagnostics
+
+bandersnatch (https://github.com/pypa/bandersnatch)
+- src/bandersnatch/tests/test_package.py:31:12: error[unresolved-attribute] Type `bound method Master.get_package_metadata(package_name: str, serial: int = Literal[0]) -&gt; @Todo(generic types.CoroutineType)` has no attribute `await_count`
++ src/bandersnatch/tests/test_package.py:31:12: error[unresolved-attribute] Type `bound method Master.get_package_metadata(package_name: str, serial: int = Literal[0]) -&gt; CoroutineType[Any, Any, Any]` has no attribute `await_count`
+- src/bandersnatch/tests/test_package.py:58:12: error[unresolved-attribute] Type `bound method Master.get_package_metadata(package_name: str, serial: int = Literal[0]) -&gt; @Todo(generic types.CoroutineType)` has no attribute `await_count`
++ src/bandersnatch/tests/test_package.py:58:12: error[unresolved-attribute] Type `bound method Master.get_package_metadata(package_name: str, serial: int = Literal[0]) -&gt; CoroutineType[Any, Any, Any]` has no attribute `await_count`
+
+dragonchain (https://github.com/dragonchain/dragonchain)
+- dragonchain/lib/database/redis_utest.py:46:9: error[unresolved-attribute] Type `def _initialize_async_redis(host: str, port: int, wait_time: int = Literal[30]) -&gt; @Todo(generic types.CoroutineType)` has no attribute `assert_called_once`
++ dragonchain/lib/database/redis_utest.py:46:9: error[unresolved-attribute] Type `def _initialize_async_redis(host: str, port: int, wait_time: int = Literal[30]) -&gt; CoroutineType[Any, Any, Unknown]` has no attribute `assert_called_once`
+
+websockets (https://github.com/aaugustin/websockets)
+- src/websockets/legacy/server.py:607:34: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `bytes`, found `@Todo(generic `typing.Awaitable` type) | Literal[HTTPStatus.SERVICE_UNAVAILABLE, b&quot;Server is shutting down.\n&quot;] | list[Unknown]`
++ src/websockets/legacy/server.py:607:34: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `bytes`, found `Unknown | Literal[HTTPStatus.SERVICE_UNAVAILABLE, b&quot;Server is shutting down.\n&quot;] | list[Unknown]`
+
+freqtrade (https://github.com/freqtrade/freqtrade)
+- freqtrade/exchange/binance_public_data.py:96:16: error[invalid-return-type] Return type does not match returned value: expected `DataFrame`, found `@Todo(generic `typing.Awaitable` type) | Series[Any]`
++ freqtrade/exchange/binance_public_data.py:96:16: error[invalid-return-type] Return type does not match returned value: expected `DataFrame`, found `Series[Any] | Unknown`
+
+paasta (https://github.com/yelp/paasta)
++ paasta_tools/contrib/get_running_task_allocation.py:102:17: error[invalid-argument-type] Argument is incorrect: Expected `str`, found `str | None`
++ paasta_tools/instance/kubernetes.py:816:17: error[invalid-argument-type] Argument to function `get_replicaset_status` is incorrect: Expected `Sequence[Future[dict[str, Any]]]`, found `Sequence[Future[dict[str, Any]]] | None`
++ paasta_tools/instance/kubernetes.py:821:12: error[invalid-return-type] Return type does not match returned value: expected `list[KubernetesVersionDict]`, found `tuple[Unknown]`
++ paasta_tools/instance/kubernetes.py:1099:12: error[invalid-return-type] Return type does not match returned value: expected `list[KubernetesVersionDict]`, found `tuple[Unknown]`
+- Found 881 diagnostics
++ Found 885 diagnostics
+
+aiohttp (https://github.com/aio-libs/aiohttp)
++ aiohttp/connector.py:1545:29: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `RequestInfo`, found `Unknown | under_cached_property[Unknown]`
++ aiohttp/connector.py:1546:29: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `tuple[ClientResponse, ...]`, found `Unknown | under_cached_property[Unknown]`
++ aiohttp/connector.py:1549:29: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `MultiMapping[str] | None`, found `Unknown | under_cached_property[Unknown]`
++ aiohttp/web_middlewares.py:109:42: error[unsupported-operator] Operator `+` is unsupported between objects of type `Unknown | under_cached_property[Unknown]` and `Unknown | Literal[&quot;&quot;]`
+- Found 168 diagnostics
++ Found 172 diagnostics
+
+mitmproxy (https://github.com/mitmproxy/mitmproxy)
++ test/mitmproxy/addons/test_clientplayback.py:18:1: error[invalid-argument-type] Argument to function `asynccontextmanager` is incorrect: Expected `(...) -&gt; AsyncIterator[Unknown]`, found `def tcp_server(handle_conn, **server_args) -&gt; Unknown | tuple[str, int]`
++ test/mitmproxy/addons/test_proxyserver.py:337:1: error[invalid-argument-type] Argument to function `asynccontextmanager` is incorrect: Expected `(...) -&gt; AsyncIterator[Unknown]`, found `def udp_server(handle_datagram: (DatagramTransport, bytes, tuple[str, int], /) -&gt; None) -&gt; Unknown | tuple[str, int]`
+- Found 1814 diagnostics
++ Found 1816 diagnostics
+
+meson (https://github.com/mesonbuild/meson)
++ mesonbuild/scripts/run_tool.py:49:12: error[invalid-return-type] Return type does not match returned value: expected `int`, found `int | None`
+- Found 773 diagnostics
++ Found 774 diagnostics
+
+prefect (https://github.com/PrefectHQ/prefect)
++ src/integrations/prefect-aws/tests/workers/test_ecs_worker.py:406:12: error[unresolved-attribute] Type `str` has no attribute `status_code`
++ src/integrations/prefect-aws/tests/workers/test_ecs_worker.py:407:36: error[unresolved-attribute] Type `str` has no attribute `identifier`
++ src/integrations/prefect-aws/tests/workers/test_ecs_worker.py:500:12: error[unresolved-attribute] Type `str` has no attribute `status_code`
++ src/integrations/prefect-aws/tests/workers/test_ecs_worker.py:501:36: error[unresolved-attribute] Type `str` has no attribute `identifier`
++ src/integrations/prefect-aws/tests/workers/test_ecs_worker.py:542:12: error[unresolved-attribute] Type `str` has no attribute `status_code`
++ src/integrations/prefect-aws/tests/workers/test_ecs_worker.py:543:36: error[unresolved-attribute] Type `str` has no attribute `identifier`
++ src/integrations/prefect-aws/tests/workers/test_ecs_worker.py:592:12: error[unresolved-attribute] Type `str` has no attribute `status_code`
++ src/integrations/prefect-aws/tests/workers/test_ecs_worker.py:593:36: error[unresolved-attribute] Type `str` has no attribute `identifier`
++ src/integrations/prefect-aws/tests/workers/test_ecs_worker.py:638:12: error[unresolved-attribute] Type `str` has no attribute `status_code`
++ src/integrations/prefect-aws/tests/workers/test_ecs_worker.py:639:36: error[unresolved-attribute] Type `str` has no attribute `identifier`
++ src/integrations/prefect-aws/tests/workers/test_ecs_worker.py:669:12: error[unresolved-attribute] Type `str` has no attribute `status_code`
++ src/integrations/prefect-aws/tests/workers/test_ecs_worker.py:670:36: error[unresolved-attribute] Type `str` has no attribute `identifier`
++ src/integrations/prefect-aws/tests/workers/test_ecs_worker.py:703:12: error[unresolved-attribute] Type `str` has no attribute `status_code`
++ src/integrations/prefect-aws/tests/workers/test_ecs_worker.py:704:36: error[unresolved-attribute] Type `str` has no attribute `identifier`
++ src/integrations/prefect-aws/tests/workers/test_ecs_worker.py:757:12: error[unresolved-attribute] Type `str` has no attribute `status_code`
++ src/integrations/prefect-aws/tests/workers/test_ecs_worker.py:758:36: error[unresolved-attribute] Type `str` has no attribute `identifier`
++ src/integrations/prefect-aws/tests/workers/test_ecs_worker.py:795:12: error[unresolved-attribute] Type `str` has no attribute `status_code`
++ src/integrations/prefect-aws/tests/workers/test_ecs_worker.py:796:36: error[unresolved-attribute] Type `str` has no attribute `identifier`
++ src/integrations/prefect-aws/tests/workers/test_ecs_worker.py:835:12: error[unresolved-attribute] Type `str` has no attribute `status_code`
++ src/integrations/prefect-aws/tests/workers/test_ecs_worker.py:836:36: error[unresolved-attribute] Type `str` has no attribute `identifier`
++ src/integrations/prefect-aws/tests/workers/test_ecs_worker.py:892:12: error[unresolved-attribute] Type `str` has no attribute `status_code`
++ src/integrations/prefect-aws/tests/workers/test_ecs_worker.py:893:36: error[unresolved-attribute] Type `str` has no attribute `identifier`
++ src/integrations/prefect-aws/tests/workers/test_ecs_worker.py:936:12: error[unresolved-attribute] Type `str` has no attribute `status_code`
++ src/integrations/prefect-aws/tests/workers/test_ecs_worker.py:937:36: error[unresolved-attribute] Type `str` has no attribute `identifier`
++ src/integrations/prefect-aws/tests/workers/test_ecs_worker.py:963:12: error[unresolved-attribute] Type `str` has no attribute `status_code`
++ src/integrations/prefect-aws/tests/workers/test_ecs_worker.py:964:36: error[unresolved-attribute] Type `str` has no attribute `identifier`
++ src/integrations/prefect-aws/tests/workers/test_ecs_worker.py:988:12: error[unresolved-attribute] Type `str` has no attribute `status_code`
++ src/integrations/prefect-aws/tests/workers/test_ecs_worker.py:989:36: error[unresolved-attribute] Type `str` has no attribute `identifier`
++ src/integrations/prefect-aws/tests/workers/test_ecs_worker.py:1018:12: error[unresolved-attribute] Type `str` has no attribute `status_code`
++ src/integrations/prefect-aws/tests/workers/test_ecs_worker.py:1064:12: error[unresolved-attribute] Type `str` has no attribute `status_code`
++ src/integrations/prefect-aws/tests/workers/test_ecs_worker.py:1113:12: error[unresolved-attribute] Type `str` has no attribute `status_code`
++ src/integrations/prefect-aws/tests/workers/test_ecs_worker.py:1165:12: error[unresolved-attribute] Type `str` has no attribute `status_code`
++ src/integrations/prefect-aws/tests/workers/test_ecs_worker.py:1306:12: error[unresolved-attribute] Type `str` has no attribute `status_code`
++ src/integrations/prefect-aws/tests/workers/test_ecs_worker.py:1342:12: error[unresolved-attribute] Type `str` has no attribute `status_code`
++ src/integrations/prefect-aws/tests/workers/test_ecs_worker.py:1544:12: error[unresolved-attribute] Type `str` has no attribute `status_code`
++ src/integrations/prefect-aws/tests/workers/test_ecs_worker.py:1545:36: error[unresolved-attribute] Type `str` has no attribute `identifier`
++ src/integrations/prefect-aws/tests/workers/test_ecs_worker.py:1587:12: error[unresolved-attribute] Type `str` has no attribute `status_code`
++ src/integrations/prefect-aws/tests/workers/test_ecs_worker.py:1588:36: error[unresolved-attribute] Type `str` has no attribute `identifier`
++ src/integrations/prefect-aws/tests/workers/test_ecs_worker.py:1618:12: error[unresolved-attribute] Type `str` has no attribute `status_code`
++ src/integrations/prefect-aws/tests/workers/test_ecs_worker.py:1619:36: error[unresolved-attribute] Type `str` has no attribute `identifier`
++ src/integrations/prefect-aws/tests/workers/test_ecs_worker.py:1656:12: error[unresolved-attribute] Type `str` has no attribute `status_code`
++ src/integrations/prefect-aws/tests/workers/test_ecs_worker.py:1657:38: error[unresolved-attribute] Type `str` has no attribute `identifier`
++ src/integrations/prefect-aws/tests/workers/test_ecs_worker.py:1659:12: error[unresolved-attribute] Type `str` has no attribute `status_code`
++ src/integrations/prefect-aws/tests/workers/test_ecs_worker.py:1660:38: error[unresolved-attribute] Type `str` has no attribute `identifier`
++ src/integrations/prefect-aws/tests/workers/test_ecs_worker.py:1703:12: error[unresolved-attribute] Type `str` has no attribute `status_code`
++ src/integrations/prefect-aws/tests/workers/test_ecs_worker.py:1704:38: error[unresolved-attribute] Type `str` has no attribute `identifier`
++ src/integrations/prefect-aws/tests/workers/test_ecs_worker.py:1706:12: error[unresolved-attribute] Type `str` has no attribute `status_code`
++ src/integrations/prefect-aws/tests/workers/test_ecs_worker.py:1707:38: error[unresolved-attribute] Type `str` has no attribute `identifier`
++ src/integrations/prefect-aws/tests/workers/test_ecs_worker.py:1731:12: error[unresolved-attribute] Type `str` has no attribute `status_code`
++ src/integrations/prefect-aws/tests/workers/test_ecs_worker.py:1733:38: error[unresolved-attribute] Type `str` has no attribute `identifier`
++ src/integrations/prefect-aws/tests/workers/test_ecs_worker.py:1735:38: error[unresolved-attribute] Type `str` has no attribute `identifier`
++ src/integrations/prefect-aws/tests/workers/test_ecs_worker.py:1761:12: error[unresolved-attribute] Type `str` has no attribute `status_code`
++ src/integrations/prefect-aws/tests/workers/test_ecs_worker.py:1762:38: error[unresolved-attribute] Type `str` has no attribute `identifier`
++ src/integrations/prefect-aws/tests/workers/test_ecs_worker.py:1764:38: error[unresolved-attribute] Type `str` has no attribute `identifier`
++ src/integrations/prefect-aws/tests/workers/test_ecs_worker.py:1792:12: error[unresolved-attribute] Type `str` has no attribute `status_code`
++ src/integrations/prefect-aws/tests/workers/test_ecs_worker.py:1794:38: error[unresolved-attribute] Type `str` has no attribute `identifier`
++ src/integrations/prefect-aws/tests/workers/test_ecs_worker.py:1796:38: error[unresolved-attribute] Type `str` has no attribute `identifier`
++ src/integrations/prefect-aws/tests/workers/test_ecs_worker.py:1829:12: error[unresolved-attribute] Type `str` has no attribute `status_code`
++ src/integrations/prefect-aws/tests/workers/test_ecs_worker.py:1830:12: error[unresolved-attribute] Type `str` has no attribute `status_code`
++ src/integrations/prefect-aws/tests/workers/test_ecs_worker.py:1832:38: error[unresolved-attribute] Type `str` has no attribute `identifier`
++ src/integrations/prefect-aws/tests/workers/test_ecs_worker.py:1834:38: error[unresolved-attribute] Type `str` has no attribute `identifier`
++ src/integrations/prefect-aws/tests/workers/test_ecs_worker.py:1836:38: error[unresolved-attribute] Type `str` has no attribute `identifier`
++ src/integrations/prefect-aws/tests/workers/test_ecs_worker.py:1868:12: error[unresolved-attribute] Type `str` has no attribute `status_code`
++ src/integrations/prefect-aws/tests/workers/test_ecs_worker.py:1870:38: error[unresolved-attribute] Type `str` has no attribute `identifier`
++ src/integrations/prefect-aws/tests/workers/test_ecs_worker.py:1872:38: error[unresolved-attribute] Type `str` has no attribute `identifier`
++ src/integrations/prefect-aws/tests/workers/test_ecs_worker.py:1902:12: error[unresolved-attribute] Type `str` has no attribute `status_code`
++ src/integrations/prefect-aws/tests/workers/test_ecs_worker.py:1904:38: error[unresolved-attribute] Type `str` has no attribute `identifier`
++ src/integrations/prefect-aws/tests/workers/test_ecs_worker.py:1906:38: error[unresolved-attribute] Type `str` has no attribute `identifier`
++ src/integrations/prefect-aws/tests/workers/test_ecs_worker.py:1967:12: error[unresolved-attribute] Type `str` has no attribute `status_code`
++ src/integrations/prefect-aws/tests/workers/test_ecs_worker.py:1969:38: error[unresolved-attribute] Type `str` has no attribute `identifier`
++ src/integrations/prefect-aws/tests/workers/test_ecs_worker.py:1971:38: error[unresolved-attribute] Type `str` has no attribute `identifier`
++ src/integrations/prefect-aws/tests/workers/test_ecs_worker.py:2001:12: error[unresolved-attribute] Type `str` has no attribute `status_code`
++ src/integrations/prefect-aws/tests/workers/test_ecs_worker.py:2002:36: error[unresolved-attribute] Type `str` has no attribute `identifier`
++ src/integrations/prefect-aws/tests/workers/test_ecs_worker.py:2035:12: error[unresolved-attribute] Type `str` has no attribute `status_code`
++ src/integrations/prefect-aws/tests/workers/test_ecs_worker.py:2036:36: error[unresolved-attribute] Type `str` has no attribute `identifier`
++ src/integrations/prefect-aws/tests/workers/test_ecs_worker.py:2072:12: error[unresolved-attribute] Type `str` has no attribute `status_code`
++ src/integrations/prefect-aws/tests/workers/test_ecs_worker.py:2073:36: error[unresolved-attribute] Type `str` has no attribute `identifier`
++ src/integrations/prefect-aws/tests/workers/test_ecs_worker.py:2129:12: error[unresolved-attribute] Type `str` has no attribute `status_code`
++ src/integrations/prefect-aws/tests/workers/test_ecs_worker.py:2130:36: error[unresolved-attribute] Type `str` has no attribute `identifier`
++ src/integrations/prefect-aws/tests/workers/test_ecs_worker.py:2174:12: error[unresolved-attribute] Type `str` has no attribute `status_code`
++ src/integrations/prefect-aws/tests/workers/test_ecs_worker.py:2175:36: error[unresolved-attribute] Type `str` has no attribute `identifier`
++ src/integrations/prefect-aws/tests/workers/test_ecs_worker.py:2229:12: error[unresolved-attribute] Type `str` has no attribute `status_code`
++ src/integrations/prefect-aws/tests/workers/test_ecs_worker.py:2230:36: error[unresolved-attribute] Type `str` has no attribute `identifier`
++ src/integrations/prefect-aws/tests/workers/test_ecs_worker.py:2275:12: error[unresolved-attribute] Type `str` has no attribute `status_code`
++ src/integrations/prefect-aws/tests/workers/test_ecs_worker.py:2276:36: error[unresolved-attribute] Type `str` has no attribute `identifier`
++ src/integrations/prefect-aws/tests/workers/test_ecs_worker.py:2318:12: error[unresolved-attribute] Type `str` has no attribute `status_code`
++ src/integrations/prefect-aws/tests/workers/test_ecs_worker.py:2319:36: error[unresolved-attribute] Type `str` has no attribute `identifier`
++ src/integrations/prefect-aws/tests/workers/test_ecs_worker.py:2365:12: error[unresolved-attribute] Type `str` has no attribute `status_code`
++ src/integrations/prefect-aws/tests/workers/test_ecs_worker.py:2366:36: error[unresolved-attribute] Type `str` has no attribute `identifier`
++ src/integrations/prefect-aws/tests/workers/test_ecs_worker.py:2458:12: error[unresolved-attribute] Type `str` has no attribute `status_code`
++ src/integrations/prefect-aws/tests/workers/test_ecs_worker.py:2459:36: error[unresolved-attribute] Type `str` has no attribute `identifier`
++ src/integrations/prefect-aws/tests/workers/test_ecs_worker.py:2482:12: error[unresolved-attribute] Type `str` has no attribute `status_code`
++ src/integrations/prefect-aws/tests/workers/test_ecs_worker.py:2483:36: error[unresolved-attribute] Type `str` has no attribute `identifier`
++ src/integrations/prefect-aws/tests/workers/test_ecs_worker.py:2676:12: error[unresolved-attribute] Type `str` has no attribute `status_code`
++ src/integrations/prefect-aws/tests/workers/test_ecs_worker.py:2677:36: error[unresolved-attribute] Type `str` has no attribute `identifier`
++ src/integrations/prefect-aws/tests/workers/test_ecs_worker.py:2704:12: error[unresolved-attribute] Type `str` has no attribute `status_code`
++ src/integrations/prefect-aws/tests/workers/test_ecs_worker.py:2705:36: error[unresolved-attribute] Type `str` has no attribute `identifier`
+- src/prefect/cli/deploy.py:688:13: error[invalid-argument-type] Argument to function `_generate_default_pull_action` is incorrect: Expected `list[dict[str, Any]]`, found `(dict[str, Any] &amp; ~AlwaysFalsy) | dict[Unknown, Unknown] | @Todo(generic `typing.Awaitable` type)`
++ src/prefect/cli/deploy.py:688:13: error[invalid-argument-type] Argument to function `_generate_default_pull_action` is incorrect: Expected `list[dict[str, Any]]`, found `(dict[str, Any] &amp; ~AlwaysFalsy) | dict[Unknown, Unknown] | dict[str, list[dict[str, Any]]]`
++ src/prefect/cli/work_pool.py:208:42: error[invalid-argument-type] Argument to function `provision` is incorrect: Expected `dict[str, Any]`, found `dict[str, Any] | None | Any`
++ src/prefect/cli/work_pool.py:226:17: error[invalid-argument-type] Argument is incorrect: Expected `dict[str, Any]`, found `dict[str, Any] | None | Any`
++ src/prefect/cli/work_pool.py:869:33: warning[possibly-unbound-attribute] Attribute `id` on type `BlockSchema | None` is possibly unbound
++ src/prefect/cli/worker.py:159:14: error[call-non-callable] Object of type `None` is not callable
+- src/prefect/events/related.py:100:17: error[invalid-argument-type] Argument to function `_get_and_cache_related_object` is incorrect: Expected `(UUID | str, /) -&gt; Awaitable[ObjectBaseModel | None]`, found `bound method PrefectClient.read_flow_run(flow_run_id: UUID) -&gt; @Todo(generic types.CoroutineType)`
++ src/prefect/events/related.py:100:17: error[invalid-argument-type] Argument to function `_get_and_cache_related_object` is incorrect: Expected `(UUID | str, /) -&gt; Awaitable[ObjectBaseModel | None]`, found `bound method PrefectClient.read_flow_run(flow_run_id: UUID) -&gt; CoroutineType[Any, Any, FlowRun]`
+- src/prefect/events/related.py:123:21: error[invalid-argument-type] Argument to function `_get_and_cache_related_object` is incorrect: Expected `(UUID | str, /) -&gt; Awaitable[ObjectBaseModel | None]`, found `bound method PrefectClient.read_flow(flow_id: UUID) -&gt; @Todo(generic types.CoroutineType)`
++ src/prefect/events/related.py:123:21: error[invalid-argument-type] Argument to function `_get_and_cache_related_object` is incorrect: Expected `(UUID | str, /) -&gt; Awaitable[ObjectBaseModel | None]`, found `bound method PrefectClient.read_flow(flow_id: UUID) -&gt; CoroutineType[Any, Any, Flow]`
+- src/prefect/events/related.py:142:25: error[invalid-argument-type] Argument to function `_get_and_cache_related_object` is incorrect: Expected `(UUID | str, /) -&gt; Awaitable[ObjectBaseModel | None]`, found `bound method PrefectClient.read_work_queue(id: UUID) -&gt; @Todo(generic types.CoroutineType)`
++ src/prefect/events/related.py:142:25: error[invalid-argument-type] Argument to function `_get_and_cache_related_object` is incorrect: Expected `(UUID | str, /) -&gt; Awaitable[ObjectBaseModel | None]`, found `bound method PrefectClient.read_work_queue(id: UUID) -&gt; CoroutineType[Any, Any, WorkQueue]`
+- src/prefect/events/related.py:153:25: error[invalid-argument-type] Argument to function `_get_and_cache_related_object` is incorrect: Expected `(UUID | str, /) -&gt; Awaitable[ObjectBaseModel | None]`, found `bound method PrefectClient.read_work_pool(work_pool_name: str) -&gt; @Todo(generic types.CoroutineType)`
++ src/prefect/events/related.py:153:25: error[invalid-argument-type] Argument to function `_get_and_cache_related_object` is incorrect: Expected `(UUID | str, /) -&gt; Awaitable[ObjectBaseModel | None]`, found `bound method PrefectClient.read_work_pool(work_pool_name: str) -&gt; CoroutineType[Any, Any, WorkPool]`
++ src/prefect/flow_runs.py:316:16: warning[possibly-unbound-attribute] Attribute `is_running` on type `State[Any] | None` is possibly unbound
++ src/prefect/flow_runs.py:478:16: warning[possibly-unbound-attribute] Attribute `is_paused` on type `State[Any] | None` is possibly unbound
++ src/prefect/flow_runs.py:484:12: warning[possibly-unbound-attribute] Attribute `type` on type `State[Any] | None` is possibly unbound
++ src/prefect/infrastructure/provisioners/cloud_run.py:238:37: warning[possibly-unbound-attribute] Attribute `id` on type `BlockSchema | None` is possibly unbound
++ src/prefect/infrastructure/provisioners/container_instance.py:731:37: warning[possibly-unbound-attribute] Attribute `id` on type `BlockSchema | None` is possibly unbound
++ src/prefect/server/api/artifacts.py:46:12: error[invalid-return-type] Return type does not match returned value: expected `Artifact`, found `Artifact`
++ src/prefect/server/events/actions.py:626:16: error[invalid-return-type] Return type does not match returned value: expected `list[str]`, found `tuple[Unknown]`
++ src/prefect/task_engine.py:1708:16: error[invalid-return-type] Return type does not match returned value: expected `R | State[Any] | None | Coroutine[Any, Any, R | State[Any] | None]`, found `AsyncGenerator[Unknown, None]`
+- Found 3712 diagnostics
++ Found 3821 diagnostics
+
+</code></pre>
+</details>
+<details>
+<summary>Memory usage changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">prefect (https://github.com/PrefectHQ/prefect)
+-     memo metadata = ~73MB
++     memo metadata = ~76MB
+
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-28 12:07</div>
+            <div class="timeline-body"><!-- generated-comment ty ecosystem-analyzer -->
+
+<h2><code>ecosystem-analyzer</code> results</h2>
+<p>| Lint rule | Added | Removed | Changed |
+|-----------|------:|--------:|--------:|
+| <code>unresolved-attribute</code> | 97 | 0 | 3 |
+| <code>invalid-argument-type</code> | 10 | 1 | 7 |
+| <code>invalid-return-type</code> | 11 | 1 | 1 |
+| <code>unused-ignore-comment</code> | 0 | 8 | 0 |
+| <code>possibly-unbound-attribute</code> | 6 | 0 | 0 |
+| <code>call-non-callable</code> | 1 | 0 | 0 |
+| <code>not-iterable</code> | 1 | 0 | 0 |
+| <code>unsupported-operator</code> | 1 | 0 | 0 |
+| <strong>Total</strong> | <strong>127</strong> | <strong>10</strong> | <strong>11</strong> |</p>
+<p><strong><a href="https://david-async-await.ecosystem-663.pages.dev/diff">Full report with detailed diff</a></strong></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/signatures.rs</code>:332 on 2025-07-28 12:08</div>
+            <div class="timeline-body"><p>a lot of the ecosystem report is because this isn't quite right if it's an async function that has a <code>yield</code> statement in it (which would make it an async generator). I can't remember the exact details of what the rules are for async generators here, but I remember that they're different to regular async functions...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-07-28 12:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/resources/mdtest/function/return_type.md</code>:458 on 2025-07-28 12:16</div>
+            <div class="timeline-body"><p>Ah, this happens because <code>i</code> is redefined below. This test should probably use subsections.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-07-28 12:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @sharkdp on 2025-07-28 12:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-07-28 12:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @sharkdp on 2025-07-28 14:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-07-28 14:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @sharkdp on 2025-07-28 14:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-07-28 14:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[ty] Support async/await" to "[ty] Support `async`/`await` and `yield from`" by @sharkdp on 2025-07-29 13:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[ty] Support `async`/`await` and `yield from`" to "[ty] Support `async`/`await`, `async with` and `yield from`" by @sharkdp on 2025-07-29 13:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @sharkdp on 2025-07-29 13:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-07-29 13:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @sharkdp on 2025-07-29 14:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @sharkdp on 2025-07-29 14:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @sharkdp on 2025-07-29 14:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:4835 on 2025-07-29 15:58</div>
+            <div class="timeline-body"><p>We could probably implement a dumb version of <code>try_upcast()</code> (that would only work with explicit subclasses of <code>Generator</code>) that iterates over the MRO of a nominal instance (or a protocol instance) to see if it can find <code>typing.Generator</code> in there. That would at least return <code>Some()</code> for <code>types.GeneratorType</code>, since <code>types.GeneratorType</code> explicitly subclasses <code>typing.Generator</code> in typeshed (as of 29/07/2025, anyway)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:4800 on 2025-07-29 16:04</div>
+            <div class="timeline-body"><p>or we could add an <code>is_async: bool</code> parameter to <code>try_enter</code>, and have it call <code>__aenter__</code> and <code>__aexit__</code> internally instead of <code>__enter__</code> if the parameter is <code>true</code>? We'd also need to propagate the asyncness into the <code>ContextManager</code> enum, of course, so that diagnostic messages don't mention theh wrong dunders</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:2781 on 2025-07-29 16:06</div>
+            <div class="timeline-body"><p><code>CoroutineType</code> is marked as <code>@final</code>, so we'll anyway emit an error if anybody tries to subclass it. I think marking it as a solid base as well might just result in a second diagnostic, which seems unnecessary -- this is why most <code>@final</code> classes are listed in the branch below this one, even though some of them are strictly-speaking solid bases</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:2744 on 2025-07-29 16:08</div>
+            <div class="timeline-body"><p>I think we can safely say that instances of <code>CoroutineType</code> are always truthy, since <code>CoroutineType</code> is an <code>@final</code> concrete class and <code>types.CoroutineType</code> doesn't define <code>__bool__</code> or <code>__len__</code> -- this should go in the first branch</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:3678 on 2025-07-29 16:10</div>
+            <div class="timeline-body"><p>huh? I don't think either of these are ever available from the <code>abc</code> module?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-07-29 16:12</div>
+            <div class="timeline-body"><p>Nice</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-07-29 16:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/function.rs</code>:355 on 2025-07-29 16:26</div>
+            <div class="timeline-body"><p>Rather than threading the <code>is_generator</code> variable through, I think you could compute it inside <code>Signature::from_function</code>, e.g.</p>
+<pre><code class="language-diff">diff --git a/crates/ty_python_semantic/src/semantic_index/definition.rs b/crates/ty_python_semantic/src/semantic_index/definition.rs
+index 6d1ce38299..63e107b777 100644
+--- a/crates/ty_python_semantic/src/semantic_index/definition.rs
++++ b/crates/ty_python_semantic/src/semantic_index/definition.rs
+@@ -8,6 +8,7 @@ use ruff_text_size::{Ranged, TextRange};
+ use crate::Db;
+ use crate::ast_node_ref::AstNodeRef;
+ use crate::node_key::NodeKey;
++use crate::semantic_index::SemanticIndex;
+ use crate::semantic_index::place::ScopedPlaceId;
+ use crate::semantic_index::scope::{FileScopeId, ScopeId};
+ use crate::semantic_index::symbol::ScopedSymbolId;
+@@ -82,6 +83,10 @@ impl&lt;'db&gt; Definition&lt;'db&gt; {
+             _ =&gt; None,
+         }
+     }
++
++    pub(crate) fn is_generator_function(self, db: &amp;'db dyn Db, index: &amp;SemanticIndex) -&gt; bool {
++        self.file_scope(db).is_generator_function(index)
++    }
+ }
+ 
+ /// Extract a docstring from a function or class body.
+diff --git a/crates/ty_python_semantic/src/types/function.rs b/crates/ty_python_semantic/src/types/function.rs
+index 2b1c71ef05..d1c7140fd7 100644
+--- a/crates/ty_python_semantic/src/types/function.rs
++++ b/crates/ty_python_semantic/src/types/function.rs
+@@ -341,16 +341,12 @@ impl&lt;'db&gt; OverloadLiteral&lt;'db&gt; {
+             GenericContext::from_type_params(db, index, type_params)
+         });
+ 
+-        let index = semantic_index(db, scope.file(db));
+-        let is_generator = scope.file_scope_id(db).is_generator_function(index);
+-
+         Signature::from_function(
+             db,
+             generic_context,
+             inherited_generic_context,
+             definition,
+             function_stmt_node,
+-            is_generator,
+         )
+     }
+ 
+diff --git a/crates/ty_python_semantic/src/types/signatures.rs b/crates/ty_python_semantic/src/types/signatures.rs
+index 856cc15fff..02436420eb 100644
+--- a/crates/ty_python_semantic/src/types/signatures.rs
++++ b/crates/ty_python_semantic/src/types/signatures.rs
+@@ -17,6 +17,7 @@ use smallvec::{SmallVec, smallvec_inline};
+ 
+ use super::{DynamicType, Type, TypeTransformer, TypeVarVariance, definition_expression_type};
+ use crate::semantic_index::definition::Definition;
++use crate::semantic_index::semantic_index;
+ use crate::types::generics::{GenericContext, walk_generic_context};
+ use crate::types::{KnownClass, TypeMapping, TypeRelation, TypeVarInstance, todo_type};
+ use crate::{Db, FxOrderSet};
+@@ -320,14 +321,13 @@ impl&lt;'db&gt; Signature&lt;'db&gt; {
+         inherited_generic_context: Option&lt;GenericContext&lt;'db&gt;&gt;,
+         definition: Definition&lt;'db&gt;,
+         function_node: &amp;ast::StmtFunctionDef,
+-        is_generator: bool,
+     ) -&gt; Self {
+         let parameters =
+             Parameters::from_parameters(db, definition, function_node.parameters.as_ref());
+         let return_ty = function_node.returns.as_ref().map(|returns| {
+             let plain_return_ty = definition_expression_type(db, definition, returns.as_ref());
+-
+-            if function_node.is_async &amp;&amp; !is_generator {
++            let semantic_index = semantic_index(db, definition.file(db));
++            if function_node.is_async &amp;&amp; !definition.is_generator_function(db, semantic_index) {
+                 KnownClass::CoroutineType
+                     .to_specialized_instance(db, [Type::any(), Type::any(), plain_return_ty])
+             } else {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/expression/yield_and_yield_from.md</code>:63 on 2025-07-29 16:50</div>
+            <div class="timeline-body"><p>I suggest explicitly specifying <code>value</code> in the <code>raise StopIteration</code> statement in <code>OnceIterator.__next__</code> (I've given it the value <code>42</code>), and making the comment slightly more expansive:</p>
+<pre><code class="language-suggestion">        if self.returned:
+            raise StopIteration(42)
+
+        self.returned = True
+        return self.value
+
+class Once(Generic[T]):
+    def __init__(self, value: T):
+        self.value = value
+
+    def __iter__(self) -&gt; OnceIterator[T]:
+        return OnceIterator(self.value)
+
+for x in Once(&quot;a&quot;):
+    reveal_type(x)  # revealed: str
+
+def generator() -&gt; Generator:
+    result = yield from Once(&quot;a&quot;)
+
+    # At runtime, the value of `result` will be the `.value` attribute of the `StopIteration`
+    # error raised by `OnceIterator` to signal to the interpreter that the iterator has been
+    # exhausted. Here that will always be 42, but this information cannot be captured in the
+    # signature of `OnceIterator.__next__`, since exceptions lie outside the type signature.
+    # We therefore just infer `Unknown` here.
+    #
+    # If the `StopIteration` error in `OnceIterator.__next__` had been simply `raise StopIteration`
+    # (the more common case), then the `.value` attribute of the `StopIteration` instance
+    # would default to `None`.
+    reveal_type(result)  # revealed: Unknown
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-07-29 16:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-07-29 18:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:3678 on 2025-07-29 18:14</div>
+            <div class="timeline-body"><p>Oops, I confused <code>abc</code> with <code>collections.abc</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-07-29 18:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:3678 on 2025-07-29 18:19</div>
+            <div class="timeline-body"><p>According to typeshed, the <code>collections.abc</code> classes are just re-exported from <code>typing</code>, so I don't think we need to worry about <code>collections.abc</code> either -- just <code>typing</code> should be fine for our purposes :-)</p>
+<p>There are a number of other classes where we'd need to make changes if typeshed ever decided to start differentiating between <code>collections.abc</code> classes and their typing aliases -- <code>Iterator</code> and <code>Iterable</code>, fo rexample</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-07-30 08:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types.rs</code>:4835 on 2025-07-30 08:43</div>
+            <div class="timeline-body"><p>Thanks. Done. Added a test that shows that it now also works for generator functions annotated with <code>types.GeneratorType[…]</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-07-30 08:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types.rs</code>:4800 on 2025-07-30 08:50</div>
+            <div class="timeline-body"><p>This is one of the routes I'll explore when I add proper error handling, thanks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-07-30 08:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types/function.rs</code>:355 on 2025-07-30 08:54</div>
+            <div class="timeline-body"><p>That doesn't work. I think it uses the wrong scope ID. We need the ID of the function body, not the one of the definition.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @sharkdp on 2025-07-30 08:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-07-30 08:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-07-30 09:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/function.rs</code>:355 on 2025-07-30 09:45</div>
+            <div class="timeline-body"><p>Gah, I checked that it compiled and assumed the tests would therefore pass 😆 sorry!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-07-30 09:45</div>
+            <div class="timeline-body"><p>Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types/function.rs</code>:355 on 2025-07-30 09:47</div>
+            <div class="timeline-body"><p>No worries — it looked good!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-07-30 09:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @sharkdp on 2025-07-30 09:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-07-30 09:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-07-30 09:51</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:58:40 UTC
+    </footer>
+</body>
+</html>

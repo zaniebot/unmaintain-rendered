@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`flake8-commas`] Add support for trailing comma checks in type parameter lists (`COM812`, `COM819`) - astral-sh/ruff #19390</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>flake8-commas</code>] Add support for trailing comma checks in type parameter lists (<code>COM812</code>, <code>COM819</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19390">#19390</a>
+        opened by <a href="https://github.com/danparizher">@danparizher</a>
+        on 2025-07-16 22:42
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/danparizher">@danparizher</a> on 2025-07-16 22:42</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Fixes #18844</p>
+<p>I'm not too sure if the solution is as simple as the way I implemented it, but I'm curious to see if we are covering all cases correctly here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-16 23:04</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-18 13:39</div>
+            <div class="timeline-body"><p>We probably have to gate this behind preview. Did you have a chance to look through the ecosystem results. Do the changes look correct to you?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2025-07-18 13:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danparizher">@danparizher</a> on 2025-07-18 17:29</div>
+            <div class="timeline-body"><p>Yes, the ecosystem changes look to be correct, from what I can tell. I also gave a shot at implementing the preview, but I'm not sure if I did it correctly. I would appreciate a review!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ntBre by @MichaReiser on 2025-07-23 06:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/checkers/tokens.rs</code>:121 on 2025-07-24 16:22</div>
+            <div class="timeline-body"><p>The <code>context</code> has a <code>LinterSettings</code> internally. I think it should be okay to add a <code>pub(crate) fn settings</code> getter to <code>LintContext</code>, basically just like the corresponding <code>Checker</code> method here:</p>
+<p>https://github.com/astral-sh/ruff/blob/d13228ab856f8cce47b3031cb2b4f2a35401e7eb/crates/ruff_linter/src/checkers/ast/mod.rs#L465-L468</p>
+<p>It looks like we could then avoid passing a separate <code>settings</code> to <code>check_tokens</code> at all, but that would be a bigger refactor we should handle separately.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_commas/rules/trailing_commas.rs</code>:103 on 2025-07-24 16:25</div>
+            <div class="timeline-body"><p>nit: we might want a slightly longer example here. This just looks like a list.</p>
+<pre><code class="language-suggestion">    /// Type parameter list, e.g. `def foo[T, U](): ...`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_commas/rules/trailing_commas.rs</code>:441 on 2025-07-24 16:37</div>
+            <div class="timeline-body"><p>Should this still be <code>ContextType::Subscript</code>? That seems more consistent with the old code, if I'm following correctly.</p>
+<p>I also don't think the preview check is the right conditional to be checking here, at least on its own. I think we'll need to look at more tokens to differentiate between a subscript and a type parameter list. I think the three valid locations for type parameter lists are</p>
+<ul>
+<li>function definitions</li>
+<li>class definitions</li>
+<li>type alias statements</li>
+</ul>
+<p>which is a bit fortuitous because I think that means two tokens of lookbehind should be enough:</p>
+<pre><code>type Alias[T] = ...
+def foo[T](): ...
+class C[T]: ...
+</code></pre>
+<p>and we already have <code>prev_prev</code> as an argument here. Basically I think we want to mimic the <code>OpeningBracket</code> case above and check for patterns like <code>(TokenType::Named, TokenType::Def)</code> and <code>(TokenType::Named, TokenType::Class)</code>, but we'll need to add <code>TokenType::Class</code> and <code>TokenType::Type</code>, I guess.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-07-24 16:42</div>
+            <div class="timeline-body"><p>Thanks! I haven't gone through all of the snapshots yet, but I had a couple of comments on the code in an initial pass.</p>
+<p>This is kind of a note to myself for later, but we'll want to double check that the ecosystem check doesn't change on stable for a preview change. It looks like it didn't rerun after you added the preview gate, but hopefully it will run again after any additional commits.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danparizher">@danparizher</a> on 2025-07-24 20:53</div>
+            <div class="timeline-body"><p>It looks like the ecosystem check didn't rerun. Maybe we can manually rerun it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ntBre by @danparizher on 2025-07-24 20:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-25 06:50</div>
+            <div class="timeline-body"><p>The ecosystem results were updated 10h ago. That would suggest that they did run?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-25 13:18</div>
+            <div class="timeline-body"><p>Maybe there was a queue of ecosystem checks yesterday afternoon. It hadn't updated when I checked after the last commit here yesterday either. I see it now though!</p>
+<p>My suggestion might have been slightly misleading about your old preview check. We'll need both the new <code>match</code> on two tokens <em>and</em> the preview check. Maybe something like this:</p>
+<pre><code class="language-rust">TokenType::OpeningSquareBracket if is_your_preview_enabled(settings) =&gt; match (prev.ty, prev_prev.ty) { // new code
+    ...
+}
+TokenType::OpeningSquareBracket =&gt; match prev.ty { // the old code
+</code></pre>
+<p>Then hopefully all the ecosystem changes will show up in the <code>preview</code> section as expected.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_commas/rules/trailing_commas.rs</code>:458 on 2025-07-25 21:19</div>
+            <div class="timeline-body"><p>I think this is wrong. We should use exactly the old code here.</p>
+<pre><code class="language-suggestion">                match prev.ty {
+                    TokenType::ClosingBracket | TokenType::Named | TokenType::String =&gt; {
+                        Context::new(ContextType::Subscript)
+                    }
+                    _ =&gt; Context::new(ContextType::List),
+</code></pre>
+<p>And the diff would be smaller if we used a guarded <code>match</code> arm. This patch cleared up all of the stable snapshot changes for me locally:</p>
+<pre><code class="language-diff">-        TokenType::OpeningSquareBracket =&gt; {
+-            if is_trailing_comma_type_params_enabled(settings) {
+-                match (prev.ty, prev_prev.ty) {
+-                    (TokenType::Named, TokenType::Def) =&gt; Context::new(ContextType::TypeParameters),
+-                    (TokenType::Named, TokenType::Class) =&gt; {
+-                        Context::new(ContextType::TypeParameters)
+-                    }
+-                    (TokenType::Named, TokenType::Type) =&gt; {
+-                        Context::new(ContextType::TypeParameters)
+-                    }
+-                    (TokenType::Named | TokenType::String, _) =&gt; Context::new(ContextType::List),
+-                    (TokenType::ClosingBracket, _) =&gt; Context::new(ContextType::Subscript),
+-                    _ =&gt; Context::new(ContextType::List),
+-                }
+-            } else {
+-                match prev.ty {
+-                    TokenType::Named =&gt; Context::new(ContextType::List),
+-                    TokenType::ClosingBracket =&gt; Context::new(ContextType::Subscript),
+-                    _ =&gt; Context::new(ContextType::List),
++        TokenType::OpeningSquareBracket if is_trailing_comma_type_params_enabled(settings) =&gt; {
++            match (prev.ty, prev_prev.ty) {
++                (TokenType::Named, TokenType::Def)
++                | (TokenType::Named, TokenType::Class)
++                | (TokenType::Named, TokenType::Type) =&gt; Context::new(ContextType::TypeParameters),
++                (TokenType::ClosingBracket | TokenType::Named | TokenType::String, _) =&gt; {
++                    Context::new(ContextType::Subscript)
+                 }
++                _ =&gt; Context::new(ContextType::List),
+             }
+         }
++        TokenType::OpeningSquareBracket =&gt; match prev.ty {
++            TokenType::ClosingBracket | TokenType::Named | TokenType::String =&gt; {
++                Context::new(ContextType::Subscript)
++            }
++            _ =&gt; Context::new(ContextType::List),
++        },
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_commas/rules/trailing_commas.rs</code>:347 on 2025-07-25 21:20</div>
+            <div class="timeline-body"><p>I don't think we need the preview check here. The only way we can get a <code>ContextType::TypeParameters</code> is if the other preview check was true.</p>
+<pre><code class="language-suggestion">            ContextType::TypeParameters =&gt; true,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-07-25 21:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danparizher">@danparizher</a> on 2025-07-25 21:51</div>
+            <div class="timeline-body"><p>Appreciate the suggestions, I think I was confusing myself with this part 😆</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ntBre by @danparizher on 2025-07-25 22:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/checkers/tokens.rs</code>:121 on 2025-07-28 14:20</div>
+            <div class="timeline-body"><p>I'll mark this resolved. I'll follow up here on the bigger <code>check_tokens</code> refactor.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-07-28 14:35</div>
+            <div class="timeline-body"><p>Thanks. I think you may have missed a couple of the key parts of my patch suggestion. There were still a lot of unexpected differences between the preview and non-preview snapshots, which I saw locally by diffing them. Hopefully we'll get #19351 at some point and this will be easier to see directly in PRs.</p>
+<p>I made a couple of tweaks and then confirmed that</p>
+<pre><code class="language-shell">diff crates/ruff_linter/src/rules/flake8_commas/snapshots/ruff_linter__rules__flake8_commas__tests__COM81_syntax_error.py.snap crates/ruff_linter/src/rules/flake8_commas/snapshots/ruff_linter__rules__flake8_commas__tests__preview__COM81_syntax_error.py.snap
+</code></pre>
+<p>was totally empty and that</p>
+<pre><code class="language-shell">diff crates/ruff_linter/src/rules/flake8_commas/snapshots/ruff_linter__rules__flake8_commas__tests__COM81.py.snap crates/ruff_linter/src/rules/flake8_commas/snapshots/ruff_linter__rules__flake8_commas__tests__preview__COM81.py.snap
+</code></pre>
+<p>only showed modifications at the end of the file, where the new cases were added.</p>
+<p>I think that will also cut down on the ecosystem changes. I'll double check that and then merge this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[`flake8_commas`] Add support for trailing comma checks in type parameter lists for COM812 and COM819" to "[`flake8-commas`] Add support for trailing comma checks in type parameter lists (`COM812`,`COM819`)" by @ntBre on 2025-07-28 14:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-28 14:52</div>
+            <div class="timeline-body"><p>That actually entirely cleared the ecosystem changes :sweat_smile: I hadn't noticed before that they were all related to the slice change, not actual type parameters, but that's the case for all the ones I clicked through just now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @ntBre on 2025-07-28 14:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ntBre on 2025-07-28 14:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-07-28 14:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-07-28 15:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[`flake8-commas`] Add support for trailing comma checks in type parameter lists (`COM812`,`COM819`)" to "[`flake8-commas`] Add support for trailing comma checks in type parameter lists (`COM812`, `COM819`)" by @ntBre on 2025-07-28 23:54</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:58:39 UTC
+    </footer>
+</body>
+</html>

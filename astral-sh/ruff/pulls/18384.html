@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Fix broken property tests for disjointness - astral-sh/ruff #18384</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Fix broken property tests for disjointness</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/18384">#18384</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-05-30 12:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-30 12:28</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Fixes https://github.com/astral-sh/ty/issues/549</p>
+<p>This assertion passes on <code>main</code>:</p>
+<pre><code class="language-py">static_assert(is_disjoint_from(bool, Callable[..., Any]))
+</code></pre>
+<p>But this one does not:</p>
+<pre><code class="language-py">static_assert(is_disjoint_from(Callable[..., Any], bool))
+</code></pre>
+<p>https://play.ty.dev/d0a6b6c2-e492-4330-a866-2c4b0d51085a</p>
+<p>The reason is that the <code>self.member_lookup_with_policy()</code> call here is incorrect. <code>self</code> might not be the <code>NominalInstance</code> type in the <code>match</code>; it might be the <code>Callable</code> type:</p>
+<p>https://github.com/astral-sh/ruff/blob/ad2f667ee4323dd0c12224338734d722d13d28b4/crates/ty_python_semantic/src/types.rs#L2180-L2192</p>
+<p>I also removed an invalid TODO comment, as per the conversation in https://github.com/astral-sh/ruff/pull/18368#discussion_r2114886040</p>
+<h2>Test Plan</h2>
+<ul>
+<li>Added mdtests</li>
+<li><code>QUICKCHECK_TESTS=100000 cargo test --release -p ty_python_semantic -- --ignored types::property_tests::stable</code> passes again</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @AlexWaygood on 2025-05-30 12:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @AlexWaygood on 2025-05-30 12:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @AlexWaygood on 2025-05-30 12:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @AlexWaygood on 2025-05-30 12:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-05-30 12:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-30 12:28</div>
+            <div class="timeline-body"><p>(I added the &quot;internal&quot; label because the bug being fixed here hasn't appeared in any release, so this doesn't deserve an inclusion in the release notes.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-05-30 12:30</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">beartype (https://github.com/beartype/beartype)
++ error[unresolved-attribute] beartype/_util/hint/pep/proposal/pep612.py:596:9: Type `(...) -&gt; Unknown` has no attribute `__name__`
+- Found 575 diagnostics
++ Found 576 diagnostics
+
+starlette (https://github.com/encode/starlette)
++ error[unresolved-attribute] starlette/config.py:139:81: Type `(Any, /) -&gt; Any` has no attribute `__name__`
+- Found 177 diagnostics
++ Found 178 diagnostics
+
+ignite (https://github.com/pytorch/ignite)
++ error[not-iterable] ignite/handlers/base_logger.py:52:29: Object of type `list[Unknown] | ((str, Unknown, /) -&gt; bool)` may not be iterable
+- Found 2222 diagnostics
++ Found 2223 diagnostics
+
+werkzeug (https://github.com/pallets/werkzeug)
+- error[unsupported-operator] src/werkzeug/utils.py:508:12: Operator `&gt;` is not supported for types `(str | None, /) -&gt; int | None` and `Literal[0]`, in comparing `int | (((str | None, /) -&gt; int | None) &amp; ~None) | (Unknown &amp; ~None)` with `Literal[0]`
++ error[unsupported-operator] src/werkzeug/utils.py:508:12: Operator `&gt;` is not supported for types `(str | None, /) -&gt; int | None` and `Literal[0]`, in comparing `int | ((str | None, /) -&gt; int | None) | (Unknown &amp; ~None)` with `Literal[0]`
+- error[invalid-assignment] src/werkzeug/utils.py:512:9: Object of type `int | (((str | None, /) -&gt; int | None) &amp; ~None) | (Unknown &amp; ~None)` is not assignable to attribute `max_age` of type `int | None`
++ error[invalid-assignment] src/werkzeug/utils.py:512:9: Object of type `int | ((str | None, /) -&gt; int | None) | (Unknown &amp; ~None)` is not assignable to attribute `max_age` of type `int | None`
+- warning[unused-ignore-comment] src/werkzeug/utils.py:513:45: Unused blanket `type: ignore` directive
+- Found 452 diagnostics
++ Found 451 diagnostics
+
+nox (https://github.com/wntrblm/nox)
+- warning[possibly-unbound-attribute] nox/registry.py:107:26: Attribute `__name__` on type `(((...) -&gt; Any) &amp; ~None) | Func` is possibly unbound
+- warning[possibly-unbound-attribute] nox/registry.py:120:23: Attribute `__name__` on type `(((...) -&gt; Any) &amp; ~None) | Func` is possibly unbound
++ error[unresolved-attribute] nox/registry.py:107:26: Type `((...) -&gt; Any) | Func` has no attribute `__name__`
++ error[unresolved-attribute] nox/registry.py:120:23: Type `((...) -&gt; Any) | Func` has no attribute `__name__`
+
+websockets (https://github.com/aaugustin/websockets)
++ error[unresolved-attribute] src/websockets/server.py:110:17: Type `(ServerProtocol, Sequence[Unknown], /) -&gt; Unknown | None` has no attribute `__get__`
+- Found 109 diagnostics
++ Found 110 diagnostics
+
+vision (https://github.com/pytorch/vision)
+- error[invalid-argument-type] test/datasets_utils.py:835:52: Argument to function `create_image_file` is incorrect: Expected `Sequence[int] | int`, found `Unknown | Sequence[int] | int | (((int, /) -&gt; Sequence[int] | int) &amp; ~None)`
++ error[invalid-argument-type] test/datasets_utils.py:835:52: Argument to function `create_image_file` is incorrect: Expected `Sequence[int] | int`, found `Unknown | Sequence[int] | int | ((int, /) -&gt; Sequence[int] | int)`
+
+hydra-zen (https://github.com/mit-ll-responsible-ai/hydra-zen)
++ error[invalid-assignment] src/hydra_zen/third_party/beartype.py:125:9: Implicit shadowing of function `__init__`
+- Found 639 diagnostics
++ Found 640 diagnostics
+
+pytest (https://github.com/pytest-dev/pytest)
+- error[invalid-argument-type] src/_pytest/fixtures.py:1022:42: Argument to function `_eval_scope_callable` is incorrect: Expected `(str, Config, /) -&gt; Unknown`, found `Scope | (Unknown &amp; ~None) | (((str, Config, /) -&gt; Unknown) &amp; ~None)`
++ error[invalid-argument-type] src/_pytest/fixtures.py:1022:42: Argument to function `_eval_scope_callable` is incorrect: Expected `(str, Config, /) -&gt; Unknown`, found `Scope | (Unknown &amp; ~None) | ((str, Config, /) -&gt; Unknown)`
+- error[invalid-argument-type] src/_pytest/fixtures.py:1385:9: Argument is incorrect: Expected `tuple[object, ...] | ((Any, /) -&gt; object) | None`, found `None | Sequence[object] | (((Any, /) -&gt; object) &amp; ~None) | tuple[Unknown, ...]`
++ error[invalid-argument-type] src/_pytest/fixtures.py:1385:9: Argument is incorrect: Expected `tuple[object, ...] | ((Any, /) -&gt; object) | None`, found `None | Sequence[object] | ((Any, /) -&gt; object) | tuple[Unknown, ...]`
+- error[invalid-argument-type] src/_pytest/fixtures.py:1385:70: Argument to function `__new__` is incorrect: Expected `Iterable[Unknown]`, found `Sequence[object] | (((Any, /) -&gt; object) &amp; ~None)`
++ error[invalid-argument-type] src/_pytest/fixtures.py:1385:70: Argument to function `__new__` is incorrect: Expected `Iterable[Unknown]`, found `Sequence[object] | ((Any, /) -&gt; object)`
+- error[invalid-argument-type] src/_pytest/python.py:1380:13: Argument is incorrect: Expected `((Any, /) -&gt; object) | None`, found `None | Iterable[object] | (((Any, /) -&gt; object) &amp; ~None)`
++ error[invalid-argument-type] src/_pytest/python.py:1380:13: Argument is incorrect: Expected `((Any, /) -&gt; object) | None`, found `None | Iterable[object] | ((Any, /) -&gt; object)`
+
+streamlit (https://github.com/streamlit/streamlit)
++ warning[possibly-unbound-attribute] lib/streamlit/runtime/fragment.py:171:47: Attribute `__qualname__` on type `Unknown | F` is possibly unbound
++ error[call-non-callable] lib/streamlit/runtime/fragment.py:245:38: Object of type `F` is not callable
++ error[call-non-callable] lib/streamlit/runtime/metrics_util.py:443:22: Object of type `F` is not callable
+- Found 3271 diagnostics
++ Found 3274 diagnostics
+
+dd-trace-py (https://github.com/DataDog/dd-trace-py)
+- warning[possibly-unbound-attribute] ddtrace/debugging/_signal/utils.py:227:38: Attribute `__name__` on type `(((Any, /) -&gt; bool) &amp; ~None) | ((_) -&gt; Unknown)` is possibly unbound
++ error[unresolved-attribute] ddtrace/debugging/_signal/utils.py:227:38: Type `((Any, /) -&gt; bool) | ((_) -&gt; Unknown)` has no attribute `__name__`
+- warning[possibly-unbound-attribute] ddtrace/debugging/_signal/utils.py:257:38: Attribute `__name__` on type `(((Any, /) -&gt; bool) &amp; ~None) | ((_) -&gt; Unknown)` is possibly unbound
++ error[unresolved-attribute] ddtrace/debugging/_signal/utils.py:257:38: Type `((Any, /) -&gt; bool) | ((_) -&gt; Unknown)` has no attribute `__name__`
+- warning[possibly-unbound-attribute] ddtrace/debugging/_signal/utils.py:313:41: Attribute `__name__` on type `(((Any, /) -&gt; bool) &amp; ~None) | ((_) -&gt; Unknown)` is possibly unbound
++ error[unresolved-attribute] ddtrace/debugging/_signal/utils.py:313:41: Type `((Any, /) -&gt; bool) | ((_) -&gt; Unknown)` has no attribute `__name__`
+- warning[possibly-unbound-attribute] ddtrace/debugging/_signal/utils.py:332:34: Attribute `__name__` on type `(((Any, /) -&gt; bool) &amp; ~None) | ((_) -&gt; Unknown)` is possibly unbound
++ error[unresolved-attribute] ddtrace/debugging/_signal/utils.py:332:34: Type `((Any, /) -&gt; bool) | ((_) -&gt; Unknown)` has no attribute `__name__`
+- warning[possibly-unbound-attribute] ddtrace/debugging/_signal/utils.py:358:37: Attribute `__name__` on type `(((Any, /) -&gt; bool) &amp; ~None) | ((_) -&gt; Unknown)` is possibly unbound
++ error[unresolved-attribute] ddtrace/debugging/_signal/utils.py:358:37: Type `((Any, /) -&gt; bool) | ((_) -&gt; Unknown)` has no attribute `__name__`
+
+sympy (https://github.com/sympy/sympy)
++ error[invalid-argument-type] sympy/assumptions/refine.py:63:30: Argument is incorrect: Expected `Boolean`, found `Unknown | Literal[True]`
+- Found 18553 diagnostics
++ Found 18554 diagnostics
+
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-30 12:41</div>
+            <div class="timeline-body"><p>Pretty interesting that there's a fair amount of mypy_primer fallout here, given that there was none on https://github.com/astral-sh/ruff/pull/18368! I'll go through it in a moment</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-30 12:57</div>
+            <div class="timeline-body"><blockquote>
+<pre><code class="language-diff">+ error[unresolved-attribute] beartype/_util/hint/pep/proposal/pep612.py:596:9: Type `(...) -&gt; Unknown` has no attribute `__name__`
+</code></pre>
+</blockquote>
+<p>Here's a minimal repro of this hit. On <code>main</code> our behaviour is:</p>
+<pre><code class="language-py">from typing import Callable, reveal_type
+
+def f(func: Callable | None):
+    x = reveal_type(func).__name__ if func is not None else 'bar'  # revealed: `((...) -&gt; Unknown) &amp; ~None`
+    reveal_type(x)  # revealed: `@Todo(map_with_boundness: intersections with negative contributions) | Literal[&quot;bar&quot;]`
+</code></pre>
+<p>This is because we do not infer that <code>Callable</code> is disjoint from <code>None</code>. With this PR branch, we instead have this behaviour, which seems much more correct:</p>
+<pre><code class="language-py">from typing import Callable, reveal_type
+
+def f(func: Callable | None):
+    # error: Type `(...) -&gt; Unknown` has no attribute `__name__`
+    x = reveal_type(func).__name__ if func is not None else 'bar'  # revealed: `((...) -&gt; Unknown)`
+    reveal_type(x)  # revealed: `Unknown | Literal[&quot;bar&quot;]`
+</code></pre>
+<p>There's an open question about whether we should infer all <code>Callable</code> types as having the same attributes as <code>types.FunctionType</code> instances, the same as mypy/pyright, but that should definitely not be solved in this PR.</p>
+<p>The <a href="https://github.com/encode/starlette/blob/739321d719db5b6e3fff9ccca9a2ccc7c2e07f18/starlette/config.py#L128-L139"><code>starlette</code></a> and <a href="https://github.com/python-websockets/websockets/blob/fc7cafea01ebe3ec1738160ac62889fd80653255/src/websockets/server.py#L104-L111"><code>websockets</code></a> hits appear to be the same thing as <code>beartype</code>: we didn't understand that <code>Callable</code> types were disjoint from <code>None</code>; now we do.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-30 13:00</div>
+            <div class="timeline-body"><blockquote>
+<pre><code class="language-diff">+ error[not-iterable] ignite/handlers/base_logger.py:52:29: Object of type `list[Unknown] | ((str, Unknown, /) -&gt; bool)` may not be iterable
+</code></pre>
+</blockquote>
+<p>This one appears to be due to missing support for <code>TypeIs</code> -- once we support <code>TypeIs</code>, we'll be able to do <code>~Callable</code> narrowing in the <code>else</code> branch here: https://github.com/pytorch/ignite/blob/adbb260bfb1756c106fed2e793e1b645918ece27/ignite/handlers/base_logger.py#L44-L54</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-30 13:10</div>
+            <div class="timeline-body"><p>The <a href="https://github.com/sympy/sympy/blob/c5ec3a7ce41a99d7a7397676fdf6c8e050a918a8/sympy/assumptions/refine.py#L11-L63">sympy</a> one looks correct to me. It's yet another case where we didn't see <code>Callable</code> types and <code>None</code> as being disjoint, but now we do. The function checks that the <code>handler</code> variable is <code>not None</code>, which narrows the type of <code>handler</code> (returned from the <code>handlers_dict.get()</code> call to <code>Callable[[Expr, Boolean], Expr]</code>. But the function then uses the <code>assumptions</code> variable as the second argument when it calls the <code>handler</code> callback, and the <code>assumptions</code> variable could still be <code>Literal[True]</code>.</p>
+<p>So I think all the mypy_primer hits are correct, and show that this PR improves our inference overall!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-05-30 15:31</div>
+            <div class="timeline-body"><p>Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2025-05-30 15:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-05-30 15:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-05-30 15:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch restored on 2025-07-25 18:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-07-25 18:33</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:58:38 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`flake8-blind-except`] Change `BLE001` to permit `logging.critical(..., exc_info=True)`. - astral-sh/ruff #19520</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>flake8-blind-except</code>] Change <code>BLE001</code> to permit <code>logging.critical(..., exc_info=True)</code>.</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19520">#19520</a>
+        opened by <a href="https://github.com/clockback">@clockback</a>
+        on 2025-07-24 04:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/clockback">@clockback</a> on 2025-07-24 04:49</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Changing <code>BLE001</code> (blind-except) so that it does not flag <code>except</code> clauses which include <code>logging.critical(..., exc_info=True)</code>.</p>
+<h2>Test Plan</h2>
+<p>It passes the following (whereas the <code>main</code> branch does not):</p>
+<pre><code class="language-sh">$ cargo run -p ruff -- check somefile.py --no-cache --select=BLE001
+</code></pre>
+<pre><code class="language-python"># somefile.py
+
+import logging
+
+
+try:
+    print(&quot;Hello world!&quot;)
+except Exception:
+    logging.critical(&quot;Did not run.&quot;, exc_info=True)
+</code></pre>
+<p>Related: https://github.com/astral-sh/ruff/issues/19519</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ntBre by @ntBre on 2025-07-24 13:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2025-07-24 13:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_blind_except/rules/blind_except.rs</code>:51 on 2025-07-24 13:50</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">/// Exceptions that are logged via `logging.exception()`,
+/// `logging.error()`, or `logging.critical()` with `exc_info` enabled will
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-07-24 13:55</div>
+            <div class="timeline-body"><p>Thanks! This makes sense to me. @MichaReiser does this need to go out in preview? <a href="https://docs.astral.sh/ruff/rules/blind-except/#blind-except-ble001">blind-except (BLE001)</a> is a stable rule.</p>
+<p>I just had one minor docs nit, and could we add a test case or two? Maybe one example with <code>exc_info</code> without a lint and one without <code>exc_info</code> with a lint. These could go at the end of this file and basically be copies of the <code>error</code> case here:</p>
+<p>https://github.com/astral-sh/ruff/blob/d13228ab856f8cce47b3031cb2b4f2a35401e7eb/crates/ruff_linter/resources/test/fixtures/flake8_blind_except/BLE.py#L91-L94</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-24 14:07</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-24 14:25</div>
+            <div class="timeline-body"><blockquote>
+<p>Thanks! This makes sense to me. @MichaReiser does this need to go out in preview? <a href="https://docs.astral.sh/ruff/rules/blind-except/#blind-except-ble001">blind-except (BLE001)</a> is a stable rule.</p>
+</blockquote>
+<p>Our versioning policy is a bit vague here:</p>
+<ul>
+<li>The scope of a stable rule is significantly increased</li>
+<li>The intent of the rule changes</li>
+</ul>
+<p>Given that this reduce violations, I'd say it's probably okay but it might be good to do a quick grep for <code># noqa: BLE001</code> to see if you can find any suppressions specifically for this pattern. If there are many -&gt; preview, otherwise go ahead</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-07-24 14:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_blind_except/rules/blind_except.rs</code>:51 on 2025-07-24 14:39</div>
+            <div class="timeline-body"><p>Oh, I take this back. My suggestion makes it sound like <code>exc_info</code> is needed for <code>logging.exception</code> too, my bad!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-24 14:46</div>
+            <div class="timeline-body"><p>I went through two pages of search results on GitHub and didn't find any instances of this pattern. Along with the clean ecosystem report, I think this is good to go once we add tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ntBre by @clockback on 2025-07-25 08:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> approved on 2025-07-25 21:51</div>
+            <div class="timeline-body"><p>Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Change `BLE001` to permit `logging.critical(..., exc_info=True)`." to "[`flake8-blind-except`] Change `BLE001` to permit `logging.critical(..., exc_info=True)`." by @ntBre on 2025-07-25 21:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ntBre on 2025-07-25 21:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-07-25 21:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-07-25 22:08</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:58:39 UTC
+    </footer>
+</body>
+</html>

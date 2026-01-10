@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`flake8-future-annotations`] Add optional integration with `TC` rules (`FA100`) - astral-sh/ruff #18919</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>flake8-future-annotations</code>] Add optional integration with <code>TC</code> rules (<code>FA100</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/18919">#18919</a>
+        opened by <a href="https://github.com/ntBre">@ntBre</a>
+        on 2025-06-24 16:33
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ntBre">@ntBre</a> on 2025-06-24 16:33</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR covers the next step in https://github.com/astral-sh/ruff/issues/18502 after adding an autofix in https://github.com/astral-sh/ruff/pull/18903: checking for opportunities to emit FA100 that would cause TC001, TC002, and TC003 to activate. The main changes here are:</p>
+<ul>
+<li>A new <code>lint.flake8-future-annotations.aggressive</code> config option to enable this behavior (not sold on the name, so this is basically a placeholder)</li>
+<li>A new return type from the helper method <code>is_typing_reference</code> to help distinguish the cases where applying FA100 would change the applicability of the TC rules</li>
+<li>A slightly modified <code>future_rewritable_type_annotation</code> implementation to accept anything <code>Ranged</code> and customize the error message<ul>
+<li>This changed some snapshots (and the ecosystem hits), but I think using the actual text from the file instead of the resolved name makes sense.</li>
+</ul>
+</li>
+</ul>
+<h2>Test Plan</h2>
+<p>New tests with both FA100 and the TC rules active.</p>
+<p>I opted only to emit FA100 in these cases, but we should double check that applying its autofix then also triggers the TC rules after #18903 lands, maybe with a CLI test.</p>
+<p>I also did some manual testing for duplicates with the setup below. Everything seems okay when selecting combinations of the FA and TC rules, even when backporting the fix from #18903, but maybe someone else has a better idea for a test here.</p>
+<details><summary>Manual testing setup</summary>
+
+<pre><code class="language-py"># try.py
+import collections
+
+import pandas
+
+from . import local_module
+
+
+# FA102
+def func(obj: dict[str, int | None]) -&gt; None: ...
+
+# FA102
+def func(obj: dict[str, int | None]) -&gt; None: ...
+
+# TC003
+def func(c: collections.Counter) -&gt; int: ...
+
+# TC002
+def func(df: pandas.DataFrame) -&gt; int: ...
+
+# TC001
+def func(sized: local_module.Container) -&gt; int: ...
+</code></pre>
+<pre><code class="language-shell"># run.sh
+set -x
+
+cp try.py input.py
+
+~/astral/ruff/target/debug/ruff check input.py --no-cache --select FA100 --select TC \
+        --config lint.flake8-future-annotations.aggressive=true \
+        --config lint.flake8-type-checking.strict=true --fix --unsafe-fixes
+
+diff try.py input.py
+</code></pre>
+<p>Output:</p>
+<pre><code class="language-diff">Found 6 errors (6 fixed, 0 remaining).
+1c1
+&lt; import collections
+---
+&gt; from __future__ import annotations
+3d2
+&lt; import pandas
+5c4,9
+&lt; from . import local_module
+---
+&gt; from typing import TYPE_CHECKING
+&gt; 
+&gt; if TYPE_CHECKING:
+&gt;     from . import local_module
+&gt;     import pandas
+&gt;     import collections
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-06-24 16:41</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+5 -5 violations, +0 -0 fixes in 1 projects; 54 projects unchanged)</p>
+<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+5 -5 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --no-preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/apache/airflow/blob/f0c329641c49823f90e3b3cc51936b690c81917f/airflow-core/src/airflow/api_fastapi/execution_api/deps.py#L58'>airflow-core/src/airflow/api_fastapi/execution_api/deps.py:58:26:</a> FA100 Add `from __future__ import annotations` to simplify `Optional`
+- <a href='https://github.com/apache/airflow/blob/f0c329641c49823f90e3b3cc51936b690c81917f/airflow-core/src/airflow/api_fastapi/execution_api/deps.py#L58'>airflow-core/src/airflow/api_fastapi/execution_api/deps.py:58:26:</a> FA100 Add `from __future__ import annotations` to simplify `typing.Optional`
++ <a href='https://github.com/apache/airflow/blob/f0c329641c49823f90e3b3cc51936b690c81917f/airflow-core/src/airflow/api_fastapi/execution_api/deps.py#L59'>airflow-core/src/airflow/api_fastapi/execution_api/deps.py:59:26:</a> FA100 Add `from __future__ import annotations` to simplify `Optional`
+- <a href='https://github.com/apache/airflow/blob/f0c329641c49823f90e3b3cc51936b690c81917f/airflow-core/src/airflow/api_fastapi/execution_api/deps.py#L59'>airflow-core/src/airflow/api_fastapi/execution_api/deps.py:59:26:</a> FA100 Add `from __future__ import annotations` to simplify `typing.Optional`
++ <a href='https://github.com/apache/airflow/blob/f0c329641c49823f90e3b3cc51936b690c81917f/airflow-core/src/airflow/api_fastapi/execution_api/deps.py#L69'>airflow-core/src/airflow/api_fastapi/execution_api/deps.py:69:10:</a> FA100 Add `from __future__ import annotations` to simplify `Optional`
+- <a href='https://github.com/apache/airflow/blob/f0c329641c49823f90e3b3cc51936b690c81917f/airflow-core/src/airflow/api_fastapi/execution_api/deps.py#L69'>airflow-core/src/airflow/api_fastapi/execution_api/deps.py:69:10:</a> FA100 Add `from __future__ import annotations` to simplify `typing.Optional`
++ <a href='https://github.com/apache/airflow/blob/f0c329641c49823f90e3b3cc51936b690c81917f/providers/standard/tests/unit/standard/decorators/test_python.py#L134'>providers/standard/tests/unit/standard/decorators/test_python.py:134:21:</a> FA100 Add `from __future__ import annotations` to simplify `Union`
+- <a href='https://github.com/apache/airflow/blob/f0c329641c49823f90e3b3cc51936b690c81917f/providers/standard/tests/unit/standard/decorators/test_python.py#L134'>providers/standard/tests/unit/standard/decorators/test_python.py:134:21:</a> FA100 Add `from __future__ import annotations` to simplify `typing.Union`
++ <a href='https://github.com/apache/airflow/blob/f0c329641c49823f90e3b3cc51936b690c81917f/providers/standard/tests/unit/standard/decorators/test_python.py#L964'>providers/standard/tests/unit/standard/decorators/test_python.py:964:23:</a> FA100 Add `from __future__ import annotations` to simplify `Union`
+- <a href='https://github.com/apache/airflow/blob/f0c329641c49823f90e3b3cc51936b690c81917f/providers/standard/tests/unit/standard/decorators/test_python.py#L964'>providers/standard/tests/unit/standard/decorators/test_python.py:964:23:</a> FA100 Add `from __future__ import annotations` to simplify `typing.Union`
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (1 rules affected)</summary>
+<p>
+
+<p>| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| FA100 | 10 | 5 | 5 | 0 | 0 |</p>
+</p>
+</details>
+
+<h3>Linter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+5 -5 violations, +0 -0 fixes in 1 projects; 54 projects unchanged)</p>
+<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+5 -5 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/apache/airflow/blob/f0c329641c49823f90e3b3cc51936b690c81917f/airflow-core/src/airflow/api_fastapi/execution_api/deps.py#L58'>airflow-core/src/airflow/api_fastapi/execution_api/deps.py:58:26:</a> FA100 Add `from __future__ import annotations` to simplify `Optional`
+- <a href='https://github.com/apache/airflow/blob/f0c329641c49823f90e3b3cc51936b690c81917f/airflow-core/src/airflow/api_fastapi/execution_api/deps.py#L58'>airflow-core/src/airflow/api_fastapi/execution_api/deps.py:58:26:</a> FA100 Add `from __future__ import annotations` to simplify `typing.Optional`
++ <a href='https://github.com/apache/airflow/blob/f0c329641c49823f90e3b3cc51936b690c81917f/airflow-core/src/airflow/api_fastapi/execution_api/deps.py#L59'>airflow-core/src/airflow/api_fastapi/execution_api/deps.py:59:26:</a> FA100 Add `from __future__ import annotations` to simplify `Optional`
+- <a href='https://github.com/apache/airflow/blob/f0c329641c49823f90e3b3cc51936b690c81917f/airflow-core/src/airflow/api_fastapi/execution_api/deps.py#L59'>airflow-core/src/airflow/api_fastapi/execution_api/deps.py:59:26:</a> FA100 Add `from __future__ import annotations` to simplify `typing.Optional`
++ <a href='https://github.com/apache/airflow/blob/f0c329641c49823f90e3b3cc51936b690c81917f/airflow-core/src/airflow/api_fastapi/execution_api/deps.py#L69'>airflow-core/src/airflow/api_fastapi/execution_api/deps.py:69:10:</a> FA100 Add `from __future__ import annotations` to simplify `Optional`
+- <a href='https://github.com/apache/airflow/blob/f0c329641c49823f90e3b3cc51936b690c81917f/airflow-core/src/airflow/api_fastapi/execution_api/deps.py#L69'>airflow-core/src/airflow/api_fastapi/execution_api/deps.py:69:10:</a> FA100 Add `from __future__ import annotations` to simplify `typing.Optional`
++ <a href='https://github.com/apache/airflow/blob/f0c329641c49823f90e3b3cc51936b690c81917f/providers/standard/tests/unit/standard/decorators/test_python.py#L134'>providers/standard/tests/unit/standard/decorators/test_python.py:134:21:</a> FA100 Add `from __future__ import annotations` to simplify `Union`
+- <a href='https://github.com/apache/airflow/blob/f0c329641c49823f90e3b3cc51936b690c81917f/providers/standard/tests/unit/standard/decorators/test_python.py#L134'>providers/standard/tests/unit/standard/decorators/test_python.py:134:21:</a> FA100 Add `from __future__ import annotations` to simplify `typing.Union`
++ <a href='https://github.com/apache/airflow/blob/f0c329641c49823f90e3b3cc51936b690c81917f/providers/standard/tests/unit/standard/decorators/test_python.py#L964'>providers/standard/tests/unit/standard/decorators/test_python.py:964:23:</a> FA100 Add `from __future__ import annotations` to simplify `Union`
+- <a href='https://github.com/apache/airflow/blob/f0c329641c49823f90e3b3cc51936b690c81917f/providers/standard/tests/unit/standard/decorators/test_python.py#L964'>providers/standard/tests/unit/standard/decorators/test_python.py:964:23:</a> FA100 Add `from __future__ import annotations` to simplify `typing.Union`
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (1 rules affected)</summary>
+<p>
+
+<p>| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| FA100 | 10 | 5 | 5 | 0 | 0 |</p>
+</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @ntBre on 2025-06-24 16:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2025-06-24 16:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @ntBre on 2025-06-24 17:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @ntBre on 2025-06-24 17:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @ntBre on 2025-06-24 17:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-25 08:59</div>
+            <div class="timeline-body"><blockquote>
+<p>I think this should be behind a configuration option, as the TC rules are very opinionated: not all users will want FA100 to also apply to these situations. Alternatively, we could add a new FA* rule that sits alongside FA100 and flags these situations -- https://github.com/astral-sh/ruff/issues/13273#issuecomment-2336550747 argues in favour of doing that instead.</p>
+</blockquote>
+<p>Can you tell me more why you opted for a configuration option over a new rule?</p>
+<p>Edit: Maybe something to answer on the issue. I think there are at least 3 possible designs and I find it hard to think through if the approach chosen here is the most ideal without looking at the problem holsiticly: Some rules change their behavior based on a future import.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Daverball">@Daverball</a> reviewed on 2025-06-25 09:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Daverball">@Daverball</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/helpers.rs</code>:76 on 2025-06-25 09:42</div>
+            <div class="timeline-body"><p>You might want to check whether there is a future import, if there is, the answer here is definitely <code>No</code> and not <code>Maybe</code>. The same goes for if the target Version is 3.14 or above.</p>
+<p>I also don't quite recall how Ruff treats PEP 695 type parameter bounds or PEP 696 type parameter defaults. They probably could relatively safely be treated as typing only references, but I'm not sure that's currently how they are treated. A similar, although weaker, argument could be made for <code>type</code> statements. See #16981 for further discussions.</p>
+<p>Treating them as <code>Maybe</code> seems correct on the surface, but <code>Maybe</code> here seems to mean that the decisions will (or at least likely will) change based on a future annotation or the target python version, which is not the case for type statements or type parameter bounds/defaults. Maybe a different name would be more appropriate? Do we want a fourth value?</p>
+<p>Also #14787 is relevant to some degree here as well. I'm also a little worried about the interaction with the <code>quote_annotations</code> setting, since quoting annotations is antithetical to adding a future import.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-06-25 12:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/helpers.rs</code>:76 on 2025-06-25 12:48</div>
+            <div class="timeline-body"><p>Thanks for taking a look!</p>
+<blockquote>
+<p>You might want to check whether there is a future import, if there is, the answer here is definitely <code>No</code> and not <code>Maybe</code>. The same goes for if the target Version is 3.14 or above.</p>
+</blockquote>
+<p>I think if there's already a future import or the version is 3.14+ we will have already returned <code>Yes</code> a few lines above, right? That's what I was thinking while writing this at least. This logic does feel tricky, so I could certainly be wrong here.</p>
+<blockquote>
+<p>I also don't quite recall how Ruff treats PEP 695 type parameter bounds or PEP 696 type parameter defaults. They probably could relatively safely be treated as typing only references, but I'm not sure that's currently how they are treated. A similar, although weaker, argument could be made for <code>type</code> statements. See #16981 for further discussions.</p>
+<p>Treating them as <code>Maybe</code> seems correct on the surface, but <code>Maybe</code> here seems to mean that the decisions will (or at least likely will) change based on a future annotation or the target python version, which is not the case for type statements or type parameter bounds/defaults. Maybe a different name would be more appropriate? Do we want a fourth value?</p>
+</blockquote>
+<p>Hmm, I think I see what you mean. This might just not be the best place to perform this check. The integration with some other <a href="https://github.com/astral-sh/ruff/blob/1f241b4cabe5b84d4c99b827bb088815d8d072d1/crates/ruff_linter/src/checkers/ast/analyze/expression.rs#L34">rules</a> looked more repetitive, but if we just re-checked the condition that was here originally (or modified slightly to fit our needs), we could avoid trying to overload the yes/no/maybe meaning.</p>
+<blockquote>
+<p>Also #14787 is relevant to some degree here as well. I'm also a little worried about the interaction with the <code>quote_annotations</code> setting, since quoting annotations is antithetical to adding a future import.</p>
+</blockquote>
+<p>Related to my first point, I <em>think</em> we will have already returned <code>Yes</code> if we're in a string annotation, but, again, I could be wrong. It sounds like I should add more test cases anyway to be sure.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Daverball">@Daverball</a> reviewed on 2025-06-25 13:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Daverball">@Daverball</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/helpers.rs</code>:76 on 2025-06-25 13:47</div>
+            <div class="timeline-body"><blockquote>
+<p>I think if there's already a future import or the version is 3.14+ we will have already returned Yes a few lines above, right? That's what I was thinking while writing this at least. This logic does feel tricky, so I could certainly be wrong here.</p>
+</blockquote>
+<p>You're probably correct for annotations, for some reason I thought <code>in_typing_only_annotation()</code> was less reliable than it actually is. But that's probably only because I personally would like it to apply to type statements and type parameters as well, but currently it does not.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Daverball">@Daverball</a> reviewed on 2025-06-25 13:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Daverball">@Daverball</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/helpers.rs</code>:76 on 2025-06-25 13:54</div>
+            <div class="timeline-body"><p>But either way, this function gets called for a lot more type definitions than annotations, so <code>Maybe</code> is too generous for generic subscripts, type aliases, casts, type parameters bounds/defaults. So you should definitely make sure the reference stems from an annotation (i.e. <code>in_runtime_evaluated_annotation()</code>  for <code>Maybe</code> rather than <code>!in_typing_only_annotation()</code>, it's worth noting here that runtime required annotations also can't be re-written with modern typing syntax).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-06-25 16:13</div>
+            <div class="timeline-body"><p>(no changes, just rebasing onto the autofix)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-06-25 22:33</div>
+            <div class="timeline-body"><p>I'll put this back into draft while we discuss the design on the issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @ntBre on 2025-06-25 22:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-07-24 13:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-07-24 13:32</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:58:38 UTC
+    </footer>
+</body>
+</html>

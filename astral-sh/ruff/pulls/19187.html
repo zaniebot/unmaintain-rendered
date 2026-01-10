@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Do not consider a type `T` to satisfy a method member on a protocol unless the method is available on the meta-type of `T` - astral-sh/ruff #19187</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Do not consider a type <code>T</code> to satisfy a method member on a protocol unless the method is available on the meta-type of <code>T</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19187">#19187</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-07-07 17:20
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-07 17:20</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>A callable instance attribute is not sufficient for a type to satisfy a protocol with a method member: a method member specified by a protocol <code>P</code> must exist on the <em>meta-type</em> of <code>T</code> for <code>T</code> to be a subtype of <code>P</code>:</p>
+<pre><code class="language-py">from typing import Callable, Protocol
+from ty_extensions import static_assert, is_assignable_to
+
+class SupportsFooMethod(Protocol):
+    def foo(self): ...
+
+class SupportsFooAttr(Protocol):
+    foo: Callable[..., object]
+
+class Foo:
+    def __init__(self):
+        self.foo: Callable[..., object] = lambda *args, **kwargs: None
+
+static_assert(not is_assignable_to(Foo, SupportsFooMethod))
+static_assert(is_assignable_to(Foo, SupportsFooAttr))
+</code></pre>
+<p>There are several reasons why we must enforce this rule:</p>
+<ol>
+<li><p>Some methods, such as dunder methods, are always looked up on the class directly. If a class with an <code>__iter__</code> instance attribute satisfied the <code>Iterable</code> protocol, for example, the <code>Iterable</code> protocol would not accurately describe the requirements Python has for a class to be iterable at runtime. We <em>could</em> apply different rules for dunder method members as opposed to non-dunder method members, but I worry that this would appear inconsistent and would confuse users.</p>
+</li>
+<li><p>Allowing callable instance attributes to satisfy method members of protocols would make <code>issubclass()</code> narrowing of runtime-checkable protocols unsound, as the <code>issubclass()</code> mechanism at runtime for protocols only checks whether a method is accessible on the class object, not the instance. (Protocols with non-method members cannot be passed to <code>issubclass()</code> at all at runtime.)</p>
+</li>
+<li><p>If we allowed an instance-only attribute to satisfy a method member on a protocol, it would make <code>type[]</code> types unsound for protocols. For example, this currently type-checks fine on <code>main</code>, but it crashes at runtime; under this PR, it no longer type-checks:</p>
+<pre><code class="language-py">from typing import Protocol
+
+class Foo(Protocol):
+    def method(self) -&gt; str: ...
+
+    def f(x: Foo):
+        type(x).method
+
+class Bar:
+    def __init__(self):
+        self.method = lambda: &quot;foo&quot;
+
+f(Bar())
+</code></pre>
+</li>
+</ol>
+<p>Enforcing this rule fixes https://github.com/astral-sh/ty/issues/764, because the inconsistency between our understanding of <code>Iterable</code> assignability and types that <code>Type::try_iterate()</code> returned <code>Ok()</code> for is now fixed. Many types that we previously incorrectly considered assignable to <code>Iterable</code> are now no longer considered assignable to <code>Iterable</code>.</p>
+<h2>Test plan</h2>
+<ul>
+<li><p>I added mdtests to <code>protocol.md</code> explaining and enforcing this rule</p>
+</li>
+<li><p>I added a corpus test for https://github.com/astral-sh/ty/issues/764 that ensures that the crash is fixed</p>
+</li>
+<li><p>In a PR based on top of this one (https://github.com/astral-sh/ruff/pull/19208), I moved <code>zope.interface</code> to the <code>good.txt</code> list in mypy_primer, and confirmed that this PR means we no longer crash when analyzing that codebase. (Previously, we crashed due to https://github.com/astral-sh/ty/issues/764.)</p>
+</li>
+<li><p>I analyzed the mypy_primer report in https://github.com/astral-sh/ruff/pull/19187#issuecomment-3052558437. Overall it LGTM.</p>
+</li>
+<li><p>The fixes in this PR allow us to stabilise the property test added in https://github.com/astral-sh/ruff/pull/19186. I checked that it <em>is</em> stable locally by running <code>QUICKCHECK_TESTS=1000000 cargo test --release -p ty_python_semantic -- --ignored types::property_tests::stable</code></p>
+</li>
+<li><p>I also added some failing tests regarding class-literal types where a class has <code>Any</code> or <code>Unknown</code> in its MRO. I think there's an argument that these <em>should</em> be considered <code>Iterable</code> actually, but <em>not</em> because they might have an <code>__iter__</code> instance attribute. Rather, the metaclass of such a class might define an <code>__iter__</code> method, which would make all classes with that metaclass iterable. We can't come to any firm conclusion about what the metaclass of a class with <code>Any</code> in its MRO might be, because the <code>Any</code> might materialize to a type with a custom metaclass.</p>
+<p>For now, I defer the question of fixing this, but I have a draft PR open to explore fixing it: https://github.com/astral-sh/ruff/pull/19157. It has some... surprising primer results. I need to do some more digging there to figure out what's going on. I suspect that there is yet another underlying bug being uncovered there. 😆</p>
+</li>
+</ul>
+<h2>Performance</h2>
+<p>~~There's a performance regression on this PR, but not a huge one. I think that's sort-of unavoidable; we're again just doing slightly more work than we did before. https://github.com/astral-sh/ruff/pull/19230 will more than reclaim the performance hit here, though, if that PR is accepted.~~</p>
+<p>After rebasing on #19230, this PR now shows speedups of 3% on some benchmarks, and slowdowns of 2% on others. Overall the picture looks pretty positive to me, but it's hard to make out much signal here: https://codspeed.io/astral-sh/ruff/branches/alex%2Fmethod-metatype?runnerMode=Instrumentation</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-07 17:43</div>
+            <div class="timeline-body"><p>The post-the-primer-comment CI job isn't working at the moment, but here's the primer diff:</p>
+<pre><code class="language-diff">itsdangerous (https://github.com/pallets/itsdangerous)
++ error[invalid-assignment] src/itsdangerous/serializer.py:95:5: Object of type `&lt;module 'json'&gt;` is not assignable to `_PDataSerializer[Any]`
++ error[invalid-assignment] src/itsdangerous/url_safe.py:21:5: Object of type `&lt;class '_CompactJSON'&gt;` is not assignable to `_PDataSerializer[str]`
+- Found 6 diagnostics
++ Found 8 diagnostics
+
+werkzeug (https://github.com/pallets/werkzeug)
+- error[invalid-argument-type] tests/test_test.py:438:36: Argument to bound method `add_file` is incorrect: Expected `str | PathLike[str] | IO[bytes]`, found `SpecialInput`
++ error[invalid-argument-type] tests/test_test.py:438:36: Argument to bound method `add_file` is incorrect: Expected `str | PathLike[str] | IO[bytes] | FileStorage`, found `SpecialInput`
+
+pwndbg (https://github.com/pwndbg/pwndbg)
++ error[unsupported-operator] pwndbg/aglib/nearpc.py:304:24: Operator `*` is unsupported between objects of type `Unknown | Parameter` and `Literal[&quot; &quot;]`
++ error[unsupported-operator] pwndbg/commands/context.py:1189:39: Operator `*` is unsupported between objects of type `Literal[&quot; &quot;]` and `Parameter`
+- Found 2273 diagnostics
++ Found 2275 diagnostics
+
+psycopg (https://github.com/psycopg/psycopg)
++ error[invalid-argument-type] tests/scripts/pipeline-demo.py:190:38: Argument to function `_pipeline_communicate` is incorrect: Expected `PGconn`, found `LoggingPGconn`
++ error[invalid-argument-type] tests/scripts/pipeline-demo.py:212:38: Argument to function `_pipeline_communicate` is incorrect: Expected `PGconn`, found `LoggingPGconn`
+- Found 561 diagnostics
++ Found 563 diagnostics
+
+scrapy (https://github.com/scrapy/scrapy)
+- error[invalid-argument-type] tests/test_utils_spider.py:20:17: Argument to bound method `__init__` is incorrect: Expected `Iterable[Unknown]`, found `AsyncGenerator[Unknown, None]`
+- Found 1100 diagnostics
++ Found 1099 diagnostics
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-07-07 17:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-08 10:12</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">itsdangerous (https://github.com/pallets/itsdangerous)
++ error[invalid-assignment] src/itsdangerous/serializer.py:95:5: Object of type `&lt;module 'json'&gt;` is not assignable to `_PDataSerializer[Any]`
++ error[invalid-assignment] src/itsdangerous/url_safe.py:21:5: Object of type `&lt;class '_CompactJSON'&gt;` is not assignable to `_PDataSerializer[str]`
+- Found 6 diagnostics
++ Found 8 diagnostics
+
+psycopg (https://github.com/psycopg/psycopg)
++ error[invalid-argument-type] tests/scripts/pipeline-demo.py:190:38: Argument to function `_pipeline_communicate` is incorrect: Expected `PGconn`, found `LoggingPGconn`
++ error[invalid-argument-type] tests/scripts/pipeline-demo.py:212:38: Argument to function `_pipeline_communicate` is incorrect: Expected `PGconn`, found `LoggingPGconn`
+- Found 669 diagnostics
++ Found 671 diagnostics
+
+scrapy (https://github.com/scrapy/scrapy)
+- error[invalid-argument-type] tests/test_utils_spider.py:20:17: Argument to bound method `__init__` is incorrect: Expected `Iterable[Unknown]`, found `AsyncGenerator[Unknown, None]`
+- Found 1099 diagnostics
++ Found 1098 diagnostics
+
+werkzeug (https://github.com/pallets/werkzeug)
+- error[invalid-argument-type] tests/test_test.py:438:36: Argument to bound method `add_file` is incorrect: Expected `str | PathLike[str] | IO[bytes]`, found `SpecialInput`
++ error[invalid-argument-type] tests/test_test.py:438:36: Argument to bound method `add_file` is incorrect: Expected `str | PathLike[str] | IO[bytes] | FileStorage`, found `SpecialInput`
+
+pwndbg (https://github.com/pwndbg/pwndbg)
++ error[unsupported-operator] pwndbg/aglib/nearpc.py:304:24: Operator `*` is unsupported between objects of type `Unknown | Parameter` and `Literal[&quot; &quot;]`
++ error[unsupported-operator] pwndbg/commands/context.py:1189:39: Operator `*` is unsupported between objects of type `Literal[&quot; &quot;]` and `Parameter`
+- Found 2275 diagnostics
++ Found 2277 diagnostics
+
+</code></pre>
+</details>
+<details>
+<summary>Memory usage changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">prefect (https://github.com/PrefectHQ/prefect)
+-     struct metadata = ~25MB
++     struct metadata = ~23MB
+
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-07-08 10:19</div>
+            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+
+<!-- __CODSPEED_WALLTIME_PERFORMANCE_REPORT_COMMENT__ -->
+
+<h2><a href="https://codspeed.io/astral-sh/ruff/branches/alex%2Fmethod-metatype?runnerMode=WallTime">CodSpeed WallTime Performance Report</a></h2>
+<h3>Merging #19187 will <strong>not alter performance</strong></h3>
+<p><sub>Comparing <code>alex/method-metatype</code> (25b9d54) with <code>main</code> (59aa869)</sub></p>
+<h3>Summary</h3>
+<p><code>✅ 7</code> untouched benchmarks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-09 12:50</div>
+            <div class="timeline-body"><h2>Primer analysis</h2>
+<h3><code>psycopg</code></h3>
+<blockquote>
+<pre><code class="language-diff">psycopg (https://github.com/psycopg/psycopg)
++ error[invalid-argument-type] tests/scripts/pipeline-demo.py:190:38: Argument to function `_pipeline_communicate` is incorrect: Expected `PGconn`, found `LoggingPGconn`
++ error[invalid-argument-type] tests/scripts/pipeline-demo.py:212:38: Argument to function `_pipeline_communicate` is incorrect: Expected `PGconn`, found `LoggingPGconn`
+</code></pre>
+</blockquote>
+<p>The <code>PGConn</code> protocol is <a href="https://github.com/psycopg/psycopg/blob/ce085bc927d82526dc19362ea1a66f460374aff0/psycopg/psycopg/pq/abc.py#L22">here</a>, and <code>LoggingPGConn</code> is <a href="https://github.com/psycopg/psycopg/blob/ce085bc927d82526dc19362ea1a66f460374aff0/tests/scripts/pipeline-demo.py#L34">here</a>. Previously we considered <code>LoggingPGConn</code> a subtype of <code>PGConn</code> because of <a href="https://github.com/psycopg/psycopg/blob/ce085bc927d82526dc19362ea1a66f460374aff0/tests/scripts/pipeline-demo.py#L63-L64"><code>LoggingPGConn.__getattr__</code></a>, which means that arbitrary attributes are available on <em>instances</em> of <code>LoggingPGConn</code>. However, it does not mean that arbitrary attributes are available on the class <code>LoggingPGConn</code> itself:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; class Foo:
+...     def __getattr__(self, attr): return Foo()
+...     
+&gt;&gt;&gt; f = Foo()
+&gt;&gt;&gt; f.__iter__
+&lt;__main__.Foo object at 0x10320aad0&gt;
+&gt;&gt;&gt; Foo.__iter__
+Traceback (most recent call last):
+  File &quot;&lt;python-input-4&gt;&quot;, line 1, in &lt;module&gt;
+    Foo.__iter__
+AttributeError: type object 'Foo' has no attribute '__iter__'. Did you mean: '__str__'?
+&gt;&gt;&gt; for x in f:
+...     pass
+...     
+Traceback (most recent call last):
+  File &quot;&lt;python-input-3&gt;&quot;, line 1, in &lt;module&gt;
+    for x in f:
+             ^
+TypeError: 'Foo' object is not iterable
+</code></pre>
+<p>The <code>PGConn</code> protocol does not actually have any dunder methods in its interface, and the distinction here <em>is</em> most important for dunder methods, since dunder methods are always looked up on the class object rather than the instance. The protocol is also not decorated with <code>@runtime_checkable</code>, so concerns about the soundness of <code>issubclass()</code> narrowing also don't apply. This therefore feels a little unfortunate: it would arguably be sound in mosrt cases to consider <code>LoggingPGConn</code> a subtype of <code>PGConn</code> in this instance. Still, I don't really like the idea of applying different rules to how subtyping of protocol method members works depending on whether the protocol method member is a dunder method and whether the protocol is decorated with <code>@runtime_checkable</code>. That feels like it would be inconsistent and confusing. Considering instance attributes sufficient to satisfy method members would also make <code>type[P]</code> unsound if <code>P</code> was a protocol type: if a method is available on instances of <code>P</code>, it should be available as a function instance-attribute on the meta-type of any instance of <code>P</code>.</p>
+<hr />
+<h3><code>pwndbg</code></h3>
+<blockquote>
+<pre><code class="language-diff">pwndbg (https://github.com/pwndbg/pwndbg)
++ error[unsupported-operator] pwndbg/aglib/nearpc.py:304:24: Operator `*` is unsupported between objects of type `Unknown | Parameter` and `Literal[&quot; &quot;]`
++ error[unsupported-operator] pwndbg/commands/context.py:1189:39: Operator `*` is unsupported between objects of type `Literal[&quot; &quot;]` and `Parameter`
+</code></pre>
+</blockquote>
+<p>This one looks like a true positive! The hits in question are lines like <a href="https://github.com/pwndbg/pwndbg/blob/7cec1187712e1729c2f2ae8793253b3466a2f6a8/pwndbg/aglib/nearpc.py#L304-L306">this</a>. The <code>opcode_separator_bytes</code> variable on that line is defined <a href="https://github.com/pwndbg/pwndbg/blob/7cec1187712e1729c2f2ae8793253b3466a2f6a8/pwndbg/aglib/nearpc.py#L84C1-L89">here</a> -- we can see that it's the result of a call to <code>pwndbg.config.add_param()</code>. <code>pwndbg.config</code> <a href="https://github.com/pwndbg/pwndbg/blob/7cec1187712e1729c2f2ae8793253b3466a2f6a8/pwndbg/__init__.py#L6">is a <code>pwndbg.config.Config</code> instance</a>, and <code>pwndbg.config.Config.add_param()</code> <a href="https://github.com/pwndbg/pwndbg/blob/7cec1187712e1729c2f2ae8793253b3466a2f6a8/pwndbg/lib/config.py#L224-L234">returns an instance of <code>pwndbg.config.Parameter</code></a> -- the TL;DR here is that the <code>opcode_separator_bytes</code> variable is an instance of <code>pwndbg.config.Parameter</code>, so the question here is whether we should emit an error when we see a <code>Parameter</code> instance being multiplied by a string literal.</p>
+<p>I think the answer to that is &quot;yes, we should&quot;. The <code>*</code> operation could go via <code>Parameter.__mul__</code> or <code>str.__rmul__</code> -- <code>Parameter.__mul__</code> <a href="https://github.com/pwndbg/pwndbg/blob/7cec1187712e1729c2f2ae8793253b3466a2f6a8/pwndbg/lib/config.py#L197-L198">only accepts <code>int</code>s</a> (a string literal type is not a subtype of <code>int</code>), and <code>str.__rmul__</code> <a href="https://github.com/python/typeshed/blob/9317dc62bd4fb46b8b48ce5353286cab80308d47/stdlib/builtins.pyi#L638-L641">only accepts instances of the <code>SupportsIndex</code> protocol</a>. Currently we consider that <code>Parameter</code> satisfies the <code>SupportsIndex</code> protocol because it has a <code>__getattr__</code> method, but that's incorrect: <code>__getattr__</code> is only called when looking up attributes on instances, and dunder methods such as <code>__index__</code> are looked up directly on the class object:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; class Foo:
+...     def __init__(self):
+...         self.__index__ = lambda self: 42
+...         
+&gt;&gt;&gt; int(Foo())
+Traceback (most recent call last):
+  File &quot;&lt;python-input-1&gt;&quot;, line 1, in &lt;module&gt;
+    int(Foo())
+    ~~~^^^^^^^
+TypeError: int() argument must be a string, a bytes-like object or a real number, not 'Foo'
+&gt;&gt;&gt; class Foo:
+...     __index__ = lambda self: 42
+...     
+&gt;&gt;&gt; int(Foo())
+42
+</code></pre>
+<hr />
+<h3><code>itsdangerous</code></h3>
+<pre><code class="language-diff">itsdangerous (https://github.com/pallets/itsdangerous)
++ error[invalid-assignment] src/itsdangerous/serializer.py:95:5: Object of type `&lt;module 'json'&gt;` is not assignable to `_PDataSerializer[Any]`
++ error[invalid-assignment] src/itsdangerous/url_safe.py:21:5: Object of type `&lt;class '_CompactJSON'&gt;` is not assignable to `_PDataSerializer[str]`
+</code></pre>
+<p>These are similar cases to the <code>psycopg</code> hits: considering <code>&lt;module 'json'&gt;</code> or <code>&lt;class '_CompactJson'&gt;</code> assignable of <code>_PDataSerializer[str]</code> would probably not be unsafe in most cases, so this PR probably leads to a usability regression for this kind of scenario. In order for <code>&lt;module json&gt;</code> to be considered assignable to this protocol under the new rules in this PR, you would have to rewrite the protocol like this:</p>
+<pre><code class="language-diff">  class _PDataSerializer(t.Protocol[_TSerialized]):
+-     def loads(self, payload: _TSerialized, /) -&gt; t.Any: ...
++     @property
++     def loads(self) -&gt; t.Callable[[_TSerialized], Any]: ...
+      # A signature with additional arguments is not handled correctly by type
+      # checkers right now, so an overload is used below for serializers that
+      # don't match this strict protocol.
+-     def dumps(self, obj: t.Any, /) -&gt; _TSerialized: ...
++     @property
++     def dumps(self) -&gt; Callable[[t.Any], _TSerialized]: ...
+</code></pre>
+<hr />
+<h3><code>scrapy</code></h3>
+<pre><code class="language-diff">scrapy (https://github.com/scrapy/scrapy)
+- error[invalid-argument-type] tests/test_utils_spider.py:20:17: Argument to bound method `__init__` is incorrect: Expected `Iterable[Unknown]`, found `AsyncGenerator[Unknown, None]`
+</code></pre>
+<p>This is a false positive going away. The line we emit the error on is <a href="https://github.com/scrapy/scrapy/blob/6b2997af9000bbf9114aca681b62713c30cc628e/tests/test_utils_spider.py#L20">here</a>; the reason why we previously emitted the error is that we thought that the <code>iterate_spider_output</code> call returned an instance of <code>Deferred[T]</code>, and we thought that an instance of <code>Deferred[T]</code> wasn't a good type to pass to the <code>list()</code> constructor. The reason why we thought the <code>iterate_spider_output</code> returned a <code>Deferred[T]</code> instance was that we were picking the <a href="https://github.com/scrapy/scrapy/blob/6b2997af9000bbf9114aca681b62713c30cc628e/scrapy/commands/parse.py#L138-L144">first overload here</a> -- we picked that overload because we thought that the <a href="https://github.com/scrapy/scrapy/blob/6b2997af9000bbf9114aca681b62713c30cc628e/scrapy/item.py#L57"><code>Item</code></a> type satisifed the <code>AsyncGenerator</code> protocol. We came to that incorrect conclusion because of the <a href="https://github.com/scrapy/scrapy/blob/6b2997af9000bbf9114aca681b62713c30cc628e/scrapy/item.py#L103-L106"><code>Item.__getattr__</code></a> method, but now we correctly see that as insufficient, which leads us to correctly pick the second overload of <code>iterate_spider_output</code>, causing us to infer the result of the <code>iterate_spider_output</code> call as <code>Iterable[Any]</code>, which is obviously acceptable as an argument to pass to the <code>list()</code> constructor.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @AlexWaygood on 2025-07-09 16:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @AlexWaygood on 2025-07-09 16:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @AlexWaygood on 2025-07-09 16:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @AlexWaygood on 2025-07-09 16:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-07-10 07:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-10 07:14</div>
+            <div class="timeline-body"><!-- generated-comment ty ecosystem-analyzer -->
+
+<h2><code>ecosystem-analyzer</code> results</h2>
+<p>| Lint rule | Added | Removed | Changed |
+|-----------|------:|--------:|--------:|
+| <code>invalid-argument-type</code> | 0 | 1 | 1 |
+| <code>invalid-assignment</code> | 2 | 0 | 0 |
+| <code>unsupported-operator</code> | 2 | 0 | 0 |
+| <strong>Total</strong> | <strong>4</strong> | <strong>1</strong> | <strong>1</strong> |</p>
+<p><strong><a href="https://alex-method-metatype.ecosystem-663.pages.dev/diff">Full report with detailed diff</a></strong></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-10 08:58</div>
+            <div class="timeline-body"><p>(I updated my description in the PR summary of the performance characteristics of this PR, which are now pretty different after rebasing it on top of #19230)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @sharkdp on 2025-07-10 09:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-07-10 09:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @sharkdp removed by @sharkdp on 2025-07-15 09:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-07-21 21:11</div>
+            <div class="timeline-body"><p>Sorry that I didn't get to this sooner! I never quite got to the bottom of my post-vacation review queue last week, and unfortunately I was tackling the notifications top-down, so this PR suffered from not being noisy enough, recently enough. Thanks for the reminder!</p>
+<p>Neither mypy nor pyright enforce this rule; they seem to instead avoid the <code>__getattr__</code> issues by never allowing a <code>__getattr__</code> to factor into protocol assignability.</p>
+<p>After reading through the description here, and the ecosystem analysis, I admit I am not convinced that we should enforce this rule, either. The ecosystem false positives on psycopg and itsdangerous seem really problematic to me, and I don't find the arguments presented in favor of enforcing this rule convincing. Specifically, I think that both <code>type[Proto]</code> and <code>@runtime_checkable</code> enforcement are so deeply unsound to begin with, that this issue barely registers a noticeable difference in their soundness. And I am also not convinced that distinguishing dunder methods from non-dunder methods will be too confusing to users. We already model this actual difference in how dunders are looked up elsewhere in ty. It's a real runtime behavior difference, and I don't see why we should avoid correctly modeling it here as well.</p>
+<p>So my take would be that we should not allow an instance-only attribute to satisfy a dunder-method member of a Protocol, but we should otherwise allow instance-only attributes to satisfy Protocol method members. If I'm reading the issue and the ecosystem analysis correctly, I think that approach would fix all the false negatives fixed by this PR (and would fix the Iterable-assignability problem), without triggering any of the new false positives.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-24 17:36</div>
+            <div class="timeline-body"><p>(requested ping!)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-07-24 17:38</div>
+            <div class="timeline-body"><p>Haha I just went and looked it up right away so you wouldn't have to do that, but thank you 😆 Will review it shortly, after I record some of the other conclusions from our discussion so I don't forget them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-07-24 23:07</div>
+            <div class="timeline-body"><p>We discussed this in person, and I'm open to try this approach. If we execute the descriptor protocol on accessing a method from a Protocol type, then it makes sense to require that it exist on the meta-type.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2025-07-25 10:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-07-25 10:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-07-25 10:16</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:58:38 UTC
+    </footer>
+</body>
+</html>

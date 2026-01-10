@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Split `ScopedPlaceId` into `ScopedSymbolId` and `ScopedMemberId` - astral-sh/ruff #19497</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Split <code>ScopedPlaceId</code> into <code>ScopedSymbolId</code> and <code>ScopedMemberId</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19497">#19497</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2025-07-22 20:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-22 20:28</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR changes the place structs in the semantic index module to enums over a symbol or a member:</p>
+<ul>
+<li><code>ScopedPlaceId</code>: Is now an enum over <code>ScopedSymbolId</code> and <code>ScopedMemberId</code></li>
+<li><code>PlaceExpr</code>: Is now an enum over <code>Symbol</code> and <code>Member</code></li>
+<li><code>PlaceExprRef</code>: Is now an enum over <code>&amp;Symbol</code> and <code>&amp;Member</code></li>
+<li><code>PlaceTable</code>: now separately tracks symbols and members</li>
+</ul>
+<p>This idea was initially mentioned in https://github.com/astral-sh/ruff/pull/19470. The hope was that splitting <code>Symbol</code> and <code>Member</code> would help to reduce memory usage because <code>Symbol</code> is only 32 bytes (compared to <code>PlaceExpr</code>, which is 40 bytes).</p>
+<p>However, the memory usage is roughly unchanged after running ty on a large repository (the saving must be less than 100MB if there's even any). Splitting symbol and members also introduces some extra memory overhead because all <code>IndexVec</code> over <code>ScopedPlaceId</code> now needs to be two separate vectors.</p>
+<p>Performance also shows to be mostly neutral.</p>
+<p>The main benefit I now see in this refactor is that it clarifies some usages of places. Before, it was often unclear whether some code iterates over symbols or members or both. In fact, I spent the majority of my time during this refactor on trying to understand which of the two it is. The split also helped me better understand which flags are only supported on flags/members and which flags are supported by both.</p>
+<p>Now, whether this distinction makes sense long term heavily depends on whether we expect that many places that currently are only over symbols will need to handle members the same way in the future.</p>
+<p>Overall: I don't have a strong opinion on this. I do think it helps clarify some code but it does come at a cost.</p>
+<h2>Code increase</h2>
+<p>This PR adds a fair amount of new code. However, most of it is just the boilerplate from having separate <code>Symbol</code>/<code>Member</code>, <code>SymbolTable</code>/<code>MemberTable</code>/<code>PlaceTable</code> and <code>SymbolTableBuilder</code>/<code>MemberTableBuilder</code>/<code>PlaceTableBuilder</code>. Most of that code is fairly simple (many getters)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-07-22 21:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/oconnor663">@oconnor663</a> on <code>crates/ty_python_semantic/src/semantic_index/member.rs</code>:141 on 2025-07-23 20:46</div>
+            <div class="timeline-body"><p>Would it be better to store the symbol in a separate field, like <code>PlaceExpr</code> currently does with its <code>root_name</code> field?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/oconnor663">@oconnor663</a> on <code>crates/ty_python_semantic/src/semantic_index/member.rs</code>:207 on 2025-07-23 20:47</div>
+            <div class="timeline-body"><p>In that case, maybe the <code>Symbol</code> variant wouldn't be needed here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/oconnor663">@oconnor663</a> reviewed on 2025-07-23 20:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-24 05:48</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅
+No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-24 05:54</div>
+            <div class="timeline-body"><p>Hmm. The memory increase doesn't come entirely as a surprise. I suspect that we end up with more &quot;empty buckets&quot; with two hash maps compared to just using one but I need to look at more detailed reports.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-24 09:53</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-07-24 09:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/semantic_index/member.rs</code>:1 on 2025-07-24 09:54</div>
+            <div class="timeline-body"><p>I'll write some more docs if we decide to go forward with this PR. The current docs are carried over from <code>PlaceExpr</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-07-24 09:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/semantic_index/place.rs</code>:925 on 2025-07-24 09:55</div>
+            <div class="timeline-body"><p>I moved everything <em>Scope</em> to <code>scope.rs</code>. That code doesn't need to belong into <code>place</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2025-07-24 09:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @MichaReiser on 2025-07-24 09:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @MichaReiser on 2025-07-24 09:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @MichaReiser on 2025-07-24 09:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @MichaReiser on 2025-07-24 09:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @AlexWaygood removed by @AlexWaygood on 2025-07-24 10:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/semantic_index/member.rs</code>:150 on 2025-07-24 11:44</div>
+            <div class="timeline-body"><p>I think we can optimize this further by:</p>
+<ul>
+<li>Storing a single <code>Name</code> which is the entire path of the member</li>
+<li>In the <code>SmallVec</code>: Store the kind of each segment and where it starts as a <code>u32</code>.</li>
+</ul>
+<p>This doesn't change the size of <code>Member</code>, but it reduces the size of the stored segments because it doesn't require a length and capacity for each segment.</p>
+<p>This should be sufficient because all we need is a unique key to hash, knowing if it has the form <code>a.b</code>, and a <code>Display</code> implementation</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-07-24 11:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/semantic_index/scope.rs</code>:239 on 2025-07-25 00:43</div>
+            <div class="timeline-body"><p>nit: this got search-replaced too eagerly in the symbol-&gt;place PR, CPython doesn't have a &quot;place table&quot;</p>
+<pre><code class="language-suggestion">        // symbol table also uses the term &quot;function-like&quot; for these scopes.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/semantic_index/member.rs</code>:80 on 2025-07-25 00:48</div>
+            <div class="timeline-body"><p>This comment doesn't seem like it matches the code now?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/semantic_index/use_def.rs</code>:318 on 2025-07-25 01:01</div>
+            <div class="timeline-body"><p>And similar for above comment.</p>
+<pre><code class="language-suggestion">    /// [`PlaceState`] visible at end of scope for each member.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-07-25 01:05</div>
+            <div class="timeline-body"><p>I think this is a strong improvement in clarity; if it's neutral in performance, I'm +1 to go ahead with it. Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_python_semantic/src/semantic_index/builder.rs</code>:2244 on 2025-07-25 04:07</div>
+            <div class="timeline-body"><p>nit: it might be useful to reduce the nesting here by chaining the calls</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-07-25 04:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @dhruvmanila on 2025-07-25 04:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> approved on 2025-07-25 10:54</div>
+            <div class="timeline-body"><p>Thank you!</p>
+<p>A minor naming quibble: &quot;member&quot; refers to something like <code>self.x</code> (which seems consistent with how we use that term elsewhere, as an attribute on something), but also to a subscript expression like <code>xs[0]</code>. But no need to change anything.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-07-25 11:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/semantic_index/builder.rs</code>:2244 on 2025-07-25 11:05</div>
+            <div class="timeline-body"><p>It's not clear to me how I would do this without let chains</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-25 11:30</div>
+            <div class="timeline-body"><blockquote>
+<p>A minor naming quibble: &quot;member&quot; refers to something like self.x (which seems consistent with how we use that term elsewhere, as an attribute on something), but also to a subscript expression like xs[0]. But no need to change anything.</p>
+</blockquote>
+<p>That's fair. Not sure what else to use. I considered <code>Attribute</code> but that is confusing because only <code>x.a</code> is an attribute access. That's why I landed on <code>Member</code> because, to me, that includes all sort of member access (but maybe that's just me coming from the JS ecosystem where all those expressions are called member expression)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-25 11:43</div>
+            <div class="timeline-body"><p>A possible alternative is <code>Subscript</code>. It might be confusing too, but <code>x.a</code> is just a special way of writing the subscript. I'm happy to make that rename if we decide for that name in a separate PR</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2025-07-25 11:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-07-25 11:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-07-25 11:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-07-25 15:25</div>
+            <div class="timeline-body"><p>Yes, the naming issue occurred to me in review also, but I didn't mention it because I didn't have any concrete suggestion that I liked. I don't know of a term that clearly means &quot;either attribute or subscript&quot;, and &quot;member&quot; (borrowed from JS) seems not unreasonable (though I would also initially assume it to mean just an attribute).</p>
+<p>The clearest options would be the verbose ones: <code>AttributeOrSubscript</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-07-25 20:56</div>
+            <div class="timeline-body"><blockquote>
+<p>either attribute or subscript</p>
+</blockquote>
+<p>subscribute :grin:</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:58:39 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Detect illegal non-enum attribute accesses in Literal annotation - astral-sh/ruff #19477</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Detect illegal non-enum attribute accesses in Literal annotation</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19477">#19477</a>
+        opened by <a href="https://github.com/sharkdp">@sharkdp</a>
+        on 2025-07-22 07:21
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-22 07:21</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Detect illegal attribute accesses in <code>Literal[X.Y]</code> annotations if <code>X</code> is not an enum class.</p>
+<h2>Test Plan</h2>
+<p>New Markdown test</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @sharkdp on 2025-07-22 07:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @sharkdp on 2025-07-22 07:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @sharkdp on 2025-07-22 07:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @sharkdp on 2025-07-22 07:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-22 07:25</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅
+No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-22 09:24</div>
+            <div class="timeline-body"><blockquote>
+<pre><code class="language-diff">+ error[invalid-type-form] bidict/_typing.py:22:28: Type arguments for `Literal` must be `None`, a literal value (int, bool, str, or bytes), or an enum value
+</code></pre>
+</blockquote>
+<p>I see the error has gone away from the primer diff on the latest version of this PR, but FWIW I think &quot;enum member&quot; would be clearer than &quot;enum value&quot; in this error message. (I know that this issue predates this PR!)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-07-22 09:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @sharkdp on 2025-07-22 09:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-07-22 09:31</div>
+            <div class="timeline-body"><p>If I apply this diff to your branch then I get some pull-types panics on the <code>literal.md</code> mdtest:</p>
+<pre><code class="language-diff">diff --git a/crates/ty_python_semantic/resources/mdtest/annotations/literal.md b/crates/ty_python_semantic/resources/mdtest/annotations/literal.md
+index 0c266868e1..6e480724cb 100644
+--- a/crates/ty_python_semantic/resources/mdtest/annotations/literal.md
++++ b/crates/ty_python_semantic/resources/mdtest/annotations/literal.md
+@@ -5,7 +5,7 @@
+ ## Parameterization
+ 
+ ```py
+-from typing import Literal
++from typing import Literal, Any
+ from enum import Enum
+ 
+ mode: Literal[&quot;w&quot;, &quot;r&quot;]
+@@ -57,9 +57,12 @@ invalid4: Literal[
+ 
+ class NotAnEnum:
+     x: int = 1
++    y: list[Any] = []
+ 
+ # error: [invalid-type-form]
+ invalid5: Literal[NotAnEnum.x]
++invalid6: Literal[NotAnEnum.y[0]]
++invalid7: Literal[NotAnEnum[&quot;x&quot;].value]
+ ```
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-22 09:36</div>
+            <div class="timeline-body"><blockquote>
+<p>I think &quot;enum member&quot; would be clearer than &quot;enum value&quot; in this error message</p>
+</blockquote>
+<p>:+1:  https://github.com/astral-sh/ruff/pull/19482</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-22 09:41</div>
+            <div class="timeline-body"><blockquote>
+<p>If I apply this diff to your branch then I get some pull-types panics on the <code>literal.md</code> mdtest:</p>
+</blockquote>
+<p>I can't see how this would be related to this PR, and in fact, I can also reproduce this on <code>main</code>. Will look into it or open a ticket.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @sharkdp on 2025-07-22 09:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-07-22 09:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-07-22 09:42</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:58:39 UTC
+    </footer>
+</body>
+</html>

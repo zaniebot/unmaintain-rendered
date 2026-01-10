@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Disallow implicit concatenation of t-strings and other string types - astral-sh/ruff #19485</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Disallow implicit concatenation of t-strings and other string types</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19485">#19485</a>
+        opened by <a href="https://github.com/dylwil3">@dylwil3</a>
+        on 2025-07-22 12:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-07-22 12:47</div>
+            <div class="timeline-body"><p>As of <a href="https://github.com/python/cpython/pull/135996">this cpython PR</a>, it is not allowed to concatenate t-strings with non-t-strings, implicitly or explicitly. Expressions such as <code>&quot;foo&quot; t&quot;{bar}&quot;</code> are now syntax errors.</p>
+<p>This PR updates some AST nodes and parsing to reflect this change.</p>
+<p>The structural change is that <code>TStringPart</code> is no longer needed, since, as in the case of <code>BytesStringLiteral</code>, the only possibilities are that we have a single <code>TString</code> or a vector of such (representing an implicit concatenation of t-strings). This removes a level of nesting from many AST expressions (which is what all the snapshot changes reflect), and simplifies some logic in the implementation of visitors, for example.</p>
+<p>The other change of note is in the parser. When we meet an implicit concatenation of string-like literals, we now count the number of t-string literals. If these do not exhaust the total number of implicitly concatenated pieces, then we emit a syntax error. To recover from this syntax error, we encode any t-string pieces as <em>invalid</em> string literals (which means we flag them as invalid, record their range, and record the value as <code>&quot;&quot;</code>). Note that if at least one of the pieces is an f-string we prefer to parse the entire string as an f-string; otherwise we parse it as a string.</p>
+<p>This logic is exactly the same as how we currently treat <code>BytesStringLiteral</code> parsing and error recovery - and carries with it the same pros and cons.</p>
+<p>Finally, note that I have not implemented any changes in the implementation of the formatter. As far as I can tell, none are needed. I did change a few of the fixtures so that we are always concatenating t-strings with t-strings.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @dylwil3 on 2025-07-22 12:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">parser</span> added by @dylwil3 on 2025-07-22 12:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">python314</span> added by @dylwil3 on 2025-07-22 12:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-22 12:51</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅
+No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-22 13:08</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dylwil3">@dylwil3</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:677 on 2025-07-25 18:04</div>
+            <div class="timeline-body"><p>Modify this example (since the displayed implicit concatenation is not allowed)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dylwil3">@dylwil3</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:710 on 2025-07-25 18:05</div>
+            <div class="timeline-body"><p>Modify this example, since the displayed implicit concatenation is not allowed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dylwil3">@dylwil3</a> on <code>crates/ruff_python_ast/src/comparable.rs</code>:712 on 2025-07-25 18:07</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    // [CPython implementation] of a `string.templatelib.Template` object.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dylwil3">@dylwil3</a> on <code>crates/ruff_python_parser/src/snapshots/ruff_python_parser__string__tests__parse_tstring.snap</code>:58 on 2025-07-25 18:12</div>
+            <div class="timeline-body"><p>This is correct - the actual test has</p>
+<pre><code class="language-rust">        let source = r#&quot;t&quot;{a}{ b }{{foo}}&quot;&quot;#;
+</code></pre>
+<p>so we are correctly reading the escaped braces.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dylwil3">@dylwil3</a> on <code>crates/ruff_python_parser/src/snapshots/ruff_python_parser__string__tests__parse_tstring_equals.snap</code>:45 on 2025-07-25 18:14</div>
+            <div class="timeline-body"><p>This is also correct - it's just one of those unfortunate diffs that makes it look like something changed when it was just moved.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dylwil3">@dylwil3</a> on <code>crates/ruff_python_parser/src/string.rs</code>:867 on 2025-07-25 18:15</div>
+            <div class="timeline-body"><p>nit - consistent naming convention</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dylwil3">@dylwil3</a> reviewed on 2025-07-25 18:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @dylwil3 on 2025-07-25 18:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @dylwil3 on 2025-07-25 18:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @dylwil3 on 2025-07-25 18:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @dylwil3 on 2025-07-25 18:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @dylwil3 on 2025-07-25 18:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @dylwil3 on 2025-07-25 18:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @dylwil3 on 2025-07-25 18:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/parser/expression.rs</code>:1380 on 2025-07-26 11:21</div>
+            <div class="timeline-body"><p>I'd prefer using <code>tstring_count &lt; strings.len()</code> over a match with an <code>unreachable</code>. The idea of using a <code>match</code> is to handle all cases but this doesn't seem very useful if one of the cases is impossible anyway</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-07-26 11:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dylwil3">@dylwil3</a> reviewed on 2025-07-27 12:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dylwil3">@dylwil3</a> on <code>crates/ruff_python_parser/src/parser/expression.rs</code>:1380 on 2025-07-27 12:37</div>
+            <div class="timeline-body"><p>Here I was mimicking the style used in the similar expression for bytes - so I've changed them both to the form you suggested</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dylwil3 on 2025-07-27 12:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dylwil3 on 2025-07-27 12:41</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:58:39 UTC
+    </footer>
+</body>
+</html>

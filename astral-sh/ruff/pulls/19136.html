@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`refurb`] `FURB164` fix should validate arguments and should usually be marked unsafe - astral-sh/ruff #19136</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>refurb</code>] <code>FURB164</code> fix should validate arguments and should usually be marked unsafe</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19136">#19136</a>
+        opened by <a href="https://github.com/danparizher">@danparizher</a>
+        on 2025-07-04 03:12
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/danparizher">@danparizher</a> on 2025-07-04 03:12</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Fixes #19076</p>
+<p>An attempt at fixing #19076 where the rule could change program behavior by incorrectly converting from_float/from_decimal method calls to constructor calls.</p>
+<p>The fix implements argument validation using Ruff's existing type inference system (<code>ResolvedPythonType</code>, <code>typing::is_int</code>, <code>typing::is_float</code>) to determine when conversions are actually safe, adds logic to detect invalid method calls (wrong argument counts, incorrect keyword names) and suppress fixes for them, and changes the default fix applicability from <code>Safe</code> to <code>Unsafe</code> with safe fixes only offered when the argument type is known to be compatible and no problematic keywords are used.</p>
+<p>One uncertainty is whether the type inference catches all possible edge cases in complex codebases, but the new approach is significantly more conservative and safer than the previous implementation.</p>
+<h2>Test Plan</h2>
+<p>I updated the existing test fixtures with edge cases from the issue and manually verified behavior with temporary test files for valid/unsafe/invalid scenarios.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-04 03:22</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ntBre by @MichaReiser on 2025-07-14 09:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-07-14 15:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @ntBre on 2025-07-14 15:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/refurb/rules/unnecessary_from_float.rs</code>:80 on 2025-07-14 15:56</div>
+            <div class="timeline-body"><p>nit: we tend to keep the main rule function at the top of the file, followed by any helpers.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/refurb/rules/unnecessary_from_float.rs</code>:154 on 2025-07-14 16:07</div>
+            <div class="timeline-body"><p>The nested <code>match</code>es look very similar in all three branches here. Could we possibly do the <code>resolve_type</code> match first and then the method and constructor match? It looks like we might need to save <code>is_int</code> and <code>is_float</code> variables to check later.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/refurb/rules/unnecessary_from_float.rs</code>:187 on 2025-07-14 16:11</div>
+            <div class="timeline-body"><p>I <em>think</em> this could be simplified by checking <code>call.arguments.len()</code> which should account for both <code>args</code> and <code>keywords</code> and then using <code>find_argument</code> to locate it by name or position:</p>
+<pre><code class="language-suggestion">            // from_float(f) - should have exactly one positional argument or 'f' keyword
+            if call.arguments.len() != 1 {
+                false
+            } else {
+                call.arguments.find_argument(&quot;f&quot;, 0).is_some()
+            }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/refurb/rules/unnecessary_from_float.rs</code>:191 on 2025-07-14 16:12</div>
+            <div class="timeline-body"><p>Same as above, if it works above.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/refurb/rules/unnecessary_from_float.rs</code>:187 on 2025-07-14 16:15</div>
+            <div class="timeline-body"><p>We may also need to match on the constructor here. <code>Decimal.from_float</code> is positional-only, unless that's checked somewhere else:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; from decimal import Decimal
+&gt;&gt;&gt; Decimal.from_float(f=123)
+Traceback (most recent call last):
+  File &quot;&lt;python-input-7&gt;&quot;, line 1, in &lt;module&gt;
+    Decimal.from_float(f=123)
+    ~~~~~~~~~~~~~~~~~~^^^^^^^
+TypeError: Decimal.from_float() takes no keyword arguments
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/refurb/rules/unnecessary_from_float.rs</code>:250 on 2025-07-14 16:16</div>
+            <div class="timeline-body"><p>We should just move this check after the other <code>report_diagnostic</code> call instead of duplicating the construction.</p>
+<pre><code class="language-suggestion">    // Validate that the method call has correct arguments
+    if !has_valid_method_arguments(call, method_name) {
+        // Don't suggest a fix for invalid calls
+        return;
+    }
+</code></pre>
+<p>This would have made more sense when we used to have to create a diagnostic and later push it to the <code>Checker</code>, but merely creating the diagnostic now will set it up to be pushed on <code>Drop</code> so we can just return after creating it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/refurb/rules/unnecessary_from_float.rs</code>:264 on 2025-07-14 16:18</div>
+            <div class="timeline-body"><p>It might make sense to return an <code>Option</code> from <code>has_valid_method_arguments</code> instead of finding the argument values again here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/refurb/rules/unnecessary_from_float.rs</code>:340 on 2025-07-14 16:26</div>
+            <div class="timeline-body"><p>nit: I'd probably put this right after the <code>let-else</code> checking that it's a <code>Call</code>. I'm not sure which of these checks is most expensive, but that makes sense logically at least.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-07-14 17:50</div>
+            <div class="timeline-body"><p>Thanks, this looks good to me. I just had some suggestions for simplifying the code a bit.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ntBre by @danparizher on 2025-07-14 20:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/refurb/rules/unnecessary_from_float.rs</code>:185 on 2025-07-16 14:57</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        arg_expr
+            .as_name_expr()
+            .and_then(|name| semantic.only_binding(name).map(|id| semantic.binding(id)))
+            .map(|binding| {
+                (
+                    typing::is_int(binding, semantic),
+                    typing::is_float(binding, semantic),
+                )
+            })
+            .unwrap_or_default()
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/refurb/rules/unnecessary_from_float.rs</code>:223 on 2025-07-16 14:57</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                arg_expr
+                    .as_call_expr()
+                    .and_then(|call| semantic.resolve_qualified_name(&amp;call.func))
+                    .is_some_and(|qualified_name| {
+                        matches!(qualified_name.segments(), [&quot;decimal&quot;, &quot;Decimal&quot;])
+                    })
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/refurb/rules/unnecessary_from_float.rs</code>:249 on 2025-07-16 15:01</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                call.arguments.find_positional(0)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/refurb/rules/unnecessary_from_float.rs</code>:241 on 2025-07-16 15:03</div>
+            <div class="timeline-body"><p>I see now that we could actually convert the <code>len</code> check to an early return since it's shared by both branches:</p>
+<pre><code class="language-suggestion">    if call.arguments.len() != 1 {
+        return None;
+    }
+    
+    match method_name {
+        MethodName::FromFloat =&gt; {
+            // Decimal.from_float is positional-only; Fraction.from_float allows keyword 'f'.
+            if constructor == Constructor::Decimal {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/refurb/rules/unnecessary_from_float.rs</code>:261 on 2025-07-16 15:03</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">            call.arguments.find_argument_value(&quot;dec&quot;, 0)
+</code></pre>
+<p>after the early return above.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> approved on 2025-07-16 15:05</div>
+            <div class="timeline-body"><p>Thanks! Just a few more slight simplifications.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ntBre on 2025-07-16 15:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-07-16 15:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-07-16 15:51</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:58:38 UTC
+    </footer>
+</body>
+</html>

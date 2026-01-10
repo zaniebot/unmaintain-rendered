@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] synthesize __setattr__ for frozen dataclasses - astral-sh/ruff #19307</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] synthesize <strong>setattr</strong> for frozen dataclasses</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19307">#19307</a>
+        opened by <a href="https://github.com/thejchap">@thejchap</a>
+        on 2025-07-13 12:37
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/thejchap">@thejchap</a> on 2025-07-13 12:37</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Synthesize a <code>__setattr__</code> method with a return type of <code>Never</code> for frozen dataclasses.</p>
+<p>https://docs.python.org/3/library/dataclasses.html#frozen-instances
+https://docs.python.org/3/library/dataclasses.html#dataclasses.FrozenInstanceError</p>
+<h3>Related</h3>
+<p>https://github.com/astral-sh/ty/issues/111
+https://github.com/astral-sh/ruff/pull/17974#discussion_r2108527106
+https://github.com/astral-sh/ruff/pull/18347#discussion_r2128174665</p>
+<p>WIP</p>
+<h2>Test Plan</h2>
+<p>New Markdown tests</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-13 12:59</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">attrs (https://github.com/python-attrs/attrs)
++ error[invalid-assignment] tests/test_next_gen.py:267:13: Property `c` defined in `C` is read-only
+- Found 636 diagnostics
++ Found 637 diagnostics
+
+</code></pre>
+</details>
+No memory usage changes detected ✅
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thejchap">@thejchap</a> on 2025-07-13 14:32</div>
+            <div class="timeline-body"><p>@sharkdp i could use some help understanding your comment <a href="https://github.com/astral-sh/ruff/pull/18347#discussion_r2128174665">here</a></p>
+<blockquote>
+<p>It returns an AttributeError if the attribute doesn't exist, and it returns a FrozenInstanceError if it's an existing attribute</p>
+</blockquote>
+<p>did you mean to say <em>raises</em> instead <em>returns</em>? and if so, can you maybe expand a bit on your idea for differentiating based on the function body (which doesn't exist in the ast since it's synthesized), since as far as i understand it from <a href="https://github.com/thejchap/ruff/blob/dd1a59ea5bb19ab02c85d18a93fd7a80f67731fd/crates/ty_python_semantic/resources/mdtest/function/return_type.md?plain=1#L22">this code</a> a <code>raise</code> is considered to have a return type of <code>Never</code>, which would look the same regardless of the function body? apologies if im missing something obvious...</p>
+<p>also as an aside, it looks like at runtime a <code>FrozenInstanceError</code> gets thrown regardless of if the attribute exists or not</p>
+<pre><code class="language-py">from dataclasses import dataclass
+
+@dataclass(frozen=True)
+class Test:
+    b: int
+
+test = Test(1)
+test.a = 2
+</code></pre>
+<pre><code class="language-bash">Traceback (most recent call last):
+  File &quot;/Users/justinchapman/src/ruff/../test.py&quot;, line 8, in &lt;module&gt;
+    test.a = 2  # This will raise an error because the dataclass is frozen
+    ^^^^^^
+  File &quot;&lt;string&gt;&quot;, line 4, in __setattr__
+dataclasses.FrozenInstanceError: cannot assign to field 'a'
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @MichaReiser on 2025-07-13 14:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-14 08:28</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>It returns an AttributeError if the attribute doesn't exist, and it returns a FrozenInstanceError if it's an existing attribute</p>
+</blockquote>
+<p>did you mean to say <em>raises</em> instead <em>returns</em>?</p>
+</blockquote>
+<p>Yes</p>
+<blockquote>
+<p>can you maybe expand a bit on your idea for differentiating based on the function body (which doesn't exist in the ast since it's synthesized), since as far as i understand it from <a href="https://github.com/thejchap/ruff/blob/dd1a59ea5bb19ab02c85d18a93fd7a80f67731fd/crates/ty_python_semantic/resources/mdtest/function/return_type.md?plain=1#L22">this code</a> a <code>raise</code> is considered to have a return type of <code>Never</code>, which would look the same regardless of the function body? apologies if im missing something obvious...</p>
+</blockquote>
+<p>My idea was that we could distinguish between calling a user-defined <code>__setattr__</code> method and the synthesized <code>__setattr__</code> method that you implemented here. This maybe more difficult than I imagined, since we only (easily) have access to the return type here. One way that would work (but I don't think I like that idea) would be to &quot;tag&quot; the <code>Never</code> return type. <code>Type::Never</code> could internally track some metadata (like a bit field) that would allow us to track the &quot;origin&quot; of that type. User-defined methods would just return a &quot;normal&quot; <code>Type::Never(NeverMetadata::default())</code>, but the synthesized dataclass <code>__setattr__</code> could return <code>Type::Never(NeverMetadata::FROZEN_DATACLASS_SETATTR)</code> or similar. The metadata wouldn't change the behavior of the <code>Never</code> type in any way. But here, when checking the return type of <code>__setattr__</code>, we could use that flag to distinguish the different origins of <code>Never</code>.</p>
+<p>Another way to do this would be to look up <code>__setattr__</code> as an attribute (in addition to calling <code>try_call_dunder</code>). Instead of getting some <code>Type::FunctionLiteral</code>, we should see the function-like <code>Type::Callable</code> that would be evidence for it being a synthesized <code>__setattr__</code> method.</p>
+<p>All of this would only be a way to provide a nicer error message. Something that mentions &quot;frozen dataclass&quot; instead of &quot;custom <code>__setattr__</code> with a return type of <code>Never</code>&quot;, which might be really confusing for users.</p>
+<blockquote>
+<p>also as an aside, it looks like at runtime a <code>FrozenInstanceError</code> gets thrown regardless of if the attribute exists or not</p>
+</blockquote>
+<p>Ah, interesting. I think I probably just tried accessing an unknown member, not setting it. I think it would also be fine to emit the invalid-assignment diagnostic here instead of unresolved-attribute. What's more important is the thing above.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @thejchap on 2025-07-18 00:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @thejchap on 2025-07-18 00:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[ty] synthesize __setattr__ and __delattr__ for frozen dataclasses" to "[ty] synthesize __setattr__ for frozen dataclasses" by @thejchap on 2025-07-18 00:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @sharkdp on 2025-07-18 09:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @sharkdp on 2025-07-18 09:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @sharkdp on 2025-07-18 09:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @sharkdp on 2025-07-18 09:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @sharkdp on 2025-07-18 09:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> approved on 2025-07-18 09:23</div>
+            <div class="timeline-body"><p>Thank you very much for this. Look, this found a new true positive!</p>
+<pre><code class="language-diff">attrs (https://github.com/python-attrs/attrs)
++ error[invalid-assignment] tests/test_next_gen.py:267:13: Property `c` defined in `C` is read-only
+</code></pre>
+<p>I made a few minor updates to bring this into a mergeable state. Most importantly, we can not skip the whole check for the <code>frozen</code> flag, and can rely on <code>__setattr__</code> alone. This leads to a big code improvement.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @sharkdp on 2025-07-18 09:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-07-18 09:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thejchap">@thejchap</a> on 2025-07-18 13:50</div>
+            <div class="timeline-body"><p>@sharkdp ah, awesome - thanks! i had planned to work on it a bit more, but if its good with you its good with me :) i appreciate you getting it merged</p>
+<p>is there anything else in https://github.com/astral-sh/ty/issues/111 that you think would be good to work on next?</p>
+<p>one thing this is still missing i believe is emitting the same error for <code>__delattr__</code> (mypy doesn't do this, but at runtime you get the same <code>dataclasses.FrozenInstanceError: cannot delete field 'a'</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-18 18:26</div>
+            <div class="timeline-body"><blockquote>
+<p>i had planned to work on it a bit more</p>
+</blockquote>
+<p>I noticed that it was still in draft, but it seemed like a good and consistent contribution. You're certainly welcome to add something on top of this!</p>
+<blockquote>
+<p>one thing this is still missing i believe is emitting the same error for <code>__delattr__</code> (mypy doesn't do this, but at runtime you get the same <code>dataclasses.FrozenInstanceError: cannot delete field 'a'</code>)</p>
+</blockquote>
+<p>Adding that would be great. I noticed that you already added a test for it.</p>
+<blockquote>
+<p>is there anything else in <a href="https://github.com/astral-sh/ty/issues/111">astral-sh/ty#111</a> that you think would be good to work on next?</p>
+</blockquote>
+<p>Adding support for more of the synthesized methods/arguments would certainly be a good next step. I haven't looked closely at this, and maybe some of these might not require any special casing at all. The next thing I'd do would probably be to write a few more tests for these, even if they are initially still failing. That should give us an idea what to focus on next.</p>
+<p>Support for dataclass fields is another interesting area, but we're already working on this.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:58:38 UTC
+    </footer>
+</body>
+</html>

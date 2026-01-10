@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] make `del x` force local resolution of `x` in the current scope - astral-sh/ruff #19389</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] make <code>del x</code> force local resolution of <code>x</code> in the current scope</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19389">#19389</a>
+        opened by <a href="https://github.com/oconnor663">@oconnor663</a>
+        on 2025-07-16 18:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/oconnor663">@oconnor663</a> on 2025-07-16 18:22</div>
+            <div class="timeline-body"><p>Fixes https://github.com/astral-sh/ty/issues/769.</p>
+<p><strong>Updated:</strong> The preferred approach here is to keep the SemanticIndex simple (<code>del</code> of any name marks that name &quot;bound&quot; in the current scope) and to move complexity to type inference (free variable resolution stops when it finds a binding, unless that binding is declared <code>nonlocal</code>). As part of this change, free variable resolution will now union the types it finds as it walks in enclosing scopes. This approach is still incomplete, because it doesn't consider inner scopes or sibling scopes, but it improves the common case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @oconnor663 on 2025-07-16 18:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @oconnor663 on 2025-07-16 18:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @oconnor663 on 2025-07-16 18:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @oconnor663 on 2025-07-16 18:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @oconnor663 on 2025-07-16 18:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/oconnor663">@oconnor663</a> on <code>crates/ty_python_semantic/resources/mdtest/del.md</code>:116 on 2025-07-16 18:23</div>
+            <div class="timeline-body"><p>This fails if you delete the <code>!place_expr.is_marked_nonlocal()</code> check in <code>builder.rs</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/oconnor663">@oconnor663</a> reviewed on 2025-07-16 18:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @oconnor663 on 2025-07-16 18:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-16 18:27</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅
+No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-16 18:31</div>
+            <div class="timeline-body"><!-- generated-comment ty ecosystem-analyzer -->
+
+<h2><code>ecosystem-analyzer</code> results</h2>
+<p>No changes detected ✅
+<strong><a href="https://del-mark-bound.ecosystem-663.pages.dev/diff">Full report with detailed diff</a></strong></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/semantic_index/builder.rs</code>:2014 on 2025-07-16 19:07</div>
+            <div class="timeline-body"><p>I think it's preferable if the flags we assign in semantic indexing have simple and consistent semantics, and the more complex semantics are built on top of that in type inference. In this case it would be nice if we could just say &quot;<code>del x</code> is always considered to make <code>x</code> bound in the local scope&quot; and then in type inference implement the semantics of <code>nonlocal</code> (that if a name is both bound in a scope and nonlocal in a scope, we also need to consider its type in the enclosing scope).</p>
+<p>I think a related case is this one, which is the same as one of your tests in this PR, but with <code>x = 2</code> in place of <code>del x</code>:</p>
+<pre><code class="language-py">def f():
+    x = 1
+    def g():
+        nonlocal x
+        def h():
+            reveal_type(x)
+        h()
+        x = 2
+</code></pre>
+<p>Currently (and in this PR) we reveal <code>Unknown | Literal[2]</code> inside <code>h()</code> for <code>x</code>, but that's clearly wrong -- at runtime <code>x</code> will be <code>1</code> when <code>h</code> is called. It seems like when we find that <code>x</code> is bound in the scope of <code>g</code> we just stop there, but I think since it's also <code>nonlocal</code> we ought to keep going and union with the type from the scope of <code>f()</code> as well. If we did that in general, then I think we could allow <code>del x</code> to always mark x as bound.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/del.md</code>:116 on 2025-07-16 19:07</div>
+            <div class="timeline-body"><p>If we used <code>reveal_type</code> instead of <code>print</code>, could we show (and test) that it refers to <code>x</code> in <code>f</code>, rather than just asserting that in an unchecked comment?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/infer.rs</code>:4661 on 2025-07-16 19:09</div>
+            <div class="timeline-body"><p>I think this comment is probably not helpful here. I understand why it made sense in the context of figuring out how to implement this, but it doesn't directly relate to any code here, and I don't know that it will be helpful to a future reader.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-07-16 19:11</div>
+            <div class="timeline-body"><p>Thanks! I think this is a behavior improvement and I'm ok with landing it as is, but it seems to me that our approach to <code>nonlocal</code> might not quite be fully there yet (discussed inline).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/oconnor663">@oconnor663</a> on 2025-07-17 23:17</div>
+            <div class="timeline-body"><p>Ok @carljm, I've reworked this PR and updated the description up top. <a href="https://github.com/astral-sh/ruff/pull/19389#discussion_r2211327215">As you suggested</a>, I've moved the <code>nonlocal</code> + <code>del</code> case into <code>infer.rs</code>, to keep the complexity out of the Semantic Index. I've also added a <code>UnionBuilder</code> to the scope walking loop, along with some new test cases for that. It...seems to work :-D</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/oconnor663">@oconnor663</a> reviewed on 2025-07-17 23:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/oconnor663">@oconnor663</a> on <code>crates/ty_python_semantic/src/types/infer.rs</code>:6120 on 2025-07-17 23:18</div>
+            <div class="timeline-body"><p>I'm fuzzy on the difference between <code>Boundness::PossiblyUnbound</code> and <code>Place::Unbound</code>, so please look extra close at what I'm doing here with <code>local_boundness</code> and tell me if this makes sense.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @oconnor663 on 2025-07-17 23:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @oconnor663 on 2025-07-17 23:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/oconnor663">@oconnor663</a> on 2025-07-17 23:42</div>
+            <div class="timeline-body"><p>The updated <a href="https://del-mark-bound.ecosystem-663.pages.dev/diff">ecosystem analysis</a> has 4 new diagnostics that I think are ~~false positives~~ (update: maybe not?) to do with function parameters in an enclosing scope, so I'm pretty sure I've screwed something up. Will track it down and add another test case.</p>
+<p>Update: Ok, I think this is a minimized version of the new failures:</p>
+<pre><code class="language-py">def f():
+    x: int = 1
+    def g():
+        if not isinstance(x, int):
+            print(x)  # [unresolved-reference]: Name `x` used when not defined &lt;-- only on this PR, not main
+</code></pre>
+<p>I think what's happening is that my new type unioning, maybe plus the way <code>narrow_place_with_applicable_constraints</code> is used in the same loop, leads to the conclusion that the type is...I'm not sure...uninhabited? It's not obvious to me that this is wrong, but I don't understand it very well. Notably, there are no diagnostics for this simpler example:</p>
+<pre><code class="language-py">x: int = 1
+if not isinstance(x, int):
+    print(x)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @sharkdp removed by @sharkdp on 2025-07-18 07:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @oconnor663 on 2025-07-18 17:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @oconnor663 on 2025-07-18 17:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/oconnor663">@oconnor663</a> on 2025-07-18 18:16</div>
+            <div class="timeline-body"><p>Ok, I've added a bool to distinguish &quot;narrowing constraints result in <code>Never</code>&quot; from &quot;we never encountered any definitions, so <code>UnionBuilder::build</code> returns <code>Never</code>&quot;. <a href="https://del-mark-bound.ecosystem-663.pages.dev/diff">The ecosystem report is now clean.</a> This PR has Carl's green checkmark from before that fix, but I'd love to get eyes from at least one other reviewer who's familiar with this unioning / narrowing / boundness machinery. Does it look like I'm doing the right thing here? Am I missing any useful helpers or duplicating anything that I shouldn't be? Etc.</p>
+<p>https://github.com/astral-sh/ruff/blob/8db7db36f41425a1b9f8a3cc17acdce6e46f20c0/crates/ty_python_semantic/src/types/infer.rs#L6117-L6142</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/scopes/nonlocal.md</code>:87 on 2025-07-18 20:34</div>
+            <div class="timeline-body"><p>These tests are great! Very clear.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-07-18 21:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @carljm on 2025-07-18 21:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-07-18 21:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-07-18 21:58</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:58:39 UTC
+    </footer>
+</body>
+</html>

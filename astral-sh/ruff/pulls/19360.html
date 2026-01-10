@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rework typeshed-sync workflow to also add docstrings for Windows- and MacOS-specific APIs - astral-sh/ruff #19360</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Rework typeshed-sync workflow to also add docstrings for Windows- and MacOS-specific APIs</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19360">#19360</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-07-15 16:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-15 16:08</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>The docstring-adder codemod can only add docstrings for APIs that exist at runtime. I.e., if the codemod is run on a Linux machine, it can't add any docstrings for APIs that don't exist at runtime on a Linux machine. The Python stdlib has some APIs that only exist on Windows/MacOS, and it seems a shame not to provide docstrings for those too.</p>
+<p>This PR reworks the <code>sync_typeshed.yaml</code> workflow so that:</p>
+<ol>
+<li>A Linux worker:
+a. Syncs the typeshed stubs
+b. Syncs the docstrings available on Linux
+c. Commits the changes and pushes them to an upstream branch</li>
+<li>Once the Linux worker is done, a Windows worker:
+a. Checks out the branch created by the Linux worker
+b. Syncs all docstrings available on Windows that are not available on Linux
+c. Commits the changes and pushes them to the same upstream branch</li>
+<li>Once the Windows worker is done, a MacOS worker:
+a. Checks out the branch created by the Linux worker
+b. Syncs all docstrings available on MacOS that are not available on Linux or Windows
+c. Commits the changes and pushes them to the same upstream branch
+d. Creates the typeshed-sync PR</li>
+</ol>
+<p>This PR also updates the pinned commit of docstring-adder to https://github.com/astral-sh/docstring-adder/commit/7f350b03ee83dd44ebd8010228ad3dfca34a7887, which includes https://github.com/astral-sh/docstring-adder/pull/2</p>
+<h2>Test Plan</h2>
+<p><code>¯\_(ツ)_/¯</code></p>
+<p>I ran pre-commit, and ran the new <code>codemod_docstrings.sh</code> script through shellcheck. Not sure how else to test this other than by merging it and seeing if it works?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @AlexWaygood on 2025-07-15 16:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @AlexWaygood on 2025-07-15 16:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ci</span> added by @AlexWaygood on 2025-07-15 16:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-07-15 16:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-15 16:18</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>ℹ️ ecosystem check <strong>encountered format errors</strong>. (no format changes; 1 project error)</p>
+<details><summary><a href="https://github.com/openai/openai-cookbook">openai/openai-cookbook</a> (error)</summary>
+<p>
+
+<pre><code>warning: Detected debug build without --no-cache.
+error: Failed to parse examples/mcp/databricks_mcp_cookbook.ipynb:12:1:8: Simple statements must be separated by newlines or semicolons
+</code></pre>
+</p>
+</details>
+
+<h3>Formatter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>encountered format errors</strong>. (no format changes; 1 project error)</p>
+<details><summary><a href="https://github.com/openai/openai-cookbook">openai/openai-cookbook</a> (error)</summary>
+<p>
+<pre>ruff format --preview</pre>
+</p>
+<p>
+
+<pre><code>warning: Detected debug build without --no-cache.
+error: Failed to parse examples/mcp/databricks_mcp_cookbook.ipynb:12:1:8: Simple statements must be separated by newlines or semicolons
+</code></pre>
+</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>.github/workflows/sync_typeshed.yaml</code>:100 on 2025-07-15 16:25</div>
+            <div class="timeline-body"><p>Will this fail if the changes are empty?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-07-15 16:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-07-15 16:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>.github/workflows/sync_typeshed.yaml</code>:100 on 2025-07-15 16:28</div>
+            <div class="timeline-body"><p>Yes. I don't expect that to ever be the case, though, due to modules like https://github.com/python/cpython/blob/main/Lib/asyncio/windows_events.py that can't be imported at all on non-Windows (but which this job will add docstrings for). So I sort-of feel like it would be a feature if this step failed because no changes had been made -- it indicates something weird is going on.</p>
+<p>I could add a comment?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-07-15 16:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>.github/workflows/sync_typeshed.yaml</code>:100 on 2025-07-15 16:32</div>
+            <div class="timeline-body"><p>or I could just add <code>--allow-empty</code>, I don't have a strong opinion</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>.github/workflows/sync_typeshed.yaml</code>:100 on 2025-07-15 16:37</div>
+            <div class="timeline-body"><p>It's not quiet clear how this workflow works. To which repository is it commiting to? If it's the ruff repository: Are these commits squashed later?</p>
+<p>For testing: Have you considered just triggering a typeshed run. Shouldn't that the updated typeshed files</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-07-15 16:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-07-15 16:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>.github/workflows/sync_typeshed.yaml</code>:100 on 2025-07-15 16:40</div>
+            <div class="timeline-body"><p>Okay I think I understand how it works. I think I would primarily make it consistent to <code>git commit -am &quot;Sync macOS docstrings&quot; --allow-empty</code></p>
+<p>It might also be helpful to add some comment at the top of the workflow file explaining what's going on in this workflow :) It's not very obvious hehe</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-07-15 16:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>.github/workflows/sync_typeshed.yaml</code>:100 on 2025-07-15 16:42</div>
+            <div class="timeline-body"><blockquote>
+<p>It's not quiet clear how this workflow works. To which repository is it commiting to?</p>
+</blockquote>
+<p>It creates a branch on the upstream Ruff repository and pushes the commits to that branch. It then creates a PR from that branch to the <code>main</code> branch. That's what we already do on <code>main</code>; the new bit is that workers on Windows and MacOS now pick up where the Linux worker left off before a PR is made</p>
+<blockquote>
+<p>Are these commits squashed later?</p>
+</blockquote>
+<p>The commits are not squashed but we squash-merge all PRs, so I don't think that matters. If anything, I'd quite like to see the separate steps as individual commits; it would make it easier to verify that the workflow is working as expected.</p>
+<blockquote>
+<p>For testing: Have you considered just triggering a typeshed run. Shouldn't that the updated typeshed files</p>
+</blockquote>
+<p>Yes, absolutely. But I think I can only do that once this is merged?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-07-15 16:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>.github/workflows/sync_typeshed.yaml</code>:100 on 2025-07-15 16:43</div>
+            <div class="timeline-body"><blockquote>
+<p>It might also be helpful to add some comment at the top of the workflow file explaining what's going on in this workflow :) It's not very obvious hehe</p>
+</blockquote>
+<p>yeah for sure!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-07-15 16:50</div>
+            <div class="timeline-body"><p>The git thingy where you make commits to carry over the docstrings is a bit hard to understand. I think using something like the upload files action might have been slightly easier. But I don't think it's worth changing, but some documentation at the top (e.g. take the PR summary) would be great</p>
+<pre><code>      - name: Upload generated files
+        uses: actions/upload-artifact@v4
+        with:
+          name: files-${{ matrix.os }}
+          path: |
+            path/to/generated/files/
+            !path/to/exclude/
+          retention-days: 1
+</code></pre>
+<p>Don't dare to break the typeshed sync and then be off for a week ;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2025-07-15 17:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-07-15 17:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-07-15 17:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-15 17:20</div>
+            <div class="timeline-body"><p>I think you should have been able to run it like this:
+<img width="2040" height="892" alt="Screenshot 2025-07-15 at 19 19 36" src="https://github.com/user-attachments/assets/66182898-c551-46e2-9c36-367b640a145e" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-15 17:21</div>
+            <div class="timeline-body"><p>Hmm, I'll try that on #19367</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:58:38 UTC
+    </footer>
+</body>
+</html>

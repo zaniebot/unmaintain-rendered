@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Reachability analysis for `isinstance(…)` branches - astral-sh/ruff #19503</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Reachability analysis for <code>isinstance(…)</code> branches</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19503">#19503</a>
+        opened by <a href="https://github.com/sharkdp">@sharkdp</a>
+        on 2025-07-23 08:52
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-23 08:52</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Add more precise type inference for a limited set of <code>isinstance(…)</code> calls, i.e. return <code>Literal[True]</code> if we can be sure that this is the correct result. This improves exhaustiveness checking / reachability analysis for if-elif-else chains with <code>isinstance</code> checks. For example:</p>
+<pre><code class="language-py">def is_number(x: int | str) -&gt; bool:  # no &quot;can implicitly return `None` error here anymore
+    if isinstance(x, int):
+        return True
+    elif isinstance(x, str):
+        return False
+
+    # code here is now detected as being unreachable
+</code></pre>
+<p>This PR also adds a new test suite for exhaustiveness checking.</p>
+<h2>Test Plan</h2>
+<p>New Markdown tests</p>
+<h3>Ecosystem analysis</h3>
+<p>The removed diagnostics look good. There's <a href="https://github.com/pytorch/vision/blob/f52c4f1afd7dec25cbe7b98bcf1cbc840298e8da/torchvision/io/video_reader.py#L125-L143">one case</a> where a &quot;true positive&quot; is removed in unreachable code. <code>src</code> is annotated as being of type <code>str</code>, but there is an <code>elif isinstance(src, bytes)</code> branch, which we now detect as unreachable. And so the diagnostic inside that branch is silenced. I don't think this is a problem, especially once we have a &quot;graying out&quot; feature, or a lint that warns about unreachable code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @sharkdp on 2025-07-23 08:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-07-23 08:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-07-23 08:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/resources/mdtest/exhaustiveness_checking.md</code>:179 on 2025-07-23 08:54</div>
+            <div class="timeline-body"><p>On <code>main</code>, we emit a diagnostic here, i.e. we do not detect this branch as unreachable. On this branch, we do detect this as unreachable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-23 08:55</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">kornia (https://github.com/kornia/kornia)
+- error[invalid-return-type] kornia/geometry/liegroup/so3.py:77:38: Function can implicitly return `None`, which is not assignable to return type `So3`
+- error[invalid-return-type] kornia/geometry/liegroup/so3.py:98:24: Return type does not match returned value: expected `So3`, found `Vector3`
+- Found 777 diagnostics
++ Found 775 diagnostics
+
+PyGithub (https://github.com/PyGithub/PyGithub)
+- error[invalid-return-type] github/Repository.py:3599:45: Function can implicitly return `None`, which is not assignable to return type `GitRelease`
+- error[invalid-assignment] github/Team.py:305:13: Object of type `str` is not assignable to `Repository`
+- Found 307 diagnostics
++ Found 305 diagnostics
+
+apprise (https://github.com/caronc/apprise)
+- error[unresolved-attribute] test/helpers/rest.py:291:26: Type `NotifyBase` has no attribute `url`
+- error[unresolved-attribute] test/test_plugin_email.py:388:30: Type `NotifyBase` has no attribute `url`
+- error[unresolved-attribute] test/test_plugin_growl.py:298:30: Type `NotifyBase` has no attribute `url`
+- Found 4315 diagnostics
++ Found 4312 diagnostics
+
+pwndbg (https://github.com/pwndbg/pwndbg)
+- warning[possibly-unresolved-reference] pwndbg/dbg/gdb/__init__.py:817:13: Name `bp` used when possibly not defined
+- warning[possibly-unresolved-reference] pwndbg/dbg/gdb/__init__.py:819:27: Name `bp` used when possibly not defined
+- warning[possibly-unresolved-reference] pwndbg/dbg/gdb/__init__.py:833:9: Name `bp` used when possibly not defined
+- warning[possibly-unresolved-reference] pwndbg/dbg/lldb/__init__.py:632:16: Name `value` used when possibly not defined
+- warning[possibly-unresolved-reference] pwndbg/dbg/lldb/__init__.py:634:55: Name `value` used when possibly not defined
+- warning[possibly-unresolved-reference] pwndbg/dbg/lldb/__init__.py:637:26: Name `value` used when possibly not defined
+- warning[possibly-unresolved-reference] pwndbg/dbg/lldb/__init__.py:1551:16: Name `bp` used when possibly not defined
+- warning[possibly-unresolved-reference] pwndbg/dbg/lldb/__init__.py:1553:60: Name `e` used when possibly not defined
+- warning[possibly-unresolved-reference] pwndbg/dbg/lldb/__init__.py:1553:77: Name `e` used when possibly not defined
+- warning[possibly-unresolved-reference] pwndbg/dbg/lldb/__init__.py:1576:28: Name `bp` used when possibly not defined
+- warning[possibly-unresolved-reference] pwndbg/dbg/lldb/__init__.py:1595:27: Name `bp` used when possibly not defined
+- warning[possibly-unresolved-reference] pwndbg/dbg/lldb/__init__.py:1596:88: Name `bp` used when possibly not defined
+- warning[possibly-unresolved-reference] pwndbg/dbg/lldb/__init__.py:1597:29: Name `bp` used when possibly not defined
+- warning[possibly-unresolved-reference] pwndbg/dbg/lldb/__init__.py:1598:88: Name `bp` used when possibly not defined
+- Found 2260 diagnostics
++ Found 2246 diagnostics
+
+vision (https://github.com/pytorch/vision)
+- error[invalid-assignment] torchvision/io/video_reader.py:143:17: Object of type `BytesIO` is not assignable to `str`
+- Found 1468 diagnostics
++ Found 1467 diagnostics
+
+prefect (https://github.com/PrefectHQ/prefect)
+- error[invalid-return-type] src/prefect/server/schemas/schedules.py:565:27: Function can implicitly return `None`, which is not assignable to return type `rrule`
+- Found 3688 diagnostics
++ Found 3687 diagnostics
+
+sympy (https://github.com/sympy/sympy)
+- warning[possibly-unresolved-reference] sympy/solvers/ode/ode.py:1001:32: Name `deriv` used when possibly not defined
+- warning[possibly-unresolved-reference] sympy/solvers/ode/ode.py:1001:66: Name `deriv` used when possibly not defined
+- warning[possibly-unresolved-reference] sympy/solvers/ode/ode.py:1002:39: Name `deriv` used when possibly not defined
+- warning[possibly-unresolved-reference] sympy/solvers/ode/ode.py:1003:25: Name `deriv` used when possibly not defined
+- warning[possibly-unresolved-reference] sympy/solvers/ode/ode.py:1003:54: Name `old` used when possibly not defined
+- warning[possibly-unresolved-reference] sympy/solvers/ode/ode.py:1004:21: Name `new` used when possibly not defined
+- warning[possibly-unresolved-reference] sympy/solvers/ode/ode.py:1004:45: Name `deriv` used when possibly not defined
+- warning[possibly-unresolved-reference] sympy/solvers/ode/ode.py:1005:21: Name `deriv` used when possibly not defined
+- warning[possibly-unresolved-reference] sympy/solvers/ode/ode.py:1007:40: Name `deriv` used when possibly not defined
+- warning[possibly-unresolved-reference] sympy/solvers/ode/ode.py:1009:44: Name `new` used when possibly not defined
+- Found 12963 diagnostics
++ Found 12953 diagnostics
+
+</code></pre>
+</details>
+No memory usage changes detected ✅
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-07-23 08:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/resources/mdtest/exhaustiveness_checking.md</code>:1 on 2025-07-23 08:55</div>
+            <div class="timeline-body"><p>I added tests for <code>match</code> statements as well, but they don't work yet (see https://github.com/astral-sh/ty/issues/99#issuecomment-2983054488)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-23 09:00</div>
+            <div class="timeline-body"><!-- generated-comment ty ecosystem-analyzer -->
+
+<h2><code>ecosystem-analyzer</code> results</h2>
+<p>| Lint rule | Added | Removed | Changed |
+|-----------|------:|--------:|--------:|
+| <code>possibly-unresolved-reference</code> | 0 | 24 | 0 |
+| <code>invalid-return-type</code> | 0 | 4 | 0 |
+| <code>unresolved-attribute</code> | 0 | 3 | 0 |
+| <code>invalid-assignment</code> | 0 | 2 | 0 |
+| <strong>Total</strong> | <strong>0</strong> | <strong>33</strong> | <strong>0</strong> |</p>
+<p><strong><a href="https://david-isinstance-inference.ecosystem-663.pages.dev/diff">Full report with detailed diff</a></strong></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[ty] Type inference for `isinstance(…)` calls" to "[ty] Reachability analysis for `isinstance(…)` branches" by @sharkdp on 2025-07-23 09:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @sharkdp on 2025-07-23 09:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @sharkdp on 2025-07-23 09:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @sharkdp on 2025-07-23 09:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @sharkdp on 2025-07-23 09:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/function.rs</code>:1272 on 2025-07-23 09:28</div>
+            <div class="timeline-body"><p>we could possibly also set the return type to <code>Literal[False]</code> if <code>ClassType::could_coexist_in_mro_with()</code> returns <code>false</code> for the two classes (indicating that it would be impossible to create a class that subclasses both classes simultaneously):</p>
+<p>https://github.com/astral-sh/ruff/blob/b605c3e2327fbc7c16f7e26cdc1f53c47ce60344/crates/ty_python_semantic/src/types/class.rs#L492-L497</p>
+<p>doesn't have to be done in this PR, though</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/function.rs</code>:1321 on 2025-07-23 09:29</div>
+            <div class="timeline-body"><p>it might make sense to apply similar handling for <code>issubclass()</code> too, just for symmetry if for nothing else. But again, that doesn't have to be done in this PR</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/function.rs</code>:1268 on 2025-07-23 09:38</div>
+            <div class="timeline-body"><p>there are a number of other variants where we <em>could</em> plausibly return <code>true</code> here. Any inhabitant of a <code>Tuple</code> type is an instance of <code>tuple</code>; any inhabitant of a <code>ClassLiteral</code> type is an instance of <code>type</code>; any inhabitant of a <code>FunctionLiteral</code> type is an instance of <code>types.FunctionType</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/exhaustiveness_checking.md</code>:159 on 2025-07-23 09:43</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">            # this diagnostic is correct: the inferred type of `x` is `Literal[1]`:
+            assert_never(x)  # error: [type-assertion-failure]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/exhaustiveness_checking.md</code>:42 on 2025-07-23 09:44</div>
+            <div class="timeline-body"><p>this might help distinguish this from some of the undesirable diangostics in this file (having a deliberate <code>type-assertion-failure</code> diagnostic in an mdtest is a bit unusual!)</p>
+<pre><code class="language-suggestion">        # this diagnostic is correct: the inferred type of `x` is `Literal[1]`
+        assert_never(x)  # error: [type-assertion-failure]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/exhaustiveness_checking.md</code>:200 on 2025-07-23 09:45</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        # this diagnostic is correct: inferred type of `x` is `C`:
+        assert_never(x)  # error: [type-assertion-failure]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/exhaustiveness_checking.md</code>:237 on 2025-07-23 09:45</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">            # this diagnostic is correct: the inferred type of `x` is `B`:
+            assert_never(x)  # error: [type-assertion-failure]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-07-23 09:46</div>
+            <div class="timeline-body"><p>Nice!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-07-23 10:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types/function.rs</code>:1272 on 2025-07-23 10:09</div>
+            <div class="timeline-body"><p>Ah, interesting! I'm somehow assuming that negative answers will not yield a lot of benefit, but I might be wrong. Will evaluate this separately.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-07-23 10:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types/function.rs</code>:1321 on 2025-07-23 10:10</div>
+            <div class="timeline-body"><p>I did sort of a 80:20 thing here. We could do many sophisticated things, but I'm not sure if it's worth it? Might be quick to try out though, will evaluate separately.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-07-23 10:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types/function.rs</code>:1268 on 2025-07-23 10:12</div>
+            <div class="timeline-body"><p>Yes, I thought about it. It's a similar &quot;bang for the buck&quot; argument here, I guess. Can try to add a few more things, though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-07-23 10:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/function.rs</code>:1268 on 2025-07-23 10:18</div>
+            <div class="timeline-body"><p>we already have the &quot;this variant delegates to <em>this</em> nominal-instance type&quot; logic fully spelled out in <code>Type::has_relation_to()</code>. But we obviously can't easily reuse that delegation logic here, at least not without some (possibly painful) refactoring</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @sharkdp on 2025-07-23 10:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-07-23 10:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @sharkdp on 2025-07-23 10:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-07-23 10:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/function.rs</code>:946 on 2025-07-23 10:44</div>
+            <div class="timeline-body"><p>I think we can optimize the same way for function-literals as you did for tuples?</p>
+<pre><code class="language-suggestion">        Type::Tuple(..) =&gt; always_true_if(class.is_known(db, KnownClass::Tuple)),
+
+        Type::FunctionLiteral(..) =&gt; {
+            always_true_if(class.is_known(db, KnownClass::FunctionType))
+        }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/function.rs</code>:970 on 2025-07-23 10:46</div>
+            <div class="timeline-body"><p>I <em>do</em> think the fact that class-literals are all instances of <code>type</code> comes up fairly often, so I think that would be worth reflecting. (But the same is <a href="https://github.com/astral-sh/ty/issues/116">not true</a> for generic aliases, and thus we also can't apply the same logic to <code>SubclassOf</code> types either.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-07-23 10:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-07-23 10:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types/function.rs</code>:946 on 2025-07-23 10:51</div>
+            <div class="timeline-body"><p>I think the existing check for function literals is more general. It would also work for <code>isinstance(some_function, object)</code>. I had to rewrite the one for tuples because it didn't work the other way around (due to the representation of tuple instances, I think)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-07-23 10:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/function.rs</code>:946 on 2025-07-23 10:53</div>
+            <div class="timeline-body"><p>Aha, yet another reason for me to remove <code>Type::Tuple</code> entirely!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @sharkdp on 2025-07-23 10:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-07-23 10:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-07-23 10:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types/function.rs</code>:970 on 2025-07-23 10:59</div>
+            <div class="timeline-body"><p>Didn't yield any new ecosystem results, but doesn't hurt :smile: — thanks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @sharkdp on 2025-07-23 11:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-07-23 11:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-07-23 11:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-07-23 12:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/function.rs</code>:970 on 2025-07-23 12:22</div>
+            <div class="timeline-body"><p>For the record -- I experimented in https://github.com/astral-sh/ruff/pull/19507 with what it would look like to do a more exhaustive match here. No ecosystem hits at all, so I think you were right to choose a simpler route here :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-07-23 12:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types/function.rs</code>:970 on 2025-07-23 12:42</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:58:39 UTC
+    </footer>
+</body>
+</html>

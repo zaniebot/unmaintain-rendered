@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] synthesize `__replace__` for dataclasses (&gt;=3.13) - astral-sh/ruff #19545</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] synthesize <code>__replace__</code> for dataclasses (&gt;=3.13)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19545">#19545</a>
+        opened by <a href="https://github.com/thejchap">@thejchap</a>
+        on 2025-07-25 01:21
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/thejchap">@thejchap</a> on 2025-07-25 01:21</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>https://github.com/astral-sh/ty/issues/111</p>
+<p>adds support for the new <code>copy.replace</code> and <code>__replace__</code> protocol <a href="https://docs.python.org/3/whatsnew/3.13.html#copy">added in 3.13</a></p>
+<ul>
+<li>docs: https://docs.python.org/3/library/copy.html#object.<strong>replace</strong></li>
+<li>some discussion on pyright/mypy implementations: https://discuss.python.org/t/dataclass-transform-and-replace/69067</li>
+</ul>
+<h3>Burndown</h3>
+<ul>
+<li>[x] add tests</li>
+<li>[x] implement <code>__replace__</code><ul>
+<li>[ ] <a href="https://docs.python.org/3/library/collections.html#collections.namedtuple">collections.namedtuple()</a></li>
+<li>[x] <a href="https://docs.python.org/3/library/dataclasses.html#dataclasses.dataclass">dataclasses.dataclass</a></li>
+</ul>
+</li>
+</ul>
+<h2>Test Plan</h2>
+<p>new mdtests</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-25 01:25</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅
+No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[ty] synthesize __replace__ for >=3.13" to "[ty] synthesize `__replace__` for dataclasses (>=3.13)" by @thejchap on 2025-07-25 01:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-07-25 07:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-25 11:00</div>
+            <div class="timeline-body"><p>Thank you for working on this!!</p>
+<blockquote>
+<ul>
+<li><p><a href="https://docs.python.org/3/library/datetime.html#datetime.datetime">datetime.datetime</a>, <a href="https://docs.python.org/3/library/datetime.html#datetime.date">datetime.date</a>, <a href="https://docs.python.org/3/library/datetime.html#datetime.time">datetime.time</a></p>
+</li>
+<li><p>[ ]  <a href="https://docs.python.org/3/library/inspect.html#inspect.Signature">inspect.Signature</a>, <a href="https://docs.python.org/3/library/inspect.html#inspect.Parameter">inspect.Parameter</a></p>
+</li>
+<li><p>[ ]  <a href="https://docs.python.org/3/library/types.html#types.SimpleNamespace">types.SimpleNamespace</a></p>
+</li>
+<li><p>[ ]  <a href="https://docs.python.org/3/reference/datamodel.html#code-objects">code objects</a></p>
+</li>
+</ul>
+</blockquote>
+<p>Hmm, I'm not sure we need to implement special casing for any of these. Typeshed should already include <code>__replace__</code> methods for all of these in the stdlib stubs that we vendor, so no additional implementation from us <em>should</em> be required -- it should hopefully &quot;just work&quot;! I <em>think</em> the only cases where we need to add some special casing are named tuples and dataclasses, because for these very special types the methods are synthesized at runtime rather than being present in the source code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/thejchap">@thejchap</a> reviewed on 2025-07-26 03:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/thejchap">@thejchap</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:1675 on 2025-07-26 03:40</div>
+            <div class="timeline-body"><p>not sure this is the right way to model this...</p>
+<pre><code class="language-py">reveal_type(a.__replace__)
+
+# mypy: def (*, a: builtins.int =) -&gt; test.Test
+# ty: (*, a: int = int) -&gt; Test
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/thejchap">@thejchap</a> reviewed on 2025-07-26 03:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/thejchap">@thejchap</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:1597 on 2025-07-26 03:42</div>
+            <div class="timeline-body"><p>didn't feel like the cleanest way to toggle some of this behavior, open to suggestions...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @thejchap on 2025-07-26 03:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @thejchap on 2025-07-26 03:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @thejchap on 2025-07-26 03:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @thejchap on 2025-07-26 03:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @thejchap on 2025-07-26 03:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thejchap">@thejchap</a> on 2025-07-26 03:46</div>
+            <div class="timeline-body"><p>@AlexWaygood ready for some feedback on this one!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-07-28 07:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:1597 on 2025-07-28 07:50</div>
+            <div class="timeline-body"><p>I think you could maybe just check for <code>name == &quot;__replace__&quot;</code> instead of adding this <code>for_replace</code> flag.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/resources/mdtest/replace.md</code>:9 on 2025-07-28 07:53</div>
+            <div class="timeline-body"><p>If you move this block up to the top level <code># Replace</code> section, it will be active for all sub-sections. I think it makes sense to do this here, as every test will otherwise need to have one of these.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-07-28 07:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/resources/mdtest/replace.md</code>:45 on 2025-07-28 07:57</div>
+            <div class="timeline-body"><p>The benefit of modeling the signature of <code>__replace__</code> more precisely is that we would catch errors if you try to update a field with an incorrect value. So I think we should add a test for this. Something like</p>
+<pre><code class="language-suggestion">reveal_type(d)  # revealed: Point
+
+e = replace(a, x=&quot;wrong&quot;)  # error: [invalid-argument-type]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-07-28 07:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-07-28 07:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/resources/mdtest/replace.md</code>:49 on 2025-07-28 07:57</div>
+            <div class="timeline-body"><p>I think it's fine to drop this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:1675 on 2025-07-28 07:59</div>
+            <div class="timeline-body"><p>The type of the default value is not that important, and we're even thinking about removing this from the displayed signature (showing an actual value instead — if available. If none is available, like here, we could still display <code>= ...</code>). So what you have here seems fine. I would move the comment inside the <code>if</code> branch, though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-07-28 07:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-07-28 08:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:1749 on 2025-07-28 08:00</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">            (CodeGeneratorKind::DataclassLike, &quot;__replace__&quot;) if Program::get(db).python_version(db) &lt; PythonVersion::PY313 =&gt; {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> approved on 2025-07-28 08:00</div>
+            <div class="timeline-body"><p>Very nice — thank you. I added a couple of minor inline comments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-28 12:10</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on typing conformance tests</h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thejchap">@thejchap</a> on 2025-07-28 13:22</div>
+            <div class="timeline-body"><p>@sharkdp thanks! addressed most of your comments, and added a wip implementation of special handling of <code>copy.replace</code> <a href="https://github.com/astral-sh/ruff/pull/19545/files#diff-89ab607f2738327350b89c4bf98de6e4af15eb4cfdf55d3afc1cb71499928f88R952">here</a>. please let me know if that's on the right track</p>
+<p>if so, i'm fine to either merge as-is and complete that in a follow-on pr, or finish as part of this one</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/resources/mdtest/replace.md</code>:24 on 2025-07-29 06:54</div>
+            <div class="timeline-body"><p>Remove?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types/call/bind.rs</code>:953 on 2025-07-29 06:55</div>
+            <div class="timeline-body"><p>I don't think the version check is necessary here. If we have a <code>KnownFunction::Replace</code>, that should be enough evidence?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types/call/bind.rs</code>:955 on 2025-07-29 06:56</div>
+            <div class="timeline-body"><p>Should this be</p>
+<pre><code class="language-suggestion">                            let [Some(instance_ty), ..] = overload.parameter_types() else {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types/call/bind.rs</code>:980 on 2025-07-29 07:04</div>
+            <div class="timeline-body"><p>As an upfront comment: I don't think it's particularly important that we support this feature (issuing <code>invalid-argument-type</code> for invalid <code>replace(…)</code> calls). So if this turns out to be complicated to get right, I think we should just drop the feature.</p>
+<p>Instead of querying the signature of <code>__replace__</code>, I think we should try to actually call the <code>__replace__</code> dunder method via <code>try_call_dunder</code>, and then bubble up any call errors as diagnostics via <code>overload.errors.push</code>, similar to what we do in the <code>Type::MethodWrapper(MethodWrapperKind::PropertyDunderGet(property))</code> branch, for example.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:1762 on 2025-07-29 07:05</div>
+            <div class="timeline-body"><p>Minor: extract <code>Type::instance(db, self.apply_optional_specialization(db, specialization)</code> into a variable since it's used twice?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types/function.rs</code>:1141 on 2025-07-29 07:06</div>
+            <div class="timeline-body"><p>Similar here. Is the version check really required? Prior to 3.13, the function will just not be available in that module, so I think it's fine to just check the module</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-07-29 07:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thejchap">@thejchap</a> on 2025-07-29 12:13</div>
+            <div class="timeline-body"><p>@sharkdp thanks - i pulled out the <code>invalid-argument-type</code> logic for invalid <code>replace(…)</code> calls for now. i might work on this more in another pr</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> approved on 2025-07-29 15:22</div>
+            <div class="timeline-body"><p>Thank you very much. I made a few minor adjustments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @sharkdp on 2025-07-29 15:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-07-29 15:32</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:58:39 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Implement support for respecting return type of __new__ - astral-sh/ruff #18125</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Implement support for respecting return type of <strong>new</strong></h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/18125">#18125</a>
+        opened by <a href="https://github.com/rowillia">@rowillia</a>
+        on 2025-05-15 22:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/rowillia">@rowillia</a> on 2025-05-15 22:55</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/ty/issues/281</p>
+<h2>Summary</h2>
+<p>Previously <code>ty</code> didn't respect the return type of <code>__new__</code> when type checking, which is used by libraries like trio widely https://github.com/astral-sh/ty/issues/385</p>
+<h2>Test Plan</h2>
+<p>Added test cases</p>
+<p>This also required changing the types of some existing test cases which brought the behavior closer to in line with pyright after feedback from @JelleZijlstra in Discord.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @rowillia on 2025-05-15 22:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @rowillia on 2025-05-15 22:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @rowillia on 2025-05-15 22:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @rowillia on 2025-05-15 22:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-05-15 23:27</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">pybind11 (https://github.com/pybind/pybind11)
+- error[non-subscriptable] tests/test_sequences_and_iterators.py:149:5: Cannot subscript object of type `reversed[Unknown]` with no `__getitem__` method
++ error[non-subscriptable] tests/test_sequences_and_iterators.py:149:5: Cannot subscript object of type `Iterator[Unknown]` with no `__getitem__` method
+
+nox (https://github.com/wntrblm/nox)
++ error[invalid-return-type] nox/_decorators.py:102:16: Return type does not match returned value: expected `Func`, found `FunctionDecorator`
++ warning[possibly-unbound-attribute] nox/manifest.py:248:27: Attribute `copy` on type `Unknown | FunctionDecorator` is possibly unbound
++ error[invalid-argument-type] nox/manifest.py:379:31: Argument to bound method `__init__` is incorrect: Expected `Func`, found `Unknown | FunctionDecorator`
++ error[invalid-return-type] nox/registry.py:121:12: Return type does not match returned value: expected `Func | ((@Todo(Inference of subscript on special form) | Func, /) -&gt; Func)`, found `FunctionDecorator`
+- Found 39 diagnostics
++ Found 43 diagnostics
+
+graphql-core (https://github.com/graphql-python/graphql-core)
++ error[invalid-assignment] src/graphql/type/introspection.py:100:1: Object of type `GraphQLNamedType` is not assignable to `GraphQLObjectType`
++ error[invalid-assignment] src/graphql/type/introspection.py:168:1: Object of type `GraphQLNamedType` is not assignable to `GraphQLObjectType`
++ error[invalid-assignment] src/graphql/type/introspection.py:181:1: Object of type `GraphQLNamedType` is not assignable to `GraphQLEnumType`
++ error[invalid-assignment] src/graphql/type/introspection.py:405:1: Object of type `GraphQLNamedType` is not assignable to `GraphQLObjectType`
++ error[invalid-assignment] src/graphql/type/introspection.py:476:1: Object of type `GraphQLNamedType` is not assignable to `GraphQLObjectType`
++ error[invalid-assignment] src/graphql/type/introspection.py:537:1: Object of type `GraphQLNamedType` is not assignable to `GraphQLObjectType`
++ error[invalid-assignment] src/graphql/type/introspection.py:581:1: Object of type `GraphQLNamedType` is not assignable to `GraphQLObjectType`
++ error[invalid-assignment] src/graphql/type/introspection.py:604:1: Object of type `GraphQLNamedType` is not assignable to `GraphQLEnumType`
++ error[invalid-return-type] src/graphql/utilities/build_client_schema.py:153:20: Return type does not match returned value: expected `GraphQLScalarType`, found `GraphQLNamedType`
++ error[invalid-return-type] src/graphql/utilities/build_client_schema.py:184:20: Return type does not match returned value: expected `GraphQLObjectType`, found `GraphQLNamedType`
++ error[invalid-return-type] src/graphql/utilities/build_client_schema.py:194:16: Return type does not match returned value: expected `GraphQLInterfaceType`, found `GraphQLNamedType`
++ error[invalid-return-type] src/graphql/utilities/build_client_schema.py:214:16: Return type does not match returned value: expected `GraphQLUnionType`, found `GraphQLNamedType`
++ error[invalid-return-type] src/graphql/utilities/build_client_schema.py:231:20: Return type does not match returned value: expected `GraphQLEnumType`, found `GraphQLNamedType`
++ error[invalid-return-type] src/graphql/utilities/build_client_schema.py:253:16: Return type does not match returned value: expected `GraphQLInputObjectType`, found `GraphQLNamedType`
++ error[invalid-return-type] src/graphql/utilities/extend_schema.py:699:16: Return type does not match returned value: expected `GraphQLObjectType`, found `GraphQLNamedType`
++ error[invalid-return-type] src/graphql/utilities/extend_schema.py:718:16: Return type does not match returned value: expected `GraphQLInterfaceType`, found `GraphQLNamedType`
++ error[invalid-return-type] src/graphql/utilities/extend_schema.py:734:16: Return type does not match returned value: expected `GraphQLEnumType`, found `GraphQLNamedType`
++ error[invalid-return-type] src/graphql/utilities/extend_schema.py:749:16: Return type does not match returned value: expected `GraphQLUnionType`, found `GraphQLNamedType`
++ error[invalid-return-type] src/graphql/utilities/extend_schema.py:762:16: Return type does not match returned value: expected `GraphQLScalarType`, found `GraphQLNamedType`
++ error[invalid-return-type] src/graphql/utilities/extend_schema.py:779:16: Return type does not match returned value: expected `GraphQLInputObjectType`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/benchmarks/test_execution_async.py:28:5: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/benchmarks/test_execution_sync.py:26:5: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/benchmarks/test_repeated_fields.py:10:5: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_abstract.py:119:13: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_abstract.py:183:13: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_abstract.py:244:13: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_abstract.py:301:13: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_abstract.py:367:13: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_customize.py:23:13: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_customize.py:39:13: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_customize.py:84:13: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_customize.py:85:13: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_customize.py:129:13: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_customize.py:130:13: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_defer.py:138:24: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_directives.py:6:5: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_executor.py:35:13: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-assignment] tests/execution/test_executor.py:115:9: Object of type `GraphQLNamedType` is not assignable to `GraphQLObjectType`
++ error[invalid-argument-type] tests/execution/test_executor.py:158:27: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_executor.py:197:32: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_executor.py:240:32: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_executor.py:292:32: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_executor.py:332:13: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_executor.py:351:13: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_executor.py:399:13: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_executor.py:533:13: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_executor.py:589:13: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_executor.py:624:13: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_executor.py:638:13: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_executor.py:652:13: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_executor.py:670:13: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_executor.py:683:13: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_executor.py:706:13: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_executor.py:724:13: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_executor.py:737:13: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_executor.py:738:13: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_executor.py:739:13: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_executor.py:759:13: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_executor.py:760:13: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_executor.py:779:13: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_executor.py:780:13: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_executor.py:799:13: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_executor.py:815:13: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_executor.py:875:13: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_executor.py:914:13: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_executor.py:942:13: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_executor.py:952:13: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_executor.py:963:13: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_executor.py:1019:13: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_executor.py:1052:13: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_executor.py:1077:13: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_executor.py:1093:13: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_executor.py:1116:13: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_lists.py:153:13: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_middleware.py:27:31: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_middleware.py:56:31: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_middleware.py:89:31: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_middleware.py:119:31: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_middleware.py:151:31: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_middleware.py:162:21: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_middleware.py:194:31: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_middleware.py:200:31: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_middleware.py:227:31: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_middleware.py:235:31: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_middleware.py:267:36: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_middleware.py:267:53: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_middleware.py:293:44: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_middleware.py:309:44: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_middleware.py:323:35: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_middleware.py:363:31: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_mutations.py:72:5: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_mutations.py:73:5: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_nonnull.py:515:13: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_parallel.py:42:13: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_parallel.py:64:13: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_parallel.py:89:13: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_parallel.py:112:13: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_parallel.py:160:13: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_resolve.py:23:30: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_resolve.py:246:32: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-assignment] tests/execution/test_schema.py:62:9: Object of type `GraphQLNamedType` is not assignable to `GraphQLObjectType`
++ error[invalid-argument-type] tests/execution/test_schema.py:90:36: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_stream.py:87:24: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_subscribe.py:105:5: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_subscribe.py:106:5: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_subscribe.py:178:9: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `Unknown | GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_subscribe.py:179:9: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_subscribe.py:224:13: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `Unknown | GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_subscribe.py:225:13: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_subscribe.py:252:13: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `Unknown | GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_subscribe.py:253:13: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_subscribe.py:277:13: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `Unknown | GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_subscribe.py:278:13: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_subscribe.py:307:13: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `Unknown | GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_subscribe.py:308:13: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_subscribe.py:331:32: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `Unknown | GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_subscribe.py:350:13: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `Unknown | GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_subscribe.py:351:13: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_subscribe.py:371:13: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `Unknown | GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_subscribe.py:372:13: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_subscribe.py:454:13: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `Unknown | GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_subscribe.py:455:13: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_subscribe.py:1009:13: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `Unknown | GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_subscribe.py:1010:13: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_subscribe.py:1054:13: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `Unknown | GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_subscribe.py:1055:13: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_subscribe.py:1090:13: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `Unknown | GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_subscribe.py:1091:13: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_subscribe.py:1120:13: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `Unknown | GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_subscribe.py:1121:13: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_subscribe.py:1163:13: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `Unknown | GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_subscribe.py:1164:13: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_subscribe.py:1218:13: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `Unknown | GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_subscribe.py:1219:13: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_sync.py:21:9: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_sync.py:28:9: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_union_interface.py:133:24: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_union_interface.py:509:33: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/execution/test_variables.py:154:24: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/pyutils/test_description.py:193:32: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/pyutils/test_description.py:229:32: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-assignment] tests/star_wars_schema.py:97:1: Object of type `GraphQLNamedType` is not assignable to `GraphQLInterfaceType`
++ error[invalid-assignment] tests/star_wars_schema.py:134:1: Object of type `GraphQLNamedType` is not assignable to `GraphQLObjectType`
++ error[invalid-assignment] tests/star_wars_schema.py:175:1: Object of type `GraphQLNamedType` is not assignable to `GraphQLObjectType`
++ error[invalid-argument-type] tests/star_wars_schema.py:256:34: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/test_user_registry.py:171:5: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/test_user_registry.py:179:5: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/test_user_registry.py:202:5: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
+- error[missing-argument] tests/type/test_definition.py:152:16: No argument provided for required parameter `node` of function `parse_literal`
+- error[missing-argument] tests/type/test_definition.py:154:13: No argument provided for required parameter `node` of function `parse_literal`
+- error[invalid-argument-type] tests/type/test_definition.py:158:72: Argument to function `parse_literal` is incorrect: Expected `ValueNode`, found `dict[Unknown, Unknown]`
++ error[invalid-argument-type] tests/type/test_custom_scalars.py:85:5: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[unresolved-attribute] tests/type/test_definition.py:100:16: Type `GraphQLNamedType` has no attribute `serialize`
++ error[unresolved-attribute] tests/type/test_definition.py:112:16: Type `GraphQLNamedType` has no attribute `specified_by_url`
++ error[unresolved-attribute] tests/type/test_definition.py:125:16: Type `GraphQLNamedType` has no attribute `parse_value`
++ error[unresolved-attribute] tests/type/test_definition.py:126:16: Type `GraphQLNamedType` has no attribute `parse_literal`
++ error[unresolved-attribute] tests/type/test_definition.py:135:16: Type `GraphQLNamedType` has no attribute `serialize`
++ error[unresolved-attribute] tests/type/test_definition.py:136:16: Type `GraphQLNamedType` has no attribute `parse_value`
++ error[unresolved-attribute] tests/type/test_definition.py:152:16: Type `GraphQLNamedType` has no attribute `parse_literal`
++ error[unresolved-attribute] tests/type/test_definition.py:154:13: Type `GraphQLNamedType` has no attribute `parse_literal`
++ error[unresolved-attribute] tests/type/test_definition.py:158:13: Type `GraphQLNamedType` has no attribute `parse_literal`
++ error[unresolved-attribute] tests/type/test_definition.py:267:16: Type `GraphQLNamedType` has no attribute `fields`
++ error[unresolved-attribute] tests/type/test_definition.py:268:16: Type `GraphQLNamedType` has no attribute `fields`
++ error[unresolved-attribute] tests/type/test_definition.py:269:16: Type `GraphQLNamedType` has no attribute `interfaces`
++ error[unresolved-attribute] tests/type/test_definition.py:270:16: Type `GraphQLNamedType` has no attribute `interfaces`
++ error[unresolved-attribute] tests/type/test_definition.py:295:16: Type `GraphQLNamedType` has no attribute `fields`
++ error[unresolved-attribute] tests/type/test_definition.py:295:40: Type `GraphQLNamedType` has no attribute `fields`
++ error[unresolved-attribute] tests/type/test_definition.py:311:16: Type `GraphQLNamedType` has no attribute `fields`
++ error[unresolved-attribute] tests/type/test_definition.py:311:46: Type `GraphQLNamedType` has no attribute `fields`
++ error[unresolved-attribute] tests/type/test_definition.py:326:28: Type `GraphQLNamedType` has no attribute `fields`
++ error[unresolved-attribute] tests/type/test_definition.py:332:28: Type `GraphQLNamedType` has no attribute `fields`
++ error[unresolved-attribute] tests/type/test_definition.py:339:21: Type `GraphQLNamedType` has no attribute `fields`
++ error[unresolved-attribute] tests/type/test_definition.py:340:17: Type `GraphQLNamedType` has no attribute `fields`
++ error[unresolved-attribute] tests/type/test_definition.py:350:21: Type `GraphQLNamedType` has no attribute `fields`
++ error[unresolved-attribute] tests/type/test_definition.py:351:17: Type `GraphQLNamedType` has no attribute `fields`
++ error[unresolved-attribute] tests/type/test_definition.py:371:23: Type `GraphQLNamedType` has no attribute `fields`
++ error[unresolved-attribute] tests/type/test_definition.py:381:17: Type `GraphQLNamedType` has no attribute `fields`
++ error[unresolved-attribute] tests/type/test_definition.py:403:16: Type `GraphQLNamedType` has no attribute `interfaces`
++ error[unresolved-attribute] tests/type/test_definition.py:407:16: Type `GraphQLNamedType` has no attribute `interfaces`
++ error[unresolved-attribute] tests/type/test_definition.py:418:16: Type `GraphQLNamedType` has no attribute `interfaces`
++ error[unresolved-attribute] tests/type/test_definition.py:433:16: Type `GraphQLNamedType` has no attribute `fields`
++ error[unresolved-attribute] tests/type/test_definition.py:475:24: Type `GraphQLNamedType` has no attribute `fields`
++ error[unresolved-attribute] tests/type/test_definition.py:485:24: Type `GraphQLNamedType` has no attribute `fields`
++ error[unresolved-attribute] tests/type/test_definition.py:498:24: Type `GraphQLNamedType` has no attribute `fields`
++ error[unresolved-attribute] tests/type/test_definition.py:511:24: Type `GraphQLNamedType` has no attribute `interfaces`
++ error[unresolved-attribute] tests/type/test_definition.py:520:16: Type `GraphQLNamedType` has no attribute `fields`
++ error[unresolved-attribute] tests/type/test_definition.py:521:16: Type `GraphQLNamedType` has no attribute `fields`
++ error[unresolved-attribute] tests/type/test_definition.py:522:16: Type `GraphQLNamedType` has no attribute `resolve_type`
++ error[unresolved-attribute] tests/type/test_definition.py:543:16: Type `GraphQLNamedType` has no attribute `resolve_type`
++ error[unresolved-attribute] tests/type/test_definition.py:550:18: Type `GraphQLNamedType` has no attribute `fields`
++ error[unresolved-attribute] tests/type/test_definition.py:560:16: Type `GraphQLNamedType` has no attribute `fields`
++ error[unresolved-attribute] tests/type/test_definition.py:571:23: Type `GraphQLNamedType` has no attribute `fields`
++ error[unresolved-attribute] tests/type/test_definition.py:580:16: Type `GraphQLNamedType` has no attribute `interfaces`
++ error[unresolved-attribute] tests/type/test_definition.py:586:16: Type `GraphQLNamedType` has no attribute `interfaces`
++ error[unresolved-attribute] tests/type/test_definition.py:599:16: Type `GraphQLNamedType` has no attribute `interfaces`
++ error[unresolved-attribute] tests/type/test_definition.py:622:24: Type `GraphQLNamedType` has no attribute `fields`
++ error[unresolved-attribute] tests/type/test_definition.py:641:24: Type `GraphQLNamedType` has no attribute `interfaces`
++ error[unresolved-attribute] tests/type/test_definition.py:654:16: Type `GraphQLNamedType` has no attribute `types`
++ error[unresolved-attribute] tests/type/test_definition.py:658:16: Type `GraphQLNamedType` has no attribute `types`
++ error[unresolved-attribute] tests/type/test_definition.py:667:16: Type `GraphQLNamedType` has no attribute `types`
++ error[unresolved-attribute] tests/type/test_definition.py:669:16: Type `GraphQLNamedType` has no attribute `types`
++ error[unresolved-attribute] tests/type/test_definition.py:699:24: Type `GraphQLNamedType` has no attribute `types`
++ error[unresolved-attribute] tests/type/test_definition.py:706:16: Type `GraphQLNamedType` has no attribute `values`
++ error[unresolved-attribute] tests/type/test_definition.py:714:16: Type `GraphQLNamedType` has no attribute `values`
++ error[unresolved-attribute] tests/type/test_definition.py:719:16: Type `GraphQLNamedType` has no attribute `values`
++ error[unresolved-attribute] tests/type/test_definition.py:727:16: Type `GraphQLNamedType` has no attribute `values`
++ error[unresolved-attribute] tests/type/test_definition.py:735:16: Type `GraphQLNamedType` has no attribute `values`
++ error[unresolved-attribute] tests/type/test_definition.py:743:16: Type `GraphQLNamedType` has no attribute `values`
++ error[unresolved-attribute] tests/type/test_definition.py:764:28: Type `GraphQLNamedType` has no attribute `values`
++ error[unresolved-attribute] tests/type/test_definition.py:777:21: Type `GraphQLNamedType` has no attribute `values`
++ error[unresolved-attribute] tests/type/test_definition.py:782:22: Type `GraphQLNamedType` has no attribute `values`
++ error[unresolved-attribute] tests/type/test_definition.py:788:22: Type `GraphQLNamedType` has no attribute `values`
++ error[unresolved-attribute] tests/type/test_definition.py:794:27: Type `GraphQLNamedType` has no attribute `values`
++ error[unresolved-attribute] tests/type/test_definition.py:803:16: Type `GraphQLNamedType` has no attribute `values`
++ error[unresolved-attribute] tests/type/test_definition.py:804:16: Type `GraphQLNamedType` has no attribute `values`
++ error[unresolved-attribute] tests/type/test_definition.py:808:16: Type `GraphQLNamedType` has no attribute `values`
++ error[unresolved-attribute] tests/type/test_definition.py:809:16: Type `GraphQLNamedType` has no attribute `values`
++ error[unresolved-attribute] tests/type/test_definition.py:813:16: Type `GraphQLNamedType` has no attribute `values`
++ error[unresolved-attribute] tests/type/test_definition.py:814:16: Type `GraphQLNamedType` has no attribute `values`
++ error[unresolved-attribute] tests/type/test_definition.py:820:16: Type `GraphQLNamedType` has no attribute `values`
++ error[unresolved-attribute] tests/type/test_definition.py:821:16: Type `GraphQLNamedType` has no attribute `values`
++ error[unresolved-attribute] tests/type/test_definition.py:822:16: Type `GraphQLNamedType` has no attribute `values`
++ error[unresolved-attribute] tests/type/test_definition.py:824:13: Type `GraphQLNamedType` has no attribute `serialize`
++ error[unresolved-attribute] tests/type/test_definition.py:828:13: Type `GraphQLNamedType` has no attribute `serialize`
++ error[unresolved-attribute] tests/type/test_definition.py:831:16: Type `GraphQLNamedType` has no attribute `serialize`
++ error[unresolved-attribute] tests/type/test_definition.py:833:13: Type `GraphQLNamedType` has no attribute `serialize`
++ error[unresolved-attribute] tests/type/test_definition.py:836:16: Type `GraphQLNamedType` has no attribute `serialize`
++ error[unresolved-attribute] tests/type/test_definition.py:838:13: Type `GraphQLNamedType` has no attribute `serialize`
++ error[unresolved-attribute] tests/type/test_definition.py:841:16: Type `GraphQLNamedType` has no attribute `serialize`
++ error[unresolved-attribute] tests/type/test_definition.py:843:13: Type `GraphQLNamedType` has no attribute `serialize`
++ error[unresolved-attribute] tests/type/test_definition.py:847:13: Type `GraphQLNamedType` has no attribute `serialize`
++ error[unresolved-attribute] tests/type/test_definition.py:853:16: Type `GraphQLNamedType` has no attribute `values`
++ error[unresolved-attribute] tests/type/test_definition.py:854:16: Type `GraphQLNamedType` has no attribute `values`
++ error[unresolved-attribute] tests/type/test_definition.py:855:16: Type `GraphQLNamedType` has no attribute `serialize`
++ error[unresolved-attribute] tests/type/test_definition.py:861:16: Type `GraphQLNamedType` has no attribute `parse_value`
++ error[unresolved-attribute] tests/type/test_definition.py:863:13: Type `GraphQLNamedType` has no attribute `parse_value`
++ error[unresolved-attribute] tests/type/test_definition.py:866:16: Type `GraphQLNamedType` has no attribute `parse_value`
++ error[unresolved-attribute] tests/type/test_definition.py:872:16: Type `GraphQLNamedType` has no attribute `parse_value`
++ error[unresolved-attribute] tests/type/test_definition.py:873:16: Type `GraphQLNamedType` has no attribute `parse_literal`
++ error[unresolved-attribute] tests/type/test_definition.py:875:13: Type `GraphQLNamedType` has no attribute `parse_literal`
++ error[unresolved-attribute] tests/type/test_definition.py:881:13: Type `GraphQLNamedType` has no attribute `parse_literal`
++ error[unresolved-attribute] tests/type/test_definition.py:884:16: Type `GraphQLNamedType` has no attribute `parse_literal`
++ error[unresolved-attribute] tests/type/test_definition.py:886:13: Type `GraphQLNamedType` has no attribute `parse_literal`
++ error[unresolved-attribute] tests/type/test_definition.py:891:16: Type `GraphQLNamedType` has no attribute `parse_literal`
++ error[unresolved-attribute] tests/type/test_definition.py:893:13: Type `GraphQLNamedType` has no attribute `parse_literal`
++ error[unresolved-attribute] tests/type/test_definition.py:1012:16: Type `GraphQLNamedType` has no attribute `out_type`
++ error[unresolved-attribute] tests/type/test_definition.py:1018:16: Type `GraphQLNamedType` has no attribute `out_type`
++ error[unresolved-attribute] tests/type/test_definition.py:1038:25: Type `GraphQLNamedType` has no attribute `fields`
++ error[unresolved-attribute] tests/type/test_definition.py:1039:27: Type `GraphQLNamedType` has no attribute `fields`
++ error[unresolved-attribute] tests/type/test_definition.py:1055:21: Type `GraphQLNamedType` has no attribute `fields`
++ error[unresolved-attribute] tests/type/test_definition.py:1063:25: Type `GraphQLNamedType` has no attribute `fields`
++ error[unresolved-attribute] tests/type/test_definition.py:1064:27: Type `GraphQLNamedType` has no attribute `fields`
++ error[unresolved-attribute] tests/type/test_definition.py:1102:28: Type `GraphQLNamedType` has no attribute `fields`
++ error[unresolved-attribute] tests/type/test_definition.py:1114:28: Type `GraphQLNamedType` has no attribute `fields`
++ error[unresolved-attribute] tests/type/test_definition.py:1192:28: Type `GraphQLNamedType` has no attribute `fields`
+- error[missing-argument] tests/type/test_scalars.py:60:24: No argument provided for required parameter `node` of function `parse_literal`
+- error[missing-argument] tests/type/test_scalars.py:222:24: No argument provided for required parameter `node` of function `parse_literal`
+- error[missing-argument] tests/type/test_scalars.py:348:24: No argument provided for required parameter `node` of function `parse_literal`
+- error[missing-argument] tests/type/test_scalars.py:471:24: No argument provided for required parameter `node` of function `parse_literal`
+- error[missing-argument] tests/type/test_scalars.py:616:24: No argument provided for required parameter `node` of function `parse_literal`
+- warning[unused-ignore-comment] tests/type/test_schema.py:385:52: Unused blanket `type: ignore` directive
++ error[invalid-argument-type] tests/type/test_enum.py:114:5: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/type/test_enum.py:114:22: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/type/test_enum.py:114:45: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ warning[possibly-unbound-attribute] tests/type/test_enum.py:124:16: Attribute `values` on type `Unknown | GraphQLNamedType` is possibly unbound
++ warning[possibly-unbound-attribute] tests/type/test_enum.py:124:37: Attribute `values` on type `Unknown | GraphQLNamedType` is possibly unbound
++ warning[possibly-unbound-attribute] tests/type/test_enum.py:125:21: Attribute `values` on type `Unknown | GraphQLNamedType` is possibly unbound
++ warning[possibly-unbound-attribute] tests/type/test_enum.py:126:22: Attribute `values` on type `Unknown | GraphQLNamedType` is possibly unbound
++ warning[possibly-unbound-attribute] tests/type/test_enum.py:128:44: Attribute `values` on type `Unknown | GraphQLNamedType` is possibly unbound
++ warning[possibly-unbound-attribute] tests/type/test_enum.py:129:45: Attribute `values` on type `Unknown | GraphQLNamedType` is possibly unbound
++ warning[possibly-unbound-attribute] tests/type/test_enum.py:318:18: Attribute `values` on type `Unknown | GraphQLNamedType` is possibly unbound
++ error[unresolved-attribute] tests/type/test_extensions.py:52:26: Type `GraphQLNamedType` has no attribute `fields`
++ error[unresolved-attribute] tests/type/test_extensions.py:83:26: Type `GraphQLNamedType` has no attribute `fields`
++ error[unresolved-attribute] tests/type/test_extensions.py:104:26: Type `GraphQLNamedType` has no attribute `fields`
++ error[unresolved-attribute] tests/type/test_extensions.py:135:26: Type `GraphQLNamedType` has no attribute `fields`
++ error[unresolved-attribute] tests/type/test_extensions.py:166:26: Type `GraphQLNamedType` has no attribute `values`
++ error[unresolved-attribute] tests/type/test_extensions.py:183:26: Type `GraphQLNamedType` has no attribute `values`
++ error[unresolved-attribute] tests/type/test_extensions.py:196:32: Type `GraphQLNamedType` has no attribute `fields`
++ error[unresolved-attribute] tests/type/test_extensions.py:217:32: Type `GraphQLNamedType` has no attribute `fields`
++ warning[possibly-unbound-attribute] tests/type/test_scalars.py:23:28: Attribute `parse_value` on type `Unknown | GraphQLNamedType` is possibly unbound
++ warning[possibly-unbound-attribute] tests/type/test_scalars.py:60:24: Attribute `parse_literal` on type `Unknown | GraphQLNamedType` is possibly unbound
++ warning[possibly-unbound-attribute] tests/type/test_scalars.py:108:25: Attribute `serialize` on type `Unknown | GraphQLNamedType` is possibly unbound
++ warning[possibly-unbound-attribute] tests/type/test_scalars.py:186:28: Attribute `parse_value` on type `Unknown | GraphQLNamedType` is possibly unbound
++ warning[possibly-unbound-attribute] tests/type/test_scalars.py:222:24: Attribute `parse_literal` on type `Unknown | GraphQLNamedType` is possibly unbound
++ warning[possibly-unbound-attribute] tests/type/test_scalars.py:269:25: Attribute `serialize` on type `Unknown | GraphQLNamedType` is possibly unbound
++ warning[possibly-unbound-attribute] tests/type/test_scalars.py:318:28: Attribute `parse_value` on type `Unknown | GraphQLNamedType` is possibly unbound
++ warning[possibly-unbound-attribute] tests/type/test_scalars.py:348:24: Attribute `parse_literal` on type `Unknown | GraphQLNamedType` is possibly unbound
++ warning[possibly-unbound-attribute] tests/type/test_scalars.py:389:25: Attribute `serialize` on type `Unknown | GraphQLNamedType` is possibly unbound
++ warning[possibly-unbound-attribute] tests/type/test_scalars.py:433:28: Attribute `parse_value` on type `Unknown | GraphQLNamedType` is possibly unbound
++ warning[possibly-unbound-attribute] tests/type/test_scalars.py:471:24: Attribute `parse_literal` on type `Unknown | GraphQLNamedType` is possibly unbound
++ warning[possibly-unbound-attribute] tests/type/test_scalars.py:533:25: Attribute `serialize` on type `Unknown | GraphQLNamedType` is possibly unbound
++ warning[possibly-unbound-attribute] tests/type/test_scalars.py:584:28: Attribute `parse_value` on type `Unknown | GraphQLNamedType` is possibly unbound
++ warning[possibly-unbound-attribute] tests/type/test_scalars.py:616:24: Attribute `parse_literal` on type `Unknown | GraphQLNamedType` is possibly unbound
++ warning[possibly-unbound-attribute] tests/type/test_scalars.py:667:25: Attribute `serialize` on type `Unknown | GraphQLNamedType` is possibly unbound
++ error[invalid-assignment] tests/type/test_schema.py:67:9: Object of type `GraphQLNamedType` is not assignable to `GraphQLObjectType`
++ error[invalid-argument-type] tests/type/test_schema.py:102:13: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/type/test_schema.py:103:13: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/type/test_schema.py:104:13: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/type/test_schema.py:184:17: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/type/test_schema.py:216:17: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/type/test_schema.py:266:32: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/type/test_schema.py:304:32: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/type/test_schema.py:304:44: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/type/test_schema.py:304:59: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ warning[possibly-unbound-attribute] tests/type/test_schema.py:309:52: Attribute `fields` on type `Unknown | GraphQLNamedType` is possibly unbound
++ warning[possibly-unbound-attribute] tests/type/test_schema.py:310:52: Attribute `fields` on type `Unknown | GraphQLNamedType` is possibly unbound
++ warning[possibly-unbound-attribute] tests/type/test_schema.py:312:58: Attribute `fields` on type `Unknown | GraphQLNamedType` is possibly unbound
++ error[invalid-argument-type] tests/type/test_schema.py:373:31: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/type/test_schema.py:416:31: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/type/test_schema.py:433:17: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/type/test_validation.py:115:9: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/type/test_validation.py:1005:13: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[unresolved-attribute] tests/type/test_validation.py:1073:9: Unresolved attribute `interfaces` on type `GraphQLNamedType`.
++ error[invalid-argument-type] tests/type/test_validation.py:1074:32: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/type/test_validation.py:1300:13: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/type/test_validation.py:1408:13: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/type/test_validation.py:1524:13: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/utilities/test_build_client_schema.py:372:13: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/utilities/test_introspection_from_schema.py:26:9: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/utilities/test_print_schema.py:45:26: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/utilities/test_print_schema.py:293:48: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/utilities/test_print_schema.py:309:13: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/utilities/test_print_schema.py:310:13: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/utilities/test_print_schema.py:311:13: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/utilities/test_print_schema.py:325:32: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/utilities/test_print_schema.py:338:32: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/utilities/test_print_schema.py:351:32: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/utilities/test_print_schema.py:448:32: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/utilities/test_print_schema.py:631:13: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/utilities/test_type_comparators.py:45:17: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/utils/viral_schema.py:34:30: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/validation/test_values_of_correct_type.py:1045:17: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/validation/test_values_of_correct_type.py:1077:17: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
++ error[invalid-argument-type] tests/validation/test_values_of_correct_type.py:1101:17: Argument to bound method `__init__` is incorrect: Expected `GraphQLObjectType | None`, found `GraphQLNamedType`
+- Found 412 diagnostics
++ Found 728 diagnostics
+
+isort (https://github.com/pycqa/isort)
+- warning[possibly-unbound-attribute] isort/deprecated/finders.py:81:31: Attribute `lower` on type `Unknown | None` is possibly unbound
+- Found 54 diagnostics
++ Found 53 diagnostics
+
+mkdocs (https://github.com/mkdocs/mkdocs)
++ error[unresolved-attribute] mkdocs/config/base.py:387:10: Type `Config` has no attribute `strict`
++ error[invalid-return-type] mkdocs/config/base.py:392:12: Return type does not match returned value: expected `MkDocsConfig`, found `Config`
++ error[invalid-return-type] mkdocs/tests/base.py:41:12: Return type does not match returned value: expected `MkDocsConfig`, found `Config`
++ error[invalid-return-type] mkdocs/tests/structure/page_tests.py:33:12: Return type does not match returned value: expected `MkDocsConfig`, found `Config`
+- Found 347 diagnostics
++ Found 351 diagnostics
+
+mypy (https://github.com/python/mypy)
++ warning[possibly-unbound-attribute] mypyc/irbuild/classdef.py:731:57: Attribute `fullname` on type `(Unknown &amp; Expression) | Expression` is possibly unbound
+- Found 3360 diagnostics
++ Found 3361 diagnostics
+
+aiohttp (https://github.com/aio-libs/aiohttp)
+- error[invalid-return-type] aiohttp/web_request.py:597:16: Return type does not match returned value: expected `slice[int, int, int]`, found `slice[Any, _StartT_co, _StartT_co | _StopT_co]`
++ error[invalid-return-type] aiohttp/web_request.py:597:16: Return type does not match returned value: expected `slice[int, int, int]`, found `slice[None | int, None | int, Literal[1]]`
+
+sympy (https://github.com/sympy/sympy)
++ error[missing-argument] sympy/functions/special/error_functions.py:2732:20: No argument provided for required parameter `cdir` of bound method `_eval_nseries`
++ error[missing-argument] sympy/functions/special/error_functions.py:2743:20: No argument provided for required parameter `cdir` of bound method `_eval_nseries`
++ error[missing-argument] sympy/functions/special/error_functions.py:2776:16: No argument provided for required parameter `cdir` of bound method `_eval_nseries`
+- warning[possibly-unbound-attribute] sympy/integrals/laplace.py:270:19: Attribute `canonical` on type `Unknown | And` is possibly unbound
++ warning[possibly-unbound-attribute] sympy/integrals/laplace.py:270:19: Attribute `canonical` on type `Unknown | Boolean` is possibly unbound
++ warning[possibly-unbound-attribute] sympy/logic/tests/test_boolalg.py:908:12: Attribute `canonical` on type `Unknown | Boolean` is possibly unbound
++ warning[possibly-unbound-attribute] sympy/logic/tests/test_boolalg.py:909:12: Attribute `canonical` on type `Unknown | Boolean` is possibly unbound
++ warning[possibly-unbound-attribute] sympy/logic/tests/test_boolalg.py:913:12: Attribute `negated` on type `Unknown | Boolean` is possibly unbound
++ warning[possibly-unbound-attribute] sympy/logic/tests/test_boolalg.py:914:12: Attribute `negated` on type `Unknown | Boolean` is possibly unbound
++ error[unresolved-attribute] sympy/logic/tests/test_boolalg.py:1021:12: Type `Boolean` has no attribute `diff`
+- error[unresolved-attribute] sympy/polys/numberfields/minpoly.py:602:19: Type `Mul` has no attribute `q`
++ error[unresolved-attribute] sympy/polys/numberfields/minpoly.py:602:19: Type `Expr` has no attribute `q`
+- error[unresolved-attribute] sympy/polys/numberfields/minpoly.py:602:38: Type `Mul` has no attribute `p`
++ error[unresolved-attribute] sympy/polys/numberfields/minpoly.py:602:38: Type `Expr` has no attribute `p`
+- error[unresolved-attribute] sympy/series/residues.py:69:50: Type `Mul` has no attribute `exp`
++ error[unresolved-attribute] sympy/series/residues.py:69:50: Type `Expr` has no attribute `exp`
+- warning[possibly-unbound-attribute] sympy/sets/conditionset.py:172:24: Attribute `intersect` on type `@Todo(Type::Intersection.call()) | Boolean` is possibly unbound
++ warning[possibly-unbound-attribute] sympy/sets/conditionset.py:172:24: Attribute `intersect` on type `@Todo(Type::Intersection.call()) | Basic` is possibly unbound
++ error[unsupported-operator] sympy/solvers/pde.py:949:13: Operator `+=` is unsupported between objects of type `Literal[0]` and `Unknown | Basic`
++ warning[possibly-unbound-attribute] sympy/solvers/pde.py:952:21: Attribute `expand` on type `Unknown | Basic` is possibly unbound
++ warning[possibly-unbound-attribute] sympy/solvers/pde.py:952:21: Attribute `expand` on type `Unknown | Basic` is possibly unbound
++ warning[possibly-unbound-attribute] sympy/solvers/pde.py:952:21: Attribute `expand` on type `Unknown | Basic` is possibly unbound
++ warning[possibly-unbound-attribute] sympy/solvers/pde.py:958:16: Attribute `expand` on type `Unknown | Basic` is possibly unbound
+- Found 17176 diagnostics
++ Found 17189 diagnostics
+
+scipy (https://github.com/scipy/scipy)
++ error[no-matching-overload] benchmarks/benchmarks/linalg.py:183:13: No overload of function `lstsq` matches arguments
++ error[no-matching-overload] scipy/_lib/pyprima/pyprima/src/pyprima/cobyla/cobyla.py:294:11: No overload of function `sum` matches arguments
+- error[unsupported-operator] scipy/_lib/pyprima/pyprima/src/pyprima/cobyla/cobyla.py:404:10: Operator `&lt;` is not supported for types `int` and `None`, in comparing `Literal[0]` with `Unknown | None | float`
++ error[unsupported-operator] scipy/_lib/pyprima/pyprima/src/pyprima/cobyla/cobyla.py:404:10: Operator `&lt;` is not supported for types `int` and `None`, in comparing `Literal[0]` with `Unknown | None | floating[Any] | float`
+- error[unsupported-operator] scipy/_lib/pyprima/pyprima/src/pyprima/cobyla/cobyla.py:404:14: Operator `&lt;` is not supported for types `None` and `int`, in comparing `Unknown | None | float` with `Literal[1]`
++ error[unsupported-operator] scipy/_lib/pyprima/pyprima/src/pyprima/cobyla/cobyla.py:404:14: Operator `&lt;` is not supported for types `None` and `int`, in comparing `Unknown | None | floating[Any] | float` with `Literal[1]`
+- error[unsupported-operator] scipy/_lib/pyprima/pyprima/src/pyprima/cobyla/cobyla.py:405:17: Operator `+` is unsupported between objects of type `Unknown | None | float` and `Literal[2]`
++ error[unsupported-operator] scipy/_lib/pyprima/pyprima/src/pyprima/cobyla/cobyla.py:405:17: Operator `+` is unsupported between objects of type `Unknown | None | floating[Any] | float` and `Literal[2]`
+- error[unsupported-operator] scipy/_lib/pyprima/pyprima/src/pyprima/common/preproc.py:143:21: Operator `+` is unsupported between objects of type `Unknown | None | float` and `Literal[2]`
++ error[unsupported-operator] scipy/_lib/pyprima/pyprima/src/pyprima/common/preproc.py:143:21: Operator `+` is unsupported between objects of type `Unknown | None | float | floating[Any]` and `Literal[2]`
+- error[unsupported-operator] scipy/_lib/pyprima/pyprima/src/pyprima/common/preproc.py:265:20: Operator `&gt;=` is not supported for types `None` and `int`, in comparing `Unknown | None | float` with `Literal[0]`
++ error[unsupported-operator] scipy/_lib/pyprima/pyprima/src/pyprima/common/preproc.py:265:20: Operator `&gt;=` is not supported for types `None` and `int`, in comparing `Unknown | None | float | floating[Any]` with `Literal[0]`
+- error[unsupported-operator] scipy/_lib/pyprima/pyprima/src/pyprima/common/preproc.py:265:34: Operator `&lt;=` is not supported for types `None` and `None`, in comparing `Unknown | None | float` with `Unknown | None | float`
++ error[unsupported-operator] scipy/_lib/pyprima/pyprima/src/pyprima/common/preproc.py:265:34: Operator `&lt;=` is not supported for types `None` and `None`, in comparing `Unknown | None | float | floating[Any]` with `Unknown | None | float`
+- error[invalid-argument-type] scipy/_lib/pyprima/pyprima/src/pyprima/common/preproc.py:270:24: Argument to function `all` is incorrect: Expected `Iterable[object]`, found `Unknown | bool`
++ error[invalid-argument-type] scipy/_lib/pyprima/pyprima/src/pyprima/common/preproc.py:270:24: Argument to function `all` is incorrect: Expected `Iterable[object]`, found `Unknown | bool | bool[bool]`
+- error[unsupported-operator] scipy/_lib/pyprima/pyprima/src/pyprima/common/preproc.py:272:56: Operator `+` is unsupported between objects of type `Unknown | None` and `Unknown | Literal[1]`
++ error[unsupported-operator] scipy/_lib/pyprima/pyprima/src/pyprima/common/preproc.py:272:56: Operator `+` is unsupported between objects of type `Unknown | None` and `Unknown | Literal[1] | floating[Any]`
+- error[unsupported-operator] scipy/_lib/pyprima/pyprima/src/pyprima/common/preproc.py:273:56: Operator `-` is unsupported between objects of type `Unknown | None` and `Unknown | Literal[1]`
++ error[unsupported-operator] scipy/_lib/pyprima/pyprima/src/pyprima/common/preproc.py:273:56: Operator `-` is unsupported between objects of type `Unknown | None` and `Unknown | Literal[1] | floating[Any]`
++ error[invalid-return-type] scipy/_lib/pyprima/pyprima/src/pyprima/common/selectx.py:63:12: Return type does not match returned value: expected `bool`, found `bool | (bool[bool] &amp; ~AlwaysTruthy) | (bool[bool] &amp; ~AlwaysFalsy) | Any`
++ error[no-matching-overload] scipy/interpolate/tests/test_bary_rational.py:52:5: No overload of function `assert_allclose` matches arguments
++ error[no-matching-overload] scipy/interpolate/tests/test_bary_rational.py:106:9: No overload of function `assert_allclose` matches arguments
++ error[no-matching-overload] scipy/interpolate/tests/test_bary_rational.py:118:9: No overload of function `assert_allclose` matches arguments
++ error[no-matching-overload] scipy/interpolate/tests/test_bary_rational.py:120:9: No overload of function `assert_allclose` matches arguments
++ error[no-matching-overload] scipy/interpolate/tests/test_bary_rational.py:131:9: No overload of function `assert_allclose` matches arguments
++ error[no-matching-overload] scipy/interpolate/tests/test_bary_rational.py:145:9: No overload of function `assert_allclose` matches arguments
++ error[no-matching-overload] scipy/interpolate/tests/test_bary_rational.py:174:9: No overload of function `assert_allclose` matches arguments
++ error[no-matching-overload] scipy/linalg/tests/test_blas.py:1017:9: No overload of function `assert_allclose` matches arguments
++ error[no-matching-overload] scipy/linalg/tests/test_blas.py:1086:9: No overload of function `assert_allclose` matches arguments
++ error[no-matching-overload] scipy/linalg/tests/test_blas.py:1090:9: No overload of function `assert_allclose` matches arguments
++ error[no-matching-overload] scipy/linalg/tests/test_blas.py:1094:9: No overload of function `assert_allclose` matches arguments
++ error[no-matching-overload] scipy/linalg/tests/test_blas.py:1099:9: No overload of function `assert_allclose` matches arguments
++ error[no-matching-overload] scipy/linalg/tests/test_blas.py:1103:9: No overload of function `assert_allclose` matches arguments
++ error[no-matching-overload] scipy/linalg/tests/test_blas.py:1108:9: No overload of function `assert_allclose` matches arguments
++ error[no-matching-overload] scipy/linalg/tests/test_decomp.py:942:9: No overload of function `assert_allclose` matches arguments
++ error[no-matching-overload] scipy/linalg/tests/test_decomp.py:2918:5: No overload of function `assert_allclose` matches arguments
++ error[no-matching-overload] scipy/linalg/tests/test_decomp.py:2922:5: No overload of function `assert_allclose` matches arguments
++ error[no-matching-overload] scipy/linalg/tests/test_decomp.py:2985:13: No overload of function `assert_allclose` matches arguments
++ error[no-matching-overload] scipy/linalg/tests/test_decomp.py:2989:13: No overload of function `assert_allclose` matches arguments
++ error[no-ma...*[Comment body truncated]*
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-05-16 00:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-05-16 10:48</div>
+            <div class="timeline-body"><p>Thanks for the PR, this is great! It being PyCon this week/weekend, we're a bit short-staffed on reviewers, but I'll try to get to this as soon as I can.</p>
+<p>One thing that would be really useful is to check some of the (many) new diagnostics that are showing up in the mypy-primer results here, and understand whether they are correct diagnostics that we previously missed, or indicate some issues we need to resolve in this PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types.rs</code>:4551 on 2025-05-28 21:01</div>
+            <div class="timeline-body"><p>If it does, we shouldn't attempt to call <code>__init__</code> at all. So this check should come before the <code>__init__</code> call, and we should bypass the <code>__init__</code> call if we find a return type that isn't a subclass of the self type.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types.rs</code>:4561 on 2025-05-28 21:05</div>
+            <div class="timeline-body"><p><code>__new__</code> returning <code>None</code> seems like an error, but I'm not sure why we should exclude it here. Unresolved annotations won't resolve to <code>None</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/generics/legacy/classes.md</code>:322 on 2025-05-28 21:07</div>
+            <div class="timeline-body"><p>We probably shouldn't let <code>V</code> leak here, it should probably specialize to <code>Unknown</code>? That might be out of scope for this PR, but let's at least add a TODO comment</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/generics/pep695/classes.md</code>:265 on 2025-05-28 21:07</div>
+            <div class="timeline-body"><p>same as above</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types.rs</code>:4560 on 2025-05-28 21:11</div>
+            <div class="timeline-body"><p>This is redundant since <code>Unknown</code> is a variant of <code>Dynamic</code>.</p>
+<p>The <a href="https://typing.python.org/en/latest/spec/constructors.html#new-method">spec</a> says that an explicit <code>Any</code> or a union containing <code>Any</code> should be considered as &quot;not an instance&quot;. So I think that we should return <code>None</code> if the return type is <code>Unknown</code> (as &quot;no annotation&quot; should be considered same as <code>Self</code>), but if we see <code>Any</code> that should cause us to return <code>Some(ret_type)</code>.</p>
+<p>We should also add some tests for these cases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types.rs</code>:4570 on 2025-05-28 21:12</div>
+            <div class="timeline-body"><p>What particular case(s) motivated this special case?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types.rs</code>:4644 on 2025-05-28 21:16</div>
+            <div class="timeline-body"><p>This comment looks like it belongs a few lines down; there's no <code>instance_ty</code> here</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types.rs</code>:4645 on 2025-05-28 21:18</div>
+            <div class="timeline-body"><p>It seems like if we have a <code>__new__</code> return type, but we also called <code>__init__</code>, we may need to further specialize <code>new_return_type</code> here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types.rs</code>:4578 on 2025-05-28 21:19</div>
+            <div class="timeline-body"><p>Seems like we shouldn't really need this equality check? If the types are the same, it won't hurt to use the <code>__new__</code> return type.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types.rs</code>:4490 on 2025-05-28 21:21</div>
+            <div class="timeline-body"><p>We do support <code>Self</code> now. (We don't yet assume it as the type of an un-annotated <code>self</code> arg, but for <code>__new__</code> that's not relevant anyway.) So this PR should explicitly specialize a <code>__new__</code> return type of <code>Self</code> to the <code>instance_ty</code>, and update this comment to remove the mention of not supporting <code>Self</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> requested changes on 2025-05-28 21:25</div>
+            <div class="timeline-body"><p>Thanks for the PR! I think there are some things to update here and some additional tests that should be added, plus we need to understand what's causing all the new errors in mypy-primer.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-28 09:06</div>
+            <div class="timeline-body"><p>Thank you for your contribution. I'll close this due to inactivity. Let me know if you plan to come back to this and I'll reopen the PR. For other contributors. Feel free to pick this up and submit it as a new PR. Please take a look at the review comments when you do so</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-07-28 09:06</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:58:38 UTC
+    </footer>
+</body>
+</html>

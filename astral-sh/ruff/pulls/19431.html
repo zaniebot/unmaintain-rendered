@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Reduce size of empty `TypeCheckDiagnostics` to one word - astral-sh/ruff #19431</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Reduce size of empty <code>TypeCheckDiagnostics</code> to one word</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19431">#19431</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2025-07-19 15:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-19 15:29</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p><code>TypeCheckDiagnostics</code> are stored in every <code>TypeInference</code> and ty creates a lot of them (see below for some numbers from a large project).
+But most of those inference contexts don't have any diagnostics or suppressions.</p>
+<p>This PR changes <code>TypeCheckDiagnostics</code> to use a <code>Option&lt;Box&lt;Inner&gt;&gt;</code> instead. This reduces the size of <code>TypeInference</code> from 224 bytes to 176 bytes (48 bytes).
+The downside of this is that it requires an extra allocation for files that use suppressions or diagnostics. But these should be rare.</p>
+<pre><code>`infer_definition_types -&gt; ty_python_semantic::types::infer::TypeInference`
+    metadata=850.32MB fields=2307.24MB count=5089303
+`infer_expression_types -&gt; ty_python_semantic::types::infer::TypeInference`
+    metadata=1701.13MB fields=2014.07MB count=4971063
+`infer_scope_types -&gt; ty_python_semantic::types::infer::TypeInference`
+    metadata=400.87MB fields=1738.46MB count=868855
+</code></pre>
+<p>I considered using a <code>ThinVec</code> for <code>diagnostics</code> over boxing the entire <code>TypeCheckDiagnostics</code> but that only reduces the size by 16 bytes because
+it doesn't help with the much larger <code>HashSet</code>.</p>
+<p>If the above project would have zero suppressions and diagnostics, this PR saves ~500MB even though ty emits a ton of diagnostics!</p>
+<pre><code>`infer_definition_types -&gt; ty_python_semantic::types::infer::TypeInference`
+    metadata=850.28MB fields=2065.54MB count=5089306
+`infer_expression_types -&gt; ty_python_semantic::types::infer::TypeInference`
+    metadata=1701.02MB fields=1779.32MB count=4971063
+`infer_scope_types -&gt; ty_python_semantic::types::infer::TypeInference`
+    metadata=400.87MB fields=1699.84MB count=868855
+</code></pre>
+<h2>Test Plan</h2>
+<p><code>cargo test</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @MichaReiser on 2025-07-19 15:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @MichaReiser on 2025-07-19 15:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @MichaReiser on 2025-07-19 15:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @MichaReiser on 2025-07-19 15:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @MichaReiser on 2025-07-19 15:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @MichaReiser on 2025-07-19 15:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-19 15:33</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅
+No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[ty] Reduce size of `TypeCheckDiagnostics` to one word" to "[ty] Reduce size of empty `TypeCheckDiagnostics` to one word" by @MichaReiser on 2025-07-19 15:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-20 08:40</div>
+            <div class="timeline-body"><p>I'll  roll this into another PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-07-20 08:40</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:58:39 UTC
+    </footer>
+</body>
+</html>

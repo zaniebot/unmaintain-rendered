@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Support iterating over enums - astral-sh/ruff #19486</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Support iterating over enums</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19486">#19486</a>
+        opened by <a href="https://github.com/sharkdp">@sharkdp</a>
+        on 2025-07-22 13:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-22 13:15</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Infer the correct type in a scenario like this:</p>
+<pre><code class="language-py">class Color(Enum):
+    RED = 1
+    GREEN = 2
+    BLUE = 3
+
+for color in Color:
+    reveal_type(color)  # revealed: Color
+</code></pre>
+<p>We should eventually support this out-of-the-box when https://github.com/astral-sh/ty/issues/501 is implemented. For this reason, @AlexWaygood would prefer to keep things as they are (we currently infer <code>Unknown</code>, so false positives seem unlikely). But it seemed relatively easy to support, so I'm opening this for discussion.</p>
+<p>part of https://github.com/astral-sh/ty/issues/183</p>
+<h2>Test Plan</h2>
+<p>Adapted existing test.</p>
+<h2>Ecosystem analysis</h2>
+<pre><code class="language-diff">- warning[unused-ignore-comment] rotkehlchen/chain/aggregator.py:591:82: Unused blanket `type: ignore` directive
+</code></pre>
+<p>This <code>unused-ignore-comment</code> goes away due to a new true positive.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @sharkdp on 2025-07-22 13:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @sharkdp on 2025-07-22 13:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @sharkdp on 2025-07-22 13:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @sharkdp on 2025-07-22 13:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-22 13:19</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">rotki (https://github.com/rotki/rotki)
+- warning[unused-ignore-comment] rotkehlchen/chain/aggregator.py:591:82: Unused blanket `type: ignore` directive
+- Found 1580 diagnostics
++ Found 1579 diagnostics
+
+</code></pre>
+</details>
+No memory usage changes detected ✅
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-07-22 13:35</div>
+            <div class="timeline-body"><p>The code looks good but you already know my opinion on whether it's worth adding this branch in the first place :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-07-22 13:59</div>
+            <div class="timeline-body"><p>Alex said the code looks good ;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-22 14:09</div>
+            <div class="timeline-body"><p>It doesn't look like a huge maintenance burden to me, so I'm merging this to complete my list of &quot;high priority&quot; enum tasks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @sharkdp on 2025-07-22 14:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-07-22 14:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-07-22 14:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-22 16:31</div>
+            <div class="timeline-body"><p>I suppose the logic here doesn't account for the fact that enums can have subclasses of <code>EnumMeta</code> as their metaclass. E.g. we reveal <code>Foo</code> here, but at runtime iterating over this enum class yields <code>int</code>s:</p>
+<pre><code class="language-py">from typing import Iterator, reveal_type
+import enum
+
+class Annoying(enum.EnumMeta):
+    def __iter__(cls) -&gt; Iterator[int]:
+        yield from range(4)
+
+class Foo(enum.Enum, metaclass=Annoying):
+    A = 1
+    B = 2
+
+for f in Foo:
+    reveal_type(f)
+</code></pre>
+<p>https://play.ty.dev/3347bb64-35ba-469a-9359-b5fe504bb81d</p>
+<p>Having said that, we'll emit a Liskov violation on <code>Annoying.__iter__</code> once we've implemented https://github.com/astral-sh/ty/issues/166. In fact, I don't think it's possible to override <code>EnumMeta.__iter__</code> <em>and change its return type</em> in a Liskov-compatible way. So this probably isn't a serious issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-07-22 18:09</div>
+            <div class="timeline-body"><p>FWIW, mypy issues the Liskov error, pyright does not. Both mypy and pyright do correctly infer that the iteration yields <code>int</code> in that example.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-07-22 18:10</div>
+            <div class="timeline-body"><p>But I think once we fix https://github.com/astral-sh/ty/issues/501 and remove this temporary approach, that should fall out anyway, so not worth worrying about now.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:58:39 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Add caching for submodule completion suggestions - astral-sh/ruff #19408</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Add caching for submodule completion suggestions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19408">#19408</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2025-07-17 18:07
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-07-17 18:07</div>
+            <div class="timeline-body"><p>This change makes it so we aren't doing a directory traversal every time
+we ask for completions from a module. Specifically, submodules that
+aren't attributes of their parent module can only be discovered by
+looking at the directory tree. But we want to avoid doing a directory
+scan unless we think there are changes.</p>
+<p>To make this work, this change does a little bit of surgery to
+<code>FileRoot</code>. Previously, a <code>FileRoot</code> was only used for library search
+paths. Its revision was bumped whenever a file in that tree was added,
+deleted or even modified (to support the discovery of <code>pth</code> files and
+changes to its contents). This generally seems fine since these are
+presumably dependency paths that shouldn't change frequently.</p>
+<p>In this change, we add a <code>FileRoot</code> for the project. But having the
+<code>FileRoot</code>'s revision bumped for every change in the project makes
+caching based on that <code>FileRoot</code> rather ineffective. That is, cache
+invalidation will occur too aggressively. To the point that there is
+little point in adding caching in the first place. To mitigate this, a
+<code>FileRoot</code>'s revision is only bumped on a change to a child file's
+contents when the <code>FileRoot</code> is a <code>LibrarySearchPath</code>. Otherwise, we
+only bump the revision when a file is created or added.</p>
+<p>The effect is that, at least in VS Code, when a new module is added or
+removed, this change is picked up and the cache is properly invalidated.
+Other LSP clients with worse support for file watching (which seems to
+be the case for the CoC vim plugin that I use) don't work as well. Here,
+the cache is less likely to be invalidated which might cause completions
+to have stale results. Unless there's an obvious way to fix or improve
+this, I propose punting on improvements here for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @BurntSushi on 2025-07-17 18:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @BurntSushi on 2025-07-17 18:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @BurntSushi on 2025-07-17 18:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @BurntSushi on 2025-07-17 18:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @BurntSushi on 2025-07-17 18:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @dcreager removed by @BurntSushi on 2025-07-17 18:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @carljm removed by @BurntSushi on 2025-07-17 18:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @sharkdp removed by @BurntSushi on 2025-07-17 18:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @AlexWaygood removed by @BurntSushi on 2025-07-17 18:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @BurntSushi on 2025-07-17 18:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @BurntSushi on 2025-07-17 18:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @BurntSushi on 2025-07-17 18:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @BurntSushi on 2025-07-17 18:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-07-17 18:08</div>
+            <div class="timeline-body"><p>Demo (although I guess this is technically indistinguishable from what's on <code>main</code>):</p>
+<p>https://github.com/user-attachments/assets/36317313-eb5a-4ed0-aa4e-53c82cadb3ae</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-17 18:11</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅
+No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-07-17 18:51</div>
+            <div class="timeline-body"><p>The test failure on Windows looks interesting. Maybe the file watcher isn't picking up the deleted file? If it doesn't, then the cache doesn't get invalidated and you end up with <code>wazoo</code> in the completions (which should be gone).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty/tests/file_watching.rs</code>:1903 on 2025-07-18 11:32</div>
+            <div class="timeline-body"><p>I assume we're waiting here on the event for <code>bar/wazoo.py</code>. If so, I suggest using <code>event_for_file(&quot;bar/wazoo.py&quot;)</code>. That makes the test less flaky because the runner explicitly waits for an event for this file (or <code>Rescan</code>) rather than any event</p>
+<pre><code class="language-suggestion">    let changes = case.stop_watch(event_for_file(&quot;wazoo.py&quot;));
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty/tests/file_watching.rs</code>:1947 on 2025-07-18 11:33</div>
+            <div class="timeline-body"><p>Same here, use <code>event_file</code> if possible</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty/tests/file_watching.rs</code>:1981 on 2025-07-18 11:37</div>
+            <div class="timeline-body"><p>I'm not sure this test is testing what you want. A file watcher could decide not to emit any event here because the operations happen to quickly (and the observable effect is nothing changed).</p>
+<p>I think what you want to do here is to write the file, wait for the file watching event, update the db, then delete the file...</p>
+<pre><code class="language-suggestion">    std::fs::write(case.project_path(&quot;bar/wazoo.py&quot;).as_std_path(), &quot;&quot;)?;
+    let changes = case.take_watch_changes(event_for_file(&quot;wazoo.py&quot;));
+    case.apply_changes(changes, None);
+    
+    std::fs::remove_file(case.project_path(&quot;bar/wazoo.py&quot;).as_std_path())?;
+    let changes = case.stop_watch(event_for_file(&quot;wazoo.py&quot;));
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_project/src/db/changes.rs</code>:138 on 2025-07-18 11:39</div>
+            <div class="timeline-body"><p>Isn't <code>sync_recursively</code> already updating all roots?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_project/src/db/changes.rs</code>:175 on 2025-07-18 11:43</div>
+            <div class="timeline-body"><p>On line 284: We'll need to re-create the <code>FileRoot</code>. The case handled there is if a user deletes a <code>pyproject.toml</code> (or creates a new <code>ty.toml</code>). Doing so can change the root path of the project. You might want to move the <code>FileRoot</code> creation into the <code>from_metadata</code> method</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/module_resolver/module.rs</code>:20 on 2025-07-18 11:54</div>
+            <div class="timeline-body"><p>It's probably best to do this in a separate PR but I think it could make sense to explore making <code>Module</code> a <code>salsa::tracked</code> and removing the inner <code>Arc</code>.</p>
+<p>The decision for making something a salsa ingredient vs e.g. using an <code>Arc</code> is mostly on whether there are any salsa queries that take the struct as an argument. <code>Module</code> is an <code>Arc</code> because, up to now, no query took <code>Module</code> as an argument so it was simply unnecessary for it to be a sala tracked struct. This changes with your PR. That's why I think it's worth to give it a short try to see how big the fallout is if we make it a <code>salsa::struct</code>.</p>
+<p>I would probably design it like this:</p>
+<pre><code class="language-rust">#[salsa::tracked(debug)]
+#[derive(PartialEq, Eq)]
+pub(crate) struct FileModule {
+	#[returns(ref)]
+	name: ModuleName, 
+	kind: ModuleKind,
+	#[returns(ref)]
+  search_path: SearchPath,
+  file: File,
+  known: Option&lt;KnownModule&gt;,
+}
+
+#[salsa::tracked(debug)]
+#[derive(PartialEq, Eq)]
+pub(crate) struct NamespacePackage {
+	#[returns(ref)]
+	name: ModuleName
+}
+
+#[derive(salsa::Supertype, Eq, PartialEq, Debug)]
+pub(crate) enum Module {
+	File(FileModule),
+	Namespace(NamespacePackage)
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-07-18 11:56</div>
+            <div class="timeline-body"><p>This looks great. I left a few comments around the file watching test. I hope it helps resolve the windows issue.</p>
+<p>The only thing that needs addressing before landing is that we properly handle the case where a user creates or deletes a new <code>ty.toml</code> or <code>pyproject.toml</code> (see inline comment).</p>
+<p>I also think it's worth considering making <code>Module</code> a salsa tracked ingredient to remove the <code>()</code> pseudo argument hack but that's something for a separate PR and only worth doing if the fallout isn't too big</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-07-18 14:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ty/tests/file_watching.rs</code>:1903 on 2025-07-18 14:01</div>
+            <div class="timeline-body"><p>Ah okay, I didn't realize that providing a specific file path would help avoid flakes. That makes sense. I noticed the other tests did that, but wondered about it. I added some comments on <code>stop_watch</code> explaining this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-07-18 14:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ty_python_semantic/src/module_resolver/module.rs</code>:20 on 2025-07-18 14:04</div>
+            <div class="timeline-body"><p>Thank you! I'll give this a try in a follow-up.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-07-18 14:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty/tests/file_watching.rs</code>:1903 on 2025-07-18 14:04</div>
+            <div class="timeline-body"><p>Thank you. I guess there are two benefits:</p>
+<ul>
+<li>It prevents &quot;stopping&quot; if there was a spurious file watcher event</li>
+<li>It gives better error messages because we can now say: We waited for an event for <code>wazoo.py</code> but we only saw ...</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-07-18 14:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ty/tests/file_watching.rs</code>:1981 on 2025-07-18 14:06</div>
+            <div class="timeline-body"><p>Perfect, thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-07-18 14:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ty_project/src/db/changes.rs</code>:138 on 2025-07-18 14:19</div>
+            <div class="timeline-body"><p>It looks like it doesn't. It only seems to sync roots that are beneath the path given. Which is maybe not intended? Specifically, if this is flipped around</p>
+<p>https://github.com/astral-sh/ruff/blob/ba7ed3a6f99aa37c82b888c0ecea3ebf1ba0ec03/crates/ruff_db/src/files.rs#L235</p>
+<p>then I think it works how you describe. But it seems like the intent of <code>sync_recursively</code> is only to sync files/directories <em>beneath</em> the path given. But here, we want to sync the root for the path given, which should be <em>above</em> it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-07-18 14:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_project/src/db/changes.rs</code>:138 on 2025-07-18 14:22</div>
+            <div class="timeline-body"><p>Uhm, this looks the wrong way round... It doesn't seem very useful to bump a root if its parent directory changed? The idea of <code>sync_recursively</code> is to resync the entire subtree.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-07-18 14:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ty_project/src/db/changes.rs</code>:138 on 2025-07-18 14:29</div>
+            <div class="timeline-body"><p>Ah okay. So for file roots you want to go up, but for the actual files you want to go down. So I think this part is correct:</p>
+<p>https://github.com/astral-sh/ruff/blob/ba7ed3a6f99aa37c82b888c0ecea3ebf1ba0ec03/crates/ruff_db/src/files.rs#L226-L230</p>
+<p>I can flip this condition around.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-07-18 14:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ty_project/src/db/changes.rs</code>:175 on 2025-07-18 14:41</div>
+            <div class="timeline-body"><p>Good catch. I actually had this at an even higher level, but I agree that putting it in <code>from_metadata</code> is even better.</p>
+<p>Adding a regression test for this seems a little tricky. I think it's because the project is created initially and a file root is added. And even when the <code>Project</code> is re-created, I guess by that point the file root has already been added so everything still works?</p>
+<p>Anyway, this is done. And I did add a test.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @BurntSushi on 2025-07-18 15:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2025-07-18 15:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-07-18 15:54</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:58:39 UTC
+    </footer>
+</body>
+</html>

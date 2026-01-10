@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Return a tuple spec from the iterator protocol - astral-sh/ruff #19496</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Return a tuple spec from the iterator protocol</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19496">#19496</a>
+        opened by <a href="https://github.com/dcreager">@dcreager</a>
+        on 2025-07-22 20:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dcreager">@dcreager</a> on 2025-07-22 20:19</div>
+            <div class="timeline-body"><p>This PR updates our iterator protocol machinery to return a tuple spec describing the elements that are returned, instead of a type. That allows us to track heterogeneous iterators more precisely, and consolidates the logic in unpacking and splatting, which are the two places where we can take advantage of that more precise information. (Other iterator consumers, like <code>for</code> loops, have to collapse the iterated elements down to a single type regardless, and we provide a new helper method on <code>TupleSpec</code> to perform that summarization.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @dcreager on 2025-07-22 20:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-22 20:23</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅
+No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/call/bind.rs</code>:986 on 2025-07-22 21:10</div>
+            <div class="timeline-body"><p>I moved this logic over into <code>Type::try_iterate</code>, but it seems inconsistent with how we interpret iterating over <code>Never</code> in e.g. a <code>for</code> loop.  Before, this would reveal <code>Never</code>:</p>
+<pre><code class="language-py">def _(never: Never):
+    for x in never:
+        reveal_type(x)  # revealed: Never
+</code></pre>
+<p>i.e., the body is never executed, just like when we iterate over the empty tuple:</p>
+<pre><code class="language-py">for x in ():
+    reveal_type(x)  # revealed: Never
+</code></pre>
+<p>This is consistent with simplifying <code>tuple[Never, ...]</code> to <code>tuple[()]</code>.</p>
+<p>The interpretation described here is that iterating over <code>Never</code> might produce an arbitrary number of elements.  That requires changing the <code>for</code> loop test to reveal <code>Unknown</code>.</p>
+<p>To me, the interpretation <em>without</em> this special case seems more intuitive, especially when you consider it in terms of the <code>for</code> loop example. @AlexWaygood, you added this special case in #19469. Were there examples in the ecosystem check of indexing into this kind of tuple, which necessitated this special case?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/unpacker.rs</code>:133 on 2025-07-22 21:12</div>
+            <div class="timeline-body"><p>This special case isn't needed any more, since we can now interpret <code>str</code>'s iteration behavior in the typeshed correctly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types.rs</code>:4645 on 2025-07-22 21:13</div>
+            <div class="timeline-body"><p>I think this clause is moot (and has been for awhile), since all tuple instances are now modeled as a <code>Type::Tuple</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @dcreager on 2025-07-22 21:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @dcreager on 2025-07-22 21:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @dcreager on 2025-07-22 21:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @dcreager on 2025-07-22 21:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-07-22 21:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-07-22 21:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types.rs</code>:4645 on 2025-07-22 21:16</div>
+            <div class="timeline-body"><p>nm, I was wrong! This is still needed</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/call/bind.rs</code>:986 on 2025-07-22 21:22</div>
+            <div class="timeline-body"><p>I think I added the special case in #18987, not #19469 — it was to tackle false positives I saw in the ecosystem report for sympy on early versions of that PR. If you look at the revisions to the primer report in https://github.com/astral-sh/ruff/pull/18987#issuecomment-3013282630, the false positives for sympy are present in the penultimate version of the comment</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-07-22 21:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-07-22 21:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/call/bind.rs</code>:986 on 2025-07-22 21:43</div>
+            <div class="timeline-body"><p>To me the thing that seems wrong in this comment is that we simplify <code>tuple[Never, ...]</code> to <code>tuple[()]</code>. Shouldn't it simplify to <code>Never</code> instead, and then we wouldn't get false positives indexing into it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/call/bind.rs</code>:986 on 2025-07-22 22:04</div>
+            <div class="timeline-body"><blockquote>
+<p>Shouldn't it simplify to <code>Never</code> instead</p>
+</blockquote>
+<p>No because that would imply the type is uninhabited. <code>tuple[Never, ...]</code> is inhabited by the empty tuple <code>()</code>, the same as <code>list[Never]</code> cannot simplify to <code>Never</code> because it is inhabited by the empty list <code>[]</code>.</p>
+<p>The situation for <code>Never</code> type arguments to homogeneous tuples here is closer to the situation for other generic containers than it is to the situation for heterogeneous tuples</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-07-22 22:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-07-22 22:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/call/bind.rs</code>:986 on 2025-07-22 22:10</div>
+            <div class="timeline-body"><p>Hmm, that makes sense, but I do wonder if there is any practical benefit to that simplification. It seems like there is a practical cost, because <code>tuple[Never, ...]</code> is a type that can arise in unreachable code, and the indexing errors aren't desirable there. It seems like there might be only upside to just leaving <code>tuple[Never, ...]</code> as-is, instead of simplifying it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-07-23 10:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/call/bind.rs</code>:986 on 2025-07-23 10:50</div>
+            <div class="timeline-body"><p>@dcreager added that particular simplification so I'll defer to him, but I'm a bit reluctant to give up on it. It feels obviously correct from the perspective of set-theoretic types.</p>
+<p>But we probably don't need the somewhat unprincipled special case I added here that Doug was asking me about -- a better fix would probably just be to check here whether the node is reachable before emitting the diagnostic:</p>
+<p>https://github.com/astral-sh/ruff/blob/b605c3e2327fbc7c16f7e26cdc1f53c47ce60344/crates/ty_python_semantic/src/types/infer.rs#L8421-L8439</p>
+<p>I think the machinery @sharkdp added should allow us to query that realtively easily?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-07-23 15:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/call/bind.rs</code>:986 on 2025-07-23 15:35</div>
+            <div class="timeline-body"><p>I think currently in order to query reachability for a node we have to know in advance that that node might need its reachability queried, and proactively store it in semantic indexing. Which has a memory cost if the category of nodes we are adding is large.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-07-23 15:44</div>
+            <div class="timeline-body"><p>Looks good!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-07-23 17:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/call/bind.rs</code>:986 on 2025-07-23 17:12</div>
+            <div class="timeline-body"><p>Another possibility would be to special-case that iterating <code>Never</code> gives <code>Never</code>, not <code>tuple[Never, ...]</code> or <code>tuple[Unknown, ...]</code>. That is, it is &quot;not iterable&quot;, as opposed to &quot;iterable returning no elements&quot; or &quot;iterable returning unknown elements&quot;. That would let us keep the simplification of <code>tuple[Never, ...]</code> to <code>tuple[()]</code>, which I agree seems consistent with first principles.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-07-23 20:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/call/bind.rs</code>:986 on 2025-07-23 20:30</div>
+            <div class="timeline-body"><p>If iterating <code>Never</code> were to emit a &quot;not iterable&quot; diagnostic, then I think we'd have to special-case avoiding that diagnostic in unreachable code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-07-23 20:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/call/bind.rs</code>:986 on 2025-07-23 20:40</div>
+            <div class="timeline-body"><blockquote>
+<p>But we probably don't need the somewhat unprincipled special case I added here that Doug was asking me about -- a better fix would probably just be to check here whether the node is reachable before emitting the diagnostic:</p>
+</blockquote>
+<p>I've left the <code>Never</code> special case for now, and added a TODO to consider doing this as a replacement. (This also leaves in place the simplification of <code>tuple[Never, ...]</code> to <code>tuple[()]</code>.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dcreager on 2025-07-23 21:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dcreager on 2025-07-23 21:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-07-23 21:11</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:58:39 UTC
+    </footer>
+</body>
+</html>

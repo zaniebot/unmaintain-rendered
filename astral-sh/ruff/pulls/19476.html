@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Extend `Final` test suite - astral-sh/ruff #19476</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Extend <code>Final</code> test suite</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19476">#19476</a>
+        opened by <a href="https://github.com/sharkdp">@sharkdp</a>
+        on 2025-07-22 07:04
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-22 07:04</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Restructures and cleans up the <code>typing.Final</code> test suite. Also adds a few more tests with TODOs based on the <a href="https://typing.python.org/en/latest/spec/qualifiers.html#uppercase-final">typing spec for <code>typing.Final</code></a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">testing</span> added by @sharkdp on 2025-07-22 07:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @sharkdp on 2025-07-22 07:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @sharkdp on 2025-07-22 07:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @sharkdp on 2025-07-22 07:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @sharkdp on 2025-07-22 07:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/type_qualifiers/final.md</code>:280 on 2025-07-22 09:19</div>
+            <div class="timeline-body"><p>we could also add tests for these, both of which should be illegal:</p>
+<pre><code class="language-py">from typing import Final
+
+class Foo(Final[tuple[int]]): ...
+
+reveal_type(Foo.__mro__)
+
+def f() -&gt; Final[None]: ...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/type_qualifiers/final.md</code>:296 on 2025-07-22 09:21</div>
+            <div class="timeline-body"><p>how does <code>__new__</code> play into things here? (I can't remember what the spec says.) E.g. this feels ~fine to me... but if the spec disallows it, then the spec disallows it, I guess:</p>
+<pre><code class="language-py">from typing import Final
+
+class Foo:
+    def __new__(cls):
+        self = object.__new__(cls)
+        self.x: Final = 42
+        return self
+</code></pre>
+<p>it's basically the pattern that <code>fractions.Fraction</code> uses in the stdlib: https://github.com/python/cpython/blob/9a21df7c0a494e2819775eabd522ebec994d96c0/Lib/fractions.py#L205-L311</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/type_qualifiers/final.md</code>:306 on 2025-07-22 09:22</div>
+            <div class="timeline-body"><p>I think it would be clearer here to use a different name for the loop variable -- the declaration in the loop body is illegal because the variable would be repeatedly assigned on each iteration of the loop, not because it shadows the loop variable:</p>
+<pre><code class="language-suggestion">for _ in range(10):
+    # TODO: This should be an error
+    i: Final[int] = 1
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-07-22 09:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-07-22 09:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/resources/mdtest/type_qualifiers/final.md</code>:306 on 2025-07-22 09:23</div>
+            <div class="timeline-body"><p>Oops, yes!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-07-22 09:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/resources/mdtest/type_qualifiers/final.md</code>:296 on 2025-07-22 09:57</div>
+            <div class="timeline-body"><p>The spec says (emphasis mine):</p>
+<blockquote>
+<p>Finally, as <code>self.id: Final = 1</code> (also optionally with a type in square brackets). <strong>This is allowed only in <code>__init__</code> methods</strong>, so that the final instance attribute is assigned only once when an instance is created.</p>
+</blockquote>
+<p>In your code snippet in particular, any declaration would be illegal in that position. You can't annotate attribute assignments if they don't refer to the first parameter in a method (ty does not yet enforce this, see https://github.com/astral-sh/ty/issues/509).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-07-22 10:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/type_qualifiers/final.md</code>:296 on 2025-07-22 10:06</div>
+            <div class="timeline-body"><p>hmm, I think there might be value in special-casing <code>__new__</code> methods specifically so that we allow attribute annotations in <code>__new__</code> methods where the value of the attribute expression is an instance of <code>cls</code>. But we can defer that discussion to a later PR</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @sharkdp on 2025-07-22 10:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-07-22 10:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-07-22 10:06</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:58:39 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Implemented partial support for &quot;find references&quot; language server feature. - astral-sh/ruff #19475</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Implemented partial support for &quot;find references&quot; language server feature.</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19475">#19475</a>
+        opened by <a href="https://github.com/UnboundVariable">@UnboundVariable</a>
+        on 2025-07-22 04:52
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/UnboundVariable">@UnboundVariable</a> on 2025-07-22 04:52</div>
+            <div class="timeline-body"><p>This PR adds basic support for the &quot;find all references&quot; language server feature. This same functionality will also be used to eventually implement &quot;rename&quot;.</p>
+<p>This PR searches for references only within the current source file. I decided to post this PR for review before extending it to support multi-file searches. Even without multi-file searches, this feature has utility.</p>
+<p>Key question for reviewers: Do you think the approach I've taken is correct, or is there a more optimal approach — for example, one that makes better use of the <code>UseDef</code> maps in the semantic index. I don't think the <code>UseDef</code> maps store enough details to eliminate the need for an AST walk, but I could be wrong.</p>
+<p>My current approach leverages the existing <code>GotoTarget</code> logic that is used in a number of the other language server features. While I think there are more optimal ways to implement this, I think they would involve replicating a lot of logic that is already provided by <code>GotoTarget</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @UnboundVariable on 2025-07-22 04:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @UnboundVariable on 2025-07-22 04:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @UnboundVariable on 2025-07-22 04:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @UnboundVariable on 2025-07-22 04:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @UnboundVariable on 2025-07-22 04:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-22 04:55</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅
+No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @MichaReiser on 2025-07-22 06:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @MichaReiser on 2025-07-22 06:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_ide/src/goto.rs</code>:324 on 2025-07-22 06:34</div>
+            <div class="timeline-body"><p>Nit: Rename to <code>to_string</code>. <code>as_str</code> suggests that it returns a <code>&amp;str</code> which it clearly doesn't</p>
+<pre><code class="language-suggestion">    pub(crate) fn to_string(&amp;self) -&gt; Option&lt;String&gt; {
+</code></pre>
+<p>We also use the following naming convention:</p>
+<ul>
+<li><code>as_</code>: For conversions that take <code>&amp;self</code> and are very cheap (don't require allocations)</li>
+<li><code>to_</code>: For conversions that take <code>&amp;self</code> but it isn't free (may require allocations)</li>
+<li><code>into_</code>: For conversions that consume <code>self</code></li>
+</ul>
+<p>We found this naming scheme useful because it provides callers with the relevant information if calling the same function multiple times or if they should consider caching the result (e.g. calling <code>to_string</code> twice for <code>if goto.to_string() == Some(&quot;test&quot;) { print!(&quot;{:?}&quot;, goto.to_string() }</code> should be avoided, but would be fine if it were <code>as_str</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_ide/src/goto.rs</code>:324 on 2025-07-22 06:36</div>
+            <div class="timeline-body"><p>Nit: This is not a hot function, so I'm fine leaving this as is but we could consider returning a <code>std::cow::Cow&lt;str&gt;</code> here to avoid allocating in almost all cases (the module one is the only case where we need to return an owned string and even that is only necessary if it contains any spaces)</p>
+<pre><code class="language-suggestion">    pub(crate) fn to_string(&amp;self) -&gt; Option&lt;Cow&lt;str&gt;&gt; {
+    	match self {
+            GotoTarget::Expression(expression) =&gt; match expression {
+                ast::ExprRef::Name(name) =&gt; Some(name.id.as_str().into()),
+                ast::ExprRef::Attribute(attr) =&gt; Some(attr.attr.as_str().into()),
+                _ =&gt; None,
+            },
+            GotoTarget::FunctionDef(function) =&gt; Some(function.name.as_str().into()),
+            GotoTarget::ClassDef(class) =&gt; Some(class.name.as_str().into()),
+            GotoTarget::Parameter(parameter) =&gt; Some(parameter.name.as_str().into()),
+            GotoTarget::ImportSymbolAlias { alias, .. } =&gt; {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_ide/src/goto.rs</code>:361 on 2025-07-22 06:37</div>
+            <div class="timeline-body"><p>Nit: You could avoid the need for the closure by using the try operator</p>
+<pre><code class="language-suggestion">                Some(except.name.as_ref()?.as_str().to_string())
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_ide/src/references.rs</code>:16 on 2025-07-22 06:37</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">//! This module implements the core functionality of the &quot;references&quot; and
+//! &quot;rename&quot; language server features. It locates all references to a named
+//! symbol. Unlike a simple text search for the symbol's name, this is
+//! a &quot;semantic search&quot; where the text and the semantic meaning must match.
+//
+//! Some symbols (such as parameters and local variables) are visible only
+//! within their scope. All other symbols, such as those defined at the global
+//! scope or within classes, are visible outside of the module. Finding
+//! all references to these externally-visible symbols therefore requires
+//! an expensive search of all source files in the workspace.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_ide/src/references.rs</code>:190 on 2025-07-22 06:44</div>
+            <div class="timeline-body"><p>Calling <code>find_goto_target</code> here again seems suboptimal because it requires traversing the entire AST again up to <code>offset</code>. This seems pretty expensive considering that we repeat it for every name expression.</p>
+<p>I think what we should do here instead is to add a method to construct a goto target from a <code>CoveringNode</code> and we could integrate the <code>CoveringNodeVisitor</code> into your visitor.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_ide/src/references.rs</code>:214 on 2025-07-22 06:47</div>
+            <div class="timeline-body"><p>Nit: Move into the same impl block</p>
+<pre><code class="language-suggestion">
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_ide/src/references.rs</code>:203 on 2025-07-22 06:50</div>
+            <div class="timeline-body"><p>Nit: It might make sense to add a contsructor to <code>NavigationTarget</code> for the (seemingly very common case) where the focus and full range are identical so that this can be written as <code>NavigationTarget::new(self.file, range)</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_ide/src/references.rs</code>:244 on 2025-07-22 06:53</div>
+            <div class="timeline-body"><p>This is more a nit and something that might be worth thinking about going forward. Matching on <code>NavigationTarget</code> seems a bit finky. <code>NavigationTarget</code> is also somewhat costly to construct because of the inner <code>Vec</code> and overall, doesn't seem to be the right abstraction.</p>
+<p>Would it make sense to have a <code>DefinitionTarget</code> enum that stands in between <code>GotoTarget</code> and <code>NavigationTargets</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-07-22 06:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @AlexWaygood removed by @AlexWaygood on 2025-07-22 11:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @carljm removed by @carljm on 2025-07-22 20:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/UnboundVariable">@UnboundVariable</a> reviewed on 2025-07-23 00:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/UnboundVariable">@UnboundVariable</a> on <code>crates/ty_ide/src/references.rs</code>:190 on 2025-07-23 00:19</div>
+            <div class="timeline-body"><p>This is done only in cases where the name expression text matches that of the target name, so it's perhaps not as expensive as you feared, but it is still somewhat expensive. I'll implement your suggested approach.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/UnboundVariable">@UnboundVariable</a> reviewed on 2025-07-23 00:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/UnboundVariable">@UnboundVariable</a> on <code>crates/ty_ide/src/references.rs</code>:244 on 2025-07-23 00:21</div>
+            <div class="timeline-body"><p>Yeah, I think that's a reasonable suggestion, but I'd prefer to do that in a separate PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/UnboundVariable">@UnboundVariable</a> on <code>crates/ty_ide/src/references.rs</code>:190 on 2025-07-23 02:09</div>
+            <div class="timeline-body"><p>I like how this approach turned out!</p>
+<p>When implementing this, I found (what I presume is a long-standing) bug in the <code>ruff_python_ast</code> crate. The <code>walk_annotation</code> function was calling <code>enter_node</code> and <code>leave_node</code> twice on the top-level node of the annotation expression.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/UnboundVariable">@UnboundVariable</a> reviewed on 2025-07-23 02:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/UnboundVariable">@UnboundVariable</a> on 2025-07-23 02:12</div>
+            <div class="timeline-body"><p>I've incorporated changes from the code review (thanks!) and added support for multi-file reference searches. That was pretty straightforward, as you predicted.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-23 02:18</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_ide/src/references.rs</code>:30 on 2025-07-23 07:22</div>
+            <div class="timeline-body"><p>Hmm, it's a bit annoying that we don't have access to the <code>ProjectDatabase</code> here. I went ahead and created a PR that inverts the dependency between <code>ty_project</code> and <code>ty_ide</code> so that this function can call <code>db.project().files(db)</code> directly (https://github.com/astral-sh/ruff/pull/19501)</p>
+<p>This also removes the need for collecting all the files in the test setup because the tests then also use the project's file discovery to find the references in the project:</p>
+<pre><code class="language-patch">Subject: [PATCH] [ty] Use `ThinVec` in various places
+---
+Index: crates/ty_ide/src/lib.rs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+&lt;+&gt;UTF-8
+===================================================================
+diff --git a/crates/ty_ide/src/lib.rs b/crates/ty_ide/src/lib.rs
+--- a/crates/ty_ide/src/lib.rs	(revision 4bf83de1624ec9068260cdf8b032a06a8cc7ef01)
++++ b/crates/ty_ide/src/lib.rs	(date 1753255216582)
+@@ -243,7 +243,6 @@
+     pub(super) struct CursorTest {
+         pub(super) db: ty_project::TestDb,
+         pub(super) cursor: Cursor,
+-        pub(super) files: Vec&lt;File&gt;,
+         _insta_settings_guard: SettingsBindDropGuard,
+     }
+ 
+@@ -303,7 +302,6 @@
+             ));
+ 
+             let mut cursor: Option&lt;Cursor&gt; = None;
+-            let mut files = Vec::new();
+ 
+             for &amp;Source {
+                 ref path,
+@@ -315,7 +313,6 @@
+                     .expect(&quot;write to memory file system to be successful&quot;);
+ 
+                 let file = system_path_to_file(&amp;db, path).expect(&quot;newly written file to existing&quot;);
+-                files.push(file);
+ 
+                 if let Some(offset) = cursor_offset {
+                     // This assert should generally never trip, since
+@@ -352,7 +349,6 @@
+             CursorTest {
+                 db,
+                 cursor: cursor.expect(&quot;at least one source to contain `&lt;CURSOR&gt;`&quot;),
+-                files,
+                 _insta_settings_guard: insta_settings_guard,
+             }
+         }
+Index: crates/ty_ide/src/references.rs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+&lt;+&gt;UTF-8
+===================================================================
+diff --git a/crates/ty_ide/src/references.rs b/crates/ty_ide/src/references.rs
+--- a/crates/ty_ide/src/references.rs	(revision 4bf83de1624ec9068260cdf8b032a06a8cc7ef01)
++++ b/crates/ty_ide/src/references.rs	(date 1753255209500)
+@@ -27,7 +27,6 @@
+     file: File,
+     offset: TextSize,
+     include_declaration: bool,
+-    project_files: impl IntoIterator&lt;Item = File&gt;,
+ ) -&gt; Option&lt;Vec&lt;RangedValue&lt;NavigationTargets&gt;&gt;&gt; {
+     let parsed = ruff_db::parsed::parsed_module(db, file);
+     let module = parsed.load(db);
+@@ -53,7 +52,7 @@
+     // Check if the symbol is potentially visible outside of this module
+     if is_symbol_externally_visible(&amp;goto_target) {
+         // Look for references in all other files within the workspace
+-        for other_file in project_files {
++        for other_file in &amp;db.project().files(db) {
+             // Skip the current file as we already processed it
+             if other_file == file {
+                 continue;
+@@ -281,38 +280,9 @@
+ 
+     impl CursorTest {
+         fn references(&amp;self) -&gt; String {
+-            let Some(reference_results) = references(
+-                &amp;self.db,
+-                self.cursor.file,
+-                self.cursor.offset,
+-                true,
+-                std::iter::empty(),
+-            ) else {
+-                return &quot;No references found&quot;.to_string();
+-            };
+-
+-            if reference_results.is_empty() {
+-                return &quot;No references found&quot;.to_string();
+-            }
+-
+-            self.render_diagnostics(reference_results.into_iter().enumerate().map(
+-                |(i, ref_item)| -&gt; ReferenceResult {
+-                    ReferenceResult {
+-                        index: i,
+-                        file_range: ref_item.range,
+-                    }
+-                },
+-            ))
+-        }
+-
+-        fn references_with_project_files(&amp;self, project_files: Vec&lt;File&gt;) -&gt; String {
+-            let Some(reference_results) = references(
+-                &amp;self.db,
+-                self.cursor.file,
+-                self.cursor.offset,
+-                true,
+-                project_files,
+-            ) else {
++            let Some(reference_results) =
++                references(&amp;self.db, self.cursor.file, self.cursor.offset, true)
++            else {
+                 return &quot;No references found&quot;.to_string();
+             };
+ 
+@@ -990,7 +960,7 @@
+             )
+             .build();
+ 
+-        assert_snapshot!(test.references_with_project_files(test.files.clone()), @r&quot;
++        assert_snapshot!(test.references(), @r&quot;
+         info[references]: Reference 1
+          --&gt; utils.py:2:5
+           |
+@@ -1075,7 +1045,7 @@
+             )
+             .build();
+ 
+-        assert_snapshot!(test.references_with_project_files(test.files.clone()), @r&quot;
++        assert_snapshot!(test.references(), @r&quot;
+         info[references]: Reference 1
+          --&gt; models.py:3:5
+           |
+
+</code></pre>
+<p>The other advantage is that we don't need to load the project files if the symbol isn't publicly visible (we can defer query the project files to exactly when they're needed)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_ide/src/references.rs</code>:126 on 2025-07-23 07:25</div>
+            <div class="timeline-body"><p>Nit: I would suggest using an exhaustive match here. It makes it easier for the next person adding a variant to <code>GotoTarget</code> to know that they need to think about this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_ide/src/references.rs</code>:219 on 2025-07-23 07:30</div>
+            <div class="timeline-body"><p>This is a bit a micro optimization but I use this opportunity to show you a rust pattern.</p>
+<p>We have to clone the <code>ancestors</code> vector here because <code>from_ancestors</code> takes an owned <code>Vec</code>. We could avoid the cloning here if we restore the <code>ancestors</code> after calling <code>check_reference_from_covering_node</code>:</p>
+<pre><code class="language-rust">	let mut ancestors_with_identifier = std::mem::take(&amp;mut self.ancestors); // take the ancestors, that leaves `self.ancestors` empty
+	ancestors_with_identifier.push(AnyNodeRef::from(identifier));
+  let covering_node = CoveringNode::from_ancestors(ancestors_with_identifier);
+	self.check_reference_from_covering_node(&amp;covering_node);
+
+	// now, restore ancestors
+	let mut ancestors_with_identifier = covering_node.into_ancestors(); 
+	ancestors_with_identifier.pop(); // remove the identifier
+	self.ancestors = ancestors_with_identifier;
+</code></pre>
+<p>where <code>CoveringNode::into_ancestors</code> is</p>
+<pre><code class="language-rust">fn into_ancestors(self) -&gt; Vec&lt;AnyNodeRef&gt; {
+	self.ancestors
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_ide/src/references.rs</code>:234 on 2025-07-23 07:30</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        let offset = covering_node.node().start();
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-07-23 07:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @UnboundVariable on 2025-07-23 16:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @UnboundVariable on 2025-07-23 16:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-07-23 16:16</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:58:39 UTC
+    </footer>
+</body>
+</html>

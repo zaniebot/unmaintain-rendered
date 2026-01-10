@@ -1,0 +1,1160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Add support for `@warnings.deprecated` - astral-sh/ruff #19376</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Add support for <code>@warnings.deprecated</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19376">#19376</a>
+        opened by <a href="https://github.com/Gankra">@Gankra</a>
+        on 2025-07-15 20:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/Gankra">@Gankra</a> on 2025-07-15 20:22</div>
+            <div class="timeline-body"><ul>
+<li><p>[x] basic handling</p>
+<ul>
+<li>[x] parse and discover <code>@warnings.deprecated</code> attributes</li>
+<li>[x] associate them with function definitions</li>
+<li>[x] associate them with class definitions</li>
+<li>[x] add a new &quot;deprecated&quot; diagnostic</li>
+<li>[x] ensure diagnostic is styled appropriately for LSPs (DiagnosticTag::Deprecated)</li>
+</ul>
+</li>
+<li><p>[x] functions</p>
+<ul>
+<li>[x] fire on calls</li>
+<li>[x] fire on arbitrary references</li>
+</ul>
+</li>
+<li><p>[x] classes</p>
+<ul>
+<li>[x] fire on initializers</li>
+<li>[x] fire on arbitrary references</li>
+</ul>
+</li>
+<li><p>[x] methods</p>
+<ul>
+<li>[x] fire on calls</li>
+<li>[x] fire on arbitrary references</li>
+</ul>
+</li>
+<li><p>[ ] overloads</p>
+<ul>
+<li>[ ] fire on calls</li>
+<li>[ ] fire on arbitrary references(??? maybe not ???)</li>
+<li>[ ] only fire if the actual selected overload is deprecated</li>
+</ul>
+</li>
+<li><p>[ ] dunder desugarring (warn on deprecated <code>__add__</code> if <code>+</code> is invoked)</p>
+</li>
+<li><p>[ ] alias supression? (don't warn on uses of variables that deprecated items were assigned to)</p>
+</li>
+<li><p>[ ] import logic</p>
+<ul>
+<li>[x] fire on imports of deprecated items</li>
+<li>[ ] suppress subsequent diagnostics if the import diagnostic fired (is this handled by alias supression?)</li>
+<li>[x] fire on all qualified references (<code>module.mydeprecated</code>)</li>
+<li>[x] fire on all references that depend on a <code>*</code> import</li>
+</ul>
+</li>
+</ul>
+<p>Fixes https://github.com/astral-sh/ty/issues/153</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @Gankra on 2025-07-15 20:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @Gankra on 2025-07-15 20:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @Gankra on 2025-07-15 20:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @Gankra on 2025-07-15 20:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Add support for `@warnings.deprecated`" to "[ty] Add support for `@warnings.deprecated`" by @Gankra on 2025-07-15 20:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @Gankra on 2025-07-15 20:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">diagnostics</span> added by @Gankra on 2025-07-15 20:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-07-15 20:28</div>
+            <div class="timeline-body"><p>The big thing left to do here is to generalize to &quot;fire on all references&quot;. I haven't started on it but I assume it's non-trivial?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-07-15 20:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/ty_python_semantic/src/types/infer.rs</code>:5556 on 2025-07-15 20:30</div>
+            <div class="timeline-body"><p>I don't love this current formatting -- pylance displays</p>
+<pre><code>The class &quot;{class_name}&quot; is deprecated
+    {message}
+</code></pre>
+<p>Which is presumably some kind of sub-diagnostic and not literally a newline and indent? But Maybe I'm wrong (tried <code>diag.info(message)</code> but that didn't display in vscode).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-07-15 20:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/ty_python_semantic/resources/mdtest/deprecated.md</code>:236 on 2025-07-15 20:32</div>
+            <div class="timeline-body"><p>I didn't obviously see how to get this precision but I didn't look hard, something to ask @dhruvmanila about.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-07-15 20:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/ty_python_semantic/resources/mdtest/deprecated.md</code>:36 on 2025-07-15 20:32</div>
+            <div class="timeline-body"><p>I was surprised methods were somehow special here, oh well, gotta find the code that handles those!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/infer.rs</code>:5593 on 2025-07-15 20:54</div>
+            <div class="timeline-body"><p>I think this is where to get the more precision you mentioned in https://github.com/astral-sh/ruff/pull/19376#discussion_r2208606501.  Instead of checking whether <code>function_literal</code> is deprecated (which checks if any overload of the function is deprecated), you only want to check if <code>overload</code> is (that is, the particular overload that was matched for this call).</p>
+<p>(My <em>hope</em> is that <code>overload.binding.binding_type</code> is the <code>FunctionLiteral</code> that points right at the particular overload that was matched. If not, you'll have to get the overload index from the <code>matching_overloads_mut</code> iterator (which is already enumerated for you), and use that index to walk through the overloads looking for the right one. I'm about to sign off for the day but I can help you look at this tomorrow)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-07-15 21:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-07-16 03:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/ty_python_semantic/src/types/infer.rs</code>:5593 on 2025-07-16 03:28</div>
+            <div class="timeline-body"><p>I believe no matter what you need to iterate a list of overloads, as e.g. <code>int | str</code> might match an <code>int</code> overload <em>and</em> a <code>str</code> overload (but not say, a third <code>bool</code> one).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-07-16 06:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/resources/mdtest/deprecated.md</code>:98 on 2025-07-16 06:46</div>
+            <div class="timeline-body"><p>It's only been added very recently in 3.13: https://github.com/python/typeshed/blob/main/stdlib/warnings.pyi#L120-L121</p>
+<p>Mdtests check with version set to 3.9 by default (which makes that particular definition in typeshed invisible/unreachable), but you can change this by adding a <code>toml</code>-block in this section to switch the version to 3.13: https://github.com/astral-sh/ruff/blob/main/crates/ty_test/README.md#configuration</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/resources/mdtest/deprecated.md</code>:36 on 2025-07-16 06:54</div>
+            <div class="timeline-body"><blockquote>
+<p>I was surprised methods were somehow special</p>
+</blockquote>
+<p>They are, yes. When you access the <code>amethod</code> attribute through an instance of <code>MyClass</code> (<code>MyClass().amethod</code>), the <a href="https://docs.python.org/3/howto/descriptor.html#id25">descriptor protocol</a> will be invoked (function objects are descriptors), which turns the function <code>amethod</code> into a bound method object. You can also see that at runtime:</p>
+<p>It's a function when accessed through the class object itself (the descriptor protocol is also invoked here, but acts like a no-op):</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; MyClass.amethod
+&lt;function MyClass.amethod at 0x7f6251ca6160&gt;
+</code></pre>
+<p>But it becomes a bound method object when accessed through an instance</p>
+<pre><code>&gt;&gt;&gt; MyClass().amethod
+&lt;bound method MyClass.amethod of &lt;__main__.MyClass object at 0x7f6251c45a90&gt;&gt;
+</code></pre>
+<p>The difference is that the <code>self</code> argument is already bound to the instance of the class, which allows you to call it with one parameter fewer.</p>
+<p>In ty, this is modeled via a special type variant called <code>Type::BoundMethod</code>, which keeps a reference to the original function inside, so you should be able to get the deprecation message from there.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-07-16 06:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/resources/mdtest/deprecated.md</code>:89 on 2025-07-16 07:22</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">version in `warnings` is canonical, the other versions are compatibility shims.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-07-16 07:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-07-16 07:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/resources/mdtest/deprecated.md</code>:88 on 2025-07-16 07:24</div>
+            <div class="timeline-body"><p>Does <code>typing.deprecated</code> really exist? Couldn't find any reference to it, and can't import it at runtime in 3.13. It might eventually appear, given that it's present in <code>typing_extensions</code>, but it seems like not yet.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-07-16 07:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/deprecated.md</code>:88 on 2025-07-16 07:27</div>
+            <div class="timeline-body"><p>No, we'll never add it to <code>typing</code> in CPython, since it already exists in the stdlib in the <code>warnings</code> module, which is a more logical place for it overall!</p>
+<p><code>typing_extensions</code> also includes a few other backports from other stdlib modules that will never be in the typing module but may be useful to users of type hints.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/resources/mdtest/deprecated.md</code>:47 on 2025-07-16 07:29</div>
+            <div class="timeline-body"><p>That should ideally generate an error here, I think? Passing <code>invalid_deco</code> to <code>deprecated</code>'s constructor should yield an error (because it requires <code>message: LiteralString</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/module_resolver/module.rs</code>:282 on 2025-07-16 07:31</div>
+            <div class="timeline-body"><p>This is more of a question for our semantic model experts. Is it okay to return <code>warnings</code> here even if it represents <code>typing.warnings</code>, <code>typing_extensions.warnings</code>, ... or do we need different variants for each?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/resources/mdtest/deprecated.md</code>:65 on 2025-07-16 07:34</div>
+            <div class="timeline-body"><p>That's interesting. We only see this <code>missing-argument</code> diagnostic because <code>invalid_deco</code> is turned into a <code>deprecated</code> object above (which is sort of the right outcome of this incorrect call). So calling <code>invalid_deco</code> here is actually a call to <code>deprecated.__call__</code>, which takes one argument.</p>
+<p>I don't think it's a huge deal, but given that I could see someone genuinely making this mistake, we might attempt to improve the experience here? Instead of returning a <code>deprecated</code> object from that invalid use of <code>@deprecated</code>, maybe we could return the function itself instead (with an empty deprecation message)? (assuming that we will emit an error on the construct above).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:796 on 2025-07-16 07:36</div>
+            <div class="timeline-body"><p>Using name here probably makes sense but it's a stretch for what the type was intended for because this is not a name ;)</p>
+<p>We might just want to use <code>compactstr</code> here directly or use a regular <code>String</code> (they're not that common)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/resources/mdtest/deprecated.md</code>:180 on 2025-07-16 07:38</div>
+            <div class="timeline-body"><p>Do we want to error on every <em>use</em> (load) of these deprecated symbols, i.e. whenever they are read?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-07-16 07:41</div>
+            <div class="timeline-body"><p>Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types/infer.rs</code>:5556 on 2025-07-16 07:48</div>
+            <div class="timeline-body"><p>It would be good if you add a <a href="https://github.com/astral-sh/ruff/tree/main/crates/ty_test#diagnostic-snapshotting">diagnostic snapshot</a> test to your mdtest so that &quot;we can see&quot; how the diagnostics get rendered. You might also want to try running ty with <code>output-format=concise</code> just to see how it looks.</p>
+<p>I would then give <code>set_primary_message</code> a try (setting it to <code>message</code>). It will give you the <code>: {message}</code> rendering in concise mode but the message is rendered inside the code frame when using <code>output-format=full</code>.</p>
+<p>It might also be worth taking a look at what rustc does.</p>
+<p>I'm not entirely sure but I'm wondering if we should add a sub diagnostic that highlights the deprecated declaration.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types/function.rs</code>:202 on 2025-07-16 08:02</div>
+            <div class="timeline-body"><p>Use <code>returns(ref)</code> or <code>returns(deref)</code> to prevent that the accessor clones <code>Name</code> on every read</p>
+<pre><code class="language-suggestion">    /// If `Some` then contains the message from @deprecated
+    #[returns(ref)]
+    pub(crate) deprecated: Option&lt;ast::name::Name&gt;,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:796 on 2025-07-16 08:03</div>
+            <div class="timeline-body"><p>Use <code>returns(ref)</code> so that the salsa generated getter returns a reference instead of cloning the field</p>
+<pre><code class="language-suggestion">		#[returns(ref)]
+    pub(crate) deprecated: Option&lt;ast::name::Name&gt;,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-07-16 08:04</div>
+            <div class="timeline-body"><p>Thank you.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/module_resolver/module.rs</code>:282 on 2025-07-16 08:30</div>
+            <div class="timeline-body"><p>This is fine. It only establishes the <code>warnings</code> module as a <code>KnownModule</code>.</p>
+<blockquote>
+<p>even if it represents <code>typing.warnings</code>, <code>typing_extensions.warnings</code></p>
+</blockquote>
+<p>There's <code>typing_extensions.deprecated</code> as well, but <code>typing_extensions</code> is already a known module. <code>typing.deprecated</code> doesn't exist (see one of my other comments). <code>typing.warnings</code> or <code>typing_extensions.warnings</code> do not exist.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-07-16 08:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-07-16 13:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/ty_python_semantic/resources/mdtest/deprecated.md</code>:180 on 2025-07-16 13:11</div>
+            <div class="timeline-body"><p>I believe so, yes. This is suggested in https://typing.python.org/en/latest/spec/directives.html#deprecated</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-07-16 13:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/ty_python_semantic/src/module_resolver/module.rs</code>:282 on 2025-07-16 13:12</div>
+            <div class="timeline-body"><p>I believe we do this kind of conflation for other KnownClasses with typing_extensions shims</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-07-16 13:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:796 on 2025-07-16 13:14</div>
+            <div class="timeline-body"><p>Yeah I agree Name is very &quot;uhhhhh this seems wrong&quot; but it was the only type I could find a good precedent for in the code. Happy to change it to either of those other types.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_python_semantic/resources/mdtest/deprecated.md</code>:236 on 2025-07-16 13:51</div>
+            <div class="timeline-body"><p>I think this might require invoking the call logic i.e., calling the <code>try_call</code> method on the type of <code>f</code> with the argument types. This should give you the <code>Bindings</code> object which would be populated with all the information about the call including the chosen overload which is <code>CallableBinding::matching_overload_index</code>. The problem with this is that the <code>matching_overload_index</code> for now is only populated for step 1 and step 4 of the algorithm.</p>
+<p>For step 2, it can easily be done here:</p>
+<p>https://github.com/astral-sh/ruff/blob/f3a27406c91438ccad488212c4a9651a7b8d2374/crates/ty_python_semantic/src/types/call/bind.rs#L1226-L1229</p>
+<p>Step 3 will have more than one matching overloads so it might require updating the type of <code>matching_overload_index</code> or you could use the existing <code>MatchingOverloadIndex</code>.</p>
+<p>Step 5 could also result in multiple matching overloads which can also be represented using <code>MatchingOverloadIndex</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-07-16 13:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-07-16 13:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_python_semantic/resources/mdtest/deprecated.md</code>:236 on 2025-07-16 13:51</div>
+            <div class="timeline-body"><p>But, if this PR doesn't result into too many false positives, we could do this in a follow-up PR as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-07-16 14:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/ty_python_semantic/resources/mdtest/deprecated.md</code>:236 on 2025-07-16 14:32</div>
+            <div class="timeline-body"><p>I think the false positives will be really annoying here, and deprecated-overloads is pretty narrow, so I think it's best to just disable all support for deprecated overloads until said followup.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-07-16 14:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_python_semantic/resources/mdtest/deprecated.md</code>:236 on 2025-07-16 14:56</div>
+            <div class="timeline-body"><p>That sounds reasonable. Can you open an issue to keep track of it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-07-16 15:19</div>
+            <div class="timeline-body"><p>I've pushed up an updated implementation that focuses on places like <code>infer_load_expr</code> and <code>infer_import_from</code>. I think the currently implemented functionality is shippable (mdtest TODOs cover the limitations I'm Knowningly shipping).</p>
+<p>I still need to do some cleanups to the code though.</p>
+<p>I also haven't looked at all at the specific clauses about inheritance and overrides.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-07-16 15:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:796 on 2025-07-16 15:28</div>
+            <div class="timeline-body"><p>Or <code>Type&lt;'db&gt;</code>!</p>
+<p>That would move your <code>into_string_literal</code> call from <code>KnownClass::check_call</code> to <code>TypeInferenceBuilder::check_deprecated</code> (i.e. don't worry about coercing the deprecation message into a string until you render the deprecation diagnostic).</p>
+<p>It would mean not being strict about the deprecation warning being a string literal; the following would become allowed:</p>
+<pre><code class="language-py">message = &quot;this is bad &quot; + &quot;don't use it&quot;
+
+@warnings.deprecated(message)
+def bad_function(): ...
+</code></pre>
+<p>@JelleZijlstra mentioned in discord that the language in the spec about the message being a string literal was more meant to be advisory, to not <em>require</em> type checkers to have to do things like constant folding. But we already do, and I think it won't be any more complex to store the deprecation message as a <code>Type&lt;'db&gt;</code> as we pass it around various places.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-07-16 15:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/infer.rs</code>:5593 on 2025-07-16 15:31</div>
+            <div class="timeline-body"><p>Right, I think I spoke poorly. The <code>for</code> loop over <code>matching_overloads_mut</code> handles what you're describing — the loop body will be invoked for each overload that the call actually matches. But for each of those matching overloads, you need to find the <code>OverloadLiteral</code> that describes its signature, so that you can see if it has a <code>deprecated</code> decorator attached. What I was describing was how to go from the <code>Binding</code> (which is what the <code>overload</code> variable is) to that <code>OverloadLiteral</code>. That might require walking through what is effectively a linked list.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-07-16 15:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:796 on 2025-07-16 15:38</div>
+            <div class="timeline-body"><p>Hmm, although...I think that my example might work with how you've currently done this, too! You're not checking that the argument is syntactically a string literal. Because you're using <code>into_string_literal</code>, you're checking that its inferred type is a statically known string.</p>
+<p>So given that, I think <code>Option&lt;StringLiteralType&lt;'db&gt;&gt;</code> is what you want to store here. That's an interned salsa struct, so they're cheap to store and pass around.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-07-17 16:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:796 on 2025-07-17 16:07</div>
+            <div class="timeline-body"><p>That worked, thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-07-17 16:34</div>
+            <div class="timeline-body"><p>Rebased and addressed all reviews.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-17 16:38</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">parso (https://github.com/davidhalter/parso)
++ warning[deprecated] parso/tree.py:1:33: The class `abstractproperty` is deprecated: Use 'property' with 'abstractmethod' instead
++ warning[deprecated] parso/tree.py:136:6: The class `abstractproperty` is deprecated: Use 'property' with 'abstractmethod' instead
++ warning[deprecated] parso/tree.py:144:6: The class `abstractproperty` is deprecated: Use 'property' with 'abstractmethod' instead
+- Found 72 diagnostics
++ Found 75 diagnostics
+
+DateType (https://github.com/glyph/DateType)
++ warning[deprecated] src/datetype/__init__.py:529:32: The function `utcfromtimestamp` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .fromtimestamp(datetime.timezone.utc)
++ warning[deprecated] src/datetype/__init__.py:533:32: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
+- Found 6 diagnostics
++ Found 8 diagnostics
+
+python-sop (https://gitlab.com/dkg/python-sop)
++ warning[deprecated] sop/__init__.py:424:29: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
+- Found 2 diagnostics
++ Found 3 diagnostics
+
+anyio (https://github.com/agronholm/anyio)
++ warning[deprecated] src/anyio/__init__.py:46:29: The function `wait_socket_readable` is deprecated: This function is deprecated; use `wait_readable` instead
++ warning[deprecated] src/anyio/__init__.py:47:29: The function `wait_socket_writable` is deprecated: This function is deprecated; use `wait_writable` instead
+- Found 93 diagnostics
++ Found 95 diagnostics
+
+speedrun.com_global_scoreboard_webapp (https://github.com/Avasam/speedrun.com_global_scoreboard_webapp)
++ warning[deprecated] backend/api/api_wrappers.py:56:33: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] backend/api/core_api.py:36:29: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] backend/api/core_api.py:37:29: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] backend/api/global_scoreboard_api.py:76:20: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] backend/services/user_updater.py:78:30: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
+- Found 60 diagnostics
++ Found 65 diagnostics
+
+comtypes (https://github.com/enthought/comtypes)
++ warning[deprecated] comtypes/test/__init__.py:137:21: The function `makeSuite` is deprecated: Deprecated in Python 3.11; removal scheduled for Python 3.13
++ warning[deprecated] comtypes/test/__init__.py:207:24: The function `makeSuite` is deprecated: Deprecated in Python 3.11; removal scheduled for Python 3.13
+- Found 420 diagnostics
++ Found 422 diagnostics
+
+alerta (https://github.com/alerta/alerta)
++ warning[deprecated] alerta/auth/oidc.py:99:24: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] alerta/auth/utils.py:52:20: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] alerta/commands.py:66:24: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] alerta/database/backends/mongodb/base.py:190:56: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] alerta/database/backends/mongodb/base.py:214:24: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] alerta/database/backends/mongodb/base.py:1116:79: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] alerta/database/backends/mongodb/base.py:1194:51: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] alerta/database/backends/mongodb/base.py:1259:52: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] alerta/database/backends/mongodb/base.py:1301:67: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] alerta/database/backends/mongodb/base.py:1517:41: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] alerta/database/backends/mongodb/base.py:1603:44: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] alerta/database/backends/mongodb/base.py:1608:41: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] alerta/database/backends/mongodb/base.py:1618:100: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] alerta/database/backends/mongodb/base.py:1668:95: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] alerta/database/backends/mongodb/base.py:1718:95: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] alerta/database/backends/mongodb/utils.py:250:79: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] alerta/database/backends/mongodb/utils.py:250:120: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] alerta/database/backends/mongodb/utils.py:252:68: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] alerta/database/backends/mongodb/utils.py:254:67: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] alerta/database/backends/mongodb/utils.py:345:70: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] alerta/database/backends/mongodb/utils.py:347:69: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] alerta/dev.py:4:23: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] alerta/management/views.py:144:39: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] alerta/models/alert.py:66:72: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] alerta/models/alert.py:75:74: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] alerta/models/alert.py:282:24: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] alerta/models/alert.py:335:24: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] alerta/models/alert.py:379:24: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] alerta/models/alert.py:430:24: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] alerta/models/alert.py:574:34: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] alerta/models/alert.py:594:34: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] alerta/models/alert.py:609:24: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] alerta/models/alert.py:637:24: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] alerta/models/blackout.py:37:65: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] alerta/models/blackout.py:60:91: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] alerta/models/blackout.py:84:24: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] alerta/models/heartbeat.py:56:52: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] alerta/models/heartbeat.py:59:74: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] alerta/models/heartbeat.py:61:31: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] alerta/models/history.py:16:72: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] alerta/models/key.py:31:52: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] alerta/models/key.py:42:49: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] alerta/models/key.py:164:57: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] alerta/models/note.py:25:91: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] alerta/models/user.py:41:72: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] alerta/models/user.py:44:72: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] alerta/utils/audit.py:94:36: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] alerta/utils/client.py:44:45: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] alerta/views/alerts.py:309:27: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] tests/test_blackouts.py:688:42: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
+- Found 447 diagnostics
++ Found 497 diagnostics
+
+dulwich (https://github.com/dulwich/dulwich)
++ warning[deprecated] dulwich/porcelain.py:5638:25: The function `warn` is deprecated: Deprecated; use warning() instead.
+- Found 169 diagnostics
++ Found 170 diagnostics
+
+discord.py (https://github.com/Rapptz/discord.py)
++ warning[deprecated] discord/member.py:929:91: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] discord/member.py:985:61: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
+- Found 519 diagnostics
++ Found 521 diagnostics
+
+httpx-caching (https://github.com/johtso/httpx-caching)
++ warning[deprecated] httpx_caching/_heuristics.py:14:29: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
+- Found 27 diagnostics
++ Found 28 diagnostics
+
+PyGithub (https://github.com/PyGithub/PyGithub)
++ warning[deprecated] github/MainClass.py:134:42: The class `AppAuthentication` is deprecated: Use github.Auth.AppInstallationAuth instead
++ warning[deprecated] github/MainClass.py:179:19: The class `AppAuthentication` is deprecated: Use github.Auth.AppInstallationAuth instead
++ warning[deprecated] github/Requester.py:118:36: The class `AppAuthentication` is deprecated: Use github.Auth.AppInstallationAuth instead
++ warning[deprecated] github/Requester.py:289:17: The class `AppAuthentication` is deprecated: Use github.Auth.AppInstallationAuth instead
++ warning[deprecated] github/__init__.py:55:32: The class `AppAuthentication` is deprecated: Use github.Auth.AppInstallationAuth instead
++ warning[deprecated] tests/Authentication.py:95:31: The class `AppAuthentication` is deprecated: Use github.Auth.AppInstallationAuth instead
+- Found 301 diagnostics
++ Found 307 diagnostics
+
+mongo-python-driver (https://github.com/mongodb/mongo-python-driver)
++ warning[deprecated] bson/codec_options.py:63:10: The class `abstractproperty` is deprecated: Use 'property' with 'abstractmethod' instead
++ warning[deprecated] bson/codec_options.py:82:10: The class `abstractproperty` is deprecated: Use 'property' with 'abstractmethod' instead
+- Found 423 diagnostics
++ Found 425 diagnostics
+
+pydantic (https://github.com/pydantic/pydantic)
++ warning[deprecated] pydantic/__init__.py:62:46: The function `root_validator` is deprecated: Pydantic V1 style `@root_validator` validators are deprecated. You should migrate to Pydantic V2 style `@model_validator` validators, see the migration guide for more details
++ warning[deprecated] pydantic/__init__.py:62:62: The function `validator` is deprecated: Pydantic V1 style `@validator` validators are deprecated. You should migrate to Pydantic V2 style `@field_validator` validators, see the migration guide for more details
++ warning[deprecated] pydantic/__init__.py:63:36: The class `BaseConfig` is deprecated: BaseConfig is deprecated. Use the `pydantic.ConfigDict` instead.
++ warning[deprecated] pydantic/__init__.py:63:48: The class `Extra` is deprecated: Extra is deprecated. Use literal values instead (e.g. `extra='allow'`)
++ warning[deprecated] pydantic/color.py:89:32: The class `Color` is deprecated: The `Color` class is deprecated, use `pydantic_extra_types` instead. See https://docs.pydantic.dev/latest/api/pydantic_extra_types_color/.
++ warning[deprecated] pydantic/color.py:242:56: The class `Color` is deprecated: The `Color` class is deprecated, use `pydantic_extra_types` instead. See https://docs.pydantic.dev/latest/api/pydantic_extra_types_color/.
++ warning[deprecated] pydantic/color.py:252:34: The class `Color` is deprecated: The `Color` class is deprecated, use `pydantic_extra_types` instead. See https://docs.pydantic.dev/latest/api/pydantic_extra_types_color/.
++ warning[deprecated] pydantic/deprecated/decorator.py:85:72: The function `validate_arguments` is deprecated: The `validate_arguments` method is deprecated; use `validate_call` instead.
++ warning[deprecated] pydantic/deprecated/json.py:16:21: The class `Color` is deprecated: The `Color` class is deprecated, use `pydantic_extra_types` instead. See https://docs.pydantic.dev/latest/api/pydantic_extra_types_color/.
++ warning[deprecated] pydantic/deprecated/json.py:56:5: The class `Color` is deprecated: The `Color` class is deprecated, use `pydantic_extra_types` instead. See https://docs.pydantic.dev/latest/api/pydantic_extra_types_color/.
++ warning[deprecated] pydantic/deprecated/json.py:132:16: The function `pydantic_encoder` is deprecated: `pydantic_encoder` is deprecated, use `pydantic_core.to_jsonable_python` instead.
++ warning[deprecated] pydantic/deprecated/parse.py:78:12: The function `load_str_bytes` is deprecated: `load_str_bytes` is deprecated.
++ warning[deprecated] pydantic/deprecated/tools.py:101:9: The function `schema_of` is deprecated: `schema_of` is deprecated. Use `pydantic.TypeAdapter.json_schema` instead.
++ warning[deprecated] pydantic/main.py:267:30: The function `dict` is deprecated: The `dict` method is deprecated; use `model_dump` instead.
++ warning[deprecated] pydantic/main.py:278:39: The function `dict` is deprecated: The `dict` method is deprecated; use `model_dump` instead.
++ warning[deprecated] pydantic/main.py:288:30: The function `dict` is deprecated: The `dict` method is deprecated; use `model_dump` instead.
++ warning[deprecated] pydantic/main.py:436:10: The function `dict` is deprecated: The `dict` method is deprecated; use `model_dump` instead.
++ warning[deprecated] pydantic/main.py:546:10: The function `dict` is deprecated: The `dict` method is deprecated; use `model_dump` instead.
++ warning[deprecated] pydantic/main.py:937:34: The function `dict` is deprecated: The `dict` method is deprecated; use `model_dump` instead.
++ warning[deprecated] pydantic/main.py:1094:31: The function `dict` is deprecated: The `dict` method is deprecated; use `model_dump` instead.
++ warning[deprecated] pydantic/main.py:1105:35: The function `dict` is deprecated: The `dict` method is deprecated; use `model_dump` instead.
++ warning[deprecated] pydantic/main.py:1248:29: The function `dict` is deprecated: The `dict` method is deprecated; use `model_dump` instead.
++ warning[deprecated] pydantic/main.py:1362:25: The function `load_str_bytes` is deprecated: `load_str_bytes` is deprecated.
++ warning[deprecated] pydantic/main.py:1415:21: The function `load_file` is deprecated: `load_file` is deprecated.
++ warning[deprecated] pydantic/main.py:1557:38: The function `pydantic_encoder` is deprecated: `pydantic_encoder` is deprecated, use `pydantic_core.to_jsonable_python` instead.
++ warning[deprecated] pydantic/main.py:1561:21: The function `pydantic_encoder` is deprecated: `pydantic_encoder` is deprecated, use `pydantic_core.to_jsonable_python` instead.
++ warning[deprecated] pydantic/types.py:1949:78: The class `PaymentCardNumber` is deprecated: The `PaymentCardNumber` class is deprecated, use `pydantic_extra_types` instead. See https://docs.pydantic.dev/latest/api/pydantic_extra_types_payment/#pydantic_extra_types.payment.PaymentCardNumber.
++ warning[deprecated] pydantic/v1/_hypothesis_plugin.py:105:20: The class `Color` is deprecated: The `Color` class is deprecated, use `pydantic_extra_types` instead. See https://docs.pydantic.dev/latest/api/pydantic_extra_types_color/.
++ warning[deprecated] pydantic/v1/_hypothesis_plugin.py:126:22: The class `PaymentCardNumber` is deprecated: The `PaymentCardNumber` class is deprecated, use `pydantic_extra_types` instead. See https://docs.pydantic.dev/latest/api/pydantic_extra_types_payment/#pydantic_extra_types.payment.PaymentCardNumber.
++ warning[deprecated] pydantic/v1/_hypothesis_plugin.py:139:14: The class `PaymentCardNumber` is deprecated: The `PaymentCardNumber` class is deprecated, use `pydantic_extra_types` instead. See https://docs.pydantic.dev/latest/api/pydantic_extra_types_payment/#pydantic_extra_types.payment.PaymentCardNumber.
+- Found 748 diagnostics
++ Found 778 diagnostics
+
+strawberry (https://github.com/strawberry-graphql/strawberry)
++ warning[deprecated] strawberry/utils/typing.py:221:65: The class `Index` is deprecated: Deprecated since Python 3.9. Use the index value directly instead.
++ warning[deprecated] strawberry/utils/typing.py:258:65: The class `Index` is deprecated: Deprecated since Python 3.9. Use the index value directly instead.
++ warning[deprecated] strawberry/utils/typing.py:276:65: The class `Index` is deprecated: Deprecated since Python 3.9. Use the index value directly instead.
+- Found 365 diagnostics
++ Found 368 diagnostics
+
+mkosi (https://github.com/systemd/mkosi)
++ warning[deprecated] mkosi/documentation.py:32:29: The function `warn` is deprecated: Deprecated; use warning() instead.
+- Found 90 diagnostics
++ Found 91 diagnostics
+
+stone (https://github.com/dropbox/stone)
++ warning[deprecated] test/test_python_gen.py:145:33: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] test/test_python_gen.py:221:33: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] test/test_python_gen.py:413:33: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
+- Found 113 diagnostics
++ Found 116 diagnostics
+
+SinbadCogs (https://github.com/mikeshardmind/SinbadCogs)
++ warning[deprecated] antimentionspam/antimentionspam.py:239:26: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] embedmaker/serialize.py:81:34: The function `utcfromtimestamp` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .fromtimestamp(datetime.timezone.utc)
++ warning[deprecated] embedmaker/time_utils.py:42:54: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] modnotes/modnotes.py:148:32: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] rolemanagement/events.py:41:24: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] scheduler/message.py:82:57: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] scheduler/time_utils.py:42:54: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
+- Found 142 diagnostics
++ Found 149 diagnostics
+
+dragonchain (https://github.com/dragonchain/dragonchain)
++ warning[deprecated] dragonchain/lib/authorization.py:51:30: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] dragonchain/lib/dto/smart_contract_model.py:100:95: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] dragonchain/lib/dto/smart_contract_model.py:300:121: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] dragonchain/scheduler/scheduler.py:65:51: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
+- Found 302 diagnostics
++ Found 306 diagnostics
+
+tornado (https://github.com/tornadoweb/tornado)
++ warning[deprecated] tornado/autoreload.py:339:26: The function `get_loader` is deprecated: Use importlib.util.find_spec() instead. Will be removed in Python 3.14.
++ warning[deprecated] tornado/test/httpclient_test.py:932:43: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] tornado/test/httputil_test.py:506:42: The function `utcfromtimestamp` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .fromtimestamp(datetime.timezone.utc)
+- Found 243 diagnostics
++ Found 246 diagnostics
+
+bandersnatch (https://github.com/pypa/bandersnatch)
++ warning[deprecated] src/bandersnatch/utils.py:54:24: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
+- Found 128 diagnostics
++ Found 129 diagnostics
+
+freqtrade (https://github.com/freqtrade/freqtrade)
++ warning[deprecated] freqtrade/rpc/api_server/api_ws.py:42:41: The function `dict` is deprecated: The `dict` method is deprecated; use `model_dump` instead.
+- Found 368 diagnostics
++ Found 369 diagnostics
+
+paasta (https://github.com/yelp/paasta)
++ warning[deprecated] paasta_tools/cli/cmds/logs.py:1018:46: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] paasta_tools/cli/cmds/logs.py:1315:42: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] paasta_tools/cli/cmds/logs.py:1327:40: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] paasta_tools/cli/cmds/start_stop_restart.py:276:77: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] paasta_tools/utils.py:1514:30: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] paasta_tools/utils.py:3710:52: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] paasta_tools/utils.py:3718:52: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
+- Found 878 diagnostics
++ Found 885 diagnostics
+
+pywin32 (https://github.com/mhammond/pywin32)
++ warning[deprecated] AutoDuck/fixHelpCompression.py:16:10: The function `WriteProfileVal` is deprecated: This function is obsolete, applications should use the registry instead.
++ warning[deprecated] Pythonwin/pywin/framework/editor/vss.py:45:29: The function `GetProfileVal` is deprecated: This function is obsolete, applications should use the registry instead.
++ warning[deprecated] Pythonwin/pywin/framework/editor/vss.py:46:28: The function `GetProfileVal` is deprecated: This function is obsolete, applications should use the registry instead.
++ warning[deprecated] Pythonwin/pywin/framework/sgrepmdi.py:606:29: The function `GetProfileSection` is deprecated: This function is obsolete, applications should use the registry instead.
++ warning[deprecated] Pythonwin/pywin/framework/sgrepmdi.py:620:30: The function `WriteProfileVal` is deprecated: This function is obsolete, applications should use the registry instead.
++ warning[deprecated] com/win32com/test/testMSOffice.py:147:38: The function `MakeTime` is deprecated: Use pywintypes.Time() instead.
++ warning[deprecated] com/win32comext/shell/demos/servers/folder_view.py:25:18: The function `MakeIID` is deprecated: Use pywintypes.IID() instead.
++ warning[deprecated] com/win32comext/shell/demos/servers/folder_view.py:91:17: The function `MakeIID` is deprecated: Use pywintypes.IID() instead.
++ warning[deprecated] com/win32comext/shell/demos/servers/folder_view.py:92:17: The function `MakeIID` is deprecated: Use pywintypes.IID() instead.
++ warning[deprecated] com/win32comext/shell/demos/servers/folder_view.py:93:18: The function `MakeIID` is deprecated: Use pywintypes.IID() instead.
++ warning[deprecated] com/win32comext/shell/demos/servers/folder_view.py:94:18: The function `MakeIID` is deprecated: Use pywintypes.IID() instead.
++ warning[deprecated] com/win32comext/shell/demos/servers/folder_view.py:99:16: The function `MakeIID` is deprecated: Use pywintypes.IID() instead.
++ warning[deprecated] com/win32comext/shell/demos/servers/folder_view.py:100:17: The function `MakeIID` is deprecated: Use pywintypes.IID() instead.
++ warning[deprecated] com/win32comext/shell/demos/servers/folder_view.py:101:17: The function `MakeIID` is deprecated: Use pywintypes.IID() instead.
++ warning[deprecated] com/win32comext/shell/demos/servers/folder_view.py:102:17: The function `MakeIID` is deprecated: Use pywintypes.IID() instead.
++ warning[deprecated] com/win32comext/shell/demos/servers/folder_view.py:103:17: The function `MakeIID` is deprecated: Use pywintypes.IID() instead.
++ warning[deprecated] win32/Lib/win32serviceutil.py:139:28: The function `GetProfileVal` is deprecated: This function is obsolete, applications should use the registry instead.
+- Found 2014 diagnostics
++ Found 2031 diagnostics
+
+schema_salad (https://github.com/common-workflow-language/schema_salad)
++ warning[deprecated] docs/conf.py:22:23: The function `utcfromtimestamp` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .fromtimestamp(datetime.timezone.utc)
+- Found 144 diagnostics
++ Found 145 diagnostics
+
+mitmproxy (https://github.com/mitmproxy/mitmproxy)
++ warning[deprecated] examples/contrib/webscanner_helper/urlindex.py:93:42: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] examples/contrib/webscanner_helper/watchdog.py:74:51: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] examples/contrib/webscanner_helper/watchdog.py:78:51: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] mitmproxy/contentviews/__init__.py:20:22: The function `get` is deprecated: Use `mitmproxy.contentviews.registry` instead.
++ warning[deprecated] mitmproxy/contentviews/__init__.py:22:22: The function `remove` is deprecated: Use `mitmproxy.contentviews.Contentview` instead.
++ warning[deprecated] mitmproxy/contentviews/__init__.py:42:19: The class `View` is deprecated: Use `mitmproxy.contentviews.Contentview` instead.
++ warning[deprecated] mitmproxy/contentviews/__init__.py:166:32: The class `View` is deprecated: Use `mitmproxy.contentviews.Contentview` instead.
++ warning[deprecated] mitmproxy/contentviews/_compat.py:20:45: The class `View` is deprecated: Use `mitmproxy.contentviews.Contentview` instead.
++ warning[deprecated] mitmproxy/contentviews/_compat.py:60:37: The class `View` is deprecated: Use `mitmproxy.contentviews.Contentview` instead.
++ warning[deprecated] mitmproxy/contentviews/_compat.py:73:18: The class `View` is deprecated: Use `mitmproxy.contentviews.Contentview` instead.
++ warning[deprecated] mitmproxy/contentviews/base.py:80:34: The class `View` is deprecated: Use `mitmproxy.contentviews.Contentview` instead.
++ warning[deprecated] mitmproxy/contentviews/base.py:120:12: The function `format_pairs` is deprecated: Use `mitmproxy.contentviews.Contentview` instead.
++ warning[deprecated] test/mitmproxy/contentviews/test__compat.py:6:41: The class `View` is deprecated: Use `mitmproxy.contentviews.Contentview` instead.
++ warning[deprecated] test/mitmproxy/contentviews/test__compat.py:10:20: The class `View` is deprecated: Use `mitmproxy.contentviews.Contentview` instead.
++ warning[deprecated] test/mitmproxy/contentviews/test__compat.py:53:28: The function `get` is deprecated: Use `mitmproxy.contentviews.registry` instead.
++ warning[deprecated] test/mitmproxy/contentviews/test__compat.py:59:28: The function `get` is deprecated: Use `mitmproxy.contentviews.registry` instead.
++ warning[deprecated] test/mitmproxy/contentviews/test__compat.py:67:17: The function `remove` is deprecated: Use `mitmproxy.contentviews.Contentview` instead.
++ warning[deprecated] test/mitmproxy/contentviews/test_base.py:9:20: The function `format_dict` is deprecated: Use `mitmproxy.contentviews.Contentview` instead.
++ warning[deprecated] test/mitmproxy/contentviews/test_base.py:14:20: The function `format_dict` is deprecated: Use `mitmproxy.contentviews.Contentview` instead.
++ warning[deprecated] test/mitmproxy/contentviews/test_base.py:19:20: The function `format_dict` is deprecated: Use `mitmproxy.contentviews.Contentview` instead.
++ warning[deprecated] test/mitmproxy/contentviews/test_base.py:27:20: The function `format_pairs` is deprecated: Use `mitmproxy.contentviews.Contentview` instead.
++ warning[deprecated] test/mitmproxy/contentviews/test_base.py:32:20: The function `format_pairs` is deprecated: Use `mitmproxy.contentviews.Contentview` instead.
++ warning[deprecated] test/mitmproxy/contentviews/test_base.py:37:20: The function `format_pairs` is deprecated: Use `mitmproxy.contentviews.Contentview` instead.
++ warning[deprecated] test/mitmproxy/test_certs.py:236:53: The function `to_pyopenssl` is deprecated: Use `to_cryptography` instead.
+- Found 1797 diagnostics
++ Found 1821 diagnostics
+
+openlibrary (https://github.com/internetarchive/openlibrary)
++ warning[deprecated] openlibrary/accounts/model.py:241:52: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] openlibrary/accounts/model.py:605:40: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] openlibrary/core/admin.py:147:31: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] openlibrary/core/edits.py:237:43: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] openlibrary/core/edits.py:257:39: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] openlibrary/core/edits.py:286:39: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] openlibrary/core/edits.py:302:39: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] openlibrary/core/edits.py:328:44: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] openlibrary/core/imports.py:284:46: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] openlibrary/core/lending.py:838:35: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] openlibrary/core/lending.py:928:67: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] openlibrary/core/statsdb.py:32:48: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] openlibrary/core/statsdb.py:58:48: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] openlibrary/core/waitinglist.py:69:35: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] openlibrary/core/waitinglist.py:75:74: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] openlibrary/core/waitinglist.py:84:52: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] openlibrary/core/waitinglist.py:265:70: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] openlibrary/core/waitinglist.py:273:31: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] openlibrary/coverstore/db.py:41:29: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] openlibrary/coverstore/db.py:115:29: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] openlibrary/coverstore/db.py:130:29: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] openlibrary/data/db.py:157:29: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] openlibrary/data/sitemap.py:88:35: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] openlibrary/plugins/admin/code.py:616:30: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] openlibrary/plugins/ol_infobase.py:301:33: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] openlibrary/plugins/openlibrary/borrow_home.py:52:33: The function `utcfromtimestamp` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .fromtimestamp(datetime.timezone.utc)
++ warning[deprecated] openlibrary/plugins/openlibrary/borrow_home.py:68:33: The function `utcfromtimestamp` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .fromtimestamp(datetime.timezone.utc)
++ warning[deprecated] openlibrary/plugins/openlibrary/borrow_home.py:69:31: The function `utcfromtimestamp` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .fromtimestamp(datetime.timezone.utc)
++ warning[deprecated] openlibrary/plugins/openlibrary/code.py:1125:27: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] openlibrary/plugins/openlibrary/connection.py:213:50: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] openlibrary/plugins/openlibrary/infobase_hook.py:21:35: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] openlibrary/plugins/upstream/addbook.py:46:36: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] openlibrary/plugins/upstream/borrow.py:418:21: The function `utcfromtimestamp` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .fromtimestamp(datetime.timezone.utc)
++ warning[deprecated] openlibrary/plugins/upstream/borrow.py:524:77: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] openlibrary/plugins/upstream/code.py:213:52: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] openlibrary/plugins/worksearch/subjects.py:344:46: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] openlibrary/utils/bulkimport.py:80:39: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] openlibrary/utils/bulkimport.py:191:39: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
+- Found 681 diagnostics
++ Found 719 diagnostics
+
+meson (https://github.com/mesonbuild/meson)
++ warning[deprecated] mesonbuild/build.py:532:10: The class `abstractproperty` is deprecated: Use 'property' with 'abstractmethod' instead
++ warning[deprecated] mesonbuild/linkers/linkers.py:127:10: The class `abstractproperty` is deprecated: Use 'property' with 'abstractmethod' instead
+- Found 909 diagnostics
++ Found 911 diagnostics
+
+prefect (https://github.com/PrefectHQ/prefect)
++ warning[deprecated] src/prefect/input/actions.py:46:49: The function `json` is deprecated: The `json` method is deprecated; use `model_dump_json` instead.
+- Found 3739 diagnostics
++ Found 3740 diagnostics
+
+materialize (https://github.com/MaterializeInc/materialize)
++ warning[deprecated] ci/cleanup/aws.py:105:20: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] ci/cleanup/launchdarkly.py:32:24: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] ci/load/periodic.py:31:29: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] ci/load/periodic.py:36:40: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] misc/python/materialize/buildkite_insights/util/data_io.py:75:21: The function `utcfromtimestamp` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .fromtimestamp(datetime.timezone.utc)
++ warning[deprecated] misc/python/materialize/cli/cloudbench.py:290:44: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] misc/python/materialize/cli/scratch/create.py:148:40: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] misc/python/materialize/parallel_workload/action.py:80:46: The function `getName` is deprecated: Use the name attribute instead
++ warning[deprecated] misc/python/materialize/parallel_workload/action.py:1737:40: The function `getName` is deprecated: Use the name attribute instead
++ warning[deprecated] misc/python/materialize/parallel_workload/executor.py:109:50: The function `getName` is deprecated: Use the name attribute instead
++ warning[deprecated] misc/python/materialize/parallel_workload/worker.py:131:62: The function `getName` is deprecated: Use the name attribute instead
++ warning[deprecated] misc/python/materialize/scratch.py:418:34: The function `utcnow` is deprecated: Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.timezone.utc)
++ warning[deprecated] test/rtr-combined/mzcompose.py:67:54: The function `getName` is deprecated: Use the name attribute instead
+- Found 3237 diagnostics
++ Found 3250 diagnostics
+
+sympy (https://github.com/sympy/sympy)
++ warning[deprecated] sympy/testing/runtests.py:1176:28: The class `Str` is deprecated: Replaced by ast.Constant; removed in Python 3.14
++ warning[deprecated] sympy/testing/runtests.py:1195:33: The class `Str` is deprecated: Replaced by ast.Constant; removed in Python 3.14
+- Found 13539 diagnostics
++ Found 13541 diagnostics
+
+</code></pre>
+</details>
+No memory usage changes detected ✅
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-18 08:08</div>
+            <div class="timeline-body"><p>Rebased your branch, as I reviewed the changes in https://github.com/astral-sh/ruff/pull/19400 that caused the conflicts here. Hope that's fine</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-07-18 08:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-18 08:16</div>
+            <div class="timeline-body"><!-- generated-comment ty ecosystem-analyzer -->
+
+<h2><code>ecosystem-analyzer</code> results</h2>
+<p>| Lint rule | Added | Removed | Changed |
+|-----------|------:|--------:|--------:|
+| <code>deprecated</code> | 240 | 0 | 0 |
+| <code>call-non-callable</code> | 1 | 0 | 0 |
+| <code>invalid-argument-type</code> | 1 | 0 | 0 |
+| <strong>Total</strong> | <strong>242</strong> | <strong>0</strong> | <strong>0</strong> |</p>
+<p><strong><a href="https://gankra-warn-dep.ecosystem-663.pages.dev/diff">Full report with detailed diff</a></strong></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-07-18 08:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:3526 on 2025-07-18 08:31</div>
+            <div class="timeline-body"><p>It feels like this is maybe too strict? The stub allows message to be a <code>LiteralString</code>, but here, we only allow arbitrary <code>Literal[&quot;…&quot;]</code> string-literals, but not the common supertype <code>LiteralString</code>. Since <code>warnings.deprecated</code> also has a runtime effect, it seems fine to allow calls, even if we can't extract the message?</p>
+<p>See this ecosystem hit in <code>altair</code> as an example where we currently emit this new diagnostic: https://github.com/vega/altair/blob/d30d030a89e2e2e72c6f5a4d497968b7dfb743bf/altair/utils/deprecation.py#L82</p>
+<p>I would probably allow <code>message</code> to be <code>LiteralString</code> here, and return an instance of <code>deprecated</code> with some generic message?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:3526 on 2025-07-18 08:38</div>
+            <div class="timeline-body"><p>I also think that this will be incorrect for very long strings because ty falls back to <code>LiteralString</code> for overlong strings:</p>
+<p>https://github.com/astral-sh/ruff/blob/4aee0398cbed38b84e596b47a5e97e56aef5d725/crates/ty_python_semantic/src/types/infer.rs#L4964-L4968</p>
+<p>I'm not entirely sure what the right behavior is in this case. We could look at the argument expression if the inferred type is a <code>LiteralString</code> to see if it's an overlong <code>ExprString</code> and, in that case, create a <code>StringLiteral</code> type.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-07-18 08:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types/infer.rs</code>:5892 on 2025-07-18 08:42</div>
+            <div class="timeline-body"><p>We commonly use backticks for variable message parts</p>
+<pre><code class="language-suggestion">            builder.into_diagnostic(format_args!(r#&quot;The function `{func_name}` is deprecated&quot;#));
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types/infer.rs</code>:5861 on 2025-07-18 08:42</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                builder.into_diagnostic(format_args!(r#&quot;The class `{class_name}` is deprecated&quot;#));
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-07-18 08:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types/infer.rs</code>:2322 on 2025-07-18 08:43</div>
+            <div class="timeline-body"><p>You can fix this by adding a new</p>
+<pre><code class="language-rs">Type::KnownInstance(known_instance @ KnownInstanceType::Deprecated(_)) =&gt; {
+    known_instance.instance_fallback(db).bindings(db)
+}
+</code></pre>
+<p>branch to <code>Type::bindings</code>. The <code>continue</code> can then be removed here.</p>
+<p>This will effectively lift the <code>def __call__(self, arg: _T, /) -&gt; _T: ...</code> method of <code>warnings.deprecated</code> to the <code>KnownInstance</code> level.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types.rs</code>:6275 on 2025-07-18 08:43</div>
+            <div class="timeline-body"><p>Can this just return <code>self</code>?</p>
+<pre><code class="language-suggestion">        self
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types.rs</code>:6258 on 2025-07-18 08:45</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    pub(crate) message: StringLiteralType&lt;'db&gt;,
+
+    /// The `@warnings.deprecated(...)` invocation
+    pub(crate) definition: Option&lt;Definition&lt;'db&gt;&gt;,
+</code></pre>
+<p>Is the <code>definition</code> used anywhere? If not, should we remove it or do you plan on using it in the diagnostic message?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-07-18 08:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types/infer.rs</code>:8463 on 2025-07-18 08:56</div>
+            <div class="timeline-body"><p>minor</p>
+<pre><code class="language-suggestion">                // run, so this bespoke additional validation is required here for a good diagnostic.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-07-18 08:57</div>
+            <div class="timeline-body"><p>This overall looks good to me but I'm curious what the performance numbers will show. You'll have to fix the panic in the benchmark (review what new diagnostics there are) to get those numbers and push the updated benchmark.</p>
+<p>The other thing we have to look into is if using <code>StringLiteralType</code> is too strict and how we want to handle very long messages</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> approved on 2025-07-18 09:01</div>
+            <div class="timeline-body"><p>Thank you, this looks good!</p>
+<p>Apart from the <code>invalid-argument-type</code> false positive, we should also look into this new diagnostic (also on <code>altair</code>):</p>
+<pre><code class="language-diff">altair (https://github.com/vega/altair)
++ error[call-non-callable] altair/vegalite/v6/theme.py:73:5: Object of type `warnings.deprecated` is not callable
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-07-18 13:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/ty_python_semantic/src/types/infer.rs</code>:2322 on 2025-07-18 13:55</div>
+            <div class="timeline-body"><p>Oh perfect!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-07-18 13:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/ty_python_semantic/src/types.rs</code>:6275 on 2025-07-18 13:59</div>
+            <div class="timeline-body"><p>The whole function can be removed, I figured it might be good to write it out in-case something gets added but... eh.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-07-18 14:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/ty_python_semantic/src/types.rs</code>:6258 on 2025-07-18 14:00</div>
+            <div class="timeline-body"><p>It's totally useless right now, I figured it might be useful in the future and was presumably cheap to include. I can just remove it though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-07-18 14:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:3526 on 2025-07-18 14:02</div>
+            <div class="timeline-body"><p>The ~spec here says: https://typing.python.org/en/latest/spec/directives.html#deprecated</p>
+<blockquote>
+<p>The positional-only argument is of type str and contains a message that should be shown by the type checker when it encounters a usage of the decorated object. Tools may clean up the deprecation message for display, for example by using <a href="https://docs.python.org/3/library/inspect.html#inspect.cleandoc">inspect.cleandoc()</a> or equivalent logic. <strong>The message must be a string literal.</strong> The content of deprecation messages is up to the user, but it may include the version in which the deprecated object is to be removed, and information about suggested replacement APIs.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-07-18 14:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:3526 on 2025-07-18 14:03</div>
+            <div class="timeline-body"><p>But I can make it more lenient if it's messing up actual ecosystem crates.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:3526 on 2025-07-18 14:24</div>
+            <div class="timeline-body"><p>Typeshed also declares this as</p>
+<pre><code>        def __init__(self, message: LiteralString, /, *, category: type[Warning] | None = ..., stacklevel: int = 1) -&gt; None: ...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-07-18 14:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-07-18 15:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:3526 on 2025-07-18 15:54</div>
+            <div class="timeline-body"><p>Aha ok I have read more on LiteralString and I now understand and agree with this assessment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-07-18 16:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:3526 on 2025-07-18 16:32</div>
+            <div class="timeline-body"><blockquote>
+<p>We could look at the argument expression if the inferred type is a <code>LiteralString</code> to see if it's an overlong <code>ExprString</code> and, in that case, create a <code>StringLiteral</code> type.</p>
+</blockquote>
+<p>I don't think there's a need for such shenanigans. Super-long deprecation messages should be rare-to-nonexistent, I think it's fine to just use a fallback message in that case. If we see it in real code the best thing is probably just to increase our supported StringLiteral length.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types.rs</code>:6258 on 2025-07-18 16:46</div>
+            <div class="timeline-body"><p>I'd remove this unless it's either used or we have a TODO for which it will be definitely needed (and I don't see that)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types.rs</code>:6275 on 2025-07-18 16:47</div>
+            <div class="timeline-body"><p>Yeah I was wondering the same, I'd just remove this function entirely</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:805 on 2025-07-18 16:48</div>
+            <div class="timeline-body"><p>Not sure what &quot;this is <code>@warnings.deprecated</code>&quot; is supposed to mean</p>
+<pre><code class="language-suggestion">    /// If this class is deprecated, this holds the deprecation message.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-07-18 16:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:3526 on 2025-07-18 16:53</div>
+            <div class="timeline-body"><p>Fair, it's 4096 bytes (I assumed it would be much shorter)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:3498 on 2025-07-18 16:54</div>
+            <div class="timeline-body"><p>I suspect that in the future we will want to validate the entire call against the typeshed stub for <code>warnings.deprecated</code> so as to error on invalid additional arguments (even though we ignore them). Fine with leaving that as a TODO for now, though. (But I would add it as a TODO.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/diagnostic.rs</code>:277 on 2025-07-18 16:55</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    /// old_func()  # emits [deprecated] diagnostic
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:3494 on 2025-07-18 16:59</div>
+            <div class="timeline-body"><p>Am I missing something, or is this unused?</p>
+<p>It looks like it might be copied from the TypeVar case below, but TypeVars are weird in that they care about the name they are assigned to; no such thing applies here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/deprecated.md</code>:75 on 2025-07-18 17:01</div>
+            <div class="timeline-body"><p>I'm pretty sure someone will file a bug about this sooner or later, and we really should fully validate the correctness of the call (even though we don't have special treatment for the other arguments). I think it's at least worth a TODO.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/infer.rs</code>:2322 on 2025-07-18 17:03</div>
+            <div class="timeline-body"><p>I don't think that new match arm needs to be limited to <code>KnownInstanceType::Deprecated</code>? It should be correct to fallback to the fallback type for any known-instance type.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/infer.rs</code>:8465 on 2025-07-18 17:13</div>
+            <div class="timeline-body"><p>I found this message pretty confusing when I saw it in the tests, because at runtime what happens with</p>
+<pre><code class="language-py">@warnings.deprecated
+def f(): ...
+</code></pre>
+<p>is that <code>warnings.deprecated</code> is called with the function <code>f</code> as its sole argument, so you get a TypeError because the <code>message</code> argument is a function object, not a string (and <code>deprecated</code> checks the type of <code>message</code> internally and throws <code>TypeError</code> if it's not a string). Saying &quot;missing message argument&quot; implies that we had a call to <code>warnings.deprecated</code> with no <code>message</code> argument, which is not what's happening here.</p>
+<p>I think if we add fallback-instance-type callability for <code>KnownInstance</code> types as discussed above, we should be able to remove this <code>check_decorator</code> thing entirely and just rely on our usual call checking to give that same argument type error as you get at runtime.</p>
+<p>But if we think that matching the runtime error is too confusing (because users don't understand how decorators work) and we want to keep some special error handling here, we should make the special-case error message more explicit (e.g. &quot;you forgot to call <code>warnings.deprecated</code>, please add parentheses and a deprecation message&quot;).</p>
+<p>I don't think I would agree with keeping this special case, though -- it doesn't really make sense to do it for <code>warnings.deprecated</code> when tons of other decorators could have identical failure modes and won't get this special handling.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-07-18 17:16</div>
+            <div class="timeline-body"><p>This is looking great!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-07-18 17:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/infer.rs</code>:8465 on 2025-07-18 17:19</div>
+            <div class="timeline-body"><p>Hmm, I might have confused &quot;checking the call of a <code>deprecated</code> instance&quot; with &quot;fully type-checking the call to <code>deprecated</code> itself&quot;. Fixing the former won't help here, it's fixing the latter (which I mentioned in a couple other comments as something that should at least be a TODO) which would.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-07-18 17:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:3494 on 2025-07-18 17:23</div>
+            <div class="timeline-body"><p>Oh it's not unused, but it's all just to support adding the (unused) <code>definition</code> field to <code>DeprecatedInstance</code>. Yeah, I would just remove all this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-07-18 17:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/deprecated.md</code>:75 on 2025-07-18 17:34</div>
+            <div class="timeline-body"><p>It looks like the issue here is that in <code>TypeInferenceBuilder::infer_call_expression</code> we have a different path for calling class constructors, and in that path we don't do any KnownClass handling, so we exempt some known classes from the normal constructor-call checking entirely, in which case they go into the default path that calls <code>Type::bindings</code> (which doesn't fetch constructor signatures, it just returns an accept-anything signature for most classes) and then does KnownClass special-cased call handling.</p>
+<p>I think this should be integrated better, so that we can do the default constructor-call checking from typeshed <em>and</em> do KnownClass special case handling layered on top of that, rather than having to choose one or the other. But that doesn't have to be in this PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-07-18 17:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/infer.rs</code>:8465 on 2025-07-18 17:34</div>
+            <div class="timeline-body"><p>Even if we don't fix the constructor call checking in this PR, I would still be inclined to eliminate this special casing and just have it be a TODO to issue a diagnostic here through normal constructor call checks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-07-18 20:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/ty_python_semantic/resources/mdtest/deprecated.md</code>:75 on 2025-07-18 20:34</div>
+            <div class="timeline-body"><p>I manually added (roughly) the signature of <code>KnownClass::Deprecated</code> to <code>Type::bindings</code> and removed basically all other special validation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-18 22:01</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff_benchmark/benches/ty.rs</code>:620 on 2025-07-18 22:09</div>
+            <div class="timeline-body"><p>What are the two new diagnostics here? Are they legit?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/deprecated.md</code>:75 on 2025-07-18 22:11</div>
+            <div class="timeline-body"><p>Yeah, that seems like a reasonable temporary solution for this PR!</p>
+<p>Looks like this prose line in the mdtest is now obsolete and should be removed/changed? Maybe &quot;We don't implement any special understanding of the other arguments, but we validate their names and types.&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types.rs</code>:4498 on 2025-07-18 22:25</div>
+            <div class="timeline-body"><p>This fallback is valid for any known instance, we should implement it generally and not hardcode knowledge here about which specific ones are callable. For the ones that are not callable, we'll simply find that their class has no <code>__call__</code> in typeshed and continue to treat them as not-callable.</p>
+<pre><code class="language-suggestion">            Type::KnownInstance(known_instance) =&gt; {
+                known_instance.instance_fallback(db).bindings(db)
+            }
+
+            Type::PropertyInstance(_)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-07-18 22:26</div>
+            <div class="timeline-body"><p>Modulo a couple small inline comments, this looks land-ready to me!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-07-18 23:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/ruff_benchmark/benches/ty.rs</code>:620 on 2025-07-18 23:23</div>
+            <div class="timeline-body"><p>Yeah it uses two deprecated time apis, same ones that the ecosystem checks flagged on a ton of packages.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-07-18 23:48</div>
+            <div class="timeline-body"><p>Done.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @Gankra on 2025-07-18 23:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @Gankra on 2025-07-18 23:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-07-18 23:50</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:58:39 UTC
+    </footer>
+</body>
+</html>

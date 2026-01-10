@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Extend tuple `__len__` and `__bool__` special casing to also cover tuple subclasses - astral-sh/ruff #19289</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Extend tuple <code>__len__</code> and <code>__bool__</code> special casing to also cover tuple subclasses</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19289">#19289</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-07-11 18:04
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-11 18:04</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR (a collaboration with @ntBre) extends our existing <code>__len__</code> and <code>__bool__</code> special casing so that it also works with tuple subclasses. I.e., for a class like <code>Foo</code> here, we will now understand that instances of <code>Foo</code> are always truthy, and that calling <code>len()</code> on an instance of <code>Foo</code> will always return <code>Literal[1]</code>:</p>
+<pre><code class="language-py">class Foo(tuple[int]): ...
+</code></pre>
+<p>The approach taken is to synthesize <code>__bool__</code> and <code>__len__</code> class attributes on the generic alias object <code>tuple[int]</code>. <code>tuple[int].__bool__</code> is inferred as a function-like <code>Callable</code> type with signature <code>(self: tuple[int], /) -&gt; Literal[True]</code>; a similar approach is taken for <code>tuple.__len__</code>. This means that the correct signature for these methods is naturally inherited by subclasses; it means that protocol subtyping will work correctly for these subclasses; and it means that once we have implemented the Liskov Substitution Principle, unsound overrides of these methods on tuple subclasses will be naturally detected by ty.</p>
+<h2>Test Plan</h2>
+<p>Mdtests</p>
+<hr />
+<p>Co-authored-by: Brent Westbrook <a href="mailto:36778786+ntBre@users.noreply.github.com">36778786+ntBre@users.noreply.github.com</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @AlexWaygood on 2025-07-11 18:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @AlexWaygood on 2025-07-11 18:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @AlexWaygood on 2025-07-11 18:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-07-11 18:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-11 18:10</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅
+No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> reviewed on 2025-07-11 20:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on <code>crates/ty_python_semantic/resources/mdtest/expression/boolean.md</code>:108 on 2025-07-11 20:12</div>
+            <div class="timeline-body"><p>Should this not also be a Liskov violation?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> reviewed on 2025-07-11 20:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on <code>crates/ty_python_semantic/resources/mdtest/expression/boolean.md</code>:108 on 2025-07-11 20:17</div>
+            <div class="timeline-body"><p>Okay i guess its not a Liskov violation, but should we not complain at this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> reviewed on 2025-07-11 20:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on <code>crates/ty_python_semantic/resources/mdtest/expression/boolean.md</code>:108 on 2025-07-11 20:19</div>
+            <div class="timeline-body"><p>Ah sorry I retract this, my bad.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> reviewed on 2025-07-11 20:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on <code>crates/ty_python_semantic/resources/mdtest/expression/boolean.md</code>:108 on 2025-07-11 20:23</div>
+            <div class="timeline-body"><p>Okay changed my mind slightly</p>
+<pre><code class="language-py">def foo(x: tuple[int, ...]):
+    if x:
+        # Should we not also be able to say len(x) != 0
+        # *This should pass
+        assert len(x) != 0
+
+foo(Baz(()))
+</code></pre>
+<p>In rust if you have a <code>len</code> function clippy tells you to have an <code>is_empty</code> function and auto generates to <code>self.len() == 0</code>.</p>
+<p>This maybe isn't relevant, but it seems like we shouldn't allow override of <em>just</em> <code>__bool__</code>. I'm not sure where else to go with this to be honest.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-07-12 14:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/expression/boolean.md</code>:108 on 2025-07-12 14:32</div>
+            <div class="timeline-body"><p>No, I think that's a great point! It seems like in general, as part of our Liskov implementation, we should probably enforce that <code>__bool__</code> and <code>__len__</code> are never overridden to be inconsistent with each other on any <code>Sequence</code> subtype. I think otherwise this could indeed cause us to make incorrect assumptions, not just regarding tuples</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> reviewed on 2025-07-12 15:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on <code>crates/ty_python_semantic/resources/mdtest/expression/boolean.md</code>:108 on 2025-07-12 15:18</div>
+            <div class="timeline-body"><p>Cool thanks, so in this case we could emit a diagnostic saying that there should be a ’<strong>len</strong>’ method that returns ’int &amp; ~Literal[0]’ (or something like that).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-07-13 21:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/expression/boolean.md</code>:108 on 2025-07-13 21:07</div>
+            <div class="timeline-body"><p>Hmm, not sure about that specifically -- I guess I'm not sure we <em>should</em> emit an error on this specific tuple subclass. It seems a bit pedantic -- just because the <code>__len__</code> method is annotated as returning <code>int</code> doesn't mean that the class is violating the contract of <code>Sequence</code>s. It just means that we haven't been given enough information to verify; I think it's probably better to steer clear of false positives in that situation and assume the user knows what they're doing. It's not the goal of ty to catch every <em>possible</em> error that a user could make.</p>
+<p>But I <em>do</em> think it's worth emitting errors on these classes, because here we <em>do</em> have enough information to say that <code>__len__</code> and <code>__bool__</code> are inconsistent with each other:</p>
+<pre><code class="language-py">from collections import Sequence
+from typing import Literal
+
+class Foo(Sequence[int]):
+    def __len__(self) -&gt; Literal[0]:
+        return 0
+
+    def __bool__(self) -&gt; Literal[True]:
+        return True
+
+class Bar(Sequence[int]):
+    def __len__(self) -&gt; Literal[3]:
+        return 3
+
+    def __bool__(self) -&gt; Literal[False]:
+        return False
+</code></pre>
+<p>Even here, though, it's questionable whether this is a <em>typing</em> error or more something that's in the domain of a type-aware linter to check. (That doesn't mean that it wouldn't be a useful rule -- I think it would! But it might not be in the core purview of ty right now -- it might be more something for the future, when we start to use ty to power type-aware lint rules in Ruff.)</p>
+<p>So I guess I feel like you're raising a great point in general, but that for these specific cases we probably shouldn't emit errors, and even if we should it maybe shouldn't be ty <em>itself</em> that emits these errors but maybe a type-aware linter built on top of ty :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @sharkdp removed by @sharkdp on 2025-07-14 07:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/resources/mdtest/expression/boolean.md</code>:99 on 2025-07-21 11:48</div>
+            <div class="timeline-body"><p>Here, we know that the length is <code>&gt;=2</code>, even. Would it make sense to test the &quot;more extreme&quot; case of just &quot;&gt;=1&quot;?</p>
+<pre><code class="language-suggestion"># Unknown length, but we know the length is guaranteed to be &gt;0
+class Bar(tuple[int, *tuple[str, ...]]): ...
+</code></pre>
+<p>Or to adapt the description above (which is not wrong, but a bit confusing)?</p>
+<pre><code class="language-suggestion"># Unknown length, but we know the length is guaranteed to be &gt;=2
+class Bar(tuple[int, *tuple[str, ...], bytes]): ...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/resources/mdtest/expression/boolean.md</code>:99 on 2025-07-21 11:54</div>
+            <div class="timeline-body"><p>And in extensions of the above: would it make sense to add a second test here that shows that this is <em>not</em> true for <code>class Bar(tuple[str, ...]): ...</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/resources/mdtest/expression/boolean.md</code>:135 on 2025-07-21 11:56</div>
+            <div class="timeline-body"><p>Minor personal preference: I try to use self-explaining names (e.g. <code>EmptyTupleSubclass</code> here, <code>UnknownLengthTupleSubclass</code> below) over things like foo and bar. Makes reading the test assertions easier.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/resources/mdtest/expression/len.md</code>:78 on 2025-07-21 11:58</div>
+            <div class="timeline-body"><p>Add a test for <code>D</code> here as well?</p>
+<pre><code class="language-suggestion">reveal_type(len(C((1, &quot;foo&quot;))))  # revealed: Literal[2]
+reveal_type(len(D((1, 2, 3))))  # revealed: int
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/resources/mdtest/expression/len.md</code>:82 on 2025-07-21 11:59</div>
+            <div class="timeline-body"><p>Similar here: use self-explaining names for A, B, C, D, and change this to something like the following?</p>
+<pre><code class="language-suggestion">reveal_type(ExactlyTwo.__len__)  # revealed: (self: tuple[int, int], /) -&gt; Literal[2]
+reveal_type(UnknownLength.__len__)  # revealed: (self: tuple[int, ...], /) -&gt; int
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> approved on 2025-07-21 12:07</div>
+            <div class="timeline-body"><p>Very nice!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-07-21 12:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/expression/boolean.md</code>:99 on 2025-07-21 12:27</div>
+            <div class="timeline-body"><blockquote>
+<p>And in extensions of the above: would it make sense to add a second test here that shows that this is <em>not</em> true for <code>class Bar(tuple[str, ...]): ...</code>?</p>
+</blockquote>
+<p>we have that one a bit lower down, in the &quot;ambiguous values&quot; section -- it's on line 149</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2025-07-21 12:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-07-21 12:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-07-21 12:50</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:58:38 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Expansion of enums into unions of literals - astral-sh/ruff #19382</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Expansion of enums into unions of literals</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19382">#19382</a>
+        opened by <a href="https://github.com/sharkdp">@sharkdp</a>
+        on 2025-07-16 09:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-16 09:56</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Implement expansion of enums into unions of enum literals (and the reverse operation). For the enum below, this allows us to understand that <code>Color = Literal[Color.RED, Color.GREEN, Color.BLUE]</code>, or that <code>Color &amp; ~Literal[Color.RED] = Literal[Color.GREEN, Color.BLUE]</code>. This helps in exhaustiveness checking, which is why we see some removed <code>assert_never</code> false positives. And since exhaustiveness checking also helps with understanding terminal control flow, we also see a few removed <code>invalid-return-type</code> and <code>possibly-unresolved-reference</code> false positives. This PR also adds expansion of enums in overload resolution and type narrowing constructs.</p>
+<pre><code class="language-py">from enum import Enum
+from typing_extensions import Literal, assert_never
+from ty_extensions import Intersection, Not, static_assert, is_equivalent_to
+
+class Color(Enum):
+    RED = 1
+    GREEN = 2
+    BLUE = 3
+
+type Red = Literal[Color.RED]
+type Green = Literal[Color.GREEN]
+type Blue = Literal[Color.BLUE]
+
+static_assert(is_equivalent_to(Red | Green | Blue, Color))
+static_assert(is_equivalent_to(Intersection[Color, Not[Red]], Green | Blue))
+
+
+def color_name(color: Color) -&gt; str:  # no error here (we detect that this can not implicitly return None)
+    if color is Color.RED:
+        return &quot;Red&quot;
+    elif color is Color.GREEN:
+        return &quot;Green&quot;
+    elif color is Color.BLUE:
+        return &quot;Blue&quot;
+    else:
+        assert_never(color)  # no error here
+</code></pre>
+<h2>Performance</h2>
+<p>I avoided an initial regression here for large enums, but the <code>UnionBuilder</code> and <code>IntersectionBuilder</code> parts can certainly still be optimized. We might want to use the same technique that we also use for unions of other literals. I didn't see any problems in our benchmarks so far, so this is not included yet.</p>
+<h2>Test Plan</h2>
+<p>Many new Markdown tests</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @sharkdp on 2025-07-16 09:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-07-16 09:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-16 09:59</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">pwndbg (https://github.com/pwndbg/pwndbg)
+- error[invalid-return-type] pwndbg/dbg/gdb/__init__.py:1660:10: Function can implicitly return `None`, which is not assignable to return type `((...) -&gt; T, /) -&gt; (...) -&gt; T`
+- Found 2270 diagnostics
++ Found 2269 diagnostics
+
+urllib3 (https://github.com/urllib3/urllib3)
+- error[invalid-return-type] src/urllib3/_collections.py:386:20: Return type does not match returned value: expected `list[str] | _DT`, found `(_Sentinel &amp; ~Literal[_Sentinel.not_passed]) | (_DT &amp; ~Literal[_Sentinel.not_passed])`
+- error[invalid-argument-type] src/urllib3/util/connection.py:70:33: Argument to bound method `settimeout` is incorrect: Expected `int | float | None`, found `Unknown | _TYPE_DEFAULT`
+- Found 402 diagnostics
++ Found 400 diagnostics
+
+pytest (https://github.com/pytest-dev/pytest)
+- error[invalid-argument-type] src/_pytest/fixtures.py:157:22: Argument to function `assert_never` is incorrect: Expected `Never`, found `Scope &amp; ~Literal[Scope.Function] &amp; ~Literal[Scope.Class] &amp; ~Literal[Scope.Module] &amp; ~Literal[Scope.Package] &amp; ~Literal[Scope.Session]`
+- error[invalid-argument-type] src/_pytest/fixtures.py:218:22: Argument to function `assert_never` is incorrect: Expected `Never`, found `Scope &amp; ~Literal[Scope.Function] &amp; ~Literal[Scope.Session] &amp; ~Literal[Scope.Package] &amp; ~Literal[Scope.Module] &amp; ~Literal[Scope.Class]`
+- error[invalid-argument-type] src/_pytest/pathlib.py:585:22: Argument to function `assert_never` is incorrect: Expected `Never`, found `ImportMode &amp; ~Literal[ImportMode.importlib] &amp; ~Literal[ImportMode.append] &amp; ~Literal[ImportMode.prepend]`
+- error[invalid-argument-type] testing/test_cacheprovider.py:1303:22: Argument to function `assert_never` is incorrect: Expected `Never`, found `Action &amp; ~Literal[Action.MKDIR] &amp; ~Literal[Action.SET]`
+- error[invalid-argument-type] testing/test_cacheprovider.py:1315:22: Argument to function `assert_never` is incorrect: Expected `Never`, found `Action &amp; ~Literal[Action.MKDIR] &amp; ~Literal[Action.SET]`
+- Found 517 diagnostics
++ Found 512 diagnostics
+
+static-frame (https://github.com/static-frame/static-frame)
+- warning[possibly-unresolved-reference] static_frame/core/join.py:328:15: Name `final_index` used when possibly not defined
+- Found 1792 diagnostics
++ Found 1791 diagnostics
+
+meson (https://github.com/mesonbuild/meson)
+- warning[possibly-unresolved-reference] mesonbuild/mlog.py:287:16: Name `label` used when possibly not defined
+- Found 912 diagnostics
++ Found 911 diagnostics
+
+</code></pre>
+</details>
+No memory usage changes detected ✅
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-16 10:04</div>
+            <div class="timeline-body"><!-- generated-comment ty ecosystem-analyzer -->
+
+<h2><code>ecosystem-analyzer</code> results</h2>
+<p>| Lint rule | Added | Removed | Changed |
+|-----------|------:|--------:|--------:|
+| <code>invalid-argument-type</code> | 0 | 6 | 0 |
+| <code>invalid-return-type</code> | 0 | 2 | 0 |
+| <code>possibly-unresolved-reference</code> | 0 | 2 | 0 |
+| <strong>Total</strong> | <strong>0</strong> | <strong>10</strong> | <strong>0</strong> |</p>
+<p><strong><a href="https://david-enum-expansion.ecosystem-663.pages.dev/diff">Full report with detailed diff</a></strong></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-07-16 10:06</div>
+            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+
+<!-- __CODSPEED_INSTRUMENTATION_PERFORMANCE_REPORT_COMMENT__ -->
+
+<h2><a href="https://codspeed.io/astral-sh/ruff/branches/david%2Fenum-expansion?runnerMode=Instrumentation">CodSpeed Instrumentation Performance Report</a></h2>
+<h3>Merging #19382 will <strong>not alter performance</strong></h3>
+<p><sub>Comparing <code>david/enum-expansion</code> (1252ef8) with <code>main</code> (5cace28)</sub></p>
+<h3>Summary</h3>
+<p><code>✅ 41</code> untouched benchmarks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @sharkdp on 2025-07-17 08:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-07-17 08:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @sharkdp on 2025-07-17 10:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-07-17 10:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @sharkdp on 2025-07-17 12:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-07-17 12:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @sharkdp on 2025-07-17 13:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-07-17 13:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @sharkdp on 2025-07-18 11:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-07-18 11:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @sharkdp on 2025-07-18 12:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @sharkdp on 2025-07-18 12:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @sharkdp on 2025-07-18 12:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @sharkdp on 2025-07-18 12:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/narrow/conditionals/eq.md</code>:49 on 2025-07-19 00:34</div>
+            <div class="timeline-body"><p>I think we need to forbid custom <code>__eq__</code> on enum types in order to make this sound. Or maybe mark enum types with custom <code>__eq__</code> and refuse to do equality narrowing on them? (I'm fine with this just being an issue for later follow-up, if anyone ever cares enough.)</p>
+<pre><code>&gt;&gt;&gt; class Color(Enum):
+...     RED = 1
+...     BLUE = 2
+...     def __eq__(self, other):
+...         return True
+...
+&gt;&gt;&gt; Color.RED == Color.BLUE
+True
+&gt;&gt;&gt; Color.RED == 2
+True
+&gt;&gt;&gt; Color.RED == 7
+True
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-07-19 00:39</div>
+            <div class="timeline-body"><p>Only got to reviewing the tests so far, but the tests look great!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-07-19 18:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/resources/mdtest/narrow/conditionals/eq.md</code>:49 on 2025-07-19 18:49</div>
+            <div class="timeline-body"><p>This is already implemented, and tested in the <code>is_single_valued</code> tests (see <code>ComparesEqualEnum</code>). I already felt like I was adding some tests in too many places, so I wasn't sure if it should be added here as well. But happy to do so.</p>
+<p>Here's how it works:</p>
+<pre><code class="language-py">class Color(Enum):
+    RED = 1
+    BLUE = 2
+
+def _(c: Color):
+    if c == Color.RED:
+        reveal_type(c)  # Literal[Color.RED]
+</code></pre>
+<p>vs</p>
+<pre><code class="language-py">class Color(Enum):
+    RED = 1
+    BLUE = 2
+
+    def __eq__(self, other):
+        return True
+
+
+def _(c: Color):
+    if c == Color.RED:
+        reveal_type(c)  # Color
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:1442 on 2025-07-21 13:00</div>
+            <div class="timeline-body"><p>this feels like slightly less indirection (probably won't make much of a difference for performance, but maybe slightly more readable?)</p>
+<pre><code class="language-suggestion">                is_single_member_enum(db, target_enum_literal.enum_class(db))
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/type_properties/is_equivalent_to.md</code>:1 on 2025-07-21 13:04</div>
+            <div class="timeline-body"><p>you could also add a test for differently ordered unions here -- e.g. it wasn't immediately obvious to me that something like this would pass with your implementation (it's awesome that it does!)</p>
+<pre><code class="language-py">from enum import Enum
+from ty_extensions import static_assert
+from typing import Literal
+
+class A: ...
+class B: ...
+
+class MyEnum(Enum):
+    SINGLE = object()
+
+static_assert(is_equivalent_to(A | B | MyEnum, Literal[MyEnum.SINGLE] | B | A))
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/builder.rs</code>:383 on 2025-07-21 13:07</div>
+            <div class="timeline-body"><p>nit: a union has members as well as an enum; I'd find this name slightly clearer:</p>
+<pre><code class="language-suggestion">                let enum_members_in_union = self
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/builder.rs</code>:378 on 2025-07-21 13:11</div>
+            <div class="timeline-body"><p>nit: there's a lot of literals floating around in this branch. Something like this name might be a bit clearer?</p>
+<pre><code class="language-suggestion">            Type::EnumLiteral(enum_member_to_add) =&gt; {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/builder.rs</code>:392 on 2025-07-21 13:22</div>
+            <div class="timeline-body"><p>I'd be tempted to do something like this:</p>
+<pre><code class="language-diff">diff --git a/crates/ty_python_semantic/src/types/builder.rs b/crates/ty_python_semantic/src/types/builder.rs
+index c3680b7a99..dc10fe9c1c 100644
+--- a/crates/ty_python_semantic/src/types/builder.rs
++++ b/crates/ty_python_semantic/src/types/builder.rs
+@@ -88,6 +88,13 @@ enum UnionElement&lt;'db&gt; {
+ }
+ 
+ impl&lt;'db&gt; UnionElement&lt;'db&gt; {
++    const fn to_type_element(&amp;self) -&gt; Option&lt;Type&lt;'db&gt;&gt; {
++        match self {
++            UnionElement::Type(ty) =&gt; Some(*ty),
++            _ =&gt; None,
++        }
++    }
++
+     /// Try reducing this `UnionElement` given the presence in the same union of `other_type`.
+     fn try_reduce(&amp;mut self, db: &amp;'db dyn Db, other_type: Type&lt;'db&gt;) -&gt; ReduceResult&lt;'db&gt; {
+         match self {
+@@ -383,13 +390,9 @@ impl&lt;'db&gt; UnionBuilder&lt;'db&gt; {
+                 let members_in_union = self
+                     .elements
+                     .iter()
+-                    .filter_map(|element| {
+-                        if let UnionElement::Type(Type::EnumLiteral(lit)) = element {
+-                            Some(lit.name(self.db).clone())
+-                        } else {
+-                            None
+-                        }
+-                    })
++                    .filter_map(UnionElement::to_type_element)
++                    .filter_map(Type::into_enum_literal)
++                    .map(|literal| literal.name(self.db).clone())
+                     .chain(std::iter::once(enum_literal.name(self.db).clone()))
+                     .collect::&lt;FxOrderSet&lt;_&gt;&gt;();
+ 
+@@ -401,16 +404,14 @@ impl&lt;'db&gt; UnionBuilder&lt;'db&gt; {
+ 
+                 if all_members_are_in_union {
+                     self.add_in_place(enum_literal.enum_class_instance(self.db));
+-                } else {
+-                    if !self.elements.iter().any(|element| match element {
+-                        UnionElement::Type(ty) =&gt; {
+-                            Type::EnumLiteral(enum_literal).is_subtype_of(self.db, *ty)
+-                        }
+-                        _ =&gt; false,
+-                    }) {
+-                        self.elements
+-                            .push(UnionElement::Type(Type::EnumLiteral(enum_literal)));
+-                    }
++                } else if !self
++                    .elements
++                    .iter()
++                    .filter_map(UnionElement::to_type_element)
++                    .any(|ty| Type::EnumLiteral(enum_literal).is_subtype_of(self.db, ty))
++                {
++                    self.elements
++                        .push(UnionElement::Type(Type::EnumLiteral(enum_literal)));
+                 }
+             }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/builder.rs</code>:600 on 2025-07-21 13:23</div>
+            <div class="timeline-body"><p>oh, that's clever!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/builder.rs</code>:626 on 2025-07-21 13:25</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">            self.intersections
+                .iter()
+                .flat_map(|intersection| &amp;intersection.positive)
+                .any(|ty| *ty == enum_instance)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/call/arguments.rs</code>:216 on 2025-07-21 13:30</div>
+            <div class="timeline-body"><p>it looks like <code>enum_member_literals()</code> itself calls <code>enum_metadata()</code> internally, so it seems a bit duplicative to have to call <code>enum_metadata</code> first here. Should <code>enum_member_literals</code> return <code>None</code> rather than returning an empty iterator if it's called on a non-enum class (or an enum class that doesn't have any members)?</p>
+<p>Also, do we have any tests for overloads that involve <code>Enum</code> subclasses without any members? I'm guessing we shouldn't do any overload expansion of any kind for those classes; it might be good to have a test explicitly asserting that, if we don't already</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-07-21 13:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-07-21 14:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types/builder.rs</code>:392 on 2025-07-21 14:01</div>
+            <div class="timeline-body"><p>Love it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-07-21 14:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types/builder.rs</code>:600 on 2025-07-21 14:03</div>
+            <div class="timeline-body"><p>Initially, I duplicated what the <code>Type::Union</code> branch does here, but wanted to get rid of that. Fortunately, the wrapping/unwrapping in <code>UnionType</code> doesn't appear to hurt, performance-wise.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types/call/arguments.rs</code>:216 on 2025-07-21 14:36</div>
+            <div class="timeline-body"><blockquote>
+<p>it looks like <code>enum_member_literals()</code> itself calls <code>enum_metadata()</code> internally, so it seems a bit duplicative to have to call <code>enum_metadata</code> first here. Should <code>enum_member_literals</code> return <code>None</code> rather than returning an empty iterator if it's called on a non-enum class (or an enum class that doesn't have any members)?</p>
+</blockquote>
+<p>Good suggestion — changed!</p>
+<blockquote>
+<p>Also, do we have any tests for overloads that involve <code>Enum</code> subclasses without any members? I'm guessing we shouldn't do any overload expansion of any kind for those classes; it might be good to have a test explicitly asserting that, if we don't already</p>
+</blockquote>
+<p>Added</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-07-21 14:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @sharkdp on 2025-07-21 17:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-07-21 17:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-07-21 17:37</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:58:39 UTC
+    </footer>
+</body>
+</html>

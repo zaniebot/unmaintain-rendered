@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`ruff`] Offer fixes for `RUF039` in more cases - astral-sh/ruff #19065</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>ruff</code>] Offer fixes for <code>RUF039</code> in more cases</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19065">#19065</a>
+        opened by <a href="https://github.com/robsdedude">@robsdedude</a>
+        on 2025-07-01 07:58
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/robsdedude">@robsdedude</a> on 2025-07-01 07:58</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Expand cases in which ruff can offer a fix for <code>RUF039</code> (some of which are unsafe).</p>
+<p>While turning <code>&quot;\n&quot;</code> (== <code>\n</code>) into <code>r&quot;\n&quot;</code> (== <code>\\n</code>) is not equivalent at run-time, it's still functionally equivalent to do so in the context of <a href="https://docs.python.org/3/library/re.html#regular-expression-syntax">regex patterns</a> as they themselves interpret the escape sequence. Therefore, an unsafe fix can be offered.</p>
+<p>Further, this PR also makes ruff offer fixes for byte string literals, not only strings literals as before.</p>
+<h2>Test Plan</h2>
+<p>Tests for all escape sequences have been added.</p>
+<h2>Related</h2>
+<p>Closes: https://github.com/astral-sh/ruff/issues/16713</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-01 08:08</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+0 -0 violations, +2 -0 fixes in 1 projects; 54 projects unchanged)</p>
+<details><summary><a href="https://github.com/pytest-dev/pytest">pytest-dev/pytest</a> (+0 -0 violations, +2 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/pytest-dev/pytest/blob/cfc66062cb298e8b90a2849127e2104cd5070293/testing/python/metafunc.py#L432'>testing/python/metafunc.py:432:45:</a> RUF039 First argument to `re.compile()` is not raw bytes literal
++ <a href='https://github.com/pytest-dev/pytest/blob/cfc66062cb298e8b90a2849127e2104cd5070293/testing/python/metafunc.py#L432'>testing/python/metafunc.py:432:45:</a> RUF039 [*] First argument to `re.compile()` is not raw bytes literal
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (1 rules affected)</summary>
+<p>
+
+<p>| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| RUF039 | 2 | 0 | 0 | 2 | 0 |</p>
+</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @robsdedude on 2025-07-01 08:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ntBre by @MichaReiser on 2025-07-07 12:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @MichaReiser on 2025-07-07 12:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @ntBre on 2025-07-08 14:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/ruff/rules/unraw_re_pattern.rs</code>:28 on 2025-07-08 14:07</div>
+            <div class="timeline-body"><p>Sometimes we also include a <code>## Fix availability</code> section. Would that be useful here? &quot;If a fix is available&quot; is kind of raising that question for me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/ruff/rules/unraw_re_pattern.rs</code>:279 on 2025-07-08 14:20</div>
+            <div class="timeline-body"><p>This is some related code that I wrote for another rule:</p>
+<p>https://github.com/astral-sh/ruff/blob/2f8bc9a30bbcb3839fa0a5031e0bbae329210e53/crates/ruff_linter/src/rules/ruff/rules/unnecessary_regular_expression.rs#L191-L210</p>
+<p>It looks like we're handling a slightly different set of characters there: <code>abfnrtv</code>. <code>b</code> is present there but not here and <code>x</code> is here but not there, for example. Is that expected, or should the two be the same?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/ruff/rules/unraw_re_pattern.rs</code>:279 on 2025-07-08 14:26</div>
+            <div class="timeline-body"><p>I kind of like this <code>str::contains</code> check more than having to pass a closure. Then we could avoid calling the <code>checker.target_version()</code> repeatedly too, not that it's too expensive. For example:</p>
+<pre><code class="language-rust">let allowed = if checker.target_version() &gt;= PythonVersion::PY38 {
+    &quot;afnrtuUvxN&quot;
+} else {
+    &quot;afnrtuUvx&quot;
+};
+</code></pre>
+<p>and for bytes it would just be <code>&quot;afnrtvx&quot;</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/ruff/rules/unraw_re_pattern.rs</code>:279 on 2025-07-08 14:31</div>
+            <div class="timeline-body"><p>There's also this section in the <a href="https://docs.python.org/3/library/re.html#module-contents">docs</a> (just above the linked node):</p>
+<blockquote>
+<p>Octal escapes are included in a limited form. If the first digit is a 0, or if there are three octal digits, it is considered an octal escape. Otherwise, it is a group reference. As for string literals, octal escapes are always at most three digits in length.</p>
+</blockquote>
+<p>This might be too niche to worry about, if it's relevant at all. I see there's a test case with an octal escape, so this seems intentional.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/ruff/rules/unraw_re_pattern.rs</code>:257 on 2025-07-08 14:42</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                // If the next character is not one of the whitelisted ones, we likely cannot safely turn
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/ruff/rules/unraw_re_pattern.rs</code>:191 on 2025-07-08 14:42</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">/// Check how safe it is to prepend the `r` prefix to the string.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-07-08 14:44</div>
+            <div class="timeline-body"><p>Thanks! I just had a couple of questions/suggestions around the allowed escape characters and an idea for the docs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/robsdedude">@robsdedude</a> reviewed on 2025-07-22 17:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/robsdedude">@robsdedude</a> on <code>crates/ruff_linter/src/rules/ruff/rules/unraw_re_pattern.rs</code>:279 on 2025-07-22 17:18</div>
+            <div class="timeline-body"><blockquote>
+<p>I kind of like this <code>str::contains</code> check more</p>
+</blockquote>
+<p>If you prefer the <code>str::contains</code> approach for readability, I'll follow whatever you prefer as this is your code base to maintain. If you worry about performance: match is often faster. Pulling the <code>checker.target_version()</code> out of the closure is still possible and since Rust will monomorphize <code>raw_applicability</code> with the closure/anonymous function the compiler can optimize things to its heart's content (as opposed to receiving an opaque <code>str</code> and calling <code>contains</code> on it (see <a href="https://godbolt.org/#g:!((g:!((g:!((h:codeEditor,i:(filename:%271%27,fontScale:14,fontUsePx:%270%27,j:1,lang:rust,selection:(endColumn:74,endLineNumber:11,positionColumn:74,positionLineNumber:11,selectionStartColumn:74,selectionStartLineNumber:11,startColumn:74,startLineNumber:11">godbolt example</a>,source:'use+std::hint::black_box%3B%0A%0A%23%5Binline(never)%5D%0Apub+fn+f1(c:+char)+-%3E+bool+%7B%0A++++let+matches+%3D+black_box(%22afnrtuUvxN%22)%3B%0A++++matches.contains(c)%0A%7D%0A%0A%23%5Binline(never)%5D%0Apub+fn+f2(c:+char)+-%3E+bool+%7B%0A++++matches!!(c,+!'a!'+%7C+!'f!'+%7C+!'n!'+%7C+!'r!'+%7C+!'t!'+%7C+!'u!'+%7C+!'U!'+%7C+!'v!'+%7C+!'x!'+%7C+!'N!')%0A%7D%0A%0Apub+fn+main()+%7B+%0A++++let+input+%3D+black_box(!'c!')%3B%0A++++black_box(f1(input))%3B%0A++++black_box(f2(input))%3B%0A+%7D%0A'),l:'5',n:'0',o:'Rust+source+%231',t:'0')),k:50,l:'4',n:'0',o:'',s:0,t:'0'),(g:!((h:compiler,i:(compiler:r1860,filters:(b:'0',binary:'1',binaryObject:'1',commentOnly:'0',debugCalls:'1',demangle:'0',directives:'0',execute:'1',intel:'0',libraryCode:'0',trim:'1',verboseDemangling:'0'),flagsViewOpen:'1',fontScale:14,fontUsePx:'0',j:1,lang:rust,libs:!(),options:'-O',overrides:!(),selection:(endColumn:12,endLineNumber:78,positionColumn:12,positionLineNumber:78,selectionStartColumn:10,selectionStartLineNumber:78,startColumn:10,startLineNumber:78),source:1),l:'5',n:'0',o:'+rustc+1.86.0+(Editor+%231)',t:'0')),k:50,l:'4',n:'0',o:'',s:0,t:'0')),l:'2',n:'0',o:'',t:'0')),version:4)).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/robsdedude">@robsdedude</a> reviewed on 2025-07-22 17:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/robsdedude">@robsdedude</a> on <code>crates/ruff_linter/src/rules/ruff/rules/unraw_re_pattern.rs</code>:279 on 2025-07-22 17:23</div>
+            <div class="timeline-body"><blockquote>
+<p>Is that expected, or should the two be the same?</p>
+</blockquote>
+<p>I'm unsure. The linked code sure is different. If I'm interpreting it right, it's trying to go from <code>re.sub</code> to <code>str.replace</code>. While in this PR we're trying to go from <code>re.some_func(&quot;some str&quot;)</code> to <code>re.some_func(r&quot;some str&quot;)</code>. So here we're always staying in the regex world. It's just a question of how many <code>\</code>es the string will end up having. My gut feeling is that those cases are not the same. But as said, unsure.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/robsdedude">@robsdedude</a> on <code>crates/ruff_linter/src/rules/ruff/rules/unraw_re_pattern.rs</code>:279 on 2025-07-22 17:29</div>
+            <div class="timeline-body"><blockquote>
+<p>This might be too niche to worry about</p>
+</blockquote>
+<p>Yeah... I didn't want to go there :sweat_smile: I mean it wouldn't be hard to implement, but probably slightly less efficient because the search window would grow from 2 to 4 characters.</p>
+<p>I'll leave it up to you to decide if you want me to go for it or not.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/robsdedude">@robsdedude</a> reviewed on 2025-07-22 17:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-07-24 15:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/ruff/rules/unraw_re_pattern.rs</code>:279 on 2025-07-24 15:42</div>
+            <div class="timeline-body"><p>You've convinced me :) let's stick with this version.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> approved on 2025-07-24 15:42</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ntBre on 2025-07-24 15:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-07-24 15:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-07-24 18:33</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:58:38 UTC
+    </footer>
+</body>
+</html>

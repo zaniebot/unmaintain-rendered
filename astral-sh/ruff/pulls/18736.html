@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Change `NoqaCode` to a single string with an offset - astral-sh/ruff #18736</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Change <code>NoqaCode</code> to a single string with an offset</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/18736">#18736</a>
+        opened by <a href="https://github.com/ntBre">@ntBre</a>
+        on 2025-06-17 20:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ntBre">@ntBre</a> on 2025-06-17 20:44</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR explores two potential and closely related <code>NoqaCode</code> refactors. The first, in the first two commits, replaces the current <code>NoqaCode(&amp;'static str, &amp;'static str)</code> with <code>NoqaCode(&amp;'static str, usize)</code>, where the <code>usize</code> is the index where the prefix and suffix separate. As detailed in <a href="https://github.com/astral-sh/ruff/pull/18391#issuecomment-2945941780">this comment</a>, it's not really possible to get a nice, single <code>&amp;'static str</code>, but we can hack around it with a <code>LazyLock</code> to call <code>format!</code> in a <code>static</code>:</p>
+<p>https://github.com/astral-sh/ruff/blob/7ff37f42b065f788ad37aed06497842e36860aab/crates/ruff_macros/src/map_codes.rs#L293-L295</p>
+<p>In the third commit, I just tried <code>NoqaCode(String, usize)</code>, which means <code>NoqaCode</code> can no longer be <code>Copy</code>, but is otherwise a bit more natural.</p>
+<h2>Test Plan</h2>
+<p>Codspeed benchmarks on this PR. The <code>&amp;'static str</code> version didn't show any difference, but the <code>String</code> version shows up to a 3% regression. Still, either of these representations should be a bit better if we end up needing to call <code>Rule::from_code</code> since they will avoid having to allocate a new string just to pass it there. A single string should be easier to store on <code>ruff_db::Diagnostic</code> too.</p>
+<p>https://github.com/astral-sh/ruff/blob/9cb02433d5c17bb2ad70c0bf516d99da9f6cd4ae/crates/ruff_linter/src/registry.rs#L19-L21</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Change NoqaCode to a single string with an offset" to "Change `NoqaCode` to a single string with an offset" by @ntBre on 2025-06-17 20:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-06-17 20:51</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @ntBre on 2025-06-17 23:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-18 08:09</div>
+            <div class="timeline-body"><p>I wonder if this refactor is worth it, considering that it's a slow down. Should we wait until we add <code>secondary_code: String</code> to <code>ruff_db::Diagnostic</code> and then take this up again?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-07-24 13:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-07-24 13:33</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:58:38 UTC
+    </footer>
+</body>
+</html>

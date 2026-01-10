@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Don't include already-bound legacy typevars in function generic context - astral-sh/ruff #19558</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Don't include already-bound legacy typevars in function generic context</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19558">#19558</a>
+        opened by <a href="https://github.com/dcreager">@dcreager</a>
+        on 2025-07-25 14:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dcreager">@dcreager</a> on 2025-07-25 14:28</div>
+            <div class="timeline-body"><p>We now correctly exclude legacy typevars from enclosing scopes when constructing the generic context for a generic function.</p>
+<p>more detail:</p>
+<p>A function is generic if it refers to legacy typevars in its signature:</p>
+<pre><code class="language-py">from typing import TypeVar
+
+T = TypeVar(&quot;T&quot;)
+
+def f(t: T) -&gt; T:
+    return t
+</code></pre>
+<p>Generic functions are allowed to appear inside of other generic contexts. When they do, they can refer to the typevars of those enclosing generic contexts, and that should not rebind the typevar:</p>
+<pre><code class="language-py">from typing import TypeVar, Generic
+
+T = TypeVar(&quot;T&quot;)
+U = TypeVar(&quot;U&quot;)
+
+class C(Generic[T]):
+    @staticmethod
+    def method(t: T, u: U) -&gt; None: ...
+
+# revealed: def method(t: int, u: U) -&gt; None
+reveal_type(C[int].method)
+</code></pre>
+<p>This substitution was already being performed correctly, but we were also still including the enclosing legacy typevars in the method's own generic context, which can be seen via <code>ty_extensions.generic_context</code> (which has been updated to work on generic functions and methods):</p>
+<pre><code class="language-py">from ty_extensions import generic_context
+
+# before: tuple[T, U]
+# after: tuple[U]
+reveal_type(generic_context(C[int].method))
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @dcreager on 2025-07-25 14:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @dcreager on 2025-07-25 14:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @dcreager on 2025-07-25 14:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-25 14:32</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">psycopg (https://github.com/psycopg/psycopg)
+- psycopg/psycopg/_py_transformer.py:329:16: error[invalid-return-type] Return type does not match returned value: expected `Row`, found `tuple[Any, ...]`
+- psycopg_pool/psycopg_pool/pool.py:263:16: error[invalid-return-type] Return type does not match returned value: expected `CT`, found `(Unknown &amp; ~AlwaysFalsy) | Connection[@Todo(Support for `typing.TypeAlias`)]`
+- Found 658 diagnostics
++ Found 656 diagnostics
+
+zulip (https://github.com/zulip/zulip)
+- zerver/tests/test_auth_backends.py:8035:26: error[invalid-argument-type] Argument to bound method `set` is incorrect: Argument type `Unknown | int` does not satisfy upper bound of type variable `Self`
+- Found 7421 diagnostics
++ Found 7420 diagnostics
+
+</code></pre>
+</details>
+No memory usage changes detected ✅
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @MichaReiser on 2025-07-25 15:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/function.rs</code>:355 on 2025-07-25 19:29</div>
+            <div class="timeline-body"><p>We sure it's worth passing these vs just re-querying them from Salsa when we need them? We are already passing in <code>definition</code> below which knows its <code>File</code>, and a <code>File</code> is all you need to query a semantic index or a parsed module. Querying a cached value from Salsa should be very cheap (we do this a <em>lot</em>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/function.rs</code>:356 on 2025-07-25 19:30</div>
+            <div class="timeline-body"><p>I don't think we need to thread this through. Immediately below we have the function <code>Definition</code>, which already knows which scope it occurs in. (This will mean that we skip the type parameters scope for a PEP 695 generic function, but as commented above I think that's fine, even preferable.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/function.rs</code>:344 on 2025-07-25 19:34</div>
+            <div class="timeline-body"><p>For a PEP 695 generic function, this will be the type parameters scope. I think in this particular case it doesn't matter, because you walk up scopes from there, but it's a bit subtle and not clear from the naming. The type parameters scope can't ever bind a legacy typevar, so it would also be fine if we skipped it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/infer.rs</code>:388 on 2025-07-25 19:37</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">/// Returns an iterator of any generic context introduced by the given scope or any enclosing
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/infer.rs</code>:394 on 2025-07-25 19:41</div>
+            <div class="timeline-body"><p>Related to above, I'd suggest instead of taking <code>module</code> or <code>index</code> we might just take a <code>File</code> here.</p>
+<p>Or take only a <code>ScopeId</code>, which encompasses a <code>File</code> and a <code>FileScopeId</code>.</p>
+<p>I guess the one argument in favor of taking <code>module</code> and <code>index</code> is that it kind of makes it explicit that this method has a dependency on the AST of the module containing <code>scope</code>. But I'm not sure how obvious this is; it's not the way we've typically handled this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/infer.rs</code>:388 on 2025-07-25 19:56</div>
+            <div class="timeline-body"><p><code>infer.rs</code> is already massive with <code>TypeInferenceBuilder</code> and the various <code>*Inference</code> structs. Is it the best place for these new free functions? Seems like they kind of would belong in <code>generics.rs</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-07-25 20:01</div>
+            <div class="timeline-body"><p>Looks good!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/infer.rs</code>:394 on 2025-07-25 20:31</div>
+            <div class="timeline-body"><p>Done.</p>
+<blockquote>
+<p>I guess the one argument in favor of taking <code>module</code> and <code>index</code> is that it kind of makes it explicit that this method has a dependency on the AST of the module containing <code>scope</code>.</p>
+</blockquote>
+<p>That wasn't my intent, and I think it's an open question how we want to model that better more generally, so I'm going with the simpler function signatures that you've suggested</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/function.rs</code>:344 on 2025-07-25 20:31</div>
+            <div class="timeline-body"><p>See below; this is now only generated when creating a legacy generic context</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/function.rs</code>:356 on 2025-07-25 20:31</div>
+            <div class="timeline-body"><p>Good idea, done!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/function.rs</code>:355 on 2025-07-25 20:32</div>
+            <div class="timeline-body"><p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/infer.rs</code>:388 on 2025-07-25 20:37</div>
+            <div class="timeline-body"><p>Moved. That also let me make them file-local instead of <code>pub(crate)</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-07-25 20:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/call/bind.rs</code>:648 on 2025-07-25 20:42</div>
+            <div class="timeline-body"><p>nit:</p>
+<pre><code class="language-suggestion">                                    Type::ClassLiteral(class) =&gt; class.generic_context(db)
+                                        .map(|generic_context| generic_context.as_tuple(db))
+                                        .unwrap_or_else(|| Type::none(db)),
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-07-25 20:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dcreager on 2025-07-25 22:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dcreager on 2025-07-25 22:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-07-25 22:14</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:58:39 UTC
+    </footer>
+</body>
+</html>

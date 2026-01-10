@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Implement mock language server for testing - astral-sh/ruff #19391</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Implement mock language server for testing</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19391">#19391</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2025-07-17 04:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-07-17 04:26</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Closes: astral-sh/ty#88</p>
+<p>This PR implements an initial version of a mock language server that can be used to write e2e tests using the real server running in the background.</p>
+<p>The way it works is that you'd use the <code>TestServerBuilder</code> to help construct the <code>TestServer</code> with the setup data. This could be the workspace folders, populating the file and it's content in the memory file system, setting the right client capabilities to make the server respond correctly, etc. This can be expanded as we write more test cases.</p>
+<p>There are still a few things to follow-up on:</p>
+<ul>
+<li>~In the <code>Drop</code> implementation, we should assert that there are no pending notification, request and responses from the server that the test code hasn't handled yet~ Implemented in <a href="https://github.com/astral-sh/ruff/pull/19391/commits/afd1f82bdee55ea0b5426e5ee49867b77e0c1f0a"><code>afd1f82</code> (#19391)</a></li>
+<li>Reduce the setup boilerplate in any way we can</li>
+<li>Improve the final assertion, currently I'm just snapshotting the final output</li>
+</ul>
+<h2>Test Plan</h2>
+<p>Written a few test cases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @dhruvmanila on 2025-07-17 04:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">testing</span> added by @dhruvmanila on 2025-07-17 04:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @dhruvmanila on 2025-07-17 04:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-17 04:30</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅
+No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-07-17 06:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/server.rs</code>:42 on 2025-07-17 06:09</div>
+            <div class="timeline-body"><p>I would probably remove the <code>Option</code> here. It seems to complicate things unnecessarily only so that we can fallback to <code>OsSystem</code>. Doingt hsi fallback in <code>Server::new</code> seems easy enough.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/server.rs</code>:42 on 2025-07-17 06:34</div>
+            <div class="timeline-body"><p>If we remove the <code>Option</code> here, then we would need to create the <code>OsSystem</code> outside i.e., in <code>run_server</code> and when creating the <code>TestServer</code>. I don't mind that but is this what you meant?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-07-17 06:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-07-17 06:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/server.rs</code>:42 on 2025-07-17 06:55</div>
+            <div class="timeline-body"><p>Yes, that's what I meant. Creating it in <code>run_server</code> seems fine to me. It's similar to what we do in the CLI where the system is one of the first things we create. Unless we can't do that because we need to use a different current directory.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/logging.rs</code>:18 on 2025-07-17 07:14</div>
+            <div class="timeline-body"><p>The global tracing subscriber can only be set once but <code>Server::new</code> will try to set it multiple times via <code>TestServer::new</code> when there are more than 1 test to run.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-07-17 07:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-17 08:32</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/server.rs</code>:326 on 2025-07-17 14:50</div>
+            <div class="timeline-body"><p>Do we have any precedence on how to handle paths in tests on both Unix and Windows? I'm not exactly sure but I'm guessing that Windows failure are due to the fact that <code>Url::try_from_path</code> would fail on this path when running on Windows.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-07-17 14:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @dhruvmanila on 2025-07-17 14:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @dhruvmanila on 2025-07-17 14:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @dhruvmanila on 2025-07-17 14:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @dhruvmanila on 2025-07-17 14:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @dhruvmanila on 2025-07-17 14:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/lib.rs</code>:49 on 2025-07-17 17:28</div>
+            <div class="timeline-body"><p>Nit: I find <code>fallback_system</code> a bit misleading. I think I would call it <code>native_system</code> or <code>underlying_system</code> instead (here and everywhere else). The reason I find <code>fallback</code> confusing is because there are many operations where the LSP System doesn't customize the system at all and simply forwards to it. It's not falling back to it</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/logging.rs</code>:20 on 2025-07-17 17:31</div>
+            <div class="timeline-body"><p>Hmm. I'm not sure this is the right solution. I'm leaning towards passing an enum <code>ServerLogging::On/Off</code> to <code>Server::run</code> instead. This allows your testing framework to control the logging (e.g. we probably want to default to <code>Debug</code> instead of <code>Info</code>) by initializing the logging before running any tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/server.rs</code>:316 on 2025-07-17 17:32</div>
+            <div class="timeline-body"><p>Nit: I would lean towards making <code>with_memory_system</code> optional. It seems a bit verbose and ideally wouldn't be necessary in every test. The <code>TestServerBuilder</code> can simply default to <code>InMemorySystem::default</code> unless it gets overriden.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/test.rs</code>:697 on 2025-07-18 07:08</div>
+            <div class="timeline-body"><p>Nit: I would call these methods <code>enable_...</code>. It's otherwise confusing why <code>with_client_capabilities</code> replaces all capabilities but <code>with_did_change_watched_files</code> doesn't?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/test.rs</code>:104 on 2025-07-18 07:46</div>
+            <div class="timeline-body"><p>Should we move the <code>drain</code> to after the shutdown handling because the server could still be sending requests to the client during the shutdown sequence if it wnated to.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/test.rs</code>:125 on 2025-07-18 07:50</div>
+            <div class="timeline-body"><p>I think this could lead to an infinite hang if the server didn't respond to the shutdown request (because it keeps running).</p>
+<p>I suggest that you manually drop the <code>ClientConnection</code> before joining the server. This should force the server to exit immediately because there are no more incoming message and only then join the server.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/test.rs</code>:123 on 2025-07-18 07:51</div>
+            <div class="timeline-body"><p>The message here is missleading. <code>join</code> always joins the thread but it returns an error if the server thread panicked. We should update the message to make this clear</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/test.rs</code>:155 on 2025-07-18 07:52</div>
+            <div class="timeline-body"><p>Should we change the argument to take a <code>Vec&lt;(WorkspaceFolder, ClientOptions)&gt;</code> instead so that we don't need the assertion? The extra allocations shouldn't matter here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/test.rs</code>:153 on 2025-07-18 07:54</div>
+            <div class="timeline-body"><p>Nit: You could consider extracting a <code>ServerState</code> struct that implements <code>Default</code> that includes all fields except <code>server_thread</code>. That should also allow you to derive the <code>Debug</code> implementation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/test.rs</code>:305 on 2025-07-18 07:59</div>
+            <div class="timeline-body"><p>The only reason <code>send</code> can fail is if the server thread dropped the <code>ClientReceiver</code>. The only cases where this should happen is if the server thread panicked or shutdown.</p>
+<p>I suggest that we handle the error explicitly here by checking if the server thread is still running.</p>
+<ul>
+<li>if the server is still running, panic with a message saying that the server droped the client receiver.</li>
+<li>if the server isn't running anymore. That means the server exited for whatever reason or panicked. In this case, join the server thread. If it returns an <code>Err</code>, the server panicked -&gt; propagate the panic. If it exited with <code>Ok</code>, panic with a message saying that the server is shutdown.</li>
+</ul>
+<p>This will probably require some changes to <code>Drop</code> to skip the exit sequence and joining if the join handle is None.</p>
+<p>But it should allow you to remove the <code>Result</code> return type.</p>
+<p>I also suggest attributing this function with <code>#[track_caller]</code> and including the request method in the panic messages.</p>
+<p>We should do the same for <code>send_notification</code> and <code>get_response</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/test.rs</code>:329 on 2025-07-18 08:02</div>
+            <div class="timeline-body"><p>Nit: Maybe <code>await_response</code> to make it clear that this call blocks (same for notifications)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/test.rs</code>:347 on 2025-07-18 08:03</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">            let notification = self
+                .notifications
+                .iter()
+                .position(|notification| N::METHOD == notification.method)
+                .and_then(|index| self.notifications.remove(index));
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/test.rs</code>:386 on 2025-07-18 08:03</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">            &quot;Did not get a notification of type `{}` after 10 retries&quot;,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/test.rs</code>:376 on 2025-07-18 08:04</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">            let request = self
+                .requests
+                .iter()
+                .position(|request| R::METHOD == request.method)
+                .and_then(|index| self.requests.remove(index));
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/test.rs</code>:367 on 2025-07-18 08:06</div>
+            <div class="timeline-body"><p>Do we need that many retries or are the tests flaky otherwise? Waiting for 20s seems pretty long.</p>
+<p>If yes, I then suggest to log an info message with <code>tracing</code> before retrying so that a dev doesn't have to wait 20s to find out which notification took more than 20s to receive.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/test.rs</code>:437 on 2025-07-18 08:08</div>
+            <div class="timeline-body"><p>Same as for send. We should handle the case here where the server stopped or dropped the <code>Sender</code> end of the channel and panic in those cases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/test.rs</code>:308 on 2025-07-18 08:12</div>
+            <div class="timeline-body"><p>This is more of an extension but it would be nice if the server tracked the <code>pending_requests</code> (<code>FxHashMap&lt;id, &amp;'static str&gt;</code> where the value is the method).</p>
+<ul>
+<li><code>get_response</code> should panic if the server receives a response for a request not in <code>pending_requests</code> (that means the response was sent twice, e.g. after cancellation)</li>
+<li><code>Drop</code> should probably panic if there are any pending requests? I'm not entirely sure about that as it isn't a LSP spec violation. We might at least want to warn using tracing</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/test.rs</code>:490 on 2025-07-18 08:14</div>
+            <div class="timeline-body"><p>Let's log a tracing warning or even error for those cases to make it easier to track down what's happening</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/test.rs</code>:500 on 2025-07-18 08:15</div>
+            <div class="timeline-body"><p>It's not quiet clear to me how this should be used. Ideally, a test is able to customize any of those (and they are by calling <code>get_request</code>).</p>
+<p>An alternative way of implementing this is to simply have the test call <code>get_request</code> and then call <code>handle_workspace_configuration_request(request)</code> itself. Should we remove this for now?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/test.rs</code>:245 on 2025-07-18 08:20</div>
+            <div class="timeline-body"><p>Aren't document versions per document (instead of global?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/server.rs</code>:323 on 2025-07-18 08:21</div>
+            <div class="timeline-body"><p>The snapshot captures more than just the capabilities</p>
+<pre><code class="language-suggestion">        insta::assert_json_snapshot!(&quot;initialization&quot;, initialization_result);
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-07-18 08:23</div>
+            <div class="timeline-body"><p>Nice, this is awesome!</p>
+<p>I've a few suggestions on how the error handling and asserting some basic constraints of the LSP protocol can be improved. But I don't mind if you decide to defer those to a follow up PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/logging.rs</code>:20 on 2025-07-18 11:11</div>
+            <div class="timeline-body"><p>The issue here is that the global tracing subscriber can only be set once and each test will try to set it, so we need to make sure that the logging is initialized only once. Using your suggested approach (<code>ServerLogging</code>), I guess we would need to make it <code>Off</code> by default and the developer can turn it <code>On</code> when necessary e.g., to debug a test.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-07-18 11:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-07-18 11:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/server.rs</code>:316 on 2025-07-18 11:12</div>
+            <div class="timeline-body"><p>It is optional, I'll remove this call from this test case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-07-18 11:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/test.rs</code>:697 on 2025-07-18 11:14</div>
+            <div class="timeline-body"><p>I'm not sure what's confusing here, the <code>with_client_capabilities</code> should be replacing the entire capability set while <code>with_</code> prefixed specific capability should only be replacing that specific one. I'm fine with renaming it to <code>enable_</code> regardless.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-07-18 11:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/logging.rs</code>:20 on 2025-07-18 11:25</div>
+            <div class="timeline-body"><p>I don't mind having a <code>OnceLock</code> inside the <code>TestServer</code>. I just don't think it's the right approach in <code>Server::run</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/test.rs</code>:104 on 2025-07-18 11:33</div>
+            <div class="timeline-body"><p>I think we should do this first because if we reached here then the test case didn't handle some messages.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-07-18 11:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-07-18 11:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/test.rs</code>:125 on 2025-07-18 11:34</div>
+            <div class="timeline-body"><p>Ah, good point. I think I faced this when the server didn't respond to the shutdown request because the workspaces initialization was yet to be completed. I didn't realize it was due to this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/test.rs</code>:104 on 2025-07-18 11:45</div>
+            <div class="timeline-body"><p>We might then need to do it twice?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-07-18 11:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/test.rs</code>:104 on 2025-07-18 11:47</div>
+            <div class="timeline-body"><p>Oh, I think I might have misunderstood what it does. It simply drops all messages. Shouldn't it be an error if a test doesn't handle all messages? We could add a method that drops all messages but I would sort of expect that all messages are handled and any unhandled message is an error (because it didn't fully test the flow?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-07-18 11:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-07-18 11:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/test.rs</code>:104 on 2025-07-18 11:51</div>
+            <div class="timeline-body"><p>It doesn't drop all the message, it basically keeps asking the server for the messages via the <code>self.receive</code> call until we stop receiving any messages from the server which records them in <code>self.requests</code>, <code>self.notifications</code> and <code>self.responses</code> and at the end there's a <code>self.assert_no_pending_messages</code> call that asserts that these data structures are empty.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-07-18 11:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/test.rs</code>:153 on 2025-07-18 11:54</div>
+            <div class="timeline-body"><p>I like the idea but it just adds a layer of indirection which doesn't seem that useful. As such, we won't be able to implement the <code>Default</code> because <code>workspace_configurations</code> needs to be provided.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-07-18 11:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/test.rs</code>:367 on 2025-07-18 11:58</div>
+            <div class="timeline-body"><p>I don't think it's required, it's just an arbitrary number. I'll reduce it to 5 and add the tracing messages.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-07-18 12:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/test.rs</code>:104 on 2025-07-18 12:02</div>
+            <div class="timeline-body"><p>This split is necessary because we should only panic after the server thread is joined to avoid unnecessary panic messages.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-07-18 12:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/test.rs</code>:123 on 2025-07-18 12:03</div>
+            <div class="timeline-body"><p>Updated the message to:</p>
+<pre><code class="language-rs">panic!(&quot;Panic in the server thread: {err:?}&quot;);
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-07-18 12:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/test.rs</code>:490 on 2025-07-18 12:10</div>
+            <div class="timeline-body"><p>Returning an <code>Err</code> in this case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-07-18 12:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/test.rs</code>:245 on 2025-07-18 12:11</div>
+            <div class="timeline-body"><p>They are, I was just a bit lazy to implement per document tracking. I think as long as the document version change and are incremental, it should be fine?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-07-18 12:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/test.rs</code>:245 on 2025-07-18 12:13</div>
+            <div class="timeline-body"><p>We could also just ask the test to provide the versions instead so that they can emulate exactly the behavior they want</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-07-18 12:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/test.rs</code>:500 on 2025-07-18 12:14</div>
+            <div class="timeline-body"><p>Yeah, this was present before the <code>wait_until_workspaces_are_initialized</code> was implemented. The idea was that <code>self.receive</code> would handle certain requests made by the server but it would probably be confusing if the test wants to handle them on it's own. I'll remove this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-07-18 12:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/logging.rs</code>:20 on 2025-07-18 12:19</div>
+            <div class="timeline-body"><p>I'm not sure how would that work. The tracing is initialized from <code>Server::new</code> (and not <code>Server::run</code>) and the <code>TestServer</code> calls the <code>Server::new</code> method everytime the test server is created.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-07-18 13:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/test.rs</code>:490 on 2025-07-18 13:27</div>
+            <div class="timeline-body"><p>Actually, I'm thinking of making it a warning instead because otherwise the server would use the current working directory for which it will send the <code>workspace/configuration</code> request to the client and the test will fail because the user didn't provide it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-07-21 09:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/test.rs</code>:305 on 2025-07-21 09:20</div>
+            <div class="timeline-body"><p>I've made this change, I'd find it useful if you could take a quick look at it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/logging.rs</code>:20 on 2025-07-21 11:08</div>
+            <div class="timeline-body"><p>Something along these lines:</p>
+<pre><code>Subject: [PATCH] [ty] Use `ThinVec` in various places
+---
+Index: crates/ty_server/src/lib.rs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+&lt;+&gt;UTF-8
+===================================================================
+diff --git a/crates/ty_server/src/lib.rs b/crates/ty_server/src/lib.rs
+--- a/crates/ty_server/src/lib.rs	(revision a7aada5ee7426039e114f49265e4d4c25f8239c1)
++++ b/crates/ty_server/src/lib.rs	(date 1753095907066)
+@@ -48,9 +48,14 @@
+     // This is to complement the `LSPSystem` if the document is not available in the index.
+     let fallback_system = Arc::new(OsSystem::new(cwd));
+ 
+-    let server_result = Server::new(worker_threads, connection, fallback_system)
+-        .context(&quot;Failed to start server&quot;)?
+-        .run();
++    let server_result = Server::new(
++        worker_threads,
++        connection,
++        fallback_system,
++        server::Logging::Initialize,
++    )
++    .context(&quot;Failed to start server&quot;)?
++    .run();
+ 
+     let io_result = io_threads.join();
+ 
+Index: crates/ty_server/src/test.rs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+&lt;+&gt;UTF-8
+===================================================================
+diff --git a/crates/ty_server/src/test.rs b/crates/ty_server/src/test.rs
+--- a/crates/ty_server/src/test.rs	(revision a7aada5ee7426039e114f49265e4d4c25f8239c1)
++++ b/crates/ty_server/src/test.rs	(date 1753096005804)
+@@ -118,7 +118,12 @@
+             let worker_threads = NonZeroUsize::new(1).unwrap();
+             let test_system = Arc::new(TestSystem::new(memory_system));
+ 
+-            match Server::new(worker_threads, server_connection, test_system) {
++            match Server::new(
++                worker_threads,
++                server_connection,
++                test_system,
++                crate::server::Logging::Inherit,
++            ) {
+                 Ok(server) =&gt; {
+                     if let Err(err) = server.run() {
+                         panic!(&quot;Server stopped with error: {err:?}&quot;);
+Index: crates/ty_server/src/server.rs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+&lt;+&gt;UTF-8
+===================================================================
+diff --git a/crates/ty_server/src/server.rs b/crates/ty_server/src/server.rs
+--- a/crates/ty_server/src/server.rs	(revision a7aada5ee7426039e114f49265e4d4c25f8239c1)
++++ b/crates/ty_server/src/server.rs	(date 1753095974552)
+@@ -26,6 +26,12 @@
+ pub(crate) use main_loop::{Action, ConnectionSender, Event, MainLoopReceiver, MainLoopSender};
+ pub(crate) type Result&lt;T&gt; = std::result::Result&lt;T, api::Error&gt;;
+ 
++#[derive(Copy, Clone, Debug, Eq, PartialEq)]
++pub(crate) enum Logging {
++    Initialize,
++    Inherit,
++}
++
+ pub(crate) struct Server {
+     connection: Connection,
+     client_capabilities: ClientCapabilities,
+@@ -40,6 +46,7 @@
+         worker_threads: NonZeroUsize,
+         connection: Connection,
+         native_system: Arc&lt;dyn System + 'static + Send + Sync + RefUnwindSafe&gt;,
++        logging: Logging,
+     ) -&gt; crate::Result&lt;Self&gt; {
+         let (id, init_value) = connection.initialize_start()?;
+         let init_params: InitializeParams = serde_json::from_value(init_value)?;
+@@ -76,10 +83,15 @@
+         let (main_loop_sender, main_loop_receiver) = crossbeam::channel::bounded(32);
+         let client = Client::new(main_loop_sender.clone(), connection.sender.clone());
+ 
+-        crate::logging::init_logging(
+-            global_options.tracing.log_level.unwrap_or_default(),
+-            global_options.tracing.log_file.as_deref(),
+-        );
++        match logging {
++            Logging::Initialize =&gt; {
++                crate::logging::init_logging(
++                    global_options.tracing.log_level.unwrap_or_default(),
++                    global_options.tracing.log_file.as_deref(),
++                );
++            }
++            Logging::Inherit =&gt; {}
++        }
+ 
+         tracing::debug!(&quot;Version: {version}&quot;);
+ 
+
+</code></pre>
+<p>Now, for tests. Setup the logging automatically in <code>TestServerBuilder</code> or create a <code>setup_logging</code> helper function that sets up logging for a test (this is what we use in <code>ruff_db</code>).</p>
+<p>The <code>setup_logging</code> function would use a <code>OnceLock</code> internally to ensure we only setup the test logging once.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-07-21 11:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-07-21 11:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/server.rs</code>:326 on 2025-07-21 11:09</div>
+            <div class="timeline-body"><p>As discussed on Discord. I suggest to either use a temp directory or extend the <code>InMemorySystem</code> to support non-unix paths.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/test.rs</code>:193 on 2025-07-21 11:12</div>
+            <div class="timeline-body"><p>Nit: The <code>initialize</code> function can compute <code>workspace_folders</code> from iterating over <code>workspace_configurations</code> (move line 133 into `initialize)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @AlexWaygood removed by @AlexWaygood on 2025-07-21 13:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-07-22 08:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/logging.rs</code>:20 on 2025-07-22 08:58</div>
+            <div class="timeline-body"><p>Thanks, I've added this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/test.rs</code>:679 on 2025-07-22 09:07</div>
+            <div class="timeline-body"><p>We should probably skip joining the server thread when the client thread is already panicking. Triggering the panic on line 659 will only lead to a double panic which are very annoying to debug in Rust (Rust doesn't like that at all). That's why I think it's best to move the <code>std::thread::panicking</code> up before taking the server thread.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/test.rs</code>:55 on 2025-07-22 09:08</div>
+            <div class="timeline-body"><p>Should we default to <code>Debug</code>?  I don't find <code>Info</code> sufficient when working on the LSP</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-22 14:18</div>
+            <div class="timeline-body"><p>I'm taking a look at the failing windows test</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-22 14:27</div>
+            <div class="timeline-body"><p>This works for me:</p>
+<pre><code class="language-diff">Subject: [PATCH] Add Micro Benchmark
+
+This PR adds a microbenchmark for the Ruff linter. Adding microbenchmark for other tools
+should be straightforward.
+---
+Index: crates/ty_server/src/test.rs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+&lt;+&gt;UTF-8
+===================================================================
+diff --git a/crates/ty_server/src/test.rs b/crates/ty_server/src/test.rs
+--- a/crates/ty_server/src/test.rs	(revision 07e2747a21e17da81ff3c9433e27721bb8a9d61e)
++++ b/crates/ty_server/src/test.rs	(date 1753194432043)
+@@ -13,7 +13,7 @@
+ use std::time::Duration;
+ use std::{fmt, fs};
+ 
+-use anyhow::{Context, Result};
++use anyhow::{Context, Result, anyhow};
+ use crossbeam::channel::RecvTimeoutError;
+ use insta::internals::SettingsBindDropGuard;
+ use lsp_server::{Connection, Message, RequestId, Response, ResponseError};
+@@ -836,15 +836,16 @@
+         })?;
+ 
+         let mut settings = insta::Settings::clone_current();
+-        settings.add_filter(&amp;tempdir_filter(&amp;project_dir), &quot;&lt;temp_dir&gt;/&quot;);
++        settings.add_filter(&amp;tempdir_filter(project_dir.as_str()), &quot;&lt;temp_dir&gt;/&quot;);
+         // TODO: Is this required?
+-        // settings.add_filter(
+-        //     &amp;tempdir_filter(
+-        //         Url::from_file_path(project_dir.as_std_path())
+-        //             .context(&quot;Failed to convert project path to URL&quot;)?,
+-        //     ),
+-        //     &quot;file://&lt;temp_dir&gt;/&quot;,
+-        // );
++        settings.add_filter(
++            &amp;tempdir_filter(
++                Url::from_file_path(project_dir.as_std_path())
++                    .map_err(|()| anyhow!(&quot;Failed to convert root directory to url&quot;))?
++                    .path(),
++            ),
++            &quot;/&lt;temp_dir&gt;/&quot;,
++        );
+         settings.add_filter(r#&quot;\\(\w\w|\s|\.|&quot;)&quot;#, &quot;/$1&quot;);
+         settings.add_filter(
+             r#&quot;The system cannot find the file specified.&quot;#,
+@@ -865,6 +866,6 @@
+     }
+ }
+ 
+-fn tempdir_filter(path: &amp;SystemPath) -&gt; String {
+-    format!(r&quot;{}\\?/?&quot;, regex::escape(path.as_str()))
++fn tempdir_filter(path: impl AsRef&lt;str&gt;) -&gt; String {
++    format!(r&quot;{}\\?/?&quot;, regex::escape(path.as_ref()))
+ }
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/server.rs</code>:317 on 2025-07-22 14:43</div>
+            <div class="timeline-body"><p>I think I'd prefer if the tests were written as integration tests in the <code>tests</code> folder. See the <code>ty/cli/main.rs</code> for how to share code between integration tests. Unless this forces us to make many more types public that otherwise wouldn't have to be.</p>
+<p>My main thinking here is that these are integration tests and the <code>snapshots</code> folder is a bit distracting in the middle of rust modules (this could also be solved by specifying another path in the insta settings)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/test.rs</code>:809 on 2025-07-22 14:47</div>
+            <div class="timeline-body"><p>Nit: I was surprised that the insta scope is stored on <code>TestDir</code>. That's not where I would have looked for it.
+Maybe rename it to <code>TestScope</code> or <code>TestContext</code> to make it clear that it isn't the <code>TempDir</code> type (or a thin wrapper around it)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/test.rs</code>:229 on 2025-07-22 14:50</div>
+            <div class="timeline-body"><p>I see that <code>receive</code> panics if the server is disconnected. I think this is a problem, considering that <code>drain_messages</code> is called in <code>Drop</code>.</p>
+<p>I think we should propagate the <code>Disconnect</code> error from <code>receive</code> and explicitly handle it here (immediately exit the loop).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/test.rs</code>:229 on 2025-07-22 14:51</div>
+            <div class="timeline-body"><p>Should we log a warning or debug message for any of those unhandled errors?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/test.rs</code>:333 on 2025-07-22 15:01</div>
+            <div class="timeline-body"><p>Nit: Should we flip the order here: First try to get a response from <code>self.responses</code> and only call <code>self::Receive</code> if we haven't received such a response yet? That should help speed up tests because it avoids running into the <code>Timeout</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/test.rs</code>:372 on 2025-07-22 15:10</div>
+            <div class="timeline-body"><p>Same as for response. Should we flip the order here to only call <code>receive</code> if ty didn't find any notification matching the requested method.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/test.rs</code>:432 on 2025-07-22 15:16</div>
+            <div class="timeline-body"><p>Nit: We could try to poll more messages in the <code>Ok</code> case to ensure the channel is empty before returning. It could otherwise mean that <code>response</code> fails if there are 6 incoming messages and the expected response is the last one.</p>
+<pre><code class="language-suggestion">        Ok(message) =&gt; {
+            self.handle_message()?;
+
+            for message in self.client_connection.as_ref().unwrap.receiver.try_iter() {
+                ...
+            }
+        }
+</code></pre>
+<p>I see that this might be somewhat tricky due to borrowing. You might need to explicitly pass <code>requests</code>, <code>responses</code>, ... to <code>handle_message</code> to avoid the mutual borrow...</p>
+<p>Or, since this isn't performance sensitive. Collect all messages into a <code>Vec</code>, then iterate over the <code>Vec</code> and call <code>handle_message</code> for each (the only thing we need to be careful about with this approach is to not drop any messages)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/test.rs</code>:559 on 2025-07-22 15:20</div>
+            <div class="timeline-body"><p>I'm still leaning towards making <code>version</code> an argument here so that the test is in full control (and other requests that require a version) but happy to defer to you</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/test.rs</code>:645 on 2025-07-22 16:18</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        let shutdown_error = self
+            .server_thread
+            .and_then(|_| {
+                
+            });
+</code></pre>
+<p>Or use a normal <code>if ... else</code></p>
+<pre><code class="language-rust">let mut shutdown_error = None;
+
+if self.server_thread.is_some() {
+    let shutdown_id = self.send_request::&lt;Shutdown&gt;(());
+    match self.await_response::&lt;()&gt;(shutdown_id) {
+        Ok(()) =&gt; {
+            self.send_notification::&lt;Exit&gt;(());
+        }
+        Err(err) =&gt; {
+            shutdown_error = Some(format!(&quot;Failed to get shutdown response: {err:?}&quot;));
+        }
+    }
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-07-22 16:19</div>
+            <div class="timeline-body"><p>This is great. I've a few more inline suggestions</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/test.rs</code>:55 on 2025-07-23 04:50</div>
+            <div class="timeline-body"><p>Sounds reasonable, it's just that it will take up line spaces in CI because every test will add messages.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-07-23 04:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-07-23 04:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/server.rs</code>:317 on 2025-07-23 04:52</div>
+            <div class="timeline-body"><p>Yeah, I wanted this to be integration tests but it will require making <code>ClientOptions</code> and everything inside it as publicly available so that it can be used to specify workspace options in the test server.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-07-23 04:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/test.rs</code>:809 on 2025-07-23 04:53</div>
+            <div class="timeline-body"><p>Renamed it to <code>TestContext</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-07-23 05:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/test.rs</code>:229 on 2025-07-23 05:08</div>
+            <div class="timeline-body"><p>Made this change.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-07-23 05:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/test.rs</code>:559 on 2025-07-23 05:10</div>
+            <div class="timeline-body"><p>Yeah, I think that would be better, I've added the <code>version</code> parameter</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-07-23 05:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/test.rs</code>:432 on 2025-07-23 05:18</div>
+            <div class="timeline-body"><p>I think this is mostly achieved via <code>loop { ... }</code> in <code>await_response</code> and the retry logic in <code>await_notification</code> and <code>await_request</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-07-23 05:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/test.rs</code>:432 on 2025-07-23 05:47</div>
+            <div class="timeline-body"><p>It is in <code>await_response</code> because it loops forever (is this intentional?). It isn't fully for <code>await_notification</code> and <code>await_request</code> where more than 5 incoming messages (e.g. 5 incoming responses) would result in <code>receive_request</code> returning an <code>Err</code> even if it would only need to pull one more time.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-07-23 05:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/test.rs</code>:427 on 2025-07-23 05:48</div>
+            <div class="timeline-body"><p>You may want to <code>Box</code> <code>TestServerError</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-07-23 05:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/test.rs</code>:55 on 2025-07-23 05:50</div>
+            <div class="timeline-body"><p>Doesn't <code>cargo nextest</code> and <code>cargo test</code> capture the output of successful tests by default and only print the output of failing tests?</p>
+<p>If this is indeed a problem, then I suggest that test authors have to call <code>setup_tracing</code> if they want to see logs in their test. Because using <code>INFO</code> doesn't fully solve the CI problem but it's also not detailed enough to be very useful</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-07-23 06:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/test.rs</code>:55 on 2025-07-23 06:16</div>
+            <div class="timeline-body"><p>Oh, you're right. The way I run test (via rust-analyzer) it passes the <code>--show-output</code> flag which is why I've been seeing those trace logs for every tests. I'll change the log level to debug.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/test.rs</code>:432 on 2025-07-23 06:21</div>
+            <div class="timeline-body"><p>This logic is directly borrowed from Starlark LSP test server. I'm not sure what's the best way to keep polling for more messages would be that's generic over requests, notifications and responses and also avoid waiting too long. I'd prefer we improve this logic iteratively as we add more tests. So, I'd leave this as is for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-07-23 06:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-07-23 06:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/test.rs</code>:333 on 2025-07-23 06:22</div>
+            <div class="timeline-body"><p>This sounds reasonable, I've made this change.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-07-23 06:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/test.rs</code>:432 on 2025-07-23 06:32</div>
+            <div class="timeline-body"><p>Fair enough. My suggestion above should give a pretty good experience as it pulls all available messages. The retry logic is then only necessary in cases where we run into a timeout:</p>
+<pre><code class="language-patch">Index: crates/ty_server/src/test.rs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+&lt;+&gt;UTF-8
+===================================================================
+diff --git a/crates/ty_server/src/test.rs b/crates/ty_server/src/test.rs
+--- a/crates/ty_server/src/test.rs	(revision 07e2747a21e17da81ff3c9433e27721bb8a9d61e)
++++ b/crates/ty_server/src/test.rs	(date 1753252303307)
+@@ -35,6 +35,7 @@
+     WorkspaceClientCapabilities, WorkspaceFolder,
+ };
+ use ruff_db::system::{OsSystem, SystemPath, SystemPathBuf, TestSystem};
++use rustc_hash::FxHashMap;
+ use serde::de::DeserializeOwned;
+ use tempfile::TempDir;
+ 
+@@ -105,7 +106,7 @@
+     version_counter: i32,
+ 
+     /// A mapping of request IDs to responses received from the server
+-    responses: HashMap&lt;RequestId, Response&gt;,
++    responses: FxHashMap&lt;RequestId, Response&gt;,
+ 
+     /// An ordered queue of all the notifications received from the server
+     notifications: VecDeque&lt;lsp_server::Notification&gt;,
+@@ -422,14 +423,18 @@
+     fn receive(&amp;mut self, timeout: Option&lt;Duration&gt;) -&gt; Result&lt;(), TestServerError&gt; {
+         static DEFAULT_TIMEOUT: Duration = Duration::from_secs(1);
+ 
+-        match self
+-            .client_connection
+-            .as_ref()
+-            .unwrap()
+-            .receiver
+-            .recv_timeout(timeout.unwrap_or(DEFAULT_TIMEOUT))
+-        {
+-            Ok(message) =&gt; self.handle_message(message),
++        let receiver = self.client_connection.as_ref().unwrap().receiver.clone();
++
++        match receiver.recv_timeout(timeout.unwrap_or(DEFAULT_TIMEOUT)) {
++            Ok(message) =&gt; {
++                self.handle_message(message)?;
++
++				 // drain all other available messages without waiting
++                for message in receiver.try_iter() {
++                    self.handle_message(message)?;
++                }
++
++                Ok(())
++            }
+             Err(RecvTimeoutError::Timeout) =&gt; Err(TestServerError::RecvTimeoutError),
+             Err(RecvTimeoutError::Disconnected) =&gt; {
+                 self.panic_on_server_disconnect();
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/server.rs</code>:317 on 2025-07-23 06:34</div>
+            <div class="timeline-body"><p>I see. I don't think I would mind this overly much but maybe worth a separate PR so that it's clear what we need to make public</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-07-23 06:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2025-07-23 06:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2025-07-23 06:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-07-23 06:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-07-24 05:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/server.rs</code>:326 on 2025-07-24 05:24</div>
+            <div class="timeline-body"><p>I settled on using a temp directory instead.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-07-24 05:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/logging.rs</code>:18 on 2025-07-24 05:25</div>
+            <div class="timeline-body"><p>This was reverted and the tracing subscriber is registered only once during tests via the <code>setup_tracing</code> in <code>test.rs</code>.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:58:39 UTC
+    </footer>
+</body>
+</html>
