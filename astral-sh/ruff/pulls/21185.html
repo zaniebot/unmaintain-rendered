@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adjust own-line comment placement between branches - astral-sh/ruff #21185</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Adjust own-line comment placement between branches</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21185">#21185</a>
+        opened by <a href="https://github.com/dylwil3">@dylwil3</a>
+        on 2025-11-01 16:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-11-01 16:10</div>
+            <div class="timeline-body"><p>This PR attempts to improve the placement of own-line comments between branches in the setting where the comment is more indented than the preceding node.</p>
+<p>There are two main changes.</p>
+<h3>First change: Preceding node has leading content</h3>
+<p>If the preceding node has leading content, we now regard the comment as automatically <em>less</em> indented than the preceding node, and format accordingly.</p>
+<p>For example,</p>
+<pre><code class="language-python">if True: preceding_node
+# leading on `else`, not trailing on `preceding_node`
+else: ...
+</code></pre>
+<p>This is more compatible with <code>black</code>, although there is a (presumably very uncommon) edge case:</p>
+<pre><code class="language-python">if True:
+    this;that
+    # leading on `else`, but trailing in `black`
+else: ...
+</code></pre>
+<p>I'm sort of okay with this - presumably if one wanted a comment for those semi-colon separated statements, one should have put it <em>above</em> them, and one wanted a comment only for <code>that</code> then it ought to have been on the same line?</p>
+<h3>Second change: searching for last child in body</h3>
+<p>While searching for the (recursively) last child in the body of the preceding <em>branch</em>, we implicitly assumed that the preceding node had to have a body to begin the recursion. But actually, in the base case, the preceding node <em>is</em> the last child in the body of the preceding branch. So, for example:</p>
+<pre><code class="language-python">if True:
+    something
+    last_child_but_no_body
+    # leading on else for `main` but trailing in this PR
+else: ...
+</code></pre>
+<h3>More examples</h3>
+<p>The table below is an attempt to summarize the changes in behavior. The rows alternate between an example snippet with <code>while</code> and the same example with <code>if</code> - in the former case we do <em>not</em> have an <code>else</code> node and in the latter we do.</p>
+<p>Notice that:</p>
+<ol>
+<li>On <code>main</code> our handling of <code>if</code> vs. <code>while</code> is not consistent, whereas it is consistent in the present PR</li>
+<li>We disagree with <code>black</code> in all cases except that last example on <code>main</code>, but agree in all cases for the present PR (though see above for a wonky edge case where we disagree).</li>
+</ol>
+<table>
+<tr>
+<th>Original &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
+<th><code>main</code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
+<th>This PR&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
+<th><code>black</code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
+</tr>
+<tr>
+<td>
+
+<pre lang="python">
+while True: 
+    pass
+        # comment
+else:
+    pass
+</pre>
+
+</td>
+<td>
+
+<pre lang="python">
+while True:
+    pass
+else:
+    # comment
+    pass
+</pre>
+
+</td>
+<td>
+
+<pre lang="python">
+while True:
+    pass
+    # comment
+else:
+    pass
+</pre>
+
+</td>
+<td>
+
+<pre lang="python">
+while True:
+    pass
+    # comment
+else:
+    pass
+</pre>
+
+</td>
+</tr>
+<tr>
+<td>
+
+<pre lang="python">
+if True:
+    pass
+        # comment
+else:
+    pass
+</pre>
+
+</td>
+<td>
+
+<pre lang="python">
+if True:
+    pass
+# comment
+else:
+    pass
+</pre>
+
+</td>
+<td>
+
+<pre lang="python">
+if True:
+    pass
+    # comment
+else:
+    pass
+</pre>
+
+</td>
+<td>
+
+<pre lang="python">
+if True:
+    pass
+    # comment
+else:
+    pass
+</pre>
+
+</td>
+</tr>
+<tr>
+<td>
+
+<pre lang="python">
+while True: pass
+# comment
+else:
+    pass
+</pre>
+
+</td>
+<td>
+
+<pre lang="python">
+while True:
+    pass
+    # comment
+else:
+    pass
+</pre>
+
+</td>
+<td>
+
+<pre lang="python">
+while True:
+    pass
+# comment
+else:
+    pass
+</pre>
+
+</td>
+<td>
+
+<pre lang="python">
+while True:
+    pass
+# comment
+else:
+    pass
+</pre>
+
+</td>
+</tr>
+<tr>
+<td>
+
+<pre lang="python">
+if True: pass
+# comment
+else:
+    pass
+</pre>
+
+</td>
+<td>
+
+<pre lang="python">
+if True:
+    pass
+    # comment
+else:
+    pass
+</pre>
+
+</td>
+<td>
+
+<pre lang="python">
+if True:
+    pass
+# comment
+else:
+    pass
+</pre>
+
+</td>
+<td>
+
+<pre lang="python">
+if True:
+    pass
+# comment
+else:
+    pass
+</pre>
+
+</td>
+</tr>
+<tr>
+<td>
+
+<pre lang="python">
+while True: pass
+    # comment
+else:
+    pass
+</pre>
+
+</td>
+<td>
+
+<pre lang="python">
+while True:
+    pass
+else:
+    # comment
+    pass
+</pre>
+
+</td>
+<td>
+
+<pre lang="python">
+while True:
+    pass
+# comment
+else:
+    pass
+</pre>
+
+</td>
+<td>
+
+<pre lang="python">
+while True:
+    pass
+# comment
+else:
+    pass
+</pre>
+
+</td>
+</tr>
+<tr>
+<td>
+
+<pre lang="python">
+if True: pass
+    # comment
+else:
+    pass
+</pre>
+
+</td>
+<td>
+
+<pre lang="python">
+if True:
+    pass
+# comment
+else:
+    pass
+</pre>
+
+</td>
+<td>
+
+<pre lang="python">
+if True:
+    pass
+# comment
+else:
+    pass
+</pre>
+
+</td>
+<td>
+
+<pre lang="python">
+if True:
+    pass
+# comment
+else:
+    pass
+</pre>
+
+</td>
+</tr>
+</table>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @dylwil3 on 2025-11-01 16:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @dylwil3 on 2025-11-01 16:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-11-01 16:22</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Adjust comment placement before `else`/`finally` clauses" to "Adjust indented comment placement before `else`/`finally` clauses" by @dylwil3 on 2025-11-10 16:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dylwil3">@dylwil3</a> on <code>crates/ruff_python_formatter/src/comments/placement.rs</code>:580 on 2025-11-10 21:32</div>
+            <div class="timeline-body"><p>Note that <code>max_empty_lines</code> also uses a <code>SimpleTokenizer</code>. We could combine that into a single pass here, I think, but it would be less readable. Is it worth it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dylwil3">@dylwil3</a> reviewed on 2025-11-10 21:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @dylwil3 on 2025-11-10 21:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @dylwil3 on 2025-11-10 21:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-11-11 10:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/comments/placement.rs</code>:572 on 2025-11-11 10:54</div>
+            <div class="timeline-body"><p>Can you say more why we're handling this case here? I'd expect this to be handled by <code>handle_own_line_comment_between_branches</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Adjust indented comment placement before `else`/`finally` clauses" to "Adjust comment placement between branches" by @dylwil3 on 2025-11-11 16:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Adjust comment placement between branches" to "Adjust own-line comment placement between branches" by @dylwil3 on 2025-11-11 16:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dylwil3">@dylwil3</a> reviewed on 2025-11-11 16:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dylwil3">@dylwil3</a> on <code>crates/ruff_python_formatter/src/comments/placement.rs</code>:572 on 2025-11-11 16:53</div>
+            <div class="timeline-body"><p>After our offline discussion I've tried a hopefully more reasonable spot in the logic for the fix</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/comments/placement.rs</code>:626 on 2025-11-11 18:01</div>
+            <div class="timeline-body"><p>What's the <code>+1</code> for? I like to use <code>char.text_len</code>() (e.g. <code>' '.text_len()</code>) to more clearly what character we're skipping.</p>
+<p>Is it important what value we use for <code>comment_indentation</code> or can it be any value for as long as it is larger than <code>comment_indentation</code> (so that we hit the <code>Less</code> case?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/tests/snapshots/format@statement__while.py.snap</code>:39 on 2025-11-11 18:04</div>
+            <div class="timeline-body"><p>I often find it useful to number the comments. It makes it easier to match the input/output (and debug panics if we forgot to format a comment)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/comments/placement.rs</code>:726 on 2025-11-11 18:08</div>
+            <div class="timeline-body"><p>This seems risky. There isn't really anything enforcing that we're within a block statement. I think we, at least, want to assert that the enclosing node is a block statement.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> requested changes on 2025-11-11 18:10</div>
+            <div class="timeline-body"><p>This looks much better to me and it's nice that this matches black in almost all cases.</p>
+<p>However, there are a couple of tests that now fail because of instable formatting (the invariant <code>format(source) == format(format(source))</code> doesn't hold anymore). I think it's because the fallback to <code>preceding</code> is too liberal.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dylwil3">@dylwil3</a> reviewed on 2025-11-11 20:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dylwil3">@dylwil3</a> on <code>crates/ruff_python_formatter/tests/snapshots/format@statement__while.py.snap</code>:39 on 2025-11-11 20:43</div>
+            <div class="timeline-body"><p>Here I didn't do that because there is only one comment in each example - do you want me to the number them across the whole fixture? Among these examples? Or just make them all <code>#1</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dylwil3">@dylwil3</a> reviewed on 2025-11-11 20:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dylwil3">@dylwil3</a> on <code>crates/ruff_python_formatter/src/comments/placement.rs</code>:626 on 2025-11-11 20:44</div>
+            <div class="timeline-body"><p>We are just trying to hit the <code>Less</code> case - it can be any positive number. I've clarified with a comment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-11-12 00:25</div>
+            <div class="timeline-body"><p>Sorry about the failing tests! I made the beginner mistake of running tests, fixing snapshots, but then not re-running tests after that. Whoops!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @dylwil3 on 2025-11-14 18:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/comments/placement.rs</code>:743 on 2025-11-15 18:13</div>
+            <div class="timeline-body"><p>Could we use <code>if following.is_first_statement_in_body()</code> or even <code>is_first_statement_in_alternate_body</code></p>
+<p>I'm surprised that we need <code>MatchCase</code> and <code>ExceptHandler</code> here, as those nodes don't have alternate branches? How did you pick the nodes listed here? Did you add tests demonstrating that they're all necessary?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/tests/snapshots/format@statement__while.py.snap</code>:39 on 2025-11-15 18:16</div>
+            <div class="timeline-body"><p>I would give them unique numbers within the <code># Compare behavior with </code>while<code>/</code>else<code> comment placement</code> section</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-11-15 18:22</div>
+            <div class="timeline-body"><p>Thank you. This overall looks good. I just don't feel 100 confident about the new <code>Non</code> if <code>matches</code> case. Did you pick them individually or did you list all compound statements just to be sure? If it's the latter, than I'd prefer to only pick the once that are indeed necessary.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dylwil3">@dylwil3</a> reviewed on 2025-11-17 13:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dylwil3">@dylwil3</a> on <code>crates/ruff_python_formatter/src/comments/placement.rs</code>:743 on 2025-11-17 13:20</div>
+            <div class="timeline-body"><p>Yes, sorry - I added all of those because that was my interpretation of</p>
+<blockquote>
+<p>There isn't really anything enforcing that we're within a block statement. I think we, at least, want to assert that the enclosing node is a block statement.</p>
+</blockquote>
+<p>But you're right that <code>is_first_statement_in_alternate_body</code> is more targeted, so I've changed it to that, thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dylwil3 on 2025-11-17 13:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dylwil3 on 2025-11-17 13:30</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:48:27 UTC
+    </footer>
+</body>
+</html>

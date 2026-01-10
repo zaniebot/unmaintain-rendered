@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Don't confuse multiple occurrences of `typing.Self` when binding bound methods - astral-sh/ruff #21754</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Don't confuse multiple occurrences of <code>typing.Self</code> when binding bound methods</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21754">#21754</a>
+        opened by <a href="https://github.com/dcreager">@dcreager</a>
+        on 2025-12-02 16:00
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dcreager">@dcreager</a> on 2025-12-02 16:00</div>
+            <div class="timeline-body"><p>In the following example, there are two occurrences of <code>typing.Self</code>, one for <code>Foo.foo</code> and one for <code>Bar.bar</code>:</p>
+<pre><code class="language-py">from typing import Self, reveal_type
+
+class Foo[T]:
+    def foo(self: Self) -&gt; T:
+        raise NotImplementedError
+
+class Bar:
+    def bar(self: Self, x: Foo[Self]):
+        # SHOULD BE: bound method Foo[Self@bar].foo() -&gt; Self@bar
+        # revealed: bound method Foo[Self@bar].foo() -&gt; Foo[Self@bar]
+        reveal_type(x.foo)
+
+def f[U: Bar](x: Foo[U]):
+    # revealed: bound method Foo[U@f].foo() -&gt; U@f
+    reveal_type(x.foo)
+</code></pre>
+<p>When accessing a bound method, we replace any occurrences of <code>Self</code> with the bound <code>self</code> type.</p>
+<p>We were doing this correctly for the second reveal. We would first apply the specialization, getting <code>(self: Self@foo) -&gt; U@F</code> as the signature of <code>x.foo</code>. We would then bind the <code>self</code> parameter, substituting <code>Self@foo</code> with <code>Foo[U@F]</code> as part of that. The return type was already specialized to <code>U@F</code>, so that substitution had no further affect on the type that we revealed.</p>
+<p>In the first reveal, we would follow the same process, but we confused the two occurrences of <code>Self</code>. We would first apply the specialization, getting <code>(self: Self@foo) -&gt; Self@bar</code> as the method signature. We would then try to bind the <code>self</code> parameter, substituting <code>Self@foo</code> with <code>Foo[Self@bar]</code>. However, because we didn't distinguish the two separate <code>Self</code>s, and applied the substitution to the return type as well as to the <code>self</code> parameter.</p>
+<p>The fix is to track which particular <code>Self</code> we're trying to substitute when applying the type mapping.</p>
+<p>Fixes https://github.com/astral-sh/ty/issues/1713</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @dcreager on 2025-12-02 16:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @dcreager on 2025-12-02 16:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @dcreager on 2025-12-02 16:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @dcreager on 2025-12-02 16:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-12-02 16:03</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-12-02 16:05</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">antidote (https://github.com/Finistere/antidote)
+- src/antidote/core/_raw/onion.py:417:9: error[invalid-assignment] Object of type `ReferenceType[Self@add_child]` is not assignable to attribute `__parent_ref` of type `Function[Unknown, CatalogOnionLayerImpl | None]`
+- Found 286 diagnostics
++ Found 285 diagnostics
+
+scikit-build-core (https://github.com/scikit-build/scikit-build-core)
+- src/scikit_build_core/_logging.py:153:13: warning[unsupported-base] Unsupported class base with type `&lt;class 'Mapping[str, Style]'&gt; | &lt;class 'Mapping[str, Divergent]'&gt;`
++ src/scikit_build_core/build/_pathutil.py:25:38: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `str | PathLike[str]`, found `DirEntry[Path]`
++ src/scikit_build_core/build/_pathutil.py:27:24: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `str | PathLike[str]`, found `DirEntry[Path]`
++ src/scikit_build_core/build/wheel.py:98:20: error[no-matching-overload] No overload of bound method `__init__` matches arguments
+- Found 42 diagnostics
++ Found 44 diagnostics
+
+pandas (https://github.com/pandas-dev/pandas)
+- pandas/core/indexes/base.py:6464:16: error[no-matching-overload] No overload of bound method `__init__` matches arguments
+- Found 3792 diagnostics
++ Found 3791 diagnostics
+
+pandas-stubs (https://github.com/pandas-dev/pandas-stubs)
+- pandas-stubs/_typing.pyi:1207:16: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 5815 diagnostics
++ Found 5814 diagnostics
+
+
+</code></pre>
+</details>
+
+<p>No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> approved on 2025-12-02 16:15</div>
+            <div class="timeline-body"><p>Nice!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dcreager on 2025-12-02 18:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dcreager on 2025-12-02 18:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-12-02 18:15</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:48:28 UTC
+    </footer>
+</body>
+</html>

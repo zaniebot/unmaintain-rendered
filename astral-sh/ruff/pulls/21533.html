@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Implement goto-type for inlay type hints - astral-sh/ruff #21533</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Implement goto-type for inlay type hints</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21533">#21533</a>
+        opened by <a href="https://github.com/Gankra">@Gankra</a>
+        on 2025-11-20 05:07
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/Gankra">@Gankra</a> on 2025-11-20 05:07</div>
+            <div class="timeline-body"><p>This PR generalizes the signature_help system's SignatureWriter which could get the subspans of function parameters.
+We now have TypeDetailsWriter which is threaded between type's display implementations via a new <code>fmt_detailed</code> method that many of the Display types now have.</p>
+<p>With this information we can properly add goto-type targets to our inlay hints. This also lays groundwork for any future &quot;I want to render a type but get spans&quot; work.</p>
+<p>Also a ton of lifetimes are introduced to avoid things getting conflated with <code>'db</code>.</p>
+<p>This PR is broken up into a series of commits:</p>
+<ul>
+<li>Generalizing <code>SignatureWriter</code> to <code>TypeDetailsWriter</code>, but not using it anywhere else. This commit was confirmed to be a non-functional change (no test results changed)</li>
+<li>Introducing <code>fmt_detailed</code> everywhere to thread through <code>TypeDetailsWriter</code> and annotate various spans as &quot;being&quot; a given Type -- this is also where I had to reckon with a ton of erroneous <code>&amp;'db self</code>. This commit was also confirmed to be a non-functional change.</li>
+<li>Finally, actually using the results for goto-type on inlay hints!</li>
+<li>Regenerating snapshots, fixups, etc.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @Gankra on 2025-11-20 05:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @Gankra on 2025-11-20 05:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @Gankra on 2025-11-20 05:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @Gankra on 2025-11-20 05:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @Gankra on 2025-11-20 05:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @Gankra on 2025-11-20 05:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @Gankra on 2025-11-20 05:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-11-20 05:08</div>
+            <div class="timeline-body"><p>Have had this bee in my bonnet all week the IDE feels SO much better with these being clickable!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-11-20 05:09</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/ty_python_semantic/src/types/display.rs</code>:566 on 2025-11-20 05:10</div>
+            <div class="timeline-body"><p>This is the single-most important type span we introduce, since it's nearly every nominal type's name.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-11-20 05:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-11-20 05:11</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">scikit-build-core (https://github.com/scikit-build/scikit-build-core)
+- src/scikit_build_core/build/wheel.py:98:20: error[no-matching-overload] No overload of bound method `__init__` matches arguments
+- Found 44 diagnostics
++ Found 43 diagnostics
+
+
+</code></pre>
+</details>
+
+<p>No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-11-20 05:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/ty_python_semantic/src/types/display.rs</code>:690 on 2025-11-20 05:12</div>
+            <div class="timeline-body"><p>With apologies to <code>join</code> enjoyers but I had to hand-roll this gunk everywhere to invoke fmt_detailed</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-11-20 05:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/ty_python_semantic/src/types/display.rs</code>:722 on 2025-11-20 05:13</div>
+            <div class="timeline-body"><p>A lot of the PR is me breaking up a nice pretty <code>write!</code> into individual parts to invoke <code>fmt_detailed</code> where appropriate.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-11-20 05:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/ty_python_semantic/src/types/display.rs</code>:910 on 2025-11-20 05:14</div>
+            <div class="timeline-body"><p>Deconflating these lifetimes was unfortunately loadbearing. I had to do that a lot.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-11-20 05:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/ty_python_semantic/src/types/display.rs</code>:1495 on 2025-11-20 05:16</div>
+            <div class="timeline-body"><p>An incredible victory for not wanting to have to reverse-engineer what parameters belong to nested signatures.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_ide/src/inlay_hints.rs</code>:886 on 2025-11-20 08:25</div>
+            <div class="timeline-body"><p>I find the tests here confusing where there's no inlay. Aren't those inlays that are hidden? Why do we render the inlay hint targets for those? I think we should omit those from the tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types/display.rs</code>:283 on 2025-11-20 08:29</div>
+            <div class="timeline-body"><p>Should we bail early if <code>std::thread::panicking</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types/display.rs</code>:236 on 2025-11-20 08:30</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">            &amp;&amp; let Ok(end) = details.label.text_len()
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types/display.rs</code>:227 on 2025-11-20 08:31</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    start: Option&lt;TextSize&gt;,
+</code></pre>
+<p>Seems better to error early rather than silently skipping if <code>TextSize::try_from</code> fails in the <code>Drop</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types/display.rs</code>:690 on 2025-11-20 08:33</div>
+            <div class="timeline-body"><p>You could introduce a <code>FmtDetailed</code> or <code>DisplayDetailed</code> trait and then preserve the existing formatting, making the overall code more like <code>Display</code> and <code>Debug</code></p>
+<pre><code class="language-patch">Index: crates/ty_python_semantic/src/types/display.rs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+&lt;+&gt;UTF-8
+===================================================================
+diff --git a/crates/ty_python_semantic/src/types/display.rs b/crates/ty_python_semantic/src/types/display.rs
+--- a/crates/ty_python_semantic/src/types/display.rs	(revision 13fecff48afe8065b05e012e7f0cc5301bd244c4)
++++ b/crates/ty_python_semantic/src/types/display.rs	(date 1763628882673)
+@@ -190,7 +190,17 @@
+             payload: Some(detail),
+         }
+     }
++
++    fn join&lt;'c&gt;(&amp;'c mut self, separator: &amp;'static str) -&gt; Join&lt;'a, 'b, 'c, 'db&gt; {
++        Join {
++            fmt: self,
++            separator,
++            result: Ok(()),
++            seen_first: false,
++        }
++    }
+ }
++
+ impl std::fmt::Write for TypeWriter&lt;'_, '_, '_&gt; {
+     fn write_str(&amp;mut self, val: &amp;str) -&gt; fmt::Result {
+         match self {
+@@ -205,6 +215,46 @@
+     }
+ }
+ 
++trait FmtDetailed&lt;'db&gt; {
++    fn fmt_detailed(&amp;self, f: &amp;mut TypeWriter&lt;'_, '_, 'db&gt;) -&gt; fmt::Result;
++}
++
++struct Join&lt;'a, 'b, 'c, 'db&gt; {
++    fmt: &amp;'c mut TypeWriter&lt;'a, 'b, 'db&gt;,
++    separator: &amp;'static str,
++    result: fmt::Result,
++    seen_first: bool,
++}
++
++impl&lt;'db&gt; Join&lt;'_, '_, '_, 'db&gt; {
++    fn entry(&amp;mut self, item: &amp;dyn FmtDetailed&lt;'db&gt;) -&gt; &amp;mut Self {
++        if self.seen_first {
++            self.result = self
++                .result
++                .and_then(|()| self.fmt.write_str(self.separator));
++        } else {
++            self.seen_first = true;
++        }
++        self.result = self.result.and_then(|()| item.fmt_detailed(self.fmt));
++        self
++    }
++
++    fn entries&lt;I, F&gt;(&amp;mut self, items: I) -&gt; &amp;mut Self
++    where
++        I: IntoIterator&lt;Item = F&gt;,
++        F: FmtDetailed&lt;'db&gt;,
++    {
++        for item in items {
++            self.entry(&amp;item);
++        }
++        self
++    }
++
++    fn finish(&amp;mut self) -&gt; fmt::Result {
++        self.result
++    }
++}
++
+ pub enum TypeDetail&lt;'db&gt; {
+     /// Dummy item to indicate a function signature's parameters have started
+     SignatureStart,
+@@ -412,7 +462,9 @@
+             TypeWriter::Formatter(_) =&gt; unreachable!(&quot;Expected Details variant&quot;),
+         }
+     }
++}
+ 
++impl&lt;'db&gt; FmtDetailed&lt;'db&gt; for DisplayType&lt;'db&gt; {
+     fn fmt_detailed(&amp;self, f: &amp;mut TypeWriter&lt;'_, '_, 'db&gt;) -&gt; fmt::Result {
+         let representation = self.ty.representation(self.db, self.settings.clone());
+         match self.ty {
+@@ -504,7 +556,7 @@
+     settings: DisplaySettings&lt;'db&gt;,
+ }
+ 
+-impl&lt;'db&gt; ClassDisplay&lt;'db&gt; {
++impl&lt;'db&gt; FmtDetailed&lt;'db&gt; for ClassDisplay&lt;'db&gt; {
+     fn fmt_detailed(&amp;self, f: &amp;mut TypeWriter&lt;'_, '_, 'db&gt;) -&gt; fmt::Result {
+         let qualification_level = self.settings.qualified.get(&amp;**self.class.name(self.db));
+         if qualification_level.is_some() {
+@@ -556,7 +608,7 @@
+     }
+ }
+ 
+-impl&lt;'db&gt; DisplayRepresentation&lt;'db&gt; {
++impl&lt;'db&gt; FmtDetailed&lt;'db&gt; for DisplayRepresentation&lt;'db&gt; {
+     fn fmt_detailed(&amp;self, f: &amp;mut TypeWriter&lt;'_, '_, 'db&gt;) -&gt; fmt::Result {
+         match self.ty {
+             Type::Dynamic(dynamic) =&gt; write!(f, &quot;{dynamic}&quot;),
+@@ -678,17 +730,15 @@
+                             f.write_str(&quot;Overload[&quot;)?;
+                         }
+                         let separator = if self.settings.multiline { &quot;\n&quot; } else { &quot;, &quot; };
+-                        let mut is_first = true;
++                        let mut join = f.join(separator);
+                         for signature in signatures {
+-                            if !is_first {
+-                                f.write_str(separator)?;
+-                            }
+-                            is_first = false;
+-                            signature
+-                                .bind_self(self.db, Some(typing_self_ty))
+-                                .display_with(self.db, self.settings.clone())
+-                                .fmt_detailed(f)?;
++                            join.entry(
++                                &amp;signature
++                                    .bind_self(self.db, Some(typing_self_ty))
++                                    .display_with(self.db, self.settings.clone()),
++                            );
+                         }
++                        join.finish()?;
+                         if !self.settings.multiline {
+                             f.write_str(&quot;]&quot;)?;
+                         }
+@@ -875,7 +925,7 @@
+     settings: DisplaySettings&lt;'db&gt;,
+ }
+ 
+-impl&lt;'db&gt; DisplayTuple&lt;'_, 'db&gt; {
++impl&lt;'db&gt; FmtDetailed&lt;'db&gt; for DisplayTuple&lt;'_, 'db&gt; {
+     fn fmt_detailed(&amp;self, f: &amp;mut TypeWriter&lt;'_, '_, 'db&gt;) -&gt; fmt::Result {
+         f.write_str(&quot;tuple[&quot;)?;
+         match self.tuple {
+@@ -968,7 +1018,7 @@
+     settings: DisplaySettings&lt;'db&gt;,
+ }
+ 
+-impl&lt;'db&gt; DisplayOverloadLiteral&lt;'db&gt; {
++impl&lt;'db&gt; FmtDetailed&lt;'db&gt; for DisplayOverloadLiteral&lt;'db&gt; {
+     fn fmt_detailed(&amp;self, f: &amp;mut TypeWriter&lt;'_, '_, 'db&gt;) -&gt; fmt::Result {
+         let signature = self.literal.signature(self.db);
+         let type_parameters = DisplayOptionalGenericContext {
+@@ -1012,7 +1062,7 @@
+     settings: DisplaySettings&lt;'db&gt;,
+ }
+ 
+-impl&lt;'db&gt; DisplayFunctionType&lt;'db&gt; {
++impl&lt;'db&gt; FmtDetailed&lt;'db&gt; for DisplayFunctionType&lt;'db&gt; {
+     fn fmt_detailed(&amp;self, f: &amp;mut TypeWriter&lt;'_, '_, 'db&gt;) -&gt; fmt::Result {
+         let signature = self.ty.signature(self.db);
+ 
+@@ -1088,7 +1138,7 @@
+     settings: DisplaySettings&lt;'db&gt;,
+ }
+ 
+-impl&lt;'db&gt; DisplayGenericAlias&lt;'db&gt; {
++impl&lt;'db&gt; FmtDetailed&lt;'db&gt; for DisplayGenericAlias&lt;'db&gt; {
+     fn fmt_detailed(&amp;self, f: &amp;mut TypeWriter&lt;'_, '_, 'db&gt;) -&gt; fmt::Result {
+         if let Some(tuple) = self.specialization.tuple(self.db) {
+             tuple
+@@ -1160,7 +1210,7 @@
+     settings: DisplaySettings&lt;'db&gt;,
+ }
+ 
+-impl&lt;'db&gt; DisplayOptionalGenericContext&lt;'_, 'db&gt; {
++impl&lt;'db&gt; FmtDetailed&lt;'db&gt; for DisplayOptionalGenericContext&lt;'_, 'db&gt; {
+     fn fmt_detailed(&amp;self, f: &amp;mut TypeWriter&lt;'_, '_, 'db&gt;) -&gt; fmt::Result {
+         if let Some(generic_context) = self.generic_context {
+             generic_context
+@@ -1187,14 +1237,6 @@
+ }
+ 
+ impl&lt;'db&gt; DisplayGenericContext&lt;'_, 'db&gt; {
+-    fn fmt_detailed(&amp;self, f: &amp;mut TypeWriter&lt;'_, '_, 'db&gt;) -&gt; fmt::Result {
+-        if self.full {
+-            self.fmt_full(f)
+-        } else {
+-            self.fmt_normal(f)
+-        }
+-    }
+-
+     fn fmt_normal(&amp;self, f: &amp;mut TypeWriter&lt;'_, '_, 'db&gt;) -&gt; fmt::Result {
+         let variables = self.generic_context.variables(self.db);
+ 
+@@ -1229,6 +1271,16 @@
+     }
+ }
+ 
++impl&lt;'db&gt; FmtDetailed&lt;'db&gt; for DisplayGenericContext&lt;'_, 'db&gt; {
++    fn fmt_detailed(&amp;self, f: &amp;mut TypeWriter&lt;'_, '_, 'db&gt;) -&gt; fmt::Result {
++        if self.full {
++            self.fmt_full(f)
++        } else {
++            self.fmt_normal(f)
++        }
++    }
++}
++
+ impl Display for DisplayGenericContext&lt;'_, '_&gt; {
+     fn fmt(&amp;self, f: &amp;mut Formatter&lt;'_&gt;) -&gt; fmt::Result {
+         self.fmt_detailed(&amp;mut TypeWriter::Formatter(f))
+@@ -1276,14 +1328,6 @@
+ }
+ 
+ impl&lt;'db&gt; DisplaySpecialization&lt;'db&gt; {
+-    fn fmt_detailed(&amp;self, f: &amp;mut TypeWriter&lt;'_, '_, 'db&gt;) -&gt; fmt::Result {
+-        if self.full {
+-            self.fmt_full(f)
+-        } else {
+-            self.fmt_normal(f)
+-        }
+-    }
+-
+     fn fmt_normal(&amp;self, f: &amp;mut TypeWriter&lt;'_, '_, 'db&gt;) -&gt; fmt::Result {
+         f.write_char('[')?;
+         let types = self.specialization.types(self.db);
+@@ -1320,6 +1364,16 @@
+     }
+ }
+ 
++impl&lt;'db&gt; FmtDetailed&lt;'db&gt; for DisplaySpecialization&lt;'db&gt; {
++    fn fmt_detailed(&amp;self, f: &amp;mut TypeWriter&lt;'_, '_, 'db&gt;) -&gt; fmt::Result {
++        if self.full {
++            self.fmt_full(f)
++        } else {
++            self.fmt_normal(f)
++        }
++    }
++}
++
+ impl Display for DisplaySpecialization&lt;'_&gt; {
+     fn fmt(&amp;self, f: &amp;mut Formatter&lt;'_&gt;) -&gt; fmt::Result {
+         self.fmt_detailed(&amp;mut TypeWriter::Formatter(f))
+@@ -1370,7 +1424,7 @@
+     settings: DisplaySettings&lt;'db&gt;,
+ }
+ 
+-impl&lt;'db&gt; DisplayCallableType&lt;'_, 'db&gt; {
++impl&lt;'db&gt; FmtDetailed&lt;'db&gt; for DisplayCallableType&lt;'_, 'db&gt; {
+     fn fmt_detailed(&amp;self, f: &amp;mut TypeWriter&lt;'_, '_, 'db&gt;) -&gt; fmt::Result {
+         match self.signatures.overloads.as_slice() {
+             [signature] =&gt; signature
+@@ -1444,7 +1498,9 @@
+             TypeWriter::Formatter(_) =&gt; unreachable!(&quot;Expected Details variant&quot;),
+         }
+     }
++}
+ 
++impl&lt;'db&gt; FmtDetailed&lt;'db&gt; for DisplaySignature&lt;'_, 'db&gt; {
+     fn fmt_detailed(&amp;self, f: &amp;mut TypeWriter&lt;'_, '_, 'db&gt;) -&gt; fmt::Result {
+         // Immediately write a marker signaling we're starting a signature
+         let _ = f.with_detail(TypeDetail::SignatureStart);
+@@ -1564,7 +1620,7 @@
+     settings: DisplaySettings&lt;'db&gt;,
+ }
+ 
+-impl&lt;'db&gt; DisplayParameter&lt;'_, 'db&gt; {
++impl&lt;'db&gt; FmtDetailed&lt;'db&gt; for DisplayParameter&lt;'_, 'db&gt; {
+     fn fmt_detailed(&amp;self, f: &amp;mut TypeWriter&lt;'_, '_, 'db&gt;) -&gt; fmt::Result {
+         if let Some(name) = self.param.display_name() {
+             f.write_str(&amp;name)?;
+@@ -1666,7 +1722,7 @@
+     max_when_elided: 3,
+ };
+ 
+-impl&lt;'db&gt; DisplayUnionType&lt;'_, 'db&gt; {
++impl&lt;'db&gt; FmtDetailed&lt;'db&gt; for DisplayUnionType&lt;'_, 'db&gt; {
+     fn fmt_detailed(&amp;self, f: &amp;mut TypeWriter&lt;'_, '_, 'db&gt;) -&gt; fmt::Result {
+         fn is_condensable(ty: Type&lt;'_&gt;) -&gt; bool {
+             matches!(
+@@ -1832,7 +1888,7 @@
+     settings: DisplaySettings&lt;'db&gt;,
+ }
+ 
+-impl&lt;'db&gt; DisplayIntersectionType&lt;'_, 'db&gt; {
++impl&lt;'db&gt; FmtDetailed&lt;'db&gt; for DisplayIntersectionType&lt;'_, 'db&gt; {
+     fn fmt_detailed(&amp;self, f: &amp;mut TypeWriter&lt;'_, '_, 'db&gt;) -&gt; fmt::Result {
+         let tys = self
+             .ty
+@@ -1887,7 +1943,7 @@
+     settings: DisplaySettings&lt;'db&gt;,
+ }
+ 
+-impl&lt;'db&gt; DisplayMaybeNegatedType&lt;'db&gt; {
++impl&lt;'db&gt; FmtDetailed&lt;'db&gt; for DisplayMaybeNegatedType&lt;'db&gt; {
+     fn fmt_detailed(&amp;self, f: &amp;mut TypeWriter&lt;'_, '_, 'db&gt;) -&gt; fmt::Result {
+         if self.negated {
+             f.write_str(&quot;~&quot;)?;
+@@ -1913,7 +1969,7 @@
+     settings: DisplaySettings&lt;'db&gt;,
+ }
+ 
+-impl&lt;'db&gt; DisplayMaybeParenthesizedType&lt;'db&gt; {
++impl&lt;'db&gt; FmtDetailed&lt;'db&gt; for DisplayMaybeParenthesizedType&lt;'db&gt; {
+     fn fmt_detailed(&amp;self, f: &amp;mut TypeWriter&lt;'_, '_, 'db&gt;) -&gt; fmt::Result {
+         let write_parentheses = |f: &amp;mut TypeWriter&lt;'_, '_, 'db&gt;| {
+             f.write_char('(')?;
+@@ -2001,7 +2057,7 @@
+     settings: DisplaySettings&lt;'db&gt;,
+ }
+ 
+-impl&lt;'db&gt; DisplayTypeArray&lt;'_, 'db&gt; {
++impl&lt;'db&gt; FmtDetailed&lt;'db&gt; for DisplayTypeArray&lt;'_, 'db&gt; {
+     fn fmt_detailed(&amp;self, f: &amp;mut TypeWriter&lt;'_, '_, 'db&gt;) -&gt; fmt::Result {
+         let mut is_first = true;
+         for ty in self.types {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-11-20 09:09</div>
+            <div class="timeline-body"><p>The implementation looks good to me. I've one suggestion that should help to reduce the necessary changes because of <code>Join</code>.</p>
+<p>I do find the test very confusing as we now see go to targets in places where we don't show any inlay hints. I think we should change this before landing this PR</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/display.rs</code>:473 on 2025-11-20 12:51</div>
+            <div class="timeline-body"><p>It would be cool if we could also have goto-definition for the <code>Literal</code> part of e.g. <code>Literal[42]</code>. We don't have any documentation for <code>typing.Literal</code> in our vendored typeshed stubs right now (because we currently only add docstrings for classes, functions and modules), but it would be nice to add that capability to docstring-adder at some point. Then when you goto definition for <a href="https://github.com/astral-sh/ruff/blob/02c102da885922906aa57a0468fde909cbbd2ba4/crates/ty_vendored/vendor/typeshed/stdlib/typing.pyi#L351">the symbol <code>Literal</code></a> you'd see all of this lovely explanation in the stub file to tell you how <code>Literal</code> types work (this is the docstring for the symbol at runtime):</p>
+<pre><code>% uvx python -m pydoc typing.Literal   
+Help on _TypedCacheSpecialForm in typing:
+
+typing.Literal = typing.Literal
+    Special typing form to define literal types (a.k.a. value types).
+
+    This form can be used to indicate to type checkers that the corresponding
+    variable or function parameter has a value equivalent to the provided
+    literal (or one of several literals)::
+
+        def validate_simple(data: Any) -&gt; Literal[True]:  # always returns True
+            ...
+
+        MODE = Literal['r', 'rb', 'w', 'wb']
+        def open_helper(file: str, mode: MODE) -&gt; str:
+            ...
+
+        open_helper('/some/path', 'r')  # Passes type check
+        open_helper('/other/path', 'typo')  # Error in type checker
+
+    Literal[...] cannot be subclassed. At runtime, an arbitrary value
+    is allowed as type argument to Literal[...], but type checkers may
+    impose restrictions.
+</code></pre>
+<p>The symbol <code>typing.Literal</code> itself has type <code>Type::SpecialForm(SpecialFormType::Literal)</code> in our model, so would you do that like this?</p>
+<pre><code class="language-suggestion">                f.with_detail(TypeDetail::Type(Type::SpecialForm(SpecialFormType::Literal))).write_str(&quot;Literal&quot;)?;
+                f.write_char('[')?;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-11-20 13:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/ty_ide/src/inlay_hints.rs</code>:886 on 2025-11-20 13:37</div>
+            <div class="timeline-body"><p>Fixed (the test spans referenced the original doc and not the inlayed one)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-11-20 13:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/ty_python_semantic/src/types/display.rs</code>:283 on 2025-11-20 13:38</div>
+            <div class="timeline-body"><p>I don't think that's necessary?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_ide/src/inlay_hints.rs</code>:509 on 2025-11-20 13:45</div>
+            <div class="timeline-body"><p>Are those to be defined diagnostics?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-11-20 13:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-11-20 13:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_ide/src/inlay_hints.rs</code>:886 on 2025-11-20 13:47</div>
+            <div class="timeline-body"><p>Okay, that makes way more sense now :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/display.rs</code>:611 on 2025-11-20 13:50</div>
+            <div class="timeline-body"><p>if the type is <code>Type::Dynamic(DynamicType::Any)</code>, it would be cool if we could goto the definition for the <code>Any</code> symbol (with has type <code>Type::SpecialForm(SpecialFormType::Any)</code> in our model)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-11-20 13:55</div>
+            <div class="timeline-body"><p>Micha you're god damn incredible, the join impl Just Worked.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-11-20 14:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/ty_ide/src/inlay_hints.rs</code>:509 on 2025-11-20 14:00</div>
+            <div class="timeline-body"><p>I have to gather them up transiently while we create the annotated file, and then create the annotated file, and then create them properly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_ide/src/inlay_hints.rs</code>:1 on 2025-11-20 14:02</div>
+            <div class="timeline-body"><p>Could you also add tests for generic-alias types, e.g.</p>
+<pre><code class="language-py">class Foo[T]: ...
+
+a [: &lt;class 'Foo[int]'&gt;] = Foo[int]
+</code></pre>
+<p>and subclass-of types, e.g.</p>
+<pre><code class="language-py">def f(x: list[str]):
+    y [: type[list[str]]] = type(x)
+</code></pre>
+<p>For the first one I'd expect goto targets for both <code>Foo</code> and <code>int</code> in <code>&lt;class 'Foo[int]&gt;</code>. For the second one I'd expect goto targets for both <code>list </code>and <code>str</code> in <code>type[list[str]]</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-11-20 14:03</div>
+            <div class="timeline-body"><p>Very cool!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-20 14:04</div>
+            <div class="timeline-body"><p>looks like you'll need to add some snapshot filters to get snapshots that include filepaths working on Windows 🙃</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-11-20 14:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/ty_python_semantic/src/types/display.rs</code>:473 on 2025-11-20 14:13</div>
+            <div class="timeline-body"><p>I know you literally gave me the implementation but I'd like to keep these things to followups (I'm terrified of this PR getting merge conflicted to hell).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-11-20 14:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/ty_python_semantic/src/types/display.rs</code>:611 on 2025-11-20 14:13</div>
+            <div class="timeline-body"><p>(similarly leaving as a followup)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-11-20 14:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/ty_ide/src/inlay_hints.rs</code>:1 on 2025-11-20 14:14</div>
+            <div class="timeline-body"><p>Cool with this also being a followup?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-11-20 14:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/display.rs</code>:473 on 2025-11-20 14:14</div>
+            <div class="timeline-body"><p>np</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-11-20 14:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_ide/src/inlay_hints.rs</code>:1 on 2025-11-20 14:14</div>
+            <div class="timeline-body"><p>of course!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-11-20 14:28</div>
+            <div class="timeline-body"><p>Ughhhh</p>
+<pre><code>      299   299 │ info[inlay-hint-location]: Inlay Hint Target
+      300       │-  --&gt; stdlib/string/templatelib.pyi:10:7
+            300 │+  --&gt; stdlib\string\templatelib.pyi:10:7
+</code></pre>
+<p>This is really annoying because <code>\</code> can appear in like <code>\x08</code> and I think I'm just gonna ask everyone to agree to not Notice I'm clobbering those in the inlay hint tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-11-20 14:35</div>
+            <div class="timeline-body"><p>Actually I'm extremely confused why this isn't a problem in any of the goto tests</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-11-20 14:39</div>
+            <div class="timeline-body"><p>(More followups for the followup pile I guess)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @Gankra on 2025-11-20 14:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @Gankra on 2025-11-20 14:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-11-20 14:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on 2025-11-20 14:46</div>
+            <div class="timeline-body"><p>@Gankra, Sick!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:48:27 UTC
+    </footer>
+</body>
+</html>

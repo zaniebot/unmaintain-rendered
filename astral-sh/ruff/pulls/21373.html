@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`flake8-import-conventions`] Add missing conventions from upstream (`ICN001`, `ICN002`) - astral-sh/ruff #21373</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>flake8-import-conventions</code>] Add missing conventions from upstream (<code>ICN001</code>, <code>ICN002</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21373">#21373</a>
+        opened by <a href="https://github.com/danparizher">@danparizher</a>
+        on 2025-11-11 04:25
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/danparizher">@danparizher</a> on 2025-11-11 04:25</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Adds missing import conventions from upstream flake8-import-conventions plugin. Specifically:</p>
+<ul>
+<li><code>ICN001</code>: Enforces <code>plotly.graph_objects</code> → <code>go</code> and <code>statsmodels.api</code> → <code>sm</code></li>
+<li><code>ICN002</code>: Bans <code>geopandas</code> → <code>gpd</code> alias</li>
+</ul>
+<p>Fixes #21300</p>
+<h2>Problem Analysis</h2>
+<p>Ruff's <code>ICN001</code> (unconventional-import-alias) and <code>ICN002</code> (banned-import-alias) rules were missing some conventions enforced by the upstream <a href="https://github.com/joaopalmeiro/flake8-import-conventions">flake8-import-conventions</a> plugin:</p>
+<ol>
+<li><p><strong>ICN001 missing conventions:</strong></p>
+<ul>
+<li><code>plotly.graph_objects</code> should be imported as <code>go</code> (IC008 in upstream)</li>
+<li><code>statsmodels.api</code> should be imported as <code>sm</code> (IC010 in upstream)</li>
+</ul>
+</li>
+<li><p><strong>ICN002 missing convention:</strong></p>
+<ul>
+<li><code>geopandas</code> should not be imported as <code>gpd</code> (IC002 in upstream)</li>
+</ul>
+</li>
+</ol>
+<p>The root cause was that these conventions were not included in Ruff's default configuration. The <code>CONVENTIONAL_ALIASES</code> constant was missing the two ICN001 entries, and there was no default banned aliases configuration for ICN002.</p>
+<h2>Approach</h2>
+<ol>
+<li><p><strong>Added missing ICN001 conventions:</strong></p>
+<ul>
+<li>Added <code>(&quot;plotly.graph_objects&quot;, &quot;go&quot;)</code> and <code>(&quot;statsmodels.api&quot;, &quot;sm&quot;)</code> to <code>CONVENTIONAL_ALIASES</code> in <code>settings.rs</code></li>
+<li>Updated the default option string in <code>options.rs</code> to include these new aliases</li>
+</ul>
+</li>
+<li><p><strong>Added default banned aliases for ICN002:</strong></p>
+<ul>
+<li>Created <code>default_banned_aliases()</code> function returning <code>geopandas</code> → <code>[&quot;gpd&quot;]</code></li>
+<li>Updated <code>Settings::default()</code> to use <code>default_banned_aliases()</code></li>
+<li>Updated <code>try_into_settings()</code> in <code>options.rs</code> to use <code>default_banned_aliases()</code> when <code>banned_aliases</code> is None</li>
+<li>Updated the default option string for <code>banned_aliases</code> in <code>options.rs</code></li>
+</ul>
+</li>
+<li><p><strong>Added comprehensive tests:</strong></p>
+<ul>
+<li>Created <code>missing_conventions.py</code> test fixture with cases for all three new conventions</li>
+<li>Added <code>missing_conventions</code> test in <code>mod.rs</code> to verify the new conventions work correctly</li>
+</ul>
+</li>
+</ol>
+<h2>Test Plan</h2>
+<p>Added new snapshot test <code>missing_conventions</code> that verifies:</p>
+<ul>
+<li>ICN001 correctly flags <code>plotly.graph_objects</code> without alias and requires <code>go</code></li>
+<li>ICN001 correctly flags <code>statsmodels.api</code> without alias and requires <code>sm</code></li>
+<li>ICN002 correctly flags <code>geopandas as gpd</code> as banned</li>
+<li>All existing tests continue to pass (10/10 tests passing)</li>
+</ul>
+<p>The fix has been manually verified to match the behavior of upstream flake8-import-conventions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-11-11 04:33</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+4 -0 violations, +0 -0 fixes in 1 projects; 54 projects unchanged)</p>
+<details><summary><a href="https://github.com/ibis-project/ibis">ibis-project/ibis</a> (+4 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --no-fix --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/ibis-project/ibis/blob/d44186034851e0660af6342f319d00296cded660/ibis/backends/bigquery/converter.py#L9'>ibis/backends/bigquery/converter.py:9:9:</a> ICN002 `geopandas` should not be imported as `gpd`
++ <a href='https://github.com/ibis-project/ibis/blob/d44186034851e0660af6342f319d00296cded660/ibis/backends/postgres/converter.py#L11'>ibis/backends/postgres/converter.py:11:9:</a> ICN002 `geopandas` should not be imported as `gpd`
++ <a href='https://github.com/ibis-project/ibis/blob/d44186034851e0660af6342f319d00296cded660/ibis/expr/api.py#L52'>ibis/expr/api.py:52:5:</a> ICN002 `geopandas` should not be imported as `gpd`
++ <a href='https://github.com/ibis-project/ibis/blob/d44186034851e0660af6342f319d00296cded660/ibis/formats/pandas.py#L174'>ibis/formats/pandas.py:174:9:</a> ICN002 `geopandas` should not be imported as `gpd`
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (1 rules affected)</summary>
+<p>
+
+<p>| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| ICN002 | 4 | 4 | 0 | 0 | 0 |</p>
+</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/resources/test/fixtures/flake8_import_conventions/missing_conventions.py</code>:1 on 2025-11-11 13:29</div>
+            <div class="timeline-body"><p>Should we just add these to one of the existing test files? <code>defaults.py</code> seems promising. <code>missing_conventions</code> seems a bit misleading since they're not missing anymore after your PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> requested changes on 2025-11-11 13:34</div>
+            <div class="timeline-body"><p>Thanks! This looks good, just one suggestion about where to put the new tests</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2025-11-11 13:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ntBre by @danparizher on 2025-11-11 22:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-11-13 22:38</div>
+            <div class="timeline-body"><p>On second thought, could we make this a preview change? Initially I assumed this was an unintentional omission from the original PR adding the rules (https://github.com/astral-sh/ruff/pull/1098), but I see now that these were changed upstream <em>after</em> our rule was added (https://github.com/joaopalmeiro/flake8-import-conventions/issues/3, https://github.com/joaopalmeiro/flake8-import-conventions/issues/4). These issues were opened upstream before our rule but closed after. And there are a few hits in the ecosystem report for <code>geopandas</code> too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ntBre by @danparizher on 2025-11-14 02:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_import_conventions/rules/banned_import_alias.rs</code>:70 on 2025-11-18 19:46</div>
+            <div class="timeline-body"><p>Do we need to change this code? I thought we could handle this just by adjusting the preview behavior of the default settings.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_import_conventions/settings.rs</code>:96 on 2025-11-18 19:53</div>
+            <div class="timeline-body"><p>I think the way we usually handle this is by defining a method that takes a <code>preview</code> argument instead of <code>impl Default</code> (which can't take arguments). This is kind of the opposite since it was a stabilization PR, but you can see an example here: https://github.com/astral-sh/ruff/pull/12838/files#diff-0e4daa1a461406d9fd7af87b85ff4ecc89bd61f748d2b7cb24b88b25c7d5ba59</p>
+<p>Possibly a better example: https://github.com/astral-sh/ruff/pull/15951</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-11-18 19:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ntBre by @danparizher on 2025-11-19 23:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @ntBre on 2025-12-03 19:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_workspace/src/options.rs</code>:1680 on 2025-12-03 20:08</div>
+            <div class="timeline-body"><p>I don't think we should set this here. If I understand correctly, this will extend the list of aliases when preview is enabled even if the user provided a set of aliases. We only want to extend the <em>default</em> set in the case where <code>self.aliases</code> is <code>None</code> above. I think it would make sense for the <code>default_aliases</code> helper function to take the <code>preview</code> argument and apply it there.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_workspace/src/options.rs</code>:1697 on 2025-12-03 20:08</div>
+            <div class="timeline-body"><p>Same as above, we should only do this in the <code>or_default</code> case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-12-03 20:10</div>
+            <div class="timeline-body"><p>Thanks, this is looking good. I fixed a few nits, reverting some unrelated changes and tweaking the test setup, but I also wanted to get your thoughts on the <code>try_into_settings</code> changes. See my inline comments for that.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:48:27 UTC
+    </footer>
+</body>
+</html>

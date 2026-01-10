@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Show partial fixability indicator in statistics output - astral-sh/ruff #21513</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Show partial fixability indicator in statistics output</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21513">#21513</a>
+        opened by <a href="https://github.com/tsvikas">@tsvikas</a>
+        on 2025-11-18 16:21
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/tsvikas">@tsvikas</a> on 2025-11-18 16:21</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Fixes #20921</p>
+<p>When running <code>ruff --statistics</code>, the fixability indicator now correctly shows whether violations are fully, partially, or not fixable:</p>
+<ul>
+<li><code>[*]</code> when <strong>all</strong> violations of a rule are fixable</li>
+<li><code>[~]</code> when <strong>some</strong> but not all violations are fixable</li>
+<li><code>[ ]</code> when <strong>no</strong> violations are fixable</li>
+</ul>
+<p>The bug occurred because diagnostics were sorted by fixability before grouping, causing the first (unfixable) diagnostic to always be used as the representative for the group.</p>
+<h3>JSON API Change</h3>
+<p>The JSON statistics output now includes <code>fixable_count</code> instead of <code>fixable</code> boolean:</p>
+<pre><code class="language-json">{
+  &quot;code&quot;: &quot;UP035&quot;,
+  &quot;name&quot;: &quot;deprecated-import&quot;,
+  &quot;count&quot;: 2,
+  &quot;fixable_count&quot;: 1
+}
+</code></pre>
+<p><strong>Question for maintainers:</strong> Should we keep the old <code>fixable</code> boolean field for backwards compatibility? If so, should it indicate &quot;any fixable&quot; (<code>fixable_count &gt; 0</code>) or &quot;all fixable&quot; (<code>fixable_count == count</code>)?</p>
+<h2>Test plan</h2>
+<ul>
+<li>Updated existing snapshot tests for <code>show_statistics_json</code> and <code>show_statistics_json_unsafe_fixes</code></li>
+</ul>
+<p><strong>Question:</strong> Are additional tests needed, e.g., for the partial fixability indicator <code>[~]</code>?</p>
+<p>🤖 Generated with <a href="https://claude.ai/code">Claude Code</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tsvikas">@tsvikas</a> on 2025-11-18 16:27</div>
+            <div class="timeline-body"><p>a simple one-liner to see the effect:</p>
+<pre><code>echo 'from typing import List, AsyncGenerator' | ruff check --select UP035 --statistics -
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @amyreese on 2025-11-18 17:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">breaking</span> added by @MichaReiser on 2025-11-18 17:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-18 17:31</div>
+            <div class="timeline-body"><p>Thank you for this contribution</p>
+<p>Can you say more about why this PR also changes the field name and type? This change is not backward compatible and it's not clear to me how it's related.</p>
+<p>I see that you wrote this PR with claude. We don't have a policy against using AI but I just want to ask you to review the PR yourself first before we spend time reviewing. I'll put it into draft, you can mark it as ready for review once you think the PR is in a good state.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @MichaReiser on 2025-11-18 17:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tsvikas">@tsvikas</a> on 2025-11-18 18:11</div>
+            <div class="timeline-body"><blockquote>
+<p>Can you say more about why this PR also changes the field name and type? This change is not backward compatible and it's not clear to me how it's related.</p>
+</blockquote>
+<p>The field name and type change happen because the current <code>fixable: bool</code> field has undocumented and arguably unintuitive semantics.</p>
+<p><strong>Current behavior (undocumented):</strong></p>
+<ul>
+<li><code>fixable: true</code> only when <strong>all</strong> violations with that code are fixable</li>
+<li><code>fixable: false</code> when <strong>any</strong> violation is not fixable</li>
+</ul>
+<p>For example:</p>
+<pre><code class="language-bash">echo 'from typing import List, AsyncGenerator' | ruff check --select UP035 --statistics --output-format json -
+</code></pre>
+<p>Returns <code>&quot;fixable&quot;: false</code> even though 1 of the 2 violations is fixable (run without <code>--statistics</code> to see that). Users seeing this would reasonably assume &quot;none are fixable&quot; and miss the opportunity to run <code>--fix</code>.</p>
+<p>Adding <code>fixable_count</code> addresses this by explicitly showing how many issues are fixable.</p>
+<p><strong>This leave us with a dilemma - what to do with <code>fixable</code> itself:</strong></p>
+<ol>
+<li><p><strong>Keep both <code>fixable</code> and <code>fixable_count</code></strong>, preserve current behavior, add documentation</p>
+<ul>
+<li>Pro: No breakage</li>
+<li>Con: Keeps a misleading gotcha in the UX</li>
+</ul>
+</li>
+<li><p><strong>Keep both, but change <code>fixable</code> to mean &quot;any fixable&quot;</strong></p>
+<ul>
+<li>Pro: More useful to users</li>
+<li>Con: Still a breaking change, meaning still not 100% clear from name, and now redundant with <code>fixable_count</code></li>
+</ul>
+</li>
+<li><p><strong>Remove <code>fixable</code>, keep only <code>fixable_count</code></strong></p>
+<ul>
+<li>Pro: Explicit, unambiguous, users can derive both &quot;any&quot; (<code>&gt; 0</code>) and &quot;all&quot; (<code>== count</code>)</li>
+<li>Con: Breaking change for user scripts</li>
+</ul>
+</li>
+</ol>
+<p>I believe option 3 is best in the long run - users facing an explicit break now (while Ruff is still &lt;1.0) is better than silently getting misleading info. But you know more about Ruff's usage in the wild, so I defer to your judgment here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tsvikas">@tsvikas</a> on 2025-11-18 18:24</div>
+            <div class="timeline-body"><blockquote>
+<p>I see that you wrote this PR with claude. We don't have a policy against using AI but I just want to ask you to review the PR yourself first before we spend time reviewing. I'll put it into draft, you can mark it as ready for review once you think the PR is in a good state.</p>
+</blockquote>
+<p>Fair point. Thank you for verifying.
+I did review the code before submitting. I made sure to understand any change, and compiled/ran it on examples to verify the behavior.</p>
+<p>That said, I'm not a Rust developer, so I could easily miss Rust-specific idioms, performance considerations, or project conventions. This is my best effort given my experience level.</p>
+<p>I'll mark it as ready for review now. Happy to iterate on any feedback.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @tsvikas on 2025-11-18 18:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-19 07:57</div>
+            <div class="timeline-body"><p>Thanks for the explanation.</p>
+<p>I ran the command and, as a user, it isn't clear what <code>~</code> means. We'll need to update the summary too</p>
+<pre><code>﻿﻿169     F821    [ ] undefined-name
+  8     F541    [*] f-string-missing-placeholders
+  5     E401    [*] multiple-imports-on-one-line
+  4     E402    [ ] module-import-not-at-top-of-file
+  3     F401    [*] unused-import
+  3     F841    [*] unused-variable
+  2     D100    [ ] undocumented-public-module
+  2     E722    [ ] bare-except
+  2     F602    [ ] multi-value-repeated-key-variable
+  2     F811    [~] redefined-while-unused
+  1             [ ] invalid-syntax
+  1     D103    [ ] undocumented-public-function
+  1     F402    [ ] import-shadowed-by-loop-var
+  1     F403    [ ] undefined-local-with-import-star
+  1     F631    [ ] assert-tuple
+  1     F704    [ ] yield-outside-function
+Found 206 errors.
+[*] 20 fixable with the `--fix` option.
+</code></pre>
+<p>I also think that fixing the CLI command shouldn't break the CLI output. I suggest keeping <code>fixable: bool</code> in addition to <code>fixable_count</code> and we can deprecate <code>fixable</code> in the future. It would be good to add documentation to the fields explaining how they differ.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tsvikas">@tsvikas</a> on 2025-11-19 13:31</div>
+            <div class="timeline-body"><p>will do.</p>
+<blockquote>
+<p>I ran the command and, as a user, it isn't clear what ~ means. We'll need to update the summary too</p>
+</blockquote>
+<p>any input about how to update the summary? some ideas here:</p>
+<pre><code>[*~] 20 fixable with the `--fix` option.
+20 fixable with the `--fix` option (marked with [*] and [~]).
+20 fixable with the `--fix` option ([*]=all fixable, [~]=any fixable).
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-11-19 18:55</div>
+            <div class="timeline-body"><p>Would it make any sense to report two lines for F811? As in:</p>
+<pre><code>  1     F811    [*] redefined-while-unused
+  1     F811    [ ] redefined-while-unused
+</code></pre>
+<p>Just an idea to avoid having to explain another marker in the footer, but maybe it would be confusing if it wasn't 1 of each and the two entries for the same rule sorted farther apart.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tsvikas">@tsvikas</a> on 2025-11-19 22:33</div>
+            <div class="timeline-body"><p>another alternative is adding a count</p>
+<pre><code>﻿﻿169     F821    [  ] undefined-name
+  8     F541    [*8] f-string-missing-placeholders
+  5     E401    [*5] multiple-imports-on-one-line
+  4     E402    [  ] module-import-not-at-top-of-file
+  3     F401    [*3] unused-import
+  3     F841    [*3] unused-variable
+  2     D100    [  ] undocumented-public-module
+  2     E722    [  ] bare-except
+  2     F602    [  ] multi-value-repeated-key-variable
+  2     F811    [*1] redefined-while-unused
+  1             [  ] invalid-syntax
+  1     D103    [  ] undocumented-public-function
+  1     F402    [  ] import-shadowed-by-loop-var
+  1     F403    [  ] undefined-local-with-import-star
+  1     F631    [  ] assert-tuple
+  1     F704    [  ] yield-outside-function
+Found 206 errors.
+[*] 20 fixable with the `--fix` option.
+</code></pre>
+<p>(i'm still going with the original idea, but i'm open to inputs from maintainers about their preferred direction)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tsvikas">@tsvikas</a> on 2025-11-19 23:52</div>
+            <div class="timeline-body"><p>Thanks for the feedback! I've addressed all the requested changes:</p>
+<h2>Changes Made</h2>
+<h3>1. Summary line now explains the symbols</h3>
+<p>The summary line for <code>--statistics</code> now includes a legend:</p>
+<pre><code>1 fixable with the `--fix` option ([*] = all fixable, [~] = some fixable).
+</code></pre>
+<p>This only appears with <code>--statistics</code>. Regular output still shows the original format (since in that case the <code>[*]</code> marks a specific error, not an aggregated group).</p>
+<p><strong>Question</strong>: Do we want to add the <code>fixable_count</code> of each error-code to the printed statistics?</p>
+<h3>2. Kept <code>fixable: bool</code> for backward compatibility</h3>
+<p>JSON output now includes both fields:</p>
+<pre><code class="language-json">{
+  &quot;code&quot;: &quot;UP035&quot;,
+  &quot;name&quot;: &quot;deprecated-import&quot;,
+  &quot;count&quot;: 2,
+  &quot;fixable&quot;: false,
+  &quot;fixable_count&quot;: 1
+}
+</code></pre>
+<p><code>fixable</code> preserves existing semantics (true only when all violations are fixable).</p>
+<h3>3. Documentation</h3>
+<p>Added field documentation to the <code>--statistics</code> CLI help text.</p>
+<p>I looked for existing documentation to update but found that <code>--statistics</code>, <code>--output-format</code>, JSON output schemas, and their interactions are largely undocumented. Creating comprehensive documentation for these features would be out of scope for this bug fix. The CLI help addition is a net improvement over the status quo.</p>
+<p>Note: <code>cargo dev generate-all</code> didn't update <code>docs/configuration.md</code>, so I updated it manually. Let me know if there's a specific command for that. Hopefully the GH actions will keep the file updated anyway..</p>
+<h2>Tests</h2>
+<p>Added tests for both text and JSON output with partial fixability.</p>
+<hr />
+<p>Re: @ntBre's suggestion about splitting into two lines - I think keeping one row per rule code is more consistent with the statistics view purpose (aggregated counts).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tsvikas">@tsvikas</a> on 2025-11-20 12:04</div>
+            <div class="timeline-body"><p>Also, this should no more be label:breaking</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-20 13:03</div>
+            <div class="timeline-body"><blockquote>
+<p>another alternative is adding a count</p>
+</blockquote>
+<p>I sort of like this, except that I would omit the <code>*</code>.</p>
+<pre><code>﻿﻿169     F821    [ ] undefined-name
+  8     F541    [8] f-string-missing-placeholders
+  5     E401    [5] multiple-imports-on-one-line
+  4     E402    [ ] module-import-not-at-top-of-file
+  3     F401    [3] unused-import
+  3     F841    [3] unused-variable
+  2     D100    [ ] undocumented-public-module
+  2     E722    [ ] bare-except
+  2     F602    [ ] multi-value-repeated-key-variable
+  2     F811    [1] redefined-while-unused
+  1             [ ] invalid-syntax
+  1     D103    [ ] undocumented-public-function
+  1     F402    [ ] import-shadowed-by-loop-var
+  1     F403    [ ] undefined-local-with-import-star
+  1     F631    [ ] assert-tuple
+  1     F704    [ ] yield-outside-function
+Found 206 errors.
+[20] fixable with the `--fix` option.
+</code></pre>
+<p>But I'm not a 100% convinced by it. It looks a bit odd.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tsvikas">@tsvikas</a> on 2025-11-20 15:24</div>
+            <div class="timeline-body"><p>we can also:</p>
+<pre><code>F821 ﻿﻿ 169     undefined-name
+F541    8  8  f-string-missing-placeholders
+E401    5  5  multiple-imports-on-one-line
+E402    4     module-import-not-at-top-of-file
+F401    3  3  unused-import
+F841    3  3  unused-variable
+D100    2     undocumented-public-module
+E722    2     bare-except
+Found 186 errors.
+19 fixable with the `--fix` option.
+</code></pre>
+<p>or</p>
+<pre><code>169 /    F821  undefined-name
+  8 / 8  F541  f-string-missing-placeholders
+  5 / 5  E401  multiple-imports-on-one-line
+  4 /    E402  module-import-not-at-top-of-file
+  3 / 3  F401  unused-import
+  3 / 3  F841  unused-variable
+  2 /    D100  undocumented-public-module
+  2 /    E722  bare-except
+Found 186 errors / 19 fixable with the `--fix` option.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tsvikas">@tsvikas</a> on 2025-11-20 15:29</div>
+            <div class="timeline-body"><p>In my perspective, the count is useful and I also like the conciseness of [~].
+In any case, what information / criteria / next step would help us make a decision here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tsvikas">@tsvikas</a> on 2025-11-20 15:30</div>
+            <div class="timeline-body"><p>And in case it was missed in the conversation - All other parts of the PR are complete and ready for review, including the current implementation with the [~] format.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-24 08:47</div>
+            <div class="timeline-body"><p>Sorry, I had to think it over a bit. I would go with</p>
+<ul>
+<li>Use <code>[-]</code> as &quot;partial fixable&quot; indicator, similar to markdown</li>
+<li>Change the summary to <code>20 fixable with </code>--fix<code> ([*] all, [-] some).</code></li>
+</ul>
+<p>I also suggest changing <code>write_summary_text</code> to take an <code>enum Mode { Default, Statistics }</code> to make it clearer what the boolean argument means</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tsvikas">@tsvikas</a> on 2025-11-24 22:23</div>
+            <div class="timeline-body"><p>done.</p>
+<p>example of the current output:</p>
+<pre><code>594     E501    [ ] line-too-long
+ 51     I001    [*] unsorted-imports
+ 17     E402    [ ] module-import-not-at-top-of-file
+ 16     UP015   [*] redundant-open-modes
+ 12     B007    [ ] unused-loop-control-variable
+ 11     B905    [ ] zip-without-explicit-strict
+ 10     UP045   [*] non-pep604-annotation-optional
+  8     SIM115  [ ] open-file-with-context-handler
+  6     E731    [ ] lambda-assignment
+  6     F541    [*] f-string-missing-placeholders
+  4     SIM102  [ ] collapsible-if
+  4     SIM117  [-] multiple-with-statements
+  4     UP024   [*] os-error-alias
+  3     E722    [ ] bare-except
+  3     SIM109  [ ] compare-with-tuple
+  2     F401    [*] unused-import
+  2     SIM108  [ ] if-else-block-instead-of-if-exp
+  2     UP006   [*] non-pep585-annotation
+  2     UP035   [-] deprecated-import
+  1     B019    [ ] cached-instance-method
+  1     E713    [*] not-in-test
+  1     E741    [ ] ambiguous-variable-name
+  1     F841    [*] unused-variable
+  1     SIM105  [ ] suppressible-exception
+  1     SIM300  [*] yoda-conditions
+Found 763 errors.
+97 fixable with the `--fix` option ([*] all, [-] some) (33 hidden fixes can be enabled with the `--unsafe-fixes` option).
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @amyreese on 2025-11-26 02:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-26 08:14</div>
+            <div class="timeline-body"><p>I'm sorry, but I didn't realize that the summary has variants where it adds another message in parentheses and the double parenthesizing looks sort of bad.</p>
+<p>What do you think of:</p>
+<pre><code>[*] 20 fixable with the `--fix` option.
+</code></pre>
+<p>and assume that users will be able to infer that <code>[-]</code> means partial fixable</p>
+<p>or</p>
+<pre><code>[*][-] 20 fixable with the `--fix` option.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tsvikas">@tsvikas</a> on 2025-11-26 09:29</div>
+            <div class="timeline-body"><p>If you are asking for my input, I feel that a need to infer the meaning is less ideal.</p>
+<p>What do you think about:</p>
+<pre><code>Found 763 errors.
+97 fixable with the `--fix` option ([*] all, [-] some).
+33 hidden fixes can be enabled with the `--unsafe-fixes` option.
+</code></pre>
+<p>It also shortens the line length, which is a plus.</p>
+<p>(I don't think it's perfect, but it's the best I've found yet)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-26 09:33</div>
+            <div class="timeline-body"><p>I like that</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tsvikas">@tsvikas</a> on 2025-11-26 13:14</div>
+            <div class="timeline-body"><p>Thanks for the feedback! I looked at the code more carefully and realized that I need another input before continuing.</p>
+<p>The issue is that this change would create an inconsistency with other output modes.</p>
+<p>i.e., compare</p>
+<pre><code>Found 763 errors.
+97 fixable with the `--fix` option ([*] all, [-] some).
+33 hidden fixes can be enabled with the `--unsafe-fixes` option.
+</code></pre>
+<p>with those examples</p>
+<h4>Examples:</h4>
+<ol>
+<li><code>ruff check --statistics</code> with no errors:</li>
+</ol>
+<pre><code>Found 657 errors.
+No fixes available (33 hidden fixes can be enabled with the `--unsafe-fixes` option).
+</code></pre>
+<ol start="2">
+<li><code>ruff check</code> with no errors:</li>
+</ol>
+<pre><code>Found 1 error.
+No fixes available (1 hidden fix can be enabled with the `--unsafe-fixes` option).
+</code></pre>
+<ol start="3">
+<li><code>ruff check</code> with errors:</li>
+</ol>
+<pre><code>Found 763 errors.
+[*] 97 fixable with the `--fix` option (33 hidden fixes can be enabled with the `--unsafe-fixes` option).
+</code></pre>
+<p>(note: when we don't use <code>--statistics</code>, the meaning of <code>[*]</code> is &quot;this error is fixable&quot; and not &quot;all/any errors with this code are fixable&quot;, so there is no need for <code>[-]</code>)</p>
+<ol start="4">
+<li><code>ruff check --fix-only --statistics</code>:</li>
+</ol>
+<pre><code>...
+  1     SIM105  suppressible-exception
+Fixed 101 errors (33 additional fixes available with `--unsafe-fixes`).
+</code></pre>
+<h3>Options</h3>
+<p>Do you think we should:</p>
+<ol>
+<li><p>Apply the same format (moving the hidden fixes message from parentheses to a separate line) everywhere.</p>
+<ul>
+<li>Pros: Consistent UX across all modes + Cleaner code in <code>printer.rs</code></li>
+<li>Cons: Larger change scope + Increases the summary line from 1-2 lines to 1-3 lines</li>
+</ul>
+</li>
+<li><p>Limit this change to <code>--statistics</code> only (which cases exactly?  it seems that there are non-trivial states here).</p>
+</li>
+<li><p>Keep as is, find another way to represent the <code>[-]</code> symbol.</p>
+</li>
+</ol>
+<p>I'm leaning toward option 1, but I wanted to get your input before. WDYT?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tsvikas">@tsvikas</a> on 2025-11-26 15:29</div>
+            <div class="timeline-body"><p>Also, in one case the output is <code>1 fixable with the --fix option</code> and in all the others  <code>1 fixable with the `--fix` option</code>.
+I'm happy to fix that also (add ticks). would you prefer a separate PR for that, or should i fix it here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-27 07:51</div>
+            <div class="timeline-body"><p>I'm sort of leaning towards leaving it as is (the legend) and assuming that users can infer the meaning of <code>[-]</code> and we can adjust the message based on feedback. It simplifies this PR and allows us to land this improvement.</p>
+<blockquote>
+<p>I'm happy to fix that also (add ticks). would you prefer a separate PR for that, or should i fix it here?</p>
+</blockquote>
+<p>I'm fine landing it in this PR</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tsvikas">@tsvikas</a> on 2025-11-27 13:38</div>
+            <div class="timeline-body"><p>Done :)
+current output</p>
+<pre><code>594     E501    [ ] line-too-long
+ 51     I001    [*] unsorted-imports
+ 17     E402    [ ] module-import-not-at-top-of-file
+ 16     UP015   [*] redundant-open-modes
+ 12     B007    [ ] unused-loop-control-variable
+ 11     B905    [ ] zip-without-explicit-strict
+ 10     UP045   [*] non-pep604-annotation-optional
+  8     SIM115  [ ] open-file-with-context-handler
+  6     E731    [ ] lambda-assignment
+  6     F541    [*] f-string-missing-placeholders
+  4     SIM102  [ ] collapsible-if
+  4     SIM117  [-] multiple-with-statements
+  4     UP024   [*] os-error-alias
+  3     E722    [ ] bare-except
+  3     SIM109  [ ] compare-with-tuple
+  2     F401    [*] unused-import
+  2     SIM108  [ ] if-else-block-instead-of-if-exp
+  2     UP006   [*] non-pep585-annotation
+  2     UP035   [-] deprecated-import
+  1     B019    [ ] cached-instance-method
+  1     E713    [*] not-in-test
+  1     E741    [ ] ambiguous-variable-name
+  1     F841    [*] unused-variable
+  1     SIM105  [ ] suppressible-exception
+  1     SIM300  [*] yoda-conditions
+Found 763 errors.
+[*] 97 fixable with the `--fix` option (33 hidden fixes can be enabled with the `--unsafe-fixes` option).
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tsvikas">@tsvikas</a> on 2025-11-27 13:54</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>I'm happy to fix that also (add ticks). would you prefer a separate PR for that, or should i fix it here?</p>
+</blockquote>
+<p>I'm fine landing it in this PR</p>
+</blockquote>
+<p>it's contained in the last commit, so we can inspect it separately or move it to a different PR if needed</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-11-27 16:49</div>
+            <div class="timeline-body"><p>Thank you</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">breaking</span> removed by @MichaReiser on 2025-11-27 16:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-11-27 17:03</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2025-11-27 17:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-11-27 17:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tsvikas">@tsvikas</a> on 2025-11-27 22:49</div>
+            <div class="timeline-body"><p>Thank you too!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-11-28 19:12</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:48:27 UTC
+    </footer>
+</body>
+</html>

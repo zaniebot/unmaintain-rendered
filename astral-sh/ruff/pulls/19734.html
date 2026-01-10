@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>watch does not show output format warning message - astral-sh/ruff #19734</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>watch does not show output format warning message</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19734">#19734</a>
+        opened by <a href="https://github.com/mikeleppane">@mikeleppane</a>
+        on 2025-08-04 08:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/mikeleppane">@mikeleppane</a> on 2025-08-04 08:56</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title? (Please prefix with `[ty]` for ty pull
+  requests.)
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>Added and fixed how output formatting works in watch mode</p>
+<h3>Changes Made</h3>
+<ul>
+<li><p>Created <code>format_diagnostics()</code> method to support different write modes <code>WriteMode::Once</code> vs <code>WriteMode::Continuous</code></p>
+</li>
+<li><p>Added proper handling of <code>OutputFormat::Full</code> and <code>OutputFormat::Concise</code> in <code>watch</code> mode through the new <code>WriteMode::Continuous</code> branch</p>
+</li>
+<li><p>Ensured that full diagnostic formatting (including source code snippets and detailed error context) is preserved when using --watch with --output-format full</p>
+</li>
+<li><p>Introduced <code>WriteMode</code> enum to distinguish between single-run and continuous watch mode operations</p>
+</li>
+<li><p>Updated <code>TextEmitter</code> configuration in continuous mode to respect the <code>OutputFormat::Full</code> setting via .with_show_source(self.format == OutputFormat::Full)</p>
+</li>
+<li><p>Maintained backward compatibility by preserving existing behavior for non-watch mode operations</p>
+</li>
+</ul>
+<p>Note: with these changes, selecting <code>--preview</code> mode does not have any effect on output formatting. <code>full</code> mode is still the default mode.</p>
+<p>Related issues: <a href="https://github.com/astral-sh/ruff/issues/19552">#19552</a>, <a href="https://github.com/astral-sh/ruff/issues/19550">#19550</a></p>
+<h2>Test Plan</h2>
+<ul>
+<li>Added three integration tests to verify that watch mode properly outputs full diagnostic formatting</li>
+<li>Tests cover scenarios with both errors present and no errors found</li>
+<li>Ensured cross-platform compatibility for file path handling in test snapshots</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Fix(19552)/watch does not show output format warning message" to "watch does not show output format warning message" by @MichaReiser on 2025-08-04 08:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-04 09:07</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ntBre by @ntBre on 2025-08-08 14:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff/src/lib.rs</code>:359 on 2025-08-08 19:19</div>
+            <div class="timeline-body"><p>I don't think we need to log the format here. The user just typed <code>--output-format ...</code> in their CLI invocation. The warning was only because the format wasn't being used before.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff/src/printer.rs</code>:370 on 2025-08-08 19:21</div>
+            <div class="timeline-body"><p>Why do we need an empty line here? Was that coming from somewhere else before?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff/tests/integration_test.rs</code>:2436 on 2025-08-08 19:25</div>
+            <div class="timeline-body"><p>Is this necessary? It seems like running the command like this should mean Ruff knows it's not writing to a tty and should suppress colors automatically.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff/tests/integration_test.rs</code>:2430 on 2025-08-08 19:25</div>
+            <div class="timeline-body"><pre><code class="language-suggestion"></code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff/tests/integration_test.rs</code>:2439 on 2025-08-08 19:37</div>
+            <div class="timeline-body"><p>These tests are cool, but I'm not sure they're worth the effort. They require a pretty substantial amount of setup code, and the timeouts make me feel like they could be flaky too. I think I'd be okay with a manual test in this case. The output formats are well-tested otherwise, so we only have to check that we've wired up the <code>--watch</code> flag with them correctly. I'd be interested in what you and @MichaReiser think about that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff/src/printer.rs</code>:467 on 2025-08-08 19:40</div>
+            <div class="timeline-body"><p>This should also be</p>
+<pre><code class="language-suggestion">                        .with_show_source(preview)
+</code></pre>
+<p>if we want to maintain the current behavior, which I think we should do until a minor release.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff/src/printer.rs</code>:399 on 2025-08-08 19:56</div>
+            <div class="timeline-body"><p>It would be a bit more intuitive to me if we could call <code>write_once</code> here. It seems like we're pretty close to being able to do that, likely with one more flag controlling the summary text. Would that be doable, or do we need this third method?</p>
+<p>I think the <code>full</code> preview behavior might actually be one of the trickiest parts of that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-08-08 19:59</div>
+            <div class="timeline-body"><p>Thank you! This looks good to me overall. I just had a few minor suggestions and one testing question that we may want to get Micha's opinion on too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @ntBre on 2025-08-08 19:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/printer.rs</code>:445 on 2025-08-11 08:06</div>
+            <div class="timeline-body"><p>I wonder if <code>WriteMode</code> is necessary or if it's sufficient to only check <code>self.flags</code> instead.</p>
+<p>E.g. <code>.with_show_source(self.format == OutputFormat::Full)</code> could be handled at the call site instead (where it sets the output format to concise unless we're in preview).
+or <code>.with_show_fix_diff(self.flags.intersects(Flags::SHOW_FIX_DIFF))</code>: I think we can leave it up to the caller whether it sets this flag or not.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/tests/integration_test.rs</code>:2439 on 2025-08-11 08:11</div>
+            <div class="timeline-body"><p>I agree with Brent here. The main value that I see in file watching tests is if the &quot;react to changes&quot; works as expected which these tests aren't testing (see <code>file_watching.rs</code> in ty). Having tests for the watch CLI output is great but I'd rather remove as many differences between the two outputs as possible so that file watching CLI tests become unnecessary (that's whayt we do in ty). I think making the two commands behave more similarly also benefits users because there are fewer surprises between the two.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-08-18 07:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-21 08:05</div>
+            <div class="timeline-body"><p>@ntBre this seems like another PR that's very close to landing and only requires minimal cleanup. Would it makes ense for you to do them yourself so that we can get this PR landed?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-11-21 18:30</div>
+            <div class="timeline-body"><p>I was kind of tempted not to land this after https://github.com/astral-sh/ruff/pull/21097, but I guess it still makes sense to warn until it's out of preview. I'll take a look!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-11-21 19:10</div>
+            <div class="timeline-body"><p>Hmm, yeah I'm inclined to close this or just repurpose it to remove the warning code. The current state of the branch doesn't help with showing the warning (it actually deletes the warning as far as I can tell?), and  the best alternative for that I can see is something like:</p>
+<pre><code class="language-diff">diff --git a/crates/ruff/src/lib.rs b/crates/ruff/src/lib.rs
+index 3ea0d94fad..995dec44b2 100644
+--- a/crates/ruff/src/lib.rs
++++ b/crates/ruff/src/lib.rs
+@@ -358,13 +358,6 @@ pub fn check(args: CheckCommand, global_options: GlobalConfigArgs) -&gt; Result&lt;Exi
+     let preview = pyproject_config.settings.linter.preview.is_enabled();
+ 
+     if cli.watch {
+-        if output_format != OutputFormat::default() {
+-            warn_user!(
+-                &quot;`--output-format {}` is always used in watch mode.&quot;,
+-                OutputFormat::default()
+-            );
+-        }
+-
+         // Configure the file watcher.
+         let (tx, rx) = channel();
+         let mut watcher = recommended_watcher(tx)?;
+@@ -377,6 +370,17 @@ pub fn check(args: CheckCommand, global_options: GlobalConfigArgs) -&gt; Result&lt;Exi
+ 
+         // Perform an initial run instantly.
+         Printer::clear_screen()?;
++
++        // This doesn't work exactly right because we won't flag `--output-format=full` (the
++        // default) without preview mode, but we can't really differentiate `--output-format=full`
++        // from the flag not being passed at this point.
++        if output_format != OutputFormat::default() &amp;&amp; !preview {
++            printer.write_to_user(format_args!(
++                &quot;`--output-format {}` is always used in watch mode unless preview is enabled.\n&quot;,
++                OutputFormat::Concise
++            ));
++        }
++
+         printer.write_to_user(&quot;Starting linter in watch mode...\n&quot;);
+ 
+         let diagnostics = commands::check::check(
+diff --git a/crates/ruff/src/printer.rs b/crates/ruff/src/printer.rs
+index 1de440ac6e..f5329f70ad 100644
+--- a/crates/ruff/src/printer.rs
++++ b/crates/ruff/src/printer.rs
+@@ -62,7 +62,7 @@ impl Printer {
+         }
+     }
+ 
+-    pub(crate) fn write_to_user(&amp;self, message: &amp;str) {
++    pub(crate) fn write_to_user(&amp;self, message: impl std::fmt::Display) {
+         if self.log_level &gt;= LogLevel::Default {
+             notify_user!(&quot;{}&quot;, message);
+         }
+</code></pre>
+<p>but that won't emit a warning for <code>--output-format=full</code> since it's the <code>OutputFormat::default()</code>. And I expect that to be the most common alternative output format someone would try.</p>
+<p>I don't think #21097 has been too controversial, so we should just stabilize it in the next minor and resolve this too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-22 10:51</div>
+            <div class="timeline-body"><p>Sounds good.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-22 14:23</div>
+            <div class="timeline-body"><p>Thanks for your work @mikeleppane In preview, Ruff now respects the <code>--output-format</code> message which will fix https://github.com/astral-sh/ruff/issues/19552 once stabilizied</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-11-22 14:23</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:48:26 UTC
+    </footer>
+</body>
+</html>

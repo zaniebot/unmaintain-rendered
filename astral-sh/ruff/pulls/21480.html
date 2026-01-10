@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`parser`] Fix panic when parsing IPython escape command expressions - astral-sh/ruff #21480</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>parser</code>] Fix panic when parsing IPython escape command expressions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21480">#21480</a>
+        opened by <a href="https://github.com/danparizher">@danparizher</a>
+        on 2025-11-16 17:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/danparizher">@danparizher</a> on 2025-11-16 17:40</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Fixes a panic when parsing IPython escape commands with <code>Help</code> kind (<code>?</code>) in expression contexts. The parser now reports an error instead of panicking.</p>
+<p>Fixes #21465.</p>
+<h2>Problem</h2>
+<p>The parser panicked with <code>unreachable!()</code> in <code>parse_ipython_escape_command_expression</code> when encountering escape commands with <code>Help</code> kind (<code>?</code>) in expression contexts, where only <code>Magic</code> (<code>%</code>) and <code>Shell</code> (<code>!</code>) are allowed.</p>
+<h2>Approach</h2>
+<p>Replaced the <code>unreachable!()</code> panic with error handling that adds a <code>ParseErrorType::OtherError</code> and continues parsing, returning a valid AST node with the error attached.</p>
+<h2>Test Plan</h2>
+<p>Added <code>test_ipython_escape_command_in_with_statement</code> and <code>test_ipython_help_escape_command_as_expression</code> to verify the fix.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @danparizher on 2025-11-16 17:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @danparizher on 2025-11-16 17:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2025-11-16 17:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">parser</span> added by @AlexWaygood on 2025-11-16 17:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-11-16 17:52</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-11-16 18:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/parser/expression.rs</code>:2781 on 2025-11-16 18:04</div>
+            <div class="timeline-body"><p>Can you explain to me why the lexer emits the <code>Magic</code> and <code>Shell</code> tokens contrary to what the comment says? Should we fix the lexer instead?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/danparizher">@danparizher</a> reviewed on 2025-11-16 18:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/danparizher">@danparizher</a> on <code>crates/ruff_python_parser/src/parser/expression.rs</code>:2781 on 2025-11-16 18:53</div>
+            <div class="timeline-body"><p>That makes more sense, yeah. I'm pushing a change to have it fixed at the lexer level by adding an <code>in_expression_context</code> parameter to <code>lex_ipython_escape_command</code> and preventing Help kind conversion when <code>true</code> (e.g., <code>%foo?</code> stays Magic in expression contexts).</p>
+<p>I think it makes sense to keep the parser check as a defensive measure for edge cases like <code>with a,?b</code>, where Help tokens can still be lexed at the start of logical lines. Does this approach look right?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-11-17 06:01</div>
+            <div class="timeline-body"><p>Thanks for putting up this PR!</p>
+<p>I think the problem is in the way the parser is recovering. Considering your example:</p>
+<pre><code class="language-py">with a, ?b
+?
+</code></pre>
+<p>As there's a newline before the final <code>?</code>, the lexer emits the <code>IpyEscapeCommand</code> token. Now, the parser is trying to parse a list of expressions that comprises of <code>with</code> items but (1) it tries to recover from an unexpected <code>?</code> before the <code>b</code> and then it doesn't consider the newline token (<code>\n</code>) as the end of the with items given that this is unparenthesized. I think a (better?) fix would be to try to make the parser recover from this newline token and consider that the end of with items so that the second <code>?</code> is parsed as statement which will then avoid this panic.</p>
+<p>What do you think? This is what I'm referring to:</p>
+<pre><code class="language-diff">diff --git a/crates/ruff_python_parser/src/parser/mod.rs b/crates/ruff_python_parser/src/parser/mod.rs
+index 5f35b84b04..59c1857152 100644
+--- a/crates/ruff_python_parser/src/parser/mod.rs
++++ b/crates/ruff_python_parser/src/parser/mod.rs
+@@ -1115,7 +1115,12 @@ impl RecoveryContextKind {
+                     TokenKind::Colon =&gt; Some(ListTerminatorKind::ErrorRecovery),
+                     _ =&gt; None,
+                 },
+-                WithItemKind::Unparenthesized | WithItemKind::ParenthesizedExpression =&gt; p
++                WithItemKind::Unparenthesized =&gt; matches!(
++                    p.current_token_kind(),
++                    TokenKind::Colon | TokenKind::Newline
++                )
++                .then_some(ListTerminatorKind::Regular),
++                WithItemKind::ParenthesizedExpression =&gt; p
+                     .at(TokenKind::Colon)
+                     .then_some(ListTerminatorKind::Regular),
+             },
+</code></pre>
+<p>Edit: Oh, I think it should maybe be restricted to <code>WithItemKind::Unparenthesized</code>. I've updated the diff snippet.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-11-17 06:15</div>
+            <div class="timeline-body"><blockquote>
+<p>What do you think? This is what I'm referring to:</p>
+</blockquote>
+<p>Ok, I tried this and it seems to be working well and I think this is more correct approach. I've tried it on various code snippets to use parentheses in various places:</p>
+<pre><code class="language-py">with (a, ?b)
+?
+</code></pre>
+<pre><code class="language-py">with (a, ?b
+?
+</code></pre>
+<pre><code class="language-py">with a, ?b
+?
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-11-20 09:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/parser/tests.rs</code>:199 on 2025-11-20 09:17</div>
+            <div class="timeline-body"><p>Can you convert those tests to inline tests instead</p>
+<p>https://github.com/astral-sh/ruff/blob/c4240076459bc9128fee6f83cbf0f51d134b663b/crates/ruff_python_parser/CONTRIBUTING.md#L26-L28</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-11-20 09:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/parser/tests.rs</code>:167 on 2025-11-20 09:18</div>
+            <div class="timeline-body"><p>Can you add some case arms or statements coming after <code>with</code> so that it also demonstrates that the parser recovers properly?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @danparizher on 2025-11-21 02:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/parser/expression.rs</code>:2784 on 2025-11-21 04:41</div>
+            <div class="timeline-body"><p>I think this needs to be reverted now that the parser correctly recovers from the syntax error</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/parser/expression.rs</code>:2777 on 2025-11-21 04:42</div>
+            <div class="timeline-body"><p>This needs to be reverted as well</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/parser/expression.rs</code>:2807 on 2025-11-21 04:42</div>
+            <div class="timeline-body"><p>And this, you can move the test cases above the recovery branch in <code>parser/mod.rs</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/parser/statement.rs</code>:2212 on 2025-11-21 04:43</div>
+            <div class="timeline-body"><p>We should add some test cases that contains parentheses like the ones that I've mentioned in my comment</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:1245 on 2025-11-21 04:43</div>
+            <div class="timeline-body"><p>This should be reverted as well</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:1315 on 2025-11-21 04:43</div>
+            <div class="timeline-body"><p>And this</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> requested changes on 2025-11-21 04:45</div>
+            <div class="timeline-body"><p>Can you revert the original solution now that the parser recovers correctly? I'd also recommend to add some more test cases especially the ones that contains parentheses.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @danparizher on 2025-11-23 00:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> approved on 2025-11-24 05:03</div>
+            <div class="timeline-body"><p>Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-11-24 05:06</div>
+            <div class="timeline-body"><p>Hmm, actually the test cases now don't really test the bug which, I think, requires the <code>?</code> on the next line as mentioned here (https://github.com/astral-sh/ruff/pull/21480#issuecomment-3540148662). I'll update the test cases and merge.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2025-11-24 05:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2025-11-24 05:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-11-24 06:01</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:48:27 UTC
+    </footer>
+</body>
+</html>

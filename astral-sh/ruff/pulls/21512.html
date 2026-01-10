@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Add Salsa caching to `ClassLiteral::fields` - astral-sh/ruff #21512</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Add Salsa caching to <code>ClassLiteral::fields</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21512">#21512</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-11-18 15:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-18 15:29</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Locally, applying this patch to @oconnor663's branch for https://github.com/astral-sh/ruff/pull/21467 speeds us up &gt;120x on the pydantic benchmark (we go from taking a whole minute to complete the benchmark to taking &lt;0.5s).</p>
+<p>But I think this might provide a performance boost on <code>main</code>, which is why I'm filing it as a standalone PR.</p>
+<h2>Test Plan</h2>
+<p>All existing tests pass</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @AlexWaygood on 2025-11-18 15:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-11-18 15:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-11-18 15:32</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance">typing conformance tests</a></h2>
+<details>
+<summary>Changes were detected when running ty on typing conformance tests</summary>
+
+<pre><code class="language-diff">--- old-output.txt	2025-11-18 17:45:25.535995063 +0000
++++ new-output.txt	2025-11-18 17:45:28.972019207 +0000
+@@ -1,4 +1,4 @@
+-fatal[panic] Panicked at /home/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/a885bb4/src/function/execute.rs:465:17 when checking `/home/runner/work/ruff/ruff/typing/conformance/tests/aliases_typealiastype.py`: `infer_definition_types(Id(19aa3)): execute: too many cycle iterations`
++fatal[panic] Panicked at /home/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/a885bb4/src/function/execute.rs:465:17 when checking `/home/runner/work/ruff/ruff/typing/conformance/tests/aliases_typealiastype.py`: `infer_definition_types(Id(19ea3)): execute: too many cycle iterations`
+ _directives_deprecated_library.py:15:31: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `int`
+ _directives_deprecated_library.py:30:26: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `str`
+ _directives_deprecated_library.py:36:41: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `Self@__add__`
+
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-11-18 15:34</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">scikit-build-core (https://github.com/scikit-build/scikit-build-core)
+- src/scikit_build_core/build/wheel.py:98:20: error[]8;;https://ty.dev/rules#no-matching-overload\no-matching-overload]8;;\] No overload of bound method `__init__` matches arguments
+- Found 44 diagnostics
++ Found 43 diagnostics
+
+
+</code></pre>
+</details>
+
+<p>No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-11-18 15:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:2827 on 2025-11-18 15:38</div>
+            <div class="timeline-body"><p>Seems reasonable to cache this. Can you add the <code>heap_size</code> attribute so that we can get a sense of how expensive this is in terms of memory consumption?</p>
+<p>How much does it change performance if we were to cache <code>own_fields</code> only? I'm asking because that would require slightly less memory</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:2833 on 2025-11-18 15:41</div>
+            <div class="timeline-body"><p>What's the reason why we need an <code>IndexMap</code> now?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-11-18 15:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-11-18 15:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:2827 on 2025-11-18 15:41</div>
+            <div class="timeline-body"><blockquote>
+<p>Can you add the <code>heap_size</code> attribute so that we can get a sense of how expensive this is in terms of memory consumption?</p>
+</blockquote>
+<p>Yes, I was already working on this before you posted your comment 😆</p>
+<blockquote>
+<p>How much does it change performance if we were to cache <code>own_fields</code> only? I'm asking because that would require slightly less memory</p>
+</blockquote>
+<p>Not sure. Happy to try it, but I'll wait for Codspeed to finish on this version of the PR first so we can compare the two using the codspeed runners</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-11-18 15:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:2833 on 2025-11-18 15:41</div>
+            <div class="timeline-body"><p><code>salsa::Update</code> is implemented for <code>IndexMap</code> but not for <code>OrderMap</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-11-18 15:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:2833 on 2025-11-18 15:42</div>
+            <div class="timeline-body"><p>I can make a PR to Salsa to implement <code>salsa::Update</code> for <code>OrderMap</code> too if you'd prefer this method to continue returning <code>OrderMap</code>. But as far as I understand, we generally prefer to use <code>IndexMap</code>s where possible since <code>IndexMap</code> is a simpler type than <code>OrderMap</code> (<code>OrderMap</code> just adds <code>Hash</code> on top of <code>IndexMap</code>'s API, IIRC?). It doesn't seem necessary to use an <code>OrderMap</code> here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:2833 on 2025-11-18 15:47</div>
+            <div class="timeline-body"><p>Oh I see. Nah, I don't care it just wasn't obvious to me why we change it</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-11-18 15:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-11-18 15:50</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-18 15:58</div>
+            <div class="timeline-body"><p><a href="https://codspeed.io/astral-sh/ruff/branches/alex%2Foptimize-fields?utm_source=github&amp;utm_medium=check&amp;utm_content=details">1-3% improvements on six benchmarks</a>, including a 2% improvement on pydantic, offset by a 1% regression on 9 benchmarks. No memory usage change reported by mypy_primer.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-18 16:01</div>
+            <div class="timeline-body"><p>Should we rebase this on top of Jack's PR to see the real performance benefits? It seems more questionable to merge with the now very limited performance improvement</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-11-18 16:22</div>
+            <div class="timeline-body"><p>I think the options are &quot;land this first&quot; or &quot;merge it with Jack's PR&quot; -- I don't think we can land the TypedDict PR separately without this, because it makes benchmarks time out on GitHub.</p>
+<p>I would be inclined to land this separately just because it's easier to review as two separate PRs. But we can rebase Jack's PR on top of this first to verify that this fixes the performance issues there.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-18 16:47</div>
+            <div class="timeline-body"><blockquote>
+<p>Should we rebase this on top of Jack's PR to see the real performance benefits? It seems more questionable to merge with the now very limited performance improvement</p>
+</blockquote>
+<p>Hmm, I'm not <em>totally</em> sure I understand the standard being applied here -- I feel like we've merged lots of performance improvements in the past that showed &lt;3% improvements on our benchmarks, especially if they didn't have any measurable memory-usage regressions :-)</p>
+<p>As I say, I've also verified locally that this yields a <em>huge</em> speedup when I cherry pick it onto #21467, which currently can't be merged due to the performance regression on that branch.</p>
+<p>But sure, I'm happy if @oconnor663 wants to just cherry-pick https://github.com/astral-sh/ruff/pull/21512/commits/f4075371e05fe7d48a94e1c841b37e9a6f8e3dc3 onto #21467.</p>
+<blockquote>
+<p>How much does it change performance if we were to cache <code>own_fields</code> only? I'm asking because that would require slightly less memory</p>
+</blockquote>
+<p>I tried this out locally (applied to Jack's PR). It has very competitive performance to this version. But I'm inclined to go with this version, since there's no memory regression reported on this PR, and since caching <code>ClassLiteral::own_fields</code> rather than <code>ClassLiteral::fields</code> makes our APIs a fair bit less ergonomic IMO. You end up always having to assign the result of <code>class.fields(db)</code> before iterating over it, or the borrow checker complains in several places that temporary values are being dropped while borrowed, because the return type of <code>ClassLiteral::fields()</code> needs to be <code>FxIndexMap&lt;&amp;'db Name, &amp;'db Field&lt;'db&gt;&gt;</code> rather than <code>&amp;'db FxIndexMap&lt;Name, Field&lt;'db&gt;&gt;</code></p>
+<details>
+
+<pre><code class="language-diff">diff --git a/crates/ty_python_semantic/src/types/class.rs b/crates/ty_python_semantic/src/types/class.rs
+index abc54f5626..54cfd75f9c 100644
+--- a/crates/ty_python_semantic/src/types/class.rs
++++ b/crates/ty_python_semantic/src/types/class.rs
+@@ -2593,8 +2593,9 @@ impl&lt;'db&gt; ClassLiteral&lt;'db&gt; {
+                 )))
+             }
+             (CodeGeneratorKind::TypedDict, &quot;get&quot;) =&gt; {
+-                let overloads = self
+-                    .fields(db, specialization, field_policy)
++                let fields = self.fields(db, specialization, field_policy);
++
++                let overloads = fields
+                     .iter()
+                     .flat_map(|(name, field)| {
+                         let key_type =
+@@ -2824,17 +2825,19 @@ impl&lt;'db&gt; ClassLiteral&lt;'db&gt; {
+     /// Returns a list of all annotated attributes defined in this class, or any of its superclasses.
+     ///
+     /// See [`ClassLiteral::own_fields`] for more details.
+-    #[salsa::tracked(returns(ref))]
+     pub(crate) fn fields(
+         self,
+         db: &amp;'db dyn Db,
+         specialization: Option&lt;Specialization&lt;'db&gt;&gt;,
+         field_policy: CodeGeneratorKind&lt;'db&gt;,
+-    ) -&gt; FxIndexMap&lt;Name, Field&lt;'db&gt;&gt; {
++    ) -&gt; FxIndexMap&lt;&amp;'db Name, &amp;'db Field&lt;'db&gt;&gt; {
+         if field_policy == CodeGeneratorKind::NamedTuple {
+             // NamedTuples do not allow multiple inheritance, so it is sufficient to enumerate the
+             // fields of this class only.
+-            return self.own_fields(db, specialization, field_policy);
++            return self
++                .own_fields(db, specialization, field_policy)
++                .iter()
++                .collect();
+         }
+ 
+         let matching_classes_in_mro: Vec&lt;_&gt; = self
+@@ -2873,11 +2876,12 @@ impl&lt;'db&gt; ClassLiteral&lt;'db&gt; {
+     ///     y: str = &quot;a&quot;
+     /// ```
+     /// we return a map `{&quot;x&quot;: (int, None), &quot;y&quot;: (str, Some(Literal[&quot;a&quot;]))}`.
++    #[salsa::tracked(returns(ref))]
+     pub(super) fn own_fields(
+         self,
+         db: &amp;'db dyn Db,
+         specialization: Option&lt;Specialization&lt;'db&gt;&gt;,
+-        field_policy: CodeGeneratorKind,
++        field_policy: CodeGeneratorKind&lt;'db&gt;,
+     ) -&gt; FxIndexMap&lt;Name, Field&lt;'db&gt;&gt; {
+         let mut attributes = FxIndexMap::default();
+ 
+diff --git a/crates/ty_python_semantic/src/types/diagnostic.rs b/crates/ty_python_semantic/src/types/diagnostic.rs
+index 66316f1537..5b3cc2b62e 100644
+--- a/crates/ty_python_semantic/src/types/diagnostic.rs
++++ b/crates/ty_python_semantic/src/types/diagnostic.rs
+@@ -3135,7 +3135,7 @@ pub(crate) fn report_invalid_key_on_typed_dict&lt;'db&gt;(
+     typed_dict_ty: Type&lt;'db&gt;,
+     full_object_ty: Option&lt;Type&lt;'db&gt;&gt;,
+     key_ty: Type&lt;'db&gt;,
+-    items: &amp;FxIndexMap&lt;Name, Field&lt;'db&gt;&gt;,
++    items: &amp;FxIndexMap&lt;&amp;'db Name, &amp;'db Field&lt;'db&gt;&gt;,
+ ) {
+     let db = context.db();
+     if let Some(builder) = context.report_lint(&amp;INVALID_KEY, key_node) {
+@@ -3197,8 +3197,8 @@ pub(crate) fn report_invalid_key_on_typed_dict&lt;'db&gt;(
+ pub(super) fn report_namedtuple_field_without_default_after_field_with_default&lt;'db&gt;(
+     context: &amp;InferContext&lt;'db, '_&gt;,
+     class: ClassLiteral&lt;'db&gt;,
+-    (field, field_def): &amp;(Name, Option&lt;Definition&lt;'db&gt;&gt;),
+-    (field_with_default, field_with_default_def): &amp;(Name, Option&lt;Definition&lt;'db&gt;&gt;),
++    (field, field_def): (&amp;Name, Option&lt;Definition&lt;'db&gt;&gt;),
++    (field_with_default, field_with_default_def): (&amp;Name, Option&lt;Definition&lt;'db&gt;&gt;),
+ ) {
+     let db = context.db();
+     let module = context.module();
+diff --git a/crates/ty_python_semantic/src/types/infer/builder.rs b/crates/ty_python_semantic/src/types/infer/builder.rs
+index caa925ad74..778fe849b2 100644
+--- a/crates/ty_python_semantic/src/types/infer/builder.rs
++++ b/crates/ty_python_semantic/src/types/infer/builder.rs
+@@ -4,6 +4,7 @@ use itertools::{Either, Itertools};
+ use ruff_db::diagnostic::{Annotation, DiagnosticId, Severity};
+ use ruff_db::files::File;
+ use ruff_db::parsed::ParsedModuleRef;
++use ruff_python_ast::name::Name;
+ use ruff_python_ast::visitor::{Visitor, walk_expr};
+ use ruff_python_ast::{
+     self as ast, AnyNodeRef, ExprContext, HasNodeIndex, NodeIndex, PythonVersion,
+@@ -613,12 +614,11 @@ impl&lt;'db, 'ast&gt; TypeInferenceBuilder&lt;'db, 'ast&gt; {
+                     ) {
+                         field_with_default_encountered =
+                             Some((field_name, field.single_declaration));
+-                    } else if let Some(field_with_default) = field_with_default_encountered.as_ref()
+-                    {
++                    } else if let Some(field_with_default) = field_with_default_encountered {
+                         report_namedtuple_field_without_default_after_field_with_default(
+                             &amp;self.context,
+                             class,
+-                            &amp;(field_name, field.single_declaration),
++                            (field_name, field.single_declaration),
+                             field_with_default,
+                         );
+                     }
+@@ -919,9 +919,9 @@ impl&lt;'db, 'ast&gt; TypeInferenceBuilder&lt;'db, 'ast&gt; {
+                 CodeGeneratorKind::from_class(self.db(), class, None)
+             {
+                 let specialization = None;
++                let fields = class.fields(self.db(), specialization, field_policy);
+ 
+-                let kw_only_sentinel_fields: Vec&lt;_&gt; = class
+-                    .fields(self.db(), specialization, field_policy)
++                let kw_only_sentinel_fields: Vec&lt;_&gt; = fields
+                     .iter()
+                     .filter_map(|(name, field)| {
+                         field.is_kw_only_sentinel(self.db()).then_some(name)
+@@ -7269,7 +7269,7 @@ impl&lt;'db, 'ast&gt; TypeInferenceBuilder&lt;'db, 'ast&gt; {
+             }
+ 
+             let value_ty = if let Some(Type::StringLiteral(key)) = key_ty
+-                &amp;&amp; let Some(field) = typed_dict_items.get(key.value(self.db()))
++                &amp;&amp; let Some(field) = typed_dict_items.get(&amp;Name::from(key.value(self.db())))
+             {
+                 self.infer_expression(&amp;item.value, TypeContext::new(Some(field.declared_ty)))
+             } else {
+@@ -7954,7 +7954,7 @@ impl&lt;'db, 'ast&gt; TypeInferenceBuilder&lt;'db, 'ast&gt; {
+                                     Type::TypedDict(typed_dict_ty),
+                                     None,
+                                     key_ty,
+-                                    items,
++                                    &amp;items,
+                                 );
+                                 // Return `Unknown` to prevent the overload system from generating its own error
+                                 return Type::unknown();
+@@ -11285,7 +11285,7 @@ impl&lt;'db, 'ast&gt; TypeInferenceBuilder&lt;'db, 'ast&gt; {
+                                 value_ty,
+                                 None,
+                                 slice_ty,
+-                                typed_dict.items(db),
++                                &amp;typed_dict.items(db),
+                             );
+                         } else {
+                             if let Some(builder) =
+diff --git a/crates/ty_python_semantic/src/types/typed_dict.rs b/crates/ty_python_semantic/src/types/typed_dict.rs
+index 1b33d7111f..521329f2c9 100644
+--- a/crates/ty_python_semantic/src/types/typed_dict.rs
++++ b/crates/ty_python_semantic/src/types/typed_dict.rs
+@@ -58,7 +58,7 @@ impl&lt;'db&gt; TypedDictType&lt;'db&gt; {
+         self.defining_class
+     }
+ 
+-    pub(crate) fn items(self, db: &amp;'db dyn Db) -&gt; &amp;'db FxIndexMap&lt;Name, Field&lt;'db&gt;&gt; {
++    pub(crate) fn items(self, db: &amp;'db dyn Db) -&gt; FxIndexMap&lt;&amp;'db Name, &amp;'db Field&lt;'db&gt;&gt; {
+         let (class_literal, specialization) = self.defining_class.class_literal(db);
+         class_literal.fields(db, specialization, CodeGeneratorKind::TypedDict)
+     }
+@@ -318,7 +318,7 @@ pub(super) fn validate_typed_dict_key_assignment&lt;'db, 'ast&gt;(
+     let items = typed_dict.items(db);
+ 
+     // Check if key exists in `TypedDict`
+-    let Some((_, item)) = items.iter().find(|(name, _)| *name == key) else {
++    let Some((_, item)) = items.iter().find(|(name, _)| **name == key) else {
+         if emit_diagnostic {
+             report_invalid_key_on_typed_dict(
+                 context,
+@@ -327,7 +327,7 @@ pub(super) fn validate_typed_dict_key_assignment&lt;'db, 'ast&gt;(
+                 Type::TypedDict(typed_dict),
+                 full_object_ty,
+                 Type::string_literal(db, key),
+-                items,
++                &amp;items,
+             );
+         }
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @AlexWaygood on 2025-11-18 16:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @AlexWaygood on 2025-11-18 16:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @AlexWaygood on 2025-11-18 16:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @AlexWaygood on 2025-11-18 16:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff_memory_usage/src/lib.rs</code>:36 on 2025-11-18 17:05</div>
+            <div class="timeline-body"><p>Is there a reference you used to verify the actual memory use of an IndexMap that could be linked here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-11-18 17:07</div>
+            <div class="timeline-body"><p>Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-11-18 17:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_memory_usage/src/lib.rs</code>:36 on 2025-11-18 17:10</div>
+            <div class="timeline-body"><p>no, this is just the <code>OrderMap</code> implementation a few lines above directly copied and pasted. But (assuming the pre-existing <code>OrderMap</code> implementation is correct), I think that that should be correct. An <code>OrderMap</code> is <a href="https://github.com/indexmap-rs/ordermap/blob/d04e267f4cd2533b6e83e98e083942becf29c778/src/map.rs#L102-L105">just a thin wrapper around an <code>IndexMap</code></a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/ruff_memory_usage/src/lib.rs</code>:36 on 2025-11-18 17:23</div>
+            <div class="timeline-body"><p>get-size2 already has support for <code>IndexMap</code>, so I'm not sure why we need this. Maybe the <code>indexmap</code> feature is not enabled somewhere?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2025-11-18 17:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-11-18 17:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-11-18 17:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_memory_usage/src/lib.rs</code>:36 on 2025-11-18 17:44</div>
+            <div class="timeline-body"><p>Great catch -- yes, that was it! Fixed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2025-11-18 17:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-11-18 17:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-11-18 17:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/oconnor663">@oconnor663</a> on 2025-11-18 19:16</div>
+            <div class="timeline-body"><p>Thank you @AlexWaygood (and reviewers)!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:48:27 UTC
+    </footer>
+</body>
+</html>

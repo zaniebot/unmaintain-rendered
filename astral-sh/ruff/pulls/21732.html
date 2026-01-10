@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Fix find references for type defined in stub - astral-sh/ruff #21732</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Fix find references for type defined in stub</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21732">#21732</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2025-12-01 15:04
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-01 15:04</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>ty failed to return any references for a type defined in a stub where
+there's also a definition in a non-stub file.</p>
+<p>The underlying issue was that <code>find_references</code> resolved the name to
+&quot;go-to definition&quot; whereas the visitor resolved the declaration, which
+can resolve to a different file and location.</p>
+<p>This fix uses go to declaration in both steps. I don't think it really
+matters whether we use go to declaration or go to definition because
+both should resolve to the same references. I picked go to declaration
+because it requires less work (no stub mapping)</p>
+<h2>Test Plan</h2>
+<p>Added test</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @MichaReiser on 2025-12-01 15:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @MichaReiser on 2025-12-01 15:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @MichaReiser on 2025-12-01 15:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @MichaReiser on 2025-12-01 15:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @MichaReiser on 2025-12-01 15:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @MichaReiser on 2025-12-01 15:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-12-01 15:06</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @AlexWaygood removed by @AlexWaygood on 2025-12-01 15:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @Gankra by @MichaReiser on 2025-12-01 15:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @carljm removed by @MichaReiser on 2025-12-01 15:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @sharkdp removed by @MichaReiser on 2025-12-01 15:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @dcreager removed by @MichaReiser on 2025-12-01 15:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-12-01 15:08</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅</p>
+<p>No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-12-01 15:10</div>
+            <div class="timeline-body"><p>Hmm interesting, ideally we would resolve both..? Especially if you're in a codebase that maintains the <code>.py</code> and <code>.pyi</code>. I wonder what different LSPs do...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-01 15:13</div>
+            <div class="timeline-body"><blockquote>
+<p>Hmm interesting, ideally we would resolve both..? Especially if you're in a codebase that maintains the <code>.py</code> and <code>.pyi</code>. I wonder what different LSPs do...</p>
+</blockquote>
+<p>We only use the first navigation target to test if they're the same.</p>
+<p>As far as I could tell, ty now shows the same references when finding references to <code>Path</code> in <code>ty_benchmark</code> as Pylance</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> approved on 2025-12-01 15:17</div>
+            <div class="timeline-body"><p>Certainly this makes more sense than what's currently there.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-01 15:19</div>
+            <div class="timeline-body"><p>I'm certainly not saying this is the final solution. It's just one of the first issues I found while trying to wrap my head around how find references works</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2025-12-01 16:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-12-01 16:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-12-01 16:53</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:48:28 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] fix ty playground initialization and vite optimization issues - astral-sh/ruff #21471</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] fix ty playground initialization and vite optimization issues</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21471">#21471</a>
+        opened by <a href="https://github.com/mtshiba">@mtshiba</a>
+        on 2025-11-15 13:00
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/mtshiba">@mtshiba</a> on 2025-11-15 13:00</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>I tried to build the ty playground on my Windows machine and run it locally, but it didn't work. I got the following error:</p>
+<pre><code class="language-sh">$ npm start --workspace ty-playground
+
+&gt; ty-playground@0.0.0 prestart
+&gt; npm run dev:wasm
+
+
+&gt; ty-playground@0.0.0 dev:wasm
+&gt; wasm-pack build ../../crates/ty_wasm --dev --target web --out-dir ../../playground/ty/ty_wasm
+
+[INFO]: Checking for the Wasm target...
+[INFO]: Compiling to Wasm... 
+Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.69s
+[INFO]: Installing wasm-bindgen...
+[INFO]: License key is set in Cargo.toml but no LICENSE file(s) were found; Please add the LICENSE file(s) to your project directory
+[INFO]: :-) Done in 5.46s
+[INFO]: :-) Your wasm pkg is ready to publish at ..\..\playground\ty\ty_wasm.
+
+&gt; ty-playground@0.0.0 start
+&gt; vite
+
+[vite-plugin-static-copy] Error: No file was found to copy to C:\{omitted}\ruff\playground\node_modules\pyodide\*,!**/*.{md,html},!**/*.d.ts,!**/*.whl,!**/node_modules src.
+[vite-plugin-static-copy] No items found.
+</code></pre>
+<p>Also, nothing is displayed when I access localhost:5173. The following error appears in the browser console:</p>
+<pre><code>ty_wasm.js?v=16eba020:2195 Uncaught TypeError: Cannot read properties of undefined (reading '__wbindgen_malloc')
+at new Workspace (ty_wasm.js?v=16eba020:2195:51)
+at Playground.tsx:33:27
+</code></pre>
+<p>This PR fixes the above issues.</p>
+<p>First, for the first issue with vite-plugin-static-copy, I addressed it by changing backslashes <code>\</code> to slashes <code>/</code> in the path name. This is a common Windows-specific path handling issue.</p>
+<p>For the other issue, I changed the <code>ty_wasm</code> package import from a relative path to a package name, and excluded <code>ty_wasm</code> from <code>optimizeDeps</code> in vite.config.js.
+To be honest, I'm not familiar with vite, so I'm not sure why this worked, but I tried the workaround described here:</p>
+<p>https://github.com/vitejs/vite/issues/8427</p>
+<p>The above changes are for development purposes only and should not affect the content actually delivered.</p>
+<h2>Test Plan</h2>
+<p>N/A</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @mtshiba on 2025-11-15 13:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">playground</span> added by @AlexWaygood on 2025-11-15 13:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-11-15 13:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @AlexWaygood on 2025-11-15 13:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>playground/ty/vite.config.ts</code>:26 on 2025-11-15 17:46</div>
+            <div class="timeline-body"><p>This makes little sense to me, given that <code>path.join</code> uses the platform-specific path separator. Which path contains the <code>/</code> where windows expects a <code>\</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>playground/ty/vite.config.ts</code>:19 on 2025-11-15 17:50</div>
+            <div class="timeline-body"><p>We use vite for the production builds. Can you verify that the <code>vite build</code> reported sizes are the same before and after your changes</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-11-15 17:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mtshiba">@mtshiba</a> reviewed on 2025-11-16 03:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/mtshiba">@mtshiba</a> on <code>playground/ty/vite.config.ts</code>:19 on 2025-11-16 03:05</div>
+            <div class="timeline-body"><p>Sure. Build results on Ubuntu (@ WSL2):</p>
+<p>main:</p>
+<pre><code class="language-sh">❯ dust ty/dist
+ 24K   ┌── Astral.png                │█                                                             │   0%
+ 20K   │ ┌── pyodide.mjs             │█░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ │   0%
+ 20K   │ ├── solidity-CVYD1GVc.js    │█░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ │   0%
+ 24K   │ ├── tsMode-De4b9PNo.js      │█░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ │   0%
+ 36K   │ ├── cssMode-cNRTyZYV.js     │█░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ │   0%
+ 36K   │ ├── htmlMode-BieFvPPN.js    │█░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ │   0%
+ 44K   │ ├── ffi.d.ts                │█░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ │   0%
+ 44K   │ ├── jsonMode-B6VJCXeF.js    │█░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ │   0%
+ 68K   │ ├── pyodide.d.ts            │█░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ │   0%
+ 84K   │ ├── pyodide.js.map          │█░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ │   0%
+ 84K   │ ├── pyodide.mjs.map         │█░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ │   0%
+ 92K   │ ├── codicon-B_Z2XQ3P.ttf    │█░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ │   0%
+112K   │ ├── pyodide-lock.json       │█░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ │   0%
+144K   │ ├── editor-BhPcksyq.css     │█░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ │   0%
+396K   │ ├── index-BeD-OYFt.js       │█░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ │   1%
+1.0M   │ ├── pyodide.asm.js          │███░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ │   4%
+2.3M   │ ├── python_stdlib.zip       │█████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ │   8%
+3.5M   │ ├── editor.main-ClkAP-6o.js │████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ │  12%
+8.2M   │ ├── pyodide.asm.wasm        │██████████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ │  29%
+ 11M   │ ├── ty_wasm_bg-Bd9OBY4A.wasm│██████████████████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ │  41%
+ 28M   ├─┴ assets                    │█████████████████████████████████████████████████████████████ │ 100%
+ 28M ┌─┴ dist                        │█████████████████████████████████████████████████████████████ │ 100%
+</code></pre>
+<p>#21471:</p>
+<pre><code class="language-sh">❯ dust ty/dist
+ 24K   ┌── Astral.png                │█                                                             │   0%
+ 20K   │ ┌── pyodide.mjs             │█░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ │   0%
+ 20K   │ ├── solidity-CVYD1GVc.js    │█░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ │   0%
+ 24K   │ ├── tsMode-Bzlyl_WG.js      │█░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ │   0%
+ 36K   │ ├── cssMode-BItooz1B.js     │█░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ │   0%
+ 36K   │ ├── htmlMode-XS2Ok6yb.js    │█░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ │   0%
+ 44K   │ ├── ffi.d.ts                │█░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ │   0%
+ 44K   │ ├── jsonMode-Bw4_M6_V.js    │█░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ │   0%
+ 68K   │ ├── pyodide.d.ts            │█░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ │   0%
+ 84K   │ ├── pyodide.js.map          │█░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ │   0%
+ 84K   │ ├── pyodide.mjs.map         │█░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ │   0%
+ 92K   │ ├── codicon-B_Z2XQ3P.ttf    │█░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ │   0%
+112K   │ ├── pyodide-lock.json       │█░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ │   0%
+144K   │ ├── editor-BhPcksyq.css     │█░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ │   0%
+396K   │ ├── index-B_J2zKKC.js       │█░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ │   1%
+1.0M   │ ├── pyodide.asm.js          │███░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ │   4%
+2.3M   │ ├── python_stdlib.zip       │█████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ │   8%
+3.5M   │ ├── editor.main-CF30gs3G.js │████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ │  12%
+8.2M   │ ├── pyodide.asm.wasm        │██████████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ │  29%
+ 11M   │ ├── ty_wasm_bg-C8Ofe_-K.wasm│██████████████████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ │  41%
+ 28M   ├─┴ assets                    │█████████████████████████████████████████████████████████████ │ 100%
+ 28M ┌─┴ dist                        │█████████████████████████████████████████████████████████████ │ 100%
+</code></pre>
+<p>This result is consistent with what <a href="https://vite.dev/guide/dep-pre-bundling#:~:text=Dependency%20pre%2Dbundling%20only%20applies%20in%20development%20mode%2C%20and%20uses%20esbuild%20to%20convert%20dependencies%20to%20ESM.%20In%20production%20builds%2C%20%40rollup/plugin%2Dcommonjs%20is%20used%20instead.">the vite document</a> states.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mtshiba">@mtshiba</a> reviewed on 2025-11-16 03:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/mtshiba">@mtshiba</a> on <code>playground/ty/vite.config.ts</code>:26 on 2025-11-16 03:18</div>
+            <div class="timeline-body"><p>I found a statement about this limitation <a href="https://github.com/sapphi-red/vite-plugin-static-copy#usage">here</a>:</p>
+<blockquote>
+<p>If you are using Windows, make sure to use normalizePath after doing path.resolve or else. \ is a escape charactor in tinyglobby and you should use /.</p>
+</blockquote>
+<p>According to this description, using <code>normalizePath</code> is a more robust approach, so I changed it to use that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-11-16 07:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>playground/ty/vite.config.ts</code>:26 on 2025-11-16 07:50</div>
+            <div class="timeline-body"><p>Right, this is a glob and not a path.</p>
+<p>I suggest then to call <code>normalizePath(pyodideDir)</code> (or normalize before assigning to <code>pyodideDir</code>) to scope the normalize exactly to where it's necessary.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-11-16 07:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @mtshiba on 2025-11-25 02:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2025-11-25 07:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-11-25 07:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-11-25 11:27</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:48:27 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avoid syntax error when formatting attribute expressions with outer parentheses, parenthesized value, and trailing comment on value - astral-sh/ruff #20418</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Avoid syntax error when formatting attribute expressions with outer parentheses, parenthesized value, and trailing comment on value</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/20418">#20418</a>
+        opened by <a href="https://github.com/dylwil3">@dylwil3</a>
+        on 2025-09-15 14:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-09-15 14:53</div>
+            <div class="timeline-body"><p>Closes #19350</p>
+<p>I'm not sure if this is the expected/desired output. Without parentheses around the value, we have:</p>
+<pre><code class="language-python"># unformatted
+variable = (
+    something # a comment
+    .first_method(&quot;some string&quot;)
+)
+
+# formatted
+variable = something.first_method(&quot;some string&quot;)  # a comment
+</code></pre>
+<p>It's a little unclear to me... it almost feels like in <em>both</em> cases (when <code>something</code> does or does not have parentheses) we should maintain the break, since that's what I would expect from a cursory reading of https://docs.astral.sh/ruff/formatter/black/#trailing-end-of-line-comments</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @dylwil3 on 2025-09-15 14:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @dylwil3 on 2025-09-15 14:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-09-15 15:08</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @dylwil3 on 2025-09-15 15:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @dylwil3 on 2025-09-15 15:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-09-16 14:42</div>
+            <div class="timeline-body"><p>Thank you.</p>
+<p>The comment placement is a bit weird if <code>something</code> isn't parenthesized, but the comment is very long:</p>
+<pre><code class="language-python">variable = (
+    (something) # a commentdddddddddddddddddddddddddddddd
+    .first_method(&quot;some string&quot;)
+)
+
+
+variable = (
+    something # a commentdddddddddddddddddddddddddddddd
+    .first_method(&quot;some string&quot;)
+)
+</code></pre>
+<p>Formatted</p>
+<pre><code>variable = (
+    (something)  # a commentdddddddddddddddddddddddddddddd
+    .first_method(&quot;some string&quot;)
+)
+
+
+variable = something.first_method(  # a commentdddddddddddddddddddddddddddddd
+    &quot;some string&quot;
+)
+</code></pre>
+<p>We might want to spent a little time to see if we can preserve the comment placement closer to where it used to be (by e.g. inserting a hard line break after the attribute name or using a line suffix boundary). But this might be harder than it looks and is something we could fix separately.</p>
+<p>The fix otherwise looks good, e.g. it also fixes this code that previously produced invalid syntax (may be worth adding as a test to showcase that the issue isn't specific to assignment statements):</p>
+<pre><code class="language-python">if (
+    (something)  # a commentdddddddddddddddddddddddddddddd
+    .first_method(&quot;some string&quot;)
+): pass
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-09-16 14:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/expression/expr_attribute.rs</code>:182 on 2025-09-16 14:45</div>
+            <div class="timeline-body"><p>We'll now also use the new layout if <code>value</code> is parenthesized and has a trailing comment like this</p>
+<pre><code class="language-python">variable = (
+    (something # a comment  
+    ).fist_method(&quot;some string&quot;)
+)
+</code></pre>
+<p>I think that's fine but it might be worth adding a few more tests.</p>
+<p>For example, this snippet now gets formatted differently:</p>
+<pre><code class="language-python">if (
+    (something # a comment  
+    ).fist_method(&quot;some string&quot;) # second comment
+): pass
+</code></pre>
+<p>Overall, maybe add a few more permutations with multiple comments (or at least play with it in the playground)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-11-14 22:24</div>
+            <div class="timeline-body"><p>I've added some more tests, and I'm personally okay with the edge cases that produce slightly awkward formatting (in the name of getting rid of this syntax error). But let me know if you want me to try to tweak anything as part of this PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @dylwil3 on 2025-11-14 22:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/expression/expr_attribute.rs</code>:182 on 2025-11-15 18:11</div>
+            <div class="timeline-body"><p>Do we need to limit this to end of line comments only? Can you add a test where a value has both (unless that's not possible)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-11-15 18:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dylwil3">@dylwil3</a> reviewed on 2025-11-17 14:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dylwil3">@dylwil3</a> on <code>crates/ruff_python_formatter/src/expression/expr_attribute.rs</code>:182 on 2025-11-17 14:53</div>
+            <div class="timeline-body"><p>It's possible to have both (and we get a syntax error on main after formatting, but not in this PR). But you're right that we only need to use <code>Multiline</code> here if there's a trailing end of line comment, so I've narrowed the condition.</p>
+<p>Added a test with both and a test just with trailing own-line comment (the latter formats with the same IR as on <code>main</code>, and without a syntax error, now that we narrowed the condition).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dylwil3 on 2025-11-17 15:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dylwil3 on 2025-11-17 15:11</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:48:26 UTC
+    </footer>
+</body>
+</html>

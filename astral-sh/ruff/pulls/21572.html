@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Improve lsp handling of hover/goto on imports - astral-sh/ruff #21572</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Improve lsp handling of hover/goto on imports</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21572">#21572</a>
+        opened by <a href="https://github.com/Gankra">@Gankra</a>
+        on 2025-11-21 19:58
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/Gankra">@Gankra</a> on 2025-11-21 19:58</div>
+            <div class="timeline-body"><ul>
+<li>Fixes https://github.com/astral-sh/ty/issues/1011</li>
+<li>Also fixes the fact that we didn't handle <code>.x</code> properly <em>at all</em> in hover/goto</li>
+</ul>
+<p>It turns out all of our import handling completely ignored the <code>level</code> (number of relative <code>.</code>'s) in a <code>from ..x.y import z</code> statement. It was nice seeing how much my understanding of <code>ty</code> has improved -- previously this would have all been opaque to me but now it was just, completely glaring and blatant.</p>
+<p>Fixing this required refactoring all the import code to take the importing file into consideration. I ended up refactoring a bunch of code to pass around/require <code>SemanticModel</code> more, as it's the natural API for resolving this kind of import (it actually had an API for this that was just... dead code, whoops!).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @Gankra on 2025-11-21 19:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @Gankra on 2025-11-21 19:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @Gankra on 2025-11-21 19:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @Gankra on 2025-11-21 19:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @Gankra on 2025-11-21 19:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @Gankra on 2025-11-21 19:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @Gankra on 2025-11-21 19:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-11-21 20:00</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-11-21 20:06</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅</p>
+<p>No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_ide/src/goto.rs</code>:871 on 2025-11-22 14:34</div>
+            <div class="timeline-body"><p>Sort of funny that <code>SemanticModel</code> survived to this day. I introduced it in one of the very earliest prototypes of a type aware linter back when ty was barely able to infer ints. I'm not sure it's the right API but good to see that it's not complete rubbish and is useful in cases like this :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_ide/src/goto.rs</code>:942 on 2025-11-22 14:35</div>
+            <div class="timeline-body"><p>I wonder if it makes sense to change this to <code>node.is_stmt</code>. I don't think we ever want to go beyond the closest statement (my, now proven incorrect, assumption was that <code>expression</code> is a sufficient boundary but turns out it isn't)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-11-22 14:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @AlexWaygood removed by @AlexWaygood on 2025-11-22 15:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-11-22 16:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/ty_ide/src/goto.rs</code>:871 on 2025-11-22 16:05</div>
+            <div class="timeline-body"><p>Yeah between this PR and the string annotations one I am Fully embracing it as an actually useful abstraction!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-11-22 16:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/ty_ide/src/goto.rs</code>:942 on 2025-11-22 16:06</div>
+            <div class="timeline-body"><p>Hmm I'll think about it</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @Gankra on 2025-11-22 16:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @Gankra on 2025-11-22 16:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-11-22 16:06</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:48:27 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Fix auto-import code action to handle pre-existing import - astral-sh/ruff #21733</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Fix auto-import code action to handle pre-existing import</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21733">#21733</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2025-12-01 16:07
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-12-01 16:07</div>
+            <div class="timeline-body"><p>Previously, the code action to do auto-import on a pre-existing symbol
+assumed that the auto-importer would always generate an import
+statement. But sometimes an import statement already exists.</p>
+<p>A good example of this is the following snippet:</p>
+<pre><code class="language-py">import warnings
+
+@deprecated
+def myfunc(): pass
+</code></pre>
+<p>Specifically, <code>deprecated</code> exists in <code>warnings</code> but isn't currently
+imported. A code action to fix this could feasibly do two
+transformations here. One is:</p>
+<pre><code class="language-py">import warnings
+
+@warnings.deprecated
+def myfunc(): pass
+</code></pre>
+<p>Another is:</p>
+<pre><code class="language-py">from warnings import deprecated
+import warnings
+
+@deprecated
+def myfunc(): pass
+</code></pre>
+<p>The existing auto-import infrastructure chooses the former, since it
+reuses a pre-existing import statement. But this PR chooses the latter
+for the case of a code action. I'm not 100% sure this is the correct
+choice, but it seems to defer more strongly to what the user has typed.
+That is, that they want to use it unqualified because it's what has been
+typed. So we should add the necessary import statement to make that
+work.</p>
+<p>Fixes astral-sh/ty#1668</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @BurntSushi on 2025-12-01 16:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @BurntSushi on 2025-12-01 16:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @BurntSushi on 2025-12-01 16:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @BurntSushi on 2025-12-01 16:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @BurntSushi on 2025-12-01 16:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-12-01 16:07</div>
+            <div class="timeline-body"><p>Demo:</p>
+<p>https://github.com/user-attachments/assets/90294a57-3a8b-49f2-9325-af6885d2339c</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @dcreager removed by @BurntSushi on 2025-12-01 16:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @carljm removed by @BurntSushi on 2025-12-01 16:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @MichaReiser removed by @BurntSushi on 2025-12-01 16:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @sharkdp removed by @BurntSushi on 2025-12-01 16:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @Gankra by @BurntSushi on 2025-12-01 16:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ty_ide/src/completion.rs</code>:523 on 2025-12-01 16:09</div>
+            <div class="timeline-body"><p>It's always a good day when one gets to write a higher rank trait bound.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-12-01 16:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-12-01 16:09</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-12-01 16:11</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">scikit-build-core (https://github.com/scikit-build/scikit-build-core)
+- src/scikit_build_core/_logging.py:153:13: warning[unsupported-base] Unsupported class base with type `&lt;class 'Mapping[str, Style]'&gt; | &lt;class 'Mapping[str, Divergent]'&gt;`
+- src/scikit_build_core/build/_pathutil.py:25:38: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `str | PathLike[str]`, found `DirEntry[Path]`
+- src/scikit_build_core/build/_pathutil.py:27:24: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `str | PathLike[str]`, found `DirEntry[Path]`
+- src/scikit_build_core/build/wheel.py:98:20: error[no-matching-overload] No overload of bound method `__init__` matches arguments
+- Found 45 diagnostics
++ Found 41 diagnostics
+
+pandas-stubs (https://github.com/pandas-dev/pandas-stubs)
+- pandas-stubs/_typing.pyi:1207:16: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 5815 diagnostics
++ Found 5814 diagnostics
+
+
+</code></pre>
+</details>
+
+<p>No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @BurntSushi on 2025-12-01 16:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @BurntSushi on 2025-12-01 16:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_ide/src/completion.rs</code>:523 on 2025-12-01 16:51</div>
+            <div class="timeline-body"><p>It seems the only difference is <code>force</code>. Are you expecting that we'll need more arguments or flexibility around customizing in the future or could we pass a <code>Style</code> enum or similar instead of the factory function?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-12-01 16:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ty_ide/src/completion.rs</code>:523 on 2025-12-01 16:53</div>
+            <div class="timeline-body"><p>I'm honestly not sure. But I'd rather this than creating another type for now. This is also an API internal to this module, so I don't feel too bad about it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-12-01 16:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @AlexWaygood removed by @AlexWaygood on 2025-12-01 16:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> approved on 2025-12-01 17:23</div>
+            <div class="timeline-body"><p>Could you add an e2e test for this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-12-01 17:30</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm not 100% sure this is the correct choice, but it seems to defer more strongly to what the user has typed.</p>
+</blockquote>
+<p>I believe rust-analyzer just offers up both choices. This is much more palatable in the context of quick-fixes where you're likely to get, like, 4 options instead of 1000. I'd like us to do that in the future (this PR gets us closer to that).</p>
+<p>(Actually I believe rust-analyzer does a two-phase thing where you pick &quot;qualify&quot; vs &quot;import&quot; and then if there are multiple possible imports/qualifications it brings up a second prompt for which you want.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @BurntSushi on 2025-12-01 19:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2025-12-01 19:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-12-01 19:20</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:48:28 UTC
+    </footer>
+</body>
+</html>

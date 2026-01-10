@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Better handling of &quot;derived information&quot; in constraint sets - astral-sh/ruff #21463</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Better handling of &quot;derived information&quot; in constraint sets</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21463">#21463</a>
+        opened by <a href="https://github.com/dcreager">@dcreager</a>
+        on 2025-11-14 22:43
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dcreager">@dcreager</a> on 2025-11-14 22:43</div>
+            <div class="timeline-body"><p>This saga began with a regression in how we handle constraint sets where a typevar is constrained by another typevar, which #21068 first added support for:</p>
+<pre><code class="language-py">def mutually_constrained[T, U]():
+    # If [T = U ∧ U ≤ int], then [T ≤ int] must be true as well.
+    given_int = ConstraintSet.range(U, T, U) &amp; ConstraintSet.range(Never, U, int)
+    static_assert(given_int.implies_subtype_of(T, int))
+</code></pre>
+<p>While working on #21414, I saw a regression in this test, which was strange, since that PR has nothing to do with this logic! The issue is that something in that PR made us instantiate the typevars <code>T</code> and <code>U</code> in a different order, giving them differently ordered salsa IDs. And importantly, we use these salsa IDs to define the variable ordering that is used in our constraint set BDDs. This showed that our &quot;mutually constrained&quot; logic only worked for one of the two possible orderings. (We can — and now do — test this in a brute-force way by copy/pasting the test with both typevar orderings.)</p>
+<p>The underlying bug was in our <code>ConstraintSet::simplify_and_domain</code> method. It would correctly detect <code>(U ≤ T ≤ U) ∧ (U ≤ int)</code>, because those two constraints affect different typevars, and from that, infer <code>T ≤ int</code>. But it wouldn't detect the equivalent pattern in <code>(T ≤ U ≤ T) ∧ (U ≤ int)</code>, since those constraints affect the same typevar. At first I tried adding that as yet more pattern-match logic in the ever-growing <code>simplify_and_domain</code> method. But doing so caused other tests to start failing.</p>
+<p>At that point, I realized that <code>simplify_and_domain</code> had gotten to the point where it was trying to do too much, and for conflicting consumers. It was first written as part of our display logic, where the goal is to remove redundant information from a BDD to make its string rendering simpler. But we also started using it to add &quot;derived facts&quot; to a BDD. A derived fact is a constraint that doesn't appear in the BDD directly, but which we can still infer to be true. Our failing test relies on derived facts — being able to infer that <code>T ≤ int</code> even though that particular constraint doesn't appear in the original BDD. Before, <code>simplify_and_domain</code> would trace through all of the constraints in a BDD, figure out the full set of derived facts, and <em>add those derived facts</em> to the BDD structure. This is brittle, because those derived facts are not universally true! In our example, <code>T ≤ int</code> only holds along the BDD paths where both <code>T = U</code> and <code>U ≤ int</code>. Other paths will test the negations of those constraints, and on those, we <em>shouldn't</em> infer <code>T ≤ int</code>. In theory it's possible (and we were trying) to use BDD operators to express that dependency...but that runs afoul of how we were simultaneously trying to <em>remove</em> information to make our displays simpler.</p>
+<p>So, I ripped off the band-aid. <code>simplify_and_domain</code> is now <em>only</em> used for display purposes. I have not touched it at all, except to remove some logic that is definitely not used by our <code>Display</code> impl. Otherwise, I did not want to touch that house of cards for now, since the display logic is not load-bearing for any type inference logic.</p>
+<p>For all non-display callers, we have a new <strong><em>sequent map</em></strong> data type, which tracks exactly the same derived information. But it does so (a) without trying to remove anything from the BDD, and (b) lazily, without updating the BDD structure.</p>
+<p>So the end result is that all of the tests (including the new regressions) pass, via a more efficient (and hopefully better structured/documented) implementation, at the cost of hanging onto a pile of display-related tech debt that we'll want to clean up at some point.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @dcreager on 2025-11-14 22:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @dcreager on 2025-11-14 22:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-11-14 23:01</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-11-14 23:02</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅</p>
+<p>No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @dcreager on 2025-11-14 23:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @dcreager on 2025-11-14 23:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @dcreager on 2025-11-14 23:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @dcreager on 2025-11-14 23:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:2119 on 2025-11-17 13:10</div>
+            <div class="timeline-body"><p>Does this case (and the one below) need a <code>!upper.is_typevar()</code> guard? Otherwise, the <code>S ≤ T ≤ S</code> case that you mentioned above would be handled here, and you would get a post constraint of <code>Never ≤ S ≤ S</code>, which is also vacuously true.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:1997 on 2025-11-17 13:12</div>
+            <div class="timeline-body"><p>Just curious about the terminology here. The special thing about the <a href="https://en.wikipedia.org/wiki/Sequent">equivalent term in logic</a> seems to be that there can be multiple &quot;consequents&quot; on the right hand side. But none of the cases listed below seem to have that form?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-11-17 13:13</div>
+            <div class="timeline-body"><p>Not a full review yet, but I might not have enough time to review the rest today, so sending two initial questions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-11-17 16:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:1997 on 2025-11-17 16:48</div>
+            <div class="timeline-body"><p>The representation does allow for multiple consequents (there is a <code>Vec</code> in the <code>single_implications</code> and <code>pair_implications</code> maps). But we never construct one directly, since each sequent that we construct corresponds to an implication where we infer one fact from something else we already know. But when that single-consequent sequent is folded in to the rest of the <code>SequentMap</code>, it might get combined with other sequents that have the same lhs, producing a combined sequent with multiple consequents. (And the consequents of a sequent are ORed, so if there's multiple derived facts that we can infer from the same set of given facts, we can choose which of them we need to use.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-11-17 19:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:2119 on 2025-11-17 19:18</div>
+            <div class="timeline-body"><p>Yes that's a great catch! I think I can solve this instead by moving the conditional inside the match arm body above</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-11-17 19:33</div>
+            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+
+<h2><a href="https://codspeed.io/astral-sh/ruff/branches/dcreager%2Fordering-bug?utm_source=github&amp;utm_medium=comment&amp;utm_content=header">CodSpeed Performance Report</a></h2>
+<h3>Merging #21463 will <strong>not alter performance</strong></h3>
+<p><sub>Comparing <code>dcreager/ordering-bug</code> (a87c3d9) with <code>main</code> (e4a32ba)</sub></p>
+<h3>Summary</h3>
+<p><code>✅ 22</code> untouched<br />
+<code>⏩ 30</code> skipped[^skipped]</p>
+<p>[^skipped]: 30 benchmarks were skipped, so the baseline results were used instead. If they were deleted from the codebase, <a href="https://codspeed.io/astral-sh/ruff/branches/dcreager%2Fordering-bug?sectionId=benchmark-comparison-section-baseline-result-skipped&amp;utm_source=github&amp;utm_medium=comment&amp;utm_content=archive">click here and archive them to remove them from the performance reports</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-11-17 19:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:2119 on 2025-11-17 19:58</div>
+            <div class="timeline-body"><p>(done)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> approved on 2025-11-18 15:24</div>
+            <div class="timeline-body"><p>Fantastic in-code documentation and writeup. I have the feeling that I understood roughly what is going on and it seems to make a lot of sense to me, but I'll also admit that my understanding is most certainly not deep enough to provide any meaningful input on the overall design. But all of the individual pieces seem consistent to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dcreager on 2025-11-18 17:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dcreager on 2025-11-18 17:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-11-18 17:02</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:48:27 UTC
+    </footer>
+</body>
+</html>

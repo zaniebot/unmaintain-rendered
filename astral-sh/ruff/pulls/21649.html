@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] don't iterate over a hashset - astral-sh/ruff #21649</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] don't iterate over a hashset</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21649">#21649</a>
+        opened by <a href="https://github.com/carljm">@carljm</a>
+        on 2025-11-26 23:09
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/carljm">@carljm</a> on 2025-11-26 23:09</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This caused &quot;deterministic but chaotic&quot; ordering of some intersection types in diagnostics. When calling a union, we infer the argument type once per matching parameter type, intersecting the inferred types for the argument expression, and we did that in an unpredictable order.</p>
+<p>We do need a hashset here for de-duplication. Sometimes we call large unions where the type for a given parameter is the same across the union, we should infer the argument once per parameter type, not once per union element. So use an <code>FxIndexSet</code> instead of an <code>FxHashSet</code>.</p>
+<h2>Test Plan</h2>
+<p>With this change, switching between <code>main</code> and https://github.com/astral-sh/ruff/pull/21646 no longer changes the ordering of the intersection type in the test in https://github.com/astral-sh/ruff/pull/21646/commits/cca3a8045df3a1038601e848b87b2163c81aebed</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @carljm on 2025-11-26 23:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @carljm on 2025-11-26 23:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @carljm on 2025-11-26 23:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @carljm on 2025-11-26 23:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @carljm on 2025-11-26 23:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ibraheemdev by @carljm on 2025-11-26 23:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-11-26 23:11</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-11-26 23:13</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">dd-trace-py (https://github.com/DataDog/dd-trace-py)
+- ddtrace/appsec/_handlers.py:404:13: error[invalid-argument-type] Argument to bound method `add_configurations` is incorrect: Expected `list[tuple[str, str, str]]`, found `list[tuple[str, str, str] | tuple[str, int, Unknown]] &amp; list[Unknown | tuple[str, int, Unknown]]`
++ ddtrace/appsec/_handlers.py:404:13: error[invalid-argument-type] Argument to bound method `add_configurations` is incorrect: Expected `list[tuple[str, str, str]]`, found `list[Unknown | tuple[str, int, Unknown]] &amp; list[tuple[str, str, str] | tuple[str, int, Unknown]]`
+
+
+</code></pre>
+</details>
+
+<p>No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2025-11-26 23:14</div>
+            <div class="timeline-body"><p>Good catch, thanks.</p>
+<p>We could simplify this a bit further (but up to you).</p>
+<pre><code class="language-diff">- let parameter_types = overloads_with_binding
+-     .iter()
+-     .filter_map(|(overload, binding)| parameter_type(overload, binding));
+- for parameter_type in parameter_types {
++ for (overload, binding) in overloads_with_bindings {
++     let parameter_type = parameter_type(overload, binding);
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2025-11-26 23:15</div>
+            <div class="timeline-body"><p>Hmm.. the mypy-primer diagnostic changes are somewhat concerning.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> approved on 2025-11-26 23:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-11-26 23:17</div>
+            <div class="timeline-body"><blockquote>
+<p>We could simplify this a bit further (but up to you).</p>
+</blockquote>
+<p>I think we can't do that, because of the <code>filter_map</code> (<code>parameter_type(...)</code> returns an option). Or, we can, but it means adding a conditional <code>continue</code>, or <code>if let</code> and extra indentation level, in the loop, not sure that's really better.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-26 23:18</div>
+            <div class="timeline-body"><blockquote>
+<p>Hmm.. the mypy-primer diagnostic changes are somewhat concerning.</p>
+</blockquote>
+<p>I'm also seeing them on https://github.com/astral-sh/ruff/pull/21644, which only touches documentation. I think there's been more than one new cause of nondeterminism over the last few days :-) it looks related to https://github.com/astral-sh/ruff/pull/20566</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-11-26 23:19</div>
+            <div class="timeline-body"><p>Yes, I don't think this fixes the only issue.</p>
+<p>The dd-trace-py change looks like this PR, the other changes less so.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-11-26 23:27</div>
+            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+
+<h2><a href="https://codspeed.io/astral-sh/ruff/branches/cjm%2Fnondet?utm_source=github&amp;utm_medium=comment&amp;utm_content=header">CodSpeed Performance Report</a></h2>
+<h3>Merging #21649 will <strong>not alter performance</strong></h3>
+<p><sub>Comparing <code>cjm/nondet</code> (68647e2) with <code>main</code> (e2e2150)</sub></p>
+<h3>Summary</h3>
+<p><code>✅ 22</code> untouched<br />
+<code>⏩ 30</code> skipped[^skipped]</p>
+<p>[^skipped]: 30 benchmarks were skipped, so the baseline results were used instead. If they were deleted from the codebase, <a href="https://codspeed.io/astral-sh/ruff/branches/cjm%2Fnondet?sectionId=benchmark-comparison-section-baseline-result-skipped&amp;utm_source=github&amp;utm_medium=comment&amp;utm_content=archive">click here and archive them to remove them from the performance reports</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-11-27 00:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @carljm on 2025-11-27 00:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-11-27 00:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-11-27 00:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-11-27 06:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types/infer/builder.rs</code>:6904 on 2025-11-27 06:45</div>
+            <div class="timeline-body"><p>It would probably have been worth to adding a comment here or someone like me will come along and change this to a hash set again 😆</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:48:28 UTC
+    </footer>
+</body>
+</html>

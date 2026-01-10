@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`pyupgrade`] Mark `printf-string-formatting` literal fixes as safe (`UP031`) - astral-sh/ruff #20416</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>pyupgrade</code>] Mark <code>printf-string-formatting</code> literal fixes as safe (<code>UP031</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/20416">#20416</a>
+        opened by <a href="https://github.com/auscompgeek">@auscompgeek</a>
+        on 2025-09-15 13:04
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/auscompgeek">@auscompgeek</a> on 2025-09-15 13:04</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This marks the subset of fixes emitted by UP031, where the RHS operand is a literal (see https://docs.astral.sh/ruff/rules/printf-string-formatting/#fix-safety), as safe.</p>
+<h2>Test Plan</h2>
+<p><code>cargo test</code>, and inspect snapshot diff to see the new safe fixes</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dylwil3 by @dylwil3 on 2025-09-15 13:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-09-15 13:24</div>
+            <div class="timeline-body"><p>Thanks for working on this! Would you mind gating this change behind preview? You'll want to add a function to https://github.com/astral-sh/ruff/blob/e8b445012507762e794f6a5f6247856e093e53e9/crates/ruff_linter/src/preview.rs with a comment linking to this PR and then call that function in the module implementing the rule</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-09-15 13:25</div>
+            <div class="timeline-body"><p>Thanks for working on this, but I'm not sure we want to make this change. The fix has always been unsafe, even before we started handling variables (https://github.com/astral-sh/ruff/pull/11019), so I think there could be a good reason. For example, I think <a href="https://github.com/astral-sh/ruff/issues/15555#issuecomment-3282365625">this comment</a> is relevant here too:</p>
+<blockquote>
+<p><code>%s</code> is not equivalent to passing <code>None</code> to <code>__format__</code> except by convention.</p>
+</blockquote>
+<p>As an example of this:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; class C:
+...     def __format__(*args, **kwargs):
+...         print(&quot;called my format!&quot;)
+...         return &quot;&quot;
+...
+&gt;&gt;&gt; &quot;{}&quot;.format(C())
+called my format!
+''
+&gt;&gt;&gt; &quot;%s&quot; % C()
+'&lt;__main__.C object at 0x7fd0f5757250&gt;'
+</code></pre>
+<p>So I think this fix should remain unsafe, even if this is pretty reliable in practice.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/auscompgeek">@auscompgeek</a> on 2025-09-15 14:33</div>
+            <div class="timeline-body"><blockquote>
+<p>As an example of this:</p>
+</blockquote>
+<p>Ah, that's a fun example. I think there shouldn't be any examples of this being unsafe for a literal RHS though, right?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-09-15 16:42</div>
+            <div class="timeline-body"><p>Hmm, yeah it's probably safe for literals. But it also seems relatively uncommon to pass a literal to a formatting call instead of using a literal string. I'd probably just lean toward leaving the whole thing unsafe for the sake of simplicity, but I'm open to other thoughts. Making the fix safe for literals in preview, as Dylan said, sounds technically okay.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @dylwil3 removed by @dylwil3 on 2025-09-15 21:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[`pyupgrade`] Mark `printf-string-formatting` fixes as safe (`UP031`)" to "[`pyupgrade`] Mark `printf-string-formatting` literal fixes as safe (`UP031`)" by @auscompgeek on 2025-09-16 02:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/auscompgeek">@auscompgeek</a> on 2025-09-16 02:33</div>
+            <div class="timeline-body"><p>I agree that formatting only a single literal on the RHS would be quite uncommon. I can see it being useful with multiple values though.</p>
+<p>I've also added a comment about <code>__format__</code> to the fix safety docs for the rule, in case that question comes up again :smile:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/pyupgrade/rules/printf_string_formatting.rs</code>:79 on 2025-09-17 14:15</div>
+            <div class="timeline-body"><p>Not sure exactly the best phrasing here, maybe something like this?</p>
+<pre><code class="language-suggestion">/// Additionally, while `__format__` typically calls `__str__`, this is not always
+/// the case. If `__format__` has been overridden, replacing `%s` with the
+/// empty `format` placeholder will change the program's behavior:
+</code></pre>
+<p>I also think we should mention explicitly when the fix <em>is</em> safe. To me that feels most natural right at the beginning of the section (&quot;The fix is only marked as safe when the value being formatted is a literal&quot;). We should also try to work <code>In preview, ...</code> in there somewhere.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/pyupgrade/rules/printf_string_formatting.rs</code>:480 on 2025-09-17 14:17</div>
+            <div class="timeline-body"><p>It looks like <code>is_constant</code> already works for tuples:</p>
+<p>https://github.com/astral-sh/ruff/blob/d8b4b38d0bae57e72bf7c59eef68e40c5ffafa76/crates/ruff_python_ast/src/helpers.rs#L661-L663</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/pyupgrade/rules/printf_string_formatting.rs</code>:498 on 2025-09-17 14:21</div>
+            <div class="timeline-body"><p>I think we've already checked the keys in <code>clean_params_dictionary</code>. We're transforming a dict literal into keyword arguments like <code>key=value</code>, and we bail out without a <code>params_string</code> if the key isn't a string literal. But we do need to check the values with <code>is_constant</code>; it doesn't handle <code>Expr::Dict</code>s automatically like tuples.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-09-17 14:24</div>
+            <div class="timeline-body"><p>Thanks, this looks reasonable to me. I had a few minor comments, and I think we should add some test cases showing the safe fix. It seems all of the existing tests are still unsafe, or at least they aren't being run with preview enabled.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-09-17 14:37</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+151 -0 violations, +0 -0 fixes in 2 projects; 53 projects unchanged)</p>
+<details><summary><a href="https://github.com/binary-husky/gpt_academic">binary-husky/gpt_academic</a> (+11 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/binary-husky/gpt_academic/blob/3546f8c1c44994bcc2ef3b2b187619821f2c33e9/crazy_functions/Document_Optimize.py#L331'>crazy_functions/Document_Optimize.py:331:13:</a> E301 [*] Expected 1 blank line, found 0
++ <a href='https://github.com/binary-husky/gpt_academic/blob/3546f8c1c44994bcc2ef3b2b187619821f2c33e9/crazy_functions/Latex_Project_Polish.py#L16'>crazy_functions/Latex_Project_Polish.py:16:9:</a> E301 [*] Expected 1 blank line, found 0
++ <a href='https://github.com/binary-husky/gpt_academic/blob/3546f8c1c44994bcc2ef3b2b187619821f2c33e9/crazy_functions/Latex_Project_Translate_Legacy.py#L16'>crazy_functions/Latex_Project_Translate_Legacy.py:16:9:</a> E301 [*] Expected 1 blank line, found 0
++ <a href='https://github.com/binary-husky/gpt_academic/blob/3546f8c1c44994bcc2ef3b2b187619821f2c33e9/crazy_functions/Markdown_Translate.py#L19'>crazy_functions/Markdown_Translate.py:19:9:</a> E301 [*] Expected 1 blank line, found 0
++ <a href='https://github.com/binary-husky/gpt_academic/blob/3546f8c1c44994bcc2ef3b2b187619821f2c33e9/crazy_functions/SourceCode_Analyse_JupyterNotebook.py#L18'>crazy_functions/SourceCode_Analyse_JupyterNotebook.py:18:9:</a> E301 [*] Expected 1 blank line, found 0
++ <a href='https://github.com/binary-husky/gpt_academic/blob/3546f8c1c44994bcc2ef3b2b187619821f2c33e9/crazy_functions/latex_fns/latex_actions.py#L184'>crazy_functions/latex_fns/latex_actions.py:184:9:</a> E301 [*] Expected 1 blank line, found 0
++ <a href='https://github.com/binary-husky/gpt_academic/blob/3546f8c1c44994bcc2ef3b2b187619821f2c33e9/crazy_functions/paper_fns/reduce_aigc.py#L390'>crazy_functions/paper_fns/reduce_aigc.py:390:13:</a> E301 [*] Expected 1 blank line, found 0
++ <a href='https://github.com/binary-husky/gpt_academic/blob/3546f8c1c44994bcc2ef3b2b187619821f2c33e9/crazy_functions/pdf_fns/report_gen_html.py#L25'>crazy_functions/pdf_fns/report_gen_html.py:25:9:</a> E301 [*] Expected 1 blank line, found 0
++ <a href='https://github.com/binary-husky/gpt_academic/blob/3546f8c1c44994bcc2ef3b2b187619821f2c33e9/request_llms/bridge_chatglmonnx.py#L33'>request_llms/bridge_chatglmonnx.py:33:9:</a> E301 [*] Expected 1 blank line, found 0
++ <a href='https://github.com/binary-husky/gpt_academic/blob/3546f8c1c44994bcc2ef3b2b187619821f2c33e9/request_llms/com_sparkapi.py#L118'>request_llms/com_sparkapi.py:118:9:</a> E301 [*] Expected 1 blank line, found 0
+... 1 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/bokeh/bokeh">bokeh/bokeh</a> (+140 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/client/connection.py#L366'>src/bokeh/client/connection.py:366:9:</a> E301 [*] Expected 1 blank line, found 0
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/model/model.py#L559'>src/bokeh/model/model.py:559:13:</a> E301 [*] Expected 1 blank line, found 0
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/server/session.py#L231'>src/bokeh/server/session.py:231:9:</a> E301 [*] Expected 1 blank line, found 0
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/integration/models/test_plot.py#L76'>tests/integration/models/test_plot.py:76:13:</a> E301 [*] Expected 1 blank line, found 0
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/integration/models/test_plot.py#L80'>tests/integration/models/test_plot.py:80:13:</a> E301 [*] Expected 1 blank line, found 0
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/integration/widgets/test_button.py#L65'>tests/integration/widgets/test_button.py:65:9:</a> E301 [*] Expected 1 blank line, found 0
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/integration/widgets/test_button.py#L70'>tests/integration/widgets/test_button.py:70:13:</a> E301 [*] Expected 1 blank line, found 0
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/integration/widgets/test_checkbox_button_group.py#L48'>tests/integration/widgets/test_checkbox_button_group.py:48:9:</a> E301 [*] Expected 1 blank line, found 0
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/integration/widgets/test_checkbox_button_group.py#L53'>tests/integration/widgets/test_checkbox_button_group.py:53:13:</a> E301 [*] Expected 1 blank line, found 0
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/integration/widgets/test_checkbox_group.py#L66'>tests/integration/widgets/test_checkbox_group.py:66:9:</a> E301 [*] Expected 1 blank line, found 0
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/integration/widgets/test_checkbox_group.py#L71'>tests/integration/widgets/test_checkbox_group.py:71:13:</a> E301 [*] Expected 1 blank line, found 0
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/integration/widgets/test_datepicker.py#L183'>tests/integration/widgets/test_datepicker.py:183:13:</a> E301 [*] Expected 1 blank line, found 0
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/integration/widgets/test_datepicker.py#L211'>tests/integration/widgets/test_datepicker.py:211:13:</a> E301 [*] Expected 1 blank line, found 0
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/integration/widgets/test_dropdown.py#L70'>tests/integration/widgets/test_dropdown.py:70:9:</a> E301 [*] Expected 1 blank line, found 0
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/integration/widgets/test_dropdown.py#L75'>tests/integration/widgets/test_dropdown.py:75:13:</a> E301 [*] Expected 1 blank line, found 0
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/integration/widgets/test_radio_button_group.py#L48'>tests/integration/widgets/test_radio_button_group.py:48:9:</a> E301 [*] Expected 1 blank line, found 0
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/integration/widgets/test_radio_button_group.py#L53'>tests/integration/widgets/test_radio_button_group.py:53:13:</a> E301 [*] Expected 1 blank line, found 0
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/integration/widgets/test_radio_group.py#L65'>tests/integration/widgets/test_radio_group.py:65:9:</a> E301 [*] Expected 1 blank line, found 0
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/integration/widgets/test_radio_group.py#L70'>tests/integration/widgets/test_radio_group.py:70:13:</a> E301 [*] Expected 1 blank line, found 0
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/integration/widgets/test_select.py#L223'>tests/integration/widgets/test_select.py:223:9:</a> E301 [*] Expected 1 blank line, found 0
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/integration/widgets/test_select.py#L228'>tests/integration/widgets/test_select.py:228:13:</a> E301 [*] Expected 1 blank line, found 0
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/integration/widgets/test_toggle.py#L64'>tests/integration/widgets/test_toggle.py:64:9:</a> E301 [*] Expected 1 blank line, found 0
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/integration/widgets/test_toggle.py#L69'>tests/integration/widgets/test_toggle.py:69:13:</a> E301 [*] Expected 1 blank line, found 0
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/application/handlers/test_code_runner.py#L132'>tests/unit/bokeh/application/handlers/test_code_runner.py:132:9:</a> E301 [*] Expected 1 blank line, found 0
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/application/handlers/test_directory.py#L106'>tests/unit/bokeh/application/handlers/test_directory.py:106:9:</a> E301 [*] Expected 1 blank line, found 0
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/application/handlers/test_directory.py#L128'>tests/unit/bokeh/application/handlers/test_directory.py:128:9:</a> E301 [*] Expected 1 blank line, found 0
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/application/handlers/test_directory.py#L147'>tests/unit/bokeh/application/handlers/test_directory.py:147:9:</a> E301 [*] Expected 1 blank line, found 0
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/application/handlers/test_directory.py#L170'>tests/unit/bokeh/application/handlers/test_directory.py:170:9:</a> E301 [*] Expected 1 blank line, found 0
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/application/handlers/test_directory.py#L186'>tests/unit/bokeh/application/handlers/test_directory.py:186:9:</a> E301 [*] Expected 1 blank line, found 0
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/application/handlers/test_directory.py#L205'>tests/unit/bokeh/application/handlers/test_directory.py:205:9:</a> E301 [*] Expected 1 blank line, found 0
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/application/handlers/test_directory.py#L215'>tests/unit/bokeh/application/handlers/test_directory.py:215:9:</a> E301 [*] Expected 1 blank line, found 0
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/application/handlers/test_directory.py#L256'>tests/unit/bokeh/application/handlers/test_directory.py:256:9:</a> E301 [*] Expected 1 blank line, found 0
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/application/handlers/test_directory.py#L281'>tests/unit/bokeh/application/handlers/test_directory.py:281:9:</a> E301 [*] Expected 1 blank line, found 0
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/application/handlers/test_directory.py#L319'>tests/unit/bokeh/application/handlers/test_directory.py:319:9:</a> E301 [*] Expected 1 blank line, found 0
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/application/handlers/test_directory.py#L341'>tests/unit/bokeh/application/handlers/test_directory.py:341:9:</a> E301 [*] Expected 1 blank line, found 0
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/application/handlers/test_directory.py#L362'>tests/unit/bokeh/application/handlers/test_directory.py:362:9:</a> E301 [*] Expected 1 blank line, found 0
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/application/handlers/test_directory.py#L381'>tests/unit/bokeh/application/handlers/test_directory.py:381:9:</a> E301 [*] Expected 1 blank line, found 0
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/application/handlers/test_directory.py#L400'>tests/unit/bokeh/application/handlers/test_directory.py:400:9:</a> E301 [*] Expected 1 blank line, found 0
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/application/handlers/test_directory.py#L418'>tests/unit/bokeh/application/handlers/test_directory.py:418:9:</a> E301 [*] Expected 1 blank line, found 0
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/application/handlers/test_directory.py#L434'>tests/unit/bokeh/application/handlers/test_directory.py:434:9:</a> E301 [*] Expected 1 blank line, found 0
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/application/handlers/test_directory.py#L91'>tests/unit/bokeh/application/handlers/test_directory.py:91:9:</a> E301 [*] Expected 1 blank line, found 0
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/application/handlers/test_notebook__handlers.py#L59'>tests/unit/bokeh/application/handlers/test_notebook__handlers.py:59:9:</a> E301 [*] Expected 1 blank line, found 0
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/application/handlers/test_notebook__handlers.py#L71'>tests/unit/bokeh/application/handlers/test_notebook__handlers.py:71:9:</a> E301 [*] Expected 1 blank line, found 0
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/application/handlers/test_notebook__handlers.py#L82'>tests/unit/bokeh/application/handlers/test_notebook__handlers.py:82:9:</a> E301 [*] Expected 1 blank line, found 0
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/application/handlers/test_script.py#L46'>tests/unit/bokeh/application/handlers/test_script.py:46:9:</a> E301 [*] Expected 1 blank line, found 0
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/application/handlers/test_script.py#L61'>tests/unit/bokeh/application/handlers/test_script.py:61:9:</a> E301 [*] Expected 1 blank line, found 0
+... 94 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (1 rules affected)</summary>
+<p>
+
+<p>| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| E301 | 151 | 151 | 0 | 0 | 0 |</p>
+</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @ntBre on 2025-09-17 16:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @ntBre on 2025-09-17 16:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-21 08:00</div>
+            <div class="timeline-body"><p>@auscompgeek do you think you'll have time in the near future to address the PR feedback. If not, that's fine. I think we could follow up with the feedback ourselves to get this landed.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:48:26 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Set severity for non-rule diagnostics - astral-sh/ruff #21559</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Set severity for non-rule diagnostics</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21559">#21559</a>
+        opened by <a href="https://github.com/senekor">@senekor</a>
+        on 2025-11-21 13:57
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/senekor">@senekor</a> on 2025-11-21 13:57</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title? (Please prefix with `[ty]` for ty pull
+  requests.)
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>This change makes ruff server emit LSP diagnostics with severity level in more situations. Specifically, if the diagnostic didn't have a &quot;secondary code&quot; (I'm not super familiar what that is.) ruff server would previously emit <em>no</em> severity.</p>
+<p>This isn't good, because we always have an internal severity, so the information is right there. Editor experience is degraded without the severity information. For example, I use Helix. Themes typically don't consider the case of diagnostics without severity, and the fallback style is very ugly on most themes. Another functional problem is that Helix has a &quot;diagnostics picker&quot;, which can filter by severity. This allows users to focus on errors before warnings. It doesn't work without the severity information.</p>
+<p>I also added <code>tags(diagnostic)</code> to the same code path, because the information also doesn't seem to depend on the &quot;secondary code&quot;. However, I haven't noticed this information missing in my own use of ruff, so I didn't confirm the difference in my own testing.</p>
+<h2>Test Plan</h2>
+<p>I saw diagnostics without severity in my editor (Helix), made the fix, installed ruff, restarted LSP in Helix, confirmed that diagnostics now have severity.</p>
+<p>A very simple file to confirm this just contains <code>if</code>, which will emit a &quot;Expected an expression&quot; diagnostic. With this PR, it has the severity &quot;error&quot;, without it it has none.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-11-21 14:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_server/src/lint.rs</code>:294 on 2025-11-21 14:01</div>
+            <div class="timeline-body"><p>Thank you. Hmm, this seems like an oversight to me from our diagnostic refactor. @ntBre could we always use <code>diagnostic.severity</code> here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-11-21 14:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_server/src/lint.rs</code>:294 on 2025-11-21 14:28</div>
+            <div class="timeline-body"><p>Yeah it looks like it to me, it does seem like an oversight because I couldn't use the <code>severity</code> helper.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-11-21 14:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_server/src/lint.rs</code>:294 on 2025-11-21 14:31</div>
+            <div class="timeline-body"><p>Oh no we can't because all diagnostics should remain errors on the CLI, but we want to reduce the severity of some errors to warnings in the editor only</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-11-21 14:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_server/src/lint.rs</code>:294 on 2025-11-21 14:35</div>
+            <div class="timeline-body"><p>Oh right, yes. I wasn't sure if you meant could we have used the <code>diagnostic.severity()</code> in <em>this branch</em> all along (which is what I answered), or if we could just use <code>diagnostic.severity()</code> for both cases now. I think the changes in this PR make sense to me since we do the remapping you said.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-11-21 14:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_server/src/lint.rs</code>:294 on 2025-11-21 14:39</div>
+            <div class="timeline-body"><p>I would do a small refactor here to also show the diagnostic id in case the secondary code is missing. This should also allow us to make the two code paths more similar</p>
+<pre><code class="language-rust">let (severity, code) = if let Some(code) = code {
+	(severity(code), code))
+} else {
+	(
+		match diagnostic.severity { ... },
+		&amp;diagnostic.id
+	)
+};
+
+let tags = tags(diagnostics); // or inline into the struct construction below
+let code = lsp_types::NumberOrString::String(code.to_string());
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/senekor">@senekor</a> reviewed on 2025-11-21 16:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/senekor">@senekor</a> on <code>crates/ruff_server/src/lint.rs</code>:294 on 2025-11-21 16:07</div>
+            <div class="timeline-body"><p>updated</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[ruff] Still emit diagnostic severity when secondary code is missing" to "Set severity for non-rule diagnostics" by @MichaReiser on 2025-11-21 16:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2025-11-21 16:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @MichaReiser on 2025-11-21 16:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-11-21 16:34</div>
+            <div class="timeline-body"><p>Awesome, thank you</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-11-21 16:41</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2025-11-21 16:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-11-21 16:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-11-21 17:56</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:48:27 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Fix flow of associated member states during star imports - astral-sh/ruff #21776</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Fix flow of associated member states during star imports</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21776">#21776</a>
+        opened by <a href="https://github.com/sharkdp">@sharkdp</a>
+        on 2025-12-03 15:48
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-12-03 15:48</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Star-imports can not just affect the state of symbols that they pull in, they can also affect the state of members that are associated with those symbols. For example, if <code>obj.attr</code> was previously narrowed from <code>int | None</code> to <code>int</code>, and a star-import now overwrites <code>obj</code>, then the narrowing on <code>obj.attr</code> should be &quot;reset&quot;.</p>
+<p>This PR keeps track of the state of associated members during star imports and properly models the flow of their corresponding state through the control flow structure that we artificially create for star-imports.</p>
+<p>See <a href="https://github.com/astral-sh/ty/issues/1355#issuecomment-3607125005">this comment</a> for an explanation why this caused ty to see certain <code>asyncio</code> symbols as not being accessible on Python 3.14.</p>
+<p>closes https://github.com/astral-sh/ty/issues/1355</p>
+<h2>Ecosystem impact</h2>
+<pre><code class="language-diff">async-utils (https://github.com/mikeshardmind/async-utils)
+- src/async_utils/bg_loop.py:115:31: error[invalid-argument-type] Argument to bound method `set_task_factory` is incorrect: Expected `_TaskFactory | None`, found `def eager_task_factory[_T_co](loop: AbstractEventLoop | None, coro: Coroutine[Any, Any, _T_co@eager_task_factory], *, name: str | None = None, context: Context | None = None) -&gt; Task[_T_co@eager_task_factory]`
+- Found 30 diagnostics
++ Found 29 diagnostics
+
+mitmproxy (https://github.com/mitmproxy/mitmproxy)
++ mitmproxy/utils/asyncio_utils.py:96:60: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- test/conftest.py:37:31: error[invalid-argument-type] Argument to bound method `set_task_factory` is incorrect: Expected `_TaskFactory | None`, found `def eager_task_factory[_T_co](loop: AbstractEventLoop | None, coro: Coroutine[Any, Any, _T_co@eager_task_factory], *, name: str | None = None, context: Context | None = None) -&gt; Task[_T_co@eager_task_factory]`
+</code></pre>
+<p>All of these seem to be correct, they give us a different type for <code>asyncio</code> symbols that are now imported from different <code>sys.version_info</code> branches (where we previously failed to recognize some of these as statically true/false).</p>
+<pre><code class="language-diff">dd-trace-py (https://github.com/DataDog/dd-trace-py)
+- ddtrace/contrib/internal/asyncio/patch.py:39:12: error[invalid-argument-type] Argument to function `unwrap` is incorrect: Expected `WrappedFunction`, found `def create_task[_T](self, coro: Coroutine[Any, Any, _T@create_task] | Generator[Any, None, _T@create_task], *, name: object = None) -&gt; Task[_T@create_task]`
++ ddtrace/contrib/internal/asyncio/patch.py:39:12: error[invalid-argument-type] Argument to function `unwrap` is incorrect: Expected `WrappedFunction`, found `def create_task[_T](self, coro: Generator[Any, None, _T@create_task] | Coroutine[Any, Any, _T@create_task], *, name: object = None) -&gt; Task[_T@create_task]`
+</code></pre>
+<p>Similar, but only results in a diagnostic change.</p>
+<h2>Test Plan</h2>
+<p>Added a regression test</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @sharkdp on 2025-12-03 15:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @sharkdp on 2025-12-03 15:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-12-03 15:51</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-12-03 15:52</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">async-utils (https://github.com/mikeshardmind/async-utils)
+- src/async_utils/bg_loop.py:115:31: error[invalid-argument-type] Argument to bound method `set_task_factory` is incorrect: Expected `_TaskFactory | None`, found `def eager_task_factory[_T_co](loop: AbstractEventLoop | None, coro: Coroutine[Any, Any, _T_co@eager_task_factory], *, name: str | None = None, context: Context | None = None) -&gt; Task[_T_co@eager_task_factory]`
+- Found 30 diagnostics
++ Found 29 diagnostics
+
+mitmproxy (https://github.com/mitmproxy/mitmproxy)
++ mitmproxy/utils/asyncio_utils.py:96:60: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- test/conftest.py:37:31: error[invalid-argument-type] Argument to bound method `set_task_factory` is incorrect: Expected `_TaskFactory | None`, found `def eager_task_factory[_T_co](loop: AbstractEventLoop | None, coro: Coroutine[Any, Any, _T_co@eager_task_factory], *, name: str | None = None, context: Context | None = None) -&gt; Task[_T_co@eager_task_factory]`
+
+dd-trace-py (https://github.com/DataDog/dd-trace-py)
+- ddtrace/contrib/internal/asyncio/patch.py:39:12: error[invalid-argument-type] Argument to function `unwrap` is incorrect: Expected `WrappedFunction`, found `def create_task[_T](self, coro: Coroutine[Any, Any, _T@create_task] | Generator[Any, None, _T@create_task], *, name: object = None) -&gt; Task[_T@create_task]`
++ ddtrace/contrib/internal/asyncio/patch.py:39:12: error[invalid-argument-type] Argument to function `unwrap` is incorrect: Expected `WrappedFunction`, found `def create_task[_T](self, coro: Generator[Any, None, _T@create_task] | Coroutine[Any, Any, _T@create_task], *, name: object = None) -&gt; Task[_T@create_task]`
+
+scikit-build-core (https://github.com/scikit-build/scikit-build-core)
++ src/scikit_build_core/_logging.py:153:13: warning[unsupported-base] Unsupported class base with type `&lt;class 'Mapping[str, Style]'&gt; | &lt;class 'Mapping[str, Divergent]'&gt;`
+- Found 41 diagnostics
++ Found 42 diagnostics
+
+
+</code></pre>
+</details>
+
+<p>No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @sharkdp on 2025-12-03 16:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @sharkdp on 2025-12-03 16:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @sharkdp on 2025-12-03 16:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @sharkdp on 2025-12-03 16:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-12-03 16:24</div>
+            <div class="timeline-body"><p>Brilliant. Thank you!!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @sharkdp on 2025-12-03 16:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-12-03 16:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-12-03 16:52</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:48:28 UTC
+    </footer>
+</body>
+</html>

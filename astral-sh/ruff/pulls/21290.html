@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`pylint`] Fix suppression for empty dict without tuple key annotation (`PLE1141`) - astral-sh/ruff #21290</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>pylint</code>] Fix suppression for empty dict without tuple key annotation (<code>PLE1141</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21290">#21290</a>
+        opened by <a href="https://github.com/danparizher">@danparizher</a>
+        on 2025-11-06 01:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/danparizher">@danparizher</a> on 2025-11-06 01:08</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Fixes the PLE1141 (<code>dict-iter-missing-items</code>) rule to allow fixes for empty dictionaries unless they have type annotations indicating 2-tuple keys. Previously, the fix was incorrectly suppressed for all empty dicts due to vacuous truth in the <code>all()</code> function.</p>
+<p>Fixes #21289</p>
+<h2>Problem Analysis</h2>
+<p>The <code>is_dict_key_tuple_with_two_elements</code> function was designed to suppress the fix when a dictionary's keys are all 2-tuples, as unpacking tuple keys directly would change runtime behavior.</p>
+<p>However, for empty dictionaries, <code>iter_keys()</code> returns an empty iterator, and <code>all()</code> on an empty iterator returns <code>true</code> (vacuous truth). This caused the function to incorrectly suppress fixes for empty dicts, even when there was no indication that future keys would be 2-tuples.</p>
+<h2>Approach</h2>
+<ol>
+<li><p><strong>Detect empty dictionaries</strong>: Added a check to identify when a dict literal has no keys.</p>
+</li>
+<li><p><strong>Handle annotated empty dicts</strong>: For empty dicts with type annotations:</p>
+<ul>
+<li>Parse the annotation to check if it's <code>dict[tuple[T1, T2], ...]</code> where the tuple has exactly 2 elements</li>
+<li>Support both PEP 484 (<code>typing.Dict</code>, <code>typing.Tuple</code>) and PEP 585 (<code>dict</code>, <code>tuple</code>) syntax</li>
+<li>If tuple keys are detected, suppress the fix (correct behavior)</li>
+<li>Otherwise, allow the fix</li>
+</ul>
+</li>
+<li><p><strong>Handle unannotated empty dicts</strong>: For empty dicts without annotations, allow the fix since there's no indication that keys will be 2-tuples.</p>
+</li>
+<li><p><strong>Preserve existing behavior</strong>: For non-empty dicts, the original logic is unchanged - check if all existing keys are 2-tuples.</p>
+</li>
+</ol>
+<p>The implementation includes helper functions:</p>
+<ul>
+<li><code>is_annotation_dict_with_tuple_keys()</code>: Checks if a type annotation specifies dict with tuple keys</li>
+<li><code>is_tuple_type_with_two_elements()</code>: Checks if a type expression represents a 2-tuple</li>
+</ul>
+<p>Test cases were added to verify:</p>
+<ul>
+<li>Empty dict without annotation triggers the error</li>
+<li>Empty dict with <code>dict[tuple[int, str], bool]</code> suppresses the error</li>
+<li>Empty dict with <code>dict[str, int]</code> triggers the error</li>
+<li>Existing tests remain unchanged</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-11-06 01:18</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2025-11-06 21:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @ntBre on 2025-11-06 21:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/resources/test/fixtures/pylint/dict_iter_missing_items.py</code>:41 on 2025-11-06 21:35</div>
+            <div class="timeline-body"><p>I think it would be interesting to have these two lines in separate test cases, i.e.</p>
+<pre><code class="language-py">empty_dict_annotated_tuple_keys: dict[tuple[int, str], bool] = {}
+for k, v in empty_dict_annotated_tuple_keys:
+    pass
+
+empty_dict_annotated_tuple_keys = {}
+empty_dict_annotated_tuple_keys[(&quot;x&quot;, &quot;y&quot;)] = True
+for k, v in empty_dict_annotated_tuple_keys:
+    pass
+</code></pre>
+<p>I don't think we have to skip the second case even if it's technically incorrect because it's likely to be rare, as mentioned on the issue. But it seems useful to capture our behavior in this case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/pylint/rules/dict_iter_missing_items.rs</code>:127 on 2025-11-11 14:03</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    let (value, annotation) = match statement {
+        Stmt::Assign(assign_stmt) =&gt; {
+            (assign_stmt.value, None)
+        }
+        Stmt::AnnAssign(ann_assign_stmt) =&gt; {
+            let Some(value) = ann_assign_stmt.value.as_ref() else {
+                return false;
+            };
+            (value, Some(ann_assign_stmt.annotation.as_ref()))
+        }
+        _ =&gt; return false,
+</code></pre>
+<p>It might even be nicer with something like:</p>
+<pre><code class="language-rust">        Stmt::AnnAssign(ast::StmtAnnAssign{ value: Some(value), annotation, .. }) =&gt; {
+            (value, Some(annotation))
+        }
+</code></pre>
+<p>and then we can keep/share the <code>Expr::Dict</code> check below instead of duplicating it in both match arms.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/pylint/rules/dict_iter_missing_items.rs</code>:131 on 2025-11-11 14:04</div>
+            <div class="timeline-body"><p><code>ExprDict</code> has an <code>is_empty</code> method, which I think would work here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/pylint/rules/dict_iter_missing_items.rs</code>:140 on 2025-11-11 14:07</div>
+            <div class="timeline-body"><p>I think this is all just:</p>
+<pre><code class="language-suggestion">        return annotation.is_some_and(|annotation| is_annotation_dict_with_tuple_keys(annotation, semantic));
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/pylint/rules/dict_iter_missing_items.rs</code>:159 on 2025-11-11 14:08</div>
+            <div class="timeline-body"><p>If we're not handling strings, which I think is fine, we can just omit this check since it's redundant with the one below.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/pylint/rules/dict_iter_missing_items.rs</code>:169 on 2025-11-11 14:10</div>
+            <div class="timeline-body"><p>Should this just be a let-else as well?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/pylint/rules/dict_iter_missing_items.rs</code>:174 on 2025-11-11 14:10</div>
+            <div class="timeline-body"><p>I think we should check that <code>dict</code> has its builtin binding with <code>match_builtin_expr</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/pylint/rules/dict_iter_missing_items.rs</code>:162 on 2025-11-11 14:12</div>
+            <div class="timeline-body"><p>It might make sense to do something like:</p>
+<pre><code class="language-suggestion">    // dict[K, V] format - check if K is tuple with 2 elements
+    if let [key, _value] = tuple.elts.as_slice() {
+        return is_tuple_type_with_two_elements(key, semantic);
+    }
+</code></pre>
+<p>just to make sure there's the expected number of elements.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/pylint/rules/dict_iter_missing_items.rs</code>:199 on 2025-11-11 14:13</div>
+            <div class="timeline-body"><p>Again I think we need to check for builtin bindings to <code>tuple</code> to make sure it's not shadowed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/pylint/rules/dict_iter_missing_items.rs</code>:202 on 2025-11-11 14:18</div>
+            <div class="timeline-body"><p>I don't think this is a valid annotation, but I could be wrong. I think the ellipsis can only come after the first element. I would probably just check the <code>tuple.len()</code> here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> requested changes on 2025-11-11 14:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ntBre by @danparizher on 2025-11-11 22:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/pylint/rules/dict_iter_missing_items.rs</code>:131 on 2025-11-19 20:17</div>
+            <div class="timeline-body"><p>I may have gotten this backwards, sorry. Should it be <code>is_none_or</code> instead of <code>is_some_and</code>? I'm wondering because I was expecting a diagnostic at line 46 of the new tests, but we're not getting one.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-11-19 20:18</div>
+            <div class="timeline-body"><p>Thanks, this is looking great! I just had one question about the expected result of the new test case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/danparizher">@danparizher</a> reviewed on 2025-11-20 00:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/danparizher">@danparizher</a> on <code>crates/ruff_linter/src/rules/pylint/rules/dict_iter_missing_items.rs</code>:131 on 2025-11-20 00:56</div>
+            <div class="timeline-body"><p>Thanks for catching that. The logic was correct (<code>is_some_and</code> is right), but I made it explicit for clarity.</p>
+<p>For empty dicts:</p>
+<ul>
+<li>With annotation indicating tuple keys → suppress fix (return <code>true</code>)</li>
+<li>Without annotation → allow fix (return <code>false</code>)</li>
+</ul>
+<p>The <code>is_some_and</code> chain was correct, but I refactored it to an explicit <code>if let Some</code> pattern to make the behavior clearer.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ntBre by @danparizher on 2025-11-20 00:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-11-21 22:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/pylint/rules/dict_iter_missing_items.rs</code>:131 on 2025-11-21 22:02</div>
+            <div class="timeline-body"><p>Oh I see, the two test cases were interfering because they both referred to the same annotation above. I think the <code>is_some_and</code> is clear then, I was mostly just confused about the end result. I'll put it back. Thanks for fixing the test!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> approved on 2025-11-21 22:03</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ntBre on 2025-11-21 22:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-11-21 22:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-11-21 23:38</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:48:27 UTC
+    </footer>
+</body>
+</html>

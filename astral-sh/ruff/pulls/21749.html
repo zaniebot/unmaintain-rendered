@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Enable LRU collection for parsed module - astral-sh/ruff #21749</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Enable LRU collection for parsed module</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21749">#21749</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2025-12-02 07:45
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-02 07:45</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Enable LRU collection for the parsed module ~~and semantic index~~ so that ty only caches the results of a limited set of files, preventing ever-growing memory usage.</p>
+<p>Aggressively clear ASTs of third-party files during auto-import scanning.</p>
+<p>The main downside of LRU collection is that we may end up doing more recomputations if we're too aggressive about removing ASTs and semantic indices. Ultimately, I think we have to experiment with and fine-tune this based on user feedback to find the right balance between compute/memory usage.</p>
+<p>The other downside is that tracking the most recent values does add some overhead which shows up as a ~2% perf regression on the walltime benchmarks. I don't think there's much we can do about it other than, in the future, extend Salsa to make LRU a runtime feature that's only enabled in the LSP (although we have ideas to enable within-revision LRU which would also be useful for the CLI)</p>
+<p>I also replaced the global tracker used in <code>heap_size</code> to ensure subsequent calls to <code>salsa_memory_dump</code> return accurate results (e.g. source text suddenly reported that it has a size of 0 when the memory report was created more than once)</p>
+<p>Fixes https://github.com/astral-sh/ty/issues/1707</p>
+<h2>Test Plan</h2>
+<p><strong>Main, after start</strong></p>
+<pre><code>=======SALSA QUERIES=======
+`parsed_module -&gt; ruff_db::parsed::ParsedModule`
+    metadata=0.01MB   fields=23.62MB  count=91
+`semantic_index -&gt; ty_python_semantic::semantic_index::SemanticIndex&lt;'_&gt;`
+    metadata=0.86MB   fields=16.92MB  count=88
+`source_text -&gt; ruff_db::source::SourceText`
+    metadata=0.01MB   fields=1.74MB   count=91
+`infer_definition_types -&gt; ty_python_semantic::types::infer::DefinitionInference&lt;'_&gt;`
+    metadata=0.44MB   fields=0.60MB   count=1990
+`FunctionType &lt; 'db &gt;::signature_ -&gt; ty_python_semantic::types::signatures::CallableSignature&lt;'_&gt;`
+    metadata=0.13MB   fields=0.37MB   count=804
+`infer_scope_types -&gt; ty_python_semantic::types::infer::ScopeInference&lt;'_&gt;`
+    metadata=0.24MB   fields=0.34MB   count=221
+`infer_deferred_types -&gt; ty_python_semantic::types::infer::DefinitionInference&lt;'_&gt;`
+    metadata=0.21MB   fields=0.22MB   count=514
+`infer_expression_types_impl -&gt; ty_python_semantic::types::infer::ExpressionInference&lt;'_&gt;`
+    metadata=0.34MB   fields=0.21MB   count=689
+`ClassLiteral &lt; 'db &gt;::try_mro_ -&gt; core::result::Result&lt;ty_python_semantic::types::mro::Mro&lt;'_&gt;, ty_python_semantic::types::mro::MroError&lt;'_&gt;&gt;`
+    metadata=0.22MB   fields=0.16MB   count=926
+`line_index -&gt; ruff_source_file::line_index::LineIndex`
+    metadata=0.00MB   fields=0.10MB   count=11
+`Type &lt; 'db &gt;::class_member_with_policy_ -&gt; ty_python_semantic::place::PlaceAndQualifiers&lt;'_&gt;`
+    metadata=0.41MB   fields=0.09MB   count=1969
+`Type &lt; 'db &gt;::apply_specialization_ -&gt; ty_python_semantic::types::Type&lt;'_&gt;`
+    metadata=0.23MB   fields=0.07MB   count=2164
+`FunctionType &lt; 'db &gt;::last_definition_signature_ -&gt; ty_python_semantic::types::signatures::Signature&lt;'_&gt;`
+    metadata=0.05MB   fields=0.07MB   count=210
+`Type &lt; 'db &gt;::member_lookup_with_policy_ -&gt; ty_python_semantic::place::PlaceAndQualifiers&lt;'_&gt;`
+    metadata=0.25MB   fields=0.06MB   count=1300
+`ClassLiteral &lt; 'db &gt;::implicit_attribute_inner_ -&gt; ty_python_semantic::types::member::Member&lt;'_&gt;`
+    metadata=0.14MB   fields=0.06MB   count=1230
+`place_by_id -&gt; ty_python_semantic::place::PlaceAndQualifiers&lt;'_&gt;`
+    metadata=0.08MB   fields=0.05MB   count=1000
+`check_file_impl -&gt; core::result::Result&lt;alloc::boxed::Box&lt;[ruff_db::diagnostic::Diagnostic]&gt;, ruff_db::diagnostic::Diagnostic&gt;`
+    metadata=0.00MB   fields=0.03MB   count=1
+`FunctionType &lt; 'db &gt;::last_definition_raw_signature_ -&gt; ty_python_semantic::types::signatures::Signature&lt;'_&gt;`
+    metadata=0.02MB   fields=0.03MB   count=94
+`inferable_typevars_inner -&gt; std::collections::hash::set::HashSet&lt;ty_python_semantic::types::BoundTypeVarIdentity&lt;'_&gt;, rustc_hash::FxBuildHasher&gt;`
+    metadata=0.01MB   fields=0.02MB   count=225
+`Type &lt; 'db &gt;::try_call_dunder_get_ -&gt; core::option::Option&lt;(ty_python_semantic::types::Type&lt;'_&gt;, ty_python_semantic::types::AttributeKind)&gt;`
+    metadata=0.32MB   fields=0.02MB   count=515
+`exported_names -&gt; alloc::boxed::Box&lt;[ruff_python_ast::name::Name]&gt;`
+    metadata=0.00MB   fields=0.02MB   count=23
+`symbols_for_file -&gt; ty_ide::symbols::FlatSymbols`
+    metadata=0.00MB   fields=0.02MB   count=1
+`all_narrowing_constraints_for_expression -&gt; core::option::Option&lt;std::collections::hash::map::HashMap&lt;ty_python_semantic::semantic_index::place::ScopedPlaceId, ty_python_semantic::types::Type&lt;'_&gt;, rustc_hash::FxBuildHasher&gt;&gt;`
+    metadata=0.02MB   fields=0.01MB   count=126
+`overloads_and_implementation_inner -&gt; (alloc::boxed::Box&lt;[ty_python_semantic::types::function::OverloadLiteral&lt;'_&gt;]&gt;, core::option::Option&lt;ty_python_semantic::types::function::OverloadLiteral&lt;'_&gt;&gt;)`
+    metadata=0.03MB   fields=0.01MB   count=443
+`all_negative_narrowing_constraints_for_expression -&gt; core::option::Option&lt;std::collections::hash::map::HashMap&lt;ty_python_semantic::semantic_index::place::ScopedPlaceId, ty_python_semantic::types::Type&lt;'_&gt;, rustc_hash::FxBuildHasher&gt;&gt;`
+    metadata=0.01MB   fields=0.01MB   count=87
+`enum_metadata -&gt; core::option::Option&lt;ty_python_semantic::types::enums::EnumMetadata&lt;'_&gt;&gt;`
+    metadata=0.03MB   fields=0.01MB   count=102
+`ClassLiteral &lt; 'db &gt;::explicit_bases_ -&gt; alloc::boxed::Box&lt;[ty_python_semantic::types::Type&lt;'_&gt;]&gt;`
+    metadata=0.01MB   fields=0.01MB   count=169
+`ClassLiteral &lt; 'db &gt;::try_metaclass_ -&gt; core::result::Result&lt;(ty_python_semantic::types::Type&lt;'_&gt;, core::option::Option&lt;ty_python_semantic::types::function::DataclassTransformerParams&lt;'_&gt;&gt;), ty_python_semantic::types::class::MetaclassError&lt;'_&gt;&gt;`
+    metadata=0.03MB   fields=0.01MB   count=127
+`imported_modules -&gt; alloc::sync::Arc&lt;std::collections::hash::set::HashSet&lt;ty_python_semantic::module_name::ModuleName, rustc_hash::FxBuildHasher&gt;&gt;`
+    metadata=0.00MB   fields=0.00MB   count=35
+`dunder_all_names -&gt; core::option::Option&lt;std::collections::hash::set::HashSet&lt;ruff_python_ast::name::Name, rustc_hash::FxBuildHasher&gt;&gt;`
+    metadata=0.00MB   fields=0.00MB   count=21
+`infer_expression_type_impl -&gt; ty_python_semantic::types::Type&lt;'_&gt;`
+    metadata=0.01MB   fields=0.00MB   count=131
+`code_generator_of_class -&gt; core::option::Option&lt;ty_python_semantic::types::class::CodeGeneratorKind&lt;'_&gt;&gt;`
+    metadata=0.05MB   fields=0.00MB   count=349
+`ClassLiteral &lt; 'db &gt;::decorators_ -&gt; alloc::boxed::Box&lt;[ty_python_semantic::types::Type&lt;'_&gt;]&gt;`
+    metadata=0.01MB   fields=0.00MB   count=111
+`ClassLiteral &lt; 'db &gt;::fields_ -&gt; indexmap::map::IndexMap&lt;ruff_python_ast::name::Name, ty_python_semantic::types::class::Field&lt;'_&gt;, core::hash::BuildHasherDefault&lt;rustc_hash::FxHasher&gt;&gt;`
+    metadata=0.00MB   fields=0.00MB   count=5
+`place_table -&gt; alloc::sync::Arc&lt;ty_python_semantic::semantic_index::place::PlaceTable&gt;`
+    metadata=0.01MB   fields=0.00MB   count=264
+`lookup_dunder_new_inner -&gt; core::option::Option&lt;ty_python_semantic::place::PlaceAndQualifiers&lt;'_&gt;&gt;`
+    metadata=0.02MB   fields=0.00MB   count=43
+`use_def_map -&gt; alloc::sync::Arc&lt;ty_python_semantic::semantic_index::use_def::UseDefMap&lt;'_&gt;&gt;`
+    metadata=0.01MB   fields=0.00MB   count=215
+`Type &lt; 'db &gt;::is_redundant_with_ -&gt; bool`
+    metadata=0.18MB   fields=0.00MB   count=1706
+`infer_unpack_types -&gt; ty_python_semantic::types::unpacker::UnpackResult&lt;'_&gt;`
+    metadata=0.00MB   fields=0.00MB   count=7
+`ClassLiteral &lt; 'db &gt;::pep695_generic_context_ -&gt; core::option::Option&lt;ty_python_semantic::types::generics::GenericContext&lt;'_&gt;&gt;`
+    metadata=0.01MB   fields=0.00MB   count=169
+`BoundMethodType &lt; 'db &gt;::into_callable_type_ -&gt; ty_python_semantic::types::CallableType&lt;'_&gt;`
+    metadata=0.03MB   fields=0.00MB   count=145
+`resolve_module_query -&gt; core::option::Option&lt;ty_python_semantic::module_resolver::module::Module&lt;'_&gt;&gt;`
+    metadata=0.03MB   fields=0.00MB   count=92
+`ClassLiteral &lt; 'db &gt;::inherited_legacy_generic_context_ -&gt; core::option::Option&lt;ty_python_semantic::types::generics::GenericContext&lt;'_&gt;&gt;`
+    metadata=0.01MB   fields=0.00MB   count=137
+`cached_protocol_interface -&gt; ty_python_semantic::types::protocol_class::ProtocolInterface&lt;'_&gt;`
+    metadata=0.03MB   fields=0.00MB   count=94
+`global_scope -&gt; ty_python_semantic::semantic_index::scope::ScopeId&lt;'_&gt;`
+    metadata=0.00MB   fields=0.00MB   count=77
+`module_type_symbols -&gt; smallvec::SmallVec&lt;[ruff_python_ast::name::Name; 8]&gt;`
+    metadata=0.00MB   fields=0.00MB   count=1
+`TupleType &lt; 'db &gt;::to_class_type_ -&gt; ty_python_semantic::types::class::ClassType&lt;'_&gt;`
+    metadata=0.02MB   fields=0.00MB   count=45
+`suppressions -&gt; ty_python_semantic::suppression::Suppressions`
+    metadata=0.00MB   fields=0.00MB   count=1
+`file_to_module -&gt; core::option::Option&lt;ty_python_semantic::module_resolver::module::Module&lt;'_&gt;&gt;`
+    metadata=0.00MB   fields=0.00MB   count=32
+`TypeVarInstance &lt; 'db &gt;::lazy_default_ -&gt; core::option::Option&lt;ty_python_semantic::types::Type&lt;'_&gt;&gt;`
+    metadata=0.00MB   fields=0.00MB   count=10
+`TypeVarInstance &lt; 'db &gt;::lazy_bound_ -&gt; core::option::Option&lt;ty_python_semantic::types::TypeVarBoundOrConstraints&lt;'_&gt;&gt;`
+    metadata=0.00MB   fields=0.00MB   count=9
+`Type &lt; 'db &gt;::expand_eagerly__ -&gt; ty_python_semantic::types::Type&lt;'_&gt;`
+    metadata=0.00MB   fields=0.00MB   count=8
+`PEP695TypeAliasType &lt; 'db &gt;::raw_value_type_ -&gt; ty_python_semantic::types::Type&lt;'_&gt;`
+    metadata=0.00MB   fields=0.00MB   count=7
+`static_expression_truthiness -&gt; ty_python_semantic::types::Truthiness`
+    metadata=0.02MB   fields=0.00MB   count=205
+`ClassType &lt; 'db &gt;::into_callable_ -&gt; ty_python_semantic::types::CallableTypes&lt;'_&gt;`
+    metadata=0.00MB   fields=0.00MB   count=6
+`ClassLiteral &lt; 'db &gt;::is_typed_dict_ -&gt; bool`
+    metadata=0.02MB   fields=0.00MB   count=164
+`ClassLiteral &lt; 'db &gt;::inheritance_cycle_ -&gt; core::option::Option&lt;ty_python_semantic::types::class::InheritanceCycle&gt;`
+    metadata=0.01MB   fields=0.00MB   count=84
+`is_equivalent_to_object_inner -&gt; bool`
+    metadata=0.02MB   fields=0.00MB   count=74
+`PEP695TypeAliasType &lt; 'db &gt;::generic_context_ -&gt; core::option::Option&lt;ty_python_semantic::types::generics::GenericContext&lt;'_&gt;&gt;`
+    metadata=0.00MB   fields=0.00MB   count=7
+`dynamic_resolution_paths -&gt; alloc::vec::Vec&lt;ty_python_semantic::module_resolver::path::SearchPath&gt;`
+    metadata=0.00MB   fields=0.00MB   count=1
+`TypeVarInstance &lt; 'db &gt;::lazy_constraints_ -&gt; core::option::Option&lt;ty_python_semantic::types::TypeVarBoundOrConstraints&lt;'_&gt;&gt;`
+    metadata=0.00MB   fields=0.00MB   count=1
+`file_settings -&gt; ty_project::metadata::settings::FileSettings`
+    metadata=0.00MB   fields=0.00MB   count=2
+`ClassLiteral &lt; 'db &gt;::variance_of_ -&gt; ty_python_semantic::types::variance::TypeVarVariance`
+    metadata=0.00MB   fields=0.00MB   count=15
+`GenericAlias &lt; 'db &gt;::variance_of_ -&gt; ty_python_semantic::types::variance::TypeVarVariance`
+    metadata=0.00MB   fields=0.00MB   count=6
+=======SALSA SUMMARY=======
+TOTAL MEMORY USAGE: 60.77MB
+    struct metadata = 3.58MB
+    struct fields = 7.66MB
+    memo metadata = 4.61MB
+    memo fields = 44.92MB
+
+</code></pre>
+<p><strong>Main, after auto completion</strong></p>
+<pre><code>=======SALSA QUERIES=======
+`parsed_module -&gt; ruff_db::parsed::ParsedModule`
+    metadata=3.55MB   fields=5325.71MB count=46737
+`source_text -&gt; ruff_db::source::SourceText`
+    metadata=2.98MB   fields=382.08MB count=46737
+`symbols_for_file_global_only -&gt; ty_ide::symbols::FlatSymbols`
+    metadata=2.43MB   fields=31.33MB  count=46726
+`semantic_index -&gt; ty_python_semantic::semantic_index::SemanticIndex&lt;'_&gt;`
+    metadata=1.00MB   fields=6.97MB   count=102
+`all_submodule_names_for_package -&gt; core::option::Option&lt;alloc::vec::Vec&lt;ty_python_semantic::module_resolver::module::Module&lt;'_&gt;&gt;&gt;`
+    metadata=3.28MB   fields=1.12MB   count=46744
+`infer_definition_types -&gt; ty_python_semantic::types::infer::DefinitionInference&lt;'_&gt;`
+    metadata=0.49MB   fields=0.71MB   count=2258
+`FunctionType &lt; 'db &gt;::signature_ -&gt; ty_python_semantic::types::signatures::CallableSignature&lt;'_&gt;`
+    metadata=0.15MB   fields=0.45MB   count=957
+`infer_scope_types -&gt; ty_python_semantic::types::infer::ScopeInference&lt;'_&gt;`
+    metadata=0.24MB   fields=0.34MB   count=221
+`infer_deferred_types -&gt; ty_python_semantic::types::infer::DefinitionInference&lt;'_&gt;`
+    metadata=0.22MB   fields=0.23MB   count=566
+`infer_expression_types_impl -&gt; ty_python_semantic::types::infer::ExpressionInference&lt;'_&gt;`
+    metadata=0.36MB   fields=0.21MB   count=716
+`ClassLiteral &lt; 'db &gt;::try_mro_ -&gt; core::result::Result&lt;ty_python_semantic::types::mro::Mro&lt;'_&gt;, ty_python_semantic::types::mro::MroError&lt;'_&gt;&gt;`
+    metadata=0.27MB   fields=0.20MB   count=1121
+`Type &lt; 'db &gt;::class_member_with_policy_ -&gt; ty_python_semantic::place::PlaceAndQualifiers&lt;'_&gt;`
+    metadata=0.53MB   fields=0.12MB   count=2558
+`Type &lt; 'db &gt;::apply_specialization_ -&gt; ty_python_semantic::types::Type&lt;'_&gt;`
+    metadata=0.33MB   fields=0.09MB   count=2957
+`ClassLiteral &lt; 'db &gt;::implicit_attribute_inner_ -&gt; ty_python_semantic::types::member::Member&lt;'_&gt;`
+    metadata=0.18MB   fields=0.08MB   count=1641
+`Type &lt; 'db &gt;::member_lookup_with_policy_ -&gt; ty_python_semantic::place::PlaceAndQualifiers&lt;'_&gt;`
+    metadata=0.32MB   fields=0.08MB   count=1585
+`FunctionType &lt; 'db &gt;::last_definition_signature_ -&gt; ty_python_semantic::types::signatures::Signature&lt;'_&gt;`
+    metadata=0.05MB   fields=0.07MB   count=230
+`place_by_id -&gt; ty_python_semantic::place::PlaceAndQualifiers&lt;'_&gt;`
+    metadata=0.11MB   fields=0.06MB   count=1318
+`check_file_impl -&gt; core::result::Result&lt;alloc::boxed::Box&lt;[ruff_db::diagnostic::Diagnostic]&gt;, ruff_db::diagnostic::Diagnostic&gt;`
+    metadata=0.00MB   fields=0.03MB   count=1
+`FunctionType &lt; 'db &gt;::last_definition_raw_signature_ -&gt; ty_python_semantic::types::signatures::Signature&lt;'_&gt;`
+    metadata=0.02MB   fields=0.03MB   count=106
+`inferable_typevars_inner -&gt; std::collections::hash::set::HashSet&lt;ty_python_semantic::types::BoundTypeVarIdentity&lt;'_&gt;, rustc_hash::FxBuildHasher&gt;`
+    metadata=0.01MB   fields=0.03MB   count=265
+`Type &lt; 'db &gt;::try_call_dunder_get_ -&gt; core::option::Option&lt;(ty_python_semantic::types::Type&lt;'_&gt;, ty_python_semantic::types::AttributeKind)&gt;`
+    metadata=0.41MB   fields=0.03MB   count=663
+`line_index -&gt; ruff_source_file::line_index::LineIndex`
+    metadata=0.00MB   fields=0.02MB   count=11
+`exported_names -&gt; alloc::boxed::Box&lt;[ruff_python_ast::name::Name]&gt;`
+    metadata=0.00MB   fields=0.02MB   count=24
+`symbols_for_file -&gt; ty_ide::symbols::FlatSymbols`
+    metadata=0.00MB   fields=0.02MB   count=1
+`overloads_and_implementation_inner -&gt; (alloc::boxed::Box&lt;[ty_python_semantic::types::function::OverloadLiteral&lt;'_&gt;]&gt;, core::option::Option&lt;ty_python_semantic::types::function::OverloadLiteral&lt;'_&gt;&gt;)`
+    metadata=0.04MB   fields=0.02MB   count=518
+`all_narrowing_constraints_for_expression -&gt; core::option::Option&lt;std::collections::hash::map::HashMap&lt;ty_python_semantic::semantic_index::place::ScopedPlaceId, ty_python_semantic::types::Type&lt;'_&gt;, rustc_hash::FxBuildHasher&gt;&gt;`
+    metadata=0.02MB   fields=0.01MB   count=130
+`all_negative_narrowing_constraints_for_expression -&gt; core::option::Option&lt;std::collections::hash::map::HashMap&lt;ty_python_semantic::semantic_index::place::ScopedPlaceId, ty_python_semantic::types::Type&lt;'_&gt;, rustc_hash::FxBuildHasher&gt;&gt;`
+    metadata=0.01MB   fields=0.01MB   count=87
+`enum_metadata -&gt; core::option::Option&lt;ty_python_semantic::types::enums::EnumMetadata&lt;'_&gt;&gt;`
+    metadata=0.04MB   fields=0.01MB   count=105
+`ClassLiteral &lt; 'db &gt;::explicit_bases_ -&gt; alloc::boxed::Box&lt;[ty_python_semantic::types::Type&lt;'_&gt;]&gt;`
+    metadata=0.02MB   fields=0.01MB   count=192
+`ClassLiteral &lt; 'db &gt;::try_metaclass_ -&gt; core::result::Result&lt;(ty_python_semantic::types::Type&lt;'_&gt;, core::option::Option&lt;ty_python_semantic::types::function::DataclassTransformerParams&lt;'_&gt;&gt;), ty_python_semantic::types::class::MetaclassError&lt;'_&gt;&gt;`
+    metadata=0.03MB   fields=0.01MB   count=129
+`code_generator_of_class -&gt; core::option::Option&lt;ty_python_semantic::types::class::CodeGeneratorKind&lt;'_&gt;&gt;`
+    metadata=0.06MB   fields=0.00MB   count=416
+`dunder_all_names -&gt; core::option::Option&lt;std::collections::hash::set::HashSet&lt;ruff_python_ast::name::Name, rustc_hash::FxBuildHasher&gt;&gt;`
+    metadata=0.00MB   fields=0.00MB   count=23
+`infer_expression_type_impl -&gt; ty_python_semantic::types::Type&lt;'_&gt;`
+    metadata=0.01MB   fields=0.00MB   count=131
+`ClassLiteral &lt; 'db &gt;::decorators_ -&gt; alloc::boxed::Box&lt;[ty_python_semantic::types::Type&lt;'_&gt;]&gt;`
+    metadata=0.01MB   fields=0.00MB   count=114
+`ClassLiteral &lt; 'db &gt;::fields_ -&gt; indexmap::map::IndexMap&lt;ruff_python_ast::name::Name, ty_python_semantic::types::class::Field&lt;'_&gt;, core::hash::BuildHasherDefault&lt;rustc_hash::FxHasher&gt;&gt;`
+    metadata=0.00MB   fields=0.00MB   count=6
+`lookup_dunder_new_inner -&gt; core::option::Option&lt;ty_python_semantic::place::PlaceAndQualifiers&lt;'_&gt;&gt;`
+    metadata=0.02MB   fields=0.00MB   count=49
+`place_table -&gt; alloc::sync::Arc&lt;ty_python_semantic::semantic_index::place::PlaceTable&gt;`
+    metadata=0.01MB   fields=0.00MB   count=285
+`Type &lt; 'db &gt;::is_redundant_with_ -&gt; bool`
+    metadata=0.20MB   fields=0.00MB   count=1881
+`use_def_map -&gt; alloc::sync::Arc&lt;ty_python_semantic::semantic_index::use_def::UseDefMap&lt;'_&gt;&gt;`
+    metadata=0.01MB   fields=0.00MB   count=235
+`infer_unpack_types -&gt; ty_python_semantic::types::unpacker::UnpackResult&lt;'_&gt;`
+    metadata=0.00MB   fields=0.00MB   count=7
+`ClassLiteral &lt; 'db &gt;::pep695_generic_context_ -&gt; core::option::Option&lt;ty_python_semantic::types::generics::GenericContext&lt;'_&gt;&gt;`
+    metadata=0.02MB   fields=0.00MB   count=187
+`BoundMethodType &lt; 'db &gt;::into_callable_type_ -&gt; ty_python_semantic::types::CallableType&lt;'_&gt;`
+    metadata=0.03MB   fields=0.00MB   count=177
+`resolve_module_query -&gt; core::option::Option&lt;ty_python_semantic::module_resolver::module::Module&lt;'_&gt;&gt;`
+    metadata=0.03MB   fields=0.00MB   count=111
+`ClassLiteral &lt; 'db &gt;::inherited_legacy_generic_context_ -&gt; core::option::Option&lt;ty_python_semantic::types::generics::GenericContext&lt;'_&gt;&gt;`
+    metadata=0.01MB   fields=0.00MB   count=145
+`cached_protocol_interface -&gt; ty_python_semantic::types::protocol_class::ProtocolInterface&lt;'_&gt;`
+    metadata=0.04MB   fields=0.00MB   count=115
+`global_scope -&gt; ty_python_semantic::semantic_index::scope::ScopeId&lt;'_&gt;`
+    metadata=0.00MB   fields=0.00MB   count=91
+`imported_modules -&gt; alloc::sync::Arc&lt;std::collections::hash::set::HashSet&lt;ty_python_semantic::module_name::ModuleName, rustc_hash::FxBuildHasher&gt;&gt;`
+    metadata=0.00MB   fields=0.00MB   count=35
+`TupleType &lt; 'db &gt;::to_class_type_ -&gt; ty_python_semantic::types::class::ClassType&lt;'_&gt;`
+    metadata=0.02MB   fields=0.00MB   count=53
+`module_type_symbols -&gt; smallvec::SmallVec&lt;[ruff_python_ast::name::Name; 8]&gt;`
+    metadata=0.00MB   fields=0.00MB   count=1
+`suppressions -&gt; ty_python_semantic::suppression::Suppressions`
+    metadata=0.00MB   fields=0.00MB   count=1
+`file_to_module -&gt; core::option::Option&lt;ty_python_semantic::module_resolver::module::Module&lt;'_&gt;&gt;`
+    metadata=0.00MB   fields=0.00MB   count=40
+`Type &lt; 'db &gt;::expand_eagerly__ -&gt; ty_python_semantic::types::Type&lt;'_&gt;`
+    metadata=0.01MB   fields=0.00MB   count=11
+`TypeVarInstance &lt; 'db &gt;::lazy_default_ -&gt; core::option::Option&lt;ty_python_semantic::types::Type&lt;'_&gt;&gt;`
+    metadata=0.00MB   fields=0.00MB   count=10
+`TypeVarInstance &lt; 'db &gt;::lazy_bound_ -&gt; core::option::Option&lt;ty_python_semantic::types::TypeVarBoundOrConstraints&lt;'_&gt;&gt;`
+    metadata=0.00MB   fields=0.00MB   count=9
+`ClassType &lt; 'db &gt;::into_callable_ -&gt; ty_python_semantic::types::CallableTypes&lt;'_&gt;`
+    metadata=0.00MB   fields=0.00MB   count=9
+`PEP695TypeAliasType &lt; 'db &gt;::raw_value_type_ -&gt; ty_python_semantic::types::Type&lt;'_&gt;`
+    metadata=0.00MB   fields=0.00MB   count=7
+`static_expression_truthiness -&gt; ty_python_semantic::types::Truthiness`
+    metadata=0.02MB   fields=0.00MB   count=219
+`ClassLiteral &lt; 'db &gt;::is_typed_dict_ -&gt; bool`
+    metadata=0.02MB   fields=0.00MB   count=181
+`dynamic_resolution_paths -&gt; alloc::vec::Vec&lt;ty_python_semantic::module_resolver::path::SearchPath&gt;`
+    metadata=0.00MB   fields=0.00MB   count=3
+`is_equivalent_to_object_inner -&gt; bool`
+    metadata=0.03MB   fields=0.00MB   count=87
+`ClassLiteral &lt; 'db &gt;::inheritance_cycle_ -&gt; core::option::Option&lt;ty_python_semantic::types::class::InheritanceCycle&gt;`
+    metadata=0.01MB   fields=0.00MB   count=84
+`list_modules_in -&gt; alloc::vec::Vec&lt;ty_python_semantic::module_resolver::module::Module&lt;'_&gt;&gt;`
+    metadata=0.07MB   fields=0.00MB   count=3
+`PEP695TypeAliasType &lt; 'db &gt;::generic_context_ -&gt; core::option::Option&lt;ty_python_semantic::types::generics::GenericContext&lt;'_&gt;&gt;`
+    metadata=0.00MB   fields=0.00MB   count=7
+`TypeVarInstance &lt; 'db &gt;::lazy_constraints_ -&gt; core::option::Option&lt;ty_python_semantic::types::TypeVarBoundOrConstraints&lt;'_&gt;&gt;`
+    metadata=0.00MB   fields=0.00MB   count=1
+`ClassLiteral &lt; 'db &gt;::variance_of_ -&gt; ty_python_semantic::types::variance::TypeVarVariance`
+    metadata=0.00MB   fields=0.00MB   count=25
+`list_modules -&gt; alloc::vec::Vec&lt;ty_python_semantic::module_resolver::module::Module&lt;'_&gt;&gt;`
+    metadata=0.00MB   fields=0.00MB   count=1
+`file_settings -&gt; ty_project::metadata::settings::FileSettings`
+    metadata=0.00MB   fields=0.00MB   count=2
+`GenericAlias &lt; 'db &gt;::variance_of_ -&gt; ty_python_semantic::types::variance::TypeVarVariance`
+    metadata=0.00MB   fields=0.00MB   count=13
+=======SALSA SUMMARY=======
+TOTAL MEMORY USAGE: 5797.30MB
+    struct metadata = 9.40MB
+    struct fields = 20.00MB
+    memo metadata = 17.75MB
+    memo fields = 5750.15MB
+
+</code></pre>
+<p><strong>This PR, after startup</strong></p>
+<pre><code>=======SALSA QUERIES=======
+`parsed_module -&gt; ruff_db::parsed::ParsedModule`
+    metadata=0.01MB   fields=23.62MB  count=91
+`semantic_index -&gt; ty_python_semantic::semantic_index::SemanticIndex&lt;'_&gt;`
+    metadata=0.86MB   fields=16.83MB  count=88
+`source_text -&gt; ruff_db::source::SourceText`
+    metadata=0.01MB   fields=1.74MB   count=91
+`infer_definition_types -&gt; ty_python_semantic::types::infer::DefinitionInference&lt;'_&gt;`
+    metadata=0.44MB   fields=0.60MB   count=1990
+`FunctionType &lt; 'db &gt;::signature_ -&gt; ty_python_semantic::types::signatures::CallableSignature&lt;'_&gt;`
+    metadata=0.13MB   fields=0.40MB   count=861
+`infer_scope_types -&gt; ty_python_semantic::types::infer::ScopeInference&lt;'_&gt;`
+    metadata=0.24MB   fields=0.34MB   count=221
+`infer_deferred_types -&gt; ty_python_semantic::types::infer::DefinitionInference&lt;'_&gt;`
+    metadata=0.21MB   fields=0.22MB   count=521
+`infer_expression_types_impl -&gt; ty_python_semantic::types::infer::ExpressionInference&lt;'_&gt;`
+    metadata=0.35MB   fields=0.21MB   count=714
+`ClassLiteral &lt; 'db &gt;::try_mro_ -&gt; core::result::Result&lt;ty_python_semantic::types::mro::Mro&lt;'_&gt;, ty_python_semantic::types::mro::MroError&lt;'_&gt;&gt;`
+    metadata=0.24MB   fields=0.18MB   count=1027
+`line_index -&gt; ruff_source_file::line_index::LineIndex`
+    metadata=0.00MB   fields=0.11MB   count=12
+`Type &lt; 'db &gt;::class_member_with_policy_ -&gt; ty_python_semantic::place::PlaceAndQualifiers&lt;'_&gt;`
+    metadata=0.47MB   fields=0.11MB   count=2241
+`Type &lt; 'db &gt;::apply_specialization_ -&gt; ty_python_semantic::types::Type&lt;'_&gt;`
+    metadata=0.30MB   fields=0.09MB   count=2707
+`Type &lt; 'db &gt;::member_lookup_with_policy_ -&gt; ty_python_semantic::place::PlaceAndQualifiers&lt;'_&gt;`
+    metadata=0.29MB   fields=0.07MB   count=1460
+`FunctionType &lt; 'db &gt;::last_definition_signature_ -&gt; ty_python_semantic::types::signatures::Signature&lt;'_&gt;`
+    metadata=0.05MB   fields=0.07MB   count=211
+`ClassLiteral &lt; 'db &gt;::implicit_attribute_inner_ -&gt; ty_python_semantic::types::member::Member&lt;'_&gt;`
+    metadata=0.14MB   fields=0.06MB   count=1230
+`place_by_id -&gt; ty_python_semantic::place::PlaceAndQualifiers&lt;'_&gt;`
+    metadata=0.08MB   fields=0.05MB   count=1007
+`check_file_impl -&gt; core::result::Result&lt;alloc::boxed::Box&lt;[ruff_db::diagnostic::Diagnostic]&gt;, ruff_db::diagnostic::Diagnostic&gt;`
+    metadata=0.00MB   fields=0.03MB   count=1
+`FunctionType &lt; 'db &gt;::last_definition_raw_signature_ -&gt; ty_python_semantic::types::signatures::Signature&lt;'_&gt;`
+    metadata=0.02MB   fields=0.03MB   count=94
+`inferable_typevars_inner -&gt; std::collections::hash::set::HashSet&lt;ty_python_semantic::types::BoundTypeVarIdentity&lt;'_&gt;, rustc_hash::FxBuildHasher&gt;`
+    metadata=0.01MB   fields=0.03MB   count=252
+`Type &lt; 'db &gt;::try_call_dunder_get_ -&gt; core::option::Option&lt;(ty_python_semantic::types::Type&lt;'_&gt;, ty_python_semantic::types::AttributeKind)&gt;`
+    metadata=0.36MB   fields=0.02MB   count=586
+`exported_names -&gt; alloc::boxed::Box&lt;[ruff_python_ast::name::Name]&gt;`
+    metadata=0.00MB   fields=0.02MB   count=23
+`symbols_for_file -&gt; ty_ide::symbols::FlatSymbols`
+    metadata=0.00MB   fields=0.02MB   count=1
+`all_narrowing_constraints_for_expression -&gt; core::option::Option&lt;std::collections::hash::map::HashMap&lt;ty_python_semantic::semantic_index::place::ScopedPlaceId, ty_python_semantic::types::Type&lt;'_&gt;, rustc_hash::FxBuildHasher&gt;&gt;`
+    metadata=0.02MB   fields=0.01MB   count=126
+`overloads_and_implementation_inner -&gt; (alloc::boxed::Box&lt;[ty_python_semantic::types::function::OverloadLiteral&lt;'_&gt;]&gt;, core::option::Option&lt;ty_python_semantic::types::function::OverloadLiteral&lt;'_&gt;&gt;)`
+    metadata=0.03MB   fields=0.01MB   count=443
+`all_negative_narrowing_constraints_for_expression -&gt; core::option::Option&lt;std::collections::hash::map::HashMap&lt;ty_python_semantic::semantic_index::place::ScopedPlaceId, ty_python_semantic::types::Type&lt;'_&gt;, rustc_hash::FxBuildHasher&gt;&gt;`
+    metadata=0.01MB   fields=0.01MB   count=87
+`enum_metadata -&gt; core::option::Option&lt;ty_python_semantic::types::enums::EnumMetadata&lt;'_&gt;&gt;`
+    metadata=0.03MB   fields=0.01MB   count=102
+`ClassLiteral &lt; 'db &gt;::explicit_bases_ -&gt; alloc::boxed::Box&lt;[ty_python_semantic::types::Type&lt;'_&gt;]&gt;`
+    metadata=0.01MB   fields=0.01MB   count=169
+`ClassLiteral &lt; 'db &gt;::try_metaclass_ -&gt; core::result::Result&lt;(ty_python_semantic::types::Type&lt;'_&gt;, core::option::Option&lt;ty_python_semantic::types::function::DataclassTransformerParams&lt;'_&gt;&gt;), ty_python_semantic::types::class::MetaclassError&lt;'_&gt;&gt;`
+    metadata=0.03MB   fields=0.01MB   count=127
+`imported_modules -&gt; alloc::sync::Arc&lt;std::collections::hash::set::HashSet&lt;ty_python_semantic::module_name::ModuleName, rustc_hash::FxBuildHasher&gt;&gt;`
+    metadata=0.00MB   fields=0.00MB   count=35
+`dunder_all_names -&gt; core::option::Option&lt;std::collections::hash::set::HashSet&lt;ruff_python_ast::name::Name, rustc_hash::FxBuildHasher&gt;&gt;`
+    metadata=0.00MB   fields=0.00MB   count=22
+`code_generator_of_class -&gt; core::option::Option&lt;ty_python_semantic::types::class::CodeGeneratorKind&lt;'_&gt;&gt;`
+    metadata=0.05MB   fields=0.00MB   count=373
+`infer_expression_type_impl -&gt; ty_python_semantic::types::Type&lt;'_&gt;`
+    metadata=0.01MB   fields=0.00MB   count=131
+`ClassLiteral &lt; 'db &gt;::decorators_ -&gt; alloc::boxed::Box&lt;[ty_python_semantic::types::Type&lt;'_&gt;]&gt;`
+    metadata=0.01MB   fields=0.00MB   count=111
+`ClassLiteral &lt; 'db &gt;::fields_ -&gt; indexmap::map::IndexMap&lt;ruff_python_ast::name::Name, ty_python_semantic::types::class::Field&lt;'_&gt;, core::hash::BuildHasherDefault&lt;rustc_hash::FxHasher&gt;&gt;`
+    metadata=0.00MB   fields=0.00MB   count=6
+`lookup_dunder_new_inner -&gt; core::option::Option&lt;ty_python_semantic::place::PlaceAndQualifiers&lt;'_&gt;&gt;`
+    metadata=0.02MB   fields=0.00MB   count=47
+`place_table -&gt; alloc::sync::Arc&lt;ty_python_semantic::semantic_index::place::PlaceTable&gt;`
+    metadata=0.01MB   fields=0.00MB   count=264
+`Type &lt; 'db &gt;::is_redundant_with_ -&gt; bool`
+    metadata=0.19MB   fields=0.00MB   count=1844
+`use_def_map -&gt; alloc::sync::Arc&lt;ty_python_semantic::semantic_index::use_def::UseDefMap&lt;'_&gt;&gt;`
+    metadata=0.01MB   fields=0.00MB   count=215
+`infer_unpack_types -&gt; ty_python_semantic::types::unpacker::UnpackResult&lt;'_&gt;`
+    metadata=0.00MB   fields=0.00MB   count=7
+`BoundMethodType &lt; 'db &gt;::into_callable_type_ -&gt; ty_python_semantic::types::CallableType&lt;'_&gt;`
+    metadata=0.04MB   fields=0.00MB   count=171
+`ClassLiteral &lt; 'db &gt;::pep695_generic_context_ -&gt; core::option::Option&lt;ty_python_semantic::types::generics::GenericContext&lt;'_&gt;&gt;`
+    metadata=0.01MB   fields=0.00MB   count=169
+`ClassLiteral &lt; 'db &gt;::inherited_legacy_generic_context_ -&gt; core::option::Option&lt;ty_python_semantic::types::generics::GenericContext&lt;'_&gt;&gt;`
+    metadata=0.01MB   fields=0.00MB   count=137
+`resolve_module_query -&gt; core::option::Option&lt;ty_python_semantic::module_resolver::module::Module&lt;'_&gt;&gt;`
+    metadata=0.02MB   fields=0.00MB   count=91
+`cached_protocol_interface -&gt; ty_python_semantic::types::protocol_class::ProtocolInterface&lt;'_&gt;`
+    metadata=0.03MB   fields=0.00MB   count=95
+`global_scope -&gt; ty_python_semantic::semantic_index::scope::ScopeId&lt;'_&gt;`
+    metadata=0.00MB   fields=0.00MB   count=77
+`module_type_symbols -&gt; smallvec::SmallVec&lt;[ruff_python_ast::name::Name; 8]&gt;`
+    metadata=0.00MB   fields=0.00MB   count=1
+`TupleType &lt; 'db &gt;::to_class_type_ -&gt; ty_python_semantic::types::class::ClassType&lt;'_&gt;`
+    metadata=0.02MB   fields=0.00MB   count=48
+`suppressions -&gt; ty_python_semantic::suppression::Suppressions`
+    metadata=0.00MB   fields=0.00MB   count=1
+`file_to_module -&gt; core::option::Option&lt;ty_python_semantic::module_resolver::module::Module&lt;'_&gt;&gt;`
+    metadata=0.00MB   fields=0.00MB   count=32
+`Type &lt; 'db &gt;::expand_eagerly__ -&gt; ty_python_semantic::types::Type&lt;'_&gt;`
+    metadata=0.01MB   fields=0.00MB   count=10
+`TypeVarInstance &lt; 'db &gt;::lazy_default_ -&gt; core::option::Option&lt;ty_python_semantic::types::Type&lt;'_&gt;&gt;`
+    metadata=0.00MB   fields=0.00MB   count=10
+`TypeVarInstance &lt; 'db &gt;::lazy_bound_ -&gt; core::option::Option&lt;ty_python_semantic::types::TypeVarBoundOrConstraints&lt;'_&gt;&gt;`
+    metadata=0.00MB   fields=0.00MB   count=9
+`ClassType &lt; 'db &gt;::into_callable_ -&gt; ty_python_semantic::types::CallableTypes&lt;'_&gt;`
+    metadata=0.00MB   fields=0.00MB   count=9
+`PEP695TypeAliasType &lt; 'db &gt;::raw_value_type_ -&gt; ty_python_semantic::types::Type&lt;'_&gt;`
+    metadata=0.00MB   fields=0.00MB   count=7
+`static_expression_truthiness -&gt; ty_python_semantic::types::Truthiness`
+    metadata=0.02MB   fields=0.00MB   count=205
+`ClassLiteral &lt; 'db &gt;::is_typed_dict_ -&gt; bool`
+    metadata=0.02MB   fields=0.00MB   count=164
+`ClassLiteral &lt; 'db &gt;::inheritance_cycle_ -&gt; core::option::Option&lt;ty_python_semantic::types::class::InheritanceCycle&gt;`
+    metadata=0.01MB   fields=0.00MB   count=84
+`is_equivalent_to_object_inner -&gt; bool`
+    metadata=0.02MB   fields=0.00MB   count=74
+`PEP695TypeAliasType &lt; 'db &gt;::generic_context_ -&gt; core::option::Option&lt;ty_python_semantic::types::generics::GenericContext&lt;'_&gt;&gt;`
+    metadata=0.00MB   fields=0.00MB   count=7
+`dynamic_resolution_paths -&gt; alloc::vec::Vec&lt;ty_python_semantic::module_resolver::path::SearchPath&gt;`
+    metadata=0.00MB   fields=0.00MB   count=1
+`TypeVarInstance &lt; 'db &gt;::lazy_constraints_ -&gt; core::option::Option&lt;ty_python_semantic::types::TypeVarBoundOrConstraints&lt;'_&gt;&gt;`
+    metadata=0.00MB   fields=0.00MB   count=1
+`ClassLiteral &lt; 'db &gt;::variance_of_ -&gt; ty_python_semantic::types::variance::TypeVarVariance`
+    metadata=0.00MB   fields=0.00MB   count=22
+`file_settings -&gt; ty_project::metadata::settings::FileSettings`
+    metadata=0.00MB   fields=0.00MB   count=2
+`GenericAlias &lt; 'db &gt;::variance_of_ -&gt; ty_python_semantic::types::variance::TypeVarVariance`
+    metadata=0.00MB   fields=0.00MB   count=9
+=======SALSA SUMMARY=======
+TOTAL MEMORY USAGE: 60.94MB
+    struct metadata = 3.70MB
+    struct fields = 7.40MB
+    memo metadata = 4.90MB
+    memo fields = 44.94MB
+
+</code></pre>
+<p><strong>This PR, after auto complete</strong></p>
+<pre><code>=======SALSA QUERIES=======
+`source_text -&gt; ruff_db::source::SourceText`
+    metadata=2.98MB   fields=381.67MB count=46737
+`symbols_for_file_global_only -&gt; ty_ide::symbols::FlatSymbols`
+    metadata=2.99MB   fields=31.33MB  count=46726
+`parsed_module -&gt; ruff_db::parsed::ParsedModule`
+    metadata=3.55MB   fields=22.92MB  count=46737
+`semantic_index -&gt; ty_python_semantic::semantic_index::SemanticIndex&lt;'_&gt;`
+    metadata=1.00MB   fields=4.24MB   count=102
+`all_submodule_names_for_package -&gt; core::option::Option&lt;alloc::vec::Vec&lt;ty_python_semantic::module_resolver::module::Module&lt;'_&gt;&gt;&gt;`
+    metadata=3.28MB   fields=1.12MB   count=46744
+`infer_definition_types -&gt; ty_python_semantic::types::infer::DefinitionInference&lt;'_&gt;`
+    metadata=0.49MB   fields=0.71MB   count=2258
+`FunctionType &lt; 'db &gt;::signature_ -&gt; ty_python_semantic::types::signatures::CallableSignature&lt;'_&gt;`
+    metadata=0.15MB   fields=0.44MB   count=939
+`infer_scope_types -&gt; ty_python_semantic::types::infer::ScopeInference&lt;'_&gt;`
+    metadata=0.24MB   fields=0.34MB   count=221
+`infer_deferred_types -&gt; ty_python_semantic::types::infer::DefinitionInference&lt;'_&gt;`
+    metadata=0.22MB   fields=0.23MB   count=566
+`infer_expression_types_impl -&gt; ty_python_semantic::types::infer::ExpressionInference&lt;'_&gt;`
+    metadata=0.36MB   fields=0.21MB   count=715
+`ClassLiteral &lt; 'db &gt;::try_mro_ -&gt; core::result::Result&lt;ty_python_semantic::types::mro::Mro&lt;'_&gt;, ty_python_semantic::types::mro::MroError&lt;'_&gt;&gt;`
+    metadata=0.26MB   fields=0.20MB   count=1113
+`Type &lt; 'db &gt;::class_member_with_policy_ -&gt; ty_python_semantic::place::PlaceAndQualifiers&lt;'_&gt;`
+    metadata=0.51MB   fields=0.12MB   count=2500
+`Type &lt; 'db &gt;::apply_specialization_ -&gt; ty_python_semantic::types::Type&lt;'_&gt;`
+    metadata=0.30MB   fields=0.09MB   count=2756
+`ClassLiteral &lt; 'db &gt;::implicit_attribute_inner_ -&gt; ty_python_semantic::types::member::Member&lt;'_&gt;`
+    metadata=0.18MB   fields=0.08MB   count=1641
+`Type &lt; 'db &gt;::member_lookup_with_policy_ -&gt; ty_python_semantic::place::PlaceAndQualifiers&lt;'_&gt;`
+    metadata=0.32MB   fields=0.08MB   count=1591
+`FunctionType &lt; 'db &gt;::last_definition_signature_ -&gt; ty_python_semantic::types::signatures::Signature&lt;'_&gt;`
+    metadata=0.05MB   fields=0.07MB   count=232
+`place_by_id -&gt; ty_python_semantic::place::PlaceAndQualifiers&lt;'_&gt;`
+    metadata=0.11MB   fields=0.06MB   count=1318
+`check_file_impl -&gt; core::result::Result&lt;alloc::boxed::Box&lt;[ruff_db::diagnostic::Diagnostic]&gt;, ruff_db::diagnostic::Diagnostic&gt;`
+    metadata=0.00MB   fields=0.03MB   count=1
+`FunctionType &lt; 'db &gt;::last_definition_raw_signature_ -&gt; ty_python_semantic::types::signatures::Signature&lt;'_&gt;`
+    metadata=0.02MB   fields=0.03MB   count=105
+`inferable_typevars_inner -&gt; std::collections::hash::set::HashSet&lt;ty_python_semantic::types::BoundTypeVarIdentity&lt;'_&gt;, rustc_hash::FxBuildHasher&gt;`
+    metadata=0.01MB   fields=0.03MB   count=268
+`Type &lt; 'db &gt;::try_call_dunder_get_ -&gt; core::option::Option&lt;(ty_python_semantic::types::Type&lt;'_&gt;, ty_python_semantic::types::AttributeKind)&gt;`
+    metadata=0.40MB   fields=0.03MB   count=646
+`line_index -&gt; ruff_source_file::line_index::LineIndex`
+    metadata=0.00MB   fields=0.02MB   count=12
+`exported_names -&gt; alloc::boxed::Box&lt;[ruff_python_ast::name::Name]&gt;`
+    metadata=0.00MB   fields=0.02MB   count=24
+`symbols_for_file -&gt; ty_ide::symbols::FlatSymbols`
+    metadata=0.00MB   fields=0.02MB   count=1
+`overloads_and_implementation_inner -&gt; (alloc::boxed::Box&lt;[ty_python_semantic::types::function::OverloadLiteral&lt;'_&gt;]&gt;, core::option::Option&lt;ty_python_semantic::types::function::OverloadLiteral&lt;'_&gt;&gt;)`
+    metadata=0.04MB   fields=0.01MB   count=509
+`all_narrowing_constraints_for_expression -&gt; core::option::Option&lt;std::collections::hash::map::HashMap&lt;ty_python_semantic::semantic_index::place::ScopedPlaceId, ty_python_semantic::types::Type&lt;'_&gt;, rustc_hash::FxBuildHasher&gt;&gt;`
+    metadata=0.02MB   fields=0.01MB   count=130
+`all_negative_narrowing_constraints_for_expression -&gt; core::option::Option&lt;std::collections::hash::map::HashMap&lt;ty_python_semantic::semantic_index::place::ScopedPlaceId, ty_python_semantic::types::Type&lt;'_&gt;, rustc_hash::FxBuildHasher&gt;&gt;`
+    metadata=0.01MB   fields=0.01MB   count=87
+`enum_metadata -&gt; core::option::Option&lt;ty_python_semantic::types::enums::EnumMetadata&lt;'_&gt;&gt;`
+    metadata=0.04MB   fields=0.01MB   count=105
+`ClassLiteral &lt; 'db &gt;::explicit_bases_ -&gt; alloc::boxed::Box&lt;[ty_python_semantic::types::Type&lt;'_&gt;]&gt;`
+    metadata=0.02MB   fields=0.01MB   count=192
+`ClassLiteral &lt; 'db &gt;::try_metaclass_ -&gt; core::result::Result&lt;(ty_python_semantic::types::Type&lt;'_&gt;, core::option::Option&lt;ty_python_semantic::types::function::DataclassTransformerParams&lt;'_&gt;&gt;), ty_python_semantic::types::class::MetaclassError&lt;'_&gt;&gt;`
+    metadata=0.03MB   fields=0.01MB   count=129
+`code_generator_of_class -&gt; core::option::Option&lt;ty_python_semantic::types::class::CodeGeneratorKind&lt;'_&gt;&gt;`
+    metadata=0.06MB   fields=0.00MB   count=408
+`dunder_all_names -&gt; core::option::Option&lt;std::collections::hash::set::HashSet&lt;ruff_python_ast::name::Name, rustc_hash::FxBuildHasher&gt;&gt;`
+    metadata=0.00MB   fields=0.00MB   count=23
+`infer_expression_type_impl -&gt; ty_python_semantic::types::Type&lt;'_&gt;`
+    metadata=0.01MB   fields=0.00MB   count=131
+`ClassLiteral &lt; 'db &gt;::decorators_ -&gt; alloc::boxed::Box&lt;[ty_python_semantic::types::Type&lt;'_&gt;]&gt;`
+    metadata=0.01MB   fields=0.00MB   count=114
+`ClassLiteral &lt; 'db &gt;::fields_ -&gt; indexmap::map::IndexMap&lt;ruff_python_ast::name::Name, ty_python_semantic::types::class::Field&lt;'_&gt;, core::hash::BuildHasherDefault&lt;rustc_hash::FxHasher&gt;&gt;`
+    metadata=0.00MB   fields=0.00MB   count=6
+`lookup_dunder_new_inner -&gt; core::option::Option&lt;ty_python_semantic::place::PlaceAndQualifiers&lt;'_&gt;&gt;`
+    metadata=0.02MB   fields=0.00MB   count=49
+`place_table -&gt; alloc::sync::Arc&lt;ty_python_semantic::semantic_index::place::PlaceTable&gt;`
+    metadata=0.01MB   fields=0.00MB   count=285
+`use_def_map -&gt; alloc::sync::Arc&lt;ty_python_semantic::semantic_index::use_def::UseDefMap&lt;'_&gt;&gt;`
+    metadata=0.01MB   fields=0.00MB   count=235
+`Type &lt; 'db &gt;::is_redundant_with_ -&gt; bool`
+    metadata=0.20MB   fields=0.00MB   count=1868
+`infer_unpack_types -&gt; ty_python_semantic::types::unpacker::UnpackResult&lt;'_&gt;`
+    metadata=0.00MB   fields=0.00MB   count=7
+`ClassLiteral &lt; 'db &gt;::pep695_generic_context_ -&gt; core::option::Option&lt;ty_python_semantic::types::generics::GenericContext&lt;'_&gt;&gt;`
+    metadata=0.02MB   fields=0.00MB   count=187
+`BoundMethodType &lt; 'db &gt;::into_callable_type_ -&gt; ty_python_semantic::types::CallableType&lt;'_&gt;`
+    metadata=0.03MB   fields=0.00MB   count=175
+`resolve_module_query -&gt; core::option::Option&lt;ty_python_semantic::module_resolver::module::Module&lt;'_&gt;&gt;`
+    metadata=0.03MB   fields=0.00MB   count=111
+`ClassLiteral &lt; 'db &gt;::inherited_legacy_generic_context_ -&gt; core::option::Option&lt;ty_python_semantic::types::generics::GenericContext&lt;'_&gt;&gt;`
+    metadata=0.01MB   fields=0.00MB   count=145
+`cached_protocol_interface -&gt; ty_python_semantic::types::protocol_class::ProtocolInterface&lt;'_&gt;`
+    metadata=0.04MB   fields=0.00MB   count=114
+`global_scope -&gt; ty_python_semantic::semantic_index::scope::ScopeId&lt;'_&gt;`
+    metadata=0.00MB   fields=0.00MB   count=91
+`imported_modules -&gt; alloc::sync::Arc&lt;std::collections::hash::set::HashSet&lt;ty_python_semantic::module_name::ModuleName, rustc_hash::FxBuildHasher&gt;&gt;`
+    metadata=0.00MB   fields=0.00MB   count=35
+`TupleType &lt; 'db &gt;::to_class_type_ -&gt; ty_python_semantic::types::class::ClassType&lt;'_&gt;`
+    metadata=0.02MB   fields=0.00MB   count=51
+`module_type_symbols -&gt; smallvec::SmallVec&lt;[ruff_python_ast::name::Name; 8]&gt;`
+    metadata=0.00MB   fields=0.00MB   count=1
+`suppressions -&gt; ty_python_semantic::suppression::Suppressions`
+    metadata=0.00MB   fields=0.00MB   count=1
+`file_to_module -&gt; core::option::Option&lt;ty_python_semantic::module_resolver::module::Module&lt;'_&gt;&gt;`
+    metadata=0.00MB   fields=0.00MB   count=40
+`TypeVarInstance &lt; 'db &gt;::lazy_default_ -&gt; core::option::Option&lt;ty_python_semantic::types::Type&lt;'_&gt;&gt;`
+    metadata=0.00MB   fields=0.00MB   count=10
+`Type &lt; 'db &gt;::expand_eagerly__ -&gt; ty_python_semantic::types::Type&lt;'_&gt;`
+    metadata=0.01MB   fields=0.00MB   count=10
+`TypeVarInstance &lt; 'db &gt;::lazy_bound_ -&gt; core::option::Option&lt;ty_python_semantic::types::TypeVarBoundOrConstraints&lt;'_&gt;&gt;`
+    metadata=0.00MB   fields=0.00MB   count=9
+`ClassType &lt; 'db &gt;::into_callable_ -&gt; ty_python_semantic::types::CallableTypes&lt;'_&gt;`
+    metadata=0.00MB   fields=0.00MB   count=9
+`PEP695TypeAliasType &lt; 'db &gt;::raw_value_type_ -&gt; ty_python_semantic::types::Type&lt;'_&gt;`
+    metadata=0.00MB   fields=0.00MB   count=7
+`static_expression_truthiness -&gt; ty_python_semantic::types::Truthiness`
+    metadata=0.02MB   fields=0.00MB   count=219
+`ClassLiteral &lt; 'db &gt;::is_typed_dict_ -&gt; bool`
+    metadata=0.02MB   fields=0.00MB   count=181
+`dynamic_resolution_paths -&gt; alloc::vec::Vec&lt;ty_python_semantic::module_resolver::path::SearchPath&gt;`
+    metadata=0.00MB   fields=0.00MB   count=3
+`is_equivalent_to_object_inner -&gt; bool`
+    metadata=0.03MB   fields=0.00MB   count=87
+`ClassLiteral &lt; 'db &gt;::inheritance_cycle_ -&gt; core::option::Option&lt;ty_python_semantic::types::class::InheritanceCycle&gt;`
+    metadata=0.01MB   fields=0.00MB   count=84
+`list_modules_in -&gt; alloc::vec::Vec&lt;ty_python_semantic::module_resolver::module::Module&lt;'_&gt;&gt;`
+    metadata=0.07MB   fields=0.00MB   count=3
+`PEP695TypeAliasType &lt; 'db &gt;::generic_context_ -&gt; core::option::Option&lt;ty_python_semantic::types::generics::GenericContext&lt;'_&gt;&gt;`
+    metadata=0.00MB   fields=0.00MB   count=7
+`TypeVarInstance &lt; 'db &gt;::lazy_constraints_ -&gt; core::option::Option&lt;ty_python_semantic::types::TypeVarBoundOrConstraints&lt;'_&gt;&gt;`
+    metadata=0.00MB   fields=0.00MB   count=1
+`ClassLiteral &lt; 'db &gt;::variance_of_ -&gt; ty_python_semantic::types::variance::TypeVarVariance`
+    metadata=0.00MB   fields=0.00MB   count=25
+`list_modules -&gt; alloc::vec::Vec&lt;ty_python_semantic::module_resolver::module::Module&lt;'_&gt;&gt;`
+    metadata=0.00MB   fields=0.00MB   count=1
+`file_settings -&gt; ty_project::metadata::settings::FileSettings`
+    metadata=0.00MB   fields=0.00MB   count=2
+`GenericAlias &lt; 'db &gt;::variance_of_ -&gt; ty_python_semantic::types::variance::TypeVarVariance`
+    metadata=0.00MB   fields=0.00MB   count=13
+=======SALSA SUMMARY=======
+TOTAL MEMORY USAGE: 491.24MB
+    struct metadata = 9.37MB
+    struct fields = 19.41MB
+    memo metadata = 18.26MB
+    memo fields = 444.19MB
+
+</code></pre>
+<p>and parsed modules drops down to less than 200 after making a few more changes (LRU is deferred in that it requires a few changes before it's safe for salsa to delete it)</p>
+<pre><code>=======SALSA QUERIES=======
+`symbols_for_file_global_only -&gt; ty_ide::symbols::FlatSymbols`
+    metadata=2.99MB   fields=31.33MB  count=46726
+`source_text -&gt; ruff_db::source::SourceText`
+    metadata=2.98MB   fields=19.40MB  count=46737
+`parsed_module -&gt; ruff_db::parsed::ParsedModule`
+    metadata=3.55MB   fields=12.72MB  count=46737
+`semantic_index -&gt; ty_python_semantic::semantic_index::SemanticIndex&lt;'_&gt;`
+    metadata=1.00MB   fields=4.24MB   count=102
+`all_submodule_names_for_package -&gt; core::option::Option&lt;alloc::vec::Vec&lt;ty_python_semantic::module_resolver::module::Module&lt;'_&gt;&gt;&gt;`
+    metadata=3.28MB   fields=1.12MB   count=46744
+`infer_definition_types -&gt; ty_python_semantic::types::infer::Definition
+</code></pre>
+<p>@ibraheemdev I'm not sure if the counts are correctly updated after LRU. Do we filter out memos without a value, or is it intentional that we don't, so that we still account for the metadata overhead?</p>
+<p><strong>Note</strong>: ty will still use more memory than reported by salsa because it currently doesn't release no-longer-used pages. But homeassistant now takes ~1.2 GB after LRU collection compared to 5.6 GB before, which is a substantial improvement</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @MichaReiser on 2025-12-02 07:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-12-02 07:47</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-12-02 07:49</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">beartype (https://github.com/beartype/beartype)
++ beartype/claw/_package/clawpkgtrie.py:247:29: warning[unsupported-base] Unsupported class base with type `&lt;class 'dict[str, PackagesTrieWhitelist]'&gt; | &lt;class 'dict[str, Divergent]'&gt;`
+- Found 493 diagnostics
++ Found 494 diagnostics
+
+pandas-stubs (https://github.com/pandas-dev/pandas-stubs)
+- pandas-stubs/_typing.pyi:1207:16: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 5505 diagnostics
++ Found 5504 diagnostics
+
+
+</code></pre>
+</details>
+
+<p>No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-12-02 08:03</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-12-02 10:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/parsed.rs</code>:28 on 2025-12-02 10:12</div>
+            <div class="timeline-body"><p>The number here is rather random. We never evict a module within the same revision. The assumption here is that subsequent changes should rarely invalidate more than 200 files at once.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/ast_node_ref.rs</code>:90 on 2025-12-02 10:13</div>
+            <div class="timeline-body"><p>I had to remove this assertion because the AST can now be collected so that it has a different module ref when dereferencing the node</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-12-02 10:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2025-12-02 10:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @MichaReiser on 2025-12-02 10:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @MichaReiser on 2025-12-02 10:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @MichaReiser on 2025-12-02 10:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @MichaReiser on 2025-12-02 10:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-02 11:47</div>
+            <div class="timeline-body"><p>Huh, it looks like Salsa also ends up reclaiming some memoized <code>source_text</code> calls. While this might be what we want in this particular instance, I don't know how salsa would know that <code>parsed_module</code> was the only query depending on <code>source_text</code> (salsa doesn't maintain a inreverse dependency tree)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-02 12:02</div>
+            <div class="timeline-body"><blockquote>
+<p>Huh, it looks like Salsa also ends up reclaiming some memoized <code>source_text</code> calls. While this might be what we want in this particular instance, I don't know how salsa would know that <code>parsed_module</code> was the only query depending on <code>source_text</code> (salsa doesn't maintain an inverse dependency tree)</p>
+</blockquote>
+<p>I'm not sure why this would happen. All that Salsa does during LRU eviction is to set <code>memo.value = None</code>. It doesn't delete the <code>Memo</code> itself. Therefore, it shouldn't change any other queries</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ibraheemdev by @MichaReiser on 2025-12-02 12:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @dcreager removed by @MichaReiser on 2025-12-02 13:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @sharkdp removed by @MichaReiser on 2025-12-02 13:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @AlexWaygood removed by @MichaReiser on 2025-12-02 13:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @MichaReiser on 2025-12-02 13:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/ty_project/src/db.rs</code>:134 on 2025-12-02 14:35</div>
+            <div class="timeline-body"><p>Ominous truncated comment</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/ty_python_semantic/src/ast_node_ref.rs</code>:90 on 2025-12-02 14:37</div>
+            <div class="timeline-body"><p>Dang, this kind of assertion is really handy, can we maybe make the lru stuff release-only...? I guess probably inadvisable to have that big of a behaviour change between debug and release.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/ruff_memory_usage/src/lib.rs</code>:8 on 2025-12-02 14:39</div>
+            <div class="timeline-body"><p>Would appreciate a comment explaining what on earth is going on here. Also, interesting that this no longer needs to be multi-threaded..?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> approved on 2025-12-02 14:39</div>
+            <div class="timeline-body"><p>Incredible win</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ty_ide/src/symbols.rs</code>:390 on 2025-12-02 14:52</div>
+            <div class="timeline-body"><p>Does this mean that each time completions are requested, every file will need to be re-parsed?</p>
+<p>I checked out this PR and tried it out. I used a single Python source file containing just <code>array</code>. I opened it in VS Code and requested completions at the end of <code>array</code>. On <code>main</code>, I get:</p>
+<pre><code>2025-12-02 09:48:31.234246045 DEBUG request{id=13 method=&quot;textDocument/completion&quot;}: Completions request returned 326 suggestions in 149.088978ms
+2025-12-02 09:48:34.461071428 DEBUG request{id=15 method=&quot;textDocument/completion&quot;}: Completions request returned 326 suggestions in 17.225306ms
+2025-12-02 09:48:36.677139939 DEBUG request{id=17 method=&quot;textDocument/completion&quot;}: Completions request returned 326 suggestions in 19.559503ms
+2025-12-02 09:48:40.656242428 DEBUG request{id=19 method=&quot;textDocument/completion&quot;}: Completions request returned 326 suggestions in 18.719669ms
+</code></pre>
+<p>And with your branch I get:</p>
+<pre><code>2025-12-02 09:50:26.152804396 DEBUG request{id=14 method=&quot;textDocument/completion&quot;}: Completions request returned 326 suggestions in 166.780705ms
+2025-12-02 09:50:29.762248593 DEBUG request{id=16 method=&quot;textDocument/completion&quot;}: Completions request returned 326 suggestions in 19.985813ms
+2025-12-02 09:50:33.345613225 DEBUG request{id=18 method=&quot;textDocument/completion&quot;}: Completions request returned 326 suggestions in 19.429199ms
+2025-12-02 09:50:37.048968976 DEBUG request{id=20 method=&quot;textDocument/completion&quot;}: Completions request returned 326 suggestions in 18.763721ms
+</code></pre>
+<p>So there still seems to be significant caching happening?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2025-12-02 14:52</div>
+            <div class="timeline-body"><p>Wow</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-12-02 15:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_project/src/db.rs</code>:134 on 2025-12-02 15:08</div>
+            <div class="timeline-body"><p>Lol yes. It's because I decided it's a bad idea and we should fix <code>heap_size</code> instead</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-12-02 15:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_memory_usage/src/lib.rs</code>:8 on 2025-12-02 15:08</div>
+            <div class="timeline-body"><p>This was never multi-threaded. It's just that it was a <code>static</code> before, so we had to use a <code>Mutex</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-12-02 15:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_ide/src/symbols.rs</code>:390 on 2025-12-02 15:09</div>
+            <div class="timeline-body"><blockquote>
+<p>Does this mean that each time completions are requested, every file will need to be re-parsed?</p>
+</blockquote>
+<p>We still cache <code>symbols_for_file_global_only</code>. But yes, we'll have to reparse the AST if a third party file changes, but that should be very unlikely and not something we can't really avoid because we obviously have to recompute <code>symbols_for_file_global_only</code> in that case.</p>
+<p>The main drawback of this is if we had any other query that iterates over all third-party modules, parses them, and does stuff. But I don't think there's any such query?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-12-02 15:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ty_ide/src/symbols.rs</code>:390 on 2025-12-02 15:14</div>
+            <div class="timeline-body"><p>Ah I see now. Yeah this is great. And no, I'm not aware of any other queries that do this. I agree we'd have to be careful introducing one. Maybe add a comment here warning of that eventuality?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[ty] Enable LRU collection for parsed module and semantix index" to "[ty] Enable LRU collection for parsed module and semantic index" by @AlexWaygood on 2025-12-02 15:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2025-12-02 16:12</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm not sure if the counts are correctly updated after LRU. Do we filter out memos without a value, or is it intentional that we don't, so that we still account for the metadata overhead?</p>
+</blockquote>
+<p>We should still count the metadata. Maybe we want separate counts for memos with/without values?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-12-02 16:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/ast_node_ref.rs</code>:90 on 2025-12-02 16:14</div>
+            <div class="timeline-body"><p>Yeah, this specific assertion has caught a bunch of bugs in my PRs prior to me filing them :/</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> approved on 2025-12-02 16:54</div>
+            <div class="timeline-body"><p>We talked a bit about better LRU heuristics, and potentially changing completions to attempt to load the semantic index if it has already been created instead of reparsing the file, but this seems great for now!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-02 17:51</div>
+            <div class="timeline-body"><p>For tomorrow, I should test that this doesn't regress multithreading performance in a meaningful way, because the LRU uses a single <code>Mutex</code> per query :(</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-12-02 20:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/ast_node_ref.rs</code>:90 on 2025-12-02 20:42</div>
+            <div class="timeline-body"><p>I think we can bring it back for the first salsa revision. It allows us to catch at least some violations in mdtests. It's always disabled in mypy primer because we use a release build</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff_db/src/parsed.rs</code>:28 on 2025-12-03 01:18</div>
+            <div class="timeline-body"><p>I think a comment in the code, saying exactly what you said in this github comment, would be useful to future-us.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/semantic_index.rs</code>:54 on 2025-12-03 01:24</div>
+            <div class="timeline-body"><p>Similarly here, let's comment on what assumptions the 200 is based on.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-12-03 01:24</div>
+            <div class="timeline-body"><p>The memory impact here is amazing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-03 08:58</div>
+            <div class="timeline-body"><p>Hmm, yeah. We can't land this. This is a huge perf regression. Checking a large project goes from 30s to 40s, and it's very clear that this comes from the locks because the involuntary context switches increase from 2'113'066  to 8'769'635, that's 4 times as many threads that block on each other.</p>
+<p>Fixing this requires changes in Salsa. Ideally, Salsa would shard locks similarly to how we handle interned structs. This should remove most congestion because checking a file is, most of the time, local to a single thread. But I don't think this is an entirely trivial change and @ibraheemdev is probably the best person to work on it.</p>
+<p>For now, I'll land the change that enables LRU for <code>parsed_module</code> only. This doesn't seem to be as big of a regression and is the main driver in https://github.com/astral-sh/ty/issues/1707</p>
+<p>I still think it's important for us to enable LRU for semantic indexing because it's wasteful to keep all of them in memory when using workspace diagnostics.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[ty] Enable LRU collection for parsed module and semantic index" to "[ty] Enable LRU collection for parsed module" by @MichaReiser on 2025-12-03 09:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2025-12-03 11:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-12-03 11:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-12-03 11:16</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:48:28 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>:bug: Fix: rule (SIM114) was incorrectly removing comments when mergi… - astral-sh/ruff #19759</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>:bug: Fix: rule (SIM114) was incorrectly removing comments when mergi…</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19759">#19759</a>
+        opened by <a href="https://github.com/mikeleppane">@mikeleppane</a>
+        on 2025-08-05 11:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/mikeleppane">@mikeleppane</a> on 2025-08-05 11:03</div>
+            <div class="timeline-body"><p>…ng consecutive if/elif branches with identical bodies.</p>
+<!--
+Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title? (Please prefix with `[ty]` for ty pull
+  requests.)
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+<h3>Problem</h3>
+<p>The <code>if_with_same_arms</code> rule <a href="https://docs.astral.sh/ruff/rules/if-with-same-arms/">(SIM114)</a> was incorrectly removing comments when merging consecutive if/elif branches with identical bodies. This could lead to loss of important documentation and developer intent.</p>
+<p>Example of the issue (see the related issue for another example):</p>
+<pre><code class="language-python">if x == 1:
+    return True
+    # important comment 1
+elif x == 2:
+    return True
+    # important comment 2
+</code></pre>
+<p>Previously merged to:</p>
+<pre><code class="language-python">if x == 1 or x == 2:
+    return True  # important comment 2
+</code></pre>
+<h3>Solution</h3>
+<p>Added comprehensive comment preservation logic that:</p>
+<ul>
+<li>Preserves inline comments - Comments on the same line as test conditions are maintained</li>
+<li>Handles identical body comments - When both branches have identical comments, they're preserved in the merged result</li>
+<li>Prevents unsafe merges - Disables automatic fixing when comments would be lost, while still reporting the diagnostic</li>
+</ul>
+<h3>Changes Made</h3>
+<ul>
+<li>Added <code>can_preserve_comments_during_merge()</code> - Analyzes comment safety before merging</li>
+<li>Enhanced <code>merge_branches()</code> - Now only runs when comments can be safely preserved</li>
+<li>Improved <code>if_with_same_arms()</code> - Reports diagnostics even when automatic fixes are disabled</li>
+</ul>
+<h3>Allowed Cases</h3>
+<ol>
+<li>No comments</li>
+</ol>
+<pre><code class="language-python"> if x == 1:
+    return True
+elif x == 2:
+    return True
+</code></pre>
+<p>Result: Merges to if x == 1 or x == 2:
+2. Inline Comments with Test Conditions</p>
+<pre><code class="language-python">if x == 1:  # check for one
+    return True
+elif x == 2:  # check for two
+    return True
+</code></pre>
+<p>Result: Merges to if x == 1 or x == 2:  # check for one
+3. Identical Body Comments</p>
+<pre><code class="language-python">if x == 1:
+    return True  # always return true
+    # end comment
+elif x == 2:
+    return True  # always return true
+    # end comment
+</code></pre>
+<p>Result: Merges and preserves the identical body comments.
+4. Empty/Trivial Comments</p>
+<pre><code class="language-python">if x == 1:
+    return True
+    #
+elif x == 2:
+    return True
+    #
+</code></pre>
+<p>Result: Merges successfully (empty comments are ignored).
+5. Mixed Safe Comments</p>
+<pre><code class="language-python">if x == 1:  # inline comment
+    return True  # body comment
+elif x == 2:  # another inline
+    return True  # body comment
+</code></pre>
+<p>=&gt; Result:</p>
+<pre><code class="language-python">if x == 1 or x == 2:  # inline comment
+    return True  # body comment
+</code></pre>
+<h3>Not Allowed Cases</h3>
+<ol>
+<li>Any Standalone Comments Between Branches</li>
+</ol>
+<pre><code class="language-python">if x == 1:
+    return True
+
+# This is a standalone comment explaining something
+elif x == 2:
+    return True
+</code></pre>
+<p>Result: Diagnostic reported but no automatic fix.</p>
+<ol start="2">
+<li>Different Body Comments</li>
+</ol>
+<pre><code class="language-python">if x == 1:
+    return True  # case one behavior
+elif x == 2:
+    return True  # case two behavior
+</code></pre>
+<p>Result: No automatic fix. Why: Body comments differ, so information would be lost.</p>
+<ol start="3">
+<li>Multiple Standalone Comments</li>
+</ol>
+<pre><code class="language-python">if x == 1:
+    return True
+
+# First explanation
+# Second explanation
+elif x == 2:
+    return True
+</code></pre>
+<p>Result: No automatic fix. Why: Multiple standalone comments are too complex to safely preserve.</p>
+<p>Related issue: <a href="https://github.com/astral-sh/ruff/issues/19576">#19576</a></p>
+<h2>Test Plan</h2>
+<!-- How was it tested? -->
+
+<p>Added a few extra snapshot test cases.</p>
+<p>NOTE: <code>clippy</code> fails locally regarding <code>ty_server</code>:</p>
+<pre><code class="language-bash">error: unused import: `insta::assert_compact_debug_snapshot`
+ --&gt; crates\ty_server\tests\e2e\pull_diagnostics.rs:2:5
+  |
+2 | use insta::assert_compact_debug_snapshot;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |
+  = note: `-D unused-imports` implied by `-D warnings`
+  = help: to override `-D warnings` add `#[allow(unused_imports)]`
+
+error: could not compile `ty_server` (test &quot;e2e&quot;) due to 1 previous error
+warning: build failed, waiting for other jobs to finish...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @mikeleppane on 2025-08-05 11:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @mikeleppane on 2025-08-05 11:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @mikeleppane on 2025-08-05 11:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @mikeleppane on 2025-08-05 11:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-05 11:05</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-05 11:07</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅
+No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-05 11:28</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+18 -0 violations, +0 -6 fixes in 5 projects; 50 projects unchanged)</p>
+<details><summary><a href="https://github.com/PlasmaPy/PlasmaPy">PlasmaPy/PlasmaPy</a> (+1 -0 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/PlasmaPy/PlasmaPy/blob/c152b8709c38d5af6309cefa0fef573bea7ce0c0/src/plasmapy/formulary/collisions/lengths.py#L289'>src/plasmapy/formulary/collisions/lengths.py:289:5:</a> SIM114 Combine `if` branches using logical `or` operator
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+3 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --no-preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/apache/airflow/blob/1362dfb0069d504db4180a4b651062cb0f3915e7/airflow-core/src/airflow/ti_deps/deps/not_previously_skipped_dep.py#L70'>airflow-core/src/airflow/ti_deps/deps/not_previously_skipped_dep.py:70:17:</a> SIM114 Combine `if` branches using logical `or` operator
++ <a href='https://github.com/apache/airflow/blob/1362dfb0069d504db4180a4b651062cb0f3915e7/airflow-core/src/airflow/utils/log/file_task_handler.py#L644'>airflow-core/src/airflow/utils/log/file_task_handler.py:644:9:</a> SIM114 Combine `if` branches using logical `or` operator
++ <a href='https://github.com/apache/airflow/blob/1362dfb0069d504db4180a4b651062cb0f3915e7/airflow-core/tests/unit/models/test_backfill.py#L455'>airflow-core/tests/unit/models/test_backfill.py:455:5:</a> SIM114 Combine `if` branches using logical `or` operator
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/bokeh/bokeh">bokeh/bokeh</a> (+3 -0 violations, +0 -2 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --no-preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/_renderer.py#L282'>src/bokeh/plotting/_renderer.py:282:17:</a> SIM114 Combine `if` branches using logical `or` operator
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/_renderer.py#L284'>src/bokeh/plotting/_renderer.py:284:17:</a> SIM114 [*] Combine `if` branches using logical `or` operator
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/_renderer.py#L286'>src/bokeh/plotting/_renderer.py:286:17:</a> SIM114 Combine `if` branches using logical `or` operator
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/util/serialization.py#L190'>src/bokeh/util/serialization.py:190:5:</a> SIM114 Combine `if` branches using logical `or` operator
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/util/serialization.py#L190'>src/bokeh/util/serialization.py:190:5:</a> SIM114 [*] Combine `if` branches using logical `or` operator
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/mlflow/mlflow">mlflow/mlflow</a> (+3 -0 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/mlflow/mlflow/blob/fc82ad9f28eb3fe1fd4f00d03f35650e9874b7f4/mlflow/crewai/autolog.py#L181'>mlflow/crewai/autolog.py:181:9:</a> SIM114 Combine `if` branches using logical `or` operator
++ <a href='https://github.com/mlflow/mlflow/blob/fc82ad9f28eb3fe1fd4f00d03f35650e9874b7f4/mlflow/pydantic_ai/autolog.py#L155'>mlflow/pydantic_ai/autolog.py:155:9:</a> SIM114 Combine `if` branches using logical `or` operator
++ <a href='https://github.com/mlflow/mlflow/blob/fc82ad9f28eb3fe1fd4f00d03f35650e9874b7f4/mlflow/transformers/__init__.py#L2706'>mlflow/transformers/__init__.py:2706:9:</a> SIM114 Combine `if` branches using logical `or` operator
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/zulip/zulip">zulip/zulip</a> (+8 -0 violations, +0 -4 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --no-preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/zulip/zulip/blob/68b205775ec5a0a51949c906cc0f9c89bf3df99d/zerver/lib/attachments.py#L194'>zerver/lib/attachments.py:194:13:</a> SIM114 Combine `if` branches using logical `or` operator
+- <a href='https://github.com/zulip/zulip/blob/68b205775ec5a0a51949c906cc0f9c89bf3df99d/zerver/lib/attachments.py#L194'>zerver/lib/attachments.py:194:13:</a> SIM114 [*] Combine `if` branches using logical `or` operator
++ <a href='https://github.com/zulip/zulip/blob/68b205775ec5a0a51949c906cc0f9c89bf3df99d/zerver/lib/events.py#L1763'>zerver/lib/events.py:1763:5:</a> SIM114 Combine `if` branches using logical `or` operator
++ <a href='https://github.com/zulip/zulip/blob/68b205775ec5a0a51949c906cc0f9c89bf3df99d/zerver/lib/events.py#L1766'>zerver/lib/events.py:1766:5:</a> SIM114 Combine `if` branches using logical `or` operator
++ <a href='https://github.com/zulip/zulip/blob/68b205775ec5a0a51949c906cc0f9c89bf3df99d/zerver/lib/events.py#L1769'>zerver/lib/events.py:1769:5:</a> SIM114 Combine `if` branches using logical `or` operator
++ <a href='https://github.com/zulip/zulip/blob/68b205775ec5a0a51949c906cc0f9c89bf3df99d/zerver/lib/events.py#L1772'>zerver/lib/events.py:1772:5:</a> SIM114 Combine `if` branches using logical `or` operator
++ <a href='https://github.com/zulip/zulip/blob/68b205775ec5a0a51949c906cc0f9c89bf3df99d/zerver/lib/events.py#L1820'>zerver/lib/events.py:1820:5:</a> SIM114 Combine `if` branches using logical `or` operator
++ <a href='https://github.com/zulip/zulip/blob/68b205775ec5a0a51949c906cc0f9c89bf3df99d/zerver/lib/push_notifications.py#L784'>zerver/lib/push_notifications.py:784:5:</a> SIM114 Combine `if` branches using logical `or` operator
++ <a href='https://github.com/zulip/zulip/blob/68b205775ec5a0a51949c906cc0f9c89bf3df99d/zerver/lib/thumbnail.py#L597'>zerver/lib/thumbnail.py:597:9:</a> SIM114 Combine `if` branches using logical `or` operator
++ <a href='https://github.com/zulip/zulip/blob/68b205775ec5a0a51949c906cc0f9c89bf3df99d/zerver/views/documentation.py#L105'>zerver/views/documentation.py:105:9:</a> SIM114 Combine `if` branches using logical `or` operator
++ <a href='https://github.com/zulip/zulip/blob/68b205775ec5a0a51949c906cc0f9c89bf3df99d/zerver/views/registration.py#L755'>zerver/views/registration.py:755:17:</a> SIM114 Combine `if` branches using logical `or` operator
+- <a href='https://github.com/zulip/zulip/blob/68b205775ec5a0a51949c906cc0f9c89bf3df99d/zerver/views/registration.py#L755'>zerver/views/registration.py:755:17:</a> SIM114 [*] Combine `if` branches using logical `or` operator
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (1 rules affected)</summary>
+<p>
+
+<p>| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| SIM114 | 24 | 18 | 0 | 0 | 6 |</p>
+</p>
+</details>
+
+<h3>Linter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+18 -0 violations, +0 -6 fixes in 5 projects; 50 projects unchanged)</p>
+<details><summary><a href="https://github.com/PlasmaPy/PlasmaPy">PlasmaPy/PlasmaPy</a> (+1 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/PlasmaPy/PlasmaPy/blob/c152b8709c38d5af6309cefa0fef573bea7ce0c0/src/plasmapy/formulary/collisions/lengths.py#L289'>src/plasmapy/formulary/collisions/lengths.py:289:5:</a> SIM114 Combine `if` branches using logical `or` operator
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+3 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/apache/airflow/blob/1362dfb0069d504db4180a4b651062cb0f3915e7/airflow-core/src/airflow/ti_deps/deps/not_previously_skipped_dep.py#L70'>airflow-core/src/airflow/ti_deps/deps/not_previously_skipped_dep.py:70:17:</a> SIM114 Combine `if` branches using logical `or` operator
++ <a href='https://github.com/apache/airflow/blob/1362dfb0069d504db4180a4b651062cb0f3915e7/airflow-core/src/airflow/utils/log/file_task_handler.py#L644'>airflow-core/src/airflow/utils/log/file_task_handler.py:644:9:</a> SIM114 Combine `if` branches using logical `or` operator
++ <a href='https://github.com/apache/airflow/blob/1362dfb0069d504db4180a4b651062cb0f3915e7/airflow-core/tests/unit/models/test_backfill.py#L455'>airflow-core/tests/unit/models/test_backfill.py:455:5:</a> SIM114 Combine `if` branches using logical `or` operator
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/bokeh/bokeh">bokeh/bokeh</a> (+3 -0 violations, +0 -2 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/_renderer.py#L282'>src/bokeh/plotting/_renderer.py:282:17:</a> SIM114 Combine `if` branches using logical `or` operator
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/_renderer.py#L284'>src/bokeh/plotting/_renderer.py:284:17:</a> SIM114 [*] Combine `if` branches using logical `or` operator
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/_renderer.py#L286'>src/bokeh/plotting/_renderer.py:286:17:</a> SIM114 Combine `if` branches using logical `or` operator
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/util/serialization.py#L190'>src/bokeh/util/serialization.py:190:5:</a> SIM114 Combine `if` branches using logical `or` operator
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/util/serialization.py#L190'>src/bokeh/util/serialization.py:190:5:</a> SIM114 [*] Combine `if` branches using logical `or` operator
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/mlflow/mlflow">mlflow/mlflow</a> (+3 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/mlflow/mlflow/blob/fc82ad9f28eb3fe1fd4f00d03f35650e9874b7f4/mlflow/crewai/autolog.py#L181'>mlflow/crewai/autolog.py:181:9:</a> SIM114 Combine `if` branches using logical `or` operator
++ <a href='https://github.com/mlflow/mlflow/blob/fc82ad9f28eb3fe1fd4f00d03f35650e9874b7f4/mlflow/pydantic_ai/autolog.py#L155'>mlflow/pydantic_ai/autolog.py:155:9:</a> SIM114 Combine `if` branches using logical `or` operator
++ <a href='https://github.com/mlflow/mlflow/blob/fc82ad9f28eb3fe1fd4f00d03f35650e9874b7f4/mlflow/transformers/__init__.py#L2706'>mlflow/transformers/__init__.py:2706:9:</a> SIM114 Combine `if` branches using logical `or` operator
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/zulip/zulip">zulip/zulip</a> (+8 -0 violations, +0 -4 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/zulip/zulip/blob/68b205775ec5a0a51949c906cc0f9c89bf3df99d/zerver/lib/attachments.py#L194'>zerver/lib/attachments.py:194:13:</a> SIM114 Combine `if` branches using logical `or` operator
+- <a href='https://github.com/zulip/zulip/blob/68b205775ec5a0a51949c906cc0f9c89bf3df99d/zerver/lib/attachments.py#L194'>zerver/lib/attachments.py:194:13:</a> SIM114 [*] Combine `if` branches using logical `or` operator
++ <a href='https://github.com/zulip/zulip/blob/68b205775ec5a0a51949c906cc0f9c89bf3df99d/zerver/lib/events.py#L1763'>zerver/lib/events.py:1763:5:</a> SIM114 Combine `if` branches using logical `or` operator
++ <a href='https://github.com/zulip/zulip/blob/68b205775ec5a0a51949c906cc0f9c89bf3df99d/zerver/lib/events.py#L1766'>zerver/lib/events.py:1766:5:</a> SIM114 Combine `if` branches using logical `or` operator
++ <a href='https://github.com/zulip/zulip/blob/68b205775ec5a0a51949c906cc0f9c89bf3df99d/zerver/lib/events.py#L1769'>zerver/lib/events.py:1769:5:</a> SIM114 Combine `if` branches using logical `or` operator
++ <a href='https://github.com/zulip/zulip/blob/68b205775ec5a0a51949c906cc0f9c89bf3df99d/zerver/lib/events.py#L1772'>zerver/lib/events.py:1772:5:</a> SIM114 Combine `if` branches using logical `or` operator
++ <a href='https://github.com/zulip/zulip/blob/68b205775ec5a0a51949c906cc0f9c89bf3df99d/zerver/lib/events.py#L1820'>zerver/lib/events.py:1820:5:</a> SIM114 Combine `if` branches using logical `or` operator
++ <a href='https://github.com/zulip/zulip/blob/68b205775ec5a0a51949c906cc0f9c89bf3df99d/zerver/lib/push_notifications.py#L784'>zerver/lib/push_notifications.py:784:5:</a> SIM114 Combine `if` branches using logical `or` operator
++ <a href='https://github.com/zulip/zulip/blob/68b205775ec5a0a51949c906cc0f9c89bf3df99d/zerver/lib/thumbnail.py#L597'>zerver/lib/thumbnail.py:597:9:</a> SIM114 Combine `if` branches using logical `or` operator
++ <a href='https://github.com/zulip/zulip/blob/68b205775ec5a0a51949c906cc0f9c89bf3df99d/zerver/views/documentation.py#L105'>zerver/views/documentation.py:105:9:</a> SIM114 Combine `if` branches using logical `or` operator
++ <a href='https://github.com/zulip/zulip/blob/68b205775ec5a0a51949c906cc0f9c89bf3df99d/zerver/views/registration.py#L755'>zerver/views/registration.py:755:17:</a> SIM114 Combine `if` branches using logical `or` operator
+- <a href='https://github.com/zulip/zulip/blob/68b205775ec5a0a51949c906cc0f9c89bf3df99d/zerver/views/registration.py#L755'>zerver/views/registration.py:755:17:</a> SIM114 [*] Combine `if` branches using logical `or` operator
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (1 rules affected)</summary>
+<p>
+
+<p>| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| SIM114 | 24 | 18 | 0 | 0 | 6 |</p>
+</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ntBre by @ntBre on 2025-08-08 14:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @dcreager removed by @ntBre on 2025-08-08 14:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @carljm removed by @ntBre on 2025-08-08 14:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @MichaReiser removed by @ntBre on 2025-08-08 14:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @sharkdp removed by @ntBre on 2025-08-08 14:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-08-12 19:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @ntBre on 2025-08-12 19:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-08-12 19:22</div>
+            <div class="timeline-body"><p>Thank you for your work on this!</p>
+<p>How different are the results here from using a comment check like this that is common in other rules:</p>
+<p>https://github.com/astral-sh/ruff/blob/6f42c0d143460adf833caff139c11e9eaff7752d/crates/ruff_linter/src/rules/flake8_async/rules/async_zero_sleep.rs#L138-L146</p>
+<p>That's the kind of solution I was picturing here when I saw the issue: either offer an unsafe fix if any comments would be deleted (just like the example above), or we can even return without a fix in those cases if the fix is &quot;too&quot; unsafe. I would kind of prefer that over a more complicated bespoke solution, if we can get most of the same benefits that way.</p>
+<p>We're also raising new diagnostics in the ecosystem check that I think should be suppressed. They appear to fall under the previous check for identical bodies with different comments that should be preserved.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-21 08:06</div>
+            <div class="timeline-body"><p>Thanks for your contribution. I'll close this PR due to inactivity, but we'd be more than happy to review a resubmission that answers Brent's question.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-11-21 08:06</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:48:26 UTC
+    </footer>
+</body>
+</html>

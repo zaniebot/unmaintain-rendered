@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Typevars should be considered equivalent even after lazy defaults/bounds/etc are forced - astral-sh/ruff #21506</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Typevars should be considered equivalent even after lazy defaults/bounds/etc are forced</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21506">#21506</a>
+        opened by <a href="https://github.com/dcreager">@dcreager</a>
+        on 2025-11-18 02:59
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dcreager">@dcreager</a> on 2025-11-18 02:59</div>
+            <div class="timeline-body"><p>This was a lingering place where we were still using <code>TypeVarInstance</code> equality to check whether two typevars are the same. We need to fall back on comparing the typevar <code>identity</code>, since that remains the same even after evaluating lazy defaults, bounds, or constraints.</p>
+<p>This was showing up as a bug on #20933, since the new constraint solver normalizes types as part of constructing constraint sets. That had the effect of making a <code>TypeVar</code> instance fail the argument/parameter assignability check after we apply the inferred specialization in something like</p>
+<pre><code class="language-py">def f[T = int]():
+    reveal_type(T)
+</code></pre>
+<p>since the argument type has a lazy default, but the normalized/specialized parameter type ends up with the evaluated/eager default.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @dcreager on 2025-11-18 02:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @dcreager on 2025-11-18 02:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @dcreager on 2025-11-18 02:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @dcreager on 2025-11-18 02:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @dcreager on 2025-11-18 02:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-11-18 03:01</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-11-18 03:03</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅</p>
+<p>No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-11-18 14:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:8160 on 2025-11-18 14:17</div>
+            <div class="timeline-body"><p>IIUC, all of these <code>KnownInstance</code> type variants essentially represent the type of a parameterized special form in a value position. so for <code>T = TypeVar(&quot;T&quot;)</code>, we represent the type of <code>T</code> as being a <code>Type::KnownInstanceType(KnownInstanceType::TypeVar(..))</code>. Given this, why is it important to check two typevars for equivalence using <code>.is_same_typevar_as()</code>, but <em>not</em> do the same for other special forms in value positions (which might be parameterized with typevars). E.g. when comparing whether <code>T | int</code> is equivalent to <code>T | int</code>, where <code>T</code> is a type variable -- here <code>T | int</code> will be represented in our model as a <code>Type::KnownInstanceType(KnownInstanceType::UnionType(..))</code>, where one of the elements in that union is a <code>Type::KnownInstanceType(KnownInstanceType::TypeVar(..))</code>: ISTM we need to account for the possibility of <code>Type::KnownInstanceType(KnownInstanceType::TypeVar(..))</code>s being in nested positions here, which will require recursing into the types rather than just using <code>==</code> checks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-11-18 18:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types.rs</code>:8160 on 2025-11-18 18:37</div>
+            <div class="timeline-body"><p>Hmm yes I think you're right!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:48:27 UTC
+    </footer>
+</body>
+</html>

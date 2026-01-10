@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Limit `eglot-format` hook to eglot-managed Python buffers - astral-sh/ruff #21459</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Limit <code>eglot-format</code> hook to eglot-managed Python buffers</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21459">#21459</a>
+        opened by <a href="https://github.com/thamer">@thamer</a>
+        on 2025-11-14 17:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/thamer">@thamer</a> on 2025-11-14 17:34</div>
+            <div class="timeline-body"><p>Running <code>eglot-format</code> in buffers not managed by Eglot causes a <code>jsonrpc-error</code> in Emacs 30. It may also display a <code>documentFormattingProvider</code> warning when the server does not support formatting. Add checks for both.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @MichaReiser on 2025-11-14 17:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-11-14 18:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>docs/editors/setup.md</code>:411 on 2025-11-14 18:52</div>
+            <div class="timeline-body"><p>I think another option could be to add the hook with the <code>LOCAL</code> argument within a python-mode-hook. Something like:</p>
+<pre><code class="language-suggestion">  (add-hook 'python-mode-hook
+            (lambda ()
+              (add-hook 'after-save-hook 'eglot-format nil t)))
+</code></pre>
+<p>but I haven't tested this. I'm still on lsp-mode rather than eglot and don't use format-on-save.</p>
+<p>This could also be combined with the <code>python-mode-hook</code> above:</p>
+<pre><code class="language-elisp">  (add-hook 'python-mode-hook
+            (lambda ()
+              (eglot-ensure)
+              (add-hook 'after-save-hook 'eglot-format nil t)))
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">documentation</span> added by @ntBre on 2025-11-14 18:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/thamer">@thamer</a> reviewed on 2025-11-14 19:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/thamer">@thamer</a> on <code>docs/editors/setup.md</code>:411 on 2025-11-14 19:15</div>
+            <div class="timeline-body"><p>That's better. But it should be <code>python-base-mode-hook</code> to also work on the tree-sitter mode.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-11-14 19:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>docs/editors/setup.md</code>:411 on 2025-11-14 19:17</div>
+            <div class="timeline-body"><p>Ah nice, we should fix that on line 403 too then. And maybe 406?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/thamer">@thamer</a> reviewed on 2025-11-14 20:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/thamer">@thamer</a> on <code>docs/editors/setup.md</code>:411 on 2025-11-14 20:25</div>
+            <div class="timeline-body"><p>Done.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ntBre by @MichaReiser on 2025-11-17 07:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-11-17 08:57</div>
+            <div class="timeline-body"><p>I'd prefer if @ntBre could look at this as I'm not familiar with Emacs plugins :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @dhruvmanila removed by @MichaReiser on 2025-11-17 09:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> approved on 2025-11-17 13:49</div>
+            <div class="timeline-body"><p>Thank you!</p>
+<p>I tested with this configuration in an <code>init.el</code> file in a temporary directory and:</p>
+<pre><code class="language-shell">emacs --init-directory .
+</code></pre>
+<p>Editing a Python file started eglot, and format-on-save was working. Editing a different file type and saving didn't show any errors.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Limit Eglot format to eglot-managed python buffers" to "Limit `eglot-format` hook to eglot-managed Python buffers" by @ntBre on 2025-11-17 13:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ntBre on 2025-11-17 13:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-11-17 13:52</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:48:27 UTC
+    </footer>
+</body>
+</html>

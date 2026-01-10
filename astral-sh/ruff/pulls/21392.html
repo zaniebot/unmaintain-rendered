@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Constraint sets compare generic callables correctly - astral-sh/ruff #21392</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Constraint sets compare generic callables correctly</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21392">#21392</a>
+        opened by <a href="https://github.com/dcreager">@dcreager</a>
+        on 2025-11-11 22:42
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dcreager">@dcreager</a> on 2025-11-11 22:42</div>
+            <div class="timeline-body"><p>Constraint sets can now track subtyping/assignability/etc of generic callables correctly. For instance:</p>
+<pre><code class="language-py">def identity[T](t: T) -&gt; T:
+    return t
+
+constraints = ConstraintSet.always()
+static_assert(constraints.implies_subtype_of(TypeOf[identity], Callable[[int], int]))
+static_assert(constraints.implies_subtype_of(TypeOf[identity], Callable[[str], str]))
+</code></pre>
+<p>A generic callable can be considered an intersection of all of its possible specializations, and an assignability check with an intersection as the lhs side succeeds of <em>any</em> of the intersected types satisfies the check. Put another way, if someone expects to receive any function with a signature of <code>(int) -&gt; int</code>, we can give them <code>identity</code>.</p>
+<p>Note that the corresponding check using <code>is_subtype_of</code> directly does not yet work, since #20093 has not yet hooked up the core typing relationship logic to use constraint sets:</p>
+<pre><code class="language-py"># These currently fail
+static_assert(is_subtype_of(TypeOf[identity], Callable[[int], int]))
+static_assert(is_subtype_of(TypeOf[identity], Callable[[str], str]))
+</code></pre>
+<p>To do this, we add a new <em>existential quantification</em> operation on constraint sets. This takes in a list of typevars and <em>removes</em> those typevars from the constraint set. Conceptually, we return a new constraint set that evaluates to <code>true</code> when there was <em>any</em> assignment of the removed typevars that caused the old constraint set to evaluate to <code>true</code>.</p>
+<p>When comparing a generic constraint set, we add its typevars to the <code>inferable</code> set, and figure out whatever constraints would allow any specialization to satisfy the check. We then use the new existential quantification operator to remove those new typevars, since the caller doesn't (and shouldn't) know anything about them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @dcreager on 2025-11-11 22:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @dcreager on 2025-11-11 22:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-11-11 22:45</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-11-11 22:45</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">pandas (https://github.com/pandas-dev/pandas)
+- pandas/tests/series/test_cumulative.py:48:20: error[no-matching-overload] No overload matches arguments
+- pandas/tests/series/test_cumulative.py:54:20: error[no-matching-overload] No overload matches arguments
+- pandas/tests/series/test_cumulative.py:154:20: error[no-matching-overload] No overload matches arguments
+- Found 3224 diagnostics
++ Found 3221 diagnostics
+
+static-frame (https://github.com/static-frame/static-frame)
+- static_frame/test/unit/test_frame.py:293:24: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `Iterable[Iterable[Any]] | ndarray[Any, Any] | TypeBlocks | Frame | Series[Any, Any]`, found `None`
++ static_frame/test/unit/test_frame.py:293:24: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `Iterable[Iterable[Any]] | TypeBlocks | Frame | Series[Any, Any]`, found `None`
+- static_frame/test/unit/test_type_blocks.py:31:42: error[invalid-argument-type] Argument to bound method `from_blocks` is incorrect: Expected `ndarray[Any, Any] | Iterable[ndarray[Any, Any]]`, found `tuple[Literal[3], Literal[4]]`
++ static_frame/test/unit/test_type_blocks.py:31:42: error[invalid-argument-type] Argument to bound method `from_blocks` is incorrect: Expected `Iterable[ndarray[Any, Any]]`, found `tuple[Literal[3], Literal[4]]`
+
+sympy (https://github.com/sympy/sympy)
++ sympy/polys/polyclasses.py:1293:31: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- sympy/utilities/tests/test_pickling.py:56:65: error[invalid-argument-type] Argument to function `dumps` is incorrect: Expected `int | None`, found `Unknown | int | ((x: _T@copy) -&gt; _T@copy) | ((x: _T@deepcopy, memo: dict[int, Any] | None = None, _nil: Any = list[Unknown]) -&gt; _T@deepcopy)`
++ sympy/utilities/tests/test_pickling.py:56:65: error[invalid-argument-type] Argument to function `dumps` is incorrect: Expected `int | None`, found `Unknown | int | ((x: _T@copy) -&gt; _T@copy)`
+- sympy/utilities/tests/test_pickling.py:74:46: error[invalid-argument-type] Argument to function `dumps` is incorrect: Expected `int | None`, found `(Unknown &amp; ~(() -&gt; object) &amp; ~ModuleType) | (int &amp; ~(() -&gt; object)) | (((x: _T@copy) -&gt; _T@copy) &amp; ~(() -&gt; object) &amp; ~ModuleType) | (((x: _T@deepcopy, memo: dict[int, Any] | None = None, _nil: Any = list[Unknown]) -&gt; _T@deepcopy) &amp; ~(() -&gt; object) &amp; ~ModuleType)`
++ sympy/utilities/tests/test_pickling.py:74:46: error[invalid-argument-type] Argument to function `dumps` is incorrect: Expected `int | None`, found `(Unknown &amp; ~(() -&gt; object) &amp; ~ModuleType) | (int &amp; ~(() -&gt; object)) | (((x: _T@copy) -&gt; _T@copy) &amp; ~(() -&gt; object) &amp; ~ModuleType)`
+- Found 14599 diagnostics
++ Found 14600 diagnostics
+
+pydantic (https://github.com/pydantic/pydantic)
+- pydantic/experimental/pipeline.py:443:27: error[invalid-assignment] Invalid assignment to key &quot;gt&quot; with declared type `date` on TypedDict `DateSchema`: value of type `SupportsGt &amp; int`
++ pydantic/experimental/pipeline.py:443:27: error[invalid-assignment] Invalid assignment to key &quot;gt&quot; with declared type `date` on TypedDict `DateSchema`: value of type `int`
+- pydantic/experimental/pipeline.py:443:27: error[invalid-assignment] Invalid assignment to key &quot;gt&quot; with declared type `datetime` on TypedDict `DatetimeSchema`: value of type `SupportsGt &amp; int`
++ pydantic/experimental/pipeline.py:443:27: error[invalid-assignment] Invalid assignment to key &quot;gt&quot; with declared type `datetime` on TypedDict `DatetimeSchema`: value of type `int`
+- pydantic/experimental/pipeline.py:443:27: error[invalid-assignment] Invalid assignment to key &quot;gt&quot; with declared type `time` on TypedDict `TimeSchema`: value of type `SupportsGt &amp; int`
++ pydantic/experimental/pipeline.py:443:27: error[invalid-assignment] Invalid assignment to key &quot;gt&quot; with declared type `time` on TypedDict `TimeSchema`: value of type `int`
+- pydantic/experimental/pipeline.py:443:27: error[invalid-assignment] Invalid assignment to key &quot;gt&quot; with declared type `Decimal` on TypedDict `DecimalSchema`: value of type `SupportsGt &amp; int`
++ pydantic/experimental/pipeline.py:443:27: error[invalid-assignment] Invalid assignment to key &quot;gt&quot; with declared type `Decimal` on TypedDict `DecimalSchema`: value of type `int`
+- pydantic/experimental/pipeline.py:443:27: error[invalid-assignment] Invalid assignment to key &quot;gt&quot; with declared type `timedelta` on TypedDict `TimedeltaSchema`: value of type `SupportsGt &amp; int`
++ pydantic/experimental/pipeline.py:443:27: error[invalid-assignment] Invalid assignment to key &quot;gt&quot; with declared type `timedelta` on TypedDict `TimedeltaSchema`: value of type `int`
+- pydantic/experimental/pipeline.py:445:27: error[invalid-assignment] Invalid assignment to key &quot;gt&quot; with declared type `date` on TypedDict `DateSchema`: value of type `SupportsGt &amp; float`
++ pydantic/experimental/pipeline.py:445:27: error[invalid-assignment] Invalid assignment to key &quot;gt&quot; with declared type `date` on TypedDict `DateSchema`: value of type `float`
+- pydantic/experimental/pipeline.py:445:27: error[invalid-assignment] Invalid assignment to key &quot;gt&quot; with declared type `datetime` on TypedDict `DatetimeSchema`: value of type `SupportsGt &amp; float`
++ pydantic/experimental/pipeline.py:445:27: error[invalid-assignment] Invalid assignment to key &quot;gt&quot; with declared type `datetime` on TypedDict `DatetimeSchema`: value of type `float`
+- pydantic/experimental/pipeline.py:445:27: error[invalid-assignment] Invalid assignment to key &quot;gt&quot; with declared type `timedelta` on TypedDict `TimedeltaSchema`: value of type `SupportsGt &amp; float`
++ pydantic/experimental/pipeline.py:445:27: error[invalid-assignment] Invalid assignment to key &quot;gt&quot; with declared type `timedelta` on TypedDict `TimedeltaSchema`: value of type `float`
+- pydantic/experimental/pipeline.py:445:27: error[invalid-assignment] Invalid assignment to key &quot;gt&quot; with declared type `int` on TypedDict `IntSchema`: value of type `SupportsGt &amp; float`
++ pydantic/experimental/pipeline.py:445:27: error[invalid-assignment] Invalid assignment to key &quot;gt&quot; with declared type `int` on TypedDict `IntSchema`: value of type `float`
+- pydantic/experimental/pipeline.py:445:27: error[invalid-assignment] Invalid assignment to key &quot;gt&quot; with declared type `Decimal` on TypedDict `DecimalSchema`: value of type `SupportsGt &amp; float`
++ pydantic/experimental/pipeline.py:445:27: error[invalid-assignment] Invalid assignment to key &quot;gt&quot; with declared type `Decimal` on TypedDict `DecimalSchema`: value of type `float`
+- pydantic/experimental/pipeline.py:445:27: error[invalid-assignment] Invalid assignment to key &quot;gt&quot; with declared type `time` on TypedDict `TimeSchema`: value of type `SupportsGt &amp; float`
++ pydantic/experimental/pipeline.py:445:27: error[invalid-assignment] Invalid assignment to key &quot;gt&quot; with declared type `time` on TypedDict `TimeSchema`: value of type `float`
+- pydantic/experimental/pipeline.py:459:27: error[invalid-assignment] Invalid assignment to key &quot;ge&quot; with declared type `date` on TypedDict `DateSchema`: value of type `SupportsGe &amp; int`
++ pydantic/experimental/pipeline.py:459:27: error[invalid-assignment] Invalid assignment to key &quot;ge&quot; with declared type `date` on TypedDict `DateSchema`: value of type `int`
+- pydantic/experimental/pipeline.py:459:27: error[invalid-assignment] Invalid assignment to key &quot;ge&quot; with declared type `datetime` on TypedDict `DatetimeSchema`: value of type `SupportsGe &amp; int`
++ pydantic/experimental/pipeline.py:459:27: error[invalid-assignment] Invalid assignment to key &quot;ge&quot; with declared type `datetime` on TypedDict `DatetimeSchema`: value of type `int`
+- pydantic/experimental/pipeline.py:459:27: error[invalid-assignment] Invalid assignment to key &quot;ge&quot; with declared type `timedelta` on TypedDict `TimedeltaSchema`: value of type `SupportsGe &amp; int`
++ pydantic/experimental/pipeline.py:459:27: error[invalid-assignment] Invalid assignment to key &quot;ge&quot; with declared type `timedelta` on TypedDict `TimedeltaSchema`: value of type `int`
+- pydantic/experimental/pipeline.py:459:27: error[invalid-assignment] Invalid assignment to key &quot;ge&quot; with declared type `Decimal` on TypedDict `DecimalSchema`: value of type `SupportsGe &amp; int`
++ pydantic/experimental/pipeline.py:459:27: error[invalid-assignment] Invalid assignment to key &quot;ge&quot; with declared type `Decimal` on TypedDict `DecimalSchema`: value of type `int`
+- pydantic/experimental/pipeline.py:459:27: error[invalid-assignment] Invalid assignment to key &quot;ge&quot; with declared type `time` on TypedDict `TimeSchema`: value of type `SupportsGe &amp; int`
++ pydantic/experimental/pipeline.py:459:27: error[invalid-assignment] Invalid assignment to key &quot;ge&quot; with declared type `time` on TypedDict `TimeSchema`: value of type `int`
+- pydantic/experimental/pipeline.py:461:27: error[invalid-assignment] Invalid assignment to key &quot;ge&quot; with declared type `date` on TypedDict `DateSchema`: value of type `SupportsGe &amp; float`
++ pydantic/experimental/pipeline.py:461:27: error[invalid-assignment] Invalid assignment to key &quot;ge&quot; with declared type `date` on TypedDict `DateSchema`: value of type `float`
+- pydantic/experimental/pipeline.py:461:27: error[invalid-assignment] Invalid assignment to key &quot;ge&quot; with declared type `datetime` on TypedDict `DatetimeSchema`: value of type `SupportsGe &amp; float`
++ pydantic/experimental/pipeline.py:461:27: error[invalid-assignment] Invalid assignment to key &quot;ge&quot; with declared type `datetime` on TypedDict `DatetimeSchema`: value of type `float`
+- pydantic/experimental/pipeline.py:461:27: error[invalid-assignment] Invalid assignment to key &quot;ge&quot; with declared type `int` on TypedDict `IntSchema`: value of type `SupportsGe &amp; float`
++ pydantic/experimental/pipeline.py:461:27: error[invalid-assignment] Invalid assignment to key &quot;ge&quot; with declared type `int` on TypedDict `IntSchema`: value of type `float`
+- pydantic/experimental/pipeline.py:461:27: error[invalid-assignment] Invalid assignment to key &quot;ge&quot; with declared type `Decimal` on TypedDict `DecimalSchema`: value of type `SupportsGe &amp; float`
++ pydantic/experimental/pipeline.py:461:27: error[invalid-assignment] Invalid assignment to key &quot;ge&quot; with declared type `Decimal` on TypedDict `DecimalSchema`: value of type `float`
+- pydantic/experimental/pipeline.py:461:27: error[invalid-assignment] Invalid assignment to key &quot;ge&quot; with declared type `timedelta` on TypedDict `TimedeltaSchema`: value of type `SupportsGe &amp; float`
++ pydantic/experimental/pipeline.py:461:27: error[invalid-assignment] Invalid assignment to key &quot;ge&quot; with declared type `timedelta` on TypedDict `TimedeltaSchema`: value of type `float`
+- pydantic/experimental/pipeline.py:461:27: error[invalid-assignment] Invalid assignment to key &quot;ge&quot; with declared type `time` on TypedDict `TimeSchema`: value of type `SupportsGe &amp; float`
++ pydantic/experimental/pipeline.py:461:27: error[invalid-assignment] Invalid assignment to key &quot;ge&quot; with declared type `time` on TypedDict `TimeSchema`: value of type `float`
+- pydantic/experimental/pipeline.py:474:27: error[invalid-assignment] Invalid assignment to key &quot;lt&quot; with declared type `date` on TypedDict `DateSchema`: value of type `SupportsLt &amp; int`
++ pydantic/experimental/pipeline.py:474:27: error[invalid-assignment] Invalid assignment to key &quot;lt&quot; with declared type `date` on TypedDict `DateSchema`: value of type `int`
+- pydantic/experimental/pipeline.py:474:27: error[invalid-assignment] Invalid assignment to key &quot;lt&quot; with declared type `datetime` on TypedDict `DatetimeSchema`: value of type `SupportsLt &amp; int`
++ pydantic/experimental/pipeline.py:474:27: error[invalid-assignment] Invalid assignment to key &quot;lt&quot; with declared type `datetime` on TypedDict `DatetimeSchema`: value of type `int`
+- pydantic/experimental/pipeline.py:474:27: error[invalid-assignment] Invalid assignment to key &quot;lt&quot; with declared type `timedelta` on TypedDict `TimedeltaSchema`: value of type `SupportsLt &amp; int`
++ pydantic/experimental/pipeline.py:474:27: error[invalid-assignment] Invalid assignment to key &quot;lt&quot; with declared type `timedelta` on TypedDict `TimedeltaSchema`: value of type `int`
+- pydantic/experimental/pipeline.py:474:27: error[invalid-assignment] Invalid assignment to key &quot;lt&quot; with declared type `time` on TypedDict `TimeSchema`: value of type `SupportsLt &amp; int`
++ pydantic/experimental/pipeline.py:474:27: error[invalid-assignment] Invalid assignment to key &quot;lt&quot; with declared type `time` on TypedDict `TimeSchema`: value of type `int`
+- pydantic/experimental/pipeline.py:474:27: error[invalid-assignment] Invalid assignment to key &quot;lt&quot; with declared type `Decimal` on TypedDict `DecimalSchema`: value of type `SupportsLt &amp; int`
++ pydantic/experimental/pipeline.py:474:27: error[invalid-assignment] Invalid assignment to key &quot;lt&quot; with declared type `Decimal` on TypedDict `DecimalSchema`: value of type `int`
+- pydantic/experimental/pipeline.py:476:27: error[invalid-assignment] Invalid assignment to key &quot;lt&quot; with declared type `datetime` on TypedDict `DatetimeSchema`: value of type `SupportsLt &amp; float`
++ pydantic/experimental/pipeline.py:476:27: error[invalid-assignment] Invalid assignment to key &quot;lt&quot; with declared type `datetime` on TypedDict `DatetimeSchema`: value of type `float`
+- pydantic/experimental/pipeline.py:476:27: error[invalid-assignment] Invalid assignment to key &quot;lt&quot; with declared type `Decimal` on TypedDict `DecimalSchema`: value of type `SupportsLt &amp; float`
++ pydantic/experimental/pipeline.py:476:27: error[invalid-assignment] Invalid assignment to key &quot;lt&quot; with declared type `Decimal` on TypedDict `DecimalSchema`: value of type `float`
+- pydantic/experimental/pipeline.py:476:27: error[invalid-assignment] Invalid assignment to key &quot;lt&quot; with declared type `timedelta` on TypedDict `TimedeltaSchema`: value of type `SupportsLt &amp; float`
++ pydantic/experimental/pipeline.py:476:27: error[invalid-assignment] Invalid assignment to key &quot;lt&quot; with declared type `timedelta` on TypedDict `TimedeltaSchema`: value of type `float`
+- pydantic/experimental/pipeline.py:476:27: error[invalid-assignment] Invalid assignment to key &quot;lt&quot; with declared type `date` on TypedDict `DateSchema`: value of type `SupportsLt &amp; float`
++ pydantic/experimental/pipeline.py:476:27: error[invalid-assignment] Invalid assignment to key &quot;lt&quot; with declared type `date` on TypedDict `DateSchema`: value of type `float`
+- pydantic/experimental/pipeline.py:476:27: error[invalid-assignment] Invalid assignment to key &quot;lt&quot; with declared type `time` on TypedDict `TimeSchema`: value of type `SupportsLt &amp; float`
++ pydantic/experimental/pipeline.py:476:27: error[invalid-assignment] Invalid assignment to key &quot;lt&quot; with declared type `time` on TypedDict `TimeSchema`: value of type `float`
+- pydantic/experimental/pipeline.py:476:27: error[invalid-assignment] Invalid assignment to key &quot;lt&quot; with declared type `int` on TypedDict `IntSchema`: value of type `SupportsLt &amp; float`
++ pydantic/experimental/pipeline.py:476:27: error[invalid-assignment] Invalid assignment to key &quot;lt&quot; with declared type `int` on TypedDict `IntSchema`: value of type `float`
+- pydantic/experimental/pipeline.py:489:27: error[invalid-assignment] Invalid assignment to key &quot;le&quot; with declared type `time` on TypedDict `TimeSchema`: value of type `SupportsLe &amp; int`
++ pydantic/experimental/pipeline.py:489:27: error[invalid-assignment] Invalid assignment to key &quot;le&quot; with declared type `time` on TypedDict `TimeSchema`: value of type `int`
+- pydantic/experimental/pipeline.py:489:27: error[invalid-assignment] Invalid assignment to key &quot;le&quot; with declared type `Decimal` on TypedDict `DecimalSchema`: value of type `SupportsLe &amp; int`
++ pydantic/experimental/pipeline.py:489:27: error[invalid-assignment] Invalid assignment to key &quot;le&quot; with declared type `Decimal` on TypedDict `DecimalSchema`: value of type `int`
+- pydantic/experimental/pipeline.py:489:27: error[invalid-assignment] Invalid assignment to key &quot;le&quot; with declared type `date` on TypedDict `DateSchema`: value of type `SupportsLe &amp; int`
++ pydantic/experimental/pipeline.py:489:27: error[invalid-assignment] Invalid assignment to key &quot;le&quot; with declared type `date` on TypedDict `DateSchema`: value of type `int`
+- pydantic/experimental/pipeline.py:489:27: error[invalid-assignment] Invalid assignment to key &quot;le&quot; with declared type `datetime` on TypedDict `DatetimeSchema`: value of type `SupportsLe &amp; int`
++ pydantic/experimental/pipeline.py:489:27: error[invalid-assignment] Invalid assignment to key &quot;le&quot; with declared type `datetime` on TypedDict `DatetimeSchema`: value of type `int`
+- pydantic/experimental/pipeline.py:489:27: error[invalid-assignment] Invalid assignment to key &quot;le&quot; with declared type `timedelta` on TypedDict `TimedeltaSchema`: value of type `SupportsLe &amp; int`
++ pydantic/experimental/pipeline.py:489:27: error[invalid-assignment] Invalid assignment to key &quot;le&quot; with declared type `timedelta` on TypedDict `TimedeltaSchema`: value of type `int`
+- pydantic/experimental/pipeline.py:491:27: error[invalid-assignment] Invalid assignment to key &quot;le&quot; with declared type `date` on TypedDict `DateSchema`: value of type `SupportsLe &amp; float`
++ pydantic/experimental/pipeline.py:491:27: error[invalid-assignment] Invalid assignment to key &quot;le&quot; with declared type `date` on TypedDict `DateSchema`: value of type `float`
+- pydantic/experimental/pipeline.py:491:27: error[invalid-assignment] Invalid assignment to key &quot;le&quot; with declared type `datetime` on TypedDict `DatetimeSchema`: value of type `SupportsLe &amp; float`
++ pydantic/experimental/pipeline.py:491:27: error[invalid-assignment] Invalid assignment to key &quot;le&quot; with declared type `datetime` on TypedDict `DatetimeSchema`: value of type `float`
+- pydantic/experimental/pipeline.py:491:27: error[invalid-assignment] Invalid assignment to key &quot;le&quot; with declared type `timedelta` on TypedDict `TimedeltaSchema`: value of type `SupportsLe &amp; float`
++ pydantic/experimental/pipeline.py:491:27: error[invalid-assignment] Invalid assignment to key &quot;le&quot; with declared type `timedelta` on TypedDict `TimedeltaSchema`: value of type `float`
+- pydantic/experimental/pipeline.py:491:27: error[invalid-assignment] Invalid assignment to key &quot;le&quot; with declared type `time` on TypedDict `TimeSchema`: value of type `SupportsLe &amp; float`
++ pydantic/experimental/pipeline.py:491:27: error[invalid-assignment] Invalid assignment to key &quot;le&quot; with declared type `time` on TypedDict `TimeSchema`: value of type `float`
+- pydantic/experimental/pipeline.py:491:27: error[invalid-assignment] Invalid assignment to key &quot;le&quot; with declared type `int` on TypedDict `IntSchema`: value of type `SupportsLe &amp; float`
++ pydantic/experimental/pipeline.py:491:27: error[invalid-assignment] Invalid assignment to key &quot;le&quot; with declared type `int` on TypedDict `IntSchema`: value of type `float`
+- pydantic/experimental/pipeline.py:491:27: error[invalid-assignment] Invalid assignment to key &quot;le&quot; with declared type `Decimal` on TypedDict `DecimalSchema`: value of type `SupportsLe &amp; float`
++ pydantic/experimental/pipeline.py:491:27: error[invalid-assignment] Invalid assignment to key &quot;le&quot; with declared type `Decimal` on TypedDict `DecimalSchema`: value of type `float`
+
+scipy (https://github.com/scipy/scipy)
+- subprojects/highs/src/highspy/highs.py:1185:13: error[invalid-assignment] Object of type `(Iterable[highs_var | highs_linear_expression] &amp; ndarray[object, dtype[object]]) | ndarray[Any, dtype[object_]]` is not assignable to `ndarray[Any, dtype[object_]]`
++ subprojects/highs/src/highspy/highs.py:1185:13: error[invalid-assignment] Object of type `ndarray[object, dtype[object]]` is not assignable to `ndarray[Any, dtype[object_]]`
+
+
+</code></pre>
+</details>
+
+<p>No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-11-11 22:54</div>
+            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+
+<h2><a href="https://codspeed.io/astral-sh/ruff/branches/dcreager%2Fcoolable?utm_source=github&amp;utm_medium=comment&amp;utm_content=header">CodSpeed Performance Report</a></h2>
+<h3>Merging #21392 will <strong>not alter performance</strong></h3>
+<p><sub>Comparing <code>dcreager/coolable</code> (d8f5876) with <code>main</code> (ac2d07e)</sub></p>
+<h3>Summary</h3>
+<p><code>✅ 22</code> untouched<br />
+<code>⏩ 30</code> skipped[^skipped]</p>
+<p>[^skipped]: 30 benchmarks were skipped, so the baseline results were used instead. If they were deleted from the codebase, <a href="https://codspeed.io/astral-sh/ruff/branches/dcreager%2Fcoolable?sectionId=benchmark-comparison-section-baseline-result-skipped&amp;utm_source=github&amp;utm_medium=comment&amp;utm_content=archive">click here and archive them to remove them from the performance reports</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @dcreager on 2025-11-14 14:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @dcreager on 2025-11-14 14:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @dcreager on 2025-11-14 14:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @dcreager on 2025-11-14 14:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/type_properties/implies_subtype_of.md</code>:436 on 2025-11-14 22:14</div>
+            <div class="timeline-body"><p>This seems like a significant issue -- is there a next step / plan for how to fix this TODO?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/type_properties/is_assignable_to.md</code>:1250 on 2025-11-14 22:17</div>
+            <div class="timeline-body"><p>Hmm, why do we do better in these tests than in the subtype-of tests below? I don't see any gradual forms, so I would think they should have the same results.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/type_properties/is_subtype_of.md</code>:2229 on 2025-11-14 22:18</div>
+            <div class="timeline-body"><p>I assume that (to the extent the constraint-set versions of these tests pass correctly) we would expect these TODOs to be fixed by https://github.com/astral-sh/ruff/pull/20093 ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/generics.rs</code>:156 on 2025-11-14 22:26</div>
+            <div class="timeline-body"><p>I think probably the move would be to define your own iterator type in that case (in which case naming it is easy! <code>InferableTypeVarsIterator</code>), rather than trying to name a type composed of double-nested <code>Either</code> and boxed/chained iterators :) But I think what you've got here is just fine.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/signatures.rs</code>:649 on 2025-11-14 22:30</div>
+            <div class="timeline-body"><p>Was this just wrong? Or unnecessary</p>
+<p>I don't see any new/changed tests above regarding equivalence of callables, but apparently removing this doesn't break any tests?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-11-14 23:06</div>
+            <div class="timeline-body"><p>Nice!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-11-14 23:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/resources/mdtest/type_properties/implies_subtype_of.md</code>:436 on 2025-11-14 23:31</div>
+            <div class="timeline-body"><p>We will need to alpha-rename the typevars that we add to the inferable set when checking generic signatures. I'll add a TODO</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-11-17 12:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/resources/mdtest/type_properties/implies_subtype_of.md</code>:383 on 2025-11-17 12:42</div>
+            <div class="timeline-body"><p>I tried to see if tests like the following would pass here …</p>
+<pre><code class="language-py">type GenericIdentity[T] = Callable[[T], T]
+type GenericFunction[T, R] = Callable[[T], R]
+
+static_assert(constraints.implies_subtype_of(TypeOf[identity], GenericIdentity))
+static_assert(constraints.implies_subtype_of(CallableTypeOf[identity], GenericFunction))
+</code></pre>
+<p>… but I get a panic due to a <a href="https://github.com/astral-sh/ruff/blob/9269d9a36e04b4908a379ff535e0574d5f906e40/crates/ty_python_semantic/src/types/constraints.rs#L377">failing debug assertion</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/resources/mdtest/type_properties/is_assignable_to.md</code>:1250 on 2025-11-17 14:34</div>
+            <div class="timeline-body"><p>It's because of these lines:</p>
+<p>https://github.com/astral-sh/ruff/blob/9269d9a36e04b4908a379ff535e0574d5f906e40/crates/ty_python_semantic/src/types.rs#L2042-L2045</p>
+<p>I can remove the <code>is_assignable</code> part of the test, and it does cause the subtype checks to line up with the assignability checks here. But it causes other tests to start failing, because this interacts poorly with the union specialization heuristics here:</p>
+<p>https://github.com/astral-sh/ruff/blob/9269d9a36e04b4908a379ff535e0574d5f906e40/crates/ty_python_semantic/src/types/generics.rs#L1445-L1455</p>
+<p>Did I mention that the current setup is very brittle? 😅</p>
+<p>I can add a TODO in the code and here calling out that this is a known inconsistency we're working towards removing</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/resources/mdtest/type_properties/is_subtype_of.md</code>:2229 on 2025-11-17 14:34</div>
+            <div class="timeline-body"><p>Exactly, that's the patch that would update the &quot;normal&quot; <code>is_assignable_to</code> / <code>is_subtype_of</code> calls over to using the constraint set machinery for typevars</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/signatures.rs</code>:649 on 2025-11-17 14:39</div>
+            <div class="timeline-body"><p>Bad copy/pasta. I did at one point think that we only needed to force-to-inferable the typevars of one side of the callable comparison, thinking we needed that to handle a co/contravariance thing. But that's already being handled correctly by how we perform the recursive subtyping calls below, so I think it's correct to mark both sides as inferable. (This is a mumbly explanation since much of that detail has paged out of my memory at this point)</p>
+<p>But in the world where that hunch was correct, then we wouldn't do <em>any</em> force-to-inferable marking here, because if we only mark one side in <code>has_relation_to</code>, and <code>is_equivalent_to</code> is akin to <code>has_relation_to</code> in both directions, then neither side is always forced-to-inferable. (That inconsistency was another hint that made me think my first hunch was wrong.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-11-17 14:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-11-17 16:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/resources/mdtest/type_properties/implies_subtype_of.md</code>:383 on 2025-11-17 16:22</div>
+            <div class="timeline-body"><p>I traced this a bit, and the issue is that <a href="https://github.com/astral-sh/ruff/blob/9269d9a36e04b4908a379ff535e0574d5f906e40/crates/ty_python_semantic/src/types.rs#L11629"><code>type_alias.value_type</code></a> is returning a dynamic callable for these type aliases. I think that's a separate issue from this PR, though I will add some logic here to make this not cause a panic!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-11-17 16:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/resources/mdtest/type_properties/implies_subtype_of.md</code>:383 on 2025-11-17 16:28</div>
+            <div class="timeline-body"><p>If you do</p>
+<pre><code class="language-py">static_assert(constraints.implies_subtype_of(TypeOf[identity], GenericIdentity[int]))
+</code></pre>
+<p>the test passes. <code>value_type</code> is eagerly specializing the type alias to <code>GenericIdentity[Unknown]</code>. So other than the panic, this might be the correct expected behavior?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-11-17 16:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/type_properties/implies_subtype_of.md</code>:383 on 2025-11-17 16:43</div>
+            <div class="timeline-body"><p>I think it is correct/expected that a not-explicitly-specialized use of a generic type alias in a type expression is implicitly default-specialized.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-11-17 18:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/resources/mdtest/type_properties/implies_subtype_of.md</code>:383 on 2025-11-17 18:17</div>
+            <div class="timeline-body"><p>Fixed the panic and added these as additional tests</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dcreager on 2025-11-17 18:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dcreager on 2025-11-17 18:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-11-17 18:43</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:48:27 UTC
+    </footer>
+</body>
+</html>

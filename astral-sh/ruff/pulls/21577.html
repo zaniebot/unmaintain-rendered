@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Implement lsp support for string annotations - astral-sh/ruff #21577</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Implement lsp support for string annotations</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21577">#21577</a>
+        opened by <a href="https://github.com/Gankra">@Gankra</a>
+        on 2025-11-22 13:12
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/Gankra">@Gankra</a> on 2025-11-22 13:12</div>
+            <div class="timeline-body"><p>Fixes https://github.com/astral-sh/ty/issues/1009</p>
+<h2>Summary</h2>
+<p>This adds support for:</p>
+<ul>
+<li>semantic-tokens (syntax highlighting)</li>
+<li>goto-type <strong>(partially implemented, but want to land as-is)</strong></li>
+<li>goto-declaration</li>
+<li>goto-definition (falls out of goto-declaration)</li>
+<li>hover <strong>(limited by goto-type)</strong></li>
+<li>find-references</li>
+<li>rename-references (falls out of find-references)</li>
+</ul>
+<p>There are 3 major things being introduced here:</p>
+<ul>
+<li><code>TypeInferenceBuilder::string_annotations</code> is a <code>FxHashSet</code> of exprs which were determined to be string annotations during inference. It's bubbled up in <code>extras</code> to hopefully minimize the overhead as in most contexts it's empty.<ul>
+<li>Very happy to hear if this is too hacky and if I should do something better, but it's IMO important that we get an authoritative answer on whether something is a string annotation or not.</li>
+</ul>
+</li>
+<li><code>SemanticModel::enter_string_annotation</code> checks if the expr was marked by <code>TypeInferenceBuilder::string_annotations</code> and then parses the subast and produces a sub-SemanticModel that sets <code>SemanticModel::in_string_annotation_expr</code>. This expr will be used by the model whenever we need to query e.g. the scope of the current expression (otherwise the code will constantly panic as the subast nodes are not in the current File's AST)<ul>
+<li>This hazard consequently encouraged me to refactor a bunch of code to replace uses of file/db with SemanticModel to minimize hazards (it is no longer as safe to randomly materialize a SemanticModel in the middle of analysis, you need to thread through the one you have in case it has <code>in_string_annotation_expr</code> set).</li>
+</ul>
+</li>
+<li><code>GotoTarget::StringAnnotationSubexpr</code> (and a semantic-tokens impl) which involves invoking <code>SemanticModel::enter_string_annotation</code> before invoking the same kind of subroutine a normal expression would.<ul>
+<li>goto-type (and consequently displaying the type in hover) is the main hole here, because we can only get the type iff the string annotation is the entire subexpression (i.e. we can get the type of <code>&quot;int&quot;</code> but not the parts of <code>&quot;int | str&quot;</code>). This is shippable IMO.</li>
+</ul>
+</li>
+</ul>
+<h2>Test Plan</h2>
+<p>Messed around in IDE, wrote a ton of tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @Gankra on 2025-11-22 13:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @Gankra on 2025-11-22 13:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @Gankra on 2025-11-22 13:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @Gankra on 2025-11-22 13:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @Gankra on 2025-11-22 13:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @Gankra on 2025-11-22 13:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @Gankra on 2025-11-22 13:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-11-22 13:13</div>
+            <div class="timeline-body"><p>...why did a bunch of random comments get deleted. Oh well, it's still just a Draft 🙃</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-11-22 13:14</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-11-22 13:14</div>
+            <div class="timeline-body"><p>omg I think when I asked rust-analyzer to add missing members to unwildcard a match it deleted comments on all the existing branches 😭</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-11-22 13:16</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">scikit-build-core (https://github.com/scikit-build/scikit-build-core)
++ src/scikit_build_core/build/wheel.py:98:20: error[no-matching-overload] No overload of bound method `__init__` matches arguments
+- Found 44 diagnostics
++ Found 45 diagnostics
+
+
+</code></pre>
+</details>
+
+<p>No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-11-22 13:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/ty_python_semantic/src/semantic_model.rs</code>:313 on 2025-11-22 13:17</div>
+            <div class="timeline-body"><p>Pre-empting Micha: yes this does fail for various things but the type checker also does this so it's fine</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[ty] implement lsp support for highlighting/hovering/goto-ing string annotations" to "[ty] implement lsp support for highlighting/renaming/hovering/goto-ing string annotations" by @Gankra on 2025-11-22 18:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[ty] implement lsp support for highlighting/renaming/hovering/goto-ing string annotations" to "[ty] implement lsp support for string annotations" by @Gankra on 2025-11-22 18:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[ty] implement lsp support for string annotations" to "[ty] Implement lsp support for string annotations" by @Gankra on 2025-11-22 18:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-11-22 18:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/ty_ide/src/goto.rs</code>:359 on 2025-11-22 18:39</div>
+            <div class="timeline-body"><p>This is like, the one caveat of this design. Fixing this would require awful hacks or more non-trivial changes to inference.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-11-22 18:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/ty_ide/src/goto.rs</code>:359 on 2025-11-22 18:39</div>
+            <div class="timeline-body"><p>(awful hacks would be like... looking up types by-name)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-11-22 18:43</div>
+            <div class="timeline-body"><p>I want to make it clear that this is a &quot;high risk&quot; change in that any bugs in this could easily lead to LSP panics. However we could potentially have this functionality toggled behind a feature flag (literally just make <code>enter_string_annotation</code> always return None). IMO it should be safe to get into this week's release, if there's issues they should be found pretty fast by people kicking the tires, and then we can trivially disable it if so.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @carljm removed by @carljm on 2025-11-24 21:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-11-24 21:20</div>
+            <div class="timeline-body"><p>The new string-annotations tracking in inference looks good to me! Didn't review the rest.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-11-24 21:30</div>
+            <div class="timeline-body"><p>I'm reasonably confident with the rest of the code. If we wanna get this into the release tomorrow this would be fine to merge without further review (but I'll wait for review for now).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/semantic_model.rs</code>:259 on 2025-11-25 12:27</div>
+            <div class="timeline-body"><p>I'm not sure I fully understand those methods and when I'm supposed to use them.</p>
+<p>Like in what sense are they safe where the in-stringified-annotation nodes aren't? When should I use this method over using the ast node directly?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/semantic_model.rs</code>:313 on 2025-11-25 12:31</div>
+            <div class="timeline-body"><p>lol</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/semantic_model.rs</code>:414 on 2025-11-25 12:34</div>
+            <div class="timeline-body"><p>So just for my understanding. We now store the expression types of each expression in a stringified literal within the string-literal's scope?</p>
+<p>This is cool!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_ide/src/goto.rs</code>:359 on 2025-11-25 12:39</div>
+            <div class="timeline-body"><p>Okay, maybe it doesn't do yet what I thought it would.</p>
+<p>Could we change <code>ExpressionNodeKey</code> to be an enum:</p>
+<pre><code class="language-rust">enum ExpressionNodeKey {
+    Primary(NodeKey),
+    StringifiedAnnotation(Box&lt;{ parent: NodeKey, inner: NodeKey }&gt;)
+}
+</code></pre>
+<p>(It might even ahve to be a <code>ThinVec</code> if stringified annotationos can be nested multiple levels.</p>
+<p>We could then start storing the inferred expressions in type inference and look them up here</p>
+<p>Happy to leave this as a follow up</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-11-25 12:41</div>
+            <div class="timeline-body"><p>This is a huge lift and is great. I think it might even be possible (without too much work), to start storing types for the individual expression parts, see my inline comment. But let's do this in a separate PR</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-11-25 13:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/ty_ide/src/goto.rs</code>:359 on 2025-11-25 13:22</div>
+            <div class="timeline-body"><p>They cannot be nested, thankfully.</p>
+<p>I agree this would be great, are NodeKeys this stable?</p>
+<p>(Definitely followup material since it could have more non-trivial perf impact)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/ty_python_semantic/src/semantic_model.rs</code>:259 on 2025-11-25 13:24</div>
+            <div class="timeline-body"><p>The rough heuristic in my mind is &quot;if the node might be handed to the inference subsystem (i.e. trying to query it's scope or type)&quot; (which SemanticModel gatekeeps). If you ever hand these sub-AST nodes to the inference subsystem it will immediately panic because the node isn't part of the file's AST.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-11-25 13:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-11-25 13:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_ide/src/goto.rs</code>:359 on 2025-11-25 13:26</div>
+            <div class="timeline-body"><p><code>NodeKey</code>'s are stable for as long as the source text doesn't change. We simply iterate over the AST and assign an index to each node (see <code>parsed_module</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @Gankra on 2025-11-25 13:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @Gankra on 2025-11-25 13:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-11-25 13:31</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:48:27 UTC
+    </footer>
+</body>
+</html>

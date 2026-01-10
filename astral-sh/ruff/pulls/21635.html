@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Use `zip` to perform explicit specialization - astral-sh/ruff #21635</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Use <code>zip</code> to perform explicit specialization</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21635">#21635</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2025-11-26 07:09
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-11-26 07:09</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR updates the explicit specialization logic to avoid using the call machinery.</p>
+<p>Previously, the logic would use the call machinery by converting the list of type variables into a <code>Binding</code> with a single <code>Signature</code> where all the type variables are positional-only parameters with bounds and constraints as the annotated type and the default type as the default parameter value. This has the advantage that it doesn't need to implement any specific logic but the disadvantages are subpar diagnostic messages as it would use the ones specific to a function call. But, an important disadvantage is that the kind of type variable is lost in this translation which becomes important in #21445 where a <code>ParamSpec</code> can specialize into a list of types which is provided using list literal. For example,</p>
+<pre><code class="language-py">class Foo[T, **P]: ...
+
+Foo[int, [int, str]]
+</code></pre>
+<p>This PR converts the logic to use a simple loop using <code>zip_longest</code> as all type variables and their corresponding type argument maps on a 1-1 basis. They cannot be specified using keyword argument either e.g., <code>dict[_VT=str, _KT=int]</code> is invalid.</p>
+<p>This PR also makes an initial attempt to improve the diagnostic message to specifically target the specialization part by using words like &quot;type argument&quot; instead of just &quot;argument&quot; and including information like the type variable, bounds, and constraints. Further improvements can be made by highlighting the type variable definition or the bounds / constraints as a sub-diagnostic but I'm going to leave that as a follow-up.</p>
+<h2>Test Plan</h2>
+<p>Update messages in existing test cases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @dhruvmanila on 2025-11-26 07:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @dhruvmanila on 2025-11-26 07:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-11-26 07:11</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance">typing conformance tests</a></h2>
+<details>
+<summary>Changes were detected when running ty on typing conformance tests</summary>
+
+<pre><code class="language-diff">--- old-output.txt	2025-11-27 03:49:07.980672923 +0000
++++ new-output.txt	2025-11-27 03:49:11.291679471 +0000
+@@ -42,7 +42,7 @@
+ aliases_newtype.py:61:38: error[invalid-newtype] invalid base for `typing.NewType`: type `TD1`
+ aliases_newtype.py:63:15: error[invalid-newtype] Wrong number of arguments in `NewType` creation, expected 2, found 3
+ aliases_newtype.py:65:38: error[invalid-newtype] invalid base for `typing.NewType`: type `Any`
+-aliases_type_statement.py:10:19: error[too-many-positional-arguments] Too many positional arguments: expected 1, got 3
++aliases_type_statement.py:10:35: error[invalid-type-arguments] Too many type arguments: expected 1, got 3
+ aliases_type_statement.py:17:1: error[unresolved-attribute] Object of type `typing.TypeAliasType` has no attribute `bit_count`
+ aliases_type_statement.py:19:1: error[call-non-callable] Object of type `TypeAliasType` is not callable
+ aliases_type_statement.py:23:7: error[unresolved-attribute] Object of type `typing.TypeAliasType` has no attribute `other_attrib`
+@@ -63,13 +63,13 @@
+ aliases_type_statement.py:47:23: error[invalid-type-form] Int literals are not allowed in this context in a type expression
+ aliases_type_statement.py:48:23: error[invalid-type-form] Boolean operations are not allowed in type expressions
+ aliases_type_statement.py:49:23: error[fstring-type-annotation] Type expressions cannot use f-strings
+-aliases_type_statement.py:75:81: error[too-many-positional-arguments] Too many positional arguments: expected 2, got 3
+-aliases_type_statement.py:77:7: error[invalid-argument-type] Argument is incorrect: Expected `int`, found `str`
+-aliases_type_statement.py:77:7: error[too-many-positional-arguments] Too many positional arguments: expected 2, got 3
+-aliases_type_statement.py:78:7: error[too-many-positional-arguments] Too many positional arguments: expected 2, got 3
+-aliases_type_statement.py:79:7: error[invalid-argument-type] Argument is incorrect: Expected `str`, found `int`
+-aliases_type_statement.py:79:7: error[too-many-positional-arguments] Too many positional arguments: expected 2, got 3
+-aliases_type_statement.py:80:7: error[too-many-positional-arguments] Too many positional arguments: expected 2, got 3
++aliases_type_statement.py:75:107: error[invalid-type-arguments] Too many type arguments: expected 2, got 3
++aliases_type_statement.py:77:27: error[invalid-type-arguments] Type `str` is not assignable to upper bound `int` of type variable `S@RecursiveTypeAlias2`
++aliases_type_statement.py:77:37: error[invalid-type-arguments] Too many type arguments: expected 2, got 3
++aliases_type_statement.py:78:37: error[invalid-type-arguments] Too many type arguments: expected 2, got 3
++aliases_type_statement.py:79:32: error[invalid-type-arguments] Type `int` is not assignable to upper bound `str` of type variable `T@RecursiveTypeAlias2`
++aliases_type_statement.py:79:37: error[invalid-type-arguments] Too many type arguments: expected 2, got 3
++aliases_type_statement.py:80:37: error[invalid-type-arguments] Too many type arguments: expected 2, got 3
+ aliases_type_statement.py:80:37: error[invalid-type-form] List literals are not allowed in this context in a type expression: Did you mean `tuple[int, str]`?
+ aliases_type_statement.py:82:1: error[cyclic-type-alias-definition] Cyclic definition of `RecursiveTypeAlias3`
+ aliases_type_statement.py:88:1: error[cyclic-type-alias-definition] Cyclic definition of `RecursiveTypeAlias6`
+@@ -427,8 +427,8 @@
+ generics_base_class.py:29:14: error[invalid-type-form] `typing.Generic` is not allowed in type expressions
+ generics_base_class.py:30:8: error[invalid-type-form] `typing.Generic` is not allowed in type expressions
+ generics_base_class.py:45:5: error[type-assertion-failure] Type `Iterator[int]` does not match asserted type `Unknown`
+-generics_base_class.py:49:22: error[too-many-positional-arguments] Too many positional arguments to class `LinkedList`: expected 1, got 2
+-generics_base_class.py:61:18: error[too-many-positional-arguments] Too many positional arguments to class `MyDict`: expected 1, got 2
++generics_base_class.py:49:38: error[invalid-type-arguments] Too many type arguments to class `LinkedList`: expected 1, got 2
++generics_base_class.py:61:30: error[invalid-type-arguments] Too many type arguments to class `MyDict`: expected 1, got 2
+ generics_basic.py:34:12: error[unsupported-operator] Operator `+` is unsupported between objects of type `AnyStr@concat` and `AnyStr@concat`
+ generics_basic.py:49:44: error[invalid-legacy-type-variable] A `TypeVar` cannot have exactly one constraint
+ generics_basic.py:139:5: error[type-assertion-failure] Type `int` does not match asserted type `Unknown`
+@@ -446,18 +446,18 @@
+ generics_defaults.py:38:1: error[type-assertion-failure] Type `type[OneDefault[int | float, bool]]` does not match asserted type `&lt;class 'OneDefault[int | float, bool]'&gt;`
+ generics_defaults.py:45:1: error[type-assertion-failure] Type `type[AllTheDefaults[Any, Any, str, int, bool]]` does not match asserted type `&lt;class 'AllTheDefaults'&gt;`
+ generics_defaults.py:46:1: error[type-assertion-failure] Type `type[AllTheDefaults[int, int | float | complex, str, int, bool]]` does not match asserted type `&lt;class 'AllTheDefaults[int, int | float | complex, str, int, bool]'&gt;`
+-generics_defaults.py:50:1: error[missing-argument] No argument provided for required parameter `T2` of class `AllTheDefaults`
++generics_defaults.py:50:1: error[invalid-type-arguments] No type argument provided for required type variable `T2` of class `AllTheDefaults`
+ generics_defaults.py:52:1: error[type-assertion-failure] Type `type[AllTheDefaults[int, int | float | complex, str, int, bool]]` does not match asserted type `&lt;class 'AllTheDefaults[int, int | float | complex, str, int, bool]'&gt;`
+ generics_defaults.py:55:1: error[type-assertion-failure] Type `type[AllTheDefaults[int, int | float | complex, str, int, bool]]` does not match asserted type `&lt;class 'AllTheDefaults[int, int | float | complex, str, int, bool]'&gt;`
+ generics_defaults.py:59:1: error[type-assertion-failure] Type `type[AllTheDefaults[int, int | float | complex, str, int, bool]]` does not match asserted type `&lt;class 'AllTheDefaults[int, int | float | complex, str, int, bool]'&gt;`
+ generics_defaults.py:63:1: error[type-assertion-failure] Type `type[AllTheDefaults[int, int | float | complex, str, int, bool]]` does not match asserted type `&lt;class 'AllTheDefaults[int, int | float | complex, str, int, bool]'&gt;`
+ generics_defaults.py:79:1: error[type-assertion-failure] Type `Unknown` does not match asserted type `&lt;class 'Class_ParamSpec'&gt;`
+-generics_defaults.py:79:35: error[too-many-positional-arguments] Too many positional arguments to class `Class_ParamSpec`: expected 1, got 2
++generics_defaults.py:79:56: error[invalid-type-arguments] Too many type arguments to class `Class_ParamSpec`: expected between 0 and 1, got 2
+ generics_defaults.py:80:1: error[type-assertion-failure] Type `Unknown` does not match asserted type `Class_ParamSpec[Unknown]`
+-generics_defaults.py:80:32: error[too-many-positional-arguments] Too many positional arguments to class `Class_ParamSpec`: expected 1, got 2
++generics_defaults.py:80:53: error[invalid-type-arguments] Too many type arguments to class `Class_ParamSpec`: expected between 0 and 1, got 2
+ generics_defaults.py:81:1: error[type-assertion-failure] Type `Unknown` does not match asserted type `Class_ParamSpec[Unknown]`
+ generics_defaults.py:81:29: error[invalid-type-form] List literals are not allowed in this context in a type expression: Did you mean `tuple[bool, bool]`?
+-generics_defaults.py:81:46: error[too-many-positional-arguments] Too many positional arguments to class `Class_ParamSpec`: expected 1, got 2
++generics_defaults.py:81:68: error[invalid-type-arguments] Too many type arguments to class `Class_ParamSpec`: expected between 0 and 1, got 2
+ generics_defaults.py:91:26: error[invalid-argument-type] `@Todo(starred expression)` is not a valid argument to `Generic`
+ generics_defaults.py:94:1: error[type-assertion-failure] Type `@Todo(specialized non-generic class)` does not match asserted type `&lt;class 'Class_TypeVarTuple'&gt;`
+ generics_defaults.py:95:1: error[type-assertion-failure] Type `@Todo(specialized non-generic class)` does not match asserted type `Class_TypeVarTuple`
+@@ -505,7 +505,7 @@
+ generics_paramspec_specialization.py:40:27: error[invalid-type-form] List literals are not allowed in this context in a type expression: Did you mean `tuple[()]`?
+ generics_paramspec_specialization.py:40:31: error[invalid-type-form] List literals are not allowed in this context in a type expression: Did you mean `tuple[()]`?
+ generics_paramspec_specialization.py:52:22: error[invalid-type-form] List literals are not allowed in this context in a type expression: Did you mean `tuple[int, str, bool]`?
+-generics_paramspec_specialization.py:58:15: error[too-many-positional-arguments] Too many positional arguments to class `ClassC`: expected 1, got 3
++generics_paramspec_specialization.py:58:27: error[invalid-type-arguments] Too many type arguments to class `ClassC`: expected 1, got 3
+ generics_scoping.py:14:1: error[type-assertion-failure] Type `int` does not match asserted type `Literal[1]`
+ generics_scoping.py:15:1: error[type-assertion-failure] Type `str` does not match asserted type `Literal[&quot;a&quot;]`
+ generics_scoping.py:42:1: error[type-assertion-failure] Type `str` does not match asserted type `Literal[&quot;abc&quot;]`
+
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-11-26 07:13</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">anyio (https://github.com/agronholm/anyio)
+- src/anyio/_backends/_asyncio.py:186:29: error[missing-argument] No arguments provided for required parameters `_SendT_nd_contra`, `_ReturnT_nd_co` of class `Coroutine`
++ src/anyio/_backends/_asyncio.py:186:29: error[invalid-type-arguments] No type arguments provided for required type variables `_SendT_nd_contra`, `_ReturnT_nd_co` of class `Coroutine`
+
+async-utils (https://github.com/mikeshardmind/async-utils)
+- src/async_utils/corofunc_cache.py:46:39: error[too-many-positional-arguments] Too many positional arguments: expected 1, got 2
+- src/async_utils/corofunc_cache.py:46:61: error[too-many-positional-arguments] Too many positional arguments: expected 1, got 2
++ src/async_utils/corofunc_cache.py:46:51: error[invalid-type-arguments] Too many type arguments: expected 1, got 2
+- src/async_utils/corofunc_cache.py:50:36: error[too-many-positional-arguments] Too many positional arguments: expected 1, got 2
++ src/async_utils/corofunc_cache.py:46:73: error[invalid-type-arguments] Too many type arguments: expected 1, got 2
+- src/async_utils/corofunc_cache.py:50:58: error[too-many-positional-arguments] Too many positional arguments: expected 1, got 2
++ src/async_utils/corofunc_cache.py:50:48: error[invalid-type-arguments] Too many type arguments: expected 1, got 2
++ src/async_utils/corofunc_cache.py:50:70: error[invalid-type-arguments] Too many type arguments: expected 1, got 2
+- src/async_utils/corofunc_cache.py:116:31: error[too-many-positional-arguments] Too many positional arguments: expected 1, got 2
++ src/async_utils/corofunc_cache.py:116:43: error[invalid-type-arguments] Too many type arguments: expected 1, got 2
+- src/async_utils/corofunc_cache.py:116:53: error[too-many-positional-arguments] Too many positional arguments: expected 1, got 2
++ src/async_utils/corofunc_cache.py:116:65: error[invalid-type-arguments] Too many type arguments: expected 1, got 2
+- src/async_utils/corofunc_cache.py:199:31: error[too-many-positional-arguments] Too many positional arguments: expected 1, got 2
++ src/async_utils/corofunc_cache.py:199:43: error[invalid-type-arguments] Too many type arguments: expected 1, got 2
+- src/async_utils/corofunc_cache.py:199:53: error[too-many-positional-arguments] Too many positional arguments: expected 1, got 2
++ src/async_utils/corofunc_cache.py:199:65: error[invalid-type-arguments] Too many type arguments: expected 1, got 2
+- src/async_utils/gen_transform.py:62:53: error[too-many-positional-arguments] Too many positional arguments: expected 1, got 2
++ src/async_utils/gen_transform.py:62:64: error[invalid-type-arguments] Too many type arguments: expected 1, got 2
+- src/async_utils/gen_transform.py:108:8: error[too-many-positional-arguments] Too many positional arguments: expected 1, got 2
++ src/async_utils/gen_transform.py:108:24: error[invalid-type-arguments] Too many type arguments: expected 1, got 2
+- src/async_utils/task_cache.py:32:29: error[too-many-positional-arguments] Too many positional arguments: expected 1, got 2
+- src/async_utils/task_cache.py:32:46: error[too-many-positional-arguments] Too many positional arguments: expected 1, got 2
++ src/async_utils/task_cache.py:32:41: error[invalid-type-arguments] Too many type arguments: expected 1, got 2
++ src/async_utils/task_cache.py:32:58: error[invalid-type-arguments] Too many type arguments: expected 1, got 2
+- src/async_utils/task_cache.py:48:22: error[too-many-positional-arguments] Too many positional arguments: expected 1, got 2
++ src/async_utils/task_cache.py:48:38: error[invalid-type-arguments] Too many type arguments: expected 1, got 2
+- src/async_utils/task_cache.py:49:14: error[too-many-positional-arguments] Too many positional arguments: expected 1, got 2
++ src/async_utils/task_cache.py:49:26: error[invalid-type-arguments] Too many type arguments: expected 1, got 2
+- src/async_utils/task_cache.py:53:36: error[too-many-positional-arguments] Too many positional arguments: expected 1, got 2
+- src/async_utils/task_cache.py:53:62: error[too-many-positional-arguments] Too many positional arguments: expected 1, got 2
++ src/async_utils/task_cache.py:53:52: error[invalid-type-arguments] Too many type arguments: expected 1, got 2
++ src/async_utils/task_cache.py:53:74: error[invalid-type-arguments] Too many type arguments: expected 1, got 2
++ src/async_utils/task_cache.py:85:43: error[invalid-type-arguments] Too many type arguments: expected 1, got 2
+- src/async_utils/task_cache.py:85:27: error[too-many-positional-arguments] Too many positional arguments: expected 1, got 2
++ src/async_utils/task_cache.py:85:62: error[invalid-type-arguments] Too many type arguments: expected 1, got 2
+- src/async_utils/task_cache.py:85:50: error[too-many-positional-arguments] Too many positional arguments: expected 1, got 2
+- src/async_utils/task_cache.py:181:31: error[too-many-positional-arguments] Too many positional arguments: expected 1, got 2
+- src/async_utils/task_cache.py:181:57: error[too-many-positional-arguments] Too many positional arguments: expected 1, got 2
++ src/async_utils/task_cache.py:181:47: error[invalid-type-arguments] Too many type arguments: expected 1, got 2
+- src/async_utils/task_cache.py:269:31: error[too-many-positional-arguments] Too many positional arguments: expected 1, got 2
++ src/async_utils/task_cache.py:181:69: error[invalid-type-arguments] Too many type arguments: expected 1, got 2
+- src/async_utils/task_cache.py:269:57: error[too-many-positional-arguments] Too many positional arguments: expected 1, got 2
++ src/async_utils/task_cache.py:269:47: error[invalid-type-arguments] Too many type arguments: expected 1, got 2
++ src/async_utils/task_cache.py:269:69: error[invalid-type-arguments] Too many type arguments: expected 1, got 2
+
+black (https://github.com/psf/black)
+- src/black/rusty.py:28:23: error[invalid-argument-type] Argument to class `Err` is incorrect: Expected `Exception`, found `typing.TypeVar`
++ src/black/rusty.py:28:27: error[invalid-type-arguments] Type `typing.TypeVar` is not assignable to upper bound `Exception` of type variable `E@Err`
+
+pytest (https://github.com/pytest-dev/pytest)
+- src/_pytest/raises.py:1002:33: error[invalid-argument-type] Argument to class `RaisesExc` is incorrect: Expected `BaseException`, found `typing.TypeVar`
++ src/_pytest/raises.py:1002:43: error[invalid-type-arguments] Type `typing.TypeVar` is not assignable to upper bound `BaseException` of type variable `BaseExcT_co_default@RaisesExc`
+
+schemathesis (https://github.com/schemathesis/schemathesis)
+- src/schemathesis/core/result.py:27:18: error[invalid-argument-type] Argument to class `Err` is incorrect: Expected `Exception`, found `typing.TypeVar`
++ src/schemathesis/core/result.py:27:22: error[invalid-type-arguments] Type `typing.TypeVar` is not assignable to upper bound `Exception` of type variable `E@Err`
+
+Expression (https://github.com/cognitedata/Expression)
+- expression/collections/maptree.py:47:18: error[invalid-argument-type] Argument to class `MapTreeLeaf` is incorrect: Expected `SupportsLessThan`, found `typing.TypeVar`
++ expression/collections/maptree.py:47:30: error[invalid-type-arguments] Type `typing.TypeVar` is not assignable to upper bound `SupportsLessThan` of type variable `Key@MapTreeLeaf`
+
+antidote (https://github.com/Finistere/antidote)
+- src/antidote/core/__init__.py:985:41: error[missing-argument] No argument provided for required parameter `_R_co` of class `staticmethod`
++ src/antidote/core/__init__.py:985:41: error[invalid-type-arguments] No type argument provided for required type variable `_R_co` of class `staticmethod`
+- src/antidote/core/__init__.py:985:61: error[missing-argument] No arguments provided for required parameters `_P`, `_R_co` of class `classmethod`
++ src/antidote/core/__init__.py:985:61: error[invalid-type-arguments] No type arguments provided for required type variables `_P`, `_R_co` of class `classmethod`
+- src/antidote/core/__init__.py:1033:16: error[missing-argument] No argument provided for required parameter `_R_co` of class `staticmethod`
++ src/antidote/core/__init__.py:1033:16: error[invalid-type-arguments] No type argument provided for required type variable `_R_co` of class `staticmethod`
+- src/antidote/core/__init__.py:1042:10: error[missing-argument] No argument provided for required parameter `_R_co` of class `staticmethod`
++ src/antidote/core/__init__.py:1042:10: error[invalid-type-arguments] No type argument provided for required type variable `_R_co` of class `staticmethod`
+- src/antidote/core/__init__.py:1048:16: error[missing-argument] No arguments provided for required parameters `_P`, `_R_co` of class `classmethod`
++ src/antidote/core/__init__.py:1048:16: error[invalid-type-arguments] No type arguments provided for required type variables `_P`, `_R_co` of class `classmethod`
+- src/antidote/core/__init__.py:1057:10: error[missing-argument] No arguments provided for required parameters `_P`, `_R_co` of class `classmethod`
++ src/antidote/core/__init__.py:1057:10: error[invalid-type-arguments] No type arguments provided for required type variables `_P`, `_R_co` of class `classmethod`
+- src/antidote/core/_inject.py:43:41: error[missing-argument] No argument provided for required parameter `_R_co` of class `staticmethod`
++ src/antidote/core/_inject.py:43:41: error[invalid-type-arguments] No type argument provided for required type variable `_R_co` of class `staticmethod`
+- src/antidote/core/_inject.py:43:61: error[missing-argument] No arguments provided for required parameters `_P`, `_R_co` of class `classmethod`
++ src/antidote/core/_inject.py:43:61: error[invalid-type-arguments] No type arguments provided for required type variables `_P`, `_R_co` of class `classmethod`
+- src/antidote/core/_inject.py:93:21: error[missing-argument] No argument provided for required parameter `_R_co` of class `staticmethod`
++ src/antidote/core/_inject.py:93:21: error[invalid-type-arguments] No type argument provided for required type variable `_R_co` of class `staticmethod`
+- src/antidote/core/_inject.py:93:39: error[missing-argument] No arguments provided for required parameters `_P`, `_R_co` of class `classmethod`
++ src/antidote/core/_inject.py:93:39: error[invalid-type-arguments] No type arguments provided for required type variables `_P`, `_R_co` of class `classmethod`
+- src/antidote/core/_inject.py:132:16: error[missing-argument] No argument provided for required parameter `_R_co` of class `staticmethod`
++ src/antidote/core/_inject.py:132:16: error[invalid-type-arguments] No type argument provided for required type variable `_R_co` of class `staticmethod`
+- src/antidote/core/_inject.py:141:10: error[missing-argument] No argument provided for required parameter `_R_co` of class `staticmethod`
++ src/antidote/core/_inject.py:141:10: error[invalid-type-arguments] No type argument provided for required type variable `_R_co` of class `staticmethod`
+- src/antidote/core/_inject.py:147:16: error[missing-argument] No arguments provided for required parameters `_P`, `_R_co` of class `classmethod`
++ src/antidote/core/_inject.py:147:16: error[invalid-type-arguments] No type arguments provided for required type variables `_P`, `_R_co` of class `classmethod`
+- src/antidote/core/_inject.py:156:10: error[missing-argument] No arguments provided for required parameters `_P`, `_R_co` of class `classmethod`
++ src/antidote/core/_inject.py:156:10: error[invalid-type-arguments] No type arguments provided for required type variables `_P`, `_R_co` of class `classmethod`
+- src/antidote/core/_injection.py:278:53: error[missing-argument] No argument provided for required parameter `_R_co` of class `staticmethod`
++ src/antidote/core/_injection.py:278:53: error[invalid-type-arguments] No type argument provided for required type variable `_R_co` of class `staticmethod`
+- src/antidote/core/_injection.py:278:73: error[missing-argument] No arguments provided for required parameters `_P`, `_R_co` of class `classmethod`
++ src/antidote/core/_injection.py:278:73: error[invalid-type-arguments] No type arguments provided for required type variables `_P`, `_R_co` of class `classmethod`
+- src/antidote/core/_wiring.py:15:41: error[missing-argument] No argument provided for required parameter `_R_co` of class `staticmethod`
++ src/antidote/core/_wiring.py:15:41: error[invalid-type-arguments] No type argument provided for required type variable `_R_co` of class `staticmethod`
+- src/antidote/core/_wiring.py:15:61: error[missing-argument] No arguments provided for required parameters `_P`, `_R_co` of class `classmethod`
++ src/antidote/core/_wiring.py:15:61: error[invalid-type-arguments] No type arguments provided for required type variables `_P`, `_R_co` of class `classmethod`
+- src/antidote/lib/interface_ext/__init__.py:576:17: error[missing-argument] No argument provided for required parameter `_R_co` of class `staticmethod`
++ src/antidote/lib/interface_ext/__init__.py:576:17: error[invalid-type-arguments] No type argument provided for required type variable `_R_co` of class `staticmethod`
+- src/antidote/lib/interface_ext/__init__.py:1237:31: error[missing-argument] No arguments provided for required parameters `_P`, `_R_co` of class `classmethod`
++ src/antidote/lib/interface_ext/__init__.py:1237:31: error[invalid-type-arguments] No type arguments provided for required type variables `_P`, `_R_co` of class `classmethod`
+- src/antidote/lib/interface_ext/__init__.py:1241:31: error[missing-argument] No argument provided for required parameter `_R_co` of class `staticmethod`
++ src/antidote/lib/interface_ext/__init__.py:1241:31: error[invalid-type-arguments] No type argument provided for required type variable `_R_co` of class `staticmethod`
+- src/antidote/lib/interface_ext/__init__.py:1298:23: error[missing-argument] No argument provided for required parameter `_R_co` of class `staticmethod`
++ src/antidote/lib/interface_ext/__init__.py:1298:23: error[invalid-type-arguments] No type argument provided for required type variable `_R_co` of class `staticmethod`
+- src/antidote/lib/interface_ext/__init__.py:1299:10: error[missing-argument] No argument provided for required parameter `_R_co` of class `staticmethod`
++ src/antidote/lib/interface_ext/__init__.py:1299:10: error[invalid-type-arguments] No type argument provided for required type variable `_R_co` of class `staticmethod`
+- src/antidote/lib/interface_ext/__init__.py:1303:32: error[missing-argument] No argument provided for required parameter `_R_co` of class `staticmethod`
++ src/antidote/lib/interface_ext/__init__.py:1303:32: error[invalid-type-arguments] No type argument provided for required type variable `_R_co` of class `staticmethod`
+- src/antidote/lib/interface_ext/__init__.py:1303:65: error[missing-argument] No argument provided for required parameter `_R_co` of class `staticmethod`
++ src/antidote/lib/interface_ext/__init__.py:1303:65: error[invalid-type-arguments] No type argument provided for required type variable `_R_co` of class `staticmethod`
+- src/antidote/lib/interface_ext/__init__.py:1330:23: error[missing-argument] No argument provided for required parameter `_R_co` of class `staticmethod`
++ src/antidote/lib/interface_ext/__init__.py:1330:23: error[invalid-type-arguments] No type argument provided for required type variable `_R_co` of class `staticmethod`
+- src/antidote/lib/interface_ext/__init__.py:1331:10: error[missing-argument] No argument provided for required parameter `_R_co` of class `staticmethod`
++ src/antidote/lib/interface_ext/__init__.py:1331:10: error[invalid-type-arguments] No type argument provided for required type variable `_R_co` of class `staticmethod`
+- src/antidote/lib/interface_ext/__init__.py:1335:32: error[missing-argument] No argument provided for required parameter `_R_co` of class `staticmethod`
++ src/antidote/lib/interface_ext/__init__.py:1335:32: error[invalid-type-arguments] No type argument provided for required type variable `_R_co` of class `staticmethod`
+- src/antidote/lib/interface_ext/__init__.py:1335:65: error[missing-argument] No argument provided for required parameter `_R_co` of class `staticmethod`
++ src/antidote/lib/interface_ext/__init__.py:1335:65: error[invalid-type-arguments] No type argument provided for required type variable `_R_co` of class `staticmethod`
+- src/antidote/lib/interface_ext/__init__.py:1361:11: error[missing-argument] No argument provided for required parameter `_R_co` of class `staticmethod`
++ src/antidote/lib/interface_ext/__init__.py:1361:11: error[invalid-type-arguments] No type argument provided for required type variable `_R_co` of class `staticmethod`
+- src/antidote/lib/interface_ext/_interface.py:257:17: error[missing-argument] No argument provided for required parameter `_R_co` of class `staticmethod`
++ src/antidote/lib/interface_ext/_interface.py:257:17: error[invalid-type-arguments] No type argument provided for required type variable `_R_co` of class `staticmethod`
+- src/antidote/lib/lazy_ext/__init__.py:210:17: error[missing-argument] No argument provided for required parameter `_R_co` of class `staticmethod`
++ src/antidote/lib/lazy_ext/__init__.py:210:17: error[invalid-type-arguments] No type argument provided for required type variable `_R_co` of class `staticmethod`
+- src/antidote/lib/lazy_ext/__init__.py:216:10: error[missing-argument] No argument provided for required parameter `_R_co` of class `staticmethod`
++ src/antidote/lib/lazy_ext/__init__.py:216:10: error[invalid-type-arguments] No type argument provided for required type variable `_R_co` of class `staticmethod`
+- src/antidote/lib/lazy_ext/__init__.py:499:38: error[missing-argument] No argument provided for required parameter `_R_co` of class `staticmethod`
++ src/antidote/lib/lazy_ext/__init__.py:499:38: error[invalid-type-arguments] No type argument provided for required type variable `_R_co` of class `staticmethod`
+- src/antidote/lib/lazy_ext/__init__.py:505:35: error[missing-argument] No argument provided for required parameter `_R_co` of class `staticmethod`
++ src/antidote/lib/lazy_ext/__init__.py:505:35: error[invalid-type-arguments] No type argument provided for required type variable `_R_co` of class `staticmethod`
+- src/antidote/lib/lazy_ext/__init__.py:635:32: error[missing-argument] No argument provided for required parameter `_R_co` of class `staticmethod`
++ src/antidote/lib/lazy_ext/__init__.py:635:32: error[invalid-type-arguments] No type argument provided for required type variable `_R_co` of class `staticmethod`
+- src/antidote/lib/lazy_ext/__init__.py:635:65: error[missing-argument] No argument provided for required parameter `_R_co` of class `staticmethod`
++ src/antidote/lib/lazy_ext/__init__.py:635:65: error[invalid-type-arguments] No type argument provided for required type variable `_R_co` of class `staticmethod`
+- src/antidote/lib/lazy_ext/_lazy.py:104:17: error[missing-argument] No argument provided for required parameter `_R_co` of class `staticmethod`
++ src/antidote/lib/lazy_ext/_lazy.py:104:17: error[invalid-type-arguments] No type argument provided for required type variable `_R_co` of class `staticmethod`
+- src/antidote/lib/lazy_ext/_lazy.py:110:10: error[missing-argument] No argument provided for required parameter `_R_co` of class `staticmethod`
++ src/antidote/lib/lazy_ext/_lazy.py:110:10: error[invalid-type-arguments] No type argument provided for required type variable `_R_co` of class `staticmethod`
+
+mypy (https://github.com/python/mypy)
+- mypy/typeshed/stdlib/_typeshed/__init__.pyi:184:35: error[invalid-argument-type] Argument to class `PathLike` is incorrect: Expected `str | bytes`, found `typing.TypeVar`
++ mypy/typeshed/stdlib/_typeshed/__init__.pyi:184:44: error[invalid-type-arguments] Type `typing.TypeVar` does not satisfy constraints `str`, `bytes` of type variable `AnyStr_co@PathLike`
+- mypy/typeshed/stdlib/builtins.pyi:133:35: error[too-many-positional-arguments] Too many positional arguments to class `tuple`: expected 1, got 2
++ mypy/typeshed/stdlib/builtins.pyi:133:46: error[invalid-type-arguments] Too many type arguments to class `tuple`: expected 1, got 2
+- mypy/typeshed/stdlib/builtins.pyi:134:66: error[too-many-positional-arguments] Too many positional arguments to class `tuple`: expected 1, got 2
++ mypy/typeshed/stdlib/builtins.pyi:134:77: error[invalid-type-arguments] Too many type arguments to class `tuple`: expected 1, got 2
+- mypy/typeshed/stdlib/builtins.pyi:189:16: error[too-many-positional-arguments] Too many positional arguments to class `tuple`: expected 1, got 2
++ mypy/typeshed/stdlib/builtins.pyi:189:28: error[invalid-type-arguments] Too many type arguments to class `tuple`: expected 1, got 2
+- mypy/typeshed/stdlib/builtins.pyi:203:26: error[too-many-positional-arguments] Too many positional arguments to class `tuple`: expected 1, got 2
++ mypy/typeshed/stdlib/builtins.pyi:203:38: error[invalid-type-arguments] Too many type arguments to class `tuple`: expected 1, got 2
+- mypy/typeshed/stdlib/builtins.pyi:213:42: error[too-many-positional-arguments] Too many positional arguments to class `tuple`: expected 1, got 2
++ mypy/typeshed/stdlib/builtins.pyi:213:54: error[invalid-type-arguments] Too many type arguments to class `tuple`: expected 1, got 2
+- mypy/typeshed/stdlib/builtins.pyi:218:54: error[too-many-positional-arguments] Too many positional arguments to class `tuple`: expected 1, got 2
++ mypy/typeshed/stdlib/builtins.pyi:218:66: error[invalid-type-arguments] Too many type arguments to class `tuple`: expected 1, got 2
+- mypy/typeshed/stdlib/builtins.pyi:228:48: error[too-many-positional-arguments] Too many positional arguments to class `tuple`: expected 1, got 2
++ mypy/typeshed/stdlib/builtins.pyi:228:60: error[invalid-type-arguments] Too many type arguments to class `tuple`: expected 1, got 2
+- mypy/typeshed/stdlib/builtins.pyi:235:26: error[too-many-positional-arguments] Too many positional arguments to class `tuple`: expected 1, got 2
++ mypy/typeshed/stdlib/builtins.pyi:235:68: error[invalid-type-arguments] Too many type arguments to class `tuple`: expected 1, got 2
+- mypy/typeshed/stdlib/builtins.pyi:259:35: error[too-many-positional-arguments] Too many positional arguments to class `tuple`: expected 1, got 2
++ mypy/typeshed/stdlib/builtins.pyi:259:46: error[invalid-type-arguments] Too many type arguments to class `tuple`: expected 1, got 2
+- mypy/typeshed/stdlib/builtins.pyi:305:44: error[too-many-positional-arguments] Too many positional arguments to class `tuple`: expected 1, got 2
++ mypy/typeshed/stdlib/builtins.pyi:305:55: error[invalid-type-arguments] Too many type arguments to class `tuple`: expected 1, got 2
+- mypy/typeshed/stdlib/builtins.pyi:312:45: error[too-many-positional-arguments] Too many positional arguments to class `tuple`: expected 1, got 2
++ mypy/typeshed/stdlib/builtins.pyi:312:56: error[invalid-type-arguments] Too many type arguments to class `tuple`: expected 1, got 2
+- mypy/typeshed/stdlib/builtins.pyi:367:35: error[too-many-positional-arguments] Too many positional arguments to class `tuple`: expected 1, got 2
++ mypy/typeshed/stdlib/builtins.pyi:367:46: error[invalid-type-arguments] Too many type arguments to class `tuple`: expected 1, got 2
+- mypy/typeshed/stdlib/builtins.pyi:383:46: error[too-many-positional-arguments] Too many positional arguments to class `tuple`: expected 1, got 2
++ mypy/typeshed/stdlib/builtins.pyi:383:59: error[invalid-type-arguments] Too many type arguments to class `tuple`: expected 1, got 2
+- mypy/typeshed/stdlib/builtins.pyi:396:47: error[too-many-positional-arguments] Too many positional arguments to class `tuple`: expected 1, got 2
++ mypy/typeshed/stdlib/builtins.pyi:396:60: error[invalid-type-arguments] Too many type arguments to class `tuple`: expected 1, got 2
+- mypy/typeshed/stdlib/builtins.pyi:490:29: error[too-many-positional-arguments] Too many positional arguments to class `tuple`: expected 1, got 2
++ mypy/typeshed/stdlib/builtins.pyi:490:40: error[invalid-type-arguments] Too many type arguments to class `tuple`: expected 1, got 2
+- mypy/typeshed/stdlib/builtins.pyi:530:29: error[too-many-positional-arguments] Too many positional arguments to class `tuple`: expected 1, got 2
++ mypy/typeshed/stdlib/builtins.pyi:530:40: error[invalid-type-arguments] Too many type arguments to class `tuple`: expected 1, got 2
+- mypy/typeshed/stdlib/builtins.pyi:582:34: error[too-many-positional-arguments] Too many positional arguments to class `tuple`: expected 1, got 2
++ mypy/typeshed/stdlib/builtins.pyi:582:56: error[invalid-type-arguments] Too many type arguments to class `tuple`: expected 1, got 2
+- mypy/typeshed/stdlib/builtins.pyi:607:52: error[too-many-positional-arguments] Too many positional arguments to class `tuple`: expected 1, got 3
++ mypy/typeshed/stdlib/builtins.pyi:607:65: error[invalid-type-arguments] Too many type arguments to class `tuple`: expected 1, got 3
+- mypy/typeshed/stdlib/builtins.pyi:618:53: error[too-many-positional-arguments] Too many positional arguments to class `tuple`: expected 1, got 3
++ mypy/typeshed/stdlib/builtins.pyi:618:66: error[invalid-type-arguments] Too many type arguments to class `tuple`: expected 1, got 3
+- mypy/typeshed/stdlib/builtins.pyi:625:34: error[too-many-positional-arguments] Too many positional arguments to class `tuple`: expected 1, got 2
++ mypy/typeshed/stdlib/builtins.pyi:625:56: error[invalid-type-arguments] Too many type arguments to class `tuple`: expected 1, got 2
+- mypy/typeshed/stdlib/builtins.pyi:683:34: error[too-many-positional-arguments] Too many positional arguments to class `tuple`: expected 1, got 2
++ mypy/typeshed/stdlib/builtins.pyi:683:56: error[invalid-type-arguments] Too many type arguments to class `tuple`: expected 1, got 2
+- mypy/typeshed/stdlib/builtins.pyi:710:52: error[too-many-positional-arguments] Too many positional arguments to class `tuple`: expected 1, got 3
++ mypy/typeshed/stdlib/builtins.pyi:710:69: error[invalid-type-arguments] Too many type arguments to class `tuple`: expected 1, got 3
+- mypy/typeshed/stdlib/builtins.pyi:723:53: error[too-many-positional-arguments] Too many positional arguments to class `tuple`: expected 1, got 3
++ mypy/typeshed/stdlib/builtins.pyi:723:70: error[invalid-type-arguments] Too many type arguments to class `tuple`: expected 1, got 3
+- mypy/typeshed/stdlib/builtins.pyi:730:34: error[too-many-positional-arguments] Too many positional arguments to class `tuple`: expected 1, got 2
++ mypy/typeshed/stdlib/builtins.pyi:730:56: error[invalid-type-arguments] Too many type arguments to class `tuple`: expected 1, got 2
+- mypy/typeshed/stdlib/builtins.pyi:789:24: error[too-many-positional-arguments] Too many positional arguments to class `tuple`: expected 1, got 2
++ mypy/typeshed/stdlib/builtins.pyi:789:35: error[invalid-type-arguments] Too many type arguments to class `tuple`: expected 1, got 2
+- mypy/typeshed/stdlib/builtins.pyi:791:26: error[too-many-positional-arguments] Too many positional arguments to class `tuple`: expected 1, got 2
++ mypy/typeshed/stdlib/builtins.pyi:791:37: error[invalid-type-arguments] Too many type arguments to class `tuple`: expected 1, got 2
+- mypy/typeshed/stdlib/builtins.pyi:793:29: error[too-many-positional-arguments] Too many positional arguments to class `tuple`: expected 1, got 2
++ mypy/typeshed/stdlib/builtins.pyi:793:40: error[invalid-type-arguments] Too many type arguments to class `tuple`: expected 1, got 2
+- mypy/typeshed/stdlib/builtins.pyi:818:67: error[too-many-positional-arguments] Too many positional arguments to class `tuple`: expected 1, got 2
++ mypy/typeshed/stdlib/builtins.pyi:818:78: error[invalid-type-arguments] Too many type arguments to class `tuple`: expected 1, got 2
+- mypy/typeshed/stdlib/builtins.pyi:820:78: error[too-many-positional-arguments] Too many positional arguments to class `tuple`: expected 1, got 2
++ mypy/typeshed/stdlib/builtins.pyi:820:89: error[invalid-type-arguments] Too many type arguments to class `tuple`: expected 1, got 2
+- mypy/typeshed/stdlib/builtins.pyi:822:61: error[too-many-positional-arguments] Too many positional arguments to class `tuple`: expected 1, got 2
++ mypy/typeshed/stdlib/builtins.pyi:822:72: error[invalid-type-arguments] Too many type arguments to class `tuple`: expected 1, got 2
+- mypy/typeshed/stdlib/builtins.pyi:824:64: error[too-many-positional-arguments] Too many positional arguments to class `tuple`: expected 1, got 2
++ mypy/typeshed/stdlib/builtins.pyi:824:75: error[invalid-type-arguments] Too many type arguments to class `tuple`: expected 1, got 2
+- mypy/typeshed/stdlib/builtins.pyi:826:48: error[too-many-positional-arguments] Too many positional arguments to class `tuple`: expected 1, got 2
++ mypy/typeshed/stdlib/builtins.pyi:826:69: error[invalid-type-arguments] Too many type arguments to class `tuple`: expected 1, got 2
+- mypy/typeshed/stdlib/builtins.pyi:837:48: error[too-many-positional-arguments] Too many positional arguments to class `tuple`: expected 1, got 2
++ mypy/typeshed/stdlib/builtins.pyi:837:69: error[invalid-type-arguments] Too many type arguments to class `tuple`: expected 1, got 2
+- mypy/typeshed/stdlib/builtins.pyi:928:49: error[too-many-positional-arguments] Too many positional arguments to class `tuple`: expected 1, got 3
++ mypy/typeshed/stdlib/builtins.pyi:928:60: error[invalid-type-arguments] Too many type arguments to class `tuple`: expected 1, got 3
+- mypy/typeshed/stdlib/builtins.pyi:938:45: error[too-many-positional-arguments] Too many positional arguments to class `tuple`: expected 1, got 2
++ mypy/typeshed/stdlib/builtins.pyi:938:58: error[invalid-type-arguments] Too many type arguments to class `tuple`: expected 1, got 2
+- mypy/typeshed/stdlib/builtins.pyi:940:29: error[too-many-positional-arguments] Too many positional arguments to class `tuple`: expected 1, got 2
++ mypy/typeshed/stdlib/builtins.pyi:940:42: error[invalid-type-arguments] Too many type arguments to class `tuple`: expected 1, got 2
+- mypy/typeshed/stdlib/builtins.pyi:941:29: error[too-many-positional-arguments] Too many positional arguments to class `tuple`: expected 1, got 2
++ mypy/typeshed/stdlib/builtins.pyi:941:42: error[invalid-type-arguments] Too many type arguments to class `tuple`: expected 1, got 2
+- mypy/typeshed/stdlib/builtins.pyi:942:29: error[too-many-positional-arguments] Too many positional arguments to class `tuple`: expected 1, got 2
++ mypy/typeshed/stdlib/builtins.pyi:942:42: error[invalid-type-arguments] Too many type arguments to class `tuple`: expected 1, got 2
+- mypy/typeshed/stdlib/builtins.pyi:943:29: error[too-many-positional-arguments] Too many positional arguments to class `tuple`: expected 1, got 2
++ mypy/typeshed/stdlib/builtins.pyi:943:42: error[invalid-type-arguments] Too many type arguments to class `tuple`: expected 1, got 2
+- mypy/typeshed/stdlib/builtins.pyi:947:30: error[too-many-positional-arguments] Too many positional arguments to class `tuple`: expected 1, got 2
++ mypy/typeshed/stdlib/builtins.pyi:947:43: error[invalid-type-arguments] Too many type arguments to class `tuple`: expected 1, got 2
+- mypy/typeshed/stdlib/builtins.pyi:947:55: error[too-many-positional-arguments] Too many positional arguments to class `tuple`: expected 1, got 2
++ mypy/typeshed/stdlib/builtins.pyi:947:68: error[invalid-type-arguments] Too many type arguments to class `tuple`: expected 1, got 2
+- mypy/typeshed/stdlib/builtins.pyi:949:30: error[too-many-positional-arguments] Too many positional arguments to class `tuple`: expected 1, got 2
++ mypy/typeshed/stdlib/builtins.pyi:949:40: error[invalid-type-arguments] Too many type arguments to class `tuple`: expected 1, got 2
+- mypy/typeshed/stdlib/builtins.pyi:949:52: error[too-many-positional-arguments] Too many positional arguments to class `tuple`: expected 1, got 2
++ mypy/typeshed/stdlib/builtins.pyi:949:70: error[invalid-type-arguments] Too many type arguments to class `tuple`: expected 1, got 2
+- mypy/typeshed/stdlib/builtins.pyi:950:51: error[too-many-positional-arguments] Too many positional arguments to class `tuple`: expected 1, got 2
++ mypy/typeshed/stdlib/builtins.pyi:950:64: error[invalid-type-arguments] Too many type arguments to class `tuple`: expected 1, got 2
+- mypy/typeshed/stdlib/builtins.pyi:951:52: error[too-many-positional-arguments] Too many positional arguments to class `tuple`: expected 1, got 2
++ mypy/typeshed/stdlib/builtins.pyi:951:65: error[invalid-type-arguments] Too many type arguments to class `tuple`: expected 1, got 2
++ mypy/typeshed/stdlib/builtins.pyi:965:46: error[invalid-type-arguments] Too many type arguments to class `tuple`: expected 1, got 2
+- mypy/typeshed/stdlib/builtins.pyi:965:30: error[too-many-positional-arguments] Too many positional arguments to class `tuple`: expected 1, got 2
++ mypy/typeshed/stdlib/builtins.pyi:967:30: error[invalid-type-arguments] Too many type arguments to class `tuple`: expected 1, got 2
+- mypy/typeshed/stdlib/builtins.pyi:967:19: error[too-many-positional-arguments] Too many positional arguments to class `tuple`: expected 1, got 2
+- mypy/typeshed/stdlib/builtins.pyi:981:26: error[too-many-positional-arguments] Too many positional arguments to class `tuple`: expected 1, got 2
++ mypy/typeshed/stdlib/builtins.pyi:981:68: error[invalid-type-arguments] Too many type arguments to class `tuple`: expected 1, got 2
+- mypy/typeshed/stdlib/builtins.pyi:990:22: error[too-many-positional-arguments] Too many positional arguments to class `tuple`: expected 1, got 2
++ mypy/typeshed/stdlib/builtins.pyi:990:36: error[invalid-type-arguments] Too many type arguments to class `tuple`: expected 1, got 2
+- mypy/typeshed/stdlib/builtins.pyi:991:22: error[too-many-positional-arguments] Too many positional arguments to class `tuple`: expected 1, got 2
++ mypy/typeshed/stdlib/builtins.pyi:991:38: error[invalid-type-arguments] Too many type arguments to class `tuple`: expected 1, got 2
+- mypy/typeshed/stdlib/builtins.pyi:1000:22: error[too-many-positional-arguments] Too many positional arguments to class `tuple`: expected 1, got 2
++ mypy/typeshed/stdlib/builtins.pyi:1000:36: error[invalid-type-arguments] Too many type arguments to class `tuple`: expected 1, got 2
+- mypy/typeshed/stdlib/builtins.pyi:1001:22: error[too-many-positional-arguments] Too many positional arguments to class `tuple`: expected 1, got 2
++ mypy/typeshed/stdlib/builtins.pyi:1001:38: error[invalid-type-arguments] Too many type arguments to class `tuple`: expected 1, got 2
+- mypy/typeshed/stdlib/builtins.pyi:1080:43: error[too-many-positional-arguments] Too many positional arguments to class `tuple`: expected 1, got 2
++ mypy/typeshed/stdlib/builtins.pyi:1080:54: error[invalid-type-arguments] Too many type arguments to class `tuple`: expected 1, got 2
+- mypy/typeshed/stdlib/builtins.pyi:1084:28: error[too-many-positional-arguments] Too many positional arguments to class `tuple`: expected 1, got 2
++ mypy/typeshed/stdlib/builtins.pyi:1084:39: error[invalid-type-arguments] Too many type arguments to class `tuple`: expected 1, got 2
+- mypy/typeshed/stdlib/builtins.pyi:1143:39: error[too-many-positional-arguments] Too many positional arguments to class `tuple`: expected 1, got 2
++ mypy/typeshed/stdlib/builtins.pyi:1143:50: error[invalid-type-arguments] Too many type arguments to class `tuple`: expected 1, got 2
+- mypy/typeshed/stdlib/builtins.pyi:1215:26: error[too-many-positional-arguments] Too many positional arguments to class `tuple`: expected 1, got 2
++ mypy/typeshed/stdlib/builtins.pyi:1215:37: error[invalid-type-arguments] Too many type arguments to class `tuple`: expected 1, got 2
+- mypy/typeshed/stdlib/builtins.pyi:1218:27: error[too-many-positional-arguments] Too many positional arguments to class `tuple`: expected 1, got 2
++ mypy/typeshed/stdlib/builtins.pyi:1218:38: error[invalid-type-arguments] Too many type arguments to class `tuple`: expected 1, got 2
+- mypy/typeshed/stdlib/builtins.pyi:1378:18: error[too-many-positional-arguments] Too many positional arguments to class `tuple`: expected 1, got 2
++ mypy/typeshed/stdlib/builtins.pyi:1378:34: error[invalid-type-arguments] Too many type arguments to class `tuple`: expected 1, got 2
+- mypy/typeshed/stdlib/builtins.pyi:1388:18: error[too-many-positional-arguments] Too many positional arguments to class `tuple`: expected 1, got 2
++ mypy/typeshed/stdlib/builtins.pyi:1388:34: error[invalid-type-arguments] Too many type arguments to class `tuple`: expected 1, got 2
++ mypy/typeshed/stdlib/builtins.pyi:1454:72: error[invalid-type-arguments] Too many type arguments to class `tuple`: expected 1, got 2
+- mypy/typeshed/stdlib/builtins.pyi:1454:54: error[too-many-positional-arguments] Too many positional arguments to class `tuple`: expected 1, got 2
++ mypy/typeshed/stdlib/builtins.pyi:1456:54: error[invalid-type-arguments] Too many type arguments to class `tuple`: expected 1, got 2
+- mypy/typeshed/stdlib/builtins.pyi:1456:36: error[too-many-positional-arguments] Too many positional arguments to class `tuple`: expected 1, got 2
+- mypy/typeshed/stdlib/builtins.pyi:1844:105: error[too-many-positional-arguments] Too many positional arguments to class `tuple`: expected 1, got 2
++ mypy/typeshed/stdlib/builtins.pyi:1844:116: error[invalid-type-arguments] Too many type arguments to class `tuple`: expected 1, got 2
+- mypy/typeshed/stdlib/builtins.pyi:1848:18: error[too-many-positional-arguments] Too many positional arguments to class `tuple`: expected 1, got 3
++ mypy/typeshed/stdlib/builtins.pyi:1848:29: error[invalid-type-arguments] Too many type arguments to class `tuple`: expected 1, got 3
+- mypy/typeshed/stdlib/builtins.pyi:1859:18: error[too-many-positional-arguments] Too many positional arguments to class `tuple`: expected 1, got 4
++ mypy/typeshed/stdlib/builtins.pyi:1859:29: error[invalid-type-arguments] Too many type arguments to class `tuple`: expected 1, got 4
+- mypy/typeshed/stdlib/builtins.pyi:1871:18: error[too-many-positional-arguments] Too many positional arguments to class `tuple`: expected 1, got 5
++ mypy/typeshed/stdlib/builtins.pyi:1871:29: error[invalid-type-arguments] Too many type arguments to class `tuple`: expected 1, got 5
+- mypy/typeshed/stdlib/builtins.pyi:1884:18: error[too-many-positional-arguments] Too many positional arguments to class `tuple`: expected 1, got 2
++ mypy/typeshed/stdlib/builtins.pyi:1884:29: error[invalid-type-arguments] Too many type arguments to class `tuple`: expected 1, got 2
+- mypy/typeshed/stdlib/builtins.pyi:1891:80: error[too-many-positional-arguments] Too many positional arguments to class `tuple`: expected 1, got 2
++ mypy/typeshed/stdlib/builtins.pyi:1891:91: error[invalid-type-arguments] Too many type arguments to class `tuple`: expected 1, got 2
+- mypy/typeshed/stdlib/builtins.pyi:1893:102: error[too-many-positional-arguments] Too many positional arguments to class `tuple`: expected 1, got 3
++ mypy/typeshed/stdlib/builtins.pyi:1893:113: error[invalid-type-arguments] Too many type arguments to class `tuple`: expected 1, got 3
+- mypy/typeshed/stdlib/builtins.pyi:1897:18: error[too-many-positional-arguments] Too many positional arguments to class `tuple`: expected 1, got 4
++ mypy/typeshed/stdlib/builtins.pyi:1897:29: error[invalid-type-arguments] Too many type arguments to class `tuple`: expected 1, got 4
+- mypy/typeshed/stdlib/builtins.pyi:1901:18: error[too-many-positional-arguments] Too many positional arguments to class `tuple`: expected 1, got 5
++ mypy/typeshed/stdlib/builtins.pyi:1901:29: error[invalid-type-arguments] Too many type arguments to class `tuple`: expected 1, got 5
+- mypy/typeshed/stdlib/builtins.pyi:1913:18: error[too-many-positional-arguments] Too many positional arguments to class `tuple`: expected 1, got 2
++ mypy/typeshed/stdlib/builtins.pyi:1913:29: error[invalid-type-arguments] Too many type arguments to class `tuple`: expected 1, got 2
+- mypy/typeshed/stdlib/builtins.pyi:1955:11: error[too-many-positional-arguments] Too many positional arguments to class `tuple`: expected 1, got 2
++ mypy/typeshed/stdlib/builtins.pyi:1955:22: error[invalid-type-arguments] Too many type arguments to class `tuple`: expected 1, got 2
+- mypy/typeshed/stdlib/builtins.pyi:2062:40: error[too-many-positional-arguments] Too many positional arguments to class `tuple`: expected 1, got 4
++ mypy/typeshed/stdlib/builtins.pyi:2062:58: error[invalid-type-arguments] Too many type arguments to class `tuple`: expected 1, got 4
+- mypy/typeshed/stdlib/builtins.pyi:2067:35: error[too-many-positional-arguments] Too many positional arguments to class `tuple`: expected 1, got 6
++ mypy/typeshed/stdlib/builtins.pyi:2067:53: error[invalid-type-arguments] Too many type arguments to class `tuple`: expected 1, got 6
+- mypy/typeshed/stdlib/builtins.pyi:2162:33: error[too-many-positional-arguments] Too many positional arguments to class `tuple`: expected 1, got 2
++ mypy/typeshed/stdlib/builtins.pyi:2162:100: error[invalid-type-arguments] Too many type arguments to class `tuple`: expected 1, got 2
+- mypy/typeshed/stdlib/builtins.pyi:2165:54: error[too-many-positional-arguments] Too many positional arguments to class `tuple`: expected 1, got 2
++ mypy/typeshed/stdlib/builtins.pyi:2165:79: error[invalid-type-arguments] Too many type arguments to class `tuple`: expected 1, got 2
+- mypy/typeshed/stdlib/builtins.pyi:2169:58: error[too-many-positional-arguments] Too many positional arguments to class `tuple`: expected 1, got 2
++ mypy/typeshed/stdlib/builtins.pyi:2169:87: error[invalid-type-arguments] Too many type arguments to class `tuple`: expected 1, got 2
+- mypy/typeshed/stdlib/builtins.pyi:2177:54: error[too-many-positional-arguments] Too many positional arguments to class `tuple`: expected 1, got 2
++ mypy/typeshed/stdlib/builtins.pyi:2177:79: error[invalid-type-arguments] Too many type arguments to class `tuple`: expected 1, got 2
+- mypy/typeshed/stdlib/builtins.pyi:2178:14: error[too-many-positional-arguments] Too many positional arguments to class `tuple`: expected 1, got 2
++ mypy/typeshed/stdlib/builtins.pyi:2178:56: error[invalid-type-arguments] Too many type arguments to class `tuple`: expected 1, got 2
+- mypy/typeshed/stdlib/builtins.pyi:2181:58: error[too-many-positional-arguments] Too many positional arguments to class `tuple`: expected 1, got 2
++ mypy/typeshed/stdlib/builtins.pyi:2181:87: error[invalid-type-arguments] Too many type arguments to class `tuple`: expected 1, got 2
+- mypy/typeshed/stdlib/builtins.pyi:2182:14: error[too-many-positional-arguments] Too many positional arguments to class `tuple`: expected 1, got 2
++ mypy/typeshed/stdlib/builtins.pyi:2182:64: error[invalid-type-arguments] Too many type arguments to class `tuple`: expected 1, got 2
+- mypy/typeshed/stdlib/builtins.pyi:2186:14: error[too-many-positional-arguments] Too many positional arguments to class `tuple`: expected 1, got 2
++ mypy/typeshed/stdlib/builtins.pyi:2186:67: error[invalid-type-arguments] Too many type arguments to class `tuple`: expected 1, got 2
+- mypy/typeshed/stdlib/builtins.pyi:2198:33: error[too-many-positional-arguments] Too many positional arguments to class `tuple`: expected 1, got 2
++ mypy/typeshed/stdlib/builtins.pyi:2198:88: error[invalid-type-arguments] Too many type arguments to class `tuple`: expected 1, got 2
+- mypy/typeshed/stdlib/builtins.pyi:2202:54: error[too-many-positional-arguments] Too many positional arguments to class `tuple`: expected 1, got 2
++ mypy/typeshed/stdlib/builtins.pyi:2202:79: error[invalid-type-arguments] Too many type arguments to class `tuple`: expected 1, got 2
+- mypy/typeshed/stdlib/builtins.pyi:2210:54: error[too-many-positional-arguments] Too many positional arguments to class `tuple`: expected 1, got 2
++ mypy/typeshed/stdlib/builtins.pyi:2210:79: error[invalid-type-arguments] Too many type arguments to class `tuple`: expected 1, got 2
+- mypy/typeshed/stdlib/builtins.pyi:2211:14: error[too-many-positional-arguments] Too many positional arguments to class `tuple`: expected 1, got 2
++ mypy/typeshed/stdlib/builtins.pyi:2211:56: error[invalid-type-arguments] Too many type arguments to class `tuple`: expected 1, got 2
+- mypy/typeshed/stdlib/builtins.pyi:2215:14: error[too-many-positional-arguments] Too many positional arguments to class `tuple`: expected 1, got 2
++ mypy/typeshed/stdlib/builtins.pyi:2215:59: error[invalid-type-arguments] Too many type arguments to class `tuple`: expected 1, got 2
+- mypy/typeshed/stdlib/collections/__init__.pyi:43:11: error[too-many-positional-arguments] Too many positional arguments to class `tuple`: expected 1, got 2
++ mypy/typeshed/stdlib/collections/__init__.pyi:43:22: error[invalid-type-arguments] Too many type arguments to class `tuple`: expected 1, got 2
+- mypy/typeshed/stdlib/ctypes/wintypes.pyi:124:29: error[invalid-argument-type] Argument to class `_CField` is incorrect: Expected `_CData`, found `typing.TypeVar`
++ mypy/typeshed/stdlib/ctypes/wintypes.pyi:124:37: error[invalid-type-arguments] Type `typing.TypeVar` is not assignable to upper bound `_CData` of type variable `_CT@_CField`
+
+mongo-python-driver (https://github.com/mongodb/mongo-python-driver)
+- pymongo/asynchronous/collection.py:104:5: error[invalid-argument-type] Argument to class `InsertOne` is incorrect: Expected `Mapping[str, Any]`, found `typing.TypeVar`
+- pymongo/asynchronous/collection.py:107:5: error[invalid-argument-type] Argument to class `ReplaceOne` is incorrect: Expected `Mapping[str, Any]`, found `typing.TypeVar`
++ pymongo/asynchronous/collection.py:104:15: error[invalid-type-arguments] Type `typing.TypeVar` is not assignable to upper bound `Mapping[str, Any]` of type variable `_DocumentType@InsertOne`
++ pymongo/asynchronous/collection.py:107:16: error[invalid-type-arguments] Type `typing.TypeVar` is not assignable to upper bound `Mapping[str, Any]` of type variable `_DocumentType@ReplaceOne`
+- pymongo/synchronous/collection.py:103:5: error[invalid-argument-type] Argument to class `InsertOne` is incorrect: Expected `Mapping[str, Any]`, found `typing.TypeVar`
+- pymongo/synchronous/collection.py:106:5: error[invalid-argument-type] Argument to class `ReplaceOne` is incorrect: Expected `Mapping[str, Any]`, found `typing.TypeVar`
++ pymongo/synchronous/collection.py:103:15: error[invalid-type-arguments] Type `typing.TypeVar` is not assignable to upper bound `Mapping[str, Any]` of type variable `_DocumentType@InsertOne`
++ pymongo/synchronous/collection.py:106:16: error[invalid-type-arguments] Type `typing.TypeVar` is not assignable to upper bound `Mapping[str, Any]` of type variable `_DocumentType@ReplaceOne`
+
+discord.py (https://github.com/Rapptz/discord.py)
+- discord/app_commands/commands.py:140:63: error[invalid-argument-type] Argument to class `Choice` is incorrect: Expected `str | int | float`, found `typing.TypeVar`
+- discord/app_commands/commands.py:141:55: error[invalid-argument-type] Argument to class `Choice` is incorrect: Expected `str | int | float`, found `typing.TypeVar`
++ discord/app_commands/commands.py:140:70: error[invalid-type-arguments] Type `typing.TypeVar` does not satisfy constraints `str`, `int`, `int | float`, `str | int | float` of type variable `ChoiceT@Choice`
++ discord/app_commands/commands.py:141:62: error[invalid-type-arguments] Type `typing.TypeVar` does not satisfy constraints `str`, `int`, `int | float`, `str | int | float` of type variable `ChoiceT@Choice`
+- discord/app_commands/tree.py:76:10: error[invalid-argument-type] Argument to class `Interaction` is incorrect: Expected `Client`, found `typing.TypeVar`
++ discord/app_commands/tree.py:76:22: error[invalid-type-arguments] Type `typing.TypeVar` is not assignable to upper bound `Client` of type variable `ClientT@Interaction`
+- discord/ext/commands/cog.py:288:28: error[invalid-argument-type] Argument to class `Command` is incorrect: Expected `Cog | None`, found `typing.Self`
+- discord/ext/commands/cog.py:289:58: error[invalid-argument-type] Argument to class `Command` is incorrect: Expected `Group | Cog`, found `typing.Self`
++ discord/ext/commands/cog.py:288:36: error[invalid-type-arguments] Type `typing.Self` is not assignable to upper bound `Cog | None` of type variable `CogT@Command`
++ discord/ext/commands/cog.py:289:79: error[invalid-type-arguments] Type `typing.Self` is not assignable to upper bound `Group | Cog` of type variable `GroupT@Command`
+- discord/ui/modal.py:109:50: error[invalid-argument-type] Argument to class `Item` is incorrect: Expected `BaseView`, found `typing.Self`
++ discord/ui/modal.py:109:55: error[invalid-type-arguments] Type `typing.Self` is not assignable to upper bound `BaseView` of type variable `V@Item`
+
+meson (https://github.com/mesonbuild/meson)
+- mesonbuild/interpreterbase/interpreterbase.py:56:63: error[invalid-argument-type] Argument to class `ObjectHolder` is incorrect: Expected `Sequence[Divergent] | int | dict[str, Divergent] | ... omitted 5 union elements`, found `typing.TypeVar`
++ mesonbuild/interpreterbase/interpreterbase.py:56:76: error[invalid-type-arguments] Type `typing.TypeVar` is not assignable to upper bound `Sequence[Divergent] | int | dict[str, Divergent] | ... omitted 5 union elements` of type variable `InterpreterObjectTypeVar@ObjectHolder`
+
+xarray (https://github.com/pydata/xarray)
+- xarray/namedarray/_typing.py:57:5: error[invalid-argument-type] Argument to class `dtype` is incorrect: Expected `generic[Any]`, found `typing.TypeVar`
+- xarray/namedarray/_typing.py:59:20: error[invalid-argument-type] Argument to class `dtype` is incorrect: Expected `generic[Any]`, found `typing.TypeVar`
+- xarray/namedarray/_typing.py:213:5: error[invalid-argument-type] Argument to class `_arrayfunction` is incorrect: Expected `dtype[Any]`, found `typing.TypeVar`
+- xarray/namedarray/_typing.py:213:47: error[invalid-argument-type] Argument to class `_arrayapi` is incorrect: Expected `dtype[Any]`, found `typing.TypeVar`
+- xarray/namedarray/_typing.py:217:33: error[invalid-argument-type] Argument to class `dtype` is incorrect: Expected `generic[Any]`, found `typing.TypeVar`
+- xarray/namedarray/
+
+... (truncated 569 lines) ...
+</code></pre>
+</details>
+
+<p>No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-11-26 07:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types/diagnostic.rs</code>:1412 on 2025-11-26 07:41</div>
+            <div class="timeline-body"><p>TODO</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-11-26 09:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_python_semantic/resources/mdtest/generics/legacy/classes.md</code>:169 on 2025-11-26 09:06</div>
+            <div class="timeline-body"><p>I think this and other similar TODOs are now resolved, I'll remove them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @dhruvmanila on 2025-11-26 09:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @dhruvmanila on 2025-11-26 09:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @dhruvmanila on 2025-11-26 09:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @dhruvmanila on 2025-11-26 09:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @dhruvmanila on 2025-11-26 09:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @dhruvmanila on 2025-11-26 09:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-11-26 09:15</div>
+            <div class="timeline-body"><!-- generated-comment ty ecosystem-analyzer -->
+
+<h2><code>ecosystem-analyzer</code> results</h2>
+<p>| Lint rule | Added | Removed | Changed |
+|-----------|------:|--------:|--------:|
+| <code>invalid-type-arguments</code> | 437 | 0 | 0 |
+| <code>too-many-positional-arguments</code> | 0 | 288 | 0 |
+| <code>invalid-argument-type</code> | 0 | 105 | 2 |
+| <code>missing-argument</code> | 0 | 41 | 0 |
+| <code>unused-ignore-comment</code> | 3 | 0 | 0 |
+| <strong>Total</strong> | <strong>440</strong> | <strong>434</strong> | <strong>2</strong> |</p>
+<p><strong><a href="https://dhruv-zip-explicit-specializ.ecosystem-663.pages.dev/diff">Full report with detailed diff</a></strong> (<a href="https://dhruv-zip-explicit-specializ.ecosystem-663.pages.dev/timing">timing results</a>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-11-26 09:22</div>
+            <div class="timeline-body"><p>Hmm, I expected the diff numbers to be same, need to see where the difference is.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-26 09:36</div>
+            <div class="timeline-body"><p>I remember that @sharkdp saw something similar in one of his past PRs and he added an explanation of when this can happen but I'm unable to find that PR right now</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-11-26 09:57</div>
+            <div class="timeline-body"><blockquote>
+<p>I remember that @sharkdp saw something similar in one of his past PRs and he added an explanation of when this can happen but I'm unable to find that PR right now</p>
+</blockquote>
+<p>Yes, see: https://github.com/astral-sh/ruff/pull/21476#issuecomment-3546898310.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-11-26 10:00</div>
+            <div class="timeline-body"><p>Oh, I see where the difference lies:</p>
+<p>The source code is:</p>
+<pre><code class="language-python">_ResamplerGroupBy: TypeAlias = (
+    DatetimeIndexResamplerGroupby[NDFrameT]  # ty: ignore[invalid-argument-type]
+    | PeriodIndexResamplerGroupby[NDFrameT]  # ty: ignore[invalid-argument-type]
+    | TimedeltaIndexResamplerGroupby[NDFrameT]  # ty: ignore[invalid-argument-type]
+)
+</code></pre>
+<p>Here, the code has been changed from <code>invalid-argument-type</code> to <code>invalid-type-arguments</code> which results in the following new diagnostics:</p>
+<pre><code class="language-diff">+ pandas-stubs/core/groupby/groupby.pyi:74:35: error[invalid-type-arguments] Type `typing.TypeVar` is not assignable to upper bound `NDFrame` of type variable `NDFrameT@DatetimeIndexResamplerGroupby`
++ pandas-stubs/core/groupby/groupby.pyi:74:46: warning[unused-ignore-comment] Unused `ty: ignore` directive
++ pandas-stubs/core/groupby/groupby.pyi:75:35: error[invalid-type-arguments] Type `typing.TypeVar` is not assignable to upper bound `NDFrame` of type variable `NDFrameT@PeriodIndexResamplerGroupby`
++ pandas-stubs/core/groupby/groupby.pyi:75:46: warning[unused-ignore-comment] Unused `ty: ignore` directive
++ pandas-stubs/core/groupby/groupby.pyi:76:38: error[invalid-type-arguments] Type `typing.TypeVar` is not assignable to upper bound `NDFrame` of type variable `NDFrameT@TimedeltaIndexResamplerGroupby`
++ pandas-stubs/core/groupby/groupby.pyi:76:49: warning[unused-ignore-comment] Unused `ty: ignore` directive
+</code></pre>
+<p>These are the additional 6 diagnostics.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/infer/builder.rs</code>:11224 on 2025-11-26 15:33</div>
+            <div class="timeline-body"><p>As a complete aside, I've come to the opinion that we should always be passing <code>db</code> as a parameter instead of storing it locally as a field. When we use the pattern here (saving it into a local variable), it's sometimes just to save typing from all of the places that we're doing <code>self.db()</code> (or <code>self.db</code> — another inconsistency!). But other times it's load bearing, and needed to satisfy the borrow checker! Committing to just always threading it through as a parameter would be more consistent and would eliminate the borrowck problems completely. The only places where we should store a <code>db</code> into a field is when we have to, to be able to implement some external trait.</p>
+<p>But that's just me venting! No suggested change for this PR.</p>
+<p>&lt;/end of soapbox&gt;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/infer/builder.rs</code>:11269 on 2025-11-26 15:41</div>
+            <div class="timeline-body"><p>This might be something you can instead track by taking the index if the first typevar with a default, since (I think) all of the defaulty typevars have to be grouped together at the end. For instance with</p>
+<pre><code class="language-py">class C[T, U = int, V]: ...
+</code></pre>
+<p>I don't think you can instantiate <code>C</code> with only two types (<code>C[str, bool]</code>). That would assume the <code>bool</code> lines up with <code>U</code>, and you haven't provided a type for <code>V</code>.</p>
+<p>That said...I don't think that would be any simpler than what you've done here, so I would say leave it as is.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/infer/builder.rs</code>:11260 on 2025-11-26 15:45</div>
+            <div class="timeline-body"><p>nit: I think you can use <code>Itertools::format</code> here instead of <code>Itertools::join</code>. It produces the same result, but as an <code>impl Display</code> instead of a <code>String</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/infer/builder.rs</code>:11283 on 2025-11-26 15:48</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                    first_excess_type_argument_index.get_or_insert(index);
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> approved on 2025-11-26 15:50</div>
+            <div class="timeline-body"><p>This is great! I love that it finally lets us have more specific diagnostics.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @AlexWaygood removed by @AlexWaygood on 2025-11-26 15:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @carljm removed by @carljm on 2025-11-26 19:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-11-27 03:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_python_semantic/src/types/infer/builder.rs</code>:11269 on 2025-11-27 03:09</div>
+            <div class="timeline-body"><p>Yeah, the typevar with default needs to be grouped together at the end of the list. I don't think we're raising any diagnostic for that (https://play.ty.dev/776bac63-9407-4ebf-acd7-d56d2c174f25) which is something that should be easy to do now. I can do it as a quick follow-up.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_python_semantic/src/types/infer/builder.rs</code>:11269 on 2025-11-27 03:37</div>
+            <div class="timeline-body"><p>Oh wait, this is a SyntaxError in CPython for PEP 695 type variables but it's a TypeError for the legacy type variables. I'll raise a ticket for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-11-27 03:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-11-27 03:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_python_semantic/src/types/infer/builder.rs</code>:11269 on 2025-11-27 03:46</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/ty/issues/1651 and https://github.com/astral-sh/ruff/issues/17412#issuecomment-3584088217</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2025-11-27 03:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2025-11-27 03:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-11-27 03:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> removed by @dhruvmanila on 2025-11-28 12:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">diagnostics</span> added by @dhruvmanila on 2025-11-28 12:31</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:48:28 UTC
+    </footer>
+</body>
+</html>

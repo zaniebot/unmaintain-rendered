@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Better handling for panics during linting - astral-sh/ruff #20252</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Better handling for panics during linting</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/20252">#20252</a>
+        opened by <a href="https://github.com/amyreese">@amyreese</a>
+        on 2025-09-04 19:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/amyreese">@amyreese</a> on 2025-09-04 19:47</div>
+            <div class="timeline-body"><p>Stack from <a href="https://github.com/ezyang/ghstack">ghstack</a> (oldest at bottom):</p>
+<ul>
+<li><strong>-&gt;</strong> #20252</li>
+<li>#20251</li>
+</ul>
+<hr />
+<ul>
+<li>Convert panics to diagnostics with id <code>Panic</code>, severity <code>Fatal</code>, and
+the error as the diagnostic message, annotated with a <code>Span</code> with
+empty code block and no range.</li>
+<li>Updates the post-linting message diagnostic handling to track the
+maximum severity seen, and then prints the &quot;report a bug in ruff&quot;
+message only if the max severity was <code>Fatal</code></li>
+</ul>
+<p>This depends on the sorting changes since it creates diagnostics with no
+range specified.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff/src/lib.rs</code>:451 on 2025-09-04 21:16</div>
+            <div class="timeline-body"><p>I think we could use something like this from ty here:</p>
+<p>https://github.com/astral-sh/ruff/blob/df142def7a2796c9b48e1fa2314d27c4f3a94076/crates/ty/src/lib.rs#L340-L344</p>
+<p>I guess it's actually longer than the loop, but iterators are fun 😆</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff/src/lib.rs</code>:452 on 2025-09-04 21:17</div>
+            <div class="timeline-body"><p>Another idea from ty:</p>
+<p>https://github.com/astral-sh/ruff/blob/df142def7a2796c9b48e1fa2314d27c4f3a94076/crates/ty/src/lib.rs#L365</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff/src/lib.rs</code>:463 on 2025-09-04 21:22</div>
+            <div class="timeline-body"><p>It doesn't look like this guarantees that we exit non-zero. For example, if <code>cli.diff</code> or <code>fix_only</code>, we only inspect <code>diagnostics.fixed.is_empty()</code> rather than <code>diagnostics.inner.is_empty()</code>. I think a panic should still cause <code>--diff</code> or <code>--fix-only</code> to exit non-zero. Maybe I'm missing something here, though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff/src/commands/check.rs</code>:207 on 2025-09-04 21:24</div>
+            <div class="timeline-body"><p>I wonder if we should follow ty again here, or maybe even factor out a common panic <code>Diagnostic</code> constructor:</p>
+<p>https://github.com/astral-sh/ruff/blob/df142def7a2796c9b48e1fa2314d27c4f3a94076/crates/ty_project/src/lib.rs#L687-L697</p>
+<p>Some of the code for constructing the main <code>message</code> might even be helpful for us too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-09-04 21:27</div>
+            <div class="timeline-body"><p>Thanks! I had a few suggestions, mostly based on the related code in ty. I'd also be interested in adding a panicking test rule so that we can see this in action. You can see some examples of those here:</p>
+<p>https://github.com/astral-sh/ruff/blob/df142def7a2796c9b48e1fa2314d27c4f3a94076/crates/ruff_linter/src/rules/ruff/rules/test_rules.rs#L1-L3</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/amyreese">@amyreese</a> on 2025-09-04 21:28</div>
+            <div class="timeline-body"><blockquote>
+<p>Thanks! I had a few suggestions, mostly based on the related code in ty. I'd also be interested in adding a panicking test rule so that we can see this in action.</p>
+</blockquote>
+<p>I've got a commit in progress to do that, but I need to figure out how to get that panic to only happen on the right inputs or whatever, because otherwise it breaks/ruins all the existing text rule fixtures/snapshots. But also the current test rule doesn't go through the same code path, so it ends up creating a <code>ruff crashed</code> panic instead.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/amyreese">@amyreese</a> reviewed on 2025-09-04 22:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/amyreese">@amyreese</a> on <code>crates/ruff/src/commands/check.rs</code>:207 on 2025-09-04 22:55</div>
+            <div class="timeline-body"><p>I think the benefit of putting this outside the diagnostic is that we get the clear error message at the bottom after the diagnostic messages, cluing the user into the existence of a panic.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/amyreese">@amyreese</a> reviewed on 2025-09-04 22:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/amyreese">@amyreese</a> on <code>crates/ruff/src/lib.rs</code>:463 on 2025-09-04 22:55</div>
+            <div class="timeline-body"><p>Apparently in my various reworks/rebases, I forgot to include the exit code change. Oops.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-09-04 22:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff/src/commands/check.rs</code>:207 on 2025-09-04 22:59</div>
+            <div class="timeline-body"><p>Oh right, I was still thinking that we'd sort by ascending severity, like in <code>RenderingSortKey</code>, so that the panics would be at the end, but that makes sense if we don't want to sort.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-09-04 23:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff/src/commands/check.rs</code>:207 on 2025-09-04 23:01</div>
+            <div class="timeline-body"><p>Oh that's not the main comparison in <code>RenderingSortKey</code> anyway, hmm. It looks like ty has a relatively short logging/tracing message but still most of this in the diagnostic:</p>
+<p>https://github.com/astral-sh/ruff/blob/df142def7a2796c9b48e1fa2314d27c4f3a94076/crates/ty/src/lib.rs#L365-L369</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @amyreese on 2025-09-05 00:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-11-25 02:00</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:48:26 UTC
+    </footer>
+</body>
+</html>

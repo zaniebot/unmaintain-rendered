@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`pylint`] Fix `PLR1708` false positives on nested functions - astral-sh/ruff #21177</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>pylint</code>] Fix <code>PLR1708</code> false positives on nested functions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21177">#21177</a>
+        opened by <a href="https://github.com/chirizxc">@chirizxc</a>
+        on 2025-10-31 21:59
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/chirizxc">@chirizxc</a> on 2025-10-31 21:59</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Fixes https://github.com/astral-sh/ruff/issues/21162</p>
+<h2>Test Plan</h2>
+<p><code>cargo nextest run pylint</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-10-31 22:12</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-11-06 19:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @ntBre on 2025-11-06 19:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2025-11-06 19:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> requested changes on 2025-11-06 19:44</div>
+            <div class="timeline-body"><p>Thanks for working on this, but I think the fix here is too simplistic, and we actually need to be traversing scopes. As one example, this code triggers the runtime error in CPython but is no longer flagged by the rule:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; def h():
+...     yield 1
+...     class C:
+...         raise StopIteration
+...     yield C
+...
+... for i in h(): ...
+...
+Ellipsis
+Traceback (most recent call last):
+  File &quot;&lt;python-input-0&gt;&quot;, line 3, in h
+    class C:
+        raise StopIteration
+  File &quot;&lt;python-input-0&gt;&quot;, line 4, in C
+    raise StopIteration
+StopIteration
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File &quot;&lt;python-input-0&gt;&quot;, line 7, in &lt;module&gt;
+    for i in h(): ...
+             ~^^
+RuntimeError: generator raised StopIteration
+</code></pre>
+<p>I'm wondering if we should just run the rule on <code>StmtFunctionDef</code>s instead of <code>raise</code> statements and then check for both <code>yield</code> and <code>raise StopIteration</code> while visiting the function body, but I haven't thought about it much more than that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ntBre by @chirizxc on 2025-11-14 13:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/pylint/rules/stop_iteration_return.rs</code>:64 on 2025-11-18 21:07</div>
+            <div class="timeline-body"><p>nit:</p>
+<pre><code class="language-suggestion">    analyzer.visit_body(&amp;function_def.body);
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/pylint/rules/stop_iteration_return.rs</code>:108 on 2025-11-18 21:24</div>
+            <div class="timeline-body"><p>I'm not sure how helpful this helper function is. I think we could just destructure the <code>StmtRaise</code> in the <code>match</code> on line 83 and use <code>map_callable</code>:</p>
+<p>https://github.com/astral-sh/ruff/blob/192c37d5401786b3043aafbfb657b4f5e7df8ac8/crates/ruff_python_ast/src/helpers.rs#L724-L735</p>
+<p>For example,</p>
+<pre><code class="language-rust">    fn visit_stmt(&amp;mut self, stmt: &amp;'a ast::Stmt) {
+        match stmt {
+            ast::Stmt::FunctionDef(_) =&gt; {}
+            ast::Stmt::Raise(ast::StmtRaise { exc: Some(exc), .. }) =&gt; {
+                if self.checker.semantic().match_builtin_expr(map_callable(exc), &quot;StopIteration&quot;) {
+                    self.stop_iteration_raises.push(stmt_raise);
+                }
+                walk_stmt(self, stmt);
+            }
+            _ =&gt; walk_stmt(self, stmt),
+        }
+    }
+</code></pre>
+<p>I was going to suggest removing the <code>walk_stmt</code> call in the <code>Stmt::Raise</code> arm, but I think that's actually correct, and B901 has a bug in it by only checking for statements with a single yield expression:</p>
+<p>https://github.com/astral-sh/ruff/blob/192c37d5401786b3043aafbfb657b4f5e7df8ac8/crates/ruff_linter/src/rules/flake8_bugbear/rules/return_in_generator.rs#L118-L123</p>
+<p>That means it misses cases like this:</p>
+<pre><code class="language-py">def foo():
+    return (yield 1)
+</code></pre>
+<p>Feel free to follow up on that if you're interested!</p>
+<p>This also applies here, where your code will correctly flag something like this:</p>
+<pre><code class="language-py">def foo():
+    raise StopIteration((yield 1))
+</code></pre>
+<p>That might be a nice test case to add.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-11-18 21:29</div>
+            <div class="timeline-body"><p>Thanks! This looks good to me now, I just had a couple more minor simplification suggestions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ntBre by @chirizxc on 2025-11-21 14:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> approved on 2025-11-21 20:40</div>
+            <div class="timeline-body"><p>Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[`pylint`] Fix `PLR1708` false positives" to "[`pylint`] Fix `PLR1708` false positives on nested functions" by @ntBre on 2025-11-21 20:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ntBre on 2025-11-21 20:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-11-21 20:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-11-21 20:51</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:48:27 UTC
+    </footer>
+</body>
+</html>

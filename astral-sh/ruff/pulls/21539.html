@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Distinguish &quot;unconstrained&quot; from &quot;constrained to any type&quot; - astral-sh/ruff #21539</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Distinguish &quot;unconstrained&quot; from &quot;constrained to any type&quot;</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21539">#21539</a>
+        opened by <a href="https://github.com/dcreager">@dcreager</a>
+        on 2025-11-20 15:00
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dcreager">@dcreager</a> on 2025-11-20 15:00</div>
+            <div class="timeline-body"><p>Before, we would collapse any constraint of the form <code>Never ≤ T ≤ object</code> down to the &quot;always true&quot; constraint set. This is correct in terms of BDD semantics, but loses information, since &quot;not constraining a typevar at all&quot; is different than &quot;constraining a typevar to take on any type&quot;. Once we get to specialization inference, we should fall back on the typevar's default for the former, but not for the latter.</p>
+<p>This is much easier to support now that we have a sequent map, since we need to treat <code>¬(Never ≤ T ≤ object)</code> as being impossible, and prune it when we walk through BDD paths, just like we do for other impossible combinations.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @dcreager on 2025-11-20 15:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @dcreager on 2025-11-20 15:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @dcreager on 2025-11-20 15:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @dcreager on 2025-11-20 15:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @dcreager on 2025-11-20 15:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-11-20 15:02</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-11-20 15:04</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">scikit-build-core (https://github.com/scikit-build/scikit-build-core)
++ src/scikit_build_core/build/wheel.py:98:20: error[no-matching-overload] No overload of bound method `__init__` matches arguments
+- Found 44 diagnostics
++ Found 45 diagnostics
+
+
+</code></pre>
+</details>
+
+<p>No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/generics/specialize_constrained.md</code>:173 on 2025-11-20 18:05</div>
+            <div class="timeline-body"><p>This is a weird case, and the more I think about it, the weirder it gets.</p>
+<p>I <em>think</em> the principles of constrained type var should probably be:</p>
+<ol>
+<li>We should always solve to one of the constrained types (or to <code>Unknown</code> or <code>Any</code>). This is the core invariant of constrained type variables.</li>
+<li>If the constraints don't allow us to narrow down to a single constrained type, but could allow multiple, we should prefer the subtype, if one constrained type is a subtype of the other. For example, for <code>def f[T: (Base, Sub)](x: T)</code> we should prefer solving <code>f(typed_as sub)</code> to <code>Sub</code> rather than <code>Base</code>, even though both solutions would be possible.</li>
+<li>If multiple constrained types are possible, and neither is a subtype of the other, we should... do what? Fall back to the typevar default?</li>
+</ol>
+<p>But if we agree with these principles, then we can <em>never</em> solve this constrained type var to <code>Base</code>, because any set of constraints that would allow us to solve to <code>Base</code> would also allow solving to <code>Any</code>, therefore we can't narrow it down to one of the choices.</p>
+<p><a href="https://mypy-play.net/?mypy=latest&amp;python=3.13&amp;gist=25de03cec23e19bffce364d7b02e7845">mypy</a> seems to just always solve such a typevar to <code>Any</code>. (Mypy doesn't support typevar defaults, nor distinguish <code>Any</code> vs <code>Unknown</code>, so I can't really experiment with how it handles fallback-to-default.)</p>
+<p><a href="https://pyright-play.net/?pyrightVersion=1.1.405&amp;pythonVersion=3.13&amp;strict=true&amp;reportUnreachable=true&amp;code=GYJw9gtgBALgngBwJYDsDmUkQWEMoCCKcAUCQMYA2AhgM61QDKArggKYgBcJUvUCdWmSqCoAITpsAFC3YgAlNz79BwmvSbMARlIm02innwH01ogKooQbGjDYATJcdUl7bYFGABtACqcoupIANITE8lAAvOKSALpSAB7%2BPlAAPlAAcmAobJEZWQZQALQAfFB%2BRrxIHvGYDChg%2BJnZTsq81jDMIChQ8WTKINRI%2BlAASswoMFhsAKIg4CBSAET17IvyZG4eAPpSYFoAVv57%2B2zkMCG0rP6yHCFakv56bBfa19oh41xQlta2Dob9NgANzY1EoW3g7CkwF2B3k60BILBEMQ0hhlwQ8IqUGsSPBkLRUnu%2BixiNB%2BNR0Kkly0pL4uPJKKhMKxQA">pyright</a> also always solves to <code>Any</code>, unless the typevar is totally unconstrained, in which case it falls back to the typevar default (which I've explicitly specified to be <code>Base</code> in this example, but could also just implicitly be <code>Unknown</code>.) I'm not sure how pyright decides that <code>f(base)</code> or <code>f(sub)</code> should be <code>Any</code> rather than &quot;the typevar default&quot;, given that those calls are compatible with either constrained type.</p>
+<p><a href="https://pyrefly.org/sandbox/?project=N4IgZglgNgpgziAXKOBDAdgEwEYHsAeAdAA4CeS4ATrgLYAEALqcROgOZ0Q3G6UN0BBdKQA0dSjABuMVFAD6TYjAA66VQGMoqOHDoBlAK5LKiVXXN1i2uKo1addAELaYACkPGAlKfQXL123RNa30DbFdnOBhvMwsrHUDghwBVdAktBhhMHz94mzUsGDA6MABtABVEOgiXMSFSTzoAXicXAF1XfCryugAfOgA5XHQYZsHh6LoAWgA%2BOkrY8whi-E5ddFx%2BIZGcvwsJBgNKX3xAv0pUCCi6ACUDdAYuGABRSmpKV2UQDaUvz0DMEU6HJXLhsAArKpg8EwdQMMRwIxVDwwShibAuKqRGAIsLIsJie4mOipdKoTKYGK%2BfZSGTyRRuMCgiGef7U8wSaSyBTMRmuRHEVmLcS07kM1xMjFRIXskVc%2Bm8iX8sIy86ihVKJUykAiEAGR5QOAkciIEAAYhJBogTBK9zhEGG%2BVUgOKYF4NHJcnQBho2FRnSqrAYjVmdDgDBMwoOR18YC%2BAx9fuJwHwAF8vqodSAyBIwFBSIQGLQoBQLQAFUi5-NhjA4Ah0dTDSBsI7kh3oQiqC16GCjAAWDAYxDgiAA9KOc0V84ReGxRzB0KPMLh1HBR430M3W49hqOSrw6KhJJctNhYA2mxAWxcd75cMRb0bVGQGH3hlNpJQ4O2xl8AMyEAAjH%2BGboCAqa6qg9rSAAYtAMAUGgWB4EQZDgUAA">pyrefly</a> does the same thing you originally did here (always solve to a fully static type), which I'm pretty sure is wrong. It fails both the promises of a constrained type var and of the gradual guarantee, and I suspect will cause false positive errors in practice (the fact that pyright and mypy both prefer solving to <code>Any</code> strengthens this intuition.) If the <code>Any</code> constrained type means &quot;there is really some static type here, but we don't know what it is&quot; (imagine its an <code>Unknown</code> from a failed import of a type), then it's wrong to solve to some arbitrary fully static type, because we don't know that's what the constrained type was &quot;supposed&quot; to be - and it could cause a lot of cascading errors.</p>
+<p>(I think it's fine to punt all of this, but I will suggest some different TODOs below based on this analysis.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/generics/specialize_constrained.md</code>:176 on 2025-11-20 18:34</div>
+            <div class="timeline-body"><p>I would expect this to solve to the typevar default, in this case <code>Unknown</code>. What information allows us to pick <code>Base</code> over <code>Any</code> here? (If we are picking between <code>Base</code> and <code>Any</code>, I think <code>Any</code> is probably the better choice in practice, and is what mypy/pyright choose, but I'm not sure what heuristic they are using.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/generics/specialize_constrained.md</code>:179 on 2025-11-20 18:37</div>
+            <div class="timeline-body"><p>Here I think either <code>Any</code> or <code>Unknown</code> (typevar default) would be reasonable choices?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/generics/specialize_constrained.md</code>:185 on 2025-11-20 18:52</div>
+            <div class="timeline-body"><p>Pyright and mypy would also solve this to <code>Any</code>. Similar to above, I'm not sure why we'd pick <code>Base</code> over <code>Any</code> here as a solution.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/generics/specialize_constrained.md</code>:192 on 2025-11-20 18:52</div>
+            <div class="timeline-body"><p>Same as above cases, I think this should also solve to <code>Any</code> or <code>Unknown</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/generics/specialize_constrained.md</code>:199 on 2025-11-20 18:52</div>
+            <div class="timeline-body"><p>And again here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:2265 on 2025-11-20 19:52</div>
+            <div class="timeline-body"><p>Mostly just curiosity: is there an important reason why we frame this as <code>¬C₁ → false</code> rather than <code>C₁ → true</code>? Are these different in some way? The prose here suggests not.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-11-20 19:53</div>
+            <div class="timeline-body"><p>Awesome!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-11-20 21:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:2265 on 2025-11-20 21:25</div>
+            <div class="timeline-body"><p>&quot;<code>C₁</code> is always true&quot; is <code>true → C₁</code>, not <code>C₁ → true</code>. But given that change, you're right that <code>true → C₁</code> and <code>¬C₁ → false</code> are the same thing. One focuses on what is always true, and the other focuses on what's impossible. The focus of this data structure is to track situations that are impossible, so I thought it would be best to frame it with <code>false</code> on the rhs.</p>
+<p>Though I guess that means I could go further and rewrite some the examples below ­— for instance <code>C₁ ∧ C₂ → D</code> and <code>C₁ ∧ C₂ ∧ ¬D → false</code> are equivalent in exactly the same way!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @AlexWaygood removed by @AlexWaygood on 2025-11-20 21:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/resources/mdtest/generics/specialize_constrained.md</code>:173 on 2025-11-24 19:12</div>
+            <div class="timeline-body"><blockquote>
+<p>But if we agree with these principles, then we can <em>never</em> solve this constrained type var to <code>Base</code>, because any set of constraints that would allow us to solve to <code>Base</code> would also allow solving to <code>Any</code>, therefore we can't narrow it down to one of the choices.</p>
+</blockquote>
+<p>Is it worth trying to consider which materializations of <code>Any</code> are valid specializations? If <code>Base</code> is a valid specialization but no subtypes are (if that were to violate some other requirement of the specialization), then the <code>Any</code> could not materialize to anything that would take precedence according to your rule (2).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/resources/mdtest/generics/specialize_constrained.md</code>:176 on 2025-11-24 19:27</div>
+            <div class="timeline-body"><blockquote>
+<p>What information allows us to pick <code>Base</code> over <code>Any</code> here?</p>
+</blockquote>
+<p>This is a side effect of the change I added from this discussion https://github.com/astral-sh/ruff/pull/21414#discussion_r2539830595. If there are multiple solutions, my original plan was to produce the union of them. But I don't think that's correct, so instead we either:</p>
+<ul>
+<li>find a single specialization that satisfies all of the solutions, or</li>
+<li>return <code>None</code> to indicate an ambiguous result.</li>
+</ul>
+<p>Here, the constraint of <code>Any</code> can materialize to any type <code>T = *</code>, and still satisfy <code>ConstraintSet.always()</code>. The constraint of <code>Base</code> only satisfies the constraint set when <code>T = Base</code>. The intersection of those two solutions is <code>T = Base</code>, and so that's what we return.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/resources/mdtest/generics/specialize_constrained.md</code>:179 on 2025-11-24 19:59</div>
+            <div class="timeline-body"><p>Yep, this one already has <code>Any</code> as the TODO</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/resources/mdtest/generics/specialize_constrained.md</code>:185 on 2025-11-24 20:00</div>
+            <div class="timeline-body"><p>Added TODO</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/resources/mdtest/generics/specialize_constrained.md</code>:192 on 2025-11-24 20:01</div>
+            <div class="timeline-body"><p>Added TODO</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/resources/mdtest/generics/specialize_constrained.md</code>:199 on 2025-11-24 20:01</div>
+            <div class="timeline-body"><p>Added TODO</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-11-24 20:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-11-24 20:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/resources/mdtest/generics/specialize_constrained.md</code>:179 on 2025-11-24 20:20</div>
+            <div class="timeline-body"><p>(This one I think the right TODO is <code>Any</code> not <code>Unknown</code> because here we are now explicitly saying that <code>T</code> can be any type, as opposed to not having said anything about what <code>T</code> can be. The latter clearly should fall back on the default. The former I don't think should.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dcreager on 2025-11-24 20:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dcreager on 2025-11-24 20:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-11-24 20:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-11-24 20:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/generics/specialize_constrained.md</code>:173 on 2025-11-24 20:57</div>
+            <div class="timeline-body"><p>Yes, that makes sense! So if we have a lower bound of <code>Base</code> (e.g. because we got a call that provided an instance of <code>Base</code> as argument for this typevar), then we can solve to <code>Base</code> because it must be the most precise option.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:48:27 UTC
+    </footer>
+</body>
+</html>

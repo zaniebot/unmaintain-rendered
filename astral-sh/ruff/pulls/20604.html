@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`formatter`] Fix trailing newline insertion in `fmt: off` regions - astral-sh/ruff #20604</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>formatter</code>] Fix trailing newline insertion in <code>fmt: off</code> regions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/20604">#20604</a>
+        opened by <a href="https://github.com/danparizher">@danparizher</a>
+        on 2025-09-27 21:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/danparizher">@danparizher</a> on 2025-09-27 21:11</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Fixes #19492</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @danparizher on 2025-09-27 21:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-09-27 21:24</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @MichaReiser on 2025-09-29 07:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> requested changes on 2025-09-29 07:02</div>
+            <div class="timeline-body"><p>Thank you.</p>
+<p>This will need some tests. Testing whether the source contains any <code>#fmt: off</code> is also not strict enough. E.g.</p>
+<pre><code class="language-py"># fmt: off
+a = 10
+# fmt: on
+</code></pre>
+<p>The new line should be inserted for the case above</p>
+<p>This might require integration into <code>fmt_suite</code> where we track the suppression state.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danparizher">@danparizher</a> on 2025-09-29 22:38</div>
+            <div class="timeline-body"><p>I've implemented proper suppression state tracking by using <code>SuppressionKind</code>—the behavior works correctly with real files—it adds trailing newlines for non-suppressed regions and preserves formatting for suppressed regions.</p>
+<p>What I couldn't figure out was that the test snapshot for Test Case 3 isn't showing the expected trailing newline, even though the actual formatter behavior is correct. Wondering if this is an issue with the fixture or intended behavior.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @danparizher on 2025-09-29 22:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> requested changes on 2025-09-30 06:36</div>
+            <div class="timeline-body"><p>This looks better, but I think is still incorrect for:</p>
+<pre><code class="language-py">def test():
+	# fmt: off
+	...
+</code></pre>
+<p>This should only disable formatting inside the <code>test</code> function but not at the module level.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @danparizher on 2025-09-30 22:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-10-01 06:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/tests/snapshots/format@fmt_on_off__function_level_suppression.py.snap</code>:1 on 2025-10-01 06:05</div>
+            <div class="timeline-body"><p>You'll need to create different test files or you only test whatever <code>fmt: off</code> pattern comes last</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/module/mod_module.rs</code>:53 on 2025-10-01 06:09</div>
+            <div class="timeline-body"><p>Unfortunatelly, it's more complicated than this:</p>
+<pre><code class="language-py">a = b
+    # fmt: off
+b = 10
+</code></pre>
+<p>This is a module level <code>fmt: off</code> comment</p>
+<p>But this isn't</p>
+<pre><code class="language-py">if True:
+	a = b
+  # fmt: off
+</code></pre>
+<p>We should also support <code>yapf: disable</code> comments</p>
+<p>https://github.com/astral-sh/ruff/blob/32be31d2f9dce7a5e23b406c5b8a338dc4d21755/crates/ruff_python_formatter/src/comments/mod.rs#L169-L171</p>
+<p>We should also add a test for</p>
+<pre><code class="language-py"># fmt: off
+</code></pre>
+<p>I think the right approach is to iterate over all statements and, for each statement, get its comments (using <code>context.comments.leading_trailing(statement)</code>). Then test if the last comment is a <code>fmt: off</code> comment</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-10-01 06:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @danparizher on 2025-10-01 20:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-10-02 06:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/module/mod_module.rs</code>:44 on 2025-10-02 06:14</div>
+            <div class="timeline-body"><p>We should avoid doing this check if the source ends with a <code>\n</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-10-02 06:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/module/mod_module.rs</code>:32 on 2025-10-02 06:16</div>
+            <div class="timeline-body"><p>I suggest restructuring the entire code to</p>
+<pre><code class="language-rust">		body.format.with_options(SuiteKind::TopLevel).fmt(f)?;
+
+		if source.ends_width('\n') || !has_unclosed_fmt_off(f.context()) {
+			hard_line_break().fmt(f)?;
+		}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/resources/test/fixtures/ruff/fmt_on_off/yapf_disable_module.py</code>:4 on 2025-10-02 06:17</div>
+            <div class="timeline-body"><p>Is it intentional that this test case and <code>module_level_trailing_off</code> have a trailing newline?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-10-02 06:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danparizher">@danparizher</a> on 2025-10-02 21:47</div>
+            <div class="timeline-body"><p>I refactored the modules and extracted a helper. Feel free to commit directly if there's still some missing logic; I know we've been going back and forth for a bit on this one!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @danparizher on 2025-10-02 21:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-10-03 06:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/module/mod_module.rs</code>:35 on 2025-10-03 06:14</div>
+            <div class="timeline-body"><p>Hmm, I'm not sure what's happening. You have to do some debugging but I noticed that none of the tests are failing when I change this to (when I revert your changes)</p>
+<pre><code class="language-suggestion">                hard_line_break().fmt(f)?;
+
+</code></pre>
+<p>It seems we're still always inserting a trailing newline</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-10-03 06:15</div>
+            <div class="timeline-body"><p>Thanks. I updated the fixture files to remove all trailing new lines to ensure they test the right thing. I also &quot;reverted&quot; your changes locally to verify that the tests start failing, which they don't. I'm not sure why. Can you take a look.</p>
+<p>We should also add a test to verify that we preserve the correct number of blank lines for</p>
+<pre><code class="language-py">test
+# fmt: off
+# many blank lines follow
+
+
+&lt;eof&gt;
+</code></pre>
+<p>or</p>
+<pre><code class="language-py"># empty file with many blank lines
+# fmt: off
+
+
+&lt;eof&gt;
+</code></pre>
+<p>Hmm... it seems that Github truncates the trailing blank lines. So I added a <EOF> marker to prevent this</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danparizher">@danparizher</a> on 2025-10-03 20:09</div>
+            <div class="timeline-body"><p>I've spent some time debugging but wasn't able to make much headway. Not too sure what's going on either; I've tried multiple iterations of the same solution.</p>
+<p>Might take another look later.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-10-06 06:38</div>
+            <div class="timeline-body"><p>I suspect that the statement formatting might insert a new line</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-21 07:58</div>
+            <div class="timeline-body"><p>Thanks for looking into this.</p>
+<p>I'll close this PR as there hasn't been any progress in a while. Happy to review a re-submission that address the PR feedback</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-11-21 07:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-11-21 15:56</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:48:26 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`flake8-bandit`] Support new PySNMP API paths (`S508`, `S509`) - astral-sh/ruff #21374</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>flake8-bandit</code>] Support new PySNMP API paths (<code>S508</code>, <code>S509</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21374">#21374</a>
+        opened by <a href="https://github.com/danparizher">@danparizher</a>
+        on 2025-11-11 04:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/danparizher">@danparizher</a> on 2025-11-11 04:34</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Updated <code>S508</code> (snmp-insecure-version) and <code>S509</code> (snmp-weak-cryptography) rules to support both old and new PySNMP API module paths. Previously, these rules only detected the old API path <code>pysnmp.hlapi.*</code>, but now they correctly detect all PySNMP API variants including <code>pysnmp.hlapi.asyncio.*</code>, <code>pysnmp.hlapi.v1arch.*</code>, <code>pysnmp.hlapi.v3arch.*</code>, and <code>pysnmp.hlapi.auth.*</code>.</p>
+<p>Fixes #21364</p>
+<h2>Problem Analysis</h2>
+<p>The <code>S508</code> and <code>S509</code> rules used exact pattern matching on qualified names:</p>
+<ul>
+<li><code>S509</code> only matched <code>[&quot;pysnmp&quot;, &quot;hlapi&quot;, &quot;UsmUserData&quot;]</code></li>
+<li><code>S508</code> only matched <code>[&quot;pysnmp&quot;, &quot;hlapi&quot;, &quot;CommunityData&quot;]</code></li>
+</ul>
+<p>This meant that newer PySNMP API paths were not detected, such as:</p>
+<ul>
+<li><code>pysnmp.hlapi.asyncio.UsmUserData</code></li>
+<li><code>pysnmp.hlapi.v3arch.asyncio.UsmUserData</code></li>
+<li><code>pysnmp.hlapi.v3arch.asyncio.auth.UsmUserData</code></li>
+<li><code>pysnmp.hlapi.auth.UsmUserData</code></li>
+<li>Similar variants for <code>CommunityData</code> in <code>S508</code></li>
+</ul>
+<p>Additionally, the old API path <code>pysnmp.hlapi.auth.*</code> was also missing from both rules.</p>
+<h2>Approach</h2>
+<p>Instead of exact pattern matching, both rules now check if:</p>
+<ol>
+<li>The qualified name starts with <code>[&quot;pysnmp&quot;, &quot;hlapi&quot;]</code></li>
+<li>The qualified name ends with the target class name (<code>&quot;UsmUserData&quot;</code> for <code>S509</code>, <code>&quot;CommunityData&quot;</code> for <code>S508</code>)</li>
+</ol>
+<p>This flexible approach matches all PySNMP API paths without hardcoding each variant, making the rules more maintainable and future-proof.</p>
+<h2>Test Plan</h2>
+<p>Added comprehensive test cases to both <code>S508.py</code> and <code>S509.py</code> test files covering:</p>
+<ul>
+<li>New API paths: <code>pysnmp.hlapi.asyncio.*</code>, <code>pysnmp.hlapi.v1arch.*</code>, <code>pysnmp.hlapi.v3arch.*</code></li>
+<li>Old API path: <code>pysnmp.hlapi.auth.*</code></li>
+<li>Both insecure and secure usage patterns</li>
+</ul>
+<p>All existing tests pass, and new snapshot tests were added and accepted. Manual verification confirms both rules correctly detect all PySNMP API variants.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-11-11 04:46</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_bandit/rules/snmp_insecure_version.rs</code>:54 on 2025-11-13 22:44</div>
+            <div class="timeline-body"><p>I think we can still use <code>matches!</code> here:</p>
+<pre><code class="language-suggestion">           matches!(
+           		qualified_name.segments(),
+            	[&quot;pysnmp&quot;, &quot;hlapi&quot;, .., &quot;CommunityData&quot;]
+           )
+</code></pre>
+<p>This is slightly more restrictive than it really needs to be, but it's a lot shorter than enumerating all of the options for what <code>..</code> can be, especially when different path lengths are involved.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_bandit/rules/snmp_weak_cryptography.rs</code>:50 on 2025-11-13 22:47</div>
+            <div class="timeline-body"><p>Same as above, let's stick with <code>matches!</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> requested changes on 2025-11-13 22:58</div>
+            <div class="timeline-body"><p>Thanks! I had one suggestion about simplifying the <code>segments</code> checks, and let's make this a preview change just to be safe since these are stable rules.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ntBre by @danparizher on 2025-11-13 23:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2025-11-19 19:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @ntBre on 2025-11-19 19:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> approved on 2025-11-19 19:50</div>
+            <div class="timeline-body"><p>Thanks!</p>
+<p>I just reverted the removal of the stable tests and reused the existing <code>preview_rules</code> test runner for these two rules.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ntBre on 2025-11-19 20:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-11-19 20:03</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:48:27 UTC
+    </footer>
+</body>
+</html>

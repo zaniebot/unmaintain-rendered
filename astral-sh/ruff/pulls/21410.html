@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fix panic when formatting comments in unary expressions - astral-sh/ruff #21410</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fix panic when formatting comments in unary expressions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21410">#21410</a>
+        opened by <a href="https://github.com/ntBre">@ntBre</a>
+        on 2025-11-12 20:37
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ntBre">@ntBre</a> on 2025-11-12 20:37</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This is a second attempt that fixes #19226 based on the feedback in https://github.com/astral-sh/ruff/pull/20494#issuecomment-3467920065.</p>
+<p>We currently mark the comment in an expression like this:</p>
+<pre><code class="language-py">if '' and (not #
+0):
+    pass
+</code></pre>
+<p>as a leading comment on <code>not</code>, eventually causing a panic in
+<code>Operand::has_unparenthesized_leading_comments</code> because the end of the comment
+is greater than the start of the expression.</p>
+<p>https://github.com/astral-sh/ruff/blob/a1d9cb5830eca9b63e7fb529504fc536e99bca23/crates/ruff_python_formatter/src/expression/binary_like.rs#L843</p>
+<p>This PR fixes the issue by instead making such a comment a dangling comment on
+the unary expression.</p>
+<p>In the third commit, I instead tried making the comment a leading comment on the
+operand, which also looks pretty reasonable to me. Making it a dangling comment
+seems more in line with the docs on <code>handle_unary_op_comments</code>, though.</p>
+<p>I also tried deleting the leading comment logic in favor of the new dangling
+logic in the fifth commit before reverting in the sixth. This looks okay to me
+too, but the current state of the PR seems like the least invasive fix.</p>
+<h2>Test Plan</h2>
+<p>A new, minimized test case based on the issue. I also checked that the original
+snippet from the report works now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-11-12 20:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @ntBre on 2025-11-12 20:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-11-12 20:47</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @ntBre on 2025-11-12 20:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @ntBre on 2025-11-12 20:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/amyreese">@amyreese</a> approved on 2025-11-12 22:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/comments/placement.rs</code>:1868 on 2025-11-13 07:53</div>
+            <div class="timeline-body"><p>Can we add a test case for</p>
+<pre><code class="language-py">if '' and (not #
+(0)
+):
+</code></pre>
+<p>and</p>
+<pre><code class="language-py">if '' and (not 
+	(  #
+	0
+)):
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/comments/placement.rs</code>:1872 on 2025-11-13 07:55</div>
+            <div class="timeline-body"><p>I think we now need to update the documentation of this method and explain in which situation it makes comments as dangling</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/tests/snapshots/format@expression__unary.py.snap</code>:326 on 2025-11-13 08:01</div>
+            <div class="timeline-body"><p>Can you double check that</p>
+<pre><code class="language-py">if (  # comment
+    not aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+Comment
+    + bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+):
+    pass
+</code></pre>
+<p>still formats the same before and after your PR, just to make sure we don't accidentially change the stable style</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/tests/snapshots/format@expression__unary.py.snap</code>:268 on 2025-11-13 08:03</div>
+            <div class="timeline-body"><p>I don't like this :) A comment between operator and the operand is confusing</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-11-13 08:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-11-13 13:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_formatter/src/comments/placement.rs</code>:1868 on 2025-11-13 13:47</div>
+            <div class="timeline-body"><p>Well that immediately panicked again, thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_formatter/src/comments/placement.rs</code>:1868 on 2025-11-13 14:54</div>
+            <div class="timeline-body"><p>The second case is okay, it formats like this:</p>
+<pre><code class="language-py">if &quot;&quot; and (
+    not (  #
+        0
+    )
+):
+    pass
+</code></pre>
+<p>but the first case is related to an existing test case:</p>
+<pre><code class="language-py">x = (
+    # a
+    not # b
+    # c
+    ( # d
+        # e
+        True
+    )
+)
+</code></pre>
+<p>which formats like this:</p>
+<pre><code class="language-py">x = (
+    # a
+    # b
+    # c
+    not (  # d
+        # e
+        True
+    )
+)
+</code></pre>
+<p>but this causes a panic on main:</p>
+<pre><code class="language-py">x = '' and (
+    # a
+    not # b
+    # c
+    ( # d
+        # e
+        True
+    )
+)
+</code></pre>
+<p>So I'm kind of wondering if adjusting the placement is really the right fix. It seems like we often want this kind of comment to become a leading comment to preserve the relative order with other comments and a change to the parent expression is what introduces the problem.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-11-13 14:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-11-13 15:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_formatter/src/comments/placement.rs</code>:1868 on 2025-11-13 15:15</div>
+            <div class="timeline-body"><p>I tried a different fix in <code>binary_like</code> in a separate branch: https://github.com/astral-sh/ruff/compare/main...brent/unary-comment2</p>
+<p>I kind of like this because it feels more targeted and doesn't affect any existing snapshots, but it also feels a bit like just treating the symptom. However, it seems hard to differentiate the cases in my comment above otherwise.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-11-13 15:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_formatter/src/comments/placement.rs</code>:1868 on 2025-11-13 15:19</div>
+            <div class="timeline-body"><p>Hmm, I guess that branch is quite similar to #20494 though :sweat_smile:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-11-14 19:47</div>
+            <div class="timeline-body"><p>I played a bit more with this and chatted with Micha, and I think we should just patch this in the binary expression formatting. I think the closest I got to working something out was making the comment placement handling in <code>handle_unary_op_comment</code>:</p>
+<p>https://github.com/astral-sh/ruff/blob/3d4b0559f1e7c2bb52276178f28e9e8df7f9d663/crates/ruff_python_formatter/src/comments/placement.rs#L1867-L1870</p>
+<p><code>CommentPlacement::dangling</code> and then partitioning these dangling comments into leading and trailing comments in the unary expression formatting proper:</p>
+<p>https://github.com/astral-sh/ruff/blob/ddcff387084570ca2c3367eeb1d945448b3705a8/crates/ruff_python_formatter/src/expression/expr_unary_op.rs#L35-L40</p>
+<p>But this causes issues with other parent expression formatting. For example, the <code>if</code> statement formatting needs to know if the condition expression has any leading (or trailing) comments so that it can parenthesize it, but if we make the comments dangling, it won't, and I was causing a syntax error in a case like this:</p>
+<pre><code class="language-py">if (
+  not
+  # comment
+  a):
+    pass
+</code></pre>
+<p>which was formatted to</p>
+<pre><code class="language-py">if 
+# comment
+not a:
+    pass
+</code></pre>
+<p>I also temporarily added a check for leading comments that start after their expression in <code>CommentPlacement::leading</code>. Seeing that this is not the only case that violates the <code>TextRange</code> assumption in the binary expression formatting makes me feel slightly better about just adding a check to prevent the panic.</p>
+<p>I still need to verify that the surrounding code makes sense after a change like in https://github.com/astral-sh/ruff/compare/main...brent/unary-comment2, but that's what I'm currently planning to pursue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-14 20:28</div>
+            <div class="timeline-body"><p>Regarding the <code>if</code> formatting, I assume that <a href="https://github.com/astral-sh/ruff/blob/4f2606b0428c9ce0c2fb62b0958e6985a8323a57/crates/ruff_python_formatter/src/expression/expr_unary_op.rs#L73-L91"><code>needs_parentheses</code></a> returns never. You'd have to change it to return <code>Multiline</code> if there's a leading operand comment</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-11-14 21:20</div>
+            <div class="timeline-body"><blockquote>
+<p>Regarding the <code>if</code> formatting, I assume that <a href="https://github.com/astral-sh/ruff/blob/4f2606b0428c9ce0c2fb62b0958e6985a8323a57/crates/ruff_python_formatter/src/expression/expr_unary_op.rs#L73-L91"><code>needs_parentheses</code></a> returns never. You'd have to change it to return <code>Multiline</code> if there's a leading operand comment</p>
+</blockquote>
+<p>Ooh, thank you! This is looking quite promising. I'm getting an extra newline now, but if I can fix that, this might work!</p>
+<pre><code class="language-py">      361   378 │     not a
+      362   379 │ ):
+      363   380 │     pass
+      364   381 │ 
+      365       │-if (  # comment
+            382 │+if (
+            383 │+    # comment
+      366   384 │     not a
+      367   385 │ ):
+      368   386 │     pass
+      369   387 │ 
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-11-14 22:48</div>
+            <div class="timeline-body"><p>Tracking down that newline turned out to be quite the adventure. I think this is another case where things &quot;just work&quot; if the comments on the unary op are leading but would require additional special-casing as dangling comments. I'm pushing up my changes from the other branch with a bit of refactoring and some documentation, but I'm happy to revisit if I'm still missing something.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-14 22:53</div>
+            <div class="timeline-body"><blockquote>
+<p>Tracking down that newline turned out to be quite the adventure. I think this is another case where things &quot;just work&quot; if the comments on the unary op are leading but would require additional special-casing as dangling comments. I'm pushing up my changes from the other branch with a bit of refactoring and some documentation, but I'm happy to revisit if I'm still missing something.</p>
+</blockquote>
+<p>Can you share an example of where it goes wrong?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-11-14 23:01</div>
+            <div class="timeline-body"><p>These cases all have their comments moved from end of line to own-line comments, as in the diff above:</p>
+<pre><code class="language-py">if (
+    not # comment
+    aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+    + bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+):
+    pass
+
+if (
+  not  # comment
+  a):
+    pass
+
+if '' and (not #
+0):
+    pass
+
+if '' and (not #
+(0)
+):
+    pass
+
+if '' and (not
+	(  #
+	0
+)):
+    pass
+</code></pre>
+<p>I tracked the issue into <code>soft_block_indent</code> called from here in the if header formatting:</p>
+<p>https://github.com/astral-sh/ruff/blob/d63b4b038364f3befe46f133251fc11973feff21/crates/ruff_python_formatter/src/expression/parentheses.rs#L185</p>
+<p>triggered by not having leading comments here:</p>
+<p>https://github.com/astral-sh/ruff/blob/d63b4b038364f3befe46f133251fc11973feff21/crates/ruff_python_formatter/src/expression/mod.rs#L127-L130</p>
+<p>And I was playing with this approach on yet another branch full of debug prints, in case you want to try it: https://github.com/astral-sh/ruff/compare/main...brent/unary-3</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-15 17:59</div>
+            <div class="timeline-body"><p>I'm not sure I follow your latest changes. Pasting your snippet shows that all these comments are places as leading unary expression comments and not dangling comments. Is this intentional? You can see this when opening the comments tab in the playground</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-11-15 18:11</div>
+            <div class="timeline-body"><p>Yes that's intentional. I reverted my earlier changes where I was trying to make them dangling comments, restored them to leading comments like on <code>main</code>, and then worked around the panic in the binary formatting instead.</p>
+<p>Basically I gave up on the initial approach, but I'm still happy to keep trying if we come up with something better.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-15 18:32</div>
+            <div class="timeline-body"><p>Oh I see. I don't think I understand the changes you made in that branch. What I'd expected:</p>
+<ul>
+<li>Why are we now formatting the trailing comments <em>before</em> the operator?</li>
+<li>We need to insert a hard line break if there are any leading comments (before the operator)</li>
+<li>No changes should be needed in the expression formatting</li>
+</ul>
+<p>Happy to jump on a pair programming on this but I think we should maybe start fresh in the unary expression formatting and try to make small incremental changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-11-15 19:01</div>
+            <div class="timeline-body"><blockquote>
+<ul>
+<li>Why are we now formatting the trailing comments <em>before</em> the operator?</li>
+</ul>
+</blockquote>
+<p>I thought this is what we wanted to avoid splitting the operator and the operand?</p>
+<blockquote>
+<ul>
+<li>We need to insert a hard line break if there are any leading comments (before the operator)</li>
+</ul>
+</blockquote>
+<p>If I'm thinking of the same hard line break, this would change our stable formatting. That's what I meant about the newline in my comments above. But maybe you're thinking of a different one.</p>
+<blockquote>
+<ul>
+<li>No changes should be needed in the expression formatting</li>
+</ul>
+<p>Happy to jump on a pair programming on this but I think we should maybe start fresh in the unary expression formatting and try to make small incremental changes.</p>
+</blockquote>
+<p>That sounds good! The other branch was my attempt to start fresh, but I'm sure I missed a simpler option along the way. I'll convert this back to a draft for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @ntBre on 2025-11-15 19:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-11-18 15:48</div>
+            <div class="timeline-body"><p>Closing in favor of #21501.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-11-18 15:48</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:48:27 UTC
+    </footer>
+</body>
+</html>

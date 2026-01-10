@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Implement docstring rendering to markdown - astral-sh/ruff #21550</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Implement docstring rendering to markdown</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21550">#21550</a>
+        opened by <a href="https://github.com/Gankra">@Gankra</a>
+        on 2025-11-20 22:57
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/Gankra">@Gankra</a> on 2025-11-20 22:57</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This introduces a very bad and naive python-docstring-flavoured-reStructuredText to github-flavor-markdown translator. The main goal is to try to preserve a lot of the formatting and plaintext, progressively enhance the content when we find things we know about, and escape the text when we find things that might get corrupt.</p>
+<p>Previously I'd broken this out into rendering each different format, but with this approach you don't really need to?</p>
+<h2>Test Plan</h2>
+<p>Lots of snapshot tests, also messed around in some random stdlib modules.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @Gankra on 2025-11-20 22:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @Gankra on 2025-11-20 22:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @Gankra on 2025-11-20 22:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @Gankra on 2025-11-20 22:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @Gankra on 2025-11-20 22:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-11-20 22:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/ty_ide/src/docstring.rs</code>:197 on 2025-11-20 22:58</div>
+            <div class="timeline-body"><p>This is the worst parser I've written in a long while so if you tell me &quot;Aria for the love of god make a Parser type with methods and enums&quot; I will. Writing it this way was conducive to experimentation and thinking about the format.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-11-20 22:58</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-11-20 22:59</div>
+            <div class="timeline-body"><p>I spent a while salivating over the ruff docstring formatter as a basis for this, but I ultimately concluded it would be a nightmare for both codebases to try to share that logic, and it's not <em>that</em> much logic.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @Gankra on 2025-11-20 23:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @Gankra on 2025-11-20 23:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[ty] implement docstring rendering to markdown" to "[ty] Implement docstring rendering to markdown" by @Gankra on 2025-11-20 23:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-11-20 23:00</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅</p>
+<p>No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-11-20 23:03</div>
+            <div class="timeline-body"><p>The main risk of shipping this implementation is that the previous implementation was so wildly conservative that it &quot;couldn't&quot; ever mess up whereas insufficient escaping or getting confused could complete garble things and eat the docs.</p>
+<p>On balance though this just looks so much better I think the risk is worth it (and shipping it will get me a lot of bug reports about what to fix :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_ide/src/docstring.rs</code>:197 on 2025-11-21 07:00</div>
+            <div class="timeline-body"><p>You want to use <code>.universal_newlines</code> here to get proper <code>\r</code> support</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_ide/src/docstring.rs</code>:158 on 2025-11-21 07:01</div>
+            <div class="timeline-body"><p>What are the two formats that you're referring to here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_ide/src/docstring.rs</code>:270 on 2025-11-21 07:03</div>
+            <div class="timeline-body"><p>Can you say why this is necessary, given that it gets rendered as markdown?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_ide/src/docstring.rs</code>:269 on 2025-11-21 07:04</div>
+            <div class="timeline-body"><p>This won't work for code using tab indentation (which our formatter supports).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_ide/src/docstring.rs</code>:156 on 2025-11-21 07:05</div>
+            <div class="timeline-body"><p>What happens for docstrings using the numpy or google format? will they still be rendered correctly?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_ide/src/docstring.rs</code>:204 on 2025-11-21 07:06</div>
+            <div class="timeline-body"><p>I don't think I understand this. Why is it necessary to add trailing whitespace to any line? This seems very undesired?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_ide/src/docstring.rs</code>:184 on 2025-11-21 07:08</div>
+            <div class="timeline-body"><p>Let's add a link to <a href="https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html">reStructuredText</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_ide/src/docstring.rs</code>:233 on 2025-11-21 07:10</div>
+            <div class="timeline-body"><p>https://www.sphinx-doc.org/en/master/usage/restructuredtext/directives.html#directive-code-block</p>
+<p>Defaulting to Python doesn't seem unreasonable but we should respect any override</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_ide/src/docstring.rs</code>:249 on 2025-11-21 07:15</div>
+            <div class="timeline-body"><p>I'd have to play with restructuredText but the way I read this paragraph</p>
+<blockquote>
+<p>Literal code blocks (<a href="https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#literal-blocks">ref</a>) are introduced by ending a paragraph with the special marker ::. The literal block must be indented</p>
+</blockquote>
+<p>is that what comes after is only a literal block if there's at least one blank line, and text is indented.</p>
+<p>I think your code correctly handles the empty line. But it ends up pushing an empty markdown code block if the next paragraph isn't correctly indented.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_ide/src/docstring.rs</code>:196 on 2025-11-21 07:16</div>
+            <div class="timeline-body"><p>I'm not sure about mixing the parsing of docstrings with the formatting logic. It seems harder to follow. I'd be inclined to parse the docstring into an intermediate representation and then do a second pass to format it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-11-21 07:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-11-21 12:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/ty_ide/src/docstring.rs</code>:197 on 2025-11-21 12:29</div>
+            <div class="timeline-body"><p>I need to signpost that better in the comments but this function assumes <code>documentation_trim</code> (in the same file) was already run, so our leading whitespace is only spaces, and our newlines are only <code>\n</code> (and unlike ruff we don't need to care about authentically preserving the flavour of whitespace).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-11-21 12:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/ty_ide/src/docstring.rs</code>:158 on 2025-11-21 12:29</div>
+            <div class="timeline-body"><p>reStructuredText and markdown</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-11-21 12:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/ty_ide/src/docstring.rs</code>:270 on 2025-11-21 12:41</div>
+            <div class="timeline-body"><p>Yes so the idea here is that docstrings really like using indentation for structure that we do not (care to) parse but we also don't want markdown turning into code-blocks. By replacing leading whitespace with <code>&amp;nbsp;</code> outside of codeblocks, we preserve the native indent of the docstring and stuff we don't understand still is rendered clearly and pretty.</p>
+<p><img width="638" height="864" alt="Screenshot 2025-11-21 at 7 40 49 AM" src="https://github.com/user-attachments/assets/56aa0370-4960-4892-8a9c-58328a4867cf" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-11-21 12:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/ty_ide/src/docstring.rs</code>:269 on 2025-11-21 12:42</div>
+            <div class="timeline-body"><p>(another thing handled by <code>documentation_trim</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-11-21 12:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_ide/src/docstring.rs</code>:158 on 2025-11-21 12:44</div>
+            <div class="timeline-body"><p>Oh, that's not clear to me from the comment</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-11-21 12:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/ty_ide/src/docstring.rs</code>:156 on 2025-11-21 12:45</div>
+            <div class="timeline-body"><p><img width="529" height="524" alt="Screenshot 2025-11-21 at 7 44 21 AM" src="https://github.com/user-attachments/assets/2dd7ab55-9858-44f2-84cf-c2b15c4b9ee4" /></p>
+<p><img width="699" height="662" alt="Screenshot 2025-11-21 at 7 44 48 AM" src="https://github.com/user-attachments/assets/ce1f99f4-3c4e-4ed5-bae7-d72badde3b3b" /></p>
+<p><img width="605" height="447" alt="Screenshot 2025-11-21 at 7 45 11 AM" src="https://github.com/user-attachments/assets/1d3ec998-9cf6-4c81-9453-77db03bb9e55" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-11-21 12:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/ty_ide/src/docstring.rs</code>:204 on 2025-11-21 12:47</div>
+            <div class="timeline-body"><p>It's part of the approach I'm taking where I want to preserve the wrapping/indentation of the original docstring.</p>
+<p>It prevents e.g. <code>param1</code> and <code>param2</code> from being merged together as a single line in:</p>
+<pre><code>'param1' -- The first parameter description
+'param2' -- The second parameter description
+            This is a continuation of param2 description.
+'param3' -- A parameter without type annotation
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @AlexWaygood removed by @AlexWaygood on 2025-11-21 12:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-11-21 12:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/ty_ide/src/docstring.rs</code>:249 on 2025-11-21 12:49</div>
+            <div class="timeline-body"><p>Haha yes you caught me this part of the parser is distinctly janky. I'll tweak it to make it Spec Compliant (although I can't help but wonder if being sloppy will be the name of the game since we need to render whatever we find).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-11-21 12:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/ty_ide/src/docstring.rs</code>:196 on 2025-11-21 12:51</div>
+            <div class="timeline-body"><p>Dang, ok if the captain of the performance team wants more intermediate allocations and representations who am I to complain 😄</p>
+<p>(I was half expecting to be told to remove some intermediate Strings)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-11-21 12:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/ty_ide/src/docstring.rs</code>:250 on 2025-11-21 12:52</div>
+            <div class="timeline-body"><p>Found an in-retrospect-obvious place where this is broken: this mangles inline code <code>__init__</code> (I kept seeing it without any code markup, so that was my primary concern)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-11-21 12:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_ide/src/docstring.rs</code>:196 on 2025-11-21 12:54</div>
+            <div class="timeline-body"><p>Lol. I'm not too concerned here, given that we don't render markdown strings that frequently and having a more structured representation would ultimately be useful for Ruff too. Although I don't think we should aim to make it reusable for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/ty_ide/src/docstring.rs</code>:270 on 2025-11-21 12:56</div>
+            <div class="timeline-body"><p>(Even if I had a perfect parser for this format, the only clear way to render this to markdown, imo, is by rendering these blocks as indented)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-11-21 12:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-11-21 13:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_ide/src/docstring.rs</code>:270 on 2025-11-21 13:50</div>
+            <div class="timeline-body"><p>Oh, I think I misread it as <em>in a code block</em>. This makes a ton of sense for indents outside code blocks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-11-21 13:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_ide/src/docstring.rs</code>:270 on 2025-11-21 13:52</div>
+            <div class="timeline-body"><p>I wonder if we should use the unicode code point directly so that we don't rely on the markdown renderer supporting HTML?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @Gankra on 2025-11-21 15:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @Gankra on 2025-11-21 15:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-11-21 15:47</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:48:27 UTC
+    </footer>
+</body>
+</html>

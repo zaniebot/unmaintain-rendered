@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`flake8-use-pathlib`] Mark fixes unsafe for return type changes (`PTH104`, `PTH105`, `PTH109`, `PTH115`) - astral-sh/ruff #21440</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>flake8-use-pathlib</code>] Mark fixes unsafe for return type changes (<code>PTH104</code>, <code>PTH105</code>, <code>PTH109</code>, <code>PTH115</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21440">#21440</a>
+        opened by <a href="https://github.com/danparizher">@danparizher</a>
+        on 2025-11-13 22:20
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/danparizher">@danparizher</a> on 2025-11-13 22:20</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Marks fixes as unsafe when they change return types (<code>None</code> → <code>Path</code>, <code>str</code>/<code>bytes</code> → <code>Path</code>, <code>str</code> → <code>Path</code>), except when the call is a top-level expression.</p>
+<p>Fixes #21431.</p>
+<h2>Problem</h2>
+<p>Fixes for <code>os.rename</code>, <code>os.replace</code>, <code>os.getcwd</code>/<code>os.getcwdb</code>, and <code>os.readlink</code> were marked safe despite changing return types, which can break code that uses the return value.</p>
+<h2>Approach</h2>
+<p>Added <code>is_top_level_expression_call</code> helper to detect when a call is a top-level expression (return value unused). Updated <code>check_os_pathlib_two_arg_calls</code> and <code>check_os_pathlib_single_arg_calls</code> to mark fixes as unsafe unless the call is a top-level expression. Updated PTH109 to use the helper for applicability determination.</p>
+<h2>Test Plan</h2>
+<p>Updated snapshots for <code>preview_full_name.py</code>, <code>preview_import_as.py</code>, <code>preview_import_from.py</code>, and <code>preview_import_from_as.py</code> to reflect unsafe markers.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-11-13 22:31</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+0 -0 violations, +0 -38 fixes in 3 projects; 52 projects unchanged)</p>
+<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+0 -0 violations, +0 -22 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --no-fix --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/apache/airflow/blob/32afc282eab817ae801772928e2777d9c8dfb996/airflow-core/src/airflow/cli/cli_config.py#L179'>airflow-core/src/airflow/cli/cli_config.py:179:40:</a> PTH109 [*] `os.getcwd()` should be replaced by `Path.cwd()`
++ <a href='https://github.com/apache/airflow/blob/32afc282eab817ae801772928e2777d9c8dfb996/airflow-core/src/airflow/cli/cli_config.py#L179'>airflow-core/src/airflow/cli/cli_config.py:179:40:</a> PTH109 `os.getcwd()` should be replaced by `Path.cwd()`
+- <a href='https://github.com/apache/airflow/blob/32afc282eab817ae801772928e2777d9c8dfb996/airflow-core/tests/unit/utils/log/test_file_processor_handler.py#L44'>airflow-core/tests/unit/utils/log/test_file_processor_handler.py:44:33:</a> PTH115 [*] `os.readlink()` should be replaced by `Path.readlink()`
++ <a href='https://github.com/apache/airflow/blob/32afc282eab817ae801772928e2777d9c8dfb996/airflow-core/tests/unit/utils/log/test_file_processor_handler.py#L44'>airflow-core/tests/unit/utils/log/test_file_processor_handler.py:44:33:</a> PTH115 `os.readlink()` should be replaced by `Path.readlink()`
+- <a href='https://github.com/apache/airflow/blob/32afc282eab817ae801772928e2777d9c8dfb996/airflow-core/tests/unit/utils/log/test_file_processor_handler.py#L58'>airflow-core/tests/unit/utils/log/test_file_processor_handler.py:58:33:</a> PTH115 [*] `os.readlink()` should be replaced by `Path.readlink()`
++ <a href='https://github.com/apache/airflow/blob/32afc282eab817ae801772928e2777d9c8dfb996/airflow-core/tests/unit/utils/log/test_file_processor_handler.py#L58'>airflow-core/tests/unit/utils/log/test_file_processor_handler.py:58:33:</a> PTH115 `os.readlink()` should be replaced by `Path.readlink()`
+- <a href='https://github.com/apache/airflow/blob/32afc282eab817ae801772928e2777d9c8dfb996/airflow-core/tests/unit/utils/test_cli_util.py#L189'>airflow-core/tests/unit/utils/test_cli_util.py:189:38:</a> PTH109 [*] `os.getcwd()` should be replaced by `Path.cwd()`
++ <a href='https://github.com/apache/airflow/blob/32afc282eab817ae801772928e2777d9c8dfb996/airflow-core/tests/unit/utils/test_cli_util.py#L189'>airflow-core/tests/unit/utils/test_cli_util.py:189:38:</a> PTH109 `os.getcwd()` should be replaced by `Path.cwd()`
+- <a href='https://github.com/apache/airflow/blob/32afc282eab817ae801772928e2777d9c8dfb996/airflow-core/tests/unit/utils/test_cli_util.py#L194'>airflow-core/tests/unit/utils/test_cli_util.py:194:37:</a> PTH109 [*] `os.getcwd()` should be replaced by `Path.cwd()`
++ <a href='https://github.com/apache/airflow/blob/32afc282eab817ae801772928e2777d9c8dfb996/airflow-core/tests/unit/utils/test_cli_util.py#L194'>airflow-core/tests/unit/utils/test_cli_util.py:194:37:</a> PTH109 `os.getcwd()` should be replaced by `Path.cwd()`
+- <a href='https://github.com/apache/airflow/blob/32afc282eab817ae801772928e2777d9c8dfb996/airflow-ctl-tests/tests/airflowctl_tests/conftest.py#L114'>airflow-ctl-tests/tests/airflowctl_tests/conftest.py:114:47:</a> PTH109 [*] `os.getcwd()` should be replaced by `Path.cwd()`
++ <a href='https://github.com/apache/airflow/blob/32afc282eab817ae801772928e2777d9c8dfb996/airflow-ctl-tests/tests/airflowctl_tests/conftest.py#L114'>airflow-ctl-tests/tests/airflowctl_tests/conftest.py:114:47:</a> PTH109 `os.getcwd()` should be replaced by `Path.cwd()`
+- <a href='https://github.com/apache/airflow/blob/32afc282eab817ae801772928e2777d9c8dfb996/dev/breeze/src/airflow_breeze/utils/docs_publisher.py#L87'>dev/breeze/src/airflow_breeze/utils/docs_publisher.py:87:61:</a> PTH109 [*] `os.getcwd()` should be replaced by `Path.cwd()`
++ <a href='https://github.com/apache/airflow/blob/32afc282eab817ae801772928e2777d9c8dfb996/dev/breeze/src/airflow_breeze/utils/docs_publisher.py#L87'>dev/breeze/src/airflow_breeze/utils/docs_publisher.py:87:61:</a> PTH109 `os.getcwd()` should be replaced by `Path.cwd()`
+- <a href='https://github.com/apache/airflow/blob/32afc282eab817ae801772928e2777d9c8dfb996/dev/breeze/src/airflow_breeze/utils/run_utils.py#L132'>dev/breeze/src/airflow_breeze/utils/run_utils.py:132:41:</a> PTH109 [*] `os.getcwd()` should be replaced by `Path.cwd()`
++ <a href='https://github.com/apache/airflow/blob/32afc282eab817ae801772928e2777d9c8dfb996/dev/breeze/src/airflow_breeze/utils/run_utils.py#L132'>dev/breeze/src/airflow_breeze/utils/run_utils.py:132:41:</a> PTH109 `os.getcwd()` should be replaced by `Path.cwd()`
+- <a href='https://github.com/apache/airflow/blob/32afc282eab817ae801772928e2777d9c8dfb996/providers/elasticsearch/tests/unit/elasticsearch/log/test_es_task_handler.py#L893'>providers/elasticsearch/tests/unit/elasticsearch/log/test_es_task_handler.py:893:48:</a> PTH109 [*] `os.getcwd()` should be replaced by `Path.cwd()`
++ <a href='https://github.com/apache/airflow/blob/32afc282eab817ae801772928e2777d9c8dfb996/providers/elasticsearch/tests/unit/elasticsearch/log/test_es_task_handler.py#L893'>providers/elasticsearch/tests/unit/elasticsearch/log/test_es_task_handler.py:893:48:</a> PTH109 `os.getcwd()` should be replaced by `Path.cwd()`
+- <a href='https://github.com/apache/airflow/blob/32afc282eab817ae801772928e2777d9c8dfb996/scripts/ci/prek/common_prek_utils.py#L85'>scripts/ci/prek/common_prek_utils.py:85:29:</a> PTH109 [*] `os.getcwd()` should be replaced by `Path.cwd()`
+... 4 additional changes omitted for rule PTH109
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/bokeh/bokeh">bokeh/bokeh</a> (+0 -0 violations, +0 -14 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --no-fix --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/release/system.py#L57'>release/system.py:57:50:</a> PTH109 [*] `os.getcwd()` should be replaced by `Path.cwd()`
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/release/system.py#L57'>release/system.py:57:50:</a> PTH109 `os.getcwd()` should be replaced by `Path.cwd()`
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/release/system.py#L61'>release/system.py:61:34:</a> PTH109 [*] `os.getcwd()` should be replaced by `Path.cwd()`
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/release/system.py#L61'>release/system.py:61:34:</a> PTH109 `os.getcwd()` should be replaced by `Path.cwd()`
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/io/export.py#L527'>src/bokeh/io/export.py:527:76:</a> PTH109 [*] `os.getcwd()` should be replaced by `Path.cwd()`
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/io/export.py#L527'>src/bokeh/io/export.py:527:76:</a> PTH109 `os.getcwd()` should be replaced by `Path.cwd()`
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/io/util.py#L78'>src/bokeh/io/util.py:78:36:</a> PTH109 [*] `os.getcwd()` should be replaced by `Path.cwd()`
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/io/util.py#L78'>src/bokeh/io/util.py:78:36:</a> PTH109 `os.getcwd()` should be replaced by `Path.cwd()`
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/sphinxext/util.py#L48'>src/bokeh/sphinxext/util.py:48:22:</a> PTH109 [*] `os.getcwd()` should be replaced by `Path.cwd()`
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/sphinxext/util.py#L48'>src/bokeh/sphinxext/util.py:48:22:</a> PTH109 `os.getcwd()` should be replaced by `Path.cwd()`
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/application/handlers/test_code_runner.py#L159'>tests/unit/bokeh/application/handlers/test_code_runner.py:159:16:</a> PTH109 [*] `os.getcwd()` should be replaced by `Path.cwd()`
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/application/handlers/test_code_runner.py#L159'>tests/unit/bokeh/application/handlers/test_code_runner.py:159:16:</a> PTH109 `os.getcwd()` should be replaced by `Path.cwd()`
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/util/test_browser.py#L98'>tests/unit/bokeh/util/test_browser.py:98:63:</a> PTH109 [*] `os.getcwd()` should be replaced by `Path.cwd()`
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/util/test_browser.py#L98'>tests/unit/bokeh/util/test_browser.py:98:63:</a> PTH109 `os.getcwd()` should be replaced by `Path.cwd()`
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/zulip/zulip">zulip/zulip</a> (+0 -0 violations, +0 -2 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --no-fix --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/zulip/zulip/blob/f3b0c59ba50304148283863c49780e1f25306896/scripts/lib/clean_emoji_cache.py#L37'>scripts/lib/clean_emoji_cache.py:37:43:</a> PTH115 [*] `os.readlink()` should be replaced by `Path.readlink()`
++ <a href='https://github.com/zulip/zulip/blob/f3b0c59ba50304148283863c49780e1f25306896/scripts/lib/clean_emoji_cache.py#L37'>scripts/lib/clean_emoji_cache.py:37:43:</a> PTH115 `os.readlink()` should be replaced by `Path.readlink()`
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (2 rules affected)</summary>
+<p>
+
+<p>| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| PTH109 | 32 | 0 | 0 | 0 | 32 |
+| PTH115 | 6 | 0 | 0 | 0 | 6 |</p>
+</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @ntBre on 2025-11-14 15:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @ntBre on 2025-11-14 15:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_use_pathlib/rules/os_getcwd.rs</code>:98 on 2025-11-14 19:02</div>
+            <div class="timeline-body"><p>I think I would slightly prefer something like:</p>
+<pre><code class="language-suggestion">// Unsafe when the fix would delete comments or change a used return value
+let applicability = if checker.comment_ranges().intersects(range) 
+  || !is_top_level_expression_call(checker, call) {
+                Applicability::Unsafe
+            } else {
+                Applicability::Safe
+};
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_use_pathlib/rules/os_getcwd.rs</code>:43 on 2025-11-14 19:04</div>
+            <div class="timeline-body"><p>I think we could simplify this slightly to something like:</p>
+<pre><code class="language-suggestion">/// Additionally, the fix is marked as unsafe when the return value is used because the type changes
+/// from `str` or `bytes` to a `Path` object.
+</code></pre>
+<p>I think something similar would work for the other documentation updates too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_use_pathlib/snapshots/ruff_linter__rules__flake8_use_pathlib__tests__preview_full_name.py.snap</code>:320 on 2025-11-14 19:07</div>
+            <div class="timeline-body"><p>This doesn't look right. Should <code>isfile</code> be affected by these changes? I think both versions return a bool.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_use_pathlib/snapshots/ruff_linter__rules__flake8_use_pathlib__tests__preview_full_name.py.snap</code>:348 on 2025-11-14 19:08</div>
+            <div class="timeline-body"><p>I think this one also shouldn't change.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_use_pathlib/snapshots/ruff_linter__rules__flake8_use_pathlib__tests__preview_import_as.py.snap</code>:236 on 2025-11-14 19:08</div>
+            <div class="timeline-body"><p>Another one that shouldn't change, from what I can tell.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_use_pathlib/helpers.rs</code>:243 on 2025-11-14 19:11</div>
+            <div class="timeline-body"><p>Assuming that <code>call</code> is the <code>SemanticModel::current_expression</code>, I think this function could just be:</p>
+<pre><code class="language-suggestion">    checker.semantic().current_expression_parent().is_none()
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> requested changes on 2025-11-14 19:13</div>
+            <div class="timeline-body"><p>I made a couple of suggestions for simplification, but we also need to verify that this change is only applied to the correct rules. I flagged a few cases inline where rules not mentioned in #21431 were changed unnecessarily, but I didn't check them exhaustively.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danparizher">@danparizher</a> on 2025-11-14 20:59</div>
+            <div class="timeline-body"><p>Thanks for the feedback! I had thought that the same concepts applied to a few other rules, but it appears not after taking a closer look.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ntBre by @danparizher on 2025-11-14 20:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_use_pathlib/helpers.rs</code>:107 on 2025-11-18 21:51</div>
+            <div class="timeline-body"><p>I don't think we should do this check here. I checked all of the references for <code>check_os_pathlib_single_arg_calls</code>, and it's only used by PTH115, of the rules we're trying to fix in this PR.</p>
+<p>I think we should just do the <code>is_top_level_expression_call</code> check in PTH115 itself.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_use_pathlib/helpers.rs</code>:194 on 2025-11-18 21:52</div>
+            <div class="timeline-body"><p>As above, this helper also affects rules outside of PTH{104,105,109,115}. We should narrow the check to the affected rules and pass that applicability into the helper.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_use_pathlib/helpers.rs</code>:229 on 2025-11-18 21:52</div>
+            <div class="timeline-body"><p>If <code>_call</code> is not used, we should remove it from the signature.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_use_pathlib/rules/os_readlink.rs</code>:42 on 2025-11-18 21:58</div>
+            <div class="timeline-body"><p>nit: I think this one returns <code>str</code> or <code>bytes</code>. The annotation in the ty playground hover says <a href="https://docs.python.org/3/library/typing.html#typing.AnyStr"><code>AnyStr</code></a>: https://play.ty.dev/f5f68ba2-0762-4d18-b28c-5ebef25bf9be</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_use_pathlib/rules/os_path_dirname.rs</code>:45 on 2025-11-18 22:01</div>
+            <div class="timeline-body"><p>I think this is also bytes or str (<code>AnyStr</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_use_pathlib/rules/os_path_abspath.rs</code>:48 on 2025-11-18 22:01</div>
+            <div class="timeline-body"><p>This one is also <code>AnyStr</code> in ty.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_use_pathlib/rules/os_getcwd.rs</code>:93 on 2025-11-18 22:03</div>
+            <div class="timeline-body"><p>This looks good, this is the pattern I'd follow for the other rules, if possible.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_use_pathlib/rules/os_path_expanduser.rs</code>:44 on 2025-11-18 22:03</div>
+            <div class="timeline-body"><p>This is also <code>AnyStr</code> in ty</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_use_pathlib/rules/os_path_isfile.rs</code>:8 on 2025-11-18 22:04</div>
+            <div class="timeline-body"><p>nit: I would group these ruff imports with the others, separate from the <code>crate::</code> imports.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_use_pathlib/rules/os_path_islink.rs</code>:77 on 2025-11-18 22:05</div>
+            <div class="timeline-body"><p>Hmm, are there any cases left where we pass <code>None</code>? I think we could just make this a required argument. <code>None</code> and <code>Safe</code> were being treated as the same anyway, I think, so I don't see any benefit to using the Option.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> requested changes on 2025-11-18 22:08</div>
+            <div class="timeline-body"><p>Thanks! This is looking better, but I had a few more suggestions.</p>
+<p>I tried to flag all of the places the docs should say &quot;str or bytes,&quot; but I started using <a href="https://docs.python.org/3/library/typing.html#typing.AnyStr"><code>typing.AnyStr</code></a> as a shorthand since that's what ty shows. It's technically a type variable that depends on the input, but I think it's fine just to say &quot;str or bytes&quot; in each of those cases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/danparizher">@danparizher</a> reviewed on 2025-11-20 00:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/danparizher">@danparizher</a> on <code>crates/ruff_linter/src/rules/flake8_use_pathlib/helpers.rs</code>:194 on 2025-11-20 00:17</div>
+            <div class="timeline-body"><p>Just a note on this - to have applicability passed through the helper, I had to add <code>#[allow(clippy::too_many_arguments)]</code>.</p>
+<p>Let me know if that's fine or if you'd rather have it refactored.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ntBre by @danparizher on 2025-11-20 00:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_use_pathlib/helpers.rs</code>:229 on 2025-11-21 22:10</div>
+            <div class="timeline-body"><p>This is not resolved.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_use_pathlib/helpers.rs</code>:142 on 2025-11-21 22:12</div>
+            <div class="timeline-body"><p>Let's use <code>expect</code> instead of <code>allow</code>. That will remind us to remove it if we ever remove arguments.</p>
+<pre><code class="language-suggestion">#[expect(clippy::too_many_arguments)]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_use_pathlib/helpers.rs</code>:151 on 2025-11-21 22:15</div>
+            <div class="timeline-body"><p>I still don't see why we're using an <code>Option</code> here (https://github.com/astral-sh/ruff/pull/21440#discussion_r2539766325). If we're doing <code>unwrap_or(Safe)</code>, why don't we just have the callers pass in <code>Safe</code> to begin with?</p>
+<p>That also applies to the single-argument helper, though I know that was pre-existing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_use_pathlib/rules/os_path_exists.rs</code>:8 on 2025-11-21 22:20</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">use ruff_diagnostics::Applicability;
+use ruff_macros::{ViolationMetadata, derive_message_formats};
+use ruff_python_ast::ExprCall;
+
+use crate::checkers::ast::Checker;
+use crate::preview::is_fix_os_path_exists_enabled;
+use crate::rules::flake8_use_pathlib::helpers::check_os_pathlib_single_arg_calls;
+use crate::{FixAvailability, Violation};
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_use_pathlib/rules/os_readlink.rs</code>:11 on 2025-11-21 22:21</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">use ruff_diagnostics::Applicability;
+use ruff_macros::{ViolationMetadata, derive_message_formats};
+use ruff_python_ast::{ExprCall, PythonVersion};
+
+use crate::checkers::ast::Checker;
+use crate::preview::is_fix_os_readlink_enabled;
+use crate::rules::flake8_use_pathlib::helpers::{
+check_os_pathlib_single_arg_calls, is_keyword_only_argument_non_default,
+    is_top_level_expression_call,
+};
+use crate::{FixAvailability, Violation};
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_use_pathlib/rules/os_replace.rs</code>:97 on 2025-11-21 22:22</div>
+            <div class="timeline-body"><p>We don't need to check if the fix is enabled here. We already pass it into the helper.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_use_pathlib/helpers.rs</code>:105 on 2025-11-21 22:28</div>
+            <div class="timeline-body"><p>See my other comment about the <code>Option</code>, but I think we should also do something more like this to account for the possibility of <code>DisplayOnly</code> fixes, which shouldn't be &quot;elevated&quot; to unsafe if there are comments. This is unlikely to happen in these rules, but it's not really more code to handle it properly.</p>
+<pre><code class="language-suggestion">        let applicability = match applicability {
+            Applicability::DisplayOnly =&gt; Applicability::DisplayOnly,
+            _ if checker.comment_ranges().intersects(range) =&gt; Applicability::Unsafe,
+            _ =&gt; applicability,
+        };
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> requested changes on 2025-11-21 22:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ntBre by @danparizher on 2025-11-29 01:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> approved on 2025-12-01 20:05</div>
+            <div class="timeline-body"><p>Thanks! I just fixed one more round of tiny nits. Once the ecosystem check runs, I'll merge.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ntBre on 2025-12-01 20:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-12-01 20:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-12-01 22:36</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:48:27 UTC
+    </footer>
+</body>
+</html>

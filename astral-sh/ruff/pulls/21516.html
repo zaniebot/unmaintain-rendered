@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Only normalize constraint bounds for display - astral-sh/ruff #21516</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Only normalize constraint bounds for display</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21516">#21516</a>
+        opened by <a href="https://github.com/dcreager">@dcreager</a>
+        on 2025-11-18 19:38
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dcreager">@dcreager</a> on 2025-11-18 19:38</div>
+            <div class="timeline-body"><p>We were previously normalizing the upper and lower bounds of each constraint when constructing constraint sets. Like in #21463, this was for conflated reasons: It made constraint set displays nicer, since we wouldn't render multiple constraints with obviously equivalent bounds. (Think <code>T ≤ A &amp; B</code> and <code>T ≤ B &amp; A</code>) But it was also useful for correctness, since prior to #21463 we were (trying to) add the full transitive closure to a constraint set's BDD, and normalization gave a useful reduction in the number of nodes in a typical BDD.</p>
+<p>Now that we don't store the transitive closure explicitly, that second reason is no longer relevant. Our sequent map can store that full transitive closure much more efficiently than the expanded BDD would have. This helps fix some false positives on #20933, where we're seeing some (incorrect, need to be fixed, but ideally not blocking this effort) assignability failures between a type and its normalization.</p>
+<p>Normalization is still useful for display purposes, and so we do normalize the upper/lower bounds before building up our display representation of a constraint set BDD.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @dcreager on 2025-11-18 19:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @dcreager on 2025-11-18 19:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @dcreager on 2025-11-18 19:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @dcreager on 2025-11-18 19:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @dcreager on 2025-11-18 19:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-11-18 19:40</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-11-18 19:41</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅</p>
+<p>No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-11-18 23:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:2309 on 2025-11-19 08:18</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        // identify constraints that are identical besides e.g. ordering of union/intersection
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:2320 on 2025-11-19 08:30</div>
+            <div class="timeline-body"><p>The explanation above seems to imply that we could (should?) return early here? Because if <code>a → b</code> always implies <code>a ∧ b = a</code>, then the code below would otherwise add <em>two additional</em> <code>a → b</code> implications and one <code>a → a</code> implication, both of which seem unnecessary?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> approved on 2025-11-19 08:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @AlexWaygood removed by @AlexWaygood on 2025-11-19 15:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:2320 on 2025-11-19 15:58</div>
+            <div class="timeline-body"><p>There are other protections in place against both of those: The <code>single_implications</code> and <code>pair_implications</code> maps now have sets to store all of the consequents, so two copies of <code>a → b</code> will automatically get de-duped, no matter how they're created. And similarly, <code>add_single_implication</code> and <code>add_pair_implication</code> will skip any sequent of the form <code>a → a</code>, <code>a ∧ b → a</code>, or <code>a ∧ b → b</code>, since they are not useful.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-11-19 15:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dcreager on 2025-11-19 16:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dcreager on 2025-11-19 16:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-11-19 16:49</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:48:27 UTC
+    </footer>
+</body>
+</html>

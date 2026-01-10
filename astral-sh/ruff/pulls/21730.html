@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Support typevar-specialized dynamic types in generic type aliases - astral-sh/ruff #21730</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Support typevar-specialized dynamic types in generic type aliases</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21730">#21730</a>
+        opened by <a href="https://github.com/sharkdp">@sharkdp</a>
+        on 2025-12-01 14:24
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-12-01 14:24</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>For a type alias like the one below, where <code>UnknownClass</code> is something with a dynamic type, we previously lost track of the fact that this dynamic type was explicitly specialized <em>with a type variable</em>. If that alias is then later explicitly specialized itself (<code>MyAlias[int]</code>), we would miscount the number of legacy type variables and emit a <code>invalid-type-arguments</code> diagnostic (<a href="https://play.ty.dev/886ae6cc-86c3-4304-a365-510d29211f85">playground</a>).</p>
+<pre><code class="language-py">T = TypeVar(&quot;T&quot;)
+
+MyAlias: TypeAlias = UnknownClass[T] | None
+</code></pre>
+<p>The solution implemented here is not pretty, but we can hopefully get rid of it via https://github.com/astral-sh/ty/issues/1711. Also, once we properly support <code>ParamSpec</code> and <code>Concatenate</code>, we should be able to remove some of this code.</p>
+<p>This addresses many of the <code>invalid-type-arguments</code> false-positives in https://github.com/astral-sh/ty/issues/1685. With this change, there are still some diagnostics of this type left. Instead of implementing even more (rather sophisticated) workarounds for these cases as well, it might be much easier to wait for full <code>ParamSpec</code>/<code>Concatenate</code> support and then try again.</p>
+<p>A disadvantage of this implementation is that we lose track of some <code>@Todo</code> types and replace them with <code>Unknown</code>. We could spend more effort and try to preserve them, but I'm unsure if this is the best use of our time right now.</p>
+<h2>Test Plan</h2>
+<p>New Markdown tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @sharkdp on 2025-12-01 14:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-12-01 14:26</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance">typing conformance tests</a></h2>
+<details>
+<summary>Changes were detected when running ty on typing conformance tests</summary>
+
+<pre><code class="language-diff">--- old-output.txt	2025-12-03 08:27:30.384262987 +0000
++++ new-output.txt	2025-12-03 08:27:34.022271510 +0000
+@@ -4,25 +4,21 @@
+ _directives_deprecated_library.py:41:25: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `int | float`
+ _directives_deprecated_library.py:45:24: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `str`
+ aliases_explicit.py:41:24: error[invalid-type-form] List literals are not allowed in this context in a type expression: Did you mean `tuple[str, str]`?
+-aliases_explicit.py:41:36: error[invalid-type-arguments] Too many type arguments: expected 1, got 2
+-aliases_explicit.py:57:5: error[type-assertion-failure] Type `(int, str, str, /) -&gt; None` does not match asserted type `(...) -&gt; Unknown`
++aliases_explicit.py:57:5: error[type-assertion-failure] Type `(int, str, str, /) -&gt; None` does not match asserted type `Unknown`
+ aliases_explicit.py:60:5: error[type-assertion-failure] Type `(...) -&gt; None` does not match asserted type `@Todo(Callable[..] specialized with ParamSpec)`
+ aliases_explicit.py:67:24: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+ aliases_explicit.py:68:24: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+ aliases_explicit.py:69:29: error[invalid-type-arguments] Too many type arguments: expected 1, got 2
+ aliases_explicit.py:70:29: error[invalid-type-arguments] Too many type arguments: expected 1, got 2
+-aliases_explicit.py:71:29: error[invalid-type-arguments] Too many type arguments: expected 1, got 2
+ aliases_explicit.py:101:6: error[call-non-callable] Object of type `UnionType` is not callable
+ aliases_explicit.py:102:20: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+ aliases_implicit.py:54:24: error[invalid-type-form] List literals are not allowed in this context in a type expression: Did you mean `tuple[str, str]`?
+-aliases_implicit.py:54:36: error[invalid-type-arguments] Too many type arguments: expected 1, got 2
+-aliases_implicit.py:68:5: error[type-assertion-failure] Type `(int, str, str, /) -&gt; None` does not match asserted type `(...) -&gt; Unknown`
++aliases_implicit.py:68:5: error[type-assertion-failure] Type `(int, str, str, /) -&gt; None` does not match asserted type `Unknown`
+ aliases_implicit.py:72:5: error[type-assertion-failure] Type `(...) -&gt; None` does not match asserted type `@Todo(Callable[..] specialized with ParamSpec)`
+ aliases_implicit.py:76:24: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+ aliases_implicit.py:77:24: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+ aliases_implicit.py:78:29: error[invalid-type-arguments] Too many type arguments: expected 1, got 2
+ aliases_implicit.py:79:29: error[invalid-type-arguments] Too many type arguments: expected 1, got 2
+-aliases_implicit.py:80:29: error[invalid-type-arguments] Too many type arguments: expected 1, got 2
+ aliases_implicit.py:81:25: error[invalid-type-arguments] Type `str` is not assignable to upper bound `int | float` of type variable `TFloat@GoodTypeAlias12`
+ aliases_implicit.py:107:9: error[invalid-type-form] Variable of type `list[Unknown | &lt;class 'int'&gt; | &lt;class 'str'&gt;]` is not allowed in a type expression
+ aliases_implicit.py:108:9: error[invalid-type-form] Variable of type `tuple[tuple[&lt;class 'int'&gt;, &lt;class 'str'&gt;]]` is not allowed in a type expression
+@@ -141,10 +137,6 @@
+ callables_annotation.py:58:5: error[invalid-type-form] Special form `typing.Callable` expected exactly two arguments (parameter types and return type)
+ callables_annotation.py:58:14: error[invalid-type-form] The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+ callables_annotation.py:157:20: error[invalid-assignment] Object of type `Proto7` is not assignable to `Proto6`
+-callables_annotation.py:172:19: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+-callables_annotation.py:175:19: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+-callables_annotation.py:188:25: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+-callables_annotation.py:189:25: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+ callables_kwargs.py:24:5: error[type-assertion-failure] Type `int` does not match asserted type `@Todo(`Unpack[]` special form)`
+ callables_kwargs.py:32:9: error[type-assertion-failure] Type `str` does not match asserted type `@Todo(`Unpack[]` special form)`
+ callables_kwargs.py:35:5: error[type-assertion-failure] Type `str` does not match asserted type `@Todo(`Unpack[]` special form)`
+@@ -1028,4 +1020,4 @@
+ typeddicts_usage.py:28:17: error[missing-typed-dict-key] Missing required key 'name' in TypedDict `Movie` constructor
+ typeddicts_usage.py:28:18: error[invalid-key] Unknown key &quot;title&quot; for TypedDict `Movie`: Unknown key &quot;title&quot;
+ typeddicts_usage.py:40:24: error[invalid-type-form] The special form `typing.TypedDict` is not allowed in type expressions
+-Found 1030 diagnostics
++Found 1022 diagnostics
+
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-12-01 14:28</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">beartype (https://github.com/beartype/beartype)
+- beartype/claw/_package/clawpkgtrie.py:66:29: warning[unsupported-base] Unsupported class base with type `&lt;class 'dict[str, PackagesTrieBlacklist]'&gt; | &lt;class 'dict[str, Divergent]'&gt;`
+- beartype/claw/_package/clawpkgtrie.py:247:29: warning[unsupported-base] Unsupported class base with type `&lt;class 'dict[str, PackagesTrieWhitelist]'&gt; | &lt;class 'dict[str, Divergent]'&gt;`
+- Found 494 diagnostics
++ Found 492 diagnostics
+
+scrapy (https://github.com/scrapy/scrapy)
+- scrapy/commands/parse.py:331:25: error[no-matching-overload] No overload of function `getattr` matches arguments
+- tests/test_downloadermiddleware_offsite.py:90:44: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `((...) -&gt; Any) | None`, found `Unknown | dict[Unknown, Unknown]`
+- Found 1737 diagnostics
++ Found 1735 diagnostics
+
+Tanjun (https://github.com/FasterSpeeding/Tanjun)
+- tanjun/_internal/__init__.py:81:68: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/_internal/__init__.py:88:86: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/abc.py:90:81: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/abc.py:91:83: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/abc.py:92:89: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/abc.py:93:85: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/abc.py:95:84: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/abc.py:96:86: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/abc.py:97:92: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/abc.py:98:88: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/abc.py:100:66: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/abc.py:101:68: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/abc.py:102:74: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/abc.py:103:70: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/abc.py:105:96: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/abc.py:163:24: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/abc.py:177:42: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/abc.py:184:40: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/abc.py:239:43: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/abc.py:242:42: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/abc.py:245:79: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/abc.py:2076:51: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/abc.py:2161:59: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/abc.py:2228:52: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/abc.py:2292:51: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/abc.py:2356:48: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/abc.py:2469:57: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/abc.py:2526:43: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/abc.py:2541:44: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/abc.py:2794:79: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/abc.py:2799:77: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/abc.py:2804:77: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/abc.py:3236:93: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/abc.py:3452:85: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/abc.py:3469:83: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/abc.py:3888:93: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/abc.py:4378:90: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/abc.py:4399:88: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/annotations.py:1538:79: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `(...) -&gt; Coroutine[Any, Any, Any] | Any`, found `object`
+- tanjun/annotations.py:1538:79: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `(...) -&gt; Coroutine[Any, Any, Any] | Any`, found `object`
+- tanjun/checks.py:975:28: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/checks.py:981:28: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/checks.py:987:28: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/checks.py:992:28: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/checks.py:1020:53: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/checks.py:1032:28: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/checks.py:1032:68: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/checks.py:1062:28: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/checks.py:1064:30: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/checks.py:1071:28: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/checks.py:1073:30: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/checks.py:1080:28: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/checks.py:1082:30: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/checks.py:1088:28: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/checks.py:1088:69: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/checks.py:1123:38: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/checks.py:1152:28: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/checks.py:1154:30: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/checks.py:1211:28: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/checks.py:1213:30: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/checks.py:1224:28: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/checks.py:1226:30: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/checks.py:1237:28: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/checks.py:1239:30: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/checks.py:1249:28: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/checks.py:1251:30: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/clients.py:83:102: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/clients.py:758:65: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/clients.py:758:105: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/clients.py:1218:100: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/clients.py:2078:97: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/clients.py:2097:95: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/commands/base.py:57:44: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/commands/base.py:63:64: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/commands/base.py:100:50: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/commands/base.py:108:51: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/commands/menu.py:55:96: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/commands/menu.py:56:90: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/commands/menu.py:65:92: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/commands/slash.py:86:51: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/commands/slash.py:86:74: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/commands/slash.py:86:95: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/commands/slash.py:90:96: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/commands/slash.py:91:100: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/commands/slash.py:92:96: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/commands/slash.py:446:42: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/commands/slash.py:450:51: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/commands/slash.py:450:72: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/commands/slash.py:496:42: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/commands/slash.py:498:51: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/commands/slash.py:498:72: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/commands/slash.py:545:42: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/commands/slash.py:547:51: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/commands/slash.py:547:74: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/commands/slash.py:1658:69: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/commands/slash.py:1659:67: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/commands/slash.py:1660:67: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/commands/slash.py:1678:86: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/commands/slash.py:1683:84: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/commands/slash.py:1688:84: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/commands/slash.py:1929:46: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/commands/slash.py:1936:55: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/commands/slash.py:1936:76: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/commands/slash.py:1953:46: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/commands/slash.py:1955:55: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/commands/slash.py:1955:76: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/commands/slash.py:1970:46: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/commands/slash.py:1978:55: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/commands/slash.py:1978:76: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/commands/slash.py:2130:46: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/commands/slash.py:2132:55: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/commands/slash.py:2132:76: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/commands/slash.py:2149:46: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/commands/slash.py:2151:55: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/commands/slash.py:2151:76: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/commands/slash.py:2166:46: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/commands/slash.py:2173:55: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/commands/slash.py:2173:76: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/commands/slash.py:2286:46: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/commands/slash.py:2288:55: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/commands/slash.py:2288:78: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/commands/slash.py:2306:46: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/commands/slash.py:2308:55: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/commands/slash.py:2308:78: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/commands/slash.py:2324:46: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/commands/slash.py:2331:55: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/commands/slash.py:2331:78: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/commands/slash.py:2870:82: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/commands/slash.py:2958:80: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/commands/slash.py:3038:80: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/components.py:59:102: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/components.py:205:83: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/components.py:305:100: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/components.py:985:92: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/components.py:1003:90: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/hooks.py:52:87: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/hooks.py:53:89: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/hooks.py:54:95: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/hooks.py:55:91: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/hooks.py:57:90: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/hooks.py:58:92: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/hooks.py:59:98: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/hooks.py:60:94: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/hooks.py:62:72: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/hooks.py:63:74: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/hooks.py:64:80: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/hooks.py:65:76: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/hooks.py:93:57: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/hooks.py:94:65: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/hooks.py:95:60: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/hooks.py:96:61: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/hooks.py:97:54: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/hooks.py:145:58: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/hooks.py:150:58: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/hooks.py:198:66: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/hooks.py:203:66: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/hooks.py:244:59: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/hooks.py:249:59: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/hooks.py:287:58: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/hooks.py:292:58: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/hooks.py:330:55: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/hooks.py:335:55: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- tanjun/parsing.py:1553:37: error[invalid-argument-type] Argument to bound method `_add_converter` is incorrect: Expected `(...) -&gt; Coroutine[Any, Any, Any] | Any`, found `object`
+- Found 295 diagnostics
++ Found 132 diagnostics
+
+prefect (https://github.com/PrefectHQ/prefect)
+- src/prefect/server/database/dependencies.py:170:36: error[invalid-type-arguments] Too many type arguments: expected 1, got 3
+- src/prefect/server/database/dependencies.py:170:57: error[invalid-type-arguments] Too many type arguments: expected 1, got 3
+- src/prefect/server/database/dependencies.py:174:38: error[invalid-type-arguments] Too many type arguments: expected 1, got 2
+- src/prefect/server/database/dependencies.py:178:30: error[invalid-type-arguments] Too many type arguments: expected 1, got 3
+- src/prefect/server/database/dependencies.py:178:52: error[invalid-type-arguments] Too many type arguments: expected 1, got 2
+- src/prefect/server/database/dependencies.py:179:23: error[invalid-type-arguments] Too many type arguments: expected 1, got 3
+- src/prefect/server/database/dependencies.py:251:45: error[invalid-type-arguments] Too many type arguments: expected 1, got 3
+- src/prefect/server/database/dependencies.py:254:47: error[invalid-type-arguments] Too many type arguments: expected 1, got 2
+- src/prefect/server/database/dependencies.py:257:43: error[invalid-type-arguments] Too many type arguments: expected 1, got 3
+- src/prefect/server/database/dependencies.py:257:65: error[invalid-type-arguments] Too many type arguments: expected 1, got 2
+- src/prefect/server/database/dependencies.py:260:49: error[invalid-type-arguments] Too many type arguments: expected 1, got 3
+- src/prefect/server/database/dependencies.py:260:71: error[invalid-type-arguments] Too many type arguments: expected 1, got 2
+- src/prefect/server/database/dependencies.py:265:36: error[invalid-type-arguments] Too many type arguments: expected 1, got 2
+- src/prefect/server/database/dependencies.py:314:55: error[invalid-type-arguments] Too many type arguments: expected 1, got 2
+- src/prefect/server/database/dependencies.py:320:36: error[invalid-type-arguments] Too many type arguments: expected 1, got 2
+- src/prefect/server/utilities/database.py:70:36: error[invalid-type-arguments] Too many type arguments: expected 1, got 3
+- src/prefect/server/utilities/database.py:70:57: error[invalid-type-arguments] Too many type arguments: expected 1, got 3
+- src/prefect/server/utilities/database.py:74:38: error[invalid-type-arguments] Too many type arguments: expected 1, got 2
+- src/prefect/server/utilities/database.py:78:30: error[invalid-type-arguments] Too many type arguments: expected 1, got 3
+- src/prefect/server/utilities/database.py:78:52: error[invalid-type-arguments] Too many type arguments: expected 1, got 2
+- src/prefect/server/utilities/database.py:79:23: error[invalid-type-arguments] Too many type arguments: expected 1, got 3
+- Found 3396 diagnostics
++ Found 3375 diagnostics
+
+scikit-build-core (https://github.com/scikit-build/scikit-build-core)
++ src/scikit_build_core/_logging.py:153:13: warning[unsupported-base] Unsupported class base with type `&lt;class 'Mapping[str, Style]'&gt; | &lt;class 'Mapping[str, Divergent]'&gt;`
+- Found 41 diagnostics
++ Found 42 diagnostics
+
+arviz (https://github.com/arviz-devs/arviz)
+- arviz/stats/ecdf_utils.py:83:12: error[invalid-return-type] Return type does not match returned value: expected `tuple[ndarray[tuple[Any, ...], dtype[Any]], ndarray[tuple[Any, ...], dtype[Any]]]`, found `tuple[int | float | Any, int | float | Any]`
++ arviz/stats/ecdf_utils.py:83:12: error[invalid-return-type] Return type does not match returned value: expected `tuple[ndarray[tuple[Any, ...], dtype[Any]], ndarray[tuple[Any, ...], dtype[Any]]]`, found `tuple[int | float | Unknown, int | float | Unknown]`
+
+altair (https://github.com/vega/altair)
+- altair/datasets/_readimpl.py:221:37: error[invalid-type-arguments] Type `IntoDataFrameT@scan_fn` is not assignable to upper bound `NativeLazyFrame` of type variable `IntoLazyFrameT@LazyFrame`
++ altair/datasets/_readimpl.py:221:37: error[invalid-type-arguments] Type `IntoDataFrameT@into_scan` is not assignable to upper bound `NativeLazyFrame` of type variable `IntoLazyFrameT@LazyFrame`
+- altair/datasets/_readimpl.py:223:62: error[invalid-type-arguments] Type `IntoDataFrameT@scan_fn` is not assignable to upper bound `NativeLazyFrame` of type variable `IntoLazyFrameT@LazyFrame`
++ altair/datasets/_readimpl.py:223:62: error[invalid-type-arguments] Type `IntoDataFrameT@into_scan` is not assignable to upper bound `NativeLazyFrame` of type variable `IntoLazyFrameT@LazyFrame`
+- altair/utils/_transformed_data.py:119:10: error[invalid-context-manager] Object of type `PluginEnabler[(...) -&gt; Unknown, Unknown]` cannot be used with `with` because it does not correctly implement `__exit__`
++ altair/utils/_transformed_data.py:119:10: error[invalid-context-manager] Object of type `PluginEnabler[Unknown, Unknown]` cannot be used with `with` because it does not correctly implement `__exit__`
+- altair/utils/save.py:283:14: error[invalid-context-manager] Object of type `PluginEnabler[(...) -&gt; Unknown, Unknown]` cannot be used with `with` because it does not correctly implement `__exit__`
++ altair/utils/save.py:283:14: error[invalid-context-manager] Object of type `PluginEnabler[Unknown, Unknown]` cannot be used with `with` because it does not correctly implement `__exit__`
++ altair/vegalite/v6/schema/channels.py:22003:35: error[unsupported-operator] Operator `|` is unsupported between objects of type `&lt;class 'str'&gt;` and `&lt;class 'Detail'&gt;`
++ altair/vegalite/v6/schema/channels.py:22519:22: error[unsupported-operator] Operator `|` is unsupported between objects of type `&lt;class 'str'&gt;` and `&lt;class 'Detail'&gt;`
+- tests/test_jupyter_chart.py:52:10: error[invalid-context-manager] Object of type `PluginEnabler[(...) -&gt; Unknown, Unknown]` cannot be used with `with` because it does not correctly implement `__exit__`
++ tests/test_jupyter_chart.py:52:10: error[invalid-context-manager] Object of type `PluginEnabler[Unknown, Unknown]` cannot be used with `with` because it does not correctly implement `__exit__`
+- tests/test_jupyter_chart.py:78:10: error[invalid-context-manager] Object of type `PluginEnabler[(...) -&gt; Unknown, Unknown]` cannot be used with `with` because it does not correctly implement `__exit__`
++ tests/test_jupyter_chart.py:78:10: error[invalid-context-manager] Object of type `PluginEnabler[Unknown, Unknown]` cannot be used with `with` because it does not correctly implement `__exit__`
+- tests/test_jupyter_chart.py:146:10: error[invalid-context-manager] Object of type `PluginEnabler[(...) -&gt; Unknown, Unknown]` cannot be used with `with` because it does not correctly implement `__exit__`
++ tests/test_jupyter_chart.py:146:10: error[invalid-context-manager] Object of type `PluginEnabler[Unknown, Unknown]` cannot be used with `with` because it does not correctly implement `__exit__`
+- tests/test_jupyter_chart.py:206:10: error[invalid-context-manager] Object of type `PluginEnabler[(...) -&gt; Unknown, Unknown]` cannot be used with `with` because it does not correctly implement `__exit__`
++ tests/test_jupyter_chart.py:206:10: error[invalid-context-manager] Object of type `PluginEnabler[Unknown, Unknown]` cannot be used with `with` because it does not correctly implement `__exit__`
+- tests/test_jupyter_chart.py:269:10: error[invalid-context-manager] Object of type `PluginEnabler[(...) -&gt; Unknown, Unknown]` cannot be used with `with` because it does not correctly implement `__exit__`
++ tests/test_jupyter_chart.py:269:10: error[invalid-context-manager] Object of type `PluginEnabler[Unknown, Unknown]` cannot be used with `with` because it does not correctly implement `__exit__`
+- tests/utils/test_mimebundle.py:231:10: error[invalid-context-manager] Object of type `PluginEnabler[(...) -&gt; Unknown, Unknown]` cannot be used with `with` because it does not correctly implement `__exit__`
++ tests/utils/test_mimebundle.py:231:10: error[invalid-context-manager] Object of type `PluginEnabler[Unknown, Unknown]` cannot be used with `with` because it does not correctly implement `__exit__`
+- tests/utils/test_mimebundle.py:245:10: error[invalid-context-manager] Object of type `PluginEnabler[(...) -&gt; Unknown, Unknown]` cannot be used with `with` because it does not correctly implement `__exit__`
++ tests/utils/test_mimebundle.py:245:10: error[invalid-context-manager] Object of type `PluginEnabler[Unknown, Unknown]` cannot be used with `with` because it does not correctly implement `__exit__`
+- tests/vegalite/v6/test_api.py:211:10: error[invalid-context-manager] Object of type `PluginEnabler[(...) -&gt; Unknown, Unknown]` cannot be used with `with` because it does not correctly implement `__exit__`
++ tests/vegalite/v6/test_api.py:211:10: error[invalid-context-manager] Object of type `PluginEnabler[Unknown, Unknown]` cannot be used with `with` because it does not correctly implement `__exit__`
+- tests/vegalite/v6/test_api.py:215:10: error[invalid-context-manager] Object of type `PluginEnabler[(...) -&gt; Unknown, Unknown]` cannot be used with `with` because it does not correctly implement `__exit__`
++ tests/vegalite/v6/test_api.py:215:10: error[invalid-context-manager] Object of type `PluginEnabler[Unknown, Unknown]` cannot be used with `with` because it does not correctly implement `__exit__`
+- tests/vegalite/v6/test_api.py:222:10: error[invalid-context-manager] Object of type `PluginEnabler[(...) -&gt; Unknown, Unknown]` cannot be used with `with` because it does not correctly implement `__exit__`
++ tests/vegalite/v6/test_api.py:222:10: error[invalid-context-manager] Object of type `PluginEnabler[Unknown, Unknown]` cannot be used with `with` because it does not correctly implement `__exit__`
+- tests/vegalite/v6/test_api.py:226:10: error[invalid-context-manager] Object of type `PluginEnabler[(...) -&gt; Unknown, Unknown]` cannot be used with `with` because it does not correctly implement `__exit__`
++ tests/vegalite/v6/test_api.py:226:10: error[invalid-context-manager] Object of type `PluginEnabler[Unknown, Unknown]` cannot be used with `with` because it does not correctly implement `__exit__`
+- tests/vegalite/v6/test_api.py:986:10: error[invalid-context-manager] Object of type `PluginEnabler[(...) -&gt; Unknown, Unknown]` cannot be used with `with` because it does not correctly implement `__exit__`
++ tests/vegalite/v6/test_api.py:986:10: error[invalid-context-manager] Object of type `PluginEnabler[Unknown, Unknown]` cannot be used with `with` because it does not correctly implement `__exit__`
+- tests/vegalite/v6/test_api.py:995:10: error[invalid-context-manager] Object of type `PluginEnabler[(...) -&gt; Unknown, Unknown]` cannot be used with `with` because it does not correctly implement `__exit__`
++ tests/vegalite/v6/test_api.py:995:10: error[invalid-context-manager] Object of type `PluginEnabler[Unknown, Unknown]` cannot be used with `with` because it does not correctly implement `__exit__`
+- tests/vegalite/v6/test_api.py:1518:10: error[invalid-context-manager] Object of type `PluginEnabler[@Todo, ThemeConfig]` cannot be used with `with` because it does not correctly implement `__exit__`
++ tests/vegalite/v6/test_api.py:1518:10: error[invalid-context-manager] Object of type `PluginEnabler[Unknown, ThemeConfig]` cannot be used with `with` because it does not correctly implement `__exit__`
+- tests/vegalite/v6/test_api.py:1523:10: error[invalid-context-manager] Object of type `PluginEnabler[@Todo, ThemeConfig]` cannot be used with `with` because it does not correctly implement `__exit__`
++ tests/vegalite/v6/test_api.py:1523:10: error[invalid-context-manager] Object of type `PluginEnabler[Unknown, ThemeConfig]` cannot be used with `with` because it does not correctly implement `__exit__`
+- tests/vegalite/v6/test_api.py:1529:10: error[invalid-context-manager] Object of type `PluginEnabler[@Todo, ThemeConfig]` cannot be used with `with` because it does not correctly implement `__exit__`
++ tests/vegalite/v6/test_api.py:1529:10: error[invalid-context-manager] Object of type `PluginEnabler[Unknown, ThemeConfig]` cannot be used with `with` because it does not correctly implement `__exit__`
+- tests/vegalite/v6/test_api.py:1562:10: error[invalid-context-manager] Object of type `PluginEnabler[(...) -&gt; Unknown, Unknown]` cannot be used with `with` because it does not correctly implement `__exit__`
++ tests/vegalite/v6/test_api.py:1562:10: error[invalid-context-manager] Object of type `PluginEnabler[Unknown, Unknown]` cannot be used with `with` because it does not correctly implement `__exit__`
+- tests/vegalite/v6/test_api.py:1565:10: error[invalid-context-manager] Object of type `PluginEnabler[(...) -&gt; Unknown, Unknown]` cannot be used with `with` because it does not correctly implement `__exit__`
++ tests/vegalite/v6/test_api.py:1565:10: error[invalid-context-manager] Object of type `PluginEnabler[Unknown, Unknown]` cannot be used with `with` because it does not correctly implement `__exit__`
+- tests/vegalite/v6/test_api.py:1592:10: error[invalid-context-manager] Object of type `PluginEnabler[(...) -&gt; Unknown, Unknown]` cannot be used with `with` because it does not correctly implement `__exit__`
++ tests/vegalite/v6/test_api.py:1592:10: error[invalid-context-manager] Object of type `PluginEnabler[Unknown, Unknown]` cannot be used with `with` because it does not correctly implement `__exit__`
+- tests/vegalite/v6/test_api.py:1597:10: error[invalid-context-manager] Object of type `PluginEnabler[(...) -&gt; Unknown, Unknown]` cannot be used with `with` because it does not correctly implement `__exit__`
++ tests/vegalite/v6/test_api.py:1597:10: error[invalid-context-manager] Object of type `PluginEnabler[Unknown, Unknown]` cannot be used with `with` because it does not correctly implement `__exit__`
+- tests/vegalite/v6/test_api.py:1605:10: error[invalid-context-manager] Object of type `PluginEnabler[(...) -&gt; Unknown, Unknown]` cannot be used with `with` because it does not correctly implement `__exit__`
++ tests/vegalite/v6/test_api.py:1605:10: error[invalid-context-manager] Object of type `PluginEnabler[Unknown, Unknown]` cannot be used with `with` because it does not correctly implement `__exit__`
+- tests/vegalite/v6/test_api.py:1609:10: error[invalid-context-manager] Object of type `PluginEnabler[(...) -&gt; Unknown, Unknown]` cannot be used with `with` because it does not correctly implement `__exit__`
++ tests/vegalite/v6/test_api.py:1609:10: error[invalid-context-manager] Object of type `PluginEnabler[Unknown, Unknown]` cannot be used with `with` because it does not correctly implement `__exit__`
+- tests/vegalite/v6/test_api.py:1911:10: error[invalid-context-manager] Object of type `PluginEnabler[(...) -&gt; Unknown, Unknown]` cannot be used with `with` because it does not correctly implement `__exit__`
++ tests/vegalite/v6/test_api.py:1911:10: error[invalid-context-manager] Object of type `PluginEnabler[Unknown, Unknown]` cannot be used with `with` because it does not correctly implement `__exit__`
+- tests/vegalite/v6/test_data.py:15:10: error[invalid-context-manager] Object of type `PluginEnabler[(...) -&gt; Unknown, Unknown]` cannot be used with `with` because it does not correctly implement `__exit__`
++ tests/vegalite/v6/test_data.py:15:10: error[invalid-context-manager] Object of type `PluginEnabler[Unknown, Unknown]` cannot be used with `with` because it does not correctly implement `__exit__`
+- tests/vegalite/v6/test_data.py:27:13: error[invalid-context-manager] Object of type `PluginEnabler[(...) -&gt; Unknown, Unknown]` cannot be used with `with` because it does not correctly implement `__exit__`
++ tests/vegalite/v6/test_data.py:27:13: error[invalid-context-manager] Object of type `PluginEnabler[Unknown, Unknown]` cannot be used with `with` because it does not correctly implement `__exit__`
+- tests/vegalite/v6/test_geo_interface.py:32:10: error[invalid-context-manager] Object of type `PluginEnabler[(...) -&gt; Unknown, Unknown]` cannot be used with `with` because it does not correctly implement `__exit__`
++ tests/vegalite/v6/test_geo_interface.py:32:10: error[invalid-context-manager] Object of type `PluginEnabler[Unknown, Unknown]` cannot be used with `with` because it does not correctly implement `__exit__`
+- tests/vegalite/v6/test_geo_interface.py:52:10: error[invalid-context-manager] Object of type `PluginEnabler[(...) -&gt; Unknown, Unknown]` cannot be used with `with` because it does not correctly implement `__exit__`
++ tests/vegalite/v6/test_geo_interface.py:52:10: error[invalid-context-manager] Object of type `PluginEnabler[Unknown, Unknown]` cannot be used with `with` because it does not correctly implement `__exit__`
+- tests/vegalite/v6/test_geo_interface.py:72:10: error[invalid-context-manager] Object of type `PluginEnabler[(...) -&gt; Unknown, Unknown]` cannot be used with `with` because it does not correctly implement `__exit__`
++ tests/vegalite/v6/test_geo_interface.py:72:10: error[invalid-context-manager] Object of type `PluginEnabler[Unknown, Unknown]` cannot be used with `with` because it does not correctly implement `__exit__`
+- tests/vegalite/v6/test_geo_interface.py:102:10: error[invalid-context-manager] Object of type `PluginEnabler[(...) -&gt; Unknown, Unknown]` cannot be used with `with` because it does not correctly implement `__exit__`
++ tests/vegalite/v6/test_geo_interface.py:102:10: error[invalid-context-manager] Object of type `PluginEnabler[Unknown, Unknown]` cannot be used with `with` because it does not correctly implement `__exit__`
+- tests/vegalite/v6/test_geo_interface.py:122:10: error[invalid-context-manager] Object of type `PluginEnabler[(...) -&gt; Unknown, Unknown]` cannot be used with `with` because it does not correctly implement `__exit__`
++ tests/vegalite/v6/test_geo_interface.py:122:10: error[invalid-context-manager] Object of type `PluginEnabler[Unknown, Unknown]` cannot be used with `with` because it does not correctly implement `__exit__`
+- tests/vegalite/v6/test_geo_interface.py:132:10: error[invalid-context-manager] Object of type `PluginEnabler[(...) -&gt; Unknown, Unknown]` cannot be used with `with` because it does not correctly implement `__exit__`
++ tests/vegalite/v6/test_geo_interface.py:132:10: error[invalid-context-manager] Object of type `PluginEnabler[Unknown, Unknown]` cannot be used with `with` because it does not correctly implement `__exit__`
+- tests/vegalite/v6/test_geo_interface.py:168:10: error[invalid-context-manager] Object of type `PluginEnabler[(...) -&gt; Unknown, Unknown]` cannot be used with `with` because it does not correctly implement `__exit__`
++ tests/vegalite/v6/test_geo_interface.py:168:10: error[invalid-context-manager] Object of type `PluginEnabler[Unknown, Unknown]` cannot be used with `with` because it does not correctly implement `__exit__`
+- tests/vegalite/v6/test_geo_interface.py:210:10: error[invalid-context-manager] Object of type `PluginEnabler[(...) -&gt; Unknown, Unknown]` cannot be used with `with` because it does not correctly implement `__exit__`
++ tests/vegalite/v6/test_geo_interface.py:210:10: error[invalid-context-manager] Object of type `PluginEnabler[Unknown, Unknown]` cannot be used with `with` because it does not correctly implement `__exit__`
+- tests/vegalite/v6/test_theme.py:48:14: error[invalid-context-manager] Object of type `PluginEnabler[@Todo, ThemeConfig]` cannot be used with `with` because it does not correctly implement `__exit__`
++ tests/vegalite/v6/test_theme.py:48:14: error[invalid-context-manager] Object of type `PluginEnabler[Unknown, ThemeConfig]` cannot be used with `with` because it does not correctly implement `__exit__`
+- Found 1105 diagnostics
++ Found 1107 diagnostics
+
+scipy-stubs (https://github.com/scipy/scipy-stubs)
+- scipy-stubs/differentiate/_differentiate.pyi:70:20: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- scipy-stubs/differentiate/_differentiate.pyi:85:20: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- scipy-stubs/differentiate/_differentiate.pyi:100:20: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- scipy-stubs/differentiate/_differentiate.pyi:115:20: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- scipy-stubs/differentiate/_differentiate.pyi:130:20: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- scipy-stubs/integrate/_bvp.pyi:22:38: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- scipy-stubs/integrate/_bvp.pyi:22:58: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- scipy-stubs/integrate/_bvp.pyi:22:82: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- scipy-stubs/integrate/_bvp.pyi:22:106: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- scipy-stubs/integrate/_bvp.pyi:88:20: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- scipy-stubs/integrate/_bvp.pyi:95:19: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- scipy-stubs/integrate/_bvp.pyi:119:20: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- scipy-stubs/integrate/_bvp.pyi:125:20: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- scipy-stubs/integrate/_bvp.pyi:126:19: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- scipy-stubs/integrate/_bvp.pyi:127:28: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- scipy-stubs/integrate/_bvp.pyi:128:27: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- scipy-stubs/integrate/_bvp.pyi:131:20: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- scipy-stubs/integrate/_bvp.pyi:131:42: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- scipy-stubs/integrate/_bvp.pyi:136:22: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- scipy-stubs/integrate/_bvp.pyi:137:19: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- scipy-stubs/integrate/_bvp.pyi:138:22: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- scipy-stubs/integrate/_bvp.pyi:150:20: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- scipy-stubs/integrate/_bvp.pyi:168:18: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- scipy-stubs/integrate/_bvp.pyi:169:17: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- scipy-stubs/integrate/_bvp.pyi:170:26: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- scipy-stubs/integrate/_bvp.pyi:171:25: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- scipy-stubs/integrate/_bvp.pyi:177:14: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- scipy-stubs/integrate/_bvp.pyi:180:20: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- scipy-stubs/integrate/_bvp.pyi:181:19: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- scipy-stubs/integrate/_bvp.pyi:182:28: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- scipy-stubs/integrate/_bvp.pyi:183:27: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- scipy-stubs/integrate/_bvp.pyi:189:14: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- scipy-stubs/integrate/_bvp.pyi:194:18: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- scipy-stubs/integrate/_bvp.pyi:195:17: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- scipy-stubs/integrate/_bvp.pyi:200:26: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- scipy-stubs/integrate/_bvp.pyi:201:25: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- scipy-stubs/integrate/_bvp.pyi:209:20: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- scipy-stubs/integrate/_bvp.pyi:210:19: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- scipy-stubs/integrate/_bvp.pyi:215:28: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- scipy-stubs/integrate/_bvp.pyi:216:27: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- scipy-stubs/integrate/_ivp/ivp.pyi:73:72: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- scipy-stubs/integrate/_rules/_base.pyi:22:36: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- scipy-stubs/integrate/_rules/_base.pyi:25:36: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- scipy-stubs/integrate/_rules/_base.pyi:51:23: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- scipy-stubs/integrate/_tanhsinh.pyi:25:40: error[invalid-type-arguments] Too many type arguments: expected 0, got 2
+- scipy-stubs/integrate/_tanhsinh.pyi:26:43: error[invalid-type-arguments] Too many type arguments: expected 0, got 2
+- scipy-stubs/integrate/_tanhsinh.pyi:106:42: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- scipy-stubs/integrate/_tanhsinh.pyi:107:23: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- scipy-stubs/integrate/_tanhsinh.pyi:121:42: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- scipy-stubs/integrate/_tanhsinh.pyi:122:23: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- scipy-stubs/integrate/_tanhsinh.pyi:136:43: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- scipy-stubs/integrate/_tanhsinh.pyi:137:24: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- scipy-stubs/integrate/_tanhsinh.pyi:166:42: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- scipy-stubs/integrate/_tanhsinh.pyi:167:23: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- scipy-stubs/integrate/_tanhsinh.pyi:181:42: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- scipy-stubs/integrate/_tanhsinh.pyi:182:23: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- scipy-stubs/integrate/_tanhsinh.pyi:196:43: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- scipy-stubs/integrate/_tanhsinh.pyi:197:24: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- scipy-stubs/interpolate/_ndbspline.pyi:72:25: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- scipy-stubs/interpolate/_ndbspline.pyi:77:88: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- scipy-stubs/interpolate/_rgi.pyi:40:29: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- scipy-stubs/interpolate/_rgi.pyi:53:29: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- scipy-stubs/interpolate/_rgi.pyi:66:29: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- scipy-stubs/linalg/_decomp_svd.pyi:39:14: error[invalid-type-arguments] Too many type arguments: expected 0, got 2
++ scipy-stubs/linalg/_decomp_svd.pyi:39:26: error[invalid-type-arguments] Too many type arguments: expected 1, got 2
+- scipy-stubs/linalg/_decomp_svd.pyi:48:14: error[invalid-type-arguments] Too many type arguments: expected 0, got 2
++ scipy-stubs/linalg/_decomp_svd.pyi:48:26: error[invalid-type-arguments] Too many type arguments: expected 1, got 2
+- scipy-stubs/linalg/_decomp_svd.pyi:57:14: error[invalid-type-arguments] Too many type arguments: expected 0, got 2
++ scipy-stubs/linalg/_decomp_svd.pyi:57:29: error[invalid-type-arguments] Too many type arguments: expected 1, got 2
+- scipy-stubs/linalg/_decomp_svd.pyi:66:14: error[invalid-type-arguments] Too many type arguments: expected 0, got 2
++ scipy-stubs/linalg/_decomp_svd.pyi:66:28: error[invalid-type-arguments] Too many type arguments: expected 1, got 2
+- scipy-stubs/linalg/_matfuncs.pyi:219:45: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- scipy-stubs/linalg/_matfuncs.pyi:221:45: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- scipy-stubs/linalg/_matfuncs.pyi:223:52: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- scipy-stubs/linalg/_matfuncs.pyi:225:52: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- scipy-stubs/linalg/_matfuncs.pyi:227:54: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- scipy-stubs/linalg/_matfuncs.pyi:229:54: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- scipy-stubs/ndimage/_filters.pyi:583:30: error[invalid-type-arguments] Too many type arguments: expected 0, got 2
+- scipy-stubs/ndimage/_filters.pyi:595:30: error[invalid-type-arguments] Too many type arguments: expected 0, got 2
+- scipy-stubs/ndimage/_filters.pyi:607:30: error[invalid-type-arguments] Too many type arguments: expected 0, got 2
+- scipy-stubs/ndimage/_filters.pyi:619:30: error[invalid-type-arguments] Too many type arguments: expected 0, got 2
+- scipy-stubs/ndimage/_filters.pyi:631:30: error[invalid-type-arguments] Too many type arguments: expected 0, got 2
+- scipy-stubs/ndimage/_filters.pyi:643:30: error[invalid-type-arguments] Too many type arguments: expected 0, got 2
+- scipy-stubs/ndimage/_filters.pyi:725:29: error[invalid-type-arguments] Too many type arguments: expected 0, got 2
+- scipy-stubs/ndimage/_filters.pyi:737:29: error[invalid-type-arguments] Too many type arguments: expected 0, got 2
+- scipy-stubs/ndimage/_filters.pyi:749:29: error[invalid-type-arguments] Too many type arguments: expected 0, got 2
+- scipy-stubs/ndimage/_filters.pyi:761:29: error[invalid-type-arguments] Too many type arguments: expected 0, got 2
+- scipy-stubs/ndimage/_filters.pyi:773:29: error[invalid-type-arguments] Too many type arguments: expected 0, got 2
+- scipy-stubs/ndimage/_filters.pyi:785:29: error[invalid-type-arguments] Too many type arguments: expected 0, got 2
+- scipy-stubs/ndimage/_measurements.pyi:244:17: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- scipy-stubs/ndimage/_measurements.pyi:248:17: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- scipy-stubs/ndimage/_measurements.pyi:252:17: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- scipy-stubs/ndimage/_measurements.pyi:256:17: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- scipy-stubs/ndimage/_measurements.pyi:258:105: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- scipy-stubs/ndimage/_measurements.pyi:262:17: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- scipy-stubs/ndimage/_measurements.pyi:264:120: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- scipy-stubs/ndimage/_measurements.pyi:268:17: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- scipy-stubs/ndimage/_measurements.pyi:272:36: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- scipy-stubs/ndimage/_measurements.pyi:278:35: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- scipy-stubs/optimize/_differentiable_functions.pyi:35:36: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- scipy-stubs/optimize/_differentiable_functions.pyi:36:32: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- scipy-stubs/optimize/_differentiable_functions.pyi:37:34: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- scipy-stubs/optimize/_differentiable_functions.pyi:60:27: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- scipy-stubs/optimize/_differentiable_functions.pyi:66:28: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- scipy-stubs/optimize/_differentiable_functions.pyi:72:28: error[invalid-type-arguments] Too many type arguments: expected 0, got 1
+- scipy-stubs/optimize/_differentiable_functions.pyi:91:25: error[invalid-type-arguments] Too many 
+
+... (truncated 918 lines) ...
+</code></pre>
+</details>
+
+<p>No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-12-02 11:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-12-02 12:02</div>
+            <div class="timeline-body"><!-- generated-comment ty ecosystem-analyzer -->
+
+<h2><code>ecosystem-analyzer</code> results</h2>
+<p>| Lint rule | Added | Removed | Changed |
+|-----------|------:|--------:|--------:|
+| <code>invalid-type-arguments</code> | 0 | 416 | 19 |
+| <code>type-assertion-failure</code> | 0 | 0 | 358 |
+| <code>invalid-context-manager</code> | 0 | 0 | 36 |
+| <code>invalid-argument-type</code> | 2 | 4 | 0 |
+| <code>possibly-missing-attribute</code> | 0 | 0 | 3 |
+| <code>unsupported-base</code> | 0 | 3 | 0 |
+| <code>unsupported-operator</code> | 2 | 0 | 1 |
+| <code>no-matching-overload</code> | 0 | 2 | 0 |
+| <code>invalid-return-type</code> | 0 | 0 | 1 |
+| <code>unused-ignore-comment</code> | 1 | 0 | 0 |
+| <strong>Total</strong> | <strong>5</strong> | <strong>425</strong> | <strong>418</strong> |</p>
+<p><strong><a href="https://david-fix-specialized-unknow.ecosystem-663.pages.dev/diff">Full report with detailed diff</a></strong> (<a href="https://david-fix-specialized-unknow.ecosystem-663.pages.dev/timing">timing results</a>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @sharkdp on 2025-12-02 13:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-12-02 13:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[ty] Support generic type aliases involving unknown generic classes" to "[ty] Support typevar-specialized dynamic types in generic type aliases" by @sharkdp on 2025-12-02 13:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @sharkdp on 2025-12-02 15:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-12-02 15:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @sharkdp on 2025-12-02 16:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-12-02 16:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @sharkdp on 2025-12-02 16:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @sharkdp on 2025-12-02 16:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @sharkdp on 2025-12-02 16:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @sharkdp on 2025-12-02 16:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-03 02:46</div>
+            <div class="timeline-body"><p>The conformance suite results here look fine. Most of the changes are around <code>ParamSpec</code>, in the direction of issuing fewer diagnostics on our failure to understand them, which makes sense since they are currently a Todo type so end up being a case of &quot;explicitly specializing a dynamic type&quot;. In some cases we stop erroring on lines we should error on, but we were previously erroring for the wrong reason, so that's still good.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/pep613_type_aliases.md</code>:238 on 2025-12-03 02:52</div>
+            <div class="timeline-body"><p>What's our barrier to getting these three TODOs right? I guess it's just that we currently don't support generics at all on &quot;manual&quot; PEP 695 type aliases?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/infer/builder/type_expression.rs</code>:959 on 2025-12-03 02:55</div>
+            <div class="timeline-body"><p>There should be a TODO here, yeah?</p>
+<p>And we should probably file a follow-up issue for supporting generics in &quot;manual&quot; PEP 695 type aliases?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/infer/builder.rs</code>:11776 on 2025-12-03 02:56</div>
+            <div class="timeline-body"><p>And we should probably have a TODO comment somewhere in here, too...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/bound_super.rs</code>:175 on 2025-12-03 02:57</div>
+            <div class="timeline-body"><p>Heh, this lifetime was just removed a week or so ago...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-12-03 02:58</div>
+            <div class="timeline-body"><p>Looks great, thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-12-03 08:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/resources/mdtest/pep613_type_aliases.md</code>:238 on 2025-12-03 08:21</div>
+            <div class="timeline-body"><p>Yes, exactly. I considered this to be a (maybe lower-priority?) task separate from the generic implicit/PEP613 type alias work. I opened https://github.com/astral-sh/ty/issues/1737.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-12-03 08:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types/infer/builder/type_expression.rs</code>:959 on 2025-12-03 08:23</div>
+            <div class="timeline-body"><blockquote>
+<p>There should be a TODO here, yeah?</p>
+</blockquote>
+<p>Yes, I think in my mind, the whole <code>DynamicType::UnknownGeneric</code> variant was a sort of &quot;Todo&quot; marker, but I added an explicit TODO comment now :+1:</p>
+<blockquote>
+<p>And we should probably file a follow-up issue for supporting generics in &quot;manual&quot; PEP 695 type aliases?</p>
+</blockquote>
+<p>https://github.com/astral-sh/ty/issues/1737</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-12-03 08:27</div>
+            <div class="timeline-body"><blockquote>
+<p>The conformance suite results here look fine.</p>
+</blockquote>
+<p>Thank you for checking, I was so focused on the ecosystem impact (which was erratically changing with every push), I forgot to take a look at the conformance results.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @sharkdp on 2025-12-03 08:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-12-03 08:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @sharkdp on 2025-12-03 09:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-12-03 09:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-12-03 09:00</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:48:28 UTC
+    </footer>
+</body>
+</html>

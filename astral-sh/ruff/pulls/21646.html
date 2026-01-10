@@ -1,0 +1,1246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Implement `typing.final` for methods - astral-sh/ruff #21646</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Implement <code>typing.final</code> for methods</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21646">#21646</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-11-26 21:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-26 21:19</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>A method or property on a superclass decorated with <code>@final</code> cannot be overridden on a subclass.</p>
+<p>Fixes https://github.com/astral-sh/ty/issues/546.</p>
+<p>This currently only implements the check for properties and function-literal types in the class body, not for methods that end up as having other types in the class body (e.g. those decorated with <code>@lru_cache</code>). I'll open a followup issue tracking that, if this is merged.</p>
+<h2>Test Plan</h2>
+<p>mdtests/snapshots</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-11-26 21:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-11-26 21:24</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance">typing conformance tests</a></h2>
+<details>
+<summary>Changes were detected when running ty on typing conformance tests</summary>
+
+<pre><code class="language-diff">--- old-output.txt	2025-11-28 15:14:58.574457152 +0000
++++ new-output.txt	2025-11-28 15:15:02.124465943 +0000
+@@ -795,6 +795,7 @@
+ overloads_definitions.py:146:48: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `int | str`
+ overloads_definitions.py:159:46: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `int | str`
+ overloads_definitions.py:167:44: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `int | str`
++overloads_definitions.py:181:9: error[override-of-final-method] Cannot override final member `final_method` from superclass `Base`
+ overloads_definitions.py:183:10: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `int | str`
+ overloads_definitions.py:198:9: error[invalid-explicit-override] Method `bad_override` is decorated with `@override` but does not override anything
+ overloads_definitions.py:198:45: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `int | str`
+@@ -807,6 +808,7 @@
+ overloads_definitions_stub.pyi:44:9: error[invalid-overload] Overloaded function `func6` does not use the `@classmethod` decorator consistently
+ overloads_definitions_stub.pyi:76:9: error[invalid-overload] `@final` decorator should be applied only to the first overload
+ overloads_definitions_stub.pyi:86:9: error[invalid-overload] `@final` decorator should be applied only to the first overload
++overloads_definitions_stub.pyi:111:9: error[override-of-final-method] Cannot override final member `final_method` from superclass `Base`
+ overloads_definitions_stub.pyi:122:9: error[invalid-explicit-override] Method `bad_override` is decorated with `@override` but does not override anything
+ overloads_definitions_stub.pyi:147:9: error[invalid-overload] `@override` decorator should be applied only to the first overload
+ overloads_evaluation.py:38:1: error[no-matching-overload] No overload of function `example1_1` matches arguments
+@@ -894,8 +896,15 @@
+ qualifiers_final_annotation.py:155:9: error[invalid-assignment] Reassignment of `Final` symbol `x` is not allowed: Symbol later reassigned here
+ qualifiers_final_annotation.py:166:1: error[invalid-assignment] Reassignment of `Final` symbol `TEN` is not allowed: Reassignment of `Final` symbol
+ qualifiers_final_decorator.py:21:16: error[subclass-of-final-class] Class `Derived1` cannot inherit from final class `Base1`
++qualifiers_final_decorator.py:56:9: error[override-of-final-method] Cannot override final member `method1` from superclass `Base2`
++qualifiers_final_decorator.py:60:9: error[override-of-final-method] Cannot override final member `method2` from superclass `Base2`
++qualifiers_final_decorator.py:64:9: error[override-of-final-method] Cannot override final member `method3` from superclass `Base2`
++qualifiers_final_decorator.py:75:9: error[override-of-final-method] Cannot override final member `method4` from superclass `Base2`
+ qualifiers_final_decorator.py:89:9: error[invalid-overload] `@final` decorator should be applied only to the overload implementation
++qualifiers_final_decorator.py:89:9: error[override-of-final-method] Cannot override final member `method` from superclass `Base3`
++qualifiers_final_decorator.py:102:9: error[override-of-final-method] Cannot override final member `method` from superclass `Base4`
+ qualifiers_final_decorator.py:118:9: error[invalid-method-override] Invalid override of method `method`: Definition is incompatible with `Base5_2.method`
++qualifiers_final_decorator.py:118:9: error[override-of-final-method] Cannot override final member `method` from superclass `Base5_2`
+ specialtypes_any.py:86:1: error[type-assertion-failure] Type `int` does not match asserted type `int | @Todo(instance attribute on class with dynamic base)`
+ specialtypes_never.py:19:22: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `Never`
+ specialtypes_never.py:32:12: error[invalid-return-type] Return type does not match returned value: expected `int`, found `Literal[&quot;whatever works&quot;]`
+@@ -1029,4 +1038,4 @@
+ typeddicts_usage.py:28:17: error[missing-typed-dict-key] Missing required key 'name' in TypedDict `Movie` constructor
+ typeddicts_usage.py:28:18: error[invalid-key] Unknown key &quot;title&quot; for TypedDict `Movie`: Unknown key &quot;title&quot;
+ typeddicts_usage.py:40:24: error[invalid-type-form] The special form `typing.TypedDict` is not allowed in type expressions
+-Found 1031 diagnostics
++Found 1040 diagnostics
+
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-11-26 21:26</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">beartype (https://github.com/beartype/beartype)
+- beartype/claw/_package/clawpkgtrie.py:66:29: warning[unsupported-base] Unsupported class base with type `&lt;class 'dict[str, PackagesTrieBlacklist]'&gt; | &lt;class 'dict[str, Divergent]'&gt;`
+- beartype/claw/_package/clawpkgtrie.py:247:29: warning[unsupported-base] Unsupported class base with type `&lt;class 'dict[str, PackagesTrieWhitelist]'&gt; | &lt;class 'dict[str, Divergent]'&gt;`
+- Found 500 diagnostics
++ Found 498 diagnostics
+
+sphinx (https://github.com/sphinx-doc/sphinx)
+- sphinx/builders/gettext.py:286:17: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 594 diagnostics
++ Found 593 diagnostics
+
+scikit-build-core (https://github.com/scikit-build/scikit-build-core)
++ src/scikit_build_core/_logging.py:153:13: warning[unsupported-base] Unsupported class base with type `&lt;class 'Mapping[str, Style]'&gt; | &lt;class 'Mapping[str, Divergent]'&gt;`
+- Found 41 diagnostics
++ Found 42 diagnostics
+
+arviz (https://github.com/arviz-devs/arviz)
++ arviz/stats/stats_utils.py:506:9: error[override-of-final-method] Cannot override final member `copy` from superclass `NDFrame`
+- Found 814 diagnostics
++ Found 815 diagnostics
+
+pandas (https://github.com/pandas-dev/pandas)
+- pandas/core/indexes/multi.py:1757:31: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 3594 diagnostics
++ Found 3593 diagnostics
+
+pandas-stubs (https://github.com/pandas-dev/pandas-stubs)
++ pandas-stubs/core/groupby/generic.pyi:208:9: error[override-of-final-method] Cannot override final member `__iter__` from superclass `BaseGroupBy`
++ pandas-stubs/core/groupby/generic.pyi:456:9: error[override-of-final-method] Cannot override final member `__iter__` from superclass `BaseGroupBy`
+- Found 6160 diagnostics
++ Found 6162 diagnostics
+
+core (https://github.com/home-assistant/core)
+- homeassistant/components/group/valve.py:162:55: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- homeassistant/components/group/valve.py:182:56: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ homeassistant/components/zha/device_tracker.py:65:9: error[override-of-final-method] Cannot override final member `device_info` from superclass `ScannerEntity`
+- Found 14531 diagnostics
++ Found 14530 diagnostics
+
+pydantic (https://github.com/pydantic/pydantic)
+- pydantic/fields.py:943:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -&gt; None) | None`
++ pydantic/fields.py:943:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -&gt; None) | None`
+- pydantic/fields.py:983:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -&gt; None) | None`
++ pydantic/fields.py:983:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -&gt; None) | None`
+- pydantic/fields.py:1026:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -&gt; None) | None`
++ pydantic/fields.py:1026:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -&gt; None) | None`
+- pydantic/fields.py:1066:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -&gt; None) | None`
++ pydantic/fields.py:1066:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -&gt; None) | None`
+- pydantic/fields.py:1109:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -&gt; None) | None`
++ pydantic/fields.py:1109:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -&gt; None) | None`
+- pydantic/fields.py:1148:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -&gt; None) | None`
++ pydantic/fields.py:1148:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -&gt; None) | None`
+- pydantic/fields.py:1188:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -&gt; None) | None`
++ pydantic/fields.py:1188:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -&gt; None) | None`
+- pydantic/fields.py:1567:13: error[invalid-argument-type] Argument is incorrect: Expected `dict[str, Divergent] | ((dict[str, Divergent], /) -&gt; None) | None`, found `Top[dict[Unknown, Unknown]] | (((dict[str, Divergent], /) -&gt; None) &amp; ~Top[dict[Unknown, Unknown]]) | None`
++ pydantic/fields.py:1567:13: error[invalid-argument-type] Argument is incorrect: Expected `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -&gt; None) | None`, found `Top[dict[Unknown, Unknown]] | (((dict[str, int | float | str | ... omitted 3 union elements], /) -&gt; None) &amp; ~Top[dict[Unknown, Unknown]]) | None`
+
+
+</code></pre>
+</details>
+
+<details>
+<summary>Memory usage changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">flake8 (https://github.com/pycqa/flake8)
+-     memo metadata = ~7MB
++     memo metadata = ~8MB
+
+trio (https://github.com/python-trio/trio)
+-     struct metadata = ~10MB
++     struct metadata = ~11MB
+-     memo metadata = ~33MB
++     memo metadata = ~35MB
+
+sphinx (https://github.com/sphinx-doc/sphinx)
+-     struct fields = ~20MB
++     struct fields = ~21MB
+
+prefect (https://github.com/PrefectHQ/prefect)
+- TOTAL MEMORY USAGE: ~626MB
++ TOTAL MEMORY USAGE: ~657MB
+-     struct metadata = ~42MB
++     struct metadata = ~47MB
+-     struct fields = ~44MB
++     struct fields = ~49MB
+-     memo metadata = ~138MB
++     memo metadata = ~159MB
+
+
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-26 21:27</div>
+            <div class="timeline-body"><p>All the changes to the typing conformance suite look good; the lines where the new diagnostics appear all have <code># E</code> next to them</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @AlexWaygood on 2025-11-26 21:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-26 21:33</div>
+            <div class="timeline-body"><p>The primer report also all look correct! All of the new diagnostics already have suppression comments for other tools (pylint, pyright or mypy) that we either interpret as blanket <code>type: ignore</code>s, don't recognise (because they're not <code>type: ignore</code>s, they're something else), or emit on a slightly different line to the other tool</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-11-26 21:35</div>
+            <div class="timeline-body"><!-- generated-comment ty ecosystem-analyzer -->
+
+<h2><code>ecosystem-analyzer</code> results</h2>
+<p>| Lint rule | Added | Removed | Changed |
+|-----------|------:|--------:|--------:|
+| <code>override-of-final-method</code> | 4 | 0 | 0 |
+| <code>unused-ignore-comment</code> | 0 | 4 | 0 |
+| <code>invalid-argument-type</code> | 0 | 0 | 2 |
+| <code>unsupported-base</code> | 1 | 0 | 0 |
+| <strong>Total</strong> | <strong>5</strong> | <strong>4</strong> | <strong>2</strong> |</p>
+<p><strong><a href="https://alex-final-method.ecosystem-663.pages.dev/diff">Full report with detailed diff</a></strong> (<a href="https://alex-final-method.ecosystem-663.pages.dev/timing">timing results</a>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-11-26 21:38</div>
+            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+
+<h2><a href="https://codspeed.io/astral-sh/ruff/branches/alex%2Ffinal-method?utm_source=github&amp;utm_medium=comment&amp;utm_content=header">CodSpeed Performance Report</a></h2>
+<h3>Merging #21646 will <strong>degrade performances by 25.39%</strong></h3>
+<p><sub>Comparing <code>alex/final-method</code> (f8eb0d2) with <code>main</code> (c534bfa)</sub></p>
+<h3>Summary</h3>
+<p><code>❌ 3</code> regressions<br />
+<code>✅ 19</code> untouched<br />
+<code>⏩ 30</code> skipped[^skipped]</p>
+<blockquote>
+<p>:warning: <em>Please fix the performance issues or <a href="https://codspeed.io/astral-sh/ruff/branches/alex%2Ffinal-method?utm_source=github&amp;utm_medium=comment&amp;utm_content=acknowledge">acknowledge them on CodSpeed</a>.</em></p>
+</blockquote>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Mode | Benchmark | <code>BASE</code> | <code>HEAD</code> | Change |
+| --- | ---- | --------- | ------ | ------ | ------ |
+| ❌ | Simulation | <a href="https://codspeed.io/astral-sh/ruff/branches/alex%2Ffinal-method?uri=crates%2Fruff_benchmark%2Fbenches%2Fty.rs%3A%3Amicro%3A%3Abenchmark_many_enum_members%3A%3Aty_micro%5Bmany_enum_members%5D&amp;runnerMode=Instrumentation&amp;utm_source=github&amp;utm_medium=comment&amp;utm_content=benchmark"><code>ty_micro[many_enum_members]</code></a> | 93.4 ms | 125.1 ms | -25.39% |
+| ❌ | WallTime | <a href="https://codspeed.io/astral-sh/ruff/branches/alex%2Ffinal-method?uri=crates%2Fruff_benchmark%2Fbenches%2Fty_walltime.rs%3A%3Asmall%5Baltair%5D&amp;runnerMode=WallTime&amp;utm_source=github&amp;utm_medium=comment&amp;utm_content=benchmark"><code>small[altair]</code></a> | 4.1 s | 4.4 s | -5.53% |
+| ❌ | WallTime | <a href="https://codspeed.io/astral-sh/ruff/branches/alex%2Ffinal-method?uri=crates%2Fruff_benchmark%2Fbenches%2Fty_walltime.rs%3A%3Asmall%5Btanjun%5D&amp;runnerMode=WallTime&amp;utm_source=github&amp;utm_medium=comment&amp;utm_content=benchmark"><code>small[tanjun]</code></a> | 2.4 s | 2.5 s | -4.39% |
+[^skipped]: 30 benchmarks were skipped, so the baseline results were used instead. If they were deleted from the codebase, <a href="https://codspeed.io/astral-sh/ruff/branches/alex%2Ffinal-method?sectionId=benchmark-comparison-section-baseline-result-skipped&amp;utm_source=github&amp;utm_medium=comment&amp;utm_content=archive">click here and archive them to remove them from the performance reports</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @AlexWaygood on 2025-11-26 21:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @AlexWaygood on 2025-11-26 21:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @AlexWaygood on 2025-11-26 21:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @AlexWaygood on 2025-11-26 21:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @AlexWaygood on 2025-11-26 21:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-26 21:45</div>
+            <div class="timeline-body"><blockquote>
+<p>Merging #21646 will <strong>degrade performances by 25.55%</strong></p>
+</blockquote>
+<p>you hate to see it, <em>but</em> this regression is only manifesting on one (deliberately strange) microbenchmark, not on any of our real-world benchmarks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-26 21:48</div>
+            <div class="timeline-body"><p>hmm</p>
+<pre><code>
+    union.md - Unions in calls - Bidirectional Type I… (6ad89b6eeb55bea4)
+
+      crates/ty_python_semantic/resources/mdtest/call/union.md:281 unmatched assertion: error: [invalid-argument-type] &quot;Argument to function `f` is incorrect: Expected `T`, found `dict[str, int] &amp; dict[Unknown | str, Unknown | int]`&quot;
+      crates/ty_python_semantic/resources/mdtest/call/union.md:281 unexpected error: 7 [invalid-argument-type] &quot;Argument to function `f` is incorrect: Expected `T`, found `dict[Unknown | str, Unknown | int] &amp; dict[str, int]`&quot;
+
+    To rerun this specific test, set the environment variable: MDTEST_TEST_FILTER='union.md - Unions in calls - Bidirectional Type I… (6ad89b6eeb55bea4)'
+    MDTEST_TEST_FILTER='union.md - Unions in calls - Bidirectional Type I… (6ad89b6eeb55bea4)' cargo test -p ty_python_semantic --test mdtest -- mdtest__call_union
+</code></pre>
+<p>I don't know why anything I've done in this PR would change the intersection/union order here. I'm seeing the same failures locally, though, so I guess I can just change the mdtest assertion. cc. @ibraheemdev -- could this be related to https://github.com/astral-sh/ruff/pull/21267 ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-11-26 21:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/call/union.md</code>:280 on 2025-11-26 21:49</div>
+            <div class="timeline-body"><p>(see https://github.com/astral-sh/ruff/pull/21646#issuecomment-3583310745)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2025-11-26 21:51</div>
+            <div class="timeline-body"><p>I think https://github.com/astral-sh/ruff/pull/21267 just means started seeing more intersection types in mdtests that we were previously hiding, not the source of the problem.</p>
+<p>I suppose it is possible that we are creating the intersection types in a non-deterministic way during multi-inference, but I'm not sure how that would be.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-26 21:53</div>
+            <div class="timeline-body"><p>I think our intersection builder is <em>generally</em> deterministic. There are a <em>lot</em> of intersection types in our ecosystem diagnostics, so if the order of elements in our intersections was nondeterministic, we would constantly get spurious mypy_primer diffs in CI -- but we don't.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-11-26 21:58</div>
+            <div class="timeline-body"><p>It's deterministic as long as you add the types in a deterministic order; I suspect somewhere we are building an intersection from a non-deterministically-ordered iterator of types. I'm auditing intersection-building call sites to see if I can find it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-26 22:05</div>
+            <div class="timeline-body"><blockquote>
+<p>It's deterministic as long as you add the types in a deterministic order</p>
+</blockquote>
+<p>yes, that's what I meant</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-26 22:37</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>Merging #21646 will <strong>degrade performances by 25.55%</strong></p>
+</blockquote>
+<p>you hate to see it, <em>but</em> this regression is only manifesting on one (deliberately strange) microbenchmark, not on any of our real-world benchmarks.</p>
+</blockquote>
+<p>Well, okay, after fixing some edge-case bugs there are now regressions on other benchmarks too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-26 23:26</div>
+            <div class="timeline-body"><p>I tried playing around with this optimisation locally:</p>
+<details>
+
+<pre><code class="language-diff">diff --git a/crates/ty_python_semantic/src/types/liskov.rs b/crates/ty_python_semantic/src/types/liskov.rs
+index c377212831..0b8f354970 100644
+--- a/crates/ty_python_semantic/src/types/liskov.rs
++++ b/crates/ty_python_semantic/src/types/liskov.rs
+@@ -2,6 +2,8 @@
+ //!
+ //! [Liskov Substitution Principle]: https://en.wikipedia.org/wiki/Liskov_substitution_principle
+ 
++use std::cell::LazyCell;
++
+ use ruff_db::diagnostic::Annotation;
+ use rustc_hash::FxHashSet;
+ 
+@@ -9,7 +11,7 @@ use crate::{
+     place::Place,
+     semantic_index::{place_table, use_def_map},
+     types::{
+-        ClassBase, ClassLiteral, ClassType, KnownClass, Type,
++        ClassBase, ClassLiteral, ClassType, KnownClass, SpecialFormType, Type,
+         class::CodeGeneratorKind,
+         context::InferContext,
+         diagnostic::{
+@@ -56,7 +58,7 @@ fn check_class_declaration&lt;'db&gt;(
+     };
+ 
+     let (literal, specialization) = class.class_literal(db);
+-    let class_kind = CodeGeneratorKind::from_class(db, literal, specialization);
++    let class_kind = LazyCell::new(|| CodeGeneratorKind::from_class(db, literal, specialization));
+ 
+     let mut subclass_overrides_superclass_declaration = false;
+     let mut has_dynamic_superclass = false;
+@@ -171,7 +173,7 @@ fn check_class_declaration&lt;'db&gt;(
+ 
+         // Synthesized `__replace__` methods on dataclasses are not checked
+         if &amp;member.name == &quot;__replace__&quot;
+-            &amp;&amp; matches!(class_kind, Some(CodeGeneratorKind::DataclassLike(_)))
++            &amp;&amp; matches!(*class_kind, Some(CodeGeneratorKind::DataclassLike(_)))
+         {
+             continue;
+         }
+@@ -209,7 +211,14 @@ fn check_class_declaration&lt;'db&gt;(
+             {
+                 subclass_overrides_superclass_declaration = true;
+             }
+-        } else if class_kind == Some(CodeGeneratorKind::NamedTuple) {
++        // avoid checking `class_kind` here just to check if it's a `NamedTuple`:
++        // we can get that from the explicit bases directly, and dereferencing
++        // `class_kind` can result in unnecessary memory use due to it being a
++        // `LazyCell` wrapper around a Salsa-cached method.
++        } else if literal
++            .explicit_bases(db)
++            .contains(&amp;Type::SpecialForm(SpecialFormType::NamedTuple))
++        {
+             if !KnownClass::NamedTupleFallback
+                 .to_instance(db)
+                 .member(db, &amp;member.name)
+</code></pre>
+</details>
+
+<p>I can't measure any speedup locally, but it's possible it might also reduce memory usage... I could push it and see what happens in CI? It does add a little more complexity to the code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-11-27 07:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types/liskov.rs</code>:125 on 2025-11-27 07:11</div>
+            <div class="timeline-body"><p>Given that we do a ton of work here to check liskov, would it make sense to skip the work if the relevant rule is disabled?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-11-27 07:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types/liskov.rs</code>:140 on 2025-11-27 07:14</div>
+            <div class="timeline-body"><p>This call here introduces cross-module query dependencies as you're looking up a function AST node from the superclass (which could be defined anywhere within the project). You might want to move this check into a salsa query</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-27 07:18</div>
+            <div class="timeline-body"><blockquote>
+<p>I tried playing around with this optimisation locally:</p>
+</blockquote>
+<p>Is there evidence in the perf profiles that this is where we spend the majority of extra time? The function itself is salsa cached and doesn't look that complicated.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-11-27 11:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/liskov.rs</code>:125 on 2025-11-27 11:12</div>
+            <div class="timeline-body"><p>that makes sense -- what's the best/cheapest way to do that? Do I want to just copy some of the logic from here?</p>
+<p>https://github.com/astral-sh/ruff/blob/761031f729ee43fe39cdb9b04e0133740a77be17/crates/ty_python_semantic/src/types/context.rs#L424-L436</p>
+<p>I tried speculatively creating a diagnostic builder before entering the loop, but that did very strange things to <code>unused-ignore</code> comments in unrelated mdtests</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-11-27 11:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/liskov.rs</code>:72 on 2025-11-27 11:22</div>
+            <div class="timeline-body"><p>@MichaReiser, is it safe for a Salsa query to take in a <code>ScopedSymbolId</code> as an input, or do I want this to take in a <code>Name</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/liskov.rs</code>:125 on 2025-11-27 11:25</div>
+            <div class="timeline-body"><p>note that we already don't do any class checks unless we're in a file we should be checking for diagnostics: https://github.com/astral-sh/ruff/blob/761031f729ee43fe39cdb9b04e0133740a77be17/crates/ty_python_semantic/src/types/infer/builder.rs#L573-L576</p>
+<p>The Liskov checks are all called from the <code>check_class_definitions()</code> hook</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-11-27 11:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-27 11:54</div>
+            <div class="timeline-body"><p>I ran ty on a large codebase locally with <code>TY_MEMORY_REPORT=full</code>, to see where the increased memory usage (and the performance hit) might be coming from.</p>
+<details>
+<summary>Results on this branch</summary>
+
+<pre><code>=======SALSA STRUCTS=======
+`Definition`                                       metadata=252.58MB fields=353.61MB count=6314532
+`ClassLiteral &lt; 'db &gt;::implicit_attribute_inner_::interned_arguments` metadata=259.75MB fields=185.53MB count=4638323
+`Type &lt; 'db &gt;::class_member_with_policy_::interned_arguments` metadata=210.21MB fields=180.18MB count=3753792
+`IntersectionType`                                 metadata=72.35MB  fields=169.34MB count=1291881
+`FunctionType`                                     metadata=42.29MB  fields=163.73MB count=755161
+`Type &lt; 'db &gt;::is_redundant_with_::interned_arguments` metadata=264.42MB fields=151.10MB count=4721858
+`Type &lt; 'db &gt;::member_lookup_with_policy_::interned_arguments` metadata=161.90MB fields=138.77MB count=2891106
+`CallableType`                                     metadata=28.47MB  fields=107.73MB count=508356
+`UnionType`                                        metadata=89.66MB  fields=103.68MB count=1601115
+`Expression`                                       metadata=200.50MB fields=100.25MB count=4177057
+`Type &lt; 'db &gt;::try_call_dunder_get_::interned_arguments` metadata=81.64MB  fields=69.98MB  count=1457830
+`StringLiteralType`                                metadata=61.87MB  fields=69.64MB  count=1104846
+`File`                                             metadata=17.49MB  fields=61.69MB  count=273280
+`OverloadLiteral`                                  metadata=32.93MB  fields=43.44MB  count=588079
+`place_by_id::interned_arguments`                  metadata=96.79MB  fields=37.23MB  count=1861283
+`Specialization`                                   metadata=30.49MB  fields=32.77MB  count=544435
+`Type &lt; 'db &gt;::apply_specialization_::interned_arguments` metadata=62.47MB  fields=26.77MB  count=1115609
+`BoundMethodType`                                  metadata=50.61MB  fields=21.69MB  count=903705
+`ScopeId`                                          metadata=28.97MB  fields=12.42MB  count=1034607
+`ClassLiteral`                                     metadata=8.43MB   fields=11.87MB  count=150568
+`TupleType`                                        metadata=7.20MB   fields=11.14MB  count=128610
+`ClassLiteral &lt; 'db &gt;::try_mro_::interned_arguments` metadata=27.78MB  fields=7.94MB   count=495984
+`GenericContext`                                   metadata=5.15MB   fields=7.39MB   count=91888
+`BoundTypeVarInstance`                             metadata=22.58MB  fields=6.45MB   count=403295
+`GenericAlias`                                     metadata=22.10MB  fields=6.31MB   count=394583
+`FileModule`                                       metadata=2.82MB   fields=4.94MB   count=50425
+`FunctionLiteral`                                  metadata=32.93MB  fields=4.70MB   count=588079
+`ExpressionWithContext`                            metadata=10.66MB  fields=4.57MB   count=190395
+`code_generator_of_class::interned_arguments`      metadata=15.25MB  fields=4.36MB   count=272241
+`ModuleLiteralType`                                metadata=11.21MB  fields=4.31MB   count=215490
+`ModuleNameIngredient`                             metadata=2.86MB   fields=4.19MB   count=51003
+`TypeVarInstance`                                  metadata=4.85MB   fields=4.15MB   count=86523
+`ProtocolInterface`                                metadata=1.82MB   fields=3.67MB   count=32513
+`TypeVarIdentity`                                  metadata=4.83MB   fields=3.45MB   count=86284
+`Unpack`                                           metadata=2.93MB   fields=2.34MB   count=73168
+`BytesLiteralType`                                 metadata=0.49MB   fields=2.01MB   count=8761
+`EnumLiteralType`                                  metadata=1.97MB   fields=1.40MB   count=35200
+`Project`                                          metadata=0.00MB   fields=0.92MB   count=1
+`StarImportPlaceholderPredicate`                   metadata=1.19MB   fields=0.85MB   count=42389
+`lookup_dunder_new_inner::interned_arguments`      metadata=2.90MB   fields=0.83MB   count=51814
+`BoundSuperType`                                   metadata=1.35MB   fields=0.77MB   count=24019
+`ClassLiteral &lt; 'db &gt;::fields_::interned_arguments` metadata=1.33MB   fields=0.72MB   count=25670
+`PropertyInstanceType`                             metadata=0.96MB   fields=0.55MB   count=17089
+`PatternPredicate`                                 metadata=0.10MB   fields=0.26MB   count=3194
+`is_equivalent_to_object_inner::interned_arguments` metadata=0.75MB   fields=0.17MB   count=14356
+`FieldInstance`                                    metadata=0.16MB   fields=0.15MB   count=2893
+`UnionTypeInstance`                                metadata=0.05MB   fields=0.07MB   count=910
+`NewType`                                          metadata=0.06MB   fields=0.05MB   count=1092
+`Program`                                          metadata=0.00MB   fields=0.02MB   count=1
+`TypeIsType`                                       metadata=0.02MB   fields=0.01MB   count=388
+`InternedType`                                     metadata=0.02MB   fields=0.00MB   count=277
+`ClassLiteral &lt; 'db &gt;::variance_of_::interned_arguments` metadata=0.01MB   fields=0.00MB   count=127
+`DataclassParams`                                  metadata=0.00MB   fields=0.00MB   count=28
+`DeprecatedInstance`                               metadata=0.01MB   fields=0.00MB   count=119
+`GenericAlias &lt; 'db &gt;::variance_of_::interned_arguments` metadata=0.00MB   fields=0.00MB   count=45
+`FileRoot`                                         metadata=0.00MB   fields=0.00MB   count=3
+`DataclassTransformerParams`                       metadata=0.00MB   fields=0.00MB   count=5
+`NamespacePackage`                                 metadata=0.00MB   fields=0.00MB   count=8
+`is_function_definition::interned_arguments`       metadata=0.00MB   fields=0.00MB   count=4
+`ModuleResolveModeIngredient`                      metadata=0.00MB   fields=0.00MB   count=1
+`module_type_symbols::interned_arguments`          metadata=0.00MB   fields=0.00MB   count=1
+=======SALSA QUERIES=======
+`semantic_index -&gt; ty_python_semantic::semantic_index::SemanticIndex&lt;'_&gt;`
+    metadata=287.40MB fields=6808.31MB count=93616
+`parsed_module -&gt; ruff_db::parsed::ParsedModule`
+    metadata=7.15MB   fields=3328.33MB count=94119
+`infer_definition_types -&gt; ty_python_semantic::types::infer::DefinitionInference&lt;'_&gt;`
+    metadata=1945.58MB fields=1327.92MB count=5351152
+`infer_scope_types -&gt; ty_python_semantic::types::infer::ScopeInference&lt;'_&gt;`
+    metadata=732.23MB fields=1284.14MB count=914076
+`infer_expression_types_impl -&gt; ty_python_semantic::types::infer::ExpressionInference&lt;'_&gt;`
+    metadata=2050.22MB fields=823.69MB count=3815077
+`source_text -&gt; ruff_db::source::SourceText`
+    metadata=6.02MB   fields=771.74MB count=94119
+`check_file_impl -&gt; core::result::Result&lt;alloc::boxed::Box&lt;[ruff_db::diagnostic::Diagnostic]&gt;, ruff_db::diagnostic::Diagnostic&gt;`
+    metadata=21.84MB  fields=199.91MB count=90643
+`ClassLiteral &lt; 'db &gt;::implicit_attribute_inner_ -&gt; ty_python_semantic::types::member::Member&lt;'_&gt;`
+    metadata=516.93MB fields=148.43MB count=4638323
+`FunctionType &lt; 'db &gt;::signature_ -&gt; ty_python_semantic::types::signatures::CallableSignature&lt;'_&gt;`
+    metadata=94.35MB  fields=147.94MB count=628226
+`Type &lt; 'db &gt;::class_member_with_policy_ -&gt; ty_python_semantic::place::PlaceAndQualifiers&lt;'_&gt;`
+    metadata=1078.42MB fields=120.12MB count=3753792
+`Type &lt; 'db &gt;::member_lookup_with_policy_ -&gt; ty_python_semantic::place::PlaceAndQualifiers&lt;'_&gt;`
+    metadata=1071.66MB fields=92.52MB  count=2891106
+`ClassLiteral &lt; 'db &gt;::try_mro_ -&gt; core::result::Result&lt;ty_python_semantic::types::mro::Mro&lt;'_&gt;, ty_python_semantic::types::mro::MroError&lt;'_&gt;&gt;`
+    metadata=113.55MB fields=72.07MB  count=495984
+`FunctionType &lt; 'db &gt;::last_definition_raw_signature_ -&gt; ty_python_semantic::types::signatures::Signature&lt;'_&gt;`
+    metadata=43.12MB  fields=63.79MB  count=291911
+`place_by_id -&gt; ty_python_semantic::place::PlaceAndQualifiers&lt;'_&gt;`
+    metadata=155.28MB fields=59.56MB  count=1861283
+`line_index -&gt; ruff_source_file::line_index::LineIndex`
+    metadata=1.14MB   fields=56.57MB  count=21920
+`all_narrowing_constraints_for_expression -&gt; core::option::Option&lt;std::collections::hash::map::HashMap&lt;ty_python_semantic::semantic_index::place::ScopedPlaceId, ty_python_semantic::types::Type&lt;'_&gt;, rustc_hash::FxBuildHasher&gt;&gt;`
+    metadata=214.31MB fields=43.13MB  count=528646
+`Type &lt; 'db &gt;::try_call_dunder_get_ -&gt; core::option::Option&lt;(ty_python_semantic::types::Type&lt;'_&gt;, ty_python_semantic::types::AttributeKind)&gt;`
+    metadata=764.56MB fields=34.99MB  count=1457830
+`infer_deferred_types -&gt; ty_python_semantic::types::infer::DefinitionInference&lt;'_&gt;`
+    metadata=37.43MB  fields=28.17MB  count=107086
+`all_negative_narrowing_constraints_for_expression -&gt; core::option::Option&lt;std::collections::hash::map::HashMap&lt;ty_python_semantic::semantic_index::place::ScopedPlaceId, ty_python_semantic::types::Type&lt;'_&gt;, rustc_hash::FxBuildHasher&gt;&gt;`
+    metadata=46.84MB  fields=25.14MB  count=305015
+`ClassLiteral &lt; 'db &gt;::fields_ -&gt; indexmap::map::IndexMap&lt;ruff_python_ast::name::Name, ty_python_semantic::types::class::Field&lt;'_&gt;, core::hash::BuildHasherDefault&lt;rustc_hash::FxHasher&gt;&gt;`
+    metadata=17.94MB  fields=18.59MB  count=25670
+`Type &lt; 'db &gt;::apply_specialization_ -&gt; ty_python_semantic::types::Type&lt;'_&gt;`
+    metadata=175.84MB fields=17.85MB  count=1115609
+`infer_expression_type_impl -&gt; ty_python_semantic::types::Type&lt;'_&gt;`
+    metadata=84.91MB  fields=16.10MB  count=1006467
+`suppressions -&gt; ty_python_semantic::suppression::Suppressions`
+    metadata=5.80MB   fields=14.23MB  count=90643
+`FunctionLiteral &lt; 'db &gt;::overloads_and_implementation_ -&gt; (alloc::boxed::Box&lt;[ty_python_semantic::types::function::OverloadLiteral&lt;'_&gt;]&gt;, core::option::Option&lt;ty_python_semantic::types::function::OverloadLiteral&lt;'_&gt;&gt;)`
+    metadata=42.37MB  fields=14.17MB  count=586429
+`enum_metadata -&gt; core::option::Option&lt;ty_python_semantic::types::enums::EnumMetadata&lt;'_&gt;&gt;`
+    metadata=62.22MB  fields=12.67MB  count=143963
+`FunctionType &lt; 'db &gt;::last_definition_signature_ -&gt; ty_python_semantic::types::signatures::Signature&lt;'_&gt;`
+    metadata=10.29MB  fields=12.57MB  count=51169
+`infer_unpack_types -&gt; ty_python_semantic::types::unpacker::UnpackResult&lt;'_&gt;`
+    metadata=19.62MB  fields=11.86MB  count=65431
+`ClassLiteral &lt; 'db &gt;::try_metaclass_ -&gt; core::result::Result&lt;(ty_python_semantic::types::Type&lt;'_&gt;, core::option::Option&lt;ty_python_semantic::types::function::DataclassTransformerParams&lt;'_&gt;&gt;), ty_python_semantic::types::class::MetaclassError&lt;'_&gt;&gt;`
+    metadata=31.98MB  fields=7.18MB   count=149545
+`imported_modules -&gt; alloc::sync::Arc&lt;std::collections::hash::set::HashSet&lt;ty_python_semantic::module_name::ModuleName, rustc_hash::FxBuildHasher&gt;&gt;`
+    metadata=2.85MB   fields=6.61MB   count=54886
+`inferable_typevars_inner -&gt; std::collections::hash::set::HashSet&lt;ty_python_semantic::types::BoundTypeVarIdentity&lt;'_&gt;, rustc_hash::FxBuildHasher&gt;`
+    metadata=3.13MB   fields=5.21MB   count=63330
+`Type &lt; 'db &gt;::is_redundant_with_ -&gt; bool`
+    metadata=498.28MB fields=4.72MB   count=4721858
+`ClassLiteral &lt; 'db &gt;::explicit_bases_ -&gt; alloc::boxed::Box&lt;[ty_python_semantic::types::Type&lt;'_&gt;]&gt;`
+    metadata=12.46MB  fields=4.68MB   count=150348
+`code_generator_of_class -&gt; core::option::Option&lt;ty_python_semantic::types::class::CodeGeneratorKind&lt;'_&gt;&gt;`
+    metadata=35.62MB  fields=3.27MB   count=272241
+`place_table -&gt; alloc::sync::Arc&lt;ty_python_semantic::semantic_index::place::PlaceTable&gt;`
+    metadata=20.07MB  fields=3.09MB   count=385988
+`BoundMethodType &lt; 'db &gt;::into_callable_type_ -&gt; ty_python_semantic::types::CallableType&lt;'_&gt;`
+    metadata=45.34MB  fields=2.79MB   count=349181
+`ClassLiteral &lt; 'db &gt;::decorators_ -&gt; alloc::boxed::Box&lt;[ty_python_semantic::types::Type&lt;'_&gt;]&gt;`
+    metadata=10.80MB  fields=2.79MB   count=145217
+`use_def_map -&gt; alloc::sync::Arc&lt;ty_python_semantic::semantic_index::use_def::UseDefMap&lt;'_&gt;&gt;`
+    metadata=11.48MB  fields=1.77MB   count=220792
+`lookup_dunder_new_inner -&gt; core::option::Option&lt;ty_python_semantic::place::PlaceAndQualifiers&lt;'_&gt;&gt;`
+    metadata=28.70MB  fields=1.66MB   count=51814
+`ClassLiteral &lt; 'db &gt;::pep695_generic_context_ -&gt; core::option::Option&lt;ty_python_semantic::types::generics::GenericContext&lt;'_&gt;&gt;`
+    metadata=12.03MB  fields=1.20MB   count=150347
+`ClassLiteral &lt; 'db &gt;::inherited_legacy_generic_context_ -&gt; core::option::Option&lt;ty_python_semantic::types::generics::GenericContext&lt;'_&gt;&gt;`
+    metadata=12.01MB  fields=1.20MB   count=150052
+`exported_names -&gt; alloc::boxed::Box&lt;[ruff_python_ast::name::Name]&gt;`
+    metadata=0.08MB   fields=1.12MB   count=915
+`file_settings -&gt; ty_project::metadata::settings::FileSettings`
+    metadata=6.53MB   fields=0.73MB   count=90643
+`static_expression_truthiness -&gt; ty_python_semantic::types::Truthiness`
+    metadata=63.00MB  fields=0.66MB   count=660157
+`resolve_module_query -&gt; core::option::Option&lt;ty_python_semantic::module_resolver::module::Module&lt;'_&gt;&gt;`
+    metadata=22.04MB  fields=0.61MB   count=51003
+`global_scope -&gt; ty_python_semantic::semantic_index::scope::ScopeId&lt;'_&gt;`
+    metadata=3.76MB   fields=0.58MB   count=72265
+`TupleType &lt; 'db &gt;::to_class_type_ -&gt; ty_python_semantic::types::class::ClassType&lt;'_&gt;`
+    metadata=12.87MB  fields=0.23MB   count=19054
+`cached_protocol_interface -&gt; ty_python_semantic::types::protocol_class::ProtocolInterface&lt;'_&gt;`
+    metadata=8.37MB   fields=0.23MB   count=28410
+`all_narrowing_constraints_for_pattern -&gt; core::option::Option&lt;std::collections::hash::map::HashMap&lt;ty_python_semantic::semantic_index::place::ScopedPlaceId, ty_python_semantic::types::Type&lt;'_&gt;, rustc_hash::FxBuildHasher&gt;&gt;`
+    metadata=17.60MB  fields=0.19MB   count=2285
+`all_negative_narrowing_constraints_for_pattern -&gt; core::option::Option&lt;std::collections::hash::map::HashMap&lt;ty_python_semantic::semantic_index::place::ScopedPlaceId, ty_python_semantic::types::Type&lt;'_&gt;, rustc_hash::FxBuildHasher&gt;&gt;`
+    metadata=0.40MB   fields=0.19MB   count=2115
+`ClassLiteral &lt; 'db &gt;::is_typed_dict_ -&gt; bool`
+    metadata=17.30MB  fields=0.15MB   count=150123
+`ClassLiteral &lt; 'db &gt;::inheritance_cycle_ -&gt; core::option::Option&lt;ty_python_semantic::types::class::InheritanceCycle&gt;`
+    metadata=17.76MB  fields=0.15MB   count=148297
+`dunder_all_names -&gt; core::option::Option&lt;std::collections::hash::set::HashSet&lt;ruff_python_ast::name::Name, rustc_hash::FxBuildHasher&gt;&gt;`
+    metadata=0.04MB   fields=0.08MB   count=360
+`file_to_module -&gt; core::option::Option&lt;ty_python_semantic::module_resolver::module::Module&lt;'_&gt;&gt;`
+    metadata=0.35MB   fields=0.04MB   count=3212
+`ClassType &lt; 'db &gt;::into_callable_ -&gt; ty_python_semantic::types::CallableTypes&lt;'_&gt;`
+    metadata=0.16MB   fields=0.01MB   count=613
+`is_equivalent_to_object_inner -&gt; bool`
+    metadata=4.38MB   fields=0.01MB   count=14356
+`TypeVarInstance &lt; 'db &gt;::lazy_bound_ -&gt; core::option::Option&lt;ty_python_semantic::types::TypeVarBoundOrConstraints&lt;'_&gt;&gt;`
+    metadata=0.09MB   fields=0.01MB   count=852
+`NewType &lt; 'db &gt;::lazy_base_ -&gt; ty_python_semantic::types::newtype::NewTypeBase&lt;'_&gt;`
+    metadata=0.18MB   fields=0.01MB   count=771
+`TypeVarInstance &lt; 'db &gt;::lazy_constraints_ -&gt; core::option::Option&lt;ty_python_semantic::types::TypeVarBoundOrConstraints&lt;'_&gt;&gt;`
+    metadata=0.01MB   fields=0.00MB   count=57
+`module_type_symbols -&gt; smallvec::SmallVec&lt;[ruff_python_ast::name::Name; 8]&gt;`
+    metadata=0.00MB   fields=0.00MB   count=1
+`TypeVarInstance &lt; 'db &gt;::lazy_default_ -&gt; core::option::Option&lt;ty_python_semantic::types::Type&lt;'_&gt;&gt;`
+    metadata=0.00MB   fields=0.00MB   count=29
+`ClassLiteral &lt; 'db &gt;::variance_of_ -&gt; ty_python_semantic::types::variance::TypeVarVariance`
+    metadata=0.02MB   fields=0.00MB   count=127
+`dynamic_resolution_paths -&gt; alloc::vec::Vec&lt;ty_python_semantic::module_resolver::path::SearchPath&gt;`
+    metadata=0.00MB   fields=0.00MB   count=1
+`GenericAlias &lt; 'db &gt;::variance_of_ -&gt; ty_python_semantic::types::variance::TypeVarVariance`
+    metadata=0.00MB   fields=0.00MB   count=45
+`is_function_definition -&gt; bool`
+    metadata=0.00MB   fields=0.00MB   count=4
+=======SALSA SUMMARY=======
+TOTAL MEMORY USAGE: 30482.65MB
+    struct metadata = 2240.14MB
+    struct fields = 2130.14MB
+    memo metadata = 10506.70MB
+    memo fields = 15605.67MB
+</code></pre>
+</details>
+
+<details>
+<summary>Results on main</summary>
+
+<pre><code>=======SALSA STRUCTS=======
+`Definition`                                       metadata=252.58MB fields=353.61MB count=6314449
+`FunctionType`                                     metadata=42.24MB  fields=163.24MB count=754355
+`IntersectionType`                                 metadata=67.55MB  fields=158.38MB count=1206228
+`Type &lt; 'db &gt;::class_member_with_policy_::interned_arguments` metadata=184.12MB fields=157.81MB count=3287789
+`Type &lt; 'db &gt;::is_redundant_with_::interned_arguments` metadata=250.83MB fields=143.33MB count=4479056
+`ClassLiteral &lt; 'db &gt;::implicit_attribute_inner_::interned_arguments` metadata=189.96MB fields=135.68MB count=3392059
+`Type &lt; 'db &gt;::member_lookup_with_policy_::interned_arguments` metadata=140.53MB fields=120.46MB count=2509480
+`CallableType`                                     metadata=28.46MB  fields=107.72MB count=508295
+`Expression`                                       metadata=200.50MB fields=100.25MB count=4177018
+`UnionType`                                        metadata=83.39MB  fields=97.58MB  count=1489117
+`StringLiteralType`                                metadata=61.86MB  fields=69.63MB  count=1104613
+`File`                                             metadata=17.49MB  fields=61.69MB  count=273272
+`Type &lt; 'db &gt;::try_call_dunder_get_::interned_arguments` metadata=67.38MB  fields=57.75MB  count=1203194
+`OverloadLiteral`                                  metadata=32.93MB  fields=43.44MB  count=587994
+`place_by_id::interned_arguments`                  metadata=82.91MB  fields=31.89MB  count=1594423
+`Specialization`                                   metadata=29.00MB  fields=31.21MB  count=517813
+`Type &lt; 'db &gt;::apply_specialization_::interned_arguments` metadata=58.88MB  fields=25.23MB  count=1051346
+`BoundMethodType`                                  metadata=50.08MB  fields=21.46MB  count=894229
+`ScopeId`                                          metadata=28.97MB  fields=12.42MB  count=1034589
+`ClassLiteral`                                     metadata=8.43MB   fields=11.87MB  count=150562
+`TupleType`                                        metadata=7.20MB   fields=11.13MB  count=128600
+`ClassLiteral &lt; 'db &gt;::try_mro_::interned_arguments` metadata=26.63MB  fields=7.61MB   count=475488
+`GenericContext`                                   metadata=5.14MB   fields=7.38MB   count=91738
+`BoundTypeVarInstance`                             metadata=22.58MB  fields=6.45MB   count=403283
+`GenericAlias`                                     metadata=21.29MB  fields=6.08MB   count=380135
+`FileModule`                                       metadata=2.82MB   fields=4.94MB   count=50423
+`FunctionLiteral`                                  metadata=32.93MB  fields=4.70MB   count=587994
+`ExpressionWithContext`                            metadata=10.66MB  fields=4.57MB   count=190373
+`ModuleLiteralType`                                metadata=11.21MB  fields=4.31MB   count=215485
+`ModuleNameIngredient`                             metadata=2.86MB   fields=4.19MB   count=51001
+`TypeVarInstance`                                  metadata=4.85MB   fields=4.15MB   count=86519
+`code_generator_of_class::interned_arguments`      metadata=14.00MB  fields=4.00MB   count=250050
+`ProtocolInterface`                                metadata=1.82MB   fields=3.66MB   count=32509
+`TypeVarIdentity`                                  metadata=4.83MB   fields=3.45MB   count=86280
+`Unpack`                                           metadata=2.93MB   fields=2.34MB   count=73167
+`BytesLiteralType`                                 metadata=0.49MB   fields=2.01MB   count=8761
+`EnumLiteralType`                                  metadata=1.97MB   fields=1.40MB   count=35198
+`Project`                                          metadata=0.00MB   fields=0.92MB   count=1
+`StarImportPlaceholderPredicate`                   metadata=1.19MB   fields=0.85MB   count=42389
+`lookup_dunder_new_inner::interned_arguments`      metadata=2.90MB   fields=0.83MB   count=51812
+`BoundSuperType`                                   metadata=1.35MB   fields=0.77MB   count=24019
+`ClassLiteral &lt; 'db &gt;::fields_::interned_arguments` metadata=1.33MB   fields=0.72MB   count=25670
+`PropertyInstanceType`                             metadata=0.95MB   fields=0.54MB   count=17005
+`PatternPredicate`                                 metadata=0.10MB   fields=0.26MB   count=3194
+`is_equivalent_to_object_inner::interned_arguments` metadata=0.75MB   fields=0.17MB   count=14349
+`FieldInstance`                                    metadata=0.16MB   fields=0.15MB   count=2893
+`UnionTypeInstance`                                metadata=0.05MB   fields=0.07MB   count=910
+`NewType`                                          metadata=0.06MB   fields=0.05MB   count=1061
+`Program`                                          metadata=0.00MB   fields=0.02MB   count=1
+`TypeIsType`                                       metadata=0.02MB   fields=0.01MB   count=388
+`InternedType`                                     metadata=0.02MB   fields=0.00MB   count=277
+`ClassLiteral &lt; 'db &gt;::variance_of_::interned_arguments` metadata=0.01MB   fields=0.00MB   count=127
+`DataclassParams`                                  metadata=0.00MB   fields=0.00MB   count=28
+`DeprecatedInstance`                               metadata=0.01MB   fields=0.00MB   count=118
+`GenericAlias &lt; 'db &gt;::variance_of_::interned_arguments` metadata=0.00MB   fields=0.00MB   count=45
+`FileRoot`                                         metadata=0.00MB   fields=0.00MB   count=3
+`DataclassTransformerParams`                       metadata=0.00MB   fields=0.00MB   count=5
+`NamespacePackage`                                 metadata=0.00MB   fields=0.00MB   count=8
+`ModuleResolveModeIngredient`                      metadata=0.00MB   fields=0.00MB   count=1
+`module_type_symbols::interned_arguments`          metadata=0.00MB   fields=0.00MB   count=1
+=======SALSA QUERIES=======
+`semantic_index -&gt; ty_python_semantic::semantic_index::SemanticIndex&lt;'_&gt;`
+    metadata=287.40MB fields=6808.23MB count=93614
+`parsed_module -&gt; ruff_db::parsed::ParsedModule`
+    metadata=7.15MB   fields=3356.48MB count=94117
+`infer_definition_types -&gt; ty_python_semantic::types::infer::DefinitionInference&lt;'_&gt;`
+    metadata=1945.54MB fields=1327.88MB count=5350978
+`infer_scope_types -&gt; ty_python_semantic::types::infer::ScopeInference&lt;'_&gt;`
+    metadata=707.11MB fields=1284.14MB count=914075
+`infer_expression_types_impl -&gt; ty_python_semantic::types::infer::ExpressionInference&lt;'_&gt;`
+    metadata=2050.13MB fields=823.67MB count=3815035
+`source_text -&gt; ruff_db::source::SourceText`
+    metadata=6.02MB   fields=771.74MB count=94117
+`check_file_impl -&gt; core::result::Result&lt;alloc::boxed::Box&lt;[ruff_db::diagnostic::Diagnostic]&gt;, ruff_db::diagnostic::Diagnostic&gt;`
+    metadata=21.84MB  fields=199.90MB count=90643
+`FunctionType &lt; 'db &gt;::signature_ -&gt; ty_python_semantic::types::signatures::CallableSignature&lt;'_&gt;`
+    metadata=94.30MB  fields=147.62MB count=627782
+`ClassLiteral &lt; 'db &gt;::implicit_attribute_inner_ -&gt; ty_python_semantic::types::member::Member&lt;'_&gt;`
+    metadata=396.92MB fields=108.55MB count=3392059
+`Type &lt; 'db &gt;::class_member_with_policy_ -&gt; ty_python_semantic::place::PlaceAndQualifiers&lt;'_&gt;`
+    metadata=976.98MB fields=105.21MB count=3287789
+`Type &lt; 'db &gt;::member_lookup_with_policy_ -&gt; ty_python_semantic::place::PlaceAndQualifiers&lt;'_&gt;`
+    metadata=887.72MB fields=80.30MB  count=2509480
+`ClassLiteral &lt; 'db &gt;::try_mro_ -&gt; core::result::Result&lt;ty_python_semantic::types::mro::Mro&lt;'_&gt;, ty_python_semantic::types::mro::MroError&lt;'_&gt;&gt;`
+    metadata=108.56MB fields=69.22MB  count=475488
+`FunctionType &lt; 'db &gt;::last_definition_raw_signature_ -&gt; ty_python_semantic::types::signatures::Signature&lt;'_&gt;`
+    metadata=43.12MB  fields=63.79MB  count=291911
+`line_index -&gt; ruff_source_file::line_index::LineIndex`
+    metadata=1.14MB   fields=56.56MB  count=21917
+`place_by_id -&gt; ty_python_semantic::place::PlaceAndQualifiers&lt;'_&gt;`
+    metadata=122.69MB fields=51.02MB  count=1594423
+`all_narrowing_constraints_for_expression -&gt; core::option::Option&lt;std::collections::hash::map::HashMap&lt;ty_python_semantic::semantic_index::place::ScopedPlaceId, ty_python_semantic::types::Type&lt;'_&gt;, rustc_hash::FxBuildHasher&gt;&gt;`
+    metadata=214.29MB fields=43.12MB  count=528642
+`Type &lt; 'db &gt;::try_call_dunder_get_ -&gt; core::option::Option&lt;(ty_python_semantic::types::Type&lt;'_&gt;, ty_python_semantic::types::AttributeKind)&gt;`
+    metadata=721.23MB fields=28.88MB  count=1203194
+`infer_deferred_types -&gt; ty_python_semantic::types::infer::DefinitionInference&lt;'_&gt;`
+    metadata=37.42MB  fields=28.17MB  count=107084
+`all_negative_narrowing_constraints_for_expression -&gt; core::option::Option&lt;std::collections::hash::map::HashMap&lt;ty_python_semantic::semantic_index::place::ScopedPlaceId, ty_python_semantic::types::Type&lt;'_&gt;, rustc_hash::FxBuildHasher&gt;&gt;`
+    metadata=46.83MB  fields=25.13MB  count=305013
+`ClassLiteral &lt; 'db &gt;::fields_ -&gt; indexmap::map::IndexMap&lt;ruff_python_ast::name::Name, ty_python_semantic::types::class::Field&lt;'_&gt;, core::hash::BuildHasherDefault&lt;rustc_hash::FxHasher&gt;&gt;`
+    metadata=17.94MB  fields=18.59MB  count=25670
+`Type &lt; 'db &gt;::apply_specialization_ -&gt; ty_python_semantic::types::Type&lt;'_&gt;`
+    metadata=172.50MB fields=16.82MB  count=1051346
+`infer_expression_type_impl -&gt; ty_python_semantic::types::Type&lt;'_&gt;`
+    metadata=84.71MB  fields=16.07MB  count=1004549
+`suppressions -&gt; ty_python_semantic::suppression::Suppressions`
+    metadata=5.80MB   fields=14.23MB  count=90643
+`FunctionLiteral &lt; 'db &gt;::overloads_and_implementation_ -&gt; (alloc::boxed::Box&lt;[ty_python_semantic::types::function::OverloadLiteral&lt;'_&gt;]&gt;, core::option::Option&lt;ty_python_semantic::types::function::OverloadLiteral&lt;'_&gt;&gt;)`
+    metadata=42.36MB  fields=14.16MB  count=586343
+`FunctionType &lt; 'db &gt;::last_definition_signature_ -&gt; ty_python_semantic::types::signatures::Signature&lt;'_&gt;`
+    metadata=10.27MB  fields=12.51MB  count=50992
+`infer_unpack_types -&gt; ty_python_semantic::types::unpacker::UnpackResult&lt;'_&gt;`
+    metadata=19.62MB  fields=11.85MB  count=65429
+`enum_metadata -&gt; core::option::Option&lt;ty_python_semantic::types::enums::EnumMetadata&lt;'_&gt;&gt;`
+    metadata=55.41MB  fields=11.28MB  count=128187
+`ClassLiteral &lt; 'db &gt;::try_metaclass_ -&gt; core::result::Result&lt;(ty_python_semantic::types::Type&lt;'_&gt;, core::option::Option&lt;ty_python_semantic::types::function::DataclassTransformerParams&lt;'_&gt;&gt;), ty_python_semantic::types::class::MetaclassError&lt;'_&gt;&gt;`
+    metadata=31.98MB  fields=7.18MB   count=149532
+`imported_modules -&gt; alloc::sync::Arc&lt;std::collections::hash::set::HashSet&lt;ty_python_semantic::module_name::ModuleName, rustc_hash::FxBuildHasher&gt;&gt;`
+    metadata=2.85MB   fields=6.61MB   count=54884
+`inferable_typevars_inner -&gt; std::collections::hash::set::HashSet&lt;ty_python_semantic::types::BoundTypeVarIdentity&lt;'_&gt;, rustc_hash::FxBuildHasher&gt;`
+    metadata=3.13MB   fields=5.21MB   count=63323
+`ClassLiteral &lt; 'db &gt;::explicit_bases_ -&gt; alloc::boxed::Box&lt;[ty_python_semantic::types::Type&lt;'_&gt;]&gt;`
+    metadata=12.46MB  fields=4.68MB   count=150342
+`Type &lt; 'db &gt;::is_redundant_with_ -&gt; bool`
+    metadata=481.42MB fields=4.48MB   count=4479056
+`place_table -&gt; alloc::sync::Arc&lt;ty_python_semantic::semantic_index::place::PlaceTable&gt;`
+    metadata=20.07MB  fields=3.09MB   count=385979
+`code_generator_of_class -&gt; core::option::Option&lt;ty_python_semantic::types::class::CodeGeneratorKind&lt;'_&gt;&gt;`
+    metadata=32.50MB  fields=3.00MB   count=250050
+`BoundMethodType &lt; 'db &gt;::into_callable_type_ -&gt; ty_python_semantic::types::CallableType&lt;'_&gt;`
+    metadata=45.34MB  fields=2.79MB   count=349186
+`ClassLiteral &lt; 'db &gt;::decorators_ -&gt; alloc::boxed::Box&lt;[ty_python_semantic::types::Type&lt;'_&gt;]&gt;`
+    metadata=9.16MB   fields=2.40MB   count=122737
+`use_def_map -&gt; alloc::sync::Arc&lt;ty_python_semantic::semantic_index::use_def::UseDefMap&lt;'_&gt;&gt;`
+    metadata=11.48MB  fields=1.77MB   count=220784
+`lookup_dunder_new_inner -&gt; core::option::Option&lt;ty_python_semantic::place::PlaceAndQualifiers&lt;'_&gt;&gt;`
+    metadata=28.69MB  fields=1.66MB   count=51812
+`ClassLiteral &lt; 'db &gt;::pep695_generic_context_ -&gt; core::option::Option&lt;ty_python_semantic::types::generics::GenericContext&lt;'_&gt;&gt;`
+    metadata=12.03MB  fields=1.20MB   count=150341
+`ClassLiteral &lt; 'db &gt;::inherited_legacy_generic_context_ -&gt; core::option::Option&lt;ty_python_semantic::types::generics::GenericContext&lt;'_&gt;&gt;`
+    metadata=12.01MB  fields=1.20MB   count=150046
+`exported_names -&gt; alloc::boxed::Box&lt;[ruff_python_ast::name::Name]&gt;`
+    metadata=0.08MB   fields=1.12MB   count=915
+`file_settings -&gt; ty_project::metadata::settings::FileSettings`
+    metadata=6.53MB   fields=0.73MB   count=90643
+`static_expression_truthiness -&gt; ty_python_semantic::types::Truthiness`
+    metadata=62.97MB  fields=0.66MB   count=660148
+`resolve_module_query -&gt; core::option::Option&lt;ty_python_semantic::module_resolver::module::Module&lt;'_&gt;&gt;`
+    metadata=22.03MB  fields=0.61MB   count=51001
+`global_scope -&gt; ty_python_semantic::semantic_index::scope::ScopeId&lt;'_&gt;`
+    metadata=3.76MB   fields=0.58MB   count=72263
+`cached_protocol_interface -&gt; ty_python_semantic::types::protocol_class::ProtocolInterface&lt;'_&gt;`
+    metadata=8.37MB   fields=0.23MB   count=28410
+`TupleType &lt; 'db &gt;::to_class_type_ -&gt; ty_python_semantic::types::class::ClassType&lt;'_&gt;`
+    metadata=12.31MB  fields=0.21MB   count=17815
+`all_narrowing_constraints_for_pattern -&gt; core::option::Option&lt;std::collections::hash::map::HashMap&lt;ty_python_semantic::semantic_index::place::ScopedPlaceId, ty_python_semantic::types::Type&lt;'_&gt;, rustc_hash::FxBuildHasher&gt;&gt;`
+    metadata=17.60MB  fields=0.19MB   count=2285
+`all_negative_narrowing_constraints_for_pattern -&gt; core::option::Option&lt;std::collections::hash::map::HashMap&lt;ty_python_semantic::semantic_index::place::ScopedPlaceId, ty_python_semantic::types::Type&lt;'_&gt;, rustc_hash::FxBuildHasher&gt;&gt;`
+    metadata=0.40MB   fields=0.19MB   count=2115
+`ClassLiteral &lt; 'db &gt;::is_typed_dict_ -&gt; bool`
+    metadata=17.30MB  fields=0.15MB   count=150121
+`ClassLiteral &lt; 'db &gt;::inheritance_cycle_ -&gt; core::option::Option&lt;ty_python_semantic::types::class::InheritanceCycle&gt;`
+    metadata=17.76MB  fields=0.15MB   count=148291
+`dunder_all_names -&gt; core::option::Option&lt;std::collections::hash::set::HashSet&lt;ruff_python_ast::name::Name, rustc_hash::FxBuildHasher&gt;&gt;`
+    metadata=0.04MB   fields=0.08MB   count=360
+`file_to_module -&gt; core::option::Option&lt;ty_python_semantic::module_resolver::module::Module&lt;'_&gt;&gt;`
+    metadata=0.34MB   fields=0.04MB   count=3211
+`ClassType &lt; 'db &gt;::into_callable_ -&gt; ty_python_semantic::types::CallableTypes&lt;'_&gt;`
+    metadata=0.16MB   fields=0.01MB   count=611
+`is_equivalent_to_object_inner -&gt; bool`
+    metadata=4.38MB   fields=0.01MB   count=14349
+`TypeVarInstance &lt; 'db &gt;::lazy_bound_ -&gt; core::option::Option&lt;ty_python_semantic::types::TypeVarBoundOrConstraints&lt;'_&gt;&gt;`
+    metadata=0.09MB   fields=0.01MB   count=847
+`NewType &lt; 'db &gt;::lazy_base_ -&gt; ty_python_semantic::types::newtype::NewTypeBase&lt;'_&gt;`
+    metadata=0.18MB   fields=0.01MB   count=770
+`TypeVarInstance &lt; 'db &gt;::lazy_constraints_ -&gt; core::option::Option&lt;ty_python_semantic::types::TypeVarBoundOrConstraints&lt;'_&gt;&gt;`
+    metadata=0.01MB   fields=0.00MB   count=57
+`module_type_symbols -&gt; smallvec::SmallVec&lt;[ruff_python_ast::name::Name; 8]&gt;`
+    metadata=0.00MB   fields=0.00MB   count=1
+`TypeVarInstance &lt; 'db &gt;::lazy_default_ -&gt; core::option::Option&lt;ty_python_semantic::types::Type&lt;'_&gt;&gt;`
+    metadata=0.00MB   fields=0.00MB   count=29
+`ClassLiteral &lt; 'db &gt;::variance_of_ -&gt; ty_python_semantic::types::variance::TypeVarVariance`
+    metadata=0.02MB   fields=0.00MB   count=127
+`dynamic_resolution_paths -&gt; alloc::vec::Vec&lt;ty_python_semantic::module_resolver::path::SearchPath&gt;`
+    metadata=0.00MB   fields=0.00MB   count=1
+`GenericAlias &lt; 'db &gt;::variance_of_ -&gt; ty_python_semantic::types::variance::TypeVarVariance`
+    metadata=0.00MB   fields=0.00MB   count=45
+=======SALSA SUMMARY=======
+TOTAL MEMORY USAGE: 29561.45MB
+    struct metadata = 2061.16MB
+    struct fields = 1992.43MB
+    memo metadata = 9962.47MB
+    memo fields = 15545.40MB
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-27 12:16</div>
+            <div class="timeline-body"><p>The memory reports indicate that the increased memory usage is because we're doing a lot more <code>Type::member()</code> calls:</p>
+<pre><code class="language-diff">- `ClassLiteral &lt; 'db &gt;::implicit_attribute_inner_::interned_arguments` metadata=189.96MB fields=135.68MB count=3392059
++ `ClassLiteral &lt; 'db &gt;::implicit_attribute_inner_::interned_arguments` metadata=259.75MB fields=185.53MB count=4638323
+- `Type &lt; 'db &gt;::class_member_with_policy_::interned_arguments` metadata=184.12MB fields=157.81MB count=3287789
++ `Type &lt; 'db &gt;::class_member_with_policy_::interned_arguments` metadata=210.21MB fields=180.18MB count=3753792
+  `ClassLiteral &lt; 'db &gt;::implicit_attribute_inner_ -&gt; ty_python_semantic::types::member::Member&lt;'_&gt;`
+-     metadata=396.92MB fields=108.55MB count=3392059
++     metadata=516.93MB fields=148.43MB count=4638323
+  `Type &lt; 'db &gt;::class_member_with_policy_ -&gt; ty_python_semantic::place::PlaceAndQualifiers&lt;'_&gt;`
+-     metadata=976.98MB fields=105.21MB count=3287789
++     metadata=1078.42MB fields=120.12MB count=3753792
+  `Type &lt; 'db &gt;::member_lookup_with_policy_ -&gt; ty_python_semantic::place::PlaceAndQualifiers&lt;'_&gt;`
+-     metadata=887.72MB fields=80.30MB  count=2509480
++     metadata=1071.66MB fields=92.52MB  count=2891106
+</code></pre>
+<p>That makes sense: previously, we only did the <code>Type::member()</code> call on the superclass if the definition in the subclass was a function definition, because we currently only do Liskov checks if the subclass and the superclass are both function definitions (this will change in https://github.com/astral-sh/ruff/pull/21611). Now, we have to do the <code>Type::member()</code> call for all definitions on the subclass, because any definition on the subclass could possibly override a <code>@final</code> method on a superclass. I strongly suspect that the performance hit is caused by the same thing.</p>
+<p>I'm not sure there's realistically any way to get around this. With the checks we have in place <em>right now</em> we don't really need to look up implicit instance attributes: we can just look at the type as declared/defined in the class body. So it's <em>possible</em> I could avoid the <code>Type::member()</code> call in favour of more low-level APIs that would avoid looking up the member as an implicit instance attributes. But we will continue adding more Liskov checks in the (near) future, which will definitely need to know the types of implicit instance attributes on both the subclass and the superclass. So I don't think it's worth trying to micro-optimise away the <code>Type::member()</code> calls for gains that would be very short-term.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-11-27 12:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types/liskov.rs</code>:125 on 2025-11-27 12:31</div>
+            <div class="timeline-body"><p>That was actually the first thing I checked this morning, whether we always run this check or only for first-party files.</p>
+<p>I think just <code>ctx.db.rule_selection(ctx.file).is_enabled(lint)</code> should be enough</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-11-27 12:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types/liskov.rs</code>:72 on 2025-11-27 12:32</div>
+            <div class="timeline-body"><p>I don't see any issue with it, other than that it requires interning (but that's just the cost we have to pay?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-11-27 12:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/liskov.rs</code>:72 on 2025-11-27 12:38</div>
+            <div class="timeline-body"><p>cool, thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @AlexWaygood on 2025-11-27 13:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/resources/mdtest/final.md</code>:77 on 2025-11-28 07:33</div>
+            <div class="timeline-body"><p>I'm getting you're not a fan of whitespace :D</p>
+<pre><code class="language-suggestion">    @final
+    def foo(self): ...
+
+    @final
+    @property
+    def my_property1(self) -&gt; int: ...
+
+    @property
+    @final
+    def my_property2(self) -&gt; int: ...
+
+    @final
+    @classmethod
+    def class_method1(cls) -&gt; int: ...
+
+    @staticmethod
+    @final
+    def static_method1() -&gt; int: ...
+
+    @final
+    @classmethod
+    def class_method2(cls) -&gt; int: ...
+
+    @staticmethod
+    @final
+    def static_method2() -&gt; int: ...
+
+    @lossy_decorator
+    @final
+    def decorated_1(self): ...
+    
+    @final
+    @lossy_decorator
+    def decorated_2(self): ...
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/resources/mdtest/final.md</code>:59 on 2025-11-28 07:35</div>
+            <div class="timeline-body"><p>What's the difference between <code>class_method1</code> and <code>2</code> tha makes it worth having both?</p>
+<p>The same for <code>static_method1</code> and <code>2</code>. Did you mean to change the decorator ordering?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/resources/mdtest/final.md</code>:206 on 2025-11-28 07:40</div>
+            <div class="timeline-body"><p>What's the reasoning for only emitting one error here rather than one per overload implementation? It seems a bit annoying that, after removing the last overload, more diagnostics will pop up</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/resources/mdtest/final.md</code>:271 on 2025-11-28 07:44</div>
+            <div class="timeline-body"><p>I find the diagnostic range here confusing. I read the message like 4 times and was confused why ty would think that the definition of <code>f</code> on line 248 isn't the implementation when it clearly is. I think we should change the diagnostic range to underline the <code>@final</code> on line 243 because that's where the error really is and is also the code you have to change (move the <code>final</code> to line 247)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/resources/mdtest/final.md</code>:305 on 2025-11-28 07:45</div>
+            <div class="timeline-body"><p>Do we also need to emit diagnostic if we have something like</p>
+<pre><code class="language-py">class Chil(Bad):
+    def __init__(self):
+        self.f = &quot;haha&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/resources/mdtest/final.md</code>:300 on 2025-11-28 07:46</div>
+            <div class="timeline-body"><p>The <code>no diagnostic</code> suggests to me that we intentionally assert that we don't raise a diagnsotic here. Is that our intention? If so, why?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/resources/mdtest/snapshots/final.md_-_Tests_for_the_`@typi…_-_Cannot_override_a_me…_(338615109711a91b).snap</code>:120 on 2025-11-28 07:48</div>
+            <div class="timeline-body"><p>Should we omit <code>foo</code> here, given that it already appears in the primary message (and the name is also fairly obvious from what's underlined).</p>
+<p>Overrides the definition from its superclass <code>Parent</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types/diagnostic.rs</code>:3829 on 2025-11-28 07:51</div>
+            <div class="timeline-body"><p>We should assert the full concise output in at least one mdtest. I'm also not sure if it's worth here using a separate concise message. Why not always use this message and remove the primary message instead (I feel like the full output message repeats both the superclass name and member unnecessarily, we should avoid redundant information)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types/function.rs</code>:943 on 2025-11-28 07:55</div>
+            <div class="timeline-body"><p>I would a function named <code>first</code> expect to return an <code>Option</code>, which also seems more in line with what other methods iterating over overloads do.</p>
+<p>In general, the idea of <code>expect</code> is to have a message that says why the &quot;expectation holds true&quot;. In this case, there isn't any. If returning an <code>Option</code> is indeed much more annoying to handle upstream, I suggest to rename the method and add a docstring saying that it's the callers responsibility to ensure this literal has at least one overload</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/resources/mdtest/final.md</code>:33 on 2025-11-28 07:57</div>
+            <div class="timeline-body"><p>Should we add a test for a conditional member</p>
+<pre><code class="language-py">class Annoying:
+    if choice():
+        @final
+        def test(): ...
+    else:
+        def test(): ...
+
+class NowWhat(Annoying):
+    def test(): ...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types/liskov.rs</code>:352 on 2025-11-28 07:59</div>
+            <div class="timeline-body"><p>Fancy, although I think I would just have used 3 bools here. It's not like we create many instances of this and it is a bit easier to read</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-11-28 07:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-11-28 11:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/function.rs</code>:943 on 2025-11-28 11:15</div>
+            <div class="timeline-body"><p>What would you suggest renaming this method to? Having it return an <code>Option</code> would feel very silly here. We know for a fact that there will always be at least one overload or implementation. There's no way we could possibly infer a function as being a function if it has 0 <code>StmtFunctionDef</code> nodes associated with it in the source definition.</p>
+<p>To me <code>first</code> seems like by far the most logical name for this method, because it clearly describes what it does: it returns the first overload or implementation</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-11-28 11:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/liskov.rs</code>:352 on 2025-11-28 11:16</div>
+            <div class="timeline-body"><p>Hmm, I find this more readable :-) and it's also more extensible: this isn't the last override-related rule we'll be adding to this module.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-11-28 11:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/final.md</code>:300 on 2025-11-28 11:20</div>
+            <div class="timeline-body"><p>Yes, that is our intention. I said why in the prose above this snippet: mypy and pyright do not emit a diagnostic here.</p>
+<p>I'll flesh that description out a bit more to be more explicit that our behaviour here is mainly based on a desire to be compatible with what they do.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/final.md</code>:305 on 2025-11-28 11:21</div>
+            <div class="timeline-body"><p>Yes, we do. We don't currently consider implicit instance attributes for any of our override-related checks, but we'll need to add that in the future. I'll add a TODO for now 👍</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-11-28 11:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-11-28 11:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/final.md</code>:271 on 2025-11-28 11:23</div>
+            <div class="timeline-body"><p>The diagnostic range for the <code>invalid-overload</code> diagnostic? Sure, but I'm not touching any of the <code>invalid-overload</code> logic in this PR :-) This test is just demonstrating how <code>override-of-final-method</code> diagnostics are emitted on methods that would <em>also</em> be flagged as having invalid overloads: it's important to see how the two diagnostics interact</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-11-28 11:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types/function.rs</code>:943 on 2025-11-28 11:24</div>
+            <div class="timeline-body"><p>Oh, in that case it's fine. I incorrectly assumed that we only have an <code>OverloadLiteral</code> if this is, in fact, an overload. But if this is something guaranteed by the type itself, it's fine to have the expect inside the method</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-11-28 11:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/final.md</code>:206 on 2025-11-28 11:25</div>
+            <div class="timeline-body"><p>The overloads together all constitute a single definition of one function. I'll add some more verbiage to the diagnostic to make it clear that you'd have to remove all diagnostics for us to be satisfied 👍</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/final.md</code>:59 on 2025-11-28 11:25</div>
+            <div class="timeline-body"><blockquote>
+<p>Did you mean to change the decorator ordering?</p>
+</blockquote>
+<p>Oops, yes, I did 😶</p>
+<p>Great catch, thank you!!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-11-28 11:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-11-28 11:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/resources/mdtest/final.md</code>:271 on 2025-11-28 11:39</div>
+            <div class="timeline-body"><p>Yes, I'm fine leaving this to another PR then. I just got very confused by the message (which is all about <code>final</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-11-28 12:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/final.md</code>:271 on 2025-11-28 12:36</div>
+            <div class="timeline-body"><p>I opened https://github.com/astral-sh/ty/issues/1664 to track this</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/snapshots/final.md_-_Tests_for_the_`@typi…_-_A_possibly-undefined…_(fc7b496fd1986deb).snap</code>:249 on 2025-11-28 14:16</div>
+            <div class="timeline-body"><p>@MichaReiser, I feel like I remember Ruff having this issue in the past -- can you remember what the solution was? Ideally we'd mark the autofix as display-only if we can see that it's going to introduce invalid syntax. (Or use a <code>range_replacement</code> that replaces the definition with <code>pass</code>.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-11-28 14:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/resources/mdtest/snapshots/final.md_-_Tests_for_the_`@typi…_-_A_possibly-undefined…_(fc7b496fd1986deb).snap</code>:249 on 2025-11-28 14:21</div>
+            <div class="timeline-body"><p>We have a <code>DisplayOnly</code> Applicability. I don't think they are shown anywhere by default (ever?). The IDE also filters out manual only edits.</p>
+<p>I don't think we should add fixes that introduce syntax errors. I'm also not convinced that it's the right fix. It's as likely that the proper fix is to remove the <code>@final</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-11-28 14:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-11-28 14:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/snapshots/final.md_-_Tests_for_the_`@typi…_-_A_possibly-undefined…_(fc7b496fd1986deb).snap</code>:249 on 2025-11-28 14:22</div>
+            <div class="timeline-body"><p>Right, I was more wondering if Ruff had a nice little routine somewhere to easily detect that this was the only statement in the <code>if:</code> branch (and therefore that a naive deletion would introduce an unsafe fix)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/diagnostic.rs</code>:3829 on 2025-11-28 14:27</div>
+            <div class="timeline-body"><p>The concise diagnostic would repeat the word &quot;overrides&quot; twice in one short sentence. That seems very unnecessary considering how trivial it is to set a better concise diagnostic here</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-11-28 14:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-11-28 14:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/resources/mdtest/snapshots/final.md_-_Tests_for_the_`@typi…_-_A_possibly-undefined…_(fc7b496fd1986deb).snap</code>:249 on 2025-11-28 14:32</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/ruff/blob/096e539b7249d1eada88984995233db00a2c436d/crates/ruff_linter/src/fix/edits.rs#L25-L63</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-11-28 14:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/snapshots/final.md_-_Tests_for_the_`@typi…_-_A_possibly-undefined…_(fc7b496fd1986deb).snap</code>:249 on 2025-11-28 14:36</div>
+            <div class="timeline-body"><p>ty</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-11-28 14:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/snapshots/final.md_-_Tests_for_the_`@typi…_-_A_possibly-undefined…_(fc7b496fd1986deb).snap</code>:249 on 2025-11-28 14:36</div>
+            <div class="timeline-body"><p>seems complicated, I'll leave this for a followup</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-11-28 14:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/resources/mdtest/snapshots/final.md_-_Tests_for_the_`@typi…_-_A_possibly-undefined…_(fc7b496fd1986deb).snap</code>:249 on 2025-11-28 14:37</div>
+            <div class="timeline-body"><p>haha yeah</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-11-28 14:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/diagnostic.rs</code>:3829 on 2025-11-28 14:39</div>
+            <div class="timeline-body"><p>I've added an explicit test for the concise message</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/snapshots/final.md_-_Tests_for_the_`@typi…_-_Cannot_override_a_me…_(338615109711a91b).snap</code>:120 on 2025-11-28 14:39</div>
+            <div class="timeline-body"><p>This actually ends up making the primary diagnostic more verbose in most cases I tested, but I agree that the repetition wasn't great. I've applied a small variant of your suggestion, thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-11-28 14:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-28 14:40</div>
+            <div class="timeline-body"><p>Thanks for the great review @MichaReiser, it flagged a bunch of edge cases I missed!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2025-11-28 15:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-11-28 15:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-11-28 15:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-11-29 17:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types/diagnostic.rs</code>:3900 on 2025-11-29 17:15</div>
+            <div class="timeline-body"><p>A fix that might introduce invalid syntax should be a manual fix</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-12-03 11:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/diagnostic.rs</code>:3900 on 2025-12-03 11:51</div>
+            <div class="timeline-body"><p>(fixed in https://github.com/astral-sh/ruff/pull/21699)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:48:28 UTC
+    </footer>
+</body>
+</html>

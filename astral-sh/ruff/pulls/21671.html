@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Implement patterns and typevars in the LSP - astral-sh/ruff #21671</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Implement patterns and typevars in the LSP</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21671">#21671</a>
+        opened by <a href="https://github.com/Gankra">@Gankra</a>
+        on 2025-11-27 22:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/Gankra">@Gankra</a> on 2025-11-27 22:44</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p><strong>This is the final goto-targets with missing goto-definition/declaration implementations!
+You can now theoretically click on all the user-defined names in all the syntax. 🎉</strong></p>
+<p>This adds:</p>
+<ul>
+<li>goto definition/declaration on patterns/typevars</li>
+<li>find-references/rename on patterns/typevars</li>
+<li>fixes syntax highlighting of <code>*rest</code> patterns</li>
+</ul>
+<p>This notably <em>does not</em> add:</p>
+<ul>
+<li>goto-type for patterns/typevars</li>
+<li>hover for patterns/typevars (because that's just goto-type for names)</li>
+</ul>
+<p>Also I realized we were at the precipice of one of the great GotoTarget sins being resolved, and so I made import aliases also resolve to a ResolvedDefinition. This removes a ton of cruft and prevents further backsliding.</p>
+<p>Note however that import aliases are, in general, completely jacked up when it comes to find-references/renames (both before and after this PR). Previously you could try to rename an import alias and it just wouldn't do anything. With this change we instead refuse to even let you try to rename it.</p>
+<p>Sorting out why import aliases are jacked up is an ongoing thing I hope to handle in a followup.</p>
+<h2>Test Plan</h2>
+<p>You'll surely not regret checking in 86 snapshot tests</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[ty] Implement goto-definition/declaration for all syntax" to "[ty] Implement patterns/typevars in the LSP" by @Gankra on 2025-11-27 22:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-11-27 22:46</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[ty] Implement patterns/typevars in the LSP" to "[ty] Implement patterns and typevars in the LSP" by @Gankra on 2025-11-27 22:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @Gankra on 2025-11-27 22:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @Gankra on 2025-11-27 22:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-11-27 22:47</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">beartype (https://github.com/beartype/beartype)
+- beartype/claw/_package/clawpkgtrie.py:66:29: warning[unsupported-base] Unsupported class base with type `&lt;class 'dict[str, PackagesTrieBlacklist]'&gt; | &lt;class 'dict[str, Divergent]'&gt;`
+- beartype/claw/_package/clawpkgtrie.py:247:29: warning[unsupported-base] Unsupported class base with type `&lt;class 'dict[str, PackagesTrieWhitelist]'&gt; | &lt;class 'dict[str, Divergent]'&gt;`
+- Found 500 diagnostics
++ Found 498 diagnostics
+
+
+</code></pre>
+</details>
+
+<p>No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-11-27 22:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/ty_python_semantic/src/semantic_index/builder.rs</code>:1482 on 2025-11-27 22:49</div>
+            <div class="timeline-body"><p>This one is actually useless I think (I added it while thrashing and trying to get imports rename/reference working... it did not work).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @Gankra on 2025-11-28 00:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @Gankra on 2025-11-28 00:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @Gankra on 2025-11-28 00:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @Gankra on 2025-11-28 00:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @Gankra on 2025-11-28 00:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @Gankra on 2025-11-28 00:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_ide/src/goto.rs</code>:380 on 2025-11-28 08:13</div>
+            <div class="timeline-body"><p>Nit: You could reduce the boilerplate here, I think, by doing something like:</p>
+<pre><code>let definitions = match self {
+    GotoTarget::Expression(expression) =&gt; {
+        definitions_for_expression(model, *expression)
+    },
+    GotoTarget::FunctionDef(function) =&gt; {
+        Some(vec![ResolvedDefinition::Definition(
+            function.definition(model),
+        )])
+    },
+    ...
+};
+
+definitions.map(Definitions)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/semantic_index/builder.rs</code>:1068 on 2025-11-28 08:17</div>
+            <div class="timeline-body"><p>Should we add a <code>record_name</code> method or at least rename the struct (or update its documentation) to explain that, yes, it's mostly expressions but sometimes it's names too</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/semantic_index/builder.rs</code>:1482 on 2025-11-28 08:17</div>
+            <div class="timeline-body"><p>Should we remove it then? Seems easy enough to add once we know why we need it</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-11-28 08:18</div>
+            <div class="timeline-body"><p>Nice, this actually streamlines things :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/ty_python_semantic/src/semantic_index/builder.rs</code>:1068 on 2025-11-28 13:37</div>
+            <div class="timeline-body"><p>This is probably a good idea, I'll integrate it into some followup work I have planned that will involve more reckoning about &quot;&quot;expressions&quot;&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-11-28 13:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @Gankra on 2025-11-28 13:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @Gankra on 2025-11-28 13:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-11-28 13:41</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:48:28 UTC
+    </footer>
+</body>
+</html>

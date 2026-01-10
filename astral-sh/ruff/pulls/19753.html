@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>:bug: Fix SIM109 to preserve expression order in boolean operations - astral-sh/ruff #19753</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>:bug: Fix SIM109 to preserve expression order in boolean operations</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19753">#19753</a>
+        opened by <a href="https://github.com/mikeleppane">@mikeleppane</a>
+        on 2025-08-05 07:14
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/mikeleppane">@mikeleppane</a> on 2025-08-05 07:14</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title? (Please prefix with `[ty]` for ty pull
+  requests.)
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<h3>Problem</h3>
+<ul>
+<li>The <code>compare_with_tuple</code> rule <a href="https://docs.astral.sh/ruff/rules/compare-with-tuple/#compare-with-tuple-sim109">(SIM109)</a> was incorrectly reordering expressions when transforming multiple equality comparisons, which could change the semantic meaning due to Python's short-circuit evaluation. For example:</li>
+</ul>
+<pre><code class="language-python"># Before (incorrect transformation)
+x or y == z or y == w  →  y in (z, w) or x  # Wrong order!
+
+# After (correct transformation) 
+x or y == z or y == w  →  x or y in (z, w)  # Preserves order
+</code></pre>
+<h3>Solution</h3>
+<ul>
+<li>Fixed expression ordering: The replacement logic now preserves the original order by inserting the optimized expression at the position of the first matching equality comparison</li>
+</ul>
+<h3>Changes</h3>
+<ul>
+<li>Modified the replacement expression building logic in <code>compare_with_tuple()</code></li>
+<li>Added order-preserving iteration that maintains the original boolean expression structure</li>
+</ul>
+<p>Related issue: <a href="https://github.com/astral-sh/ruff/issues/18945">#18945</a></p>
+<h2>Test Plan</h2>
+<p>Enhanced snapshot tests by adding three more cases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-05 07:25</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ntBre by @ntBre on 2025-08-08 14:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/resources/test/fixtures/flake8_simplify/SIM109.py</code>:26 on 2025-08-11 20:15</div>
+            <div class="timeline-body"><p>I think this OK might be wrong since this case gets a diagnostic in the snapshot (or the snapshot result/implementation is wrong).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-08-11 20:59</div>
+            <div class="timeline-body"><p>Thanks for working on this!</p>
+<p>I'm not sure I'm quite following the new logic. Would something like this handle all of the new tests?</p>
+<pre><code class="language-diff">diff --git a/crates/ruff_linter/src/rules/flake8_simplify/rules/ast_bool_op.rs b/crates/ruff_linter/src/rules/flake8_simplify/rules/ast_bool_op.rs
+index 7576c71fc1..d18069b724 100644
+--- a/crates/ruff_linter/src/rules/flake8_simplify/rules/ast_bool_op.rs
++++ b/crates/ruff_linter/src/rules/flake8_simplify/rules/ast_bool_op.rs
+@@ -547,6 +547,14 @@ pub(crate) fn compare_with_tuple(checker: &amp;Checker, expr: &amp;Expr) {
+             continue;
+         }
+ 
++        let Some(node_range) = comparators
++            .iter()
++            .map(|expr| expr.range())
++            .min_by_key(|range| range.start())
++        else {
++            continue;
++        };
++
+         // Create a `x in (a, b)` expression.
+         let node = ast::ExprTuple {
+             elts: comparators.into_iter().cloned().collect(),
+@@ -565,7 +573,7 @@ pub(crate) fn compare_with_tuple(checker: &amp;Checker, expr: &amp;Expr) {
+             left: Box::new(node1.into()),
+             ops: Box::from([CmpOp::In]),
+             comparators: Box::from([node.into()]),
+-            range: TextRange::default(),
++            range: node_range,
+             node_index: ruff_python_ast::AtomicNodeIndex::dummy(),
+         };
+         let in_expr = node2.into();
+@@ -575,7 +583,7 @@ pub(crate) fn compare_with_tuple(checker: &amp;Checker, expr: &amp;Expr) {
+             },
+             expr.range(),
+         );
+-        let unmatched: Vec&lt;Expr&gt; = values
++        let mut unmatched: Vec&lt;Expr&gt; = values
+             .iter()
+             .enumerate()
+             .filter(|(index, _)| !indices.contains(index))
+@@ -584,10 +592,13 @@ pub(crate) fn compare_with_tuple(checker: &amp;Checker, expr: &amp;Expr) {
+         let in_expr = if unmatched.is_empty() {
+             in_expr
+         } else {
++            unmatched.push(in_expr);
++            unmatched.sort_by_key(|expr| expr.start());
++
+             // Wrap in a `x in (a, b) or ...` boolean operation.
+             let node = ast::ExprBoolOp {
+                 op: BoolOp::Or,
+-                values: iter::once(in_expr).chain(unmatched).collect(),
++                values: unmatched,
+                 range: TextRange::default(),
+                 node_index: ruff_python_ast::AtomicNodeIndex::dummy(),
+             };
+</code></pre>
+<p>The idea is just sorting the <code>in_expr</code> and the <code>unmatched</code> expressions by their starting ranges instead of always chaining them in the same order. It seemed a little easier to understand, at least to me, if it handles every case we need to handle.</p>
+<p>We may also want to document the limitation, which I think applies to both approaches. Namely, there's not a great solution if the <code>unmatched</code> comparison falls in between two <code>matches</code>. In my patch, this is the decision between <code>min</code> and <code>max</code> basically. For example, should:</p>
+<pre><code class="language-py">y == z or x or y == w
+</code></pre>
+<p>become:</p>
+<pre><code class="language-py">x or y in (z, w)
+</code></pre>
+<p>or</p>
+<pre><code class="language-py">y in (z, w) or x
+</code></pre>
+<p>I believe we current prefer the latter, which is fine, and part of the reason the fix is unsafe, but we could document that as part of the <code>## Fix safety</code> section or even <code>## Known issues</code> section, which we have in some rules. <code>Issues</code> feels a little strong for this case, though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-21 08:07</div>
+            <div class="timeline-body"><p>Thanks for your submission.</p>
+<p>I'll close this PR due to inactivity but we'd be more than happy to review a resubmission that answers Brent's question.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-11-21 08:07</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:48:26 UTC
+    </footer>
+</body>
+</html>

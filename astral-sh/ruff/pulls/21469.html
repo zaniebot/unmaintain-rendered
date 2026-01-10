@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`flake8-bandit`] Handle string literal bindings in suspicious-url-open-usage (`S310`) - astral-sh/ruff #21469</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>flake8-bandit</code>] Handle string literal bindings in suspicious-url-open-usage (<code>S310</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21469">#21469</a>
+        opened by <a href="https://github.com/danparizher">@danparizher</a>
+        on 2025-11-15 04:48
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/danparizher">@danparizher</a> on 2025-11-15 04:48</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Fixes false positive in <code>S310</code> when URL arguments are assigned to variables that resolve to string literals with safe schemes (<code>http://</code> or <code>https://</code>).</p>
+<p>Fixes #21462.</p>
+<h2>Problem</h2>
+<p>The rule flagged <code>urllib.request.urlretrieve(path, ...)</code> when <code>path</code> was assigned a string literal like <code>&quot;https://example.com/data.csv&quot;</code> because it only checked direct string literals, f-strings, and concatenation, not variable bindings.</p>
+<h2>Approach</h2>
+<p>Added <code>resolve_to_string_literal()</code> helper that uses <code>find_binding_value()</code> to resolve variable bindings to their string literal values, following the pattern in <code>unnecessary_regular_expression.rs</code>. Updated the <code>urlopen</code>/<code>urlretrieve</code> handler to check resolved string literals before falling back to <code>leading_chars()</code>.</p>
+<h2>Test Plan</h2>
+<p>Added test case to <code>S310.py</code> for the variable binding scenario.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-11-15 04:56</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+2 -4 violations, +0 -0 fixes in 4 projects; 51 projects unchanged)</p>
+<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+0 -1 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --no-fix --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/apache/airflow/blob/8d121e175d33e34021b03c6425023d9d2a02eacd/dev/breeze/src/airflow_breeze/utils/constraints_version_check.py#L364'>dev/breeze/src/airflow_breeze/utils/constraints_version_check.py:364:14:</a> S310 Audit URL open for permitted schemes. Allowing use of `file:` or custom schemes is often unexpected.
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/ibis-project/ibis">ibis-project/ibis</a> (+1 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --no-fix --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/ibis-project/ibis/blob/6459497bdc529fc79ccb45b279411ca1025863e2/ibis/examples/gen_registry.py#L175'>ibis/examples/gen_registry.py:175:59:</a> RUF100 Unused `noqa` directive (unused: `S310`)
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/rotki/rotki">rotki/rotki</a> (+1 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --no-fix --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/rotki/rotki/blob/81a22684a0494b874f3daa39bfa8ba4309998a68/package.py#L350'>package.py:350:52:</a> RUF100 [*] Unused `noqa` directive (unused: `S310`)
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/zulip/zulip">zulip/zulip</a> (+0 -3 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --no-fix --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/zulip/zulip/blob/f06f717b759d043638e0d6ea2a54dcfe0860c956/tools/droplets/create.py#L49'>tools/droplets/create.py:49:20:</a> S310 Audit URL open for permitted schemes. Allowing use of `file:` or custom schemes is often unexpected.
+- <a href='https://github.com/zulip/zulip/blob/f06f717b759d043638e0d6ea2a54dcfe0860c956/tools/droplets/create.py#L63'>tools/droplets/create.py:63:20:</a> S310 Audit URL open for permitted schemes. Allowing use of `file:` or custom schemes is often unexpected.
+- <a href='https://github.com/zulip/zulip/blob/f06f717b759d043638e0d6ea2a54dcfe0860c956/tools/droplets/create.py#L82'>tools/droplets/create.py:82:20:</a> S310 Audit URL open for permitted schemes. Allowing use of `file:` or custom schemes is often unexpected.
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (2 rules affected)</summary>
+<p>
+
+<p>| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| S310 | 4 | 0 | 4 | 0 | 0 |
+| RUF100 | 2 | 2 | 0 | 0 | 0 |</p>
+</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/edgarrmondragon">@edgarrmondragon</a> reviewed on 2025-11-17 05:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/edgarrmondragon">@edgarrmondragon</a> on <code>crates/ruff_linter/src/rules/flake8_bandit/rules/suspicious_function_call.rs</code>:1222 on 2025-11-17 05:12</div>
+            <div class="timeline-body"><p>It might also be worth similarly resolving the <code>url</code> argument of <code>urllib.request.Request</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/amyreese">@amyreese</a> approved on 2025-11-17 23:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/amyreese">@amyreese</a> on 2025-11-17 23:09</div>
+            <div class="timeline-body"><p>The one ecosystem change is from a project where this previously triggered no longer getting a false positive, and therefore getting an &quot;unused suppression&quot; from their noqa.</p>
+<p>This might be worth gating behind preview flag.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ntBre by @amyreese on 2025-11-17 23:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2025-11-18 08:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">accepted</span> added by @MichaReiser on 2025-11-18 08:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">accepted</span> removed by @MichaReiser on 2025-11-18 08:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_bandit/rules/suspicious_function_call.rs</code>:1230 on 2025-11-18 20:07</div>
+            <div class="timeline-body"><p>This version of <code>resolve_to_string_literal</code> actually seems too restrictive in this case since <code>leading_chars</code> just takes any <code>Expr</code>. I guess we should just resolve an <code>Expr::Name</code> to whatever its binding is and pass that directly to <code>leading_chars</code>. Something like:</p>
+<pre><code class="language-rust">                        Some(expr) =&gt; {
+                            let expr = resolve_name(expr);
+
+                            if leading_chars(expr).is_some_and(has_http_prefix) {
+                                return;
+                            }
+                        }
+</code></pre>
+<p>Then we could add tests showing that we handle resolved f-strings and concatenated string literals.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-11-18 20:10</div>
+            <div class="timeline-body"><p>Thanks, this looks reasonable to me. But I think we can resolve names more generally, and I agree with the suggestion to apply this to the <code>url</code> argument too.</p>
+<p>I also agree that this should be a preview change.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ntBre by @danparizher on 2025-11-19 23:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/edgarrmondragon">@edgarrmondragon</a> on 2025-11-20 05:02</div>
+            <div class="timeline-body"><p>@danparizher I opened https://github.com/danparizher/ruff/pull/1 against your fork to handle calls to <code>urllib.request.Request</code> outside of <code>urllib.request.urlopen</code>, and also process concatenated string literals recursively.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-11-21 19:57</div>
+            <div class="timeline-body"><p>Oh, I was waiting to see if the PR against the fork was merged, but I think the URL resolution was also fixed in the last commit. Is that right?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/edgarrmondragon">@edgarrmondragon</a> on 2025-11-21 20:16</div>
+            <div class="timeline-body"><blockquote>
+<p>Oh, I was waiting to see if the PR against the fork was merged, but I think the URL resolution was also fixed in the last commit. Is that right?</p>
+</blockquote>
+<p>IIUC, the last commit in this PR fixed the <code>urllib.request.urlopen(urllib.request.Request(url))</code> case, but not <code>urllib.request.Request(url)</code> on its own.</p>
+<p>It also didn't fully address this comment (https://github.com/astral-sh/ruff/pull/21469#discussion_r2539560233)</p>
+<blockquote>
+<p>handle resolved f-strings and concatenated string literals.</p>
+</blockquote>
+<p>But my all means, feel free to merge without my updates, which I can open a new PR for.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @MichaReiser on 2025-11-26 08:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-11-26 09:17</div>
+            <div class="timeline-body"><p>Thank you</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2025-11-26 09:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-11-26 09:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-11-26 13:44</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:48:27 UTC
+    </footer>
+</body>
+</html>

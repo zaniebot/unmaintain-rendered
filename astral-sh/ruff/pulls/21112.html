@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Make auto import completions include global imports from other modules in suggestions - astral-sh/ruff #21112</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Make auto import completions include global imports from other modules in suggestions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21112">#21112</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2025-10-28 18:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-10-28 18:10</div>
+            <div class="timeline-body"><p>Previously, our special auto-import code for discovering symbols in
+other files quickly (without running ty on them) didn't take imports
+into account. This PR makes a small change to do exactly that.</p>
+<p>This in particular helps with libraries that build their public API
+from submodules. In particular, numpy. This consequently improves our
+numpy evaluation tasks (which includes sub-optimal ranking because of
+precisely this bug). The ranking still isn't perfect, but at least the
+correct result appears in the suggestions. It previously did not.</p>
+<p>Unfortunately, this does regress some other tasks. For example, invoking
+auto-import on <code>TypeVa&lt;CURSOR&gt;</code> now brings up <code>TypeVar</code> from a whole
+bunch of modules. Presumably because it's imported in those modules.</p>
+<p>So I guess that means this heuristic is probably wrong. How does one
+differentiate imports that are meant to build out an API and just a
+regular old import meant for internal use?</p>
+<p>One idea is to perhaps down-rank symbols derived from imports, but above
+symbols from private modules (beginning with <code>_</code>). This would work for
+the numpy case I believe without (hopefully) regressing other tasks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @BurntSushi on 2025-10-28 18:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @BurntSushi on 2025-10-28 18:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @BurntSushi on 2025-10-28 18:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @BurntSushi on 2025-10-28 18:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @BurntSushi on 2025-10-28 18:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @dcreager removed by @BurntSushi on 2025-10-28 18:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @carljm removed by @BurntSushi on 2025-10-28 18:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @MichaReiser removed by @BurntSushi on 2025-10-28 18:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-10-28 18:11</div>
+            <div class="timeline-body"><p>Demo:</p>
+<p>https://github.com/user-attachments/assets/f1f8ac07-a1fd-4698-8fbe-cffd74631fdc</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-10-28 18:12</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-10-28 18:14</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅
+No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @MichaReiser on 2025-10-28 18:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @MichaReiser on 2025-10-28 18:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-10-29 12:04</div>
+            <div class="timeline-body"><blockquote>
+<p>So I guess that means this heuristic is probably wrong. How does one
+differentiate imports that are meant to build out an API and just a
+regular old import meant for internal use?</p>
+</blockquote>
+<p>Not a complete answer, but this is typically what <code>__all__</code> is for. In numpy's case: https://github.com/numpy/numpy/blob/5566cc4375badc1a1f218c4a1bb8924abbf34618/numpy/<strong>init</strong>.pyi#L647. So maybe we should use our <code>__all__</code> and star-import functionality to look for publicly available modules in a case like this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-10-29 13:12</div>
+            <div class="timeline-body"><p>@sharkdp Yeah I was thinking about <code>__all__</code>, but numpy doesn't use a wildcard import here.</p>
+<p>I'm going to attack this by coming up with some minimal examples and testing out what other LSPs do.</p>
+<p>I'll put this in draft for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @BurntSushi on 2025-10-29 13:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-10-29 13:29</div>
+            <div class="timeline-body"><p>@AlexWaygood or @amyreese: Are there any other conventions we could leverge?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-29 13:58</div>
+            <div class="timeline-body"><blockquote>
+<p>@AlexWaygood or @amyreese: Are there any other conventions we could leverge?</p>
+</blockquote>
+<p>Yes:</p>
+<ul>
+<li>As David says, any symbol in <code>__all__</code> is always considered publicly re-exported. In terms of the impact that this has on semantics at <em>runtime</em>, @BurntSushi is correct that this only has an impact on <code>*</code> imports. But the convention applies even outside of <code>*</code> imports: if <code>__all__</code> exists in a module, anything not listed in <code>__all__</code> is conventionally considered &quot;private to that module&quot;.</li>
+<li>If <code>__all__</code> <em>doesn't</em> exist:<ul>
+<li>anything defined via an import that uses a &quot;redundant alias&quot; is considered explicitly re-exported from a module. Similar to <code>__all__</code>, this is only <em>specified</em> to have an impact in some specific situations, but has been adopted by the community in many other situations. I.e., it is only <a href="https://typing.python.org/en/latest/spec/distributing.html#import-conventions"><em>specified</em></a> that type checkers should view the semantics differently for redundant aliases if the import is in a stub file, but it's these days generally used by the community more broadly (in <code>.py</code> files as well as <code>.pyi</code> files) to indicate &quot;this is being re-exported&quot;. A &quot;redundant alias&quot; is something like <code>import foo as foo</code>, <code>from . import bar as bar</code> or <code>from baz import eggs as eggs</code> -- the alias immediately after the <code>as</code> keyword must be identical to the symbol immediately after the <code>import</code> keyword</li>
+<li>An exception to the above rule is that in <code>__init__.py(i)</code> files, imports of submodules are conventionally considered explicitly re-exported even if they do not use a redundant alias. This is what @Gankra is implementing in https://github.com/astral-sh/ruff/pull/20855</li>
+<li>Anything that's defined in the module (but not defined via an import) is generally considered re-exported unless it has a name that starts with an underscore and does not end with an underscore</li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-10-29 14:46</div>
+            <div class="timeline-body"><p>Thanks @AlexWaygood!</p>
+<p>One thing that occurs to me is how and whether auto-import should differ from completions on modules already in scope. Consider this example.</p>
+<p>Here's <code>bar.py</code>:</p>
+<pre><code class="language-python">ZQZQ = 1
+</code></pre>
+<p>And <code>foo.py</code>:</p>
+<pre><code class="language-python">from bar import ZQZQ
+</code></pre>
+<p>And now two different versions of <code>main.py</code>. First, one that already has an explicit import:</p>
+<pre><code class="language-python">import foo
+foo.ZQ&lt;CURSOR&gt;
+</code></pre>
+<p>And now one that relies on auto-import:</p>
+<pre><code class="language-python">ZQ&lt;CURSOR&gt;
+</code></pre>
+<p>In the former case, <code>ZQZQ</code> is indeed a defined symbol on <code>foo</code>, but it's not considered &quot;exported&quot; per the typing spec as far as I can tell. We still offer completions for unexported symbols (like those that begin with an underscore), so us offering completions for them seems consistent there. Indeed, we do that today.</p>
+<p>In the latter case, it kind of seems like we shouldn't offer <code>foo.ZQZQ</code> (but yes offer <code>bar.ZQZQ</code>) <em>for the purposes of auto-import</em>. The former case is fundamentally more constrained, where as if we allow the latter case, completions fundamentally become way more noisy.</p>
+<p>Indeed, it seems like this is the same setup used by pyright. It offers <code>foo.ZQZQ</code> in the former case, but only <code>bar.ZQZQ</code> in the latter case:</p>
+<p>https://github.com/user-attachments/assets/af948f01-3406-4ddb-bcc8-aa0c1301a73a</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-29 14:54</div>
+            <div class="timeline-body"><p>@BurntSushi yep, that all sounds correct to me!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2025-12-04 18:21</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:48:27 UTC
+    </footer>
+</body>
+</html>

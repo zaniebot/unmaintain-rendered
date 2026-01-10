@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Stop testing the (brittle) constraint set display implementation - astral-sh/ruff #21743</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Stop testing the (brittle) constraint set display implementation</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21743">#21743</a>
+        opened by <a href="https://github.com/dcreager">@dcreager</a>
+        on 2025-12-01 22:50
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dcreager">@dcreager</a> on 2025-12-01 22:50</div>
+            <div class="timeline-body"><p>The <code>Display</code> implementation for constraint sets is brittle, and deserves a rethink. But later! It's perfectly fine for printf debugging; we just shouldn't be writing mdtests that depend on any particular rendering details. Most of these tests can be replaced with an equivalence check that actually validates that the <em>behavior</em> of two constraint sets are identical.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @dcreager on 2025-12-01 22:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @dcreager on 2025-12-01 22:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @dcreager on 2025-12-01 22:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @dcreager on 2025-12-01 22:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @dcreager on 2025-12-01 22:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-12-01 22:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/infer/builder.rs</code>:10583 on 2025-12-01 22:52</div>
+            <div class="timeline-body"><p>This is an important bit that lets us replace all of the <code>reveal_type</code> tests with <code>static_assert</code>s.  The <code>ConstraintSet.__eq__</code> implementation now checks whether two constraint sets are <em>equivalent</em>, not whether they are <em>identical</em>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-12-01 22:52</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-12-01 22:54</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">beartype (https://github.com/beartype/beartype)
+- beartype/claw/_package/clawpkgtrie.py:66:29: warning[unsupported-base] Unsupported class base with type `&lt;class 'dict[str, PackagesTrieBlacklist]'&gt; | &lt;class 'dict[str, Divergent]'&gt;`
+- beartype/claw/_package/clawpkgtrie.py:247:29: warning[unsupported-base] Unsupported class base with type `&lt;class 'dict[str, PackagesTrieWhitelist]'&gt; | &lt;class 'dict[str, Divergent]'&gt;`
+- Found 498 diagnostics
++ Found 496 diagnostics
+
+
+</code></pre>
+</details>
+
+<p>No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> approved on 2025-12-02 08:17</div>
+            <div class="timeline-body"><p>Thank you!</p>
+<p>I guess the major drawback of this is that <code>static_assert</code> will only give you a success/failure feedback, whereas a failing <code>reveal_type</code> tests gives you both display representations (one in the error message, one in the test assertion).</p>
+<p>We could follow the route of many other test frameworks and introduce something like a <code>static_assert_eq(left, right)</code> function that would show the display representation of the types of both arguments in case of a failure. That might be even nicer than <code>reveal_type</code> tests because we could properly align the left and right hand side types in the terminal.</p>
+<p>~~I'll merge this PR to unblock the typeshed update.~~ (no, that was the other PR)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @sharkdp on 2025-12-02 08:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-12-02 08:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-12-02 08:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-12-02 13:42</div>
+            <div class="timeline-body"><blockquote>
+<p>~I'll merge this PR to unblock the typeshed update.~ (no, that was the other PR)</p>
+</blockquote>
+<p>The other PR was blocked on this one, though, so thank you regardless!</p>
+<blockquote>
+<p>We could follow the route of many other test frameworks and introduce something like a <code>static_assert_eq(left, right)</code> function that would show the display representation of the types of both arguments in case of a failure. That might be even nicer than <code>reveal_type</code> tests because we could properly align the left and right hand side types in the terminal.</p>
+</blockquote>
+<p>That's a good idea, I opened https://github.com/astral-sh/ty/issues/1719 to track it.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:48:28 UTC
+    </footer>
+</body>
+</html>

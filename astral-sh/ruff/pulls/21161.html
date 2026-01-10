@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ruff]: Make `ruff analyze graph` work with jupyter notebooks - astral-sh/ruff #21161</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ruff]: Make <code>ruff analyze graph</code> work with jupyter notebooks</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21161">#21161</a>
+        opened by <a href="https://github.com/gauthsvenkat">@gauthsvenkat</a>
+        on 2025-10-31 13:04
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/gauthsvenkat">@gauthsvenkat</a> on 2025-10-31 13:04</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title? (Please prefix with `[ty]` for ty pull
+  requests.)
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p><code>ruff analyze graph</code> skips jupyter notebooks. This MR addresses that issue so that jupyter notebooks are also considered in the output.</p>
+<p>Closes: #21099</p>
+<h3>Detailed Summary</h3>
+<p><code>ruff analyze graph</code> has the following lines to skip if the source is a jupyter notebook.</p>
+<p>https://github.com/astral-sh/ruff/blob/d9cab4d242a18102617d2a9eea1fc10a70c67a50/crates/ruff/src/commands/analyze_graph.rs#L130-L133</p>
+<p>Removing these lines alone is not enough (see <a href="https://github.com/astral-sh/ruff/issues/21099#issuecomment-3453135503">this comment</a> on the issue). The reason is because in <code>detect()</code> the file under consideration is read and parsed to be a <code>.py</code> file.</p>
+<p>https://github.com/astral-sh/ruff/blob/d9cab4d242a18102617d2a9eea1fc10a70c67a50/crates/ruff_graph/src/lib.rs#L25-L33</p>
+<p>For notebooks, you'd expect this parsing to fail as a <code>.ipynb</code> and <code>.py</code> are different. However that is not the case as under the hood, contents of a jupyter notebook are JSON. What instead is happening is that the jupyter notebooks get parsed as<br />
+a giant nested python dictionary.</p>
+<h3>Fix</h3>
+<ul>
+<li><code>detect()</code> now takes two more arguments; <code>source</code>: the raw content and <code>source_type</code> to correctly parse both <code>.py</code> and <code>.ipynb</code> content.</li>
+<li>in <code>analyze_graph.rs</code> we extract the raw content correctly for both <code>.py</code> and <code>.ipynb</code>.</li>
+</ul>
+<h2>Test Plan</h2>
+<p>All existing unit tests pass and added two new tests to make sure the jupyter notebook flow also works.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">notebook</span> added by @amyreese on 2025-10-31 18:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">analyze</span> added by @amyreese on 2025-10-31 18:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/amyreese">@amyreese</a> on <code>crates/ruff/src/commands/analyze_graph.rs</code>:134 on 2025-10-31 18:46</div>
+            <div class="timeline-body"><p>Does this part still need to be removed?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/amyreese">@amyreese</a> reviewed on 2025-10-31 18:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/gauthsvenkat">@gauthsvenkat</a> reviewed on 2025-10-31 19:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/gauthsvenkat">@gauthsvenkat</a> on <code>crates/ruff/src/commands/analyze_graph.rs</code>:134 on 2025-10-31 19:03</div>
+            <div class="timeline-body"><p>Damn, I'm dumb. Yeah I think it should be removed.</p>
+<p>What's wild is it seems to work even with that code present. I'll take a look soon.</p>
+<p>EDIT: Spoke too soon! I think I messed up the cherry picking or something. It is removed now</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-10-31 19:34</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-10-31 21:23</div>
+            <div class="timeline-body"><p>This is great. Thank you</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2025-10-31 21:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-10-31 21:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-11-29 08:37</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:48:27 UTC
+    </footer>
+</body>
+</html>

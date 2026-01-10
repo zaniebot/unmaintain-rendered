@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`analyze`: Add option to skip over imports in `TYPE_CHECKING` blocks - astral-sh/ruff #21472</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1><code>analyze</code>: Add option to skip over imports in <code>TYPE_CHECKING</code> blocks</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21472">#21472</a>
+        opened by <a href="https://github.com/gauthsvenkat">@gauthsvenkat</a>
+        on 2025-11-15 13:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/gauthsvenkat">@gauthsvenkat</a> on 2025-11-15 13:03</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title? (Please prefix with `[ty]` for ty pull
+  requests.)
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+<p><code>ruff analyze graph</code> naively detects all imports. This MR adds a feature where <code>TYPE_CHECKING</code> imports can be detected and optionally excluded (using a CLI flag).</p>
+<p>Closes: #20736</p>
+<h3>Main changes</h3>
+<ul>
+<li>[collector.rs] <code>CollectedImport</code> is now a <code>struct</code> instead of an <code>enum</code>. This was done so that a new <code>type_checking</code> field could be added.</li>
+<li>[collector.rs] Refactored the logic in <code>Stmt::Import{,From}</code> into helper functions <code>collect_import{,_from}</code>. Done so they can be reused in <code>Stmt::If</code> to detect type checking imports.</li>
+<li>[collector.rs] Added a new helper function <code>is_type_checking_condition</code>. This can detect very simple type-checking conditions, but, practically, it would cover a lot of the cases.</li>
+</ul>
+<h2>Test Plan</h2>
+<ul>
+<li>Added a new test to check that type-checking imports are detected and filtered, iff <code>--exclude-type-checking-imports</code> flag is set.</li>
+</ul>
+<!-- How was it tested? -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-11-15 13:10</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gauthsvenkat">@gauthsvenkat</a> on 2025-11-15 13:12</div>
+            <div class="timeline-body"><p>Pipeline fails cause Clippy is complaining there are too many bools in <code>AnalyzeGraphCommand</code>. But it is a CLI option, so not sure how to deal with it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">analyze</span> added by @AlexWaygood on 2025-11-15 15:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[ruff] Option to detect (and exclude) `TYPE_CHECKING` imports in `ruff analyze graph`" to "`analyze`: Add option to skip over imports in `TYPE_CHECKING` blocks" by @MichaReiser on 2025-11-16 07:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_graph/src/collector.rs</code>:103 on 2025-11-16 07:29</div>
+            <div class="timeline-body"><p>I think a simpler approach is to pass the <code>exclude_type_checking</code> option to <code>Collector</code> and simply skip the entire body if <code>test</code> is a <code>TYPE_CHECKING</code> condition.</p>
+<p>This removes the need to split <code>collect_import_from</code> and <code>collect_import</code> out of <code>visit_stmt</code> or that we need to set <code>type_checking</code> on <code>CollectedImport</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/args.rs</code>:198 on 2025-11-16 07:31</div>
+            <div class="timeline-body"><p>I think I'd name this <code>type_checking_only_imports</code> or just <code>type_checking_imports</code> where <code>true</code> includes them and <code>false</code> skips them (should default to <code>true</code>).</p>
+<p>We should also add this as a configuration optiont to https://github.com/astral-sh/ruff/blob/6e4b15b6ca72285a2f509076f3871adca90e923a/crates/ruff_workspace/src/options.rs#L3816</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/args.rs</code>:196 on 2025-11-16 07:32</div>
+            <div class="timeline-body"><p>You can add <code>#[expect(clippy::struct_excessive_bools)]</code> to the struct definition to silence the excessive bool lint</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> requested changes on 2025-11-16 07:32</div>
+            <div class="timeline-body"><p>Thank you. I left a few inline comments with a few suggestions</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/gauthsvenkat">@gauthsvenkat</a> reviewed on 2025-11-16 07:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/gauthsvenkat">@gauthsvenkat</a> on <code>crates/ruff_graph/src/collector.rs</code>:103 on 2025-11-16 07:40</div>
+            <div class="timeline-body"><p>Oh yeah, that would be simpler.</p>
+<p>Then we don't track which imports are type-checking only for other uses. e.g., if we want to show only type-checking imports?
+Is that okay?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-11-16 07:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_graph/src/collector.rs</code>:103 on 2025-11-16 07:47</div>
+            <div class="timeline-body"><p>I think that's okay for now, given that we don't show that information anywhere.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/gauthsvenkat">@gauthsvenkat</a> reviewed on 2025-11-16 11:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/gauthsvenkat">@gauthsvenkat</a> on <code>crates/ruff/src/args.rs</code>:198 on 2025-11-16 11:00</div>
+            <div class="timeline-body"><p>I've done both.</p>
+<p>Adding it as a config option ended up being a bigger change than I expected. I tried to follow how it was done for <code>detect-string-imports</code>. Please let me know if that is good.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @gauthsvenkat on 2025-11-16 11:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/gauthsvenkat">@gauthsvenkat</a> reviewed on 2025-11-16 11:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/gauthsvenkat">@gauthsvenkat</a> on <code>crates/ruff/src/args.rs</code>:198 on 2025-11-16 11:29</div>
+            <div class="timeline-body"><p>I also just noticed that <code>preview</code> and <code>string_imports</code> config options are not boolean, but instead &quot;enabled&quot; or &quot;disabled&quot;. Should I model it that way instead?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-11-16 12:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/args.rs</code>:198 on 2025-11-16 12:28</div>
+            <div class="timeline-body"><p>Yeah, it requires a lot of boilerplate code.</p>
+<blockquote>
+<p>t preview and string_imports config options are not boolean, but instead &quot;enabled&quot; or &quot;disabled&quot;. Should I model it that way instead?</p>
+</blockquote>
+<p>I think a boolean is fine.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-11-16 12:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_graph/src/collector.rs</code>:110 on 2025-11-16 12:29</div>
+            <div class="timeline-body"><p>We could consider handling</p>
+<pre><code class="language-py">if !TYPE_CHECKING:
+	...
+else: 
+	...
+</code></pre>
+<p>and</p>
+<pre><code class="language-py">if condition:
+	...
+elif TYPE_CHECKING:
+	...
+</code></pre>
+<p>but we can do this as a separate PR</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-11-16 12:29</div>
+            <div class="timeline-body"><p>Thank you</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2025-11-16 12:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-11-16 12:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-11-29 08:37</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:48:27 UTC
+    </footer>
+</body>
+</html>

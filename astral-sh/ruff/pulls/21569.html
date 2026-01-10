@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Substitute for `typing.Self` when checking protocol members - astral-sh/ruff #21569</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Substitute for <code>typing.Self</code> when checking protocol members</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21569">#21569</a>
+        opened by <a href="https://github.com/dcreager">@dcreager</a>
+        on 2025-11-21 19:04
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dcreager">@dcreager</a> on 2025-11-21 19:04</div>
+            <div class="timeline-body"><p>This patch updates our protocol assignability checks to substitute for any occurrences of <code>typing.Self</code> in method signatures, replacing it with the class being checked for assignability against the protocol.</p>
+<p>This requires a new helper method on signatures, <code>apply_self</code>, which substitutes occurrences of <code>typing.Self</code> <em>without</em> binding the <code>self</code> parameter.</p>
+<p>We also update the <code>try_upcast_to_callable</code> method. Before, it would return a <code>Type</code>, since certain types upcast to a <em>union</em> of callables, not to a single callable. However, even in that case, we know that every element of the union is a callable. We now return a vector of <code>CallableType</code>. (Actually a smallvec to handle the most common case of a single callable; and wrapped in a new type so that we can provide helper methods.) If there is more than one element in the result, it represents a union of callables. This lets callers get at the <code>CallableType</code> instances in a more type-safe way. (This makes it easier for our protocol checking code to call the new <code>apply_self</code> helper.) We also provide an <code>into_type</code> method so that callers that really do want a <code>Type</code> can get the original result easily.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @dcreager on 2025-11-21 19:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @dcreager on 2025-11-21 19:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @dcreager on 2025-11-21 19:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @dcreager on 2025-11-21 19:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-11-21 19:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/resources/mdtest/protocols.md</code>:2123 on 2025-11-21 19:04</div>
+            <div class="timeline-body"><p>There are other <code>Self</code>-related tests in this file that are still TODO, since they also require being able to check against generic protocol members correctly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-11-21 19:06</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance">typing conformance tests</a></h2>
+<details>
+<summary>Changes were detected when running ty on typing conformance tests</summary>
+
+<pre><code class="language-diff">--- old-output.txt	2025-11-24 18:49:42.174021411 +0000
++++ new-output.txt	2025-11-24 18:49:45.948033270 +0000
+@@ -504,6 +504,7 @@
+ generics_self_basic.py:64:38: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `Self@set_value`
+ generics_self_basic.py:67:26: error[invalid-type-form] Special form `typing.Self` expected no type parameter
+ generics_self_protocols.py:61:19: error[invalid-argument-type] Argument to function `accepts_shape` is incorrect: Expected `ShapeProtocol`, found `BadReturnType`
++generics_self_protocols.py:64:19: error[invalid-argument-type] Argument to function `accepts_shape` is incorrect: Expected `ShapeProtocol`, found `ReturnDifferentClass`
+ generics_self_usage.py:50:34: error[invalid-assignment] Object of type `def foo(self) -&gt; int` is not assignable to `(typing.Self, /) -&gt; int`
+ generics_self_usage.py:73:14: error[invalid-type-form] Variable of type `typing.Self` is not allowed in a type expression
+ generics_self_usage.py:73:23: error[invalid-type-form] Variable of type `typing.Self` is not allowed in a type expression
+@@ -1002,5 +1003,5 @@
+ typeddicts_usage.py:28:17: error[missing-typed-dict-key] Missing required key 'name' in TypedDict `Movie` constructor
+ typeddicts_usage.py:28:18: error[invalid-key] Unknown key &quot;title&quot; for TypedDict `Movie`: Unknown key &quot;title&quot;
+ typeddicts_usage.py:40:24: error[invalid-type-form] The special form `typing.TypedDict` is not allowed in type expressions. Did you mean to use a concrete TypedDict or `collections.abc.Mapping[str, object]` instead?
+-Found 1004 diagnostics
++Found 1005 diagnostics
+ WARN A fatal error occurred while checking some files. Not all project files were analyzed. See the diagnostics list above for details.
+
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-11-21 21:06</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">scikit-build-core (https://github.com/scikit-build/scikit-build-core)
+- src/scikit_build_core/build/wheel.py:98:20: error[no-matching-overload] No overload of bound method `__init__` matches arguments
+- Found 45 diagnostics
++ Found 44 diagnostics
+
+sympy (https://github.com/sympy/sympy)
+- sympy/polys/domains/domain.py:586:51: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 14879 diagnostics
++ Found 14878 diagnostics
+
+core (https://github.com/home-assistant/core)
+- homeassistant/helpers/storage.py:395:13: error[invalid-argument-type] Method `__getitem__` of type `Overload[(i: SupportsIndex, /) -&gt; dict[str, Any] | list[Any] | str | ... omitted 3 union elements, (s: slice[Any, Any, Any], /) -&gt; list[dict[str, Any] | list[Any] | str | ... omitted 3 union elements]]` cannot be called with key of type `Literal[&quot;version&quot;]` on object of type `list[JsonValueType]`
++ homeassistant/helpers/storage.py:395:13: error[invalid-argument-type] Method `__getitem__` of type `Overload[(i: SupportsIndex, /) -&gt; dict[str, Any] | list[JsonValueType] | str | ... omitted 3 union elements, (s: slice[Any, Any, Any], /) -&gt; list[JsonValueType]]` cannot be called with key of type `Literal[&quot;version&quot;]` on object of type `list[JsonValueType]`
+- homeassistant/helpers/storage.py:396:17: error[invalid-argument-type] Method `__getitem__` of type `Overload[(i: SupportsIndex, /) -&gt; dict[str, Any] | list[Any] | str | ... omitted 3 union elements, (s: slice[Any, Any, Any], /) -&gt; list[dict[str, Any] | list[Any] | str | ... omitted 3 union elements]]` cannot be called with key of type `Literal[&quot;minor_version&quot;]` on object of type `list[JsonValueType]`
++ homeassistant/helpers/storage.py:396:17: error[invalid-argument-type] Method `__getitem__` of type `Overload[(i: SupportsIndex, /) -&gt; dict[str, Any] | list[JsonValueType] | str | ... omitted 3 union elements, (s: slice[Any, Any, Any], /) -&gt; list[JsonValueType]]` cannot be called with key of type `Literal[&quot;minor_version&quot;]` on object of type `list[JsonValueType]`
+- homeassistant/helpers/storage.py:398:22: error[invalid-argument-type] Method `__getitem__` of type `Overload[(i: SupportsIndex, /) -&gt; dict[str, Any] | list[Any] | str | ... omitted 3 union elements, (s: slice[Any, Any, Any], /) -&gt; list[dict[str, Any] | list[Any] | str | ... omitted 3 union elements]]` cannot be called with key of type `Literal[&quot;data&quot;]` on object of type `list[JsonValueType]`
++ homeassistant/helpers/storage.py:398:22: error[invalid-argument-type] Method `__getitem__` of type `Overload[(i: SupportsIndex, /) -&gt; dict[str, Any] | list[JsonValueType] | str | ... omitted 3 union elements, (s: slice[Any, Any, Any], /) -&gt; list[JsonValueType]]` cannot be called with key of type `Literal[&quot;data&quot;]` on object of type `list[JsonValueType]`
+- homeassistant/helpers/storage.py:403:17: error[invalid-argument-type] Method `__getitem__` of type `Overload[(i: SupportsIndex, /) -&gt; dict[str, Any] | list[Any] | str | ... omitted 3 union elements, (s: slice[Any, Any, Any], /) -&gt; list[dict[str, Any] | list[Any] | str | ... omitted 3 union elements]]` cannot be called with key of type `Literal[&quot;version&quot;]` on object of type `list[JsonValueType]`
++ homeassistant/helpers/storage.py:403:17: error[invalid-argument-type] Method `__getitem__` of type `Overload[(i: SupportsIndex, /) -&gt; dict[str, Any] | list[JsonValueType] | str | ... omitted 3 union elements, (s: slice[Any, Any, Any], /) -&gt; list[JsonValueType]]` cannot be called with key of type `Literal[&quot;version&quot;]` on object of type `list[JsonValueType]`
+- homeassistant/helpers/storage.py:404:17: error[invalid-argument-type] Method `__getitem__` of type `Overload[(i: SupportsIndex, /) -&gt; dict[str, Any] | list[Any] | str | ... omitted 3 union elements, (s: slice[Any, Any, Any], /) -&gt; list[dict[str, Any] | list[Any] | str | ... omitted 3 union elements]]` cannot be called with key of type `Literal[&quot;minor_version&quot;]` on object of type `list[JsonValueType]`
++ homeassistant/helpers/storage.py:404:17: error[invalid-argument-type] Method `__getitem__` of type `Overload[(i: SupportsIndex, /) -&gt; dict[str, Any] | list[JsonValueType] | str | ... omitted 3 union elements, (s: slice[Any, Any, Any], /) -&gt; list[JsonValueType]]` cannot be called with key of type `Literal[&quot;minor_version&quot;]` on object of type `list[JsonValueType]`
+- homeassistant/helpers/storage.py:409:57: error[invalid-argument-type] Method `__getitem__` of type `Overload[(i: SupportsIndex, /) -&gt; dict[str, Any] | list[Any] | str | ... omitted 3 union elements, (s: slice[Any, Any, Any], /) -&gt; list[dict[str, Any] | list[Any] | str | ... omitted 3 union elements]]` cannot be called with key of type `Literal[&quot;version&quot;]` on object of type `list[JsonValueType]`
++ homeassistant/helpers/storage.py:409:57: error[invalid-argument-type] Method `__getitem__` of type `Overload[(i: SupportsIndex, /) -&gt; dict[str, Any] | list[JsonValueType] | str | ... omitted 3 union elements, (s: slice[Any, Any, Any], /) -&gt; list[JsonValueType]]` cannot be called with key of type `Literal[&quot;version&quot;]` on object of type `list[JsonValueType]`
+- homeassistant/helpers/storage.py:409:74: error[invalid-argument-type] Method `__getitem__` of type `Overload[(i: SupportsIndex, /) -&gt; dict[str, Any] | list[Any] | str | ... omitted 3 union elements, (s: slice[Any, Any, Any], /) -&gt; list[dict[str, Any] | list[Any] | str | ... omitted 3 union elements]]` cannot be called with key of type `Literal[&quot;data&quot;]` on object of type `list[JsonValueType]`
++ homeassistant/helpers/storage.py:409:74: error[invalid-argument-type] Method `__getitem__` of type `Overload[(i: SupportsIndex, /) -&gt; dict[str, Any] | list[JsonValueType] | str | ... omitted 3 union elements, (s: slice[Any, Any, Any], /) -&gt; list[JsonValueType]]` cannot be called with key of type `Literal[&quot;data&quot;]` on object of type `list[JsonValueType]`
+- homeassistant/helpers/storage.py:413:25: error[invalid-argument-type] Method `__getitem__` of type `Overload[(i: SupportsIndex, /) -&gt; dict[str, Any] | list[Any] | str | ... omitted 3 union elements, (s: slice[Any, Any, Any], /) -&gt; list[dict[str, Any] | list[Any] | str | ... omitted 3 union elements]]` cannot be called with key of type `Literal[&quot;version&quot;]` on object of type `list[JsonValueType]`
++ homeassistant/helpers/storage.py:413:25: error[invalid-argument-type] Method `__getitem__` of type `Overload[(i: SupportsIndex, /) -&gt; dict[str, Any] | list[JsonValueType] | str | ... omitted 3 union elements, (s: slice[Any, Any, Any], /) -&gt; list[JsonValueType]]` cannot be called with key of type `Literal[&quot;version&quot;]` on object of type `list[JsonValueType]`
+- homeassistant/helpers/storage.py:413:42: error[invalid-argument-type] Method `__getitem__` of type `Overload[(i: SupportsIndex, /) -&gt; dict[str, Any] | list[Any] | str | ... omitted 3 union elements, (s: slice[Any, Any, Any], /) -&gt; list[dict[str, Any] | list[Any] | str | ... omitted 3 union elements]]` cannot be called with key of type `Literal[&quot;minor_version&quot;]` on object of type `list[JsonValueType]`
++ homeassistant/helpers/storage.py:413:42: error[invalid-argument-type] Method `__getitem__` of type `Overload[(i: SupportsIndex, /) -&gt; dict[str, Any] | list[JsonValueType] | str | ... omitted 3 union elements, (s: slice[Any, Any, Any], /) -&gt; list[JsonValueType]]` cannot be called with key of type `Literal[&quot;minor_version&quot;]` on object of type `list[JsonValueType]`
+- homeassistant/helpers/storage.py:413:65: error[invalid-argument-type] Method `__getitem__` of type `Overload[(i: SupportsIndex, /) -&gt; dict[str, Any] | list[Any] | str | ... omitted 3 union elements, (s: slice[Any, Any, Any], /) -&gt; list[dict[str, Any] | list[Any] | str | ... omitted 3 union elements]]` cannot be called with key of type `Literal[&quot;data&quot;]` on object of type `list[JsonValueType]`
++ homeassistant/helpers/storage.py:413:65: error[invalid-argument-type] Method `__getitem__` of type `Overload[(i: SupportsIndex, /) -&gt; dict[str, Any] | list[JsonValueType] | str | ... omitted 3 union elements, (s: slice[Any, Any, Any], /) -&gt; list[JsonValueType]]` cannot be called with key of type `Literal[&quot;data&quot;]` on object of type `list[JsonValueType]`
+- homeassistant/helpers/storage.py:416:24: error[invalid-argument-type] Method `__getitem__` of type `Overload[(i: SupportsIndex, /) -&gt; dict[str, Any] | list[Any] | str | ... omitted 3 union elements, (s: slice[Any, Any, Any], /) -&gt; list[dict[str, Any] | list[Any] | str | ... omitted 3 union elements]]` cannot be called with key of type `Literal[&quot;version&quot;]` on object of type `list[JsonValueType]`
++ homeassistant/helpers/storage.py:416:24: error[invalid-argument-type] Method `__getitem__` of type `Overload[(i: SupportsIndex, /) -&gt; dict[str, Any] | list[JsonValueType] | str | ... omitted 3 union elements, (s: slice[Any, Any, Any], /) -&gt; list[JsonValueType]]` cannot be called with key of type `Literal[&quot;version&quot;]` on object of type `list[JsonValueType]`
+- homeassistant/helpers/storage.py:418:30: error[invalid-argument-type] Method `__getitem__` of type `Overload[(i: SupportsIndex, /) -&gt; dict[str, Any] | list[Any] | str | ... omitted 3 union elements, (s: slice[Any, Any, Any], /) -&gt; list[dict[str, Any] | list[Any] | str | ... omitted 3 union elements]]` cannot be called with key of type `Literal[&quot;data&quot;]` on object of type `list[JsonValueType]`
++ homeassistant/helpers/storage.py:418:30: error[invalid-argument-type] Method `__getitem__` of type `Overload[(i: SupportsIndex, /) -&gt; dict[str, Any] | list[JsonValueType] | str | ... omitted 3 union elements, (s: slice[Any, Any, Any], /) -&gt; list[JsonValueType]]` cannot be called with key of type `Literal[&quot;data&quot;]` on object of type `list[JsonValueType]`
+
+
+</code></pre>
+</details>
+
+<details>
+<summary>Memory usage changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">flake8 (https://github.com/pycqa/flake8)
+-     memo metadata = ~7MB
++     memo metadata = ~8MB
+
+
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @dcreager on 2025-11-21 21:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-11-21 21:20</div>
+            <div class="timeline-body"><!-- generated-comment ty ecosystem-analyzer -->
+
+<h2><code>ecosystem-analyzer</code> results</h2>
+<p>| Lint rule | Added | Removed | Changed |
+|-----------|------:|--------:|--------:|
+| <code>invalid-argument-type</code> | 0 | 0 | 12 |
+| <code>unused-ignore-comment</code> | 0 | 1 | 0 |
+| <strong>Total</strong> | <strong>0</strong> | <strong>1</strong> | <strong>12</strong> |</p>
+<p><strong><a href="https://dcreager-protocol-self.ecosystem-663.pages.dev/diff">Full report with detailed diff</a></strong> (<a href="https://dcreager-protocol-self.ecosystem-663.pages.dev/timing">timing results</a>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @dcreager on 2025-11-21 21:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @dcreager on 2025-11-21 21:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-11-21 21:40</div>
+            <div class="timeline-body"><p>Typing conformance result is a new true positive</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-11-21 21:51</div>
+            <div class="timeline-body"><p>Ecosystem results look good now, too ­— showing a more precise type in the diagnostics</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-11-22 02:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-22 10:50</div>
+            <div class="timeline-body"><p>(I'd love to take a look at this one before it goes in, if that's okay, just to make sure I understand everything that's going on!)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-11-22 16:30</div>
+            <div class="timeline-body"><blockquote>
+<p>(I'd love to take a look at this one before it goes in, if that's okay, just to make sure I understand everything that's going on!)</p>
+</blockquote>
+<p>:+1: no problem, I'll wait to merge on an okay from you</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:1528 on 2025-11-23 20:37</div>
+            <div class="timeline-body"><p>I like that the new return type of this method encodes the fact that if this method returns a union, all union elements will be <code>Type::Callable</code>s. But I don't like that it makes it easier to miss the fact that the method is fallible. <code>self</code> might not be callable, in which case you have to check for an error. When this method returned an <code>Option</code>, you were forced to check for the possibility of an error, but now you have to always make sure you remember to check whether the returned <code>CallableType</code>s is empty whenever you call <code>Type::try_upcast_to_callable()</code>.</p>
+<p>I'd much prefer it if this method could continue to return an <code>Option</code> if <code>self</code> is not callable (including unions in which some elements are not callable), and if the constructor of <code>CallableTypes</code> could enforce that it must always hold at least one element internally. I think that would then mean that you could make the <code>into_type</code> method infallible -- you could use <code>unreachable!()</code> for the <code>[]</code> case in the match inside that method</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:11144 on 2025-11-23 20:40</div>
+            <div class="timeline-body"><p>the implementation of <code>Itertools::exactly_one</code> is pretty complicated internally because it has to handle arbitrary iterators. I think we can implement this method more simply:</p>
+<pre><code class="language-suggestion">    pub(crate) fn exactly_one(self) -&gt; Option&lt;CallableType&lt;'db&gt;&gt; {
+        match self.0.as_slice() {
+            [single] =&gt; Some(*single),
+            _ =&gt; None,
+        }
+    }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:10979 on 2025-11-23 20:56</div>
+            <div class="timeline-body"><p>I sort-of feel like <code>CallableType::single</code> should return <code>CallableType</code>, and we should have a <code>Type::simple_callable</code> method that wraps that in a <code>Type</code>, similar to these helper methods we have elsewhere:</p>
+<p>https://github.com/astral-sh/ruff/blob/e642874cf1a80598242e3d2becf684ed8d4c4597/crates/ty_python_semantic/src/types.rs#L1276-L1286</p>
+<p>but this issue predates your PR, so don't worry about fixing it here :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/protocol_class.rs</code>:710 on 2025-11-23 21:03</div>
+            <div class="timeline-body"><p>to make sure I understand correctly:</p>
+<ul>
+<li>we previously implicitly upcasted <code>attribute_type</code> to <code>Callable</code> as part of the <code>attribute_type.has_relation_to_impl(...)</code> check, because we have to upcast something like a <code>Type::FunctionLiteral</code> if we want to check whether it's assignable to a <code>Type::Callable</code></li>
+<li>but we now <code>.apply_self</code> to the <code>Callable</code> supertype of <code>attribute_type</code> before we check whether <code>attribute_type &lt;: other</code>, so we move the <code>Callable</code>-upcasting here</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-11-23 21:05</div>
+            <div class="timeline-body"><p>Thank you!!</p>
+<blockquote>
+<p>Typing conformance result is a new true positive</p>
+</blockquote>
+<p>Would you be able to add a regression test for this to <code>protocols.md</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types.rs</code>:10979 on 2025-11-24 18:10</div>
+            <div class="timeline-body"><p>I had thought about doing something like this anyway, so I went ahead and did it</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types.rs</code>:1528 on 2025-11-24 18:11</div>
+            <div class="timeline-body"><p>Done. This makes a few call sites need <code>if_some_and</code> now, where before the <code>None</code> case was folded into the <code>CallableTypes</code> method, but that's not too bad</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/protocol_class.rs</code>:710 on 2025-11-24 18:11</div>
+            <div class="timeline-body"><p>Yes exactly!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-11-24 18:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-11-24 18:24</div>
+            <div class="timeline-body"><blockquote>
+<p>Would you be able to add a regression test for this to <code>protocols.md</code>?</p>
+</blockquote>
+<p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-11-24 18:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/protocol_class.rs</code>:710 on 2025-11-24 18:26</div>
+            <div class="timeline-body"><p>awesome, thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:1055 on 2025-11-24 18:40</div>
+            <div class="timeline-body"><p>it looks like this method always returns <code>Some</code>. Can't we simplify this by having it return <code>CallableTypes</code> rather than <code>Option&lt;CallableTypes&gt;</code>? That would better reflect the invariant that a class literal should always be callable (as should a generic alias).</p>
+<p>Well, I guess it isn't true that a class will <em>necessarily</em> always be callable if the class's metaclass has <code>__call__ = None</code> or something strange. But I don't think we try to model that possibility at the moment.</p>
+<p>Anyway, all tests pass if I apply this patch to your branch:</p>
+<pre><code class="language-diff">diff --git a/crates/ty_python_semantic/src/types.rs b/crates/ty_python_semantic/src/types.rs
+index 8d894b6c91..2ba63d8256 100644
+--- a/crates/ty_python_semantic/src/types.rs
++++ b/crates/ty_python_semantic/src/types.rs
+@@ -1565,10 +1565,10 @@ impl&lt;'db&gt; Type&lt;'db&gt; {
+                 }
+             }
+             Type::ClassLiteral(class_literal) =&gt; {
+-                ClassType::NonGeneric(class_literal).into_callable(db)
++                Some(ClassType::NonGeneric(class_literal).into_callable(db))
+             }
+ 
+-            Type::GenericAlias(alias) =&gt; ClassType::Generic(alias).into_callable(db),
++            Type::GenericAlias(alias) =&gt; Some(ClassType::Generic(alias).into_callable(db)),
+ 
+             Type::NewTypeInstance(newtype) =&gt; {
+                 Type::instance(db, newtype.base_class_type(db)).try_upcast_to_callable(db)
+@@ -1576,7 +1576,7 @@ impl&lt;'db&gt; Type&lt;'db&gt; {
+ 
+             // TODO: This is unsound so in future we can consider an opt-in option to disable it.
+             Type::SubclassOf(subclass_of_ty) =&gt; match subclass_of_ty.subclass_of() {
+-                SubclassOfInner::Class(class) =&gt; class.into_callable(db),
++                SubclassOfInner::Class(class) =&gt; Some(class.into_callable(db)),
+                 SubclassOfInner::Dynamic(dynamic) =&gt; {
+                     Some(CallableTypes::one(CallableType::single(
+                         db,
+diff --git a/crates/ty_python_semantic/src/types/class.rs b/crates/ty_python_semantic/src/types/class.rs
+index bf97c60c93..7de3a86263 100644
+--- a/crates/ty_python_semantic/src/types/class.rs
++++ b/crates/ty_python_semantic/src/types/class.rs
+@@ -1052,7 +1052,7 @@ impl&lt;'db&gt; ClassType&lt;'db&gt; {
+     /// Return a callable type (or union of callable types) that represents the callable
+     /// constructor signature of this class.
+     #[salsa::tracked(cycle_initial=into_callable_cycle_initial, heap_size=ruff_memory_usage::heap_size)]
+-    pub(super) fn into_callable(self, db: &amp;'db dyn Db) -&gt; Option&lt;CallableTypes&lt;'db&gt;&gt; {
++    pub(super) fn into_callable(self, db: &amp;'db dyn Db) -&gt; CallableTypes&lt;'db&gt; {
+         let self_ty = Type::from(self);
+         let metaclass_dunder_call_function_symbol = self_ty
+             .member_lookup_with_policy(
+@@ -1070,9 +1070,7 @@ impl&lt;'db&gt; ClassType&lt;'db&gt; {
+             // https://typing.python.org/en/latest/spec/constructors.html#converting-a-constructor-to-callable
+             // by always respecting the signature of the metaclass `__call__`, rather than
+             // using a heuristic which makes unwarranted assumptions to sometimes ignore it.
+-            return Some(CallableTypes::one(
+-                metaclass_dunder_call_function.into_callable_type(db),
+-            ));
++            return CallableTypes::one(metaclass_dunder_call_function.into_callable_type(db));
+         }
+ 
+         let dunder_new_function_symbol = self_ty.lookup_dunder_new(db);
+@@ -1107,7 +1105,7 @@ impl&lt;'db&gt; ClassType&lt;'db&gt; {
+             );
+ 
+             if returns_non_subclass {
+-                return Some(CallableTypes::one(dunder_new_bound_method));
++                return CallableTypes::one(dunder_new_bound_method);
+             }
+             Some(dunder_new_bound_method)
+         } else {
+@@ -1164,13 +1162,13 @@ impl&lt;'db&gt; ClassType&lt;'db&gt; {
+ 
+         match (dunder_new_function, synthesized_dunder_init_callable) {
+             (Some(dunder_new_function), Some(synthesized_dunder_init_callable)) =&gt; {
+-                Some(CallableTypes::from_elements([
++                CallableTypes::from_elements([
+                     dunder_new_function,
+                     synthesized_dunder_init_callable,
+-                ]))
++                ])
+             }
+             (Some(constructor), None) | (None, Some(constructor)) =&gt; {
+-                Some(CallableTypes::one(constructor))
++                CallableTypes::one(constructor)
+             }
+             (None, None) =&gt; {
+                 // If no `__new__` or `__init__` method is found, then we fall back to looking for
+@@ -1186,17 +1184,17 @@ impl&lt;'db&gt; ClassType&lt;'db&gt; {
+                 if let Place::Defined(Type::FunctionLiteral(new_function), _, _) =
+                     new_function_symbol
+                 {
+-                    Some(CallableTypes::one(
++                    CallableTypes::one(
+                         new_function
+                             .into_bound_method_type(db, correct_return_type)
+                             .into_callable_type(db),
+-                    ))
++                    )
+                 } else {
+                     // Fallback if no `object.__new__` is found.
+-                    Some(CallableTypes::one(CallableType::single(
++                    CallableTypes::one(CallableType::single(
+                         db,
+                         Signature::new(Parameters::empty(), Some(correct_return_type)),
+-                    )))
++                    ))
+                 }
+             }
+         }
+@@ -1212,11 +1210,11 @@ impl&lt;'db&gt; ClassType&lt;'db&gt; {
+ }
+ 
+ fn into_callable_cycle_initial&lt;'db&gt;(
+-    _db: &amp;'db dyn Db,
++    db: &amp;'db dyn Db,
+     _id: salsa::Id,
+     _self: ClassType&lt;'db&gt;,
+-) -&gt; Option&lt;CallableTypes&lt;'db&gt;&gt; {
+-    None
++) -&gt; CallableTypes&lt;'db&gt; {
++    CallableTypes::one(CallableType::bottom(db))
+ }
+ 
+ impl&lt;'db&gt; From&lt;GenericAlias&lt;'db&gt;&gt; for ClassType&lt;'db&gt; {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:10987 on 2025-11-24 18:40</div>
+            <div class="timeline-body"><p>nit: maybe move these new <code>Type</code> methods to the big <code>impl&lt;'db&gt; Type&lt;'db&gt;</code> block higher up in the file?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-11-24 18:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-11-24 18:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types.rs</code>:10987 on 2025-11-24 18:42</div>
+            <div class="timeline-body"><p>Ah, I thought it would be better to have them near the type that they're related to. If we ever extract this out into a separate file these are the <code>Type</code> methods that would go with <code>CallableType</code> itself.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-11-24 18:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:10987 on 2025-11-24 18:43</div>
+            <div class="timeline-body"><p>makes sense, I don't have a strong opinion! I agree factoring out <code>CallableType(s)</code> into a separate file would be nice at some point</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-11-24 18:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:1055 on 2025-11-24 18:45</div>
+            <div class="timeline-body"><p>Done. I had not thought about using the bottom callable as the cycle fallback — that was why I had kept the <code>Option</code> wrapper originally</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-11-24 18:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dcreager on 2025-11-24 19:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dcreager on 2025-11-24 19:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-11-24 19:05</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:48:27 UTC
+    </footer>
+</body>
+</html>
