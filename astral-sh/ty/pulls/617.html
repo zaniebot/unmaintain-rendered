@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>update cargo-dist and use the recursive-tarball feature - astral-sh/ty #617</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>update cargo-dist and use the recursive-tarball feature</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ty/pull/617">#617</a>
+        opened by <a href="https://github.com/Gankra">@Gankra</a>
+        on 2025-06-09 15:23
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/Gankra">@Gankra</a> on 2025-06-09 15:23</div>
+            <div class="timeline-body"><p>Fixes #372</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @Gankra on 2025-06-09 16:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-06-09 16:44</div>
+            <div class="timeline-body"><p>This current implementation i believe has the caveat that it will silently discard the broken symlinks in the ruff fuzzer. If you consider this an issue, the fuzzer should be changed to generate the symlinks on demand instead of using these checked in broken ones.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-09 16:49</div>
+            <div class="timeline-body"><blockquote>
+<p>This current implementation i believe has the caveat that it will silently discard the broken symlinks in the ruff fuzzer. If you consider this an issue, the fuzzer should be changed to generate the symlinks on demand instead of using these checked in broken ones.</p>
+</blockquote>
+<p>I consider this an issue with the fuzzer :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-06-09 16:49</div>
+            <div class="timeline-body"><p>Nice, seems like a simple cargo dist upgrade to me.</p>
+<p>Thank you for looking into this</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">release</span> added by @MichaReiser on 2025-06-09 16:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-06-09 16:56</div>
+            <div class="timeline-body"><p>Confirmed:</p>
+<pre><code>cargo dist build -aglobal
+cp target/distrib/source.tar.gz ~/dev/tmp/ty2/
+cd ~/dev/tmp/ty2
+tar -xvf source.tar.gz
+cd ruff
+cargo test
+</code></pre>
+<p>builds and runs</p>
+<p>Although on the ty checkout I'm on all these tests fail:</p>
+<pre><code>    mdtest__annotations_invalid
+    mdtest__assignment_annotations
+    mdtest__binary_instances
+    mdtest__comparison_instances_membership_test
+    mdtest__comparison_instances_rich_comparison
+    mdtest__comparison_tuples
+    mdtest__diagnostics_attribute_assignment
+    mdtest__diagnostics_invalid_argument_type
+    mdtest__diagnostics_no_matching_overload
+    mdtest__diagnostics_semantic_syntax_errors
+    mdtest__diagnostics_shadowing
+    mdtest__diagnostics_union_call
+    mdtest__diagnostics_unpacking
+    mdtest__diagnostics_unresolved_import
+    mdtest__diagnostics_unresolved_reference
+    mdtest__diagnostics_unsupported_bool_conversion
+    mdtest__diagnostics_version_related_syntax_errors
+    mdtest__function_return_type
+    mdtest__generics_legacy_functions
+    mdtest__generics_pep695_functions
+    mdtest__import_basic
+    mdtest__loops_for
+    mdtest__mro
+    mdtest__overloads
+    mdtest__protocols
+    mdtest__unary_not
+    mdtest__with_sync
+</code></pre>
+<p>I don't know if that's expected.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-09 17:02</div>
+            <div class="timeline-body"><blockquote>
+<p>Although on the ty checkout I'm on all these tests fail:</p>
+</blockquote>
+<p>Not sure. How do you run those?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-09 17:05</div>
+            <div class="timeline-body"><p>I just pulled <code>main</code> and ran <code>cargo nextest run</code> in the ruff directory and that seems to work fine. Any chance you have a venv activated? We only recently fixed the test isolation from externally set environment variables.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-06-09 17:43</div>
+            <div class="timeline-body"><p>Interesting, <code>cargo nextest run</code> fairs far better, with only one failing test (ty_python_semantic::mdtest).</p>
+<pre><code>expression: snapshot
+────────────────────────────────────────────────────────────────────────────────
++new results
+────────────┬───────────────────────────────────────────────────────────────────
+          0 │+---
+          1 │+mdtest name: invalid.md - Tests for invalid types in type expressions - Diagnostics for common errors - Module-literal used when you meant to use a class from that module
+          2 │+mdtest path: crates/ty_python_semantic/resources/mdtest/annotations/invalid.md
+          3 │+---
+          4 │+
+          5 │+# Python source files
+          6 │+
+          7 │+## foo.py
+          8 │+
+          9 │+```
+         10 │+1 | import datetime
+         11 │+2 | 
+         12 │+3 | def f(x: datetime): ...  # error: [invalid-type-form]
+         13 │+```
+         14 │+
+         15 │+## PIL/Image.py
+         16 │+
+         17 │+```
+         18 │+1 | class Image: ...
+         19 │+```
+         20 │+
+         21 │+## bar.py
+         22 │+
+         23 │+```
+         24 │+1 | from PIL import Image
+         25 │+2 | 
+         26 │+3 | def g(x: Image): ...  # error: [invalid-type-form]
+         27 │+```
+         28 │+
+         29 │+# Diagnostics
+         30 │+
+         31 │+```
+         32 │+error[invalid-type-form]: Variable of type `&lt;module 'datetime'&gt;` is not allowed in a type expression
+         33 │+ --&gt; src/foo.py:3:10
+         34 │+  |
+         35 │+1 | import datetime
+         36 │+2 |
+         37 │+3 | def f(x: datetime): ...  # error: [invalid-type-form]
+         38 │+  |          ^^^^^^^^
+         39 │+  |
+         40 │+info: Did you mean to use the module's member `datetime.datetime` instead?
+         41 │+info: rule `invalid-type-form` is enabled by default
+         42 │+
+         43 │+```
+         44 │+
+         45 │+```
+         46 │+error[invalid-type-form]: Variable of type `&lt;module 'PIL.Image'&gt;` is not allowed in a type expression
+         47 │+ --&gt; src/bar.py:3:10
+         48 │+  |
+         49 │+1 | from PIL import Image
+         50 │+2 |
+         51 │+3 | def g(x: Image): ...  # error: [invalid-type-form]
+         52 │+  |          ^^^^^
+         53 │+  |
+         54 │+info: Did you mean to use the module's member `Image.Image` instead?
+         55 │+info: rule `invalid-type-form` is enabled by default
+         56 │+
+         57 │+```
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-09 18:30</div>
+            <div class="timeline-body"><p>Weird. Yeah, not sure why you're seeing those failures. Looking at the changes, it seems that you're missing entire snapshot files</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-06-09 18:56</div>
+            <div class="timeline-body"><p>Oh fun it looks like there's a freakout <a href="https://github.com/astral-sh/ruff/tree/main/crates/ty_python_semantic/resources/mdtest/snapshots">around the snapshot files that contain <code>...</code> in their names</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-06-09 18:58</div>
+            <div class="timeline-body"><p>Specifically the tarball does not contain them. I wonder if it's running afoul of <code>Path::parent()</code>...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-09 19:01</div>
+            <div class="timeline-body"><p>😬 we should probably use a different truncation character (e.g the unicode one)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-10 10:42</div>
+            <div class="timeline-body"><p>We actually do use the unicode <code>\u2026</code> and not a regular <code>...</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-06-10 12:41</div>
+            <div class="timeline-body"><p>Oh the bug is even more fun/silly than I thought</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-06-10 12:42</div>
+            <div class="timeline-body"><pre><code>$ git ls-files --recurse-submodules | rg ty_python_semantic
+...
+&quot;ruff/crates/ty_python_semantic/resources/mdtest/snapshots/unsupported_bool_con\342\200\246_-_Different_ways_that_\342\200\246_-_Part_of_a_union_wher\342\200\246_(7cca8063ea43c1a).snap&quot;
+&quot;ruff/crates/ty_python_semantic/resources/mdtest/snapshots/version_related_synt\342\200\246_-_Version-related_synt\342\200\246_-_`match`_statement_-_Before_3.10_(2545eaa83b635b8b).snap&quot;
+ruff/crates/ty_python_semantic/resources/mdtest/statically_known_branches.md
+ruff/crates/ty_python_semantic/resources/mdtest/stubs/class.md
+ruff/crates/ty_python_semantic/resources/mdtest/stubs/ellipsis.md
+...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-06-10 12:42</div>
+            <div class="timeline-body"><p>git ls-files freaks out and wraps those paths in quotes with escaping, cool</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-06-10 12:44</div>
+            <div class="timeline-body"><p>Looks like the <code>-z</code> flag is the answer, will test that out.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-06-10 13:26</div>
+            <div class="timeline-body"><p>Fixed in</p>
+<ul>
+<li>https://github.com/astral-sh/cargo-dist/pull/43</li>
+</ul>
+<p>Released and updated this PR to use it</p>
+<p><code>cargo test</code> now passes cleanly 🎊</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-12 13:59</div>
+            <div class="timeline-body"><p>Is this ready to be merged?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-06-12 14:32</div>
+            <div class="timeline-body"><p>Yep!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @Gankra on 2025-06-12 14:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @Gankra on 2025-06-12 14:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-06-12 14:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/WhyNotHugo">@WhyNotHugo</a> on 2025-06-12 15:13</div>
+            <div class="timeline-body"><p>Do I understand correctly that we (downstream) should use the workflow-generated tarballs, rather than the git-archive-generated tarballs?</p>
+<p>Can these be built in a reproducible manner?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-06-12 15:20</div>
+            <div class="timeline-body"><p>You can use the git-archive-generated tarballs if they work for you (they don't include the ruff submodule, this cannot be changed, that's how github works).</p>
+<p>The workflow-generated tarballs can be generated hopefully-reproducibly with <code>cargo dist build -aglobal</code> which will produce <code>target/distrib/source.tar.gz</code> using the <a href="https://github.com/astral-sh/cargo-dist/">astral-sh/cargo-dist</a> version in the dist-workspace.toml.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-06-12 15:23</div>
+            <div class="timeline-body"><p>Morally the tarballs are just shoving the git-archive-generated ruff tarball into the ty tarball -- if there's significant divergence this isn't intentional.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 02:36:04 UTC
+    </footer>
+</body>
+</html>
