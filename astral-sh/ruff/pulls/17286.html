@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Improve handling of visibility constraints in external modules when resolving `*` imports - astral-sh/ruff #17286</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Improve handling of visibility constraints in external modules when resolving <code>*</code> imports</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/17286">#17286</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-04-07 20:21
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-04-07 20:21</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Further work towards https://github.com/astral-sh/ruff/issues/14169.</p>
+<p>This adjusts our handling of <code>*</code> imports so that we pay attention to visibility constraints in the external module (the module symbols are being imported from) when we infer the boundness of symbols defined via a <code>*</code> import. I.e., for something like this:</p>
+<pre><code class="language-md">```toml
+python-version = &quot;3.9&quot;
+```
+
+`a.py`:
+
+```py
+import sys
+
+if sys.version_info &gt;= (3, 10):
+    X = True
+```
+
+`b.py`:
+
+```py
+from a import *
+
+print(X)
+```
+</code></pre>
+<p>We will now correctly emit an <code>[unresolved-reference]</code> diagnostic on the use of <code>X</code> in <code>b.py</code>: the visibility constraints in <code>a.py</code> resolve to <code>Truthiness::AlwaysFalse</code>, so no symbols are actually bound in <code>b.py</code> as a result of the <code>*</code> import.</p>
+<h2>Implementation</h2>
+<p>When adding each <code>*</code>-import definition to the <code>UseDefMap</code>, we snapshot the <code>SymbolState</code> as it was prior to the <code>*</code> import definition (possibly) overriding any (possible) previous definitions. Then, in <code>symbol::symbol_from_bindings_impl</code>, we evaluate <code>*</code> import definitions to determine the boundness of the symbol in the external module. If the symbol is in fact unbound in the external module (due to visibility constraints resolving to <code>Truthiness::AlwaysFalse</code>), we determine that the <code>*</code> import did not in fact provide an additional binding for this symbol, and in the importing module we fall back to the <code>SymbolState</code> for that symbol prior to the <code>*</code>-import definition.</p>
+<p>In order to be able to resolve <code>*</code> imports from <code>symbol.rs</code> as well as from <code>types/infer.rs</code>, several functions are pulled out of <code>infer.rs</code> into a new <code>import_resolution</code> module where they can be accessed from both <code>types/infer.rs</code> and <code>symbol.rs</code>.</p>
+<h2>Problems with this approach</h2>
+<p>This approach works well for symbols in the external module that are statically known to either be definitely bound or definitely unbound. But the logic in <code>symbol.rs</code> is still somewhat naive, and doesn't work for possibly-unbound definitions in the external module. I've added a failing test in this PR to illustrate the issue: I don't know how to fix it properly, and would welcome ideas. In addition to the new failing test, the PR does not address any of these TODOs, and ideally it would:</p>
+<p>https://github.com/astral-sh/ruff/blob/761749cb505f42b684e72f45b008402edc5a277b/crates/red_knot_python_semantic/resources/mdtest/import/star.md?plain=1#L217-L227</p>
+<h2>Test Plan</h2>
+<p>Existing assertions in mdtests updated; new ones added.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2025-04-07 20:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @AlexWaygood on 2025-04-07 20:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @AlexWaygood on 2025-04-07 20:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @AlexWaygood on 2025-04-07 20:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-04-07 20:23</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-04-07 20:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/symbol.rs</code>:699 on 2025-04-07 20:30</div>
+            <div class="timeline-body"><p>calling <code>.next()</code> here and only considering the <em>first</em> definition of the definitions-before-the-<code>*</code>-import is just... obviously incorrect :-)</p>
+<p>but I'm not sure what the correct solution is here</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/import_resolution.rs</code>:15 on 2025-04-07 20:36</div>
+            <div class="timeline-body"><p>we could possibly add some caching to this function, since it's nontrivial and it's called from both <code>symbol.rs</code> and <code>infer.rs</code>?</p>
+<p>There's a 1% slowdown on this PR according to codspeed, which isn't huge but also isn't nothing</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/import_resolution.rs</code>:71 on 2025-04-07 20:36</div>
+            <div class="timeline-body"><p>not sure if we want the tracing every time the function is called or only when this function is called from <code>infer.rs</code>? I'm guessing probably the latter?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def/symbol_state.rs</code>:316 on 2025-04-07 20:38</div>
+            <div class="timeline-body"><p>deriving <code>salsa::Update</code> was required here or the compiler started giving me odd lifetime complaints due to the new <code>bindings_at_star_imports: FxHashMap&lt;Definition&lt;'db&gt;, SymbolState&gt;</code> fields on <code>UseDefMap</code> and <code>UseDefMapBuilder</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-04-07 20:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-04-07 21:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/import_resolution.rs</code>:71 on 2025-04-07 21:00</div>
+            <div class="timeline-body"><p>Debug is also user facing (if that helps making a decision)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-04-08 03:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/symbol.rs</code>:699 on 2025-04-08 03:16</div>
+            <div class="timeline-body"><p>I think the simplest approach here might be to make a recursive <code>symbol_from_bindings_impl</code> call here with all the prior bindings and constraints. This will give you the type and boundness at the point of the star import definition (if unbound just return <code>None</code> and go on to the next binding.) The type will then replace <code>binding_ty</code> below, and possibly-unbound will mean the overall symbol resolution also has to be possibly-unbound.</p>
+<p>The alternative would be to flatten all these prior bindings into the current loop somehow, with the visibility and narrowing constraints of the star-import binding ANDed with each one of the prior bindings. This is probably doable, but seems more complex?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-04-08 03:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/symbol.rs</code>:695 on 2025-04-08 03:17</div>
+            <div class="timeline-body"><p>If the star-import result is possibly-unbound, then you would need to union the type from the star import resolution with the type obtained from the prior bindings (if you take the first option below) or keep both the star-import binding and the prior bindings in this loop (if you take the flatten option below).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-04-08 03:18</div>
+            <div class="timeline-body"><p>This is looking pretty good! Didn't do a full review, just commented on the main open issues I saw.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/import_resolution.rs</code>:33 on 2025-04-08 06:11</div>
+            <div class="timeline-body"><p>I think the comment is outdated. The code here no longer emits a diagnostic</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/symbol.rs</code>:366 on 2025-04-08 06:14</div>
+            <div class="timeline-body"><p>Nit: Can we align the argument ordering. <code>symbol_from_bindings</code> takes <code>scope</code> as second argument before <code>bindings</code> and <code>symbol_from_bindings_impl</code> takes <code>scope</code> as the last argument.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/import_resolution.rs</code>:15 on 2025-04-08 06:18</div>
+            <div class="timeline-body"><p>I don't think this method on its own performs that much computation that it's worth caching because most its inner methods are cached (mainly <code>resolve_module</code>) and I assume it isn't called that frequently (only for star imports?)</p>
+<p>I suspect that the perf regression is mainly due to us inferring more types. You could run the CLI in <code>-vvv</code> and see if the ingredient counts change.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/import_resolution.rs</code>:71 on 2025-04-08 06:20</div>
+            <div class="timeline-body"><p>It would be nice if the tracing calls would be implicit from the API (where infer uses one API and the other call site the other). E.g. could <code>UnresolvedImportError</code> wrap <code>ModuleNameResolutionError</code>? Or we return a type that allows converting from the error returned here to <code>UnresolvedImportError</code> where it has two methods.</p>
+<p>Or just add a boolean flag 😆</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-04-08 06:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-04-08 07:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/import/star.md</code>:576 on 2025-04-08 07:49</div>
+            <div class="timeline-body"><p>I think you probably want to reference https://github.com/astral-sh/ruff/issues/15797 here? In fact, this error might be gone if you rebase on main?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-04-08 07:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/import/star.md</code>:605 on 2025-04-08 07:52</div>
+            <div class="timeline-body"><p>… also known in the literature as a desperate <code>*</code> import.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-04-08 07:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/import/star.md</code>:611 on 2025-04-08 07:57</div>
+            <div class="timeline-body"><p>Is this what you referred to in the PR description considering possibly-unbound imports?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-04-08 08:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/import/star.md</code>:605 on 2025-04-08 08:18</div>
+            <div class="timeline-body"><p>it's actually morse code for &quot;help me, I'm stuck in a type checker and cannot get out&quot; if you apply the right encoding to the file</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-04-08 08:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/import/star.md</code>:611 on 2025-04-08 08:20</div>
+            <div class="timeline-body"><p>Yup</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-04-08 08:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/symbol.rs</code>:699 on 2025-04-08 08:48</div>
+            <div class="timeline-body"><p>A test case to capture this would be</p>
+<p><code>module.py</code>:</p>
+<pre><code class="language-py">if False:
+    X = 3
+</code></pre>
+<p><code>main.py</code>:</p>
+<pre><code class="language-py">def flag() -&gt; bool:
+    return False
+
+if flag():
+    X = 1
+else:
+    X = 2
+
+from module import *
+
+reveal_type(X)  # Should be Literal[1, 2], currently results in Literal[1]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/import/star.md</code>:576 on 2025-04-08 09:24</div>
+            <div class="timeline-body"><blockquote>
+<p>I think you probably want to reference https://github.com/astral-sh/ruff/issues/15797 here?</p>
+</blockquote>
+<p>oops, yes, thanks!</p>
+<blockquote>
+<p>In fact, this error might be gone if you rebase on main?</p>
+</blockquote>
+<p>Indeed it is! It looks like we still infer <code>Unknown</code> rather than <code>Never</code>, though. That might be okay? Not sure -- WDYT?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-04-08 09:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-04-08 09:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/symbol.rs</code>:699 on 2025-04-08 09:36</div>
+            <div class="timeline-body"><blockquote>
+<p>I think the simplest approach here might be to make a recursive <code>symbol_from_bindings_impl</code> call here with all the prior bindings and constraints. This will give you the type and boundness at the point of the star import definition (if unbound just return <code>None</code> and go on to the next binding.) The type will then replace <code>binding_ty</code> below, and possibly-unbound will mean the overall symbol resolution also has to be possibly-unbound.</p>
+<p>The alternative would be to flatten all these prior bindings into the current loop somehow, with the visibility and narrowing constraints of the star-import binding ANDed with each one of the prior bindings. This is probably doable, but seems more complex?</p>
+</blockquote>
+<p>The way I believe this could be implemented is actually a third approach, I think?</p>
+<p>The main problem (on <code>main</code>) seems to be that in a situation like the following, we consider <code>X</code> to be definitely overwritten by the star-import:</p>
+<pre><code class="language-py">X = 1
+
+from module import *  # may define X
+</code></pre>
+<p>This is why you implemented the approach with storing the previous symbol state at the position of the star import, attempting to reinstate it if <code>X</code> is, in fact, not defined in <code>module</code> (given the evaluation of visibility constraints in <code>module</code>).</p>
+<p>What if we did the following instead: we treat star-imports similar to a conditional branch. With the difference that we need to fill in the condition at a later point in time. Conceptually, we would replace <code>from module import *</code> with</p>
+<pre><code class="language-py">if &lt;placeholder&gt;:
+    X = module.X
+</code></pre>
+<p>Instead of unconditionally overwriting the previous binding of <code>X</code>, we would keep the previous binding with a visibility constraint of <code>~&lt;placeholder&gt;</code>, and add the new binding &quot;<code>X = module.X</code>&quot; binding with a visibility constraint of <code>&lt;placeholder&gt;</code>.</p>
+<p>During type inference, we would replace this placeholder with <code>AlwaysTrue</code> if <code>X</code> is definitely bound in <code>module</code>, with <code>AlwaysFalse</code> if <code>X</code> is definitely unbound in <code>module</code>, and with <code>Ambiguous</code> if <code>X</code> is possibly-bound in <code>module</code>. This replacement would be a TDD traversal, and the placeholders would need to include some information to which star-import they belong.</p>
+<p>The advantage of this approach, I think, would be that we would not need the new <code>bindings_at_star_imports</code> field in the use-def map. And after the placeholders have been replaced, <code>symbol_from_bindings</code> should ideally just work as before.</p>
+<p>I think it would be similar to Carl's flattening suggestion, but the actual operation would be performed by the usual visibility constraints merging in the semantic index builder (those placeholder constraints could be AND-ed and OR-ed with other constraints, it would just be a new atomic constraint).</p>
+<p>I hope this all makes sense, I'm unfortunately not that familiar with your previous star-import work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-04-08 09:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/import/star.md</code>:576 on 2025-04-08 09:37</div>
+            <div class="timeline-body"><blockquote>
+<p>Indeed it is! It looks like we still infer <code>Unknown</code> rather than <code>Never</code>, though. That might be okay? Not sure -- WDYT?</p>
+</blockquote>
+<p>Yes, this is expected.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-04-08 10:02</div>
+            <div class="timeline-body"><p>Quite apart from any of the big things I was stuck on (thank you all for your review comments!), I realised after sleeping on it that I could significantly simplify things by reviving the idea I had previously in https://github.com/astral-sh/ruff/pull/16923#discussion_r2009436905. There's now no need for moving any logic from <code>infer.rs</code> into a new <code>import_resolution</code> submodule, and all the questions about &quot;Where do we do tracing?&quot; are now redundant 🥳</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-04-08 10:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/symbol.rs</code>:699 on 2025-04-08 10:15</div>
+            <div class="timeline-body"><p>This is a really interesting idea, and potentially much more elegant than the solution Carl and I had been working on! I'm going to try it out.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-04-08 14:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/symbol.rs</code>:699 on 2025-04-08 14:17</div>
+            <div class="timeline-body"><p>Yes, that idea does sound very tidy! I think it will require an enum wrapper around <code>Predicate</code>(or similar)  in order to allow for these placeholder predicates?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-04-08 15:03</div>
+            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+
+<!-- __CODSPEED_INSTRUMENTATION_PERFORMANCE_REPORT_COMMENT__ -->
+
+<h2><a href="https://codspeed.io/astral-sh/ruff/branches/alex%2Fstar-statically-known-2">CodSpeed Performance Report</a></h2>
+<h3>Merging #17286 will <strong>degrade performances by 12.49%</strong></h3>
+<p><sub>Comparing <code>alex/star-statically-known-2</code> (9415521) with <code>main</code> (f1ba596)</sub></p>
+<h3>Summary</h3>
+<p><code>❌ 1</code> regressions<br />
+<code>✅ 31</code> untouched benchmarks</p>
+<blockquote>
+<p>:warning: <em>Please fix the performance issues or <a href="https://codspeed.io/astral-sh/ruff/branches/alex%2Fstar-statically-known-2">acknowledge them on CodSpeed</a>.</em></p>
+</blockquote>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Benchmark | <code>BASE</code> | <code>HEAD</code> | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| ❌ | <code>red_knot_check_file[cold]</code> | 96.7 ms | 110.5 ms | -12.49% |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-04-08 15:15</div>
+            <div class="timeline-body"><p>I tried out @sharkdp's suggested alternative implementation, and it appears to work beautifully... except that this PR is now triggering(?) a Salsa panic in some unrelated tests in a file I didn't touch:</p>
+<pre><code>  crates/red_knot_python_semantic/resources/mdtest/properties.md:203 panicked at /home/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/296a8c7/src/tracked_struct.rs:832:21
+  crates/red_knot_python_semantic/resources/mdtest/properties.md:203 access to field whilst the value is being initialized
+</code></pre>
+<p>which looks like the same Salsa panic that @dcreager was running into in https://github.com/astral-sh/ruff/pull/17023 before he applied https://github.com/astral-sh/ruff/pull/17023/commits/ea125488ac59d27620144dafcced3050c1da2775 to that PR...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-04-08 15:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/properties.md</code>:1 on 2025-04-08 15:40</div>
+            <div class="timeline-body"><p>All changes to this file are just commenting out the test that causes the Salsa panic (I just applied @dcreager's commit https://github.com/astral-sh/ruff/commit/ea125488ac59d27620144dafcced3050c1da2775 to this branch 😆)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/predicate.rs</code>:144 on 2025-04-08 16:11</div>
+            <div class="timeline-body"><p>This is a scoped symbol ID, meaning it is only valid in some specific scope, and can give &quot;random&quot; wrong results if interpreted as a symbol ID in some other scope.</p>
+<p>It's made clear in a comment below that the scope is implicitly always &quot;global scope of importing_file&quot;, but I think it would be worth mentioning that in a doc comment here as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-04-08 16:34</div>
+            <div class="timeline-body"><p>This is so nice and clean now! Love it.</p>
+<p>I think given our upcoming deadlines I would be inclined to merge this even with a significant regression (especially if that regression gets smaller percentage-wise when we check a larger codebase), and prefer to have someone spend dedicated time later looking for performance wins. But it wouldn't hurt to at least look at some profiles (the CodSpeed ones are sadly useless, so they have to be generated locally) to understand which queries we spend more time in now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-04-08 20:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/semantic_index/predicate.rs</code>:111 on 2025-04-08 20:09</div>
+            <div class="timeline-body"><p>Minor</p>
+<pre><code class="language-suggestion">/// Since we cannot know whether or not &lt;condition&gt; is true at semantic-index time,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-04-08 20:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/semantic_index/predicate.rs</code>:96 on 2025-04-08 20:12</div>
+            <div class="timeline-body"><p>This is a really minor nuisance, but I would have an easier time reading this doc comment if the modules were named <code>module.py</code> and <code>main.py</code> or similar, so I don't have to remember which one is the exporting and which one is the importing module :smile:. Sorry, it's late here...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-04-08 20:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:1211 on 2025-04-08 20:14</div>
+            <div class="timeline-body"><p>Maybe worth mentioning again that we essentially model a</p>
+<pre><code class="language-py">if &lt;placeholder&gt;:
+    from &lt;referenced_module&gt; import &lt;symbol&gt;
+else:
+    # (implicit empty else branch with negated visibility constraints)
+</code></pre>
+<p>control flow here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> approved on 2025-04-08 20:17</div>
+            <div class="timeline-body"><p>Very nice — Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-04-09 14:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/predicate.rs</code>:143 on 2025-04-09 14:32</div>
+            <div class="timeline-body"><p>nit</p>
+<pre><code class="language-suggestion">    /// to the global scope of the importing file.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-04-09 14:33</div>
+            <div class="timeline-body"><blockquote>
+<p>Merging #17286 will <strong>degrade performances by 12.49%</strong></p>
+</blockquote>
+<p>We discussed this internally. It's obviously far from ideal, but for now we're going to eat the performance regression. We have some ideas for how to address it, but they may or may not work out, and we want to move onto other tasks for now. I'll writeup a separate issue with our findings from looking at the tracing logs and various profiles.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2025-04-09 14:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-04-09 14:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-04-09 14:36</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:41:06 UTC
+    </footer>
+</body>
+</html>

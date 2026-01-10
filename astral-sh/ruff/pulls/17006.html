@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Add property tests for callable types - astral-sh/ruff #17006</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Add property tests for callable types</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/17006">#17006</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2025-03-27 02:09
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-03-27 02:09</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Part of #15382, this PR adds property tests for callable types.</p>
+<p>Specifically, this PR updates the property tests to generate an arbitrary signature for a general callable type which includes:</p>
+<ul>
+<li>Arbitrary combination of parameter kinds in the correct order</li>
+<li>Arbitrary number of parameters</li>
+<li>Arbitrary optional types for annotation and return type</li>
+<li>Arbitrary parameter names (no duplicate names), optional for positional-only parameters</li>
+</ul>
+<h2>Test Plan</h2>
+<pre><code>QUICKCHECK_TESTS=100000 cargo test -p red_knot_python_semantic -- --ignored types::property_tests::stable
+</code></pre>
+<p>Also, the commands in CI:</p>
+<p>https://github.com/astral-sh/ruff/blob/d72b4100a33ccb35047f86e900bede6310c7c119/.github/workflows/daily_property_tests.yaml#L47-L52</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @dhruvmanila on 2025-03-27 02:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-03-27 02:16</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-03-27 18:16</div>
+            <div class="timeline-body"><p>This is blocked on adding support for <code>is_disjoint_from</code> for callable types otherwise there are failures:</p>
+<pre><code>---- types::property_tests::stable::subtype_of_implies_not_disjoint_from stdout ----
+thread 'types::property_tests::stable::subtype_of_implies_not_disjoint_from' panicked at /Users/dhruv/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/quickcheck-1.0.3/src/tester.rs:165:28:
+[quickcheck] TEST FAILED. Arguments: (Intersection { pos: [Callable { params: List([]), returns: Some(AbcInstance(&quot;ABCMeta&quot;)) }, None], neg: [] }, AlwaysTruthy)
+
+---- types::property_tests::stable::subtype_of_implies_not_disjoint_from stdout ----
+thread 'types::property_tests::stable::subtype_of_implies_not_disjoint_from' panicked at /Users/dhruv/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/quickcheck-1.0.3/src/tester.rs:165:28:
+[quickcheck] TEST FAILED. Arguments: (Intersection { pos: [Callable { params: List([]), returns: Some(SubclassOfBuiltinClass(&quot;object&quot;)) }, StringLiteral(&quot;a&quot;)], neg: [] }, LiteralString)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-03-31 22:25</div>
+            <div class="timeline-body"><p>Ok, this seems to be discovering multiple failures which, by the looks of it, is probably related to the fact that we still need to handle relationship between the general <code>Callable</code> and other types:</p>
+<p><code>subtype_of_implies_not_disjoint_from</code>:</p>
+<pre><code>Arguments: (
+    Intersection {
+        pos: [
+            Callable { 
+                params: List([
+                    Param { 
+                        kind: KeywordVariadic, 
+                        name: Some(Name(&quot;n5&quot;)), 
+                        annotated_ty: Some(Tuple([])), 
+                        default_ty: None
+                    }
+                ]), 
+                returns: Some(AlwaysTruthy) 
+            }, 
+            BytesLiteral(&quot;&quot;)
+        ],
+        neg: []
+    },
+    AlwaysTruthy
+)
+</code></pre>
+<p><code>subtype_of_is_transitive</code>:</p>
+<pre><code>Arguments: (
+    None,
+    AlwaysFalsy,
+    Intersection {
+        pos: [],
+        neg: [Callable {
+            params: List([]),
+            returns: Some(KnownClassInstance(Str)),
+        }],
+    },
+)
+</code></pre>
+<p><code>subtype_of_is_transitive</code>:</p>
+<pre><code>Arguments: (
+    Callable {
+        params: List([
+            Param {
+                kind: KeywordOnly,
+                name: Some(Name(&quot;n6&quot;)),
+                annotated_ty: Some(Union([
+                    Intersection { pos: [], neg: [] },
+                    Intersection {
+                        pos: [],
+                        neg: [KnownClassInstance(List), KnownClassInstance(List)],
+                    },
+                    Tuple([SubclassOfAny, KnownClassInstance(TypeAliasType)]),
+                ])),
+                default_ty: Some(Tuple([IntLiteral(0)])),
+            },
+            Param {
+                kind: KeywordVariadic,
+                name: Some(Name(&quot;n5&quot;)),
+                annotated_ty: Some(Union([
+                    KnownClassInstance(Tuple),
+                    Intersection {
+                        pos: [BuiltinClassLiteral(&quot;str&quot;)],
+                        neg: [IntLiteral(-1), AlwaysTruthy],
+                    },
+                ])),
+                default_ty: None,
+            },
+        ]),
+        returns: Some(Intersection {
+            pos: [AbcInstance(&quot;ABC&quot;)],
+            neg: [SubclassOfAbcClass(&quot;ABC&quot;)],
+        }),
+    },
+    Intersection {
+        pos: [],
+        neg: [LiteralString],
+    },
+    Intersection {
+        pos: [],
+        neg: [StringLiteral(&quot;&quot;)],
+    },
+)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @dhruvmanila on 2025-04-01 19:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @dhruvmanila on 2025-04-01 19:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @dhruvmanila on 2025-04-01 19:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @dhruvmanila on 2025-04-01 19:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @dhruvmanila on 2025-04-01 19:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-04-01 19:32</div>
+            <div class="timeline-body"><p>Excellent!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2025-04-01 19:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2025-04-01 19:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-04-01 19:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-04-01 21:09</div>
+            <div class="timeline-body"><p>Very nice!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:41:05 UTC
+    </footer>
+</body>
+</html>

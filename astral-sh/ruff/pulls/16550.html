@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`refurb`] Fix starred expressions fix (`FURB161`) - astral-sh/ruff #16550</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>refurb</code>] Fix starred expressions fix (<code>FURB161</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/16550">#16550</a>
+        opened by <a href="https://github.com/VascoSch92">@VascoSch92</a>
+        on 2025-03-07 11:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/VascoSch92">@VascoSch92</a> on 2025-03-07 11:08</div>
+            <div class="timeline-body"><p>The PR partially solves issue #16457</p>
+<p>Specifically, it solves the following problem:</p>
+<pre><code class="language-text">$ cat &gt;furb161_1.py &lt;&lt;'# EOF'
+print(bin(*[123]).count(&quot;1&quot;))
+# EOF
+
+$ python furb161_1.py
+6
+
+$ ruff --isolated check --target-version py310 --preview --select FURB161 furb161_1.py --diff 2&gt;&amp;1 | grep error:
+error: Fix introduced a syntax error. Reverting all changes.
+</code></pre>
+<p>Now starred expressions are corrected handled.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-03-07 11:16</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-03-07 17:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @ntBre on 2025-03-07 17:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-03-14 08:27</div>
+            <div class="timeline-body"><p>@ntBre could you take a look at this PR</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ntBre by @MichaReiser on 2025-03-14 08:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/refurb/rules/bit_count.rs</code>:131 on 2025-03-14 13:38</div>
+            <div class="timeline-body"><p>I kind of think we should just return immediately if we see a starred expression instead of trying to do this unpacking. We would also need to do this for tuples. However, this only works for the exact case of a literal list or tuple, and I don't think code like <code>*[123]</code> or <code>*(123,)</code> is very likely in real scenarios (you would just write <code>123</code> directly). I was going to say we need to handled starred variables, but that's a syntax error:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; (*lst).bit_count()
+  File &quot;&lt;python-input-7&gt;&quot;, line 1
+    (*lst).bit_count()
+     ^^^^
+SyntaxError: cannot use starred expression here
+&gt;&gt;&gt;
+</code></pre>
+<p>In short, I think it's better to return early for <em>any</em> starred expression to save us the work of unpacking expressions that should be very rare in practice.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> requested changes on 2025-03-14 13:41</div>
+            <div class="timeline-body"><p>Thanks for doing this! I wrote a longer comment below explaining why I think we should just return on any starred expression, but I'm interested to hear your thoughts.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/VascoSch92">@VascoSch92</a> on 2025-03-16 19:48</div>
+            <div class="timeline-body"><blockquote>
+<p>Thanks for doing this! I wrote a longer comment below explaining why I think we should just return on any starred expression, but I'm interested to hear your thoughts.</p>
+</blockquote>
+<p>Thank you for the feedback. I don't have strong opinions on that matter. I agree that returning in the case of starred expressions makes perfect sense.</p>
+<p>I have updated the code accordingly. Please let me know if it aligns with your suggestion</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/refurb/rules/bit_count.rs</code>:115 on 2025-03-18 14:25</div>
+            <div class="timeline-body"><p>nit: is there something like an <code>is_starred</code> or <code>is_starred_expr</code> method on <code>arg</code>? I'd probably just add</p>
+<pre><code class="language-rust">if arg.is_starred_expr() {  // or matches!(arg, Expr::Starred(_)) if there's no existing method
+    return;
+}
+</code></pre>
+<p>above the old code for <code>literal_text = ...</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> approved on 2025-03-18 14:25</div>
+            <div class="timeline-body"><p>Thanks for following up! I have one more nit, but this otherwise looks good to me. If you push another commit or close and reopen the PR, it should trigger CI.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/VascoSch92">@VascoSch92</a> on 2025-03-19 21:22</div>
+            <div class="timeline-body"><blockquote>
+<p>Thanks for following up! I have one more nit, but this otherwise looks good to me. If you push another commit or close and reopen the PR, it should trigger CI.</p>
+</blockquote>
+<p><code>is_starred_expr</code> is the correct function ;-)
+I changed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[refurb] Fix starred expressions fix (FURB161)" to "[`refurb`] Fix starred expressions fix (`FURB161`)" by @ntBre on 2025-03-19 21:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ntBre on 2025-03-19 21:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-03-19 21:43</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:41:04 UTC
+    </footer>
+</body>
+</html>

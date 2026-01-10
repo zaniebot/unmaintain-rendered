@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[internal] Return `Message`s from `check_path` - astral-sh/ruff #16837</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[internal] Return <code>Message</code>s from <code>check_path</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/16837">#16837</a>
+        opened by <a href="https://github.com/ntBre">@ntBre</a>
+        on 2025-03-18 21:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ntBre">@ntBre</a> on 2025-03-18 21:03</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR updates <code>check_path</code> in the <code>ruff_linter</code> crate to return a <code>Vec&lt;Message&gt;</code> instead of a <code>Vec&lt;Diagnostic&gt;</code>. The main motivation for this is to make it easier to convert semantic syntax errors directly into <code>Message</code>s rather than <code>Diagnostic</code>s in #16106. However, this also has the benefit of keeping the preview check on unsupported syntax errors in <code>check_path</code>, as suggested in https://github.com/astral-sh/ruff/pull/16429#discussion_r1974748024.</p>
+<p>All of the interesting changes are in the first commit. The second commit just renames variables like <code>diagnostics</code> to <code>messages</code>, and the third commit is a tiny import fix.</p>
+<p>I also updated the <code>ExpandedMessage::location</code> field name, which caused a few extra commits tidying up the playground code. I thought it was nicely symmetric with <code>end_location</code>, but I'm happy to revert that too.</p>
+<h2>Test Plan</h2>
+<p>Existing tests. I also tested the playground and server manually.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @ntBre on 2025-03-18 21:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-03-18 21:17</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @ntBre on 2025-03-18 22:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @ntBre on 2025-03-18 22:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/fix/mod.rs</code>:184 on 2025-03-19 07:48</div>
+            <div class="timeline-body"><p>While the source text doesn't matter here, I'd still prefer to pass it in because the test here otherwise start panicking (at best) or produce nonsensical results) if <code>apply_fixes</code> ever starts accessing <code>file</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/linter.rs</code>:573 on 2025-03-19 07:50</div>
+            <div class="timeline-body"><p>Did this PR just open up the possibility for the parser to have fixes :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/noqa.rs</code>:1248 on 2025-03-19 07:52</div>
+            <div class="timeline-body"><p>Same here. I think we should pass in the actual source code to avoid panics if the code ever starts accessing <code>file</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/noqa.rs</code>:1252 on 2025-03-19 07:54</div>
+            <div class="timeline-body"><p>Can we use <code>diagnostic.start()</code> instead of the <code>0</code> offset. I think that's also the default that the linter code uses elsewhere (we could change <code>from_diagnostic</code> to take an <code>Option&lt;TextSize&gt;</code> for the noqa offset)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/test.rs</code>:322 on 2025-03-19 07:58</div>
+            <div class="timeline-body"><p>Do we still need the noqa offset mapping? Shouldn't <code>diagnostic.file</code> and <code>diagnostic.noqa_offset</code> already have the right <code>file</code> and offset?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-03-19 08:00</div>
+            <div class="timeline-body"><p>This is a great improvement. I also think that it will make Andrew's diagnostic refactor easier because <code>check_path</code>. Thanks for working on this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_server/src/lint.rs</code>:182 on 2025-03-19 11:25</div>
+            <div class="timeline-body"><p>nit: I think now I'd prefer to expand the condition for <code>show_syntax_errors</code>:</p>
+<pre><code class="language-rs">if show_syntax_errors {
+    Some(...)
+} else {
+    None
+}
+</code></pre>
+<p>I mainly avoided that previously because it was part of a <code>chain</code> which I think is now removed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-03-19 11:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> approved on 2025-03-19 11:28</div>
+            <div class="timeline-body"><p>This looks great! Thanks for doing this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-03-19 12:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/test.rs</code>:322 on 2025-03-19 12:22</div>
+            <div class="timeline-body"><p>Ah I think you're right. Tests were failing because some of them truncate the input path to just the file name, but I think the cause ended up being somewhere else. We can actually just print all of the messages here, and the tests still pass, but I'll leave the filter on <code>DiagnosticMessage</code>s for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-03-19 12:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/noqa.rs</code>:1248 on 2025-03-19 12:32</div>
+            <div class="timeline-body"><p>Good catch, I didn't realize all of this information was already available here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-03-19 12:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/fix/mod.rs</code>:184 on 2025-03-19 12:39</div>
+            <div class="timeline-body"><p>Are you suggesting passing in a placeholder like <code>&quot;&lt;filename&gt;&quot;</code> but just requiring the caller to make that choice? It looks like we don't actually have a filename where this function is used, unlike <code>message_from_diagnostic</code>. We do have a <code>Locator</code> we could extract the source code argument from, though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-03-19 12:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/fix/mod.rs</code>:184 on 2025-03-19 12:49</div>
+            <div class="timeline-body"><p>I made this function take both a <code>filename: &amp;str</code> and a <code>source: &amp;str</code> to pass to the <code>SourceFileBuilder</code> and called the function throughout the tests module with <code>&quot;&lt;filename&gt;&quot;, locator.contents(), ...</code>. Happy to revisit it if that's not what you had in mind, though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ntBre on 2025-03-19 14:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-03-19 14:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-03-19 14:08</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:41:05 UTC
+    </footer>
+</body>
+</html>

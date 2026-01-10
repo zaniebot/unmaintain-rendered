@@ -1,0 +1,2627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Improve `Debug` implementation for `semantic_index::SymbolTable` - astral-sh/ruff #17172</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Improve <code>Debug</code> implementation for <code>semantic_index::SymbolTable</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/17172">#17172</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-04-03 12:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-04-03 12:15</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p><code>dbg!</code>ing a <code>SymbolTable</code> is currently very noisy due to the <code>symbols_by_name</code> field, which doesn't tell you very much at all. The noisiness makes debugging difficult. This PR removes the <code>symbols_by_name</code> field from the <code>Debug</code> implementation.</p>
+<h2>Test Plan</h2>
+<p><code>dbg!</code> output before of the <code>builtins.pyi</code> global-scope symbol table:</p>
+<details>
+
+<pre><code>[crates/red_knot_python_semantic/src/symbol.rs:633:5] symbol_table(db, scope) = SymbolTable {
+    symbols: [
+        Symbol {
+            name: Name(&quot;_ast&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;_sitebuiltins&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;_typeshed&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;sys&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;types&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;dict_items&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;dict_keys&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;dict_values&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;AnyStr_co&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;ConvertibleToFloat&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;ConvertibleToInt&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;FileDescriptorOrPath&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;OpenBinaryMode&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;OpenBinaryModeReading&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;OpenBinaryModeUpdating&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;OpenBinaryModeWriting&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;OpenTextMode&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;ReadableBuffer&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;SupportsAdd&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;SupportsAiter&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;SupportsAnext&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;SupportsDivMod&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;SupportsFlush&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;SupportsIter&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;SupportsKeysAndGetItem&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;SupportsLenAndGetItem&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;SupportsNext&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;SupportsRAdd&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;SupportsRDivMod&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;SupportsRichComparison&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;SupportsRichComparisonT&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;SupportsWrite&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;Awaitable&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;Callable&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;Iterable&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;Iterator&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;MutableSet&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;Reversible&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;AbstractSet&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;Sized&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;BufferedRandom&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;BufferedReader&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;BufferedWriter&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;FileIO&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;TextIOWrapper&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;CellType&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;CodeType&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;TracebackType&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;IO&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;Any&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;BinaryIO&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;ClassVar&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;Generic&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;Mapping&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;MutableMapping&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;MutableSequence&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;Protocol&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;Sequence&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;SupportsAbs&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;SupportsBytes&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;SupportsComplex&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;SupportsFloat&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;SupportsIndex&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;TypeVar&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;final&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;overload&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;type_check_only&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;Concatenate&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;Literal&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;LiteralString&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;ParamSpec&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;Self&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;TypeAlias&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;TypeGuard&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;TypeIs&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;TypeVarTuple&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;deprecated&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;GenericAlias&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;_T&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;int&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;_I&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;_T_co&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;_T_contra&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;_R_co&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;_KT&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;_VT&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;_S&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;_T1&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;_T2&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;_T3&quot;),
+            flags: SymbolFlags(
+                IS_BOUND,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;_T4&quot;),
+            flags: SymbolFlags(
+                IS_BOUND,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;_T5&quot;),
+            flags: SymbolFlags(
+                IS_BOUND,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;_SupportsNextT_co&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;_SupportsAnextT_co&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;_AwaitableT&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;_AwaitableT_co&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;_P&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;_StartT_co&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;_StopT_co&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;_StepT_co&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;object&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;staticmethod&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;classmethod&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;type&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;super&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;_PositiveInteger&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;_NegativeInteger&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;_LiteralInteger&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;float&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;complex&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;_FormatMapMapping&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;_TranslateTable&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;str&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;bytes&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;bytearray&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;_IntegerFormats&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;memoryview&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;bool&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;slice&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;tuple&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;function&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;list&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;dict&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;set&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;frozenset&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;enumerate&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;range&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;property&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;_NotImplementedType&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;NotImplemented&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;abs&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;all&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;any&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;ascii&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;bin&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;breakpoint&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;callable&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;chr&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;_PathLike&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;aiter&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;_SupportsSynchronousAnext&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;anext&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;compile&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;copyright&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;credits&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;delattr&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;dir&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;divmod&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;eval&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;exec&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;exit&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;filter&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;format&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;getattr&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;globals&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;hasattr&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;hash&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;help&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;hex&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;id&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;input&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;_GetItemIterable&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;iter&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;_ClassInfo&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;isinstance&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;issubclass&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;len&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;license&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;locals&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;map&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;max&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;min&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;next&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;oct&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;_Opener&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;open&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;ord&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;_SupportsWriteAndFlush&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;print&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;_E_contra&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;_M_contra&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;_SupportsPow2&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;_SupportsPow3NoneOnly&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;_SupportsPow3&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;_SupportsSomeKindOfPow&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;pow&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;quit&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;reversed&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;repr&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;_SupportsRound1&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;_SupportsRound2&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;round&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;setattr&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;sorted&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;_AddableT1&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;_AddableT2&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;_SupportsSumWithNoDefaultGiven&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;_SupportsSumNoDefaultT&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;sum&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;vars&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;zip&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;__import__&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;__build_class__&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;EllipsisType&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;ellipsis&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;Ellipsis&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;BaseException&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;GeneratorExit&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;KeyboardInterrupt&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;SystemExit&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;Exception&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;StopIteration&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;OSError&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;EnvironmentError&quot;),
+            flags: SymbolFlags(
+                IS_BOUND,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;IOError&quot;),
+            flags: SymbolFlags(
+                IS_BOUND,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;WindowsError&quot;),
+            flags: SymbolFlags(
+                IS_BOUND,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;ArithmeticError&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;AssertionError&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;AttributeError&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;BufferError&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;EOFError&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;ImportError&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;LookupError&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;MemoryError&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;NameError&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;ReferenceError&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;RuntimeError&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;StopAsyncIteration&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;SyntaxError&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;SystemError&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;TypeError&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;ValueError&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;FloatingPointError&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;OverflowError&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;ZeroDivisionError&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;ModuleNotFoundError&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;IndexError&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;KeyError&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;UnboundLocalError&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;BlockingIOError&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;ChildProcessError&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;ConnectionError&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;BrokenPipeError&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;ConnectionAbortedError&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;ConnectionRefusedError&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;ConnectionResetError&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;FileExistsError&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;FileNotFoundError&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;InterruptedError&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;IsADirectoryError&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;NotADirectoryError&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;PermissionError&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;ProcessLookupError&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;TimeoutError&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;NotImplementedError&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;RecursionError&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;IndentationError&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;TabError&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;UnicodeError&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;UnicodeDecodeError&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;UnicodeEncodeError&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;UnicodeTranslateError&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;Warning&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;UserWarning&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;DeprecationWarning&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;SyntaxWarning&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;RuntimeWarning&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;FutureWarning&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;PendingDeprecationWarning&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;ImportWarning&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;UnicodeWarning&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;BytesWarning&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;ResourceWarning&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;EncodingWarning&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;_BaseExceptionT_co&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;_BaseExceptionT&quot;),
+            flags: SymbolFlags(
+                IS_BOUND,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;_ExceptionT_co&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;_ExceptionT&quot;),
+            flags: SymbolFlags(
+                IS_BOUND,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;BaseExceptionGroup&quot;),
+            flags: SymbolFlags(
+                IS_USED | IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;ExceptionGroup&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+        Symbol {
+            name: Name(&quot;PythonFinalizationError&quot;),
+            flags: SymbolFlags(
+                IS_BOUND | IS_DECLARED,
+            ),
+        },
+    ],
+    symbols_by_name: {
+        ScopedSymbolId(
+            235,
+        ): (),
+        ScopedSymbolId(
+            267,
+        ): (),
+        ScopedSymbolId(
+            86,
+        ): (),
+        ScopedSymbolId(
+            22,
+        ): (),
+        ScopedSymbolId(
+            182,
+        ): (),
+        ScopedSymbolId(
+            213,
+        ): (),
+        ScopedSymbolId(
+            252,
+        ): (),
+        ScopedSymbolId(
+            177,
+        ): (),
+        ScopedSymbolId(
+            173,
+        ): (),
+        ScopedSymbolId(
+            108,
+        ): (),
+        ScopedSymbolId(
+            122,
+        ): (),
+        ScopedSymbolId(
+            118,
+        ): (),
+        ScopedSymbolId(
+            197,
+        ): (),
+        ScopedSymbolId(
+            69,
+        ): (),
+        ScopedSymbolId(
+            134,
+        ): (),
+        ScopedSymbolId(
+            52,
+        ): (),
+        ScopedSymbolId(
+            248,
+        ): (),
+        ScopedSymbolId(
+            168,
+        ): (),
+        ScopedSymbolId(
+            2,
+        ): (),
+        ScopedSymbolId(
+            129,
+        ): (),
+        ScopedSymbolId(
+            5,
+        ): (),
+        ScopedSymbolId(
+            18,
+        ): (),
+        ScopedSymbolId(
+            150,
+        ): (),
+        ScopedSymbolId(
+            9,
+        ): (),
+        ScopedSymbolId(
+            16,
+        ): (),
+        ScopedSymbolId(
+            205,
+        ): (),
+        ScopedSymbolId(
+            246,
+        ): (),
+        ScopedSymbolId(
+            68,
+        ): (),
+        ScopedSymbolId(
+            93,
+        ): (),
+        ScopedSymbolId(
+            189,
+        ): (),
+        ScopedSymbolId(
+            161,
+        ): (),
+        ScopedSymbolId(
+            64,
+        ): (),
+        ScopedSymbolId(
+            124,
+        ): (),
+        ScopedSymbolId(
+            229,
+        ): (),
+        ScopedSymbolId(
+            94,
+        ): (),
+        ScopedSymbolId(
+            202,
+        ): (),
+        ScopedSymbolId(
+            67,
+        ): (),
+        ScopedSymbolId(
+            120,
+        ): (),
+        ScopedSymbolId(
+            219,
+        ): (),
+        ScopedSymbolId(
+            12,
+        ): (),
+        ScopedSymbolId(
+            20,
+        ): (),
+        ScopedSymbolId(
+            79,
+        ): (),
+        ScopedSymbolId(
+            11,
+        ): (),
+        ScopedSymbolId(
+            157,
+        ): (),
+        ScopedSymbolId(
+            216,
+        ): (),
+        ScopedSymbolId(
+            231,
+        ): (),
+        ScopedSymbolId(
+            239,
+        ): (),
+        ScopedSymbolId(
+            140,
+        ): (),
+        ScopedSymbolId(
+            36,
+        ): (),
+        ScopedSymbolId(
+            13,
+        ): (),
+        ScopedSymbolId(
+            184,
+        ): (),
+        ScopedSymbolId(
+            204,
+        ): (),
+        ScopedSymbolId(
+            70,
+        ): (),
+        ScopedSymbolId(
+            259,
+        ): (),
+        ScopedSymbolId(
+            96,
+        ): (),
+        ScopedSymbolId(
+            111,
+        ): (),
+        ScopedSymbolId(
+            72,
+        ): (),
+        ScopedSymbolId(
+            247,
+        ): (),
+        ScopedSymbolId(
+            101,
+        ): (),
+        ScopedSymbolId(
+            242,
+        ): (),
+        ScopedSymbolId(
+            261,
+        ): (),
+        ScopedSymbolId(
+            263,
+        ): (),
+        ScopedSymbolId(
+            214,
+        ): (),
+        ScopedSymbolId(
+            62,
+        ): (),
+        ScopedSymbolId(
+            166,
+        ): (),
+        ScopedSymbolId(
+            244,
+        ): (),
+        ScopedSymbolId(
+            257,
+        ): (),
+        ScopedSymbolId(
+            133,
+        ): (),
+        ScopedSymbolId(
+            112,
+        ): (),
+        ScopedSymbolId(
+            87,
+        ): (),
+        ScopedSymbolId(
+            90,
+        ): (),
+        ScopedSymbolId(
+            117,
+        ): (),
+        ScopedSymbolId(
+            158,
+        ): (),
+        ScopedSymbolId(
+            162,
+        ): (),
+        ScopedSymbolId(
+            230,
+        ): (),
+        ScopedSymbolId(
+            154,
+        ): (),
+        ScopedSymbolId(
+            255,
+        ): (),
+        ScopedSymbolId(
+            35,
+        ): (),
+        ScopedSymbolId(
+            39,
+        ): (),
+        ScopedSymbolId(
+            138,
+        ): (),
+        ScopedSymbolId(
+            190,
+        ): (),
+        ScopedSymbolId(
+            21,
+        ): (),
+        ScopedSymbolId(
+            66,
+        ): (),
+        ScopedSymbolId(
+            181,
+        ): (),
+        ScopedSymbolId(
+            7,
+        ): (),
+        ScopedSymbolId(
+            236,
+        ): (),
+        ScopedSymbolId(
+            251,
+        ): (),
+        ScopedSymbolId(
+            152,
+        ): (),
+        ScopedSymbolId(
+            227,
+        ): (),
+        ScopedSymbolId(
+            78,
+        ): (),
+        ScopedSymbolId(
+            55,
+        ): (),
+        ScopedSymbolId(
+            61,
+        ): (),
+        ScopedSymbolId(
+            253,
+        ): (),
+        ScopedSymbolId(
+            47,
+        ): (),
+        ScopedSymbolId(
+            65,
+        ): (),
+        ScopedSymbolId(
+            153,
+        ): (),
+        ScopedSymbolId(
+            104,
+        ): (),
+        ScopedSymbolId(
+            74,
+        ): (),
+        ScopedSymbolId(
+            107,
+        ): (),
+        ScopedSymbolId(
+            149,
+        ): (),
+        ScopedSymbolId(
+            98,
+        ): (),
+        ScopedSymbolId(
+            155,
+        ): (),
+        ScopedSymbolId(
+            169,
+        ): (),
+        ScopedSymbolId(
+            180,
+        ): (),
+        ScopedSymbolId(
+            237,
+        ): (),
+        ScopedSymbolId(
+            146,
+        ): (),
+        ScopedSymbolId(
+            15,
+        ): (),
+        ScopedSymbolId(
+            243,
+        ): (),
+        ScopedSymbolId(
+            17,
+        ): (),
+        ScopedSymbolId(
+            136,
+        ): (),
+        ScopedSymbolId(
+            80,
+        ): (),
+        ScopedSymbolId(
+            44,
+        ): (),
+        ScopedSymbolId(
+            228,
+        ): (),
+        ScopedSymbolId(
+            60,
+        ): (),
+        ScopedSymbolId(
+            245,
+        ): (),
+        ScopedSymbolId(
+            193,
+        ): (),
+        ScopedSymbolId(
+            264,
+        ): (),
+        ScopedSymbolId(
+            268,
+        ): (),
+        ScopedSymbolId(
+            58,
+        ): (),
+        ScopedSymbolId(
+            258,
+        ): (),
+        ScopedSymbolId(
+            279,
+        ): (),
+        ScopedSymbolId(
+            113,
+        ): (),
+        ScopedSymbolId(
+            135,
+        ): (),
+        ScopedSymbolId(
+            240,
+        ): (),
+        ScopedSymbolId(
+            85,
+        ): (),
+        ScopedSymbolId(
+            186,
+        ): (),
+        ScopedSymbolId(
+            100,
+        ): (),
+        ScopedSymbolId(
+            187,
+        ): (),
+        ScopedSymbolId(
+            106,
+        ): (),
+        ScopedSymbolId(
+            73,
+        ): (),
+        ScopedSymbolId(
+            223,
+        ): (),
+        ScopedSymbolId(
+            49,
+        ): (),
+        ScopedSymbolId(
+            83,
+        ): (),
+        ScopedSymbolId(
+            77,
+        ): (),
+        ScopedSymbolId(
+            43,
+        ): (),
+        ScopedSymbolId(
+            274,
+        ): (),
+        ScopedSymbolId(
+            46,
+        ): (),
+        ScopedSymbolId(
+            151,
+        ): (),
+        ScopedSymbolId(
+            217,
+        ): (),
+        ScopedSymbolId(
+            178,
+        ): (),
+        ScopedSymbolId(
+            278,
+        ): (),
+        ScopedSymbolId(
+            132,
+        ): (),
+        ScopedSymbolId(
+            6,
+        ): (),
+        ScopedSymbolId(
+            174,
+        ): (),
+        ScopedSymbolId(
+            99,
+        ): (),
+        ScopedSymbolId(
+            196,
+        ): (),
+        ScopedSymbolId(
+            109,
+        ): (),
+        ScopedSymbolId(
+            128,
+        ): (),
+        ScopedSymbolId(
+            123,
+        ): (),
+        ScopedSymbolId(
+            102,
+        ): (),
+        ScopedSymbolId(
+            116,
+        ): (),
+        ScopedSymbolId(
+            172,
+        ): (),
+        ScopedSymbolId(
+            32,
+        ): (),
+        ScopedSymbolId(
+            105,
+        ): (),
+        ScopedSymbolId(
+            241,
+        ): (),
+        ScopedSymbolId(
+            95,
+        ): (),
+        ScopedSymbolId(
+            206,
+        ): (),
+        ScopedSymbolId(
+            209,
+        ): (),
+        ScopedSymbolId(
+            198,
+        ): (),
+        ScopedSymbolId(
+            81,
+        ): (),
+        ScopedSymbolId(
+            170,
+        ): (),
+        ScopedSymbolId(
+            171,
+        ): (),
+        ScopedSymbolId(
+            8,
+        ): (),
+        ScopedSymbolId(
+            276,
+        ): (),
+        ScopedSymbolId(
+            1,
+        ): (),
+        ScopedSymbolId(
+            212,
+        ): (),
+        ScopedSymbolId(
+            222,
+        ): (),
+        ScopedSymbolId(
+            33,
+        ): (),
+        ScopedSymbolId(
+            144,
+        ): (),
+        ScopedSymbolId(
+            194,
+        ): (),
+        ScopedSymbolId(
+            125,
+        ): (),
+        ScopedSymbolId(
+            89,
+        ): (),
+        ScopedSymbolId(
+            38,
+        ): (),
+        ScopedSymbolId(
+            51,
+        ): (),
+        ScopedSymbolId(
+            19,
+        ): (),
+        ScopedSymbolId(
+            163,
+        ): (),
+        ScopedSymbolId(
+            0,
+        ): (),
+        ScopedSymbolId(
+            211,
+        ): (),
+        ScopedSymbolId(
+            3,
+        ): (),
+        ScopedSymbolId(
+            226,
+        ): (),
+        ScopedSymbolId(
+            121,
+        ): (),
+        ScopedSymbolId(
+            148,
+        ): (),
+        ScopedSymbolId(
+            232,
+        ): (),
+        ScopedSymbolId(
+            262,
+        ): (),
+        ScopedSymbolId(
+            260,
+        ): (),
+        ScopedSymbolId(
+            91,
+        ): (),
+        ScopedSymbolId(
+            270,
+        ): (),
+        ScopedSymbolId(
+            269,
+        ): (),
+        ScopedSymbolId(
+            225,
+        ): (),
+        ScopedSymbolId(
+            191,
+        ): (),
+        ScopedSymbolId(
+            115,
+        ): (),
+        ScopedSymbolId(
+            28,
+        ): (),
+        ScopedSymbolId(
+            220,
+        ): (),
+        ScopedSymbolId(
+            164,
+        ): (),
+        ScopedSymbolId(
+            250,
+        ): (),
+        ScopedSymbolId(
+            137,
+        ): (),
+        ScopedSymbolId(
+            141,
+        ): (),
+        ScopedSymbolId(
+            24,
+        ): (),
+        ScopedSymbolId(
+            54,
+        ): (),
+        ScopedSymbolId(
+            45,
+        ): (),
+        ScopedSymbolId(
+            188,
+        ): (),
+        ScopedSymbolId(
+            75,
+        ): (),
+        ScopedSymbolId(
+            40,
+        ): (),
+        ScopedSymbolId(
+            234,
+        ): (),
+        ScopedSymbolId(
+            30,
+        ): (),
+        ScopedSymbolId(
+            41,
+        ): (),
+        ScopedSymbolId(
+            127,
+        ): (),
+        ScopedSymbolId(
+            185,
+        ): (),
+        ScopedSymbolId(
+            145,
+        ): (),
+        ScopedSymbolId(
+            23,
+        ): (),
+        ScopedSymbolId(
+            238,
+        ): (),
+        ScopedSymbolId(
+            143,
+        ): (),
+        ScopedSymbolId(
+            167,
+        ): (),
+        ScopedSymbolId(
+            110,
+        ): (),
+        ScopedSymbolId(
+            25,
+        ): (),
+        ScopedSymbolId(
+            31,
+        ): (),
+        ScopedSymbolId(
+            57,
+        ): (),
+        ScopedSymbolId(
+            195,
+        ): (),
+        ScopedSymbolId(
+            221,
+        ): (),
+        ScopedSymbolId(
+            218,
+        ): (),
+        ScopedSymbolId(
+            37,
+        ): (),
+        ScopedSymbolId(
+            71,
+        ): (),
+        ScopedSymbolId(
+            50,
+        ): (),
+        ScopedSymbolId(
+            176,
+        ): (),
+        ScopedSymbolId(
+            179,
+        ): (),
+        ScopedSymbolId(
+            200,
+        ): (),
+        ScopedSymbolId(
+            266,
+        ): (),
+        ScopedSymbolId(
+            277,
+        ): (),
+        ScopedSymbolId(
+            119,
+        ): (),
+        ScopedSymbolId(
+            84,
+        ): (),
+        ScopedSymbolId(
+            114,
+        ): (),
+        ScopedSymbolId(
+            165,
+        ): (),
+        ScopedSymbolId(
+            271,
+        ): (),
+        ScopedSymbolId(
+            280,
+        ): (),
+        ScopedSymbolId(
+            256,
+        ): (),
+        ScopedSymbolId(
+            249,
+        ): (),
+        ScopedSymbolId(
+            88,
+        ): (),
+        ScopedSymbolId(
+            27,
+        ): (),
+        ScopedSymbolId(
+            139,
+        ): (),
+        ScopedSymbolId(
+            265,
+        ): (),
+        ScopedSymbolId(
+            4,
+        ): (),
+        ScopedSymbolId(
+            53,
+        ): (),
+        ScopedSymbolId(
+            29,
+        ): (),
+        ScopedSymbolId(
+            130,
+        ): (),
+        ScopedSymbolId(
+            42,
+        ): (),
+        ScopedSymbolId(
+            76,
+        ): (),
+        ScopedSymbolId(
+            147,
+        ): (),
+        ScopedSymbolId(
+            156,
+        ): (),
+        ScopedSymbolId(
+            208,
+        ): (),
+        ScopedSymbolId(
+            273,
+        ): (),
+        ScopedSymbolId(
+            183,
+        ): (),
+        ScopedSymbolId(
+            224,
+        ): (),
+        ScopedSymbolId(
+            97,
+        ): (),
+        ScopedSymbolId(
+            233,
+        ): (),
+        ScopedSymbolId(
+            82,
+        ): (),
+        ScopedSymbolId(
+            142,
+        ): (),
+        ScopedSymbolId(
+            254,
+        ): (),
+        ScopedSymbolId(
+            131,
+        ): (),
+        ScopedSymbolId(
+            63,
+        ): (),
+        ScopedSymbolId(
+            48,
+        ): (),
+        ScopedSymbolId(
+            215,
+        ): (),
+        ScopedSymbolId(
+            103,
+        ): (),
+        ScopedSymbolId(
+            14,
+        ): (),
+        ScopedSymbolId(
+            92,
+        ): (),
+        ScopedSymbolId(
+            207,
+        ): (),
+        ScopedSymbolId(
+            275,
+        ): (),
+        ScopedSymbolId(
+            160,
+        ): (),
+        ScopedSymbolId(
+            26,
+        ): (),
+        ScopedSymbolId(
+            56,
+        ): (),
+        ScopedSymbolId(
+            34,
+        ): (),
+        ScopedSymbolId(
+            272,
+        ): (),
+        ScopedSymbolId(
+            59,
+        ): (),
+        ScopedSymbolId(
+            126,
+        ): (),
+        ScopedSymbolId(
+            159,
+        ): (),
+        ScopedSymbolId(
+            199,
+        ): (),
+        ScopedSymbolId(
+            175,
+        ): (),
+        ScopedSymbolId(
+            192,
+        ): (),
+        ScopedSymbolId(
+            201,
+        ): (),
+        ScopedSymbolId(
+            203,
+        ): (),
+        ScopedSymbolId(
+            210,
+        ): (),
+        ScopedSymbolId(
+            10,
+        ): (),
+    },
+}
+</code></pre>
+</details>
+
+<p>I checked that with this PR, the second field is gone from the debug output (I'd paste it in, but it goes over the GitHub comment length maximum).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2025-04-03 12:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @AlexWaygood on 2025-04-03 12:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @AlexWaygood on 2025-04-03 12:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @AlexWaygood on 2025-04-03 12:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-04-03 12:17</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-04-03 12:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2025-04-03 12:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-04-03 12:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-04-03 12:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-04-03 12:45</div>
+            <div class="timeline-body"><p>Alex couldn't wait haha... @ntBre started the release. You may want to hold off merging other PRs</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-04-03 12:50</div>
+            <div class="timeline-body"><p>Oh, sorry! Didn't see the Discord message until after I merged</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-04-03 12:54</div>
+            <div class="timeline-body"><p>:laughing: No worries, I think it's not as big of a deal for red-knot PRs anyway</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:41:06 UTC
+    </footer>
+</body>
+</html>

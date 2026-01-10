@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Don't add chaperone space after escaped quote in triple quote - astral-sh/ruff #17216</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Don't add chaperone space after escaped quote in triple quote</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/17216">#17216</a>
+        opened by <a href="https://github.com/maxmynter">@maxmynter</a>
+        on 2025-04-05 05:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/maxmynter">@maxmynter</a> on 2025-04-05 05:30</div>
+            <div class="timeline-body"><p>Closes #16640</p>
+<h2>Summary</h2>
+<p>Added a check for escaped quotes in triple quotes to determine if chaperone spaces are needed.
+This prevents unwanted formatting of valid docstrings that end in escaped quotes.</p>
+<h2>Test Plan</h2>
+<p>Added a unit test testing that docstrings ending in escaped double quotes are not reformatted.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @maxmynter on 2025-04-05 05:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-04-05 05:37</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">breaking</span> added by @MichaReiser on 2025-04-05 06:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @AlexWaygood on 2025-04-05 22:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/string/docstring.rs</code>:1604 on 2025-04-07 09:23</div>
+            <div class="timeline-body"><p>I don't think adding the check to this branch makes sense because</p>
+<pre><code>trim_end.chars().rev().take_while(|c| *c == '\\').count() % 2 == 1
+</code></pre>
+<p>will always return <code>false</code> if the string ends with <code>\'</code> or <code>\&quot;</code></p>
+<p>Or am I misinterpreting this code?</p>
+<p>I think it also incorrectly returns <code>false</code> for</p>
+<pre><code class="language-py">&quot;&quot;&quot;Hello &quot;World\\&quot;&quot;&quot;&quot;
+</code></pre>
+<p>Nit: It would also be nice to avoid the allocating <code>format</code> call here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-04-07 09:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/maxmynter">@maxmynter</a> reviewed on 2025-04-08 13:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/maxmynter">@maxmynter</a> on <code>crates/ruff_python_formatter/src/string/docstring.rs</code>:1604 on 2025-04-08 13:31</div>
+            <div class="timeline-body"><p>Thanks for flagging this; you're right. It seems i underestimated edge cases and then got caught up in premature refactoring without sufficient test cases.</p>
+<p>I've added a bunch more tests in <a href="https://github.com/astral-sh/ruff/pull/17216/commits/d6e332bf3a2fb6790f20e552e8db6feb89621ba8">d6e332b</a> and fixed the implementation in <a href="https://github.com/astral-sh/ruff/pull/17216/commits/5a5f55ce0cb7d383f35699243445f09a0ee12611">5a5f55c</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @maxmynter on 2025-04-08 13:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-04-09 07:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/string/docstring.rs</code>:1619 on 2025-04-09 07:12</div>
+            <div class="timeline-body"><p>I find the way the <code>if</code>s are nested hard to reason about because checking <code>count_consecutive_chars_from_end(trim_end, '\\') % 2</code> is always false if <code>trim_end.ends_with(flags.quote_style().as_char())</code></p>
+<p>Can't we simplify this to:</p>
+<pre><code>if count_consecutive_chars_from_end(trim_end, '\\') % 2 == 1 {
+    // Odd backslash count; chaperone avoids escaping closing quotes
+    return true;
+}
+
+if let Some(before_quote) = trim_end.rstrip_prefix(flags.quote_style().as_char()) {
+	if count_consecutive_chars_from_end(before_quote, '\\') % 2 == 1 {
+    // Even backslash count preceding quote; chaperone avoids dangling
+    return true;
+	}
+}
+
+false
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/maxmynter">@maxmynter</a> reviewed on 2025-04-09 11:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/maxmynter">@maxmynter</a> on <code>crates/ruff_python_formatter/src/string/docstring.rs</code>:1619 on 2025-04-09 11:26</div>
+            <div class="timeline-body"><p>With slight adaptations, yes, we can simplify:</p>
+<ul>
+<li>used <code>strip_suffix</code> instead of <code>rstrip_prefix</code> (which doesn't exist).</li>
+<li>Check for even not odd backslash count before the closing quote.</li>
+</ul>
+<p>Implemented in <a href="https://github.com/astral-sh/ruff/pull/17216/commits/ad8604f6b09ef25916ef683881f0a51e20f1c097">ad8604f</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">breaking</span> removed by @MichaReiser on 2025-04-11 07:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @MichaReiser on 2025-04-11 07:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-04-11 07:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/resources/test/fixtures/ruff/docstring_chaperones.py</code>:5 on 2025-04-11 07:59</div>
+            <div class="timeline-body"><p>This file doesn't test the chaperone handling except for the first string because all subsequent strings aren't docstrings.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2025-04-11 08:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-04-11 08:21</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:41:06 UTC
+    </footer>
+</body>
+</html>

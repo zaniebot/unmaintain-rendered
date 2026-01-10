@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[syntax-errors] Invalid syntax in annotations - astral-sh/ruff #17101</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[syntax-errors] Invalid syntax in annotations</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/17101">#17101</a>
+        opened by <a href="https://github.com/ntBre">@ntBre</a>
+        on 2025-03-31 20:35
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ntBre">@ntBre</a> on 2025-03-31 20:35</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR detects the use of invalid syntax in annotation scopes, including
+<code>yield</code> and <code>yield from</code> expressions and named expressions. I combined a few
+different types of CPython errors here, but I think the resulting error messages
+still make sense and are even preferable to what CPython gives. For example, we
+report <code>yield expression cannot be used in a type annotation</code> for both of these:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; def f[T](x: (yield 1)): ...
+  File &quot;&lt;python-input-26&gt;&quot;, line 1
+    def f[T](x: (yield 1)): ...
+                 ^^^^^^^
+SyntaxError: yield expression cannot be used within the definition of a generic
+&gt;&gt;&gt; def foo() -&gt; (yield x): ...
+  File &quot;&lt;python-input-28&gt;&quot;, line 1
+    def foo() -&gt; (yield x): ...
+                  ^^^^^^^
+SyntaxError: 'yield' outside function
+</code></pre>
+<p>Fixes https://github.com/astral-sh/ruff/issues/11118.</p>
+<h2>Test Plan</h2>
+<p>New inline tests, along with some updates to existing tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2025-03-31 20:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @ntBre on 2025-03-31 20:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @ntBre on 2025-03-31 20:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @ntBre on 2025-03-31 20:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-03-31 20:44</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/tests/fixtures.rs</code>:187 on 2025-03-31 21:31</div>
+            <div class="timeline-body"><p>Is this check to make the <code>ParseError</code> and <code>SemanticSyntaxError</code> mutually exclusive in the snapshot output? What's the reason for doing this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:186 on 2025-03-31 21:37</div>
+            <div class="timeline-body"><p>Do we need to check <code>type_params.is_none()</code> in this context?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:165 on 2025-03-31 21:40</div>
+            <div class="timeline-body"><p>I know this rule is specific to annotations but I was wondering if we need to run the same check for the default value? I'm mainly asking because this PR also checks the default value in type params (<code>type X[T = (yield 1)] = int</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-03-31 21:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-03-31 21:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_parser/tests/fixtures.rs</code>:187 on 2025-03-31 21:52</div>
+            <div class="timeline-body"><p>Yeah, I thought that would lead to a cleaner diff and be more similar to how the linter reports errors. 9 snapshots change without this, which isn't as bad as I thought, so I'm happy to revert this if you'd prefer.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-03-31 21:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:186 on 2025-03-31 21:57</div>
+            <div class="timeline-body"><p>This one is actually invalid even without type parameters:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; type Y = (x := 1)
+  File &quot;&lt;python-input-95&gt;&quot;, line 1
+    type Y = (x := 1)
+              ^^^^^^
+SyntaxError: named expression cannot be used within a type alias
+</code></pre>
+<p>But I did add this as a test case now, thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-03-31 22:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:165 on 2025-03-31 22:05</div>
+            <div class="timeline-body"><p>You're right that this is a syntax error, but it looks like we already catch these for <code>yield</code> expressions: <a href="https://play.ruff.rs/ec306878-cf4a-439c-9333-9df2f3768c17">playground</a>, and they seem to be okay for named expressions:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; def foo(x=(y := [])): ...
+... def bar(x=(y := [])): ...
+...
+&gt;&gt;&gt;
+</code></pre>
+<p>I guess these are currently caught in the parser, so we could move the detection here if we wanted and use <code>visitor.visit_parameters</code>, though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-04-01 00:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/tests/fixtures.rs</code>:187 on 2025-04-01 00:25</div>
+            <div class="timeline-body"><p>I think it should be fine to have both <code>ParseError</code> and <code>SemanticSyntaxError</code> in the snapshots as it also gives us test coverage for semantic syntax errors in source code containing parse errors.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-04-01 00:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:165 on 2025-04-01 00:30</div>
+            <div class="timeline-body"><p>Can you specify which errors are caught in the parser? The playground link that you've provided suggest that the yield expressions are part of the lint rule while the named expressions are fine.</p>
+<p>Regardless, we also visit the type param default in here which makes me think whether we should instead split the rule as &quot;InvalidYieldExpressionUsage&quot; and &quot;InvalidNamedExpressionUsage&quot; similar to the variants on <code>ParseErrorType</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-04-01 01:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:165 on 2025-04-01 01:36</div>
+            <div class="timeline-body"><blockquote>
+<p>Can you specify which errors are caught in the parser? The playground link that you've provided suggest that the yield expressions are part of the lint rule while the named expressions are fine.</p>
+</blockquote>
+<p>Oh you're right, I just assumed it was a <code>ParseError</code> when I saw a diagnostic, but I see now that it's lint rule F704. I guess that's another rule I should reimplement, like <a href="https://github.com/astral-sh/ruff/pull/16106">F404</a>, but I'll save that for a follow-up.</p>
+<blockquote>
+<p>Regardless, we also visit the type param default in here which makes me think whether we should instead split the rule as &quot;InvalidYieldExpressionUsage&quot; and &quot;InvalidNamedExpressionUsage&quot; similar to the variants on <code>ParseErrorType</code>?</p>
+</blockquote>
+<p>Ah, I see what you mean. I guess I thought type parameter defaults were close enough to &quot;type annotations&quot; that the current error message made sense, but I see now that they are pretty different. That's also in line with CPython's different error message:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; type X[T= (yield 1)] = int
+  File &quot;&lt;python-input-112&gt;&quot;, line 1
+    type X[T= (yield 1)] = int
+               ^^^^^^^
+SyntaxError: yield expression cannot be used within a TypeVar default
+</code></pre>
+<p>Is it enough to split them into one variant for <code>yield</code> and one for named expressions, or should we try to split them up more like CPython?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:831 on 2025-04-01 07:32</div>
+            <div class="timeline-body"><p>I'm not 100% sure but using the term <code>type annotation</code> in a type alias seems misleading because the value isn't a type annotation. The same applies to when using a yield expression in a type var default. We could use a more generic term (e.g. yield expression cannot be used in a type expression) or we distinguish the different contexts. I'm leaning towards the latter.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/tests/snapshots/invalid_syntax@invalid_annotation_class.py.snap</code>:420 on 2025-04-01 07:33</div>
+            <div class="timeline-body"><p>I think the error here is misleading because <code>y := list)</code> isn't a type annotation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-04-01 07:35</div>
+            <div class="timeline-body"><p>This overall looks good to me but I think we should improve the error message because some usages of <code>yield</code> (or named) aren't in type annotations</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-04-01 14:31</div>
+            <div class="timeline-body"><p>I'm not sure the names I picked are ideal, but I think the error messages are much more accurate now. The only divergence from CPython, as far as I know, is in cases like this:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; def foo(arg: yield int): ...
+  File &quot;&lt;python-input-154&gt;&quot;, line 1
+    def foo(arg: yield int): ...
+                 ^^^^^
+SyntaxError: invalid syntax
+</code></pre>
+<p>where CPython reports a very generic &quot;invalid syntax&quot; error. I instead call these &quot;type annotations&quot; like before, which I think is accurate here.</p>
+<p>I also followed CPython in having separate messages for generic classes and functions:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; class F[T]((yield 1)): ...
+  File &quot;&lt;python-input-158&gt;&quot;, line 1
+    class F[T]((yield 1)): ...
+                ^^^^^^^
+SyntaxError: yield expression cannot be used within the definition of a generic
+&gt;&gt;&gt; class F((yield 1)): ...
+  File &quot;&lt;python-input-159&gt;&quot;, line 1
+    class F((yield 1)): ...
+             ^^^^^^^
+SyntaxError: 'yield' outside function
+</code></pre>
+<p>but it might make more sense to use the message &quot;yield expression cannot be used within a base class&quot; for both of these.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:713 on 2025-04-02 16:50</div>
+            <div class="timeline-body"><p>Does this need to be public or can it be <code>pub(crate)</code>? I'd prefer it to be latter.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:889 on 2025-04-02 16:53</div>
+            <div class="timeline-body"><p>nit: I think &quot;position&quot; might be more suitable here, what do you think?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:165 on 2025-04-02 16:57</div>
+            <div class="timeline-body"><blockquote>
+<p>Is it enough to split them into one variant for <code>yield</code> and one for named expressions, or should we try to split them up more like CPython?</p>
+</blockquote>
+<p>I think what you have right now looks great. I only suggested to split them up if we didn't want to provide granular context but I think providing them seems more useful.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/tests/snapshots/invalid_syntax@invalid_annotation_class.py.snap</code>:429 on 2025-04-02 17:03</div>
+            <div class="timeline-body"><p>The &quot;within a base class&quot; sounds a bit confusing to me, what about &quot;cannot be used as a base class&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/tests/snapshots/invalid_syntax@invalid_annotation_class.py.snap</code>:420 on 2025-04-02 17:03</div>
+            <div class="timeline-body"><p>Should we keep the message same as the one without the type params as the context is still the same? I might be missing something here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:730 on 2025-04-02 17:05</div>
+            <div class="timeline-body"><p>Should we spell out the AST nodes instead of specifying their names? For example, using &quot;type variable&quot; instead of &quot;TypeVar&quot;, &quot;parameter specification&quot; instead of &quot;ParamSpec&quot;? I don't have any strong preference and fine moving with what you have as well as it matches CPython's error messages.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> approved on 2025-04-02 17:06</div>
+            <div class="timeline-body"><p>Looks good! I like the new error messages.</p>
+<p>All of the review comments does not need to be addressed, they're more of a suggestion, so feel free to ignore them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-04-03 14:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:713 on 2025-04-03 14:31</div>
+            <div class="timeline-body"><p>I think it needs to be <code>pub</code> because it's included in a variant of <code>SemanticSyntaxErrorKind</code>, which is also <code>pub</code>. Clippy gives me a warning if I make it <code>pub(crate)</code>, but I would otherwise agree with you.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-04-03 14:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:889 on 2025-04-03 14:34</div>
+            <div class="timeline-body"><p>Ah yes, that sounds better, thanks! I would usually go for <code>Kind</code>, but I already had an <code>InvalidExpressionKind</code> here :laughing:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-04-03 14:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_parser/tests/snapshots/invalid_syntax@invalid_annotation_class.py.snap</code>:420 on 2025-04-03 14:50</div>
+            <div class="timeline-body"><p>This one is actually specific to the case of type params, unlike <code>yield</code>:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; class F[T](y := list): ...
+  File &quot;&lt;python-input-0&gt;&quot;, line 1
+    class F[T](y := list): ...
+               ^^^^^^^^^
+SyntaxError: named expression cannot be used within the definition of a generic
+&gt;&gt;&gt; class F(y := list): ...
+...
+</code></pre>
+<p>The <code>yield</code> cases could probably be combined, but I think I tested them all to be consistent with CPython for now, which gives a very generic error without generics:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; def n[T]() -&gt; (yield from 1): ...
+  File &quot;&lt;python-input-14&gt;&quot;, line 1
+    def n[T]() -&gt; (yield from 1): ...
+                   ^^^^^^^^^^^^
+SyntaxError: yield expression cannot be used within the definition of a generic
+&gt;&gt;&gt; def n() -&gt; (yield from 1): ...
+  File &quot;&lt;python-input-15&gt;&quot;, line 1
+    def n() -&gt; (yield from 1): ...
+                ^^^^^^^^^^^^
+SyntaxError: 'yield from' outside function
+</code></pre>
+<p>I don't feel very strongly either way. I like consistency with CPython, but I think our non-generic messages are already more helpful and we could easily reuse them like you said.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-04-03 14:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:730 on 2025-04-03 14:56</div>
+            <div class="timeline-body"><p>I kind of like the type names personally because they feel easier to find in documentation (I'm not sure I'd ever seen &quot;parameter specification&quot; written out haha), but I don't feel strongly either.</p>
+<p>It looks like <a href="https://pyright-play.net/?pythonVersion=3.8&amp;strict=true&amp;code=CYUwZgBA7g2gVHAKgZwgXggCgJ4EsQA2wEAjAJQC6mZAXBAHSNA">pyright</a> refers to them as type parameters or type variables as a group but uses the type names for individual errors, as another data point.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-04-03 21:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:730 on 2025-04-03 21:30</div>
+            <div class="timeline-body"><p>Let's go with what you have right now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-04-03 21:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/tests/snapshots/invalid_syntax@invalid_annotation_class.py.snap</code>:420 on 2025-04-03 21:32</div>
+            <div class="timeline-body"><p>I see, thanks for the details. Let's go with what you have right now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ntBre on 2025-04-03 21:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-04-03 21:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-04-03 21:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> on 2025-04-04 03:34</div>
+            <div class="timeline-body"><blockquote>
+<p>but it might make more sense to use the message &quot;yield expression cannot be used within a base class&quot; for both of these</p>
+</blockquote>
+<p>That would be inaccurate; you can have a yield expression (or indeed any expression) in a class base.</p>
+<pre><code>&gt;&gt;&gt; def f():
+...     class X((yield 1)):
+...         pass
+...     yield X
+... gen = f()
+... gen.send(None)
+... x = gen.send(int)
+... print(x)
+... 
+&lt;class '__main__.f.&lt;locals&gt;.X'&gt;
+</code></pre>
+<p>It needs to be parenthesized for grammar reasons though.</p>
+<p>(Sorry for the post-merge comment; only saw this when the issue was closed.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-04-04 12:30</div>
+            <div class="timeline-body"><p>No worries on the post-merge review, I appreciate it!</p>
+<p>That makes a lot of sense, now that you mention it... I think this needs more work in that case, and we likely need to implement the <code>'yield' outside function</code> error from CPython separately rather than folding it in here.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:41:05 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Optimise visibility constraints for `*`-import definitions - astral-sh/ruff #17317</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Optimise visibility constraints for <code>*</code>-import definitions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/17317">#17317</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-04-09 15:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-04-09 15:30</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>@sharkdp  gets all the credit for this idea! Quoting his comments from Discord:</p>
+<blockquote>
+<p>I have an idea for an optimization: It is kind of wasteful to generate the full</p>
+<pre><code class="language-py">if &lt;placeholder for sym1&gt;:
+    from module import sym1
+else:
+    # implicit empty else branch
+
+if &lt;placeholder for sym2&gt;:
+    from module import sym2
+else:
+    # implicit empty else branch
+
+
+# …
+</code></pre>
+<p>for all <code>N</code> symbols that we would <code>*</code>-import from <code>module</code>. One crucial difference w.r.t. normal control flow is that we already know which definitions will appear inside the branches. So I think we could check if we already have a definition for <code>sym_i</code> prior to the star-import. If we do, we proceed as before. But if we do not (which should be the overwhelming majority of cases), we can potentially generate something simpler. It's probably enough to only record that <code>from module import sym_i</code> definition and apply the placeholder visibility constraint to <em>just that definition</em> (instead of all active definitions). This might allow us to get rid of snapshotting completely for the majority of cases.</p>
+</blockquote>
+<h2>Test Plan</h2>
+<p>Existing tests all pass, and Codspeed is very happy about the PR!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2025-04-09 15:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-04-09 15:32</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-04-09 15:38</div>
+            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+
+<!-- __CODSPEED_INSTRUMENTATION_PERFORMANCE_REPORT_COMMENT__ -->
+
+<h2><a href="https://codspeed.io/astral-sh/ruff/branches/alex%2Fstar-import-optimisation">CodSpeed Performance Report</a></h2>
+<h3>Merging #17317 will <strong>improve performances by 10.3%</strong></h3>
+<p><sub>Comparing <code>alex/star-import-optimisation</code> (0bc6440) with <code>main</code> (ff376fc)</sub></p>
+<h3>Summary</h3>
+<p><code>⚡ 1</code> improvements<br />
+<code>✅ 31</code> untouched benchmarks</p>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Benchmark | <code>BASE</code> | <code>HEAD</code> | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| ⚡ | <code>red_knot_check_file[cold]</code> | 111.4 ms | 101 ms | +10.3% |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @AlexWaygood on 2025-04-09 15:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @AlexWaygood on 2025-04-09 15:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @AlexWaygood on 2025-04-09 15:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @AlexWaygood on 2025-04-09 15:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @AlexWaygood on 2025-04-09 15:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:1239 on 2025-04-09 15:59</div>
+            <div class="timeline-body"><p>This PR reclaims almost all the lost perf, so it seems fine to just go ahead with it as-is. But it still seems like we do more work here than necessary? In the newly-added case, we shouldn't have to do any snapshotting or flow-state merging at all. We can just add the star-import definition, apply the (positive) visibility constraint to it, and move on.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-04-09 16:02</div>
+            <div class="timeline-body"><p>Nice!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:1239 on 2025-04-09 16:22</div>
+            <div class="timeline-body"><p>As in, something like this (relative to my PR)? Quite a lot of tests start failing if I apply this diff...</p>
+<pre><code class="language-diff">diff --git a/crates/red_knot_python_semantic/src/semantic_index/builder.rs b/crates/red_knot_python_semantic/src/semantic_index/builder.rs
+index 486482f7f..406014831 100644
+--- a/crates/red_knot_python_semantic/src/semantic_index/builder.rs
++++ b/crates/red_knot_python_semantic/src/semantic_index/builder.rs
+@@ -1219,23 +1219,12 @@ where
+                             // we can apply the visibility constraint to *only* the added definition,
+                             // rather than all definitions
+                             if newly_added {
+-                                let constraint_id = self
++                                self
+                                     .current_use_def_map_mut()
+                                     .record_star_import_visibility_constraint(
+                                         star_import,
+                                         symbol_id,
+                                     );
+-
+-                                let post_definition = self.flow_snapshot();
+-                                self.flow_restore(pre_definition);
+-
+-                                self.current_use_def_map_mut()
+-                                    .negate_star_import_visibility_constraint(
+-                                        symbol_id,
+-                                        constraint_id,
+-                                    );
+-
+-                                self.flow_merge(post_definition);
+                             } else {
+                                 let constraint_id =
+                                     self.record_visibility_constraint(star_import.into());
+diff --git a/crates/red_knot_python_semantic/src/semantic_index/use_def.rs b/crates/red_knot_python_semantic/src/semantic_index/use_def.rs
+index edb27d26e..002faf319 100644
+--- a/crates/red_knot_python_semantic/src/semantic_index/use_def.rs
++++ b/crates/red_knot_python_semantic/src/semantic_index/use_def.rs
+@@ -713,19 +713,6 @@ impl&lt;'db&gt; UseDefMapBuilder&lt;'db&gt; {
+         visibility_id
+     }
+ 
+-    pub(super) fn negate_star_import_visibility_constraint(
+-        &amp;mut self,
+-        symbol_id: ScopedSymbolId,
+-        constraint: ScopedVisibilityConstraintId,
+-    ) {
+-        let negated_constraint = self.visibility_constraints.add_not_constraint(constraint);
+-        self.symbol_states[symbol_id]
+-            .record_visibility_constraint(&amp;mut self.visibility_constraints, negated_constraint);
+-        self.scope_start_visibility = self
+-            .visibility_constraints
+-            .add_and_constraint(self.scope_start_visibility, negated_constraint);
+-    }
+-
+     /// This method resets the visibility constraints for all symbols to a previous state
+     /// *if* there have been no new declarations or bindings since then. Consider the
+     /// following example:
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-04-09 16:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-04-09 16:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:1239 on 2025-04-09 16:48</div>
+            <div class="timeline-body"><p>I'll go ahead and merge for now, but feel free to file a followup PR if you can see a way of optimising this further without breaking all my tests ;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2025-04-09 16:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-04-09 16:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-04-09 16:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:1239 on 2025-04-09 16:53</div>
+            <div class="timeline-body"><p>This is something I also didn't think about when writing that message on Discord, but I think you would also need to apply the negated visibility constraint to the implicit <code>symbol = &lt;unbound&gt;</code> binding (it is stored as a <code>None</code> entry at the beginning of the vector). I think that should allow you to get rid of snapshotting entirely for the &quot;fast path&quot;.</p>
+<p>We would basically still model</p>
+<pre><code class="language-py">if &lt;placeholder&gt;:
+    from module import symbol
+else:
+    symbol = &lt;unbound&gt;
+</code></pre>
+<p>but with the advantage that the <placeholder> constraint does not need to be applied to anything else.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-04-09 16:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-04-09 16:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:1239 on 2025-04-09 16:58</div>
+            <div class="timeline-body"><p>Ah yeah, that's because &quot;unbound&quot; is a binding also, and we do need to apply the negated visibility constraint to the &quot;unbound&quot; binding. (The &quot;unbound&quot; binding is visible only if the star import target symbol does not end up existing.) I think this should still be doable by just applying constraints to the right bindings, without snapshotting and merging, but it would require even more special-cased new APIs. Not sure it's worth it since this version already does so well, definitely no need to look into it now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-04-09 16:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:1239 on 2025-04-09 16:59</div>
+            <div class="timeline-body"><p>Okay -- I'm going to move on for now as I think both of you have a far better understanding of our visibility constraints machinery than I do. But I welcome further optimisations of this code from anybody who wants to work on them 😄</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-04-09 17:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:1239 on 2025-04-09 17:01</div>
+            <div class="timeline-body"><blockquote>
+<p>Not sure it's worth it since this version already does so well, definitely no need to look into it now.</p>
+</blockquote>
+<p>I agree. Seems like the new isolated application of constraints helps enough to simplify the overall constraint structure.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:41:06 UTC
+    </footer>
+</body>
+</html>

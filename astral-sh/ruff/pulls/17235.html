@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fix `CallableTypeOf` display signature - astral-sh/ruff #17235</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fix <code>CallableTypeOf</code> display signature</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/17235">#17235</a>
+        opened by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a>
+        on 2025-04-06 16:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on 2025-04-06 16:54</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>If you reveal type of a variable annotated with <code>CallableTypeOf[&lt;bound method&gt;]</code> it includes the self parameter, it shouldnt do this</p>
+<h2>Test Plan</h2>
+<p>update type_api.md</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MatthewMckee4 on 2025-04-06 16:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @MatthewMckee4 on 2025-04-06 16:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @MatthewMckee4 on 2025-04-06 16:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @MatthewMckee4 on 2025-04-06 16:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @MatthewMckee4 on 2025-04-06 16:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-04-06 16:56</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-04-06 17:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:6932 on 2025-04-06 17:04</div>
+            <div class="timeline-body"><p>this should be slightly more performant, and looks a little cleaner :-)</p>
+<pre><code class="language-suggestion">                    let revealed_signature = if argument_type.is_bound_method() {
+                        signature.bind_self()
+                    else {
+                        signature.clone()
+                    };
+
+                    Type::Callable(CallableType::new(db, revealed_signature))
+</code></pre>
+<p>It requires adding a <code>Type::is_bound_method()</code> method, similar to this one:</p>
+<p>https://github.com/astral-sh/ruff/blob/4571c5f56f660d04c89f2ac00bfb8c0159597561/crates/red_knot_python_semantic/src/types.rs#L578-L580</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2025-04-06 17:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-04-06 17:12</div>
+            <div class="timeline-body"><p>I'm not totally sure that lazily binding the signature is the best design -- it seems quite error-prone that you have to remember to do things like this at all callsites of <code>Type::signatures()</code>. A more robust design (but possibly less performant?) might be to eagerly bind <code>self</code> when inferring the signature of the method in <code>Type::signatures()</code>. But with the current design, I think this is the correct bugfix (and makes things much less confusing for developers in the short term!).</p>
+<p>Curious if @dcreager has thoughts on the design, since he introduced <code>Type::signatures()</code> a few weeks ago in https://github.com/astral-sh/ruff/commit/23ccb52fa6f5b9e9bdfa5afe2adc0b65ff15b229!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2025-04-06 17:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-04-06 17:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-04-06 17:13</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:41:06 UTC
+    </footer>
+</body>
+</html>

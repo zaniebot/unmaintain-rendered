@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Add initial set of tests for unreachable code - astral-sh/ruff #17159</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Add initial set of tests for unreachable code</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/17159">#17159</a>
+        opened by <a href="https://github.com/sharkdp">@sharkdp</a>
+        on 2025-04-02 16:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-04-02 16:40</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Add an initial set of tests that will eventually document our behavior around unreachable code. In the last section of this suite, I argue why we should never type check unreachable sections and never emit any diagnostics in these sections.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @sharkdp on 2025-04-02 16:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @sharkdp on 2025-04-02 16:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @sharkdp on 2025-04-02 16:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @sharkdp on 2025-04-02 16:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-04-02 16:44</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-04-02 16:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/resources/mdtest/unreachable.md</code>:242 on 2025-04-02 16:49</div>
+            <div class="timeline-body"><p>I like that reasoning. I assume that only means we won't emit diagnostics. Would we still infer types for those sections?</p>
+<p>It will be interesting to see how we integrate this into the linter... but that's a problem for another day</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/unreachable.md</code>:242 on 2025-04-02 17:04</div>
+            <div class="timeline-body"><p>I think we <em>can</em> still infer types for unreachable sections. Whether it's useful is less clear; you are likely to see a lot of <code>Never</code> types, since no binding from outside the unreachable code section can reach the unreachable code section.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-04-02 17:05</div>
+            <div class="timeline-body"><p>This all looks right to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-04-02 17:13</div>
+            <div class="timeline-body"><p>I suspect that a lot of &quot;don't emit diagnostics in unreachable code&quot; will fall out naturally from the prevalence of <code>Never</code> types, because <code>Never</code> (if we've correctly implemented it) is a very forgiving type: it is a subtype of everything, assignable to everything, has all attributes and methods (all of type <code>Never</code>), etc.</p>
+<p>In fact it may be better to let it fall out like this than to implement a blanket policy of &quot;no diagnostics in unreachable code&quot;. An argument could be made that in the cases where there is a binding <em>inside</em> the unreachable code section, we should still emit diagnostics on invalid uses of that binding. For example, if <code>x = 3; y = x + &quot;foo&quot;</code> all occurs within unreachable code, there is no risk of false positive by still erroring on the bad binary operation. (The counter-argument would be the one mentioned in this PR: it can't cause issues at runtime. But I find that to be a less-convincing argument than the false-positive one. It can be useful to emit diagnostics for issues that cannot occur at runtime, if they <em>would</em> occur at runtime given some other change. The <code>sys.version_info</code> cases are sort of an example of this.)</p>
+<p>Unresolved-reference is an exception here; we definitely have to silence this in unreachable code, as a special case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-04-02 17:14</div>
+            <div class="timeline-body"><p>@carljm we may need special handling at least for <code># type: ignore</code> or we'll get false-positives.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-04-02 17:14</div>
+            <div class="timeline-body"><p>Yeah, &quot;unused type-ignore&quot; is another case, like unresolved-reference, that might need special handling.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-04-02 17:16</div>
+            <div class="timeline-body"><blockquote>
+<p>Unresolved-reference is an exception here</p>
+</blockquote>
+<p>I'm not at all sure we can predict which error codes are going to have false positives in unreachable code. This PR also has examples of <code>unresolved-attribute</code> and <code>unresolved-import</code> false-positive diagnostics occuring in unreachable code; there may be others, too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-04-02 17:20</div>
+            <div class="timeline-body"><p>That may be true, but I don't think adding <code>unresolved-attribute</code> and <code>unresolved-import</code> to the list is strong evidence for that conclusion. Those are just variants of <code>unresolved-reference</code>; they're all issues about boundness, rather than type violations.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-04-02 17:21</div>
+            <div class="timeline-body"><p>Hmm, I suppose so. Are we <em>sure</em> we won't add more error codes in the future that are similarly issues around boundness, though? It feels somewhat fragile to special-case specific error codes.</p>
+<p>Anyway, we can iterate on it!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @sharkdp on 2025-04-02 17:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-04-02 17:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-04-02 17:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-04-02 17:43</div>
+            <div class="timeline-body"><p>This is great, thanks!!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:41:06 UTC
+    </footer>
+</body>
+</html>

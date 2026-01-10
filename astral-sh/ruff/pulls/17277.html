@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[playground] New default program - astral-sh/ruff #17277</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[playground] New default program</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/17277">#17277</a>
+        opened by <a href="https://github.com/sharkdp">@sharkdp</a>
+        on 2025-04-07 14:24
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-04-07 14:24</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR proposes to change the default example program in the playground. I realize that this is somewhat underwhelming, but I found it rather difficult to come up with something that circumvented missing support for overloads/generics/self-type, while still looking like (easy!) code that someone might actually write, and demonstrating some Red Knot features. One thing that I wanted to capture was the experience of adding type constraints to an untyped program. And I wanted something that could be executed in the Playground once all errors are fixed.</p>
+<p>Happy for any suggestions on what we could do instead. I had a lot of different ideas, but always ran into one or another limitation. So I guess we can also iterate on this as we add more features to Red Knot.</p>
+<p>Try it here: https://playknot.ruff.rs/8e3a96af-f35d-4488-840a-2abee6c0512d</p>
+<pre><code class="language-py">from typing import Literal
+
+type Style = Literal[&quot;italic&quot;, &quot;bold&quot;, &quot;underline&quot;]
+
+# Add parameter annotations `line: str, word: str, style: Style` and a return
+# type annotation `-&gt; str` to see if you can find the mistakes in this program.
+
+def with_style(line, word, style):
+    if style == &quot;italic&quot;:
+        return line.replace(word, f&quot;*{word}*&quot;)
+    elif style == &quot;bold&quot;:
+        return line.replace(word, f&quot;__{word}__&quot;)
+
+    position = line.find(word)
+    output = line + &quot;\n&quot;
+    output += &quot; &quot; * position
+    output += &quot;-&quot; * len(word)
+
+
+print(with_style(&quot;Red Knot is a fast type checker for Python.&quot;, &quot;fast&quot;, &quot;underlined&quot;))
+</code></pre>
+<p>closes https://github.com/astral-sh/ruff/issues/17267</p>
+<h2>Test Plan</h2>
+<!-- How was it tested? -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">playground</span> added by @sharkdp on 2025-04-07 14:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @sharkdp on 2025-04-07 14:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-04-07 15:03</div>
+            <div class="timeline-body"><p>I think there should be a little bit more than that.</p>
+<p>Currently, Red Knot has multiple language features. It also understands code flows. The example should demonstrate those:</p>
+<pre><code class="language-python">class User: ...
+
+def create_user(preferred_name: str | None = None) -&gt; User:
+	if preferred_name is None:       # Hover over `preferred_name` on this line to see its type.
+		print(preferred_name)        # Do that again for this line. The type is now `None`.
+
+		preferred_name = 'Red Knot'
+		print(preferred_name)        # Do that a third time. The type is now `Literal['Red Knot']`.
+
+	return User(preferred_name)      # At this point, the type is `str`.
+
+# Red Knot knows where types are defined as well.
+# Try it out by right clicking `create_user`, then choose &quot;Go to Type Definition&quot;.
+user = create_user()
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-04-07 16:04</div>
+            <div class="timeline-body"><p>I do like the example. I could see us have a readme / documentation page where we list some interesting playground that could demonstrate other important features (as @InSyncWithFoo is suggesting)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-04-07 19:51</div>
+            <div class="timeline-body"><p>@InSyncWithFoo Thank you for the example, it demonstrates the LSP features well, but that's not all there is. I don't want to make the code too long, i.e. I don't want to have a collection of unrelated functions. But I like what @MichaReiser suggests, so let's keep this in mind.</p>
+<p>As I said, I'm also happy to change this again, but for now, I like it more than ..</p>
+<pre><code class="language-py">import os
+</code></pre>
+<p>.. so I'm merging this for now :smile:.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @sharkdp on 2025-04-07 19:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-04-07 19:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-04-07 19:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-04-07 19:58</div>
+            <div class="timeline-body"><p>Using hover on this example shows some issues that we probably want to fix if this will be our default playground sample:</p>
+<ol>
+<li>We infer <code>@Todo</code> for <code>str + Literal[&quot;\n&quot;]</code></li>
+<li>We show <code>Never</code> as the hover type of <code>output</code> in <code>output += ...</code></li>
+<li>We infer <code>@Todo</code> for <code>Literal[&quot;*&quot;] * int</code></li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-04-07 20:11</div>
+            <div class="timeline-body"><blockquote>
+<p>Using hover on this example shows some issues that we probably want to fix if this will be our default playground sample:</p>
+</blockquote>
+<p>Yes, I should have mentioned this. I did realize that and accepted it because it &quot;only&quot; requires support for overloads. There are no generics in <code>str.__add__</code> and <code>str.__mul__</code>.</p>
+<blockquote>
+<p>2. We show <code>Never</code> as the hover type of <code>output</code> in <code>output += ...</code></p>
+</blockquote>
+<p>This part I missed. Should we open a ticket for it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-04-07 20:17</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>Using hover on this example shows some issues that we probably want to fix if this will be our default playground sample:</p>
+</blockquote>
+<p>Yes, I should have mentioned this. I did realize that and accepted it because it &quot;only&quot; requires support for overloads. There are no generics in <code>str.__add__</code> and <code>str.__mul__</code>.</p>
+<blockquote>
+<p>2. We show <code>Never</code> as the hover type of <code>output</code> in <code>output += ...</code></p>
+</blockquote>
+<p>This part I missed. Should we open a ticket for it?</p>
+</blockquote>
+<p>There's a ticket for 2. That I opened last week</p>
+<p>Edit: https://github.com/astral-sh/ruff/issues/17122</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:41:06 UTC
+    </footer>
+</body>
+</html>

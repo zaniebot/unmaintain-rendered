@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Empty tuple is always-falsy - astral-sh/ruff #17213</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Empty tuple is always-falsy</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/17213">#17213</a>
+        opened by <a href="https://github.com/sharkdp">@sharkdp</a>
+        on 2025-04-04 19:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-04-04 19:22</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Fix assignability of <code>tuple[()]</code> to <code>AlwaysFalsy</code>.</p>
+<p>closes astral-sh/ruff#17202</p>
+<h2>Test Plan</h2>
+<p>Ran the property tests for a while</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @sharkdp on 2025-04-04 19:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @sharkdp on 2025-04-04 19:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @sharkdp on 2025-04-04 19:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @sharkdp on 2025-04-04 19:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-04-04 19:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1080 on 2025-04-04 19:23</div>
+            <div class="timeline-body"><p>The difference is that we now allow a fall-through to the catch-all &quot;self is subtype of target&quot; branch.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-04-04 19:24</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-04-04 19:25</div>
+            <div class="timeline-body"><p>I have a vague memory of intentionally making the opposite decision here.</p>
+<p>I think the key question we need to ensure we are answering consistently is, do instances of subclasses of the built-in <code>tuple</code> type also inhabit our <code>Type::Tuple</code> types? My memory is that in other places we assume they can, but I would have to double-check. If they do, then we cannot say that the empty <code>Type::Tuple</code> is always-falsy, since the empty instance of a subclass of <code>tuple</code> could be truthy.</p>
+<p>The potential problem with saying they do not, is that we do need to allow code like this:</p>
+<pre><code class="language-py">def f(t: tuple[int, str]): ...
+
+class MyTuple(tuple[int, str]): pass
+
+f(MyTuple((1, &quot;foo&quot;)))
+</code></pre>
+<p>In other words, if we say they do not, then our <code>Type::Tuple</code> can no longer correspond to the semantics of a <code>tuple</code> annotation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-04-04 19:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-04-04 19:30</div>
+            <div class="timeline-body"><blockquote>
+<p>I have a vague memory of intentionally making the opposite decision here.</p>
+</blockquote>
+<p>Ah yes, https://github.com/astral-sh/ty/issues/215 is still unresolved... I have a long reply in my head I've been meaning to write up there for a while :-) maybe I should set an explicit goal for myself to do that on Monday...</p>
+<p>Anyway, I think the change to the code here is correct even if we disagree on the assertion being made in the mdtest!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-04-04 19:38</div>
+            <div class="timeline-body"><p>Yes, I think the code change is correct, but we should add a TODO comment above the assertions (and maybe also above similar assertions for subtyping, if we have those already?) that we either need to special-case enforcement of Liskov on <code>__bool__</code> and <code>__len__</code> for tuple subclasses, or stop assuming that empty tuples are falsy and non-empty tuples are truthy.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @sharkdp on 2025-04-04 20:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-04-04 20:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-04-04 20:00</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:41:06 UTC
+    </footer>
+</body>
+</html>

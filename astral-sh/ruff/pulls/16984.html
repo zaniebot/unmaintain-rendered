@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[syntax-errors] Store to or delete `__debug__` - astral-sh/ruff #16984</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[syntax-errors] Store to or delete <code>__debug__</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/16984">#16984</a>
+        opened by <a href="https://github.com/ntBre">@ntBre</a>
+        on 2025-03-26 17:24
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ntBre">@ntBre</a> on 2025-03-26 17:24</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Detect setting or deleting <code>__debug__</code>. Assigning to <code>__debug__</code> was a <code>SyntaxError</code> on the earliest version I tested (3.8). Deleting <code>__debug__</code> was made a <code>SyntaxError</code> in <a href="https://github.com/python/cpython/issues/89163">BPO 45000</a>, which said it was resolved in Python 3.10. However, <code>del __debug__</code> was also a runtime error (<code>NameError</code>) when I tested in Python 3.9.6, so I thought it was worth including 3.9 in this check.</p>
+<p>I don't think it was ever a <em>good</em> idea to try <code>del __debug__</code>, so I think there's also an argument for not making this version-dependent at all. That would only simplify the implementation very slightly, though.</p>
+<h2>Test Plan</h2>
+<p>New inline tests. This also required adding a <code>PythonVersion</code> field to the <code>TestContext</code> that could be taken from the inline <code>ParseOptions</code> and making the version field on the options accessible.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2025-03-26 17:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @ntBre on 2025-03-26 17:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @ntBre on 2025-03-26 17:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @ntBre on 2025-03-26 17:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-03-26 17:34</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-03-26 18:20</div>
+            <div class="timeline-body"><blockquote>
+<p>I don't think it was ever a <em>good</em> idea to try <code>del __debug__</code>, so I think there's also an argument for not making this version-dependent at all. That would only simplify the implementation very slightly, though.</p>
+</blockquote>
+<p>I'd be in favor of just making it version independent but happy to hear others thoughts on this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> approved on 2025-03-26 18:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/parser/options.rs</code>:23 on 2025-03-27 11:53</div>
+            <div class="timeline-body"><p>I'd prefer to keep the type <code>Clone</code>. It makes it easier to add <code>non-copy</code> options in the future which doesn't seem entirely unlikely.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:329 on 2025-03-27 12:05</div>
+            <div class="timeline-body"><p>I think there are more cases that need handling where we don't use an <code>ExprName</code> in the AST</p>
+<pre><code class="language-py">from x import __debug__
+import __debug__
+
+match x:
+	__debug__: ...
+
+f(__debug__ = b)
+</code></pre>
+<p>Finding the Identifier nodes is somewhat annoying because our visitor doesn't traverse <code>Identifier</code> nodes. You can take a look at where I believe I identified all <code>Identifier</code> nodes https://github.com/astral-sh/ruff/blob/e42a8daf6433884469360fd390472246fd4c0ca8/crates/red_knot_server/src/semantic/goto.rs#L68</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-03-27 12:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-03-27 20:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:329 on 2025-03-27 20:01</div>
+            <div class="timeline-body"><p>Ah good catch. I think I should have covered all of these now.</p>
+<p>For <code>match</code> patterns, I moved the check into the <code>MultipleCaseAssignmentVisitor</code>, so it might be worth renaming that to something more generic like <code>MatchPatternVisitor</code> or just <code>PatternVisitor</code> now too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:162 on 2025-03-27 21:00</div>
+            <div class="timeline-body"><p>should we add a <code>check_identifier</code> function that handles the <code>if name == &quot;__debug__&quot;</code> handling to avoid some repetition?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-03-27 21:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-03-28 15:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ntBre on 2025-03-29 16:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-03-29 16:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-03-29 16:07</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:41:05 UTC
+    </footer>
+</body>
+</html>

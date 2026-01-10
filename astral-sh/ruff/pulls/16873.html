@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Add failing tests for `*` imports - astral-sh/ruff #16873</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Add failing tests for <code>*</code> imports</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/16873">#16873</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-03-20 16:24
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-03-20 16:24</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR adds a suite of tests for wildcard (<code>*</code>) imports. The tests nearly all fail for now, and those that don't, ahem, pass for the wrong reasons...</p>
+<p>I've tried to add TODO comments in all instances for places where we are currently inferring the incorrect thing, incorrectly emitting a diagnostic, or emitting a diagnostic with a bad error message.</p>
+<h2>Test Plan</h2>
+<p><code>cargo test -p red_knot_python_semantic</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2025-03-20 16:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @AlexWaygood on 2025-03-20 16:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @AlexWaygood on 2025-03-20 16:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @AlexWaygood on 2025-03-20 16:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-03-20 16:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/import/star.md</code>:89 on 2025-03-20 16:25</div>
+            <div class="timeline-body"><p>the reason why we do <em>not</em> emit an error here is somewhat horrifying... we're currently inserting a global-scope symbol with the name <code>&quot;*&quot;</code> in the symbol table for <code>b.py</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-03-20 16:34</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/import/star.md</code>:317 on 2025-03-21 00:30</div>
+            <div class="timeline-body"><p>I think this could be done separately from the initial PR, but I'm guessing that's already your plan; having it in the initial set of tests doesn't preclude that, this test can just keep its TODOs longer.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/import/star.md</code>:485 on 2025-03-21 00:33</div>
+            <div class="timeline-body"><p>I would go for the first. If code is definitely wrong, even if it won't actually error at runtime until &quot;used&quot;, I think it's generally better if we issue the error closer to the source, and not further from the source (which might be code with a different author who can't do anything about the problem.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/import/star.md</code>:366 on 2025-03-21 00:36</div>
+            <div class="timeline-body"><p>I think in type inference we can be pretty smart here (i.e. we could support dynamic members if they evaluate to a <code>Literal[str]</code> type). The question is how we handle it in semantic indexing. If we want to allow dynamic elements of <code>__all__</code>, I think such definitions of <code>__all__</code> would need to be treated as effectively the same as no <code>__all__</code> at all (for semantic indexing purposes), meaning any name that may be defined at global scope in the module is considered to be possibly wildcard imported.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-03-21 00:37</div>
+            <div class="timeline-body"><p>Looks great!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-03-21 13:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/import/star.md</code>:317 on 2025-03-21 13:29</div>
+            <div class="timeline-body"><p>yup, exactly</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/import/star.md</code>:485 on 2025-03-21 13:32</div>
+            <div class="timeline-body"><p>I'm sort of inclined to go for the third: emit diagnostics at both locations?</p>
+<ul>
+<li>Having an invalid <code>__all__</code> and having an import statement that we can say for sure will fail both seem like distinct errors that I'd want to know about if writing a Python module (even if they both have the same root cause)</li>
+<li>If the module you're importing from is third-party and has an invalid <code>__all__</code> but we only emit an error where <code>__all__</code> is defined, the user won't get any warning that their <code>*</code> import from the third-party module will fail, since we don't display diagnostics relating to type errors in third-party code. This isn't that far-fetched: we've had several situations at typeshed where the library we're stubbing has an invalid <code>__all__</code> and this was never detected by the library's tests (though it was caught by typeshed's tests!)</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-03-21 13:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-03-21 13:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/import/star.md</code>:366 on 2025-03-21 13:32</div>
+            <div class="timeline-body"><p>that all makes sense to me</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-03-21 14:16</div>
+            <div class="timeline-body"><p>Added some more tests in https://github.com/astral-sh/ruff/pull/16873/commits/7cf8eabccc38410cd4d2a71b08e7c4555e80fc90 ... I don't <em>think</em> they're contentious, but happy to address any comments in a followup! Merging for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2025-03-21 14:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-03-21 14:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-03-21 14:17</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:41:05 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[syntax-errors] Detect duplicate keys in `match` mapping patterns - astral-sh/ruff #17129</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[syntax-errors] Detect duplicate keys in <code>match</code> mapping patterns</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/17129">#17129</a>
+        opened by <a href="https://github.com/ntBre">@ntBre</a>
+        on 2025-04-01 18:06
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ntBre">@ntBre</a> on 2025-04-01 18:06</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Detects duplicate literals in <code>match</code> mapping keys.</p>
+<p>This PR also adds a <code>source</code> method to <code>SemanticSyntaxContext</code> to display the duplicated key in the error message by slicing out its range.</p>
+<h2>Test Plan</h2>
+<p>New inline tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2025-04-01 18:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @ntBre on 2025-04-01 18:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @ntBre on 2025-04-01 18:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @ntBre on 2025-04-01 18:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:288 on 2025-04-01 18:08</div>
+            <div class="timeline-body"><p>We could be a bit stricter here if we want (checking that the <code>BinOp</code> is an <code>Add</code> and the arguments are numbers), but we already report syntax errors for non-complex literals like <code>1 + 2</code>, so I thought this might be sufficient.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-04-01 18:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-04-01 18:15</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:289 on 2025-04-01 20:06</div>
+            <div class="timeline-body"><p>I think we should avoid breaking here and report all duplicate keys within a single mapping pattern. Or, do you see any limitation or challenges in that approach? What do you think?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:721 on 2025-04-01 20:07</div>
+            <div class="timeline-body"><p>Interesting!</p>
+<p>Also, I think you meant &quot;python&quot; or &quot;py&quot; and not &quot;pycon&quot; xD</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/tests/snapshots/invalid_syntax@duplicate_match_key.py.snap</code>:665 on 2025-04-01 20:11</div>
+            <div class="timeline-body"><p>What happens when there are multiple different duplicate keys? Like <code>case {0: 1, &quot;x&quot;: 1, 0: 2, &quot;x&quot;: 2}: ...</code>.</p>
+<p>I think we should highlight all the subsequent duplicate keys i.e., in the above case we should highlight the second <code>0</code> and the second <code>&quot;x&quot;</code> instance.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:288 on 2025-04-01 20:12</div>
+            <div class="timeline-body"><p>Yeah, I think that's fine, the parser should catch invalid complex literals.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-04-01 20:12</div>
+            <div class="timeline-body"><p>Looks good, I'd suggest that we improve the diagnostic range and expand the check for all keys unless it creates an issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-04-01 20:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:289 on 2025-04-01 20:14</div>
+            <div class="timeline-body"><p>I was just copying CPython, but that sounds reasonable too!</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; match x:
+...     case {&quot;x&quot;: 1, &quot;x&quot;: 2}: ...
+...
+  File &quot;&lt;python-input-223&gt;&quot;, line 2
+    case {&quot;x&quot;: 1, &quot;x&quot;: 2}: ...
+         ^^^^^^^^^^^^^^^^
+SyntaxError: mapping pattern checks duplicate key ('x')
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-04-01 20:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:721 on 2025-04-01 20:17</div>
+            <div class="timeline-body"><p>Oh I thought <code>pycon</code> was for the Python console <a href="https://github.com/github-linguist/linguist/blob/c27ac0c1daf3865e2b45ee3908d06b5825161d17/lib/linguist/languages.yml#L5892">[1]</a>. That's what I use here on GitHub, although it doesn't usually do much syntax highlighting anyway.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-04-01 20:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_parser/tests/snapshots/invalid_syntax@duplicate_match_key.py.snap</code>:665 on 2025-04-01 20:19</div>
+            <div class="timeline-body"><p>Yeah CPython just notes the first one (also inline with the <code>break</code> above), but I think this is a good idea.</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; match x:
+...     case {&quot;x&quot;: 1, &quot;x&quot;: 2, 0: 3, 0: 4}: ...
+...
+  File &quot;&lt;python-input-224&gt;&quot;, line 2
+    case {&quot;x&quot;: 1, &quot;x&quot;: 2, 0: 3, 0: 4}: ...
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+SyntaxError: mapping pattern checks duplicate key ('x')
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-04-01 20:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:289 on 2025-04-01 20:25</div>
+            <div class="timeline-body"><p>Yeah, in general, we should prefer to surface all errors whenever possible which is one of the main motivation to have an error resilient parser :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-04-01 20:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:721 on 2025-04-01 20:27</div>
+            <div class="timeline-body"><p>Oh lol, I had no idea about that. I don't think that matters as those are going to be rendered in an editor or crates.io.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:288 on 2025-04-02 07:29</div>
+            <div class="timeline-body"><p>We also have to allow f-string expressions. They're allowed for as long as they contain no placeholders and they should compare equal to their string equivalent (I think this is already handled by <code>ComparableExpr</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/tests/snapshots/invalid_syntax@duplicate_match_key.py.snap</code>:912 on 2025-04-02 07:32</div>
+            <div class="timeline-body"><p>Another use case for multi-span diagostics :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/tests/snapshots/invalid_syntax@duplicate_match_key.py.snap</code>:988 on 2025-04-02 07:34</div>
+            <div class="timeline-body"><p>This will break our concise rendering where each message should only be a single line long. I don't have a good recommendation but it's a general concern with including source text as is in diagnostic messages. You can either replace new lines, truncate before the new line (and replace with <code>...</code>), or not include the name if it is multiline.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-04-02 07:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-04-02 14:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_parser/tests/snapshots/invalid_syntax@duplicate_match_key.py.snap</code>:988 on 2025-04-02 14:31</div>
+            <div class="timeline-body"><p>I went with escaping the newlines to match CPython (as we discussed on Discord):</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; match x:
+...     case {
+...     &quot;&quot;&quot;x
+...     y
+...     z
+...     &quot;&quot;&quot;: 1,
+...     &quot;&quot;&quot;x
+...     y
+...     z
+...     &quot;&quot;&quot;: 2}: ...
+...
+  File &quot;&lt;python-input-0&gt;&quot;, line 2
+    case {
+         ^
+SyntaxError: mapping pattern checks duplicate key ('x\n    y\n    z\n    ')
+</code></pre>
+<p>I added a modified version of <a href="https://doc.rust-lang.org/std/str/struct.EscapeDefault.html"><code>std::str::EscapeDefault</code></a> from the Rust standard library. It's a little more heavily modified than I wanted because many of the functions in the real implementation are private, but it gets the job done and without too much code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-04-02 14:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:288 on 2025-04-02 14:34</div>
+            <div class="timeline-body"><p>I think f-strings are not allowed here by CPython, even without placeholders:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; match x:
+...     case {f&quot;x&quot;: 1}: ...
+...
+  File &quot;&lt;python-input-2&gt;&quot;, line 2
+    case {f&quot;x&quot;: 1}: ...
+         ^^^^^^^^^
+SyntaxError: mapping pattern keys may only match literals and attribute lookups
+</code></pre>
+<p>In that case, I think our <code>is_literal_expr</code> is doing the right thing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> approved on 2025-04-02 14:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ntBre on 2025-04-03 14:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-04-03 14:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-04-03 14:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-04-03 14:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:288 on 2025-04-03 14:26</div>
+            <div class="timeline-body"><p>Yeah, f-strings are not allowed as literal patterns.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:41:05 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] visibility_constraint analysis for match cases - astral-sh/ruff #17077</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] visibility_constraint analysis for match cases</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/17077">#17077</a>
+        opened by <a href="https://github.com/ericmarkmartin">@ericmarkmartin</a>
+        on 2025-03-31 03:42
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ericmarkmartin">@ericmarkmartin</a> on 2025-03-31 03:42</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>Add visibility constraint analysis for pattern predicate kinds <code>Singleton</code>, <code>Or</code>, and <code>Class</code>.</p>
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+<h2>Test Plan</h2>
+<p>update conditional/match.md</p>
+<!-- How was it tested? -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @ericmarkmartin on 2025-03-31 03:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @ericmarkmartin on 2025-03-31 03:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @ericmarkmartin on 2025-03-31 03:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @ericmarkmartin on 2025-03-31 03:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-03-31 03:43</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Match case visibility" to "[red-knot] visibility_constraint analysis for match cases" by @ericmarkmartin on 2025-03-31 03:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @MichaReiser on 2025-03-31 07:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/conditional/match.md</code>:93 on 2025-03-31 11:55</div>
+            <div class="timeline-body"><p>I think this test is more interesting if the <code>Baz()</code> branch comes first: red-knot should be able to detect that the branch can never be taken, since <code>Baz</code> is disjoint from <code>FooSub</code>, but that's currently not tested since the <code>Baz</code> branch comes last. Can we add some more tests here showing how type inference changes when the <code>Bar</code> branch comes after the <code>FooSub</code> branch?</p>
+<pre><code class="language-suggestion">    match target:
+        case Baz():
+            y = 3
+        case Foo():
+            y = 4
+        case Baz():
+            y = 5
+
+    reveal_type(y)  # revealed: Literal[4]
+
+    match target:
+        case Baz():
+            z = 3
+        case Bar():
+            z = 4
+        case Foo():
+            z = 5
+
+    reveal_type(z)  # revealed: Literal[4, 5]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/semantic_index/visibility_constraints.rs</code>:188 on 2025-03-31 11:59</div>
+            <div class="timeline-body"><p>micro-nit: we already import a bunch of things from <code>crate::semantic_index::predicate</code> on line 181; the second import could be combined with that statement, and the first import could use a similar style to the other imports in this file</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/semantic_index/visibility_constraints.rs</code>:589 on 2025-03-31 12:14</div>
+            <div class="timeline-body"><p>is this branch tested at all? It seems like if I apply this diff to your branch then all tests still pass, so perhaps not?</p>
+<pre><code class="language-suggestion">            PatternPredicateKind::Singleton(singleton) =&gt; Truthiness::Ambiguous,
+</code></pre>
+<p>I think we can also do much better here! Consider something like this:</p>
+<pre><code class="language-py">def f(x: int):
+    match x:
+        case None:
+            y = 42
+        case _:
+            y = 56
+    reveal_type(y)
+</code></pre>
+<p>On your branch, this currently reveals <code>Literal[42, 56]</code>. But in reality <code>y</code> will always have value <code>56</code>, because <code>int</code> is disjoint from <code>None</code>, so the first branch will never be taken. We can infer <code>Truthiness::AlwaysFalse</code> for <code>PatternPredicateKind::Singleton::(Singleton::None)</code> if <code>subject_ty.is_disjoint_from(Type::none(db))</code> evaluates to <code>true</code>. And similar for the other singletons.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-03-31 12:15</div>
+            <div class="timeline-body"><p>Nice! Not a full review, but I spotted something in one branch that I suspect could apply to some of the other branches, so I'll hold off on making further comments until that's addressed.</p>
+<p>Overall this looks great, though -- thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ericmarkmartin">@ericmarkmartin</a> reviewed on 2025-03-31 23:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ericmarkmartin">@ericmarkmartin</a> on <code>crates/red_knot_python_semantic/resources/mdtest/conditional/match.md</code>:93 on 2025-03-31 23:13</div>
+            <div class="timeline-body"><blockquote>
+<p>I think this test is more interesting if the Baz() branch comes first: red-knot should be able to detect that the branch can never be taken, since Baz is disjoint from FooSub, but that's currently not tested since the Baz branch comes last</p>
+</blockquote>
+<p>Makes sense, thanks for the pointer</p>
+<blockquote>
+<p>Can we add some more tests here showing how type inference changes when the Bar branch comes after the FooSub branch?</p>
+</blockquote>
+<p>I'm a bit confused here---I don't think we have any <code>FooSub</code> branches right now, just <code>Foo</code>, and <code>Bar</code> always comes after <code>Foo</code>. Do you want me to add more tests where this is a <code>Bar</code> branch that follows a <code>FooSub</code> branch? Would that be different than <code>Bar</code> following <code>Foo</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ericmarkmartin">@ericmarkmartin</a> reviewed on 2025-03-31 23:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ericmarkmartin">@ericmarkmartin</a> on <code>crates/red_knot_python_semantic/src/semantic_index/visibility_constraints.rs</code>:188 on 2025-03-31 23:16</div>
+            <div class="timeline-body"><p>I clearly lean on vscode code actions too much 😆</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-04-01 11:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/conditional/match.md</code>:93 on 2025-04-01 11:38</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm a bit confused here---I don't think we have any <code>FooSub</code> branches right now, just <code>Foo</code>, and <code>Bar</code> always comes after <code>Foo</code>.</p>
+</blockquote>
+<p>Argh, sorry for the garbled review comment! What I <em>meant</em> to say was that it would be nice if we could have a test where <code>Foo</code> comes after <code>Bar</code> as well as one where <code>Bar</code> comes after <code>Foo</code>.</p>
+<p>The <code>Foo</code> branch has visibility <code>Truthiness::AlwaysTrue</code>, so if it comes before <code>Bar</code> then we know the value of the variable is definitely the value that is assigned in the <code>Foo</code> branch. But the <code>Bar</code> branch has visibility <code>Truthiness::Ambiguous</code>, so if it comes before the <code>Foo</code> branch then we have to account for the fact that the <code>Bar</code> branch <em>might</em> be taken (if an instance of a class <code>FooBar</code> that is a subclass of both <code>Foo</code> and <code>Bar</code> is passed in), and it also <em>might not</em> be taken. It follows from this that if <code>Foo</code> comes after <code>Bar</code>, we should union the types in the <code>Foo</code> and <code>Bar</code> branches together when inferring the type of the assigned variable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/semantic_index/visibility_constraints.rs</code>:571 on 2025-04-01 11:42</div>
+            <div class="timeline-body"><p>I think we can do disjointness checking for <code>Value</code> predicates too, right?</p>
+<pre><code class="language-suggestion">                } else if subject_ty.is_disjoint_from(db, value_ty) {
+                    Truthiness::AlwaysFalse
+                } else {
+                    Truthiness::Ambiguous
+                }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/semantic_index/visibility_constraints.rs</code>:583 on 2025-04-01 11:47</div>
+            <div class="timeline-body"><p>it should be always true here that the type of <code>singleton_ty</code> is recognised as a singleton type by red-knot. That means that we can skip checking whether <code>subject_ty</code> is single-valued and go straight to the equivalence check: if <code>subject_ty</code> is equivalent to <code>singleton_ty</code>, that means that <code>subject_ty</code> is a singleton type, which means it is also a single-valued type. (The set of singleton types is a subset of the set of single-valued types; all singleton types are single-valued.)</p>
+<pre><code class="language-suggestion">                debug_assert!(singleton_ty.is_singleton(db));
+
+                if subject_ty.is_equivalent_to(db, singleton_ty) {
+                    Truthiness::AlwaysTrue
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:313 on 2025-04-01 11:48</div>
+            <div class="timeline-body"><p>I don't think this change is necessary with the latest version of this PR</p>
+<pre><code class="language-suggestion">    fn is_none(&amp;self, db: &amp;'db dyn Db) -&gt; bool {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-04-01 11:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/conditional/match.md</code>:158 on 2025-04-01 19:40</div>
+            <div class="timeline-body"><p>This comment seems out of place here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/conditional/match.md</code>:95 on 2025-04-01 19:42</div>
+            <div class="timeline-body"><p>Not sure that all these tests need the initial <code>y = 1</code> -- its existence demonstrates a fairly trivial point (that an unconditional binding shadows a prior binding) that probably doesn't need repeated testing. But it also doesn't really matter, there's little cost to including it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/visibility_constraints.rs</code>:571 on 2025-04-01 19:55</div>
+            <div class="timeline-body"><p>Testing this requires a subject that is not single-valued, and a value predicate that is disjoint from it. Something like this:</p>
+<pre><code class="language-py">from typing import final
+
+@final
+class C: pass
+
+def _(subject: C):
+    y = 1
+    match subject:
+        case 1:
+            y = 2
+    reveal_type(y)  # with the current PR this is Literal[1, 2], it should just be Literal[1]
+</code></pre>
+<p>It would of course also be fine to do this as a separate PR, though perhaps we'd at least want to capture a TODO here for it if we defer it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/visibility_constraints.rs</code>:610 on 2025-04-01 20:05</div>
+            <div class="timeline-body"><p>This is awesome to have, and a really nice implementation of it too!</p>
+<p>I don't see any tests exercising it, though. If I replace this entire arm with just <code>Truthiness::Ambiguous</code>, all tests pass. Can we add some tests for this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/visibility_constraints.rs</code>:638 on 2025-04-01 20:09</div>
+            <div class="timeline-body"><p>We could have a TODO here for actually analyzing truthiness of the guard?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-04-01 20:09</div>
+            <div class="timeline-body"><p>This is excellent work, thank you!!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ericmarkmartin">@ericmarkmartin</a> on <code>crates/red_knot_python_semantic/src/semantic_index/visibility_constraints.rs</code>:571 on 2025-04-03 00:26</div>
+            <div class="timeline-body"><p>Is this sound? With the suggested changes we have</p>
+<pre><code class="language-python">from typing import final
+
+@final
+class C:
+    def __eq__(self, other: object) -&gt; bool:
+        return other == 1
+
+def _(subject: C):
+    y = 1
+    match subject:
+        case 1:
+            y = 2
+    reveal_type(y)  # revealed_type: Literal[1]
+</code></pre>
+<p>but I think (this is the same code but with <code>print</code> instead of <code>reveal_type</code>)</p>
+<pre><code class="language-python">from typing import final
+
+@final
+class C:
+    def __eq__(self, other: object) -&gt; bool:
+        return other == 1
+
+def _(subject: C):
+    y = 1
+    match subject:
+        case 1:
+            y = 2
+    print(y)
+</code></pre>
+<pre><code class="language-console">&gt; uvx python /tmp/foo.py
+2
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ericmarkmartin">@ericmarkmartin</a> reviewed on 2025-04-03 00:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/visibility_constraints.rs</code>:571 on 2025-04-03 00:38</div>
+            <div class="timeline-body"><p>Ah, of course, great call. Yeah, we can't do this. It only works for single-valued subject (where we can be sure it doesn't compare equal to the predicate value.) And that's already supported.</p>
+<p>Thanks for catching that!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-04-03 00:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-04-03 11:10</div>
+            <div class="timeline-body"><p>Thank you, this is great!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-04-03 11:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/semantic_index/visibility_constraints.rs</code>:571 on 2025-04-03 11:11</div>
+            <div class="timeline-body"><p>Seconded, thanks -- that's a great catch! I forgot how value patterns worked. Great that you added a test for this!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2025-04-03 11:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-04-03 11:15</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:41:05 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Fix playground crashes when diagnostics are stale - astral-sh/ruff #17165</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Fix playground crashes when diagnostics are stale</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/17165">#17165</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2025-04-03 08:13
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-04-03 08:13</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Fixes a crash in the playground where it crashed with an &quot;index out of bounds&quot; error in the <code>Diagnostic::to_range</code> call
+after deleting content at the end of the file.</p>
+<p>The root cause was that the playground uses <code>useDeferred</code> to avoid too frequent <code>checkFile</code> calls (to get a smoother UX).
+However, this has the problem that the rendered <code>diagnostics</code> can be stable (from before the last change).
+Rendering the diagnostics can then fail because the <code>toRange</code> call queries the latest content and not the content
+from when the diagnostics were created.</p>
+<p>The fix is &quot;easy&quot; in the sense that we now eagerly perform the <code>toRange</code> calls. This way, it doesn't matter
+when the diagnostics are stale for a few ms.</p>
+<p>This problem can only be observed on examples where Red Knot is &quot;slow&quot; (takes more than ~16ms to check) because
+only then does <code>useDeferred</code> &quot;debounce&quot; the <code>check</code> calls.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">playground</span> added by @MichaReiser on 2025-04-03 08:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @MichaReiser on 2025-04-03 08:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @Copilot by @MichaReiser on 2025-04-03 08:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Copilot">@Copilot</a> on <code>playground/knot/src/Editor/Chrome.tsx</code>:295 on 2025-04-03 08:14</div>
+            <div class="timeline-body"><p>The Diagnostic API now defines 'id' as a property rather than a method. Please update 'diagnostic.id()' to 'diagnostic.id'.</p>
+<pre><code class="language-suggestion">        id: diagnostic.id,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/copilot-pull-request-reviewer[bot]">@copilot-pull-request-reviewer[bot]</a> reviewed on 2025-04-03 08:14</div>
+            <div class="timeline-body"><h2>Pull Request Overview</h2>
+<p>This PR fixes a crash in the playground caused by stale diagnostics by eagerly converting diagnostic information.</p>
+<ul>
+<li>Replace method calls with property accesses for diagnostic fields.</li>
+<li>Rename the file open callback from onOpenFile to onFileOpened across the code.</li>
+<li>Eagerly serialize diagnostics in Chrome.tsx for improved error handling.</li>
+</ul>
+<h3>Reviewed Changes</h3>
+<p>Copilot reviewed 3 out of 3 changed files in this pull request and generated 3 comments.</p>
+<p>| File                                        | Description                                                    |
+| ------------------------------------------- | -------------------------------------------------------------- |
+| playground/knot/src/Editor/Editor.tsx       | Updated diagnostic and file open callback handling.            |
+| playground/knot/src/Editor/Diagnostics.tsx  | Changed diagnostic property accesses and removed workspace use.|
+| playground/knot/src/Editor/Chrome.tsx         | Renamed callback prop and updated diagnostic conversion logic.   |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Copilot">@Copilot</a> on <code>playground/knot/src/Editor/Chrome.tsx</code>:298 on 2025-04-03 08:14</div>
+            <div class="timeline-body"><p>The new Diagnostic API exposes 'range' as a property instead of using the 'toRange' method. Update this line to use 'diagnostic.range' instead.</p>
+<pre><code class="language-suggestion">        range: diagnostic.range ?? null,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Copilot">@Copilot</a> on <code>playground/knot/src/Editor/Chrome.tsx</code>:299 on 2025-04-03 08:14</div>
+            <div class="timeline-body"><p>Similarly, 'textRange' should be accessed as a property rather than a method. Change 'diagnostic.textRange()' to 'diagnostic.textRange'.</p>
+<pre><code class="language-suggestion">        textRange: diagnostic.textRange ?? null,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-04-03 08:15</div>
+            <div class="timeline-body"><p>Copilot oversimplifies things here. We still need to call the WASM methods and that requires using <code>id()</code> etc.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2025-04-03 08:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-04-03 08:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-04-03 08:18</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:41:06 UTC
+    </footer>
+</body>
+</html>

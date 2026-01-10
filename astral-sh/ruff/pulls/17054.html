@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error instead of `panic!` when running Ruff from a deleted directory (#16903) - astral-sh/ruff #17054</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Error instead of <code>panic!</code> when running Ruff from a deleted directory (#16903)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/17054">#17054</a>
+        opened by <a href="https://github.com/maxmynter">@maxmynter</a>
+        on 2025-03-28 23:07
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/maxmynter">@maxmynter</a> on 2025-03-28 23:07</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<p>Closes #16903</p>
+<h2>Summary</h2>
+<p>Check if the current working directory exist. If not, provide an error instead of panicking.</p>
+<p>Fixed a stale comment in <code>resolve_default_files</code>.</p>
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+<h2>Test Plan</h2>
+<p>I added a test to the <code>resolve_files.rs</code>.</p>
+<p>Manual testing follows steps of #16903 :</p>
+<ul>
+<li>Terminal 1</li>
+</ul>
+<pre><code class="language-bash">mkdir tmp
+cd tmp
+</code></pre>
+<ul>
+<li>Terminal 2</li>
+</ul>
+<pre><code class="language-bash">rm -rf tmp
+</code></pre>
+<ul>
+<li>Terminal 1</li>
+</ul>
+<pre><code class="language-bash">ruff check
+</code></pre>
+<h2>Open Issues / Questions to Reviewer</h2>
+<p>All tests pass when executed with <code>cargo nextest run</code>.</p>
+<p>However, with <code>cargo test</code> the parallelization makes the other tests fail as we change the <code>pwd</code>.</p>
+<p>Serial execution with <code>cargo test</code> seems to require <a href="https://stackoverflow.com/questions/51694017/how-can-i-avoid-running-some-tests-in-parallel">another dependency or some workarounds</a>.</p>
+<p>Do you think an additional dependency or test complexity is worth testing this small edge case, do you have another implementation idea, or should i rather remove the test?</p>
+<hr />
+<p>P.S.: I'm currently participating in a batch at the <a href="https://www.recurse.com/">Recurse Center</a> and would love to contribute more for the next six weeks to improve my Rust. Let me know if you're open to mentoring/reviewing and/or if you have specific areas where help would be most valued.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-03-29 16:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff/src/resolve.rs</code>:26 on 2025-03-29 16:46</div>
+            <div class="timeline-body"><p>I think we could use <a href="https://docs.rs/anyhow/latest/anyhow/macro.bail.html"><code>bail!</code></a> here instead of <code>Err(anyhow!(...))</code>.</p>
+<p>I also think we might as well do something like this:</p>
+<pre><code class="language-rust">let Ok(cwd) = std::env::current_dir() else {
+    bail!(&quot;Working directory does not exist&quot;);
+};
+</code></pre>
+<p>instead of using <code>path_dedot::CWD</code> below, which is just a <code>LazyLock</code> around <code>std::env::current_dir</code>. That makes it a bit more clear what this check is for, I think.</p>
+<p>We may also want to move this check into the <code>if config_arguments.isolated</code> check if that's the only place <code>CWD</code> is used.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff/tests/resolve_files.rs</code>:111 on 2025-03-29 16:59</div>
+            <div class="timeline-body"><p>nit: I would just use <code>drop</code> directly without qualifying it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff/tests/resolve_files.rs</code>:115 on 2025-03-29 17:00</div>
+            <div class="timeline-body"><p>I don't think you actually need these filters and could leave them out. Paths only cause problems when they appear in the snapshot output.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-03-29 17:00</div>
+            <div class="timeline-body"><p>Thanks for working on this! I took a look at this earlier in the week, and I was wondering how to go about testing it too.</p>
+<p>I think if you move the new integration test to its own file, it will be built and run separately by <code>cargo test</code> and avoid the parallelization issues you ran into. Then you can also skip saving the <code>original_dir</code> and restoring it since the test should be run on its own.</p>
+<p>Alternatively, we could possibly skip testing this to avoid changing the cwd at all, which feels a little scary. What do you think @MichaReiser?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-03-29 17:07</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/maxmynter">@maxmynter</a> reviewed on 2025-03-30 01:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/maxmynter">@maxmynter</a> on <code>crates/ruff/tests/resolve_files.rs</code>:111 on 2025-03-30 01:52</div>
+            <div class="timeline-body"><p>Agree that it reads nicer.
+I will also just import from <code>std::env</code> so we can use directory operations without qualifiers.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/maxmynter">@maxmynter</a> reviewed on 2025-03-30 02:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/maxmynter">@maxmynter</a> on <code>crates/ruff/src/resolve.rs</code>:26 on 2025-03-30 02:30</div>
+            <div class="timeline-body"><p>Agree on your proposal for rewriting. It makes the intentions of the check clear and we can get rid of the comment.</p>
+<p><code>path_dedot::CWD</code> is used a couple of times throughout the function so I will keep it outside of the if clause.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/maxmynter">@maxmynter</a> on 2025-03-30 03:02</div>
+            <div class="timeline-body"><p>Having the test in a dedicated file now works for both <code>cargo test</code> and <code>cargo nextest</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ntBre by @maxmynter on 2025-03-30 03:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/resolve.rs</code>:24 on 2025-03-30 12:33</div>
+            <div class="timeline-body"><p>It feels off that the path isn't used here. I think we should change the code to call <code>cwd.parse_dot()</code> and use it instead of <code>&amp;path_dedot::CWD</code> below</p>
+<p>Edit: This is the same as what @ntBre was proposing</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/tests/direxist_guard.rs</code>:21 on 2025-03-30 12:35</div>
+            <div class="timeline-body"><p>I agree with @ntBre that changing the working directory is problematic. Let's only override the current working directory for the spanned CLI command.</p>
+<pre><code class="language-suggestion">    assert_cmd_snapshot!(Command::new(get_cargo_bin(BIN_NAME)).arg(&quot;check&quot;).current_dir(&amp;temp_path), @r###&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> requested changes on 2025-03-30 12:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-03-30 14:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff/tests/direxist_guard.rs</code>:21 on 2025-03-30 14:37</div>
+            <div class="timeline-body"><p>I think I tried <code>current_dir</code> when I looked at this, and it caused a different panic in the <code>Command</code> invocation, separate from the one we're trying to test. But it would be good to double check, and maybe I missed something.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/maxmynter">@maxmynter</a> reviewed on 2025-03-31 04:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/maxmynter">@maxmynter</a> on <code>crates/ruff/tests/direxist_guard.rs</code>:21 on 2025-03-31 04:33</div>
+            <div class="timeline-body"><p>Yes, the <code>assert_cmd_snapshot</code> or <code>current_dir</code> calls an <code>unwrap()</code> somewhere. The test fails with:</p>
+<pre><code class="language-bash">[...] called `Result::unwrap()` on an `Err` value: Os { code: 2, kind: NotFound, message: &quot;No such file or directory&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-03-31 08:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/tests/direxist_guard.rs</code>:21 on 2025-03-31 08:12</div>
+            <div class="timeline-body"><p>Hmm I see. Let's add some module level documentation (or at least test level) explaining why this test <em>has to be its own module</em>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/resolve.rs</code>:65 on 2025-03-31 08:14</div>
+            <div class="timeline-body"><p>Is it intentional that you're only using <code>parse_dot</code> in some paths?</p>
+<p>I think I'd change the method to</p>
+<pre><code class="language-rust">    let Ok(cwd) = std::env::current_dir() else {
+        bail!(&quot;Working directory does not exist&quot;)
+    };
+		let cwd = cwd.parse_dot()?;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-03-31 08:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/maxmynter">@maxmynter</a> reviewed on 2025-03-31 19:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/maxmynter">@maxmynter</a> on <code>crates/ruff/src/resolve.rs</code>:65 on 2025-03-31 19:47</div>
+            <div class="timeline-body"><p>It was born out of me wrestling with the typechecker, using the previous implementation as reference.
+I agree that a more consistent, less verbose usage is preferable.</p>
+<p>Is the change in 27a8964 what you had in mind? I'm a bit out of my depth with <code>Cow</code> and the path handling.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-03-31 20:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff/src/resolve.rs</code>:65 on 2025-03-31 20:03</div>
+            <div class="timeline-body"><p>That looks right to me. I <em>think</em> we could skip calling <code>parse_dot</code> at all since <code>path_dedot::CWD</code> doesn't:</p>
+<p>https://github.com/magiclen/path-dedot/blob/36c197f922d4c8779594ce25b8ffc6cb0315c6a8/src/lib.rs#L329-L330</p>
+<p>but I think Micha's point was that we should be consistent one way or the other.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @maxmynter on 2025-03-31 20:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff/src/resolve.rs</code>:67 on 2025-03-31 20:24</div>
+            <div class="timeline-body"><p>nit: You do need <code>as_ref</code> currently, but <code>stdin_filename</code> is already an <code>Option&lt;&amp;Path&gt;</code>, so you can actually simplify both of these cases (here and below on line 137) to this:</p>
+<pre><code class="language-suggestion">        pyproject::find_settings_toml(stdin_filename.unwrap_or(&amp;cwd))?
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff/tests/direxist_guard.rs</code>:6 on 2025-03-31 20:27</div>
+            <div class="timeline-body"><p>I think the Windows CI failure is real. I think Windows will keep the directory around as long as a process is using it. Maybe we need to exclude both <code>wasm</code> and <code>windows</code> targets? I always forget the syntax for this, but I think it's something like this:</p>
+<pre><code class="language-suggestion">#![cfg(not(any(target_family = &quot;wasm&quot;, target_family = &quot;windows&quot;)))]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-03-31 20:30</div>
+            <div class="timeline-body"><p>Thanks for following up on this, it's looking good. Just one more nit to avoid <code>as_ref</code> calls and an idea for fixing Windows CI.</p>
+<p>I'll defer to Micha for the final approval, but this looks good to me once CI passes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/maxmynter">@maxmynter</a> reviewed on 2025-04-01 03:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/maxmynter">@maxmynter</a> on <code>crates/ruff/src/resolve.rs</code>:65 on 2025-04-01 03:24</div>
+            <div class="timeline-body"><p>Interesting. I used it because the first line on the <code>path_dedot</code> crate <a href="https://lib.rs/crates/path-dedot">docs</a> say it's purpose is to handle filepaths that contain dots.</p>
+<p>But if we only use(d) it as a global variable to access the cwd, I think we can drop it.</p>
+<p>Addressed in <a href="https://github.com/astral-sh/ruff/pull/17054/commits/98c7711395a68da11b4d93c7c71e6fc0e84f182f">98c7711</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/maxmynter">@maxmynter</a> reviewed on 2025-04-01 03:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/maxmynter">@maxmynter</a> on <code>crates/ruff/tests/direxist_guard.rs</code>:6 on 2025-04-01 03:30</div>
+            <div class="timeline-body"><p>I'll leave the Windows CI failures to you, if that's fine... I don't have access to a Windows machine.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @MichaReiser on 2025-04-01 07:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-04-01 12:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2025-04-01 12:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-04-01 12:17</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:41:05 UTC
+    </footer>
+</body>
+</html>

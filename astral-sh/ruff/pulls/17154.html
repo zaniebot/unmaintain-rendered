@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ruff_db: switch diagnostic rendering over to `std::fmt::Display` - astral-sh/ruff #17154</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>ruff_db: switch diagnostic rendering over to <code>std::fmt::Display</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/17154">#17154</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2025-04-02 14:41
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-04-02 14:41</div>
+            <div class="timeline-body"><p>It was already using this approach internally, so this is &quot;just&quot; a
+matter of rejiggering the public API of <code>Diagnostic</code>.</p>
+<p>We were previously writing directly to a <code>std::io::Write</code> since it was
+thought that this worked better with the linear typing fakery. Namely,
+it increased confidence that the diagnostic rendering was actually
+written somewhere useful, instead of just being converted to a string
+that could potentially get lost.</p>
+<p>For reasons discussed in #17130, the linear type fakery was removed.
+And so there is less of a reason to require a <code>std::io::Write</code>
+implementation for diagnostic rendering. Indeed, this would sometimes
+result in <code>unwrap()</code> calls when one wants to convert to a <code>String</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @BurntSushi on 2025-04-02 14:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @BurntSushi on 2025-04-02 14:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @BurntSushi on 2025-04-02 14:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @BurntSushi on 2025-04-02 14:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @BurntSushi on 2025-04-02 14:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @dcreager removed by @BurntSushi on 2025-04-02 14:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @carljm removed by @BurntSushi on 2025-04-02 14:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @sharkdp removed by @BurntSushi on 2025-04-02 14:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @AlexWaygood removed by @BurntSushi on 2025-04-02 14:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_ide/src/goto.rs</code>:874 on 2025-04-02 14:43</div>
+            <div class="timeline-body"><p>Nit: In case you only created the <code>display</code> variable so that you can used name format args</p>
+<pre><code class="language-suggestion">                write!(buf, &quot;{diag}&quot;, diag=diag.display(&amp;self.db, &amp;config)).unwrap();
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-04-02 14:44</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/diagnostic/mod.rs</code>:111 on 2025-04-02 14:44</div>
+            <div class="timeline-body"><p>We almost exclusively use <code>'db</code> for the db lifetime.</p>
+<pre><code class="language-suggestion">        db: &amp;'db dyn Db,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/diagnostic/render.rs</code>:32 on 2025-04-02 14:45</div>
+            <div class="timeline-body"><p>I'm sure you thought about this but are the fine grained lifetimes required or could we just use one saying: You can display this as long as neither <code>self</code>, <code>db</code> or <code>config</code> gets dropped.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-04-02 14:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @MichaReiser on 2025-04-02 14:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_db/src/diagnostic/render.rs</code>:32 on 2025-04-02 14:53</div>
+            <div class="timeline-body"><p>Yes I did. When it's crate internal, it generally shouldn't matter, because these are all shared borrows and thus subtyping comes into play. And if it does matter, well, then I guess you just fix the lifetimes.</p>
+<p>It <em>can</em> matter though. See <a href="https://github.com/rust-lang/regex/issues/168">this</a> as an example. It's not totally obvious to me that it <em>will</em> matter, but usually when I expose public APIs, I try not to collapse lifetimes. So I mostly just did this by reflex.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-04-02 14:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-04-02 14:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_db/src/diagnostic/mod.rs</code>:111 on 2025-04-02 14:53</div>
+            <div class="timeline-body"><p>Yeah... I suppose this will become generic at some point, but it seems fine to just use <code>db</code> for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-04-02 14:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/red_knot_ide/src/goto.rs</code>:874 on 2025-04-02 14:54</div>
+            <div class="timeline-body"><p>It was originally a bigger expression, but sure, yeah, fixed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @BurntSushi on 2025-04-02 15:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2025-04-02 15:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-04-02 15:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-04-02 15:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/diagnostic/render.rs</code>:32 on 2025-04-02 15:32</div>
+            <div class="timeline-body"><p>It's great to see that you have the same ambition for <code>ruff_db</code> as for the <code>regex</code> crate 😆</p>
+<p>Isn't this slightly different in the sense that <code>DisplayDiagnostic</code> never returns any values? I do see the point of having all the lifetimes if <code>DisplayDiagnostic</code> had field accessors where it matters that they return the right lifetime. But here it feels like it's mainly: You can only use it as long as the three borrows are valid.</p>
+<p>Either way, not that important. It's just very scary looking</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-04-02 16:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_db/src/diagnostic/render.rs</code>:32 on 2025-04-02 16:06</div>
+            <div class="timeline-body"><p>Yeah that's what I meant by it might not mattering. As in, I can't easily come up with an example where it matters.</p>
+<p>Happy to change it back, but I honestly don't feel strongly.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:41:06 UTC
+    </footer>
+</body>
+</html>

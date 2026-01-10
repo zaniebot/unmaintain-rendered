@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] A `FunctionType` can be a subtype of `Callable`  (but never the other way around) - astral-sh/ruff #16970</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] A <code>FunctionType</code> can be a subtype of <code>Callable</code>  (but never the other way around)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/16970">#16970</a>
+        opened by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a>
+        on 2025-03-25 16:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on 2025-03-25 16:26</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>Partially fixes #16953</p>
+<h2>Test Plan</h2>
+<p>Update is_subtype_of.md</p>
+<p>Im unsure how thoroughly this needs to be tested, im not sure if it does for many more function types?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @MatthewMckee4 on 2025-03-25 16:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @MatthewMckee4 on 2025-03-25 16:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @MatthewMckee4 on 2025-03-25 16:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @MatthewMckee4 on 2025-03-25 16:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-03-25 16:32</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">pybind11 (https://github.com/pybind/pybind11)
+- error[lint:invalid-parameter-default] /tmp/mypy_primer/projects/pybind11/pybind11/setup_helpers.py:415:9: Default value of type `Literal[no_recompile]` is not assignable to annotated parameter type `(str, str, /) -&gt; bool`
+- Found 276 diagnostics
++ Found 275 diagnostics
+
+rich (https://github.com/Textualize/rich)
+- error[lint:invalid-parameter-default] /tmp/mypy_primer/projects/rich/rich/console.py:1881:9: Default value of type `Literal[currentframe]` is not assignable to annotated parameter type `() -&gt; FrameType | None`
+- Found 586 diagnostics
++ Found 585 diagnostics
+
+black (https://github.com/psf/black)
+- error[lint:invalid-return-type] /tmp/mypy_primer/projects/black/src/black/trans.py:2509:12: Object of type `Literal[is_valid_index]` is not assignable to return type `(int, /) -&gt; bool`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/black/src/black/lines.py:684:56: Object of type `Literal[is_import]` cannot be assigned to parameter `first_leaf_matches` of bound method `is_fmt_pass_converted`; expected type `((Leaf, /) -&gt; bool) | None`
+- Found 235 diagnostics
++ Found 233 diagnostics
+
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on 2025-03-25 17:41</div>
+            <div class="timeline-body"><p>Ive just added the test that is failing, I'm not sure why it is failing though, any help is appreciated.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on 2025-03-25 21:32</div>
+            <div class="timeline-body"><p>Maybe an interesting point, and a question i have, should:</p>
+<pre><code class="language-rs">is_subtype_of(CallableTypeFromFunction[f], CallableTypeFromFunction[g]))
+=&gt;
+is_subtype_of(TypeOf[f], TypeOf[g])
+</code></pre>
+<p>I guess this just depends on how we define FunctionLiteral arms in is_subtype_of. I would think that this equality should hold, but interested to see if there are any points against this</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/type_properties/is_subtype_of.md</code>:522 on 2025-03-25 21:52</div>
+            <div class="timeline-body"><p>For good measure, we could assert this is not true the other way around.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/type_properties/is_subtype_of.md</code>:520 on 2025-03-25 21:56</div>
+            <div class="timeline-body"><p>This should not be true. The <code>TypeOf[required_return_type]</code> or <code>TypeOf[optional_return_type]</code> evaluate to a function-literal type, which is a singleton type consisting of exactly one runtime object (that very function). No function-literal type has any subtype (other than itself and <code>Never</code>).</p>
+<p>So it is correct for this test to fail, and the fix is to reverse the sense of the test.</p>
+<p>And it's not surprising that it fails, since we don't have (and don't add in this PR), any case for <code>FunctionLiteral</code> vs <code>FunctionLiteral</code>.</p>
+<pre><code class="language-suggestion"># TypeOf[some_function] is a singleton function-literal type,  not a general callable type
+static_assert(not is_subtype_of(TypeOf[required_return_type], TypeOf[optional_return_type]))
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @MichaReiser on 2025-03-25 21:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-03-25 21:57</div>
+            <div class="timeline-body"><p>Barring the one test that should be changed, this looks good to me, and reasonably well tested!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-03-25 21:58</div>
+            <div class="timeline-body"><blockquote>
+<p>Maybe an interesting point, and a question i have, should:</p>
+<pre><code class="language-rust">is_subtype_of(CallableTypeFromFunction[f], CallableTypeFromFunction[g]))
+=&gt;
+is_subtype_of(TypeOf[f], TypeOf[g])
+</code></pre>
+</blockquote>
+<p>No, this should not hold, for the same reason mentioned in my review above. <code>TypeOf[some_function]</code> is a singleton function literal type, which has no subtypes besides itself and <code>Never</code>. It is not a general callable type whose inhabitants are all functions with a substitutable signature (that's what we get from <code>CallableTypeFromFunction[some_function]</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on 2025-03-25 22:00</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>Maybe an interesting point, and a question i have, should:</p>
+<pre><code class="language-rust">is_subtype_of(CallableTypeFromFunction[f], CallableTypeFromFunction[g]))
+=&gt;
+is_subtype_of(TypeOf[f], TypeOf[g])
+</code></pre>
+</blockquote>
+<p>No, this should not hold, for the same reason mentioned in my review above. <code>TypeOf[some_function]</code> is a singleton function literal type, which has no subtypes besides itself and <code>Never</code>. It is not a general callable type whose inhabitants are all functions with a substitutable signature (that's what we get from <code>CallableTypeFromFunction[some_function]</code>).</p>
+</blockquote>
+<p>Okay sounds good, thank you for the response and review. I think i thought <code>TypeOf[some_function]</code> was more similar to <code>CallableTypeFromFunction[some_function]</code> than it is.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @MichaReiser on 2025-03-25 22:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @MichaReiser removed by @MichaReiser on 2025-03-25 22:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> reviewed on 2025-03-25 22:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on <code>crates/red_knot_python_semantic/resources/mdtest/type_properties/is_subtype_of.md</code>:522 on 2025-03-25 22:04</div>
+            <div class="timeline-body"><p>Which one?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @carljm on 2025-03-25 22:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-03-25 22:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-03-26 11:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/type_properties/is_subtype_of.md</code>:522 on 2025-03-26 11:38</div>
+            <div class="timeline-body"><p>I meant both, but after reviewing the rest of the PR I think this is already adequately tested.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-03-27 00:21</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:41:05 UTC
+    </footer>
+</body>
+</html>

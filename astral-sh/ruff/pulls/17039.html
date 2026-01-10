@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[docs] Fix file permission issues when running Ruff through Docker - astral-sh/ruff #17039</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[docs] Fix file permission issues when running Ruff through Docker</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/17039">#17039</a>
+        opened by <a href="https://github.com/nickjj">@nickjj</a>
+        on 2025-03-28 15:51
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/nickjj">@nickjj</a> on 2025-03-28 15:51</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>The current documentation at https://docs.astral.sh/ruff/installation/ suggests running:</p>
+<pre><code class="language-sh">docker run -v .:/io --rm ghcr.io/astral-sh/ruff:0.3.0 check
+</code></pre>
+<p>There are 2 issues here:</p>
+<ul>
+<li>If Ruff modifies a file, the file will be written to the Docker host as <code>root:root</code> causing all sorts of permission issues, such as not being able to save the file anymore in your normal code editor<ul>
+<li>If using Docker Desktop, there are mechanisms to make it not be root but on native Linux (including WSL 2) it will be root</li>
+</ul>
+</li>
+<li>The docs reference <code>0.3.0</code> which is a bit old<ul>
+<li>I used the most recent release but maybe a long term plan in another PR (above my paygrade) would be to auto-generate this when cutting a new release so it's always using the latest release?</li>
+</ul>
+</li>
+</ul>
+<p>This PR addresses both issues:</p>
+<ul>
+<li>For the first one, I added <code>-u &quot;$(id -u):$(id -g)&quot;</code> which will use the current user's UID / GID to ensure files get written back to the host as the same user who ran the Docker command<ul>
+<li>I have been using this locally for days now, it works on both native Linux without Docker Desktop as well as Docker Desktop on macOS, I did not directly test other machines but I imagine it will be ok with Docker Desktop on Windows too as long as you run the command from WSL 2<ul>
+<li>I do not use SELinux or Podman so I'm not sure if it will work there</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>For the second one, I found the latest release and referenced it</li>
+</ul>
+<h2>Test Plan</h2>
+<p>I didn't run any tests, I found the documentation file and patched it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Fix file permission issues when running Ruff through Docker" to "[docs] Fix file permission issues when running Ruff through Docker" by @nickjj on 2025-03-28 15:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-03-28 15:56</div>
+            <div class="timeline-body"><p>The explanation makes sense to me, but I strongly suspect that the command won't work on Windows.</p>
+<p>The writing back should also only be a problem if you use <code>--fix</code>.</p>
+<p>But improving this would definitely be nice</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nickjj">@nickjj</a> on 2025-03-28 16:03</div>
+            <div class="timeline-body"><blockquote>
+<p>but I strongly suspect that the command won't work on Windows.</p>
+</blockquote>
+<p>Yep, it will not work with PowerShell but it will within WSL 2. Do you have any suggestions on how you want to handle it?</p>
+<p>Here's a couple of potential paths off the top of my head:</p>
+<ol>
+<li>Keep it as is</li>
+<li>Keep it as is but add a 2nd command for Windows users with PowerShell which doesn't have <code>-u</code> set</li>
+<li>Keep it as is but add a comment or paragraph to remove those flags when using PowerShell</li>
+<li>Remove the flag but add a comment or paragraph for fixing file permissions on native Linux / WSL 2 without Docker Desktop</li>
+</ol>
+<p>Options 1 or 2 seem desirable for developer experience so all folks have a copy / paste'able command.</p>
+<p>Considerations:</p>
+<ul>
+<li>Who is your target audience? For example, how many folks are using native Linux vs Docker Desktop on macOS vs Docker Desktop on Windows with WSL 2 vs Docker Desktop on Windows with PowerShell<ul>
+<li>Optimizing for the most folks without needing to modify the command to copy / paste seems ideal?</li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:41:05 UTC
+    </footer>
+</body>
+</html>

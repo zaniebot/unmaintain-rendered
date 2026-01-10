@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Implement flat width limits for comprehensions - astral-sh/ruff #16902</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Implement flat width limits for comprehensions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/16902">#16902</a>
+        opened by <a href="https://github.com/aronhoff">@aronhoff</a>
+        on 2025-03-21 17:41
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/aronhoff">@aronhoff</a> on 2025-03-21 17:41</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>Currently ruff formats comprehension expressions on a single line if they fit. This can squish a lot of complexity on the same line, making it harder to comprehend. There is also no way to force the comprehension to be expanded, like magic trailing commas for function calls. There has been a discussion of this in #11753.</p>
+<p>One of the most viable suggestions in that issue (in my eyes at least) was to configure a specific width limit for the flat form of these expressions.</p>
+<ul>
+<li>If the expression fits in this width limit, it can be printed on one line (subject to all other usual limitations) .</li>
+<li>If the expression exceeds this limit, it is printed expanded. The specific limit no longer applies.</li>
+</ul>
+<p>This pull request is a proof of concept implementation. I wanted to gather some feedback before finishing it up. Currently, flat width limits are implemented for:</p>
+<ul>
+<li>list comprehensions</li>
+<li>dict comprehensions</li>
+<li>set comprehensions</li>
+<li>generator expressions</li>
+<li>ternary expressions (inline ifs)</li>
+</ul>
+<p>Please let me know if you have any feedback, for the approach or for the code! I am new to this codebase and to rust in general.</p>
+<h3>Implementation details</h3>
+<p>The basis of the change is introducing a tag in <code>ruff_formatter</code>, <code>StartWidthLimitedBlock</code>/<code>EndWidthLimitedBlock</code> that can put an alternative line width limit on the formatter stack. This alternative line width limit is effectively <code>min(current_width_limit, current_cursor_position + expression_flat_width_limit)</code>. The alternative limit is removed from the stack at the end of the tag.</p>
+<p>Beyond that, in <code>ruff_python_formatter</code>, this tag is only applied if the expression in question will end up being printed flat. If the expression ends up being printed in the expanded form, the tags are not emitted.</p>
+<p>Out of scope for this PR, but I expect the formatting tag introduced here could be useful for simplifying the formatting of docstring code blocks.</p>
+<h2>Test Plan</h2>
+<p>I added a few snapshot tests to verify that the approach works. This would likely need to be expanded.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @aronhoff on 2025-03-21 17:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @MichaReiser on 2025-03-21 17:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @MichaReiser on 2025-03-21 17:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-03-21 17:50</div>
+            <div class="timeline-body"><p>Thanks for this PR. This looks very impressive.</p>
+<p>However, adding all those options isn't well in line with the formatter's philosophy. I'd prefer a configuration-less approach but uses some other heuristics to decide when and how to split generators.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-03-21 17:53</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-03-31 09:24</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:41:05 UTC
+    </footer>
+</body>
+</html>

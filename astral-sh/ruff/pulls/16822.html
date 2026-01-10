@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Emit errors for more AST nodes that are invalid (or only valid in specific contexts) in type expressions - astral-sh/ruff #16822</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Emit errors for more AST nodes that are invalid (or only valid in specific contexts) in type expressions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/16822">#16822</a>
+        opened by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a>
+        on 2025-03-17 21:33
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on 2025-03-17 21:33</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>Add error messages for invalid nodes in type expressions</p>
+<p>Fixes #16816</p>
+<h2>Test Plan</h2>
+<p>Extend annotations/invalid.md to handle these invalid AST nodes error messages</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> reviewed on 2025-03-17 21:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:6036 on 2025-03-17 21:34</div>
+            <div class="timeline-body"><p>@AlexWaygood What do you think of making this a instance method?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> reviewed on 2025-03-17 21:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:6036 on 2025-03-17 21:35</div>
+            <div class="timeline-body"><p>I was having issues with mutable references in ast::Expr::BoolOp as infer_boolean_expression requires a mutable reference to self, and i believe the closure does too</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-03-17 21:44</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2025-03-17 21:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on 2025-03-17 22:16</div>
+            <div class="timeline-body"><p>I havent covered slice type expression yet</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on 2025-03-17 22:18</div>
+            <div class="timeline-body"><p>I believe tests failing is mainly due to Callable type inference calls this function with tuple expression instead of the individual arguments, ill look into this more</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on 2025-03-17 22:51</div>
+            <div class="timeline-body"><p>The errors mainly stem from &quot;Tuples are not allowed in type expressions&quot;</p>
+<p>In generic arguments with &gt; 1 generic parameter</p>
+<p>I'm not really sure the best way to handle this.</p>
+<p>Perhaps we can create a new function that can call infer_type_expression_no_store if no tuples are expected in the Expr and else it can try to &quot;flatten&quot; the type and / or call infer_type_expression_no_store on each type in the Tuple
+*or infer_type_expression</p>
+<p>@AlexWaygood What are your thoughts?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-03-18 03:22</div>
+            <div class="timeline-body"><blockquote>
+<p>I believe tests failing is mainly due to Callable type inference calls this function with tuple expression instead of the individual arguments, ill look into this more</p>
+</blockquote>
+<p>Yeah, I haven't looked at the test failures but I think those are correct because we fallback to calling <code>infer_type_expression</code> for the slice expression if it's an invalid type form for a specific special form like <code>Callable</code>. For example: https://github.com/astral-sh/ruff/blob/f9ee155874a3b5e5d875f41f80367a70243630f5/crates/red_knot_python_semantic/src/types/infer.rs#L6584-L6590</p>
+<p>This is a requirement because currently the tests require that every expression has an inferred type even in the case of failure: https://github.com/astral-sh/ruff/blob/f9ee155874a3b5e5d875f41f80367a70243630f5/crates/red_knot_project/tests/check.rs#L165-L171</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on 2025-03-18 11:44</div>
+            <div class="timeline-body"><pre><code class="language-rust">    fn infer_type_expression_or_tuple_type_expression(
+        &amp;mut self,
+        expression: &amp;ast::Expr,
+    ) -&gt; Type&lt;'db&gt; {
+        match expression {
+            ast::Expr::Tuple(ast::ExprTuple {
+                elts: expressions, ..
+            }) =&gt; Type::Tuple(TupleType::new(
+                self.db(),
+                expressions
+                    .iter()
+                    .map(|expression| self.infer_type_expression(expression))
+                    .collect::&lt;Box&lt;_&gt;&gt;(),
+            )),
+            _ =&gt; self.infer_type_expression(expression),
+        }
+    }
+</code></pre>
+<p>This was sort of what i was thinking, and anywhere we call infer_type_expression and want to allow tuple expressions, we can call this. This is useful for</p>
+<pre><code class="language-rust">            KnownInstanceType::Dict =&gt; {
+                self.infer_type_expression(arguments_slice);
+                KnownClass::Dict.to_instance(self.db())
+            }
+</code></pre>
+<p>Where if we used infer_type_expression_or_tuple_type_expression, we can actually get the Type of the tuple back, for the future as these generics are currently not supported. But for KnownInstaneType::List, we continue to use infer_type_expression</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-03-18 11:49</div>
+            <div class="timeline-body"><p>I'd be inclined to postpone the complicated ones like <code>Expr::Tuple</code> and <code>Expr::List</code> for now and just do the easy ones in this PR -- we can tackle the complicated ones in followup(s). PRs are cheap! :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on 2025-03-18 11:50</div>
+            <div class="timeline-body"><p>Okay can revert them to no error message</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MatthewMckee4 on 2025-03-18 12:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @MatthewMckee4 on 2025-03-18 12:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @MatthewMckee4 on 2025-03-18 12:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @MatthewMckee4 on 2025-03-18 12:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @MatthewMckee4 on 2025-03-18 12:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-03-18 12:01</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-03-18 14:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-03-18 14:31</div>
+            <div class="timeline-body"><p>LGTM, thank you! Will leave it for @AlexWaygood to merge in case he has any review comments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on 2025-03-18 15:05</div>
+            <div class="timeline-body"><p>I need to test Slice node and ill also improve some error messages</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-03-18 15:46</div>
+            <div class="timeline-body"><p>FWIW I'm not personally a big fan of providing arbitrary &quot;examples&quot; in the error messages (&quot;like <code>1 := 'foo'</code>&quot;, &quot;like <code>1 &lt; 2</code>&quot;) in the error messages. It seems a bit arbitrary what kind of example to select, it seems confusing to me to give specific code examples that don't actually come from the user's code, and it seems unnecessary because, by definition, we already have a suitable example at hand: the one from the user's code that we are emitting the diagnostic on!</p>
+<p>So I would be inclined to remove these from the error messages, but open to what others think.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on 2025-03-18 15:50</div>
+            <div class="timeline-body"><p>That's fair, my thinking was that &quot;Unary operations&quot;, and others, could a bit vague for some users.</p>
+<p>Then again, you could argue, people who find themselves writing these examples in type expressions, probably know what they are called.</p>
+<p>I'm happy to revert either way</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-03-18 15:52</div>
+            <div class="timeline-body"><p>I think the strongest argument against is that the diagnostic will literally always be pointing to a specific example in the user's code, which seems like it should make things pretty clear.</p>
+<p>Given Alex's thumbs-up above, yeah I think you should go ahead and remove these from the messages.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-03-18 17:11</div>
+            <div class="timeline-body"><p>Thank you, this is great! I pushed a couple of nitpick changes, but nothing major.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2025-03-18 17:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-03-18 17:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-03-18 17:18</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:41:04 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Use pre-commit-uv in CI - astral-sh/ruff #17092</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Use pre-commit-uv in CI</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/17092">#17092</a>
+        opened by <a href="https://github.com/akx">@akx</a>
+        on 2025-03-31 12:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/akx">@akx</a> on 2025-03-31 12:30</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Follows up on #17052 to add in <a href="https://pypi.org/project/pre-commit-uv/">pre-commit-uv</a>, which patches <code>pre-commit</code> to use <code>uv</code> for venv creation as well.</p>
+<p>More dogfooding! More speed! 😄</p>
+<blockquote>
+<p>[!NOTE]
+I suspect caching could be removed from the <code>pre-commit</code> CI step with this...</p>
+</blockquote>
+<h2>Test Plan</h2>
+<blockquote>
+<p>How was it tested?</p>
+</blockquote>
+<p>We're about to find out...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @MichaReiser on 2025-03-31 12:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @akx on 2025-03-31 12:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-03-31 12:39</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ci</span> added by @AlexWaygood on 2025-03-31 13:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-03-31 17:55</div>
+            <div class="timeline-body"><p>How much do you think this is likely to buy us? Testing locally, it still seems to take pre-commit a while to setup the many virtual environments it needs if the pre-commit cache is cold, even with <code>pre-commit-uv</code>. But if the pre-commit cache is hot (which it usually is in our CI), that doesn't cost us anything at all.</p>
+<p>I'm also not sure I <em>love</em> the monkeypatching approach <code>pre-commit-uv</code> takes. I appreciate that there's not really any other way to get pre-commit to use uv internally, but it seems kinda fragile. If it bought us a lot, that would be one thing... but it seems like it might not?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/akx">@akx</a> on 2025-04-01 05:29</div>
+            <div class="timeline-body"><blockquote>
+<p>Testing locally, it still seems to take pre-commit a while to setup the many virtual environments it needs if the pre-commit cache is cold, even with <code>pre-commit-uv</code>.</p>
+</blockquote>
+<p>I've locally installed my global <code>pre-commit</code> with <code>uv tool install pre-commit --with pre-commit-uv==4.1.4</code>, which has made venv creation appreciably faster, and me happier.</p>
+<blockquote>
+<p>But if the pre-commit cache is hot (which it usually is in our CI), that doesn't cost us anything at all.</p>
+</blockquote>
+<p>Looks like it, yeah. The pre-commit lint in this branch is approximately the same speed as in <code>main</code> right now.</p>
+<blockquote>
+<p>I'm also not sure I <em>love</em> the monkeypatching approach <code>pre-commit-uv</code> takes. I appreciate that there's not really any other way to get pre-commit to use uv internally,</p>
+</blockquote>
+<p>I did try for more first-class support once upon a time... https://github.com/pre-commit/pre-commit/pull/3131</p>
+<blockquote>
+<p>but it seems kinda fragile. If it bought us a lot, that would be one thing... but it seems like it might not?</p>
+</blockquote>
+<p>Yeah, I guess it's not worth it here – feel free to close if you like.</p>
+<p>FWIW, I wrote a simple action (https://github.com/akx/pre-commit-uv-action/) to do this that I use for some of my projects :)</p>
+<hr />
+<p>Now that I <em>am</em> investigating pre-commit, though, running the same incantation as in the CI step locally (MacBook Pro, no slouch), with <code>--verbose</code>, shows it's <em>absolutely dominated</em> by <code>actionlint</code>:</p>
+<pre><code>$ time pre-commit run --all-files --show-diff-on-failure --color=always --hook-stage=manual --verbose
+Validate pyproject.toml..................................................Passed
+- duration: 0.14s
+mdformat.................................................................Passed
+- duration: 1.32s
+markdownlint-fix.........................................................Passed
+- duration: 1.05s
+blacken-docs.............................................................Passed
+- duration: 0.31s
+typos....................................................................Passed
+- duration: 1.24s
+cargo fmt................................................................Passed
+- duration: 2.01s
+ruff-format..............................................................Passed
+- duration: 0.05s
+ruff.....................................................................Passed
+- duration: 0.02s
+prettier.................................................................Passed
+- duration: 0.18s
+zizmor...................................................................Passed
+- duration: 0.05s
+Validate GitHub Workflows................................................Passed
+- duration: 0.32s
+Lint GitHub Actions workflow files.......................................Passed
+- duration: 26.87s
+________________________________________________________
+Executed in   34.97 secs    fish           external
+   usr time  306.37 secs    0.06 millis  306.37 secs
+   sys time   14.57 secs    2.69 millis   14.57 secs
+</code></pre>
+<p>Looking at <code>htop</code> during that workflow linting, it seems the action spawns an unlimited number of <a href="https://www.shellcheck.net/"><code>shellcheck</code>s</a> that compete for a finite number of CPUs' attention... 😩</p>
+<p>It could be worth it to limit <code>actionlint</code> to only run in CI if actions are actually changed?</p>
+<p><strong>EDIT:</strong> Oh... I guess it's the WASI-compiled shellcheck that's slow and heavy, but even more so on a GitHub Actions machine that's starved for cores.</p>
+<p><strong>EDIT 2:</strong> See #17108 🔧</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-04-01 12:16</div>
+            <div class="timeline-body"><blockquote>
+<p>I did try for more first-class support once upon a time... <a href="https://github.com/pre-commit/pre-commit/pull/3131">pre-commit/pre-commit#3131</a></p>
+</blockquote>
+<p>yup, I'm aware of the history 😄 thanks for your efforts there!</p>
+<blockquote>
+<p>I've locally installed my global <code>pre-commit</code> with <code>uv tool install pre-commit --with pre-commit-uv==4.1.4</code>, which has made venv creation appreciably faster, and me happier.</p>
+</blockquote>
+<p>Nice. ISTM that it probably has much more of an impact locally than in CI, though. So I'm inclined not to go with this. But thanks anyway!!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-04-01 12:16</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:41:05 UTC
+    </footer>
+</body>
+</html>

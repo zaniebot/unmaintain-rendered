@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Narrowing on `in tuple[...]` and `in str` - astral-sh/ruff #17059</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Narrowing on <code>in tuple[...]</code> and <code>in str</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/17059">#17059</a>
+        opened by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a>
+        on 2025-03-29 23:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on 2025-03-29 23:54</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>Part of #13694</p>
+<p>Seems there a bit more to cover regarding <code>in</code> and other types, but i can cover them in different PRs</p>
+<h2>Test Plan</h2>
+<p>Add <code>in.md</code> file in narrowing conditionals folder</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @MatthewMckee4 on 2025-03-29 23:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @MatthewMckee4 on 2025-03-29 23:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @MatthewMckee4 on 2025-03-29 23:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @MatthewMckee4 on 2025-03-29 23:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-03-29 23:56</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @MatthewMckee4 on 2025-03-30 00:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[red-knot] Narrowing on `in tuple[...]`" to "[red-knot] Narrowing on `in tuple[...]` and `in str`" by @MatthewMckee4 on 2025-03-30 00:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on 2025-03-30 00:33</div>
+            <div class="timeline-body"><p>Okay, i realise this is not right</p>
+<pre><code class="language-python">from typing import Literal
+
+def _(x: Literal[&quot;a&quot;, &quot;b&quot;, &quot;c&quot;, &quot;d&quot;]):
+    if x in &quot;abc&quot;:
+        reveal_type(x)  # revealed: Literal[&quot;a&quot;, &quot;b&quot;, &quot;c&quot;]
+    else:
+        reveal_type(x)  # revealed: Literal[&quot;d&quot;]
+</code></pre>
+<p>The true type is Literal[&quot;a&quot;, &quot;b&quot;, &quot;c&quot;, &quot;ab&quot;, &quot;ac&quot;, &quot;bc&quot;, &quot;abc&quot;]. So i should just infer as str right?
+Edit: In fact im wrong in this instance, but if the argument x was str then i think this is the case?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MatthewMckee4 on 2025-03-30 00:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on 2025-03-30 02:33</div>
+            <div class="timeline-body"><p>Im a bit unsure about if we should support other types in str. For example we have these right now:</p>
+<pre><code class="language-py">def _(x: Literal[&quot;a&quot;]) -&gt; None:
+    if x in &quot;abc&quot;:
+        reveal_type(x) # revealed: Literal[&quot;a&quot;]
+</code></pre>
+<pre><code class="language-py">def _(x: Literal[&quot;a&quot;, &quot;b&quot;]) -&gt; None:
+    if x in &quot;abc&quot;:
+        reveal_type(x) # revealed: Literal[&quot;a&quot;, &quot;b&quot;]
+</code></pre>
+<pre><code class="language-py">def _(x: str) -&gt; None:
+    if x in &quot;abc&quot;:
+        reveal_type(x) # revealed: str
+</code></pre>
+<p>but we also have:</p>
+<pre><code class="language-py">def _(x: object) -&gt; None:
+    if x in &quot;abc&quot;:
+        reveal_type(x) # revealed: Literal[&quot;a&quot;, &quot;b&quot;, &quot;c&quot;]
+</code></pre>
+<p>*we also get [unsupported-operator] error here
+but i feel like this should be str.</p>
+<p>My thinking for all StringLiteral and Union containing only StringLiteral, we can narrow the type, but otherwise we can only infer as str? How does this sounds.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2025-03-30 05:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/narrow/conditionals/in.md</code>:12 on 2025-03-30 18:14</div>
+            <div class="timeline-body"><p>This narrowing in the <code>if</code> branch here is not sound. <code>x</code> could be a subclass of <code>int</code> with arbitrary <code>__eq__</code> behavior that makes the <code>in</code> test return <code>True</code>:</p>
+<pre><code class="language-py">&gt;&gt;&gt; class MyInt(int):
+...     def __eq__(self, other):
+...             return True
+...
+&gt;&gt;&gt; MyInt(7) in (1, 2)
+True
+</code></pre>
+<p>Basically we cannot do positive narrowing on <code>in</code> tests or equality checks unless the subject type is a literal type or union of literal types, because of the possibility of a subclass with custom <code>__eq__</code> behavior.</p>
+<p>The exclusions in the negative branch here are valid (whatever <code>x</code> is, we know it can't be any of <code>Literal[1, 2, 3]</code>, because those would definitely return <code>True</code> on the <code>in</code> test). Not sure how much practical value this negative narrowing would provide, or whether it's worth the added complexity or the more-complex types.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/narrow/conditionals/in.md</code>:25 on 2025-03-30 18:17</div>
+            <div class="timeline-body"><p>This is also not sound, for effectively the same reason as above: <code>in</code> tests use equality, which can be customized via <code>__eq__</code> to do anything at all, so the fact that <code>x</code> compares equal to either an instance of <code>A</code> or an instance of <code>B</code> tells us nothing about the type of <code>x</code>.</p>
+<p>In this case the negative narrowing is even less sound; it's perfectly normal (the default behavior, even) for two different instances of the same type to not compare equal to each other. So <code>x</code> not being present in <code>(A(), B())</code> definitely does not tell us that <code>x</code> cannot be of type <code>A</code> or <code>B</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/narrow/conditionals/in.md</code>:61 on 2025-03-30 18:19</div>
+            <div class="timeline-body"><p>Similarly to the first case above, because <code>str</code> can be subclassed and a subclass can implement arbitrary <code>__eq__</code>, we cannot do this narrowing in the positive branch. The negative narrowing here is valid (whatever <code>x</code> is, we know it can't be <code>Literal[&quot;a&quot;]</code> etc) but may not be worth it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> requested changes on 2025-03-30 18:52</div>
+            <div class="timeline-body"><p>Haven't reviewed the code yet, just the tests, but there are some things we'll have to be a bit more conservative about here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> reviewed on 2025-03-30 19:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on <code>crates/red_knot_python_semantic/resources/mdtest/narrow/conditionals/in.md</code>:25 on 2025-03-30 19:19</div>
+            <div class="timeline-body"><p>Okay yeah I see why this is bad, I'll remove this test for now then</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on 2025-03-30 19:20</div>
+            <div class="timeline-body"><p>Okay thank you, I'll look over this again</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @AlexWaygood removed by @AlexWaygood on 2025-03-31 12:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/narrow.rs</code>:304 on 2025-03-31 18:42</div>
+            <div class="timeline-body"><p><code>UnionType::from_elements</code> is a less verbose way to do this</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/narrow.rs</code>:307 on 2025-03-31 18:44</div>
+            <div class="timeline-body"><p>This case is identical to the above case, we can just <code>||</code> the conditions instead of duplicating the arms. Or even wrap the conditions up in a single method, which I think we could reasonably call <code>Type::is_closed</code>. (That is, the type is a singleton or a union of singletons, or equivalent to a union of singletons, which would be true of e.g. <code>bool</code> or an enum type also.) I think the implementation of this method could also use <code>Type::is_singleton</code> rather than <code>Type::is_literal</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/narrow.rs</code>:295 on 2025-03-31 18:46</div>
+            <div class="timeline-body"><p>The only use of this argument is to negate the type in each arm, can't we just do that once at the call-site and eliminate this argument?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/narrow.rs</code>:337 on 2025-03-31 18:46</div>
+            <div class="timeline-body"><p>This is a confusing and inefficient way to do a no-op, instead let's have this method return <code>Option&lt;Type&lt;'db&gt;&gt;</code> and just return <code>None</code> here; if the caller gets back <code>None</code> it just doesn't insert a constraint.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/narrow.rs</code>:327 on 2025-03-31 18:48</div>
+            <div class="timeline-body"><p>These two cases can also be collapsed into one, and the guard test can just use the same <code>Type::is_closed</code> method discussed above.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-03-31 18:48</div>
+            <div class="timeline-body"><p>The behavior here looks good! I think we can simplify the implementation and make it a bit more general.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on 2025-03-31 20:08</div>
+            <div class="timeline-body"><p>Thank you</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> reviewed on 2025-03-31 20:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on <code>crates/red_knot_python_semantic/src/types/narrow.rs</code>:295 on 2025-03-31 20:11</div>
+            <div class="timeline-body"><p>We don't always negate though, only for certain arms</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> reviewed on 2025-03-31 20:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on <code>crates/red_knot_python_semantic/src/types/narrow.rs</code>:307 on 2025-03-31 20:13</div>
+            <div class="timeline-body"><p>Okay thank you, I'm still not aware of all of the methods in the 'Type' enum so this is very useful thank you</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-03-31 20:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/narrow.rs</code>:295 on 2025-03-31 20:30</div>
+            <div class="timeline-body"><p>If we eliminate the &quot;do nothing&quot; arm by just returning <code>None</code> instead, as I suggested below, then I think all the remaining arms do negate?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/narrow.rs</code>:307 on 2025-03-31 20:31</div>
+            <div class="timeline-body"><p>I think I mis-spoke here, what we'd want is <code>is_single_valued()</code> not <code>is_singleton()</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-03-31 20:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> reviewed on 2025-03-31 21:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on <code>crates/red_knot_python_semantic/src/types/narrow.rs</code>:327 on 2025-03-31 21:15</div>
+            <div class="timeline-body"><p>dont we just want to check this if the first type is a literal string or union of literal strings, because then we can narrow it down, like:</p>
+<pre><code class="language-py">from typing import Literal
+
+def _(x: Literal[&quot;a&quot;, &quot;b&quot;, &quot;c&quot;, &quot;d&quot;]):
+    if x in &quot;abc&quot;:
+        reveal_type(x)  # revealed: Literal[&quot;a&quot;, &quot;b&quot;, &quot;c&quot;]
+    else:
+        reveal_type(x)  # revealed: Literal[&quot;d&quot;]
+</code></pre>
+<p>and we can only do this if its <code>str in str</code> i think.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-03-31 21:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/narrow.rs</code>:327 on 2025-03-31 21:23</div>
+            <div class="timeline-body"><p>No it's correct to do it more broadly, consider a case like this:</p>
+<pre><code>def _(x: Literal[1, 2, &quot;a&quot;, &quot;b&quot;, &quot;c&quot;, &quot;d&quot;]):
+    if x in &quot;abc&quot;:
+        reveal_type(x)  # revealed: Literal[&quot;a&quot;, &quot;b&quot;, &quot;c&quot;]
+</code></pre>
+<p>The type of <code>x</code> here is not solely string literals, but we still can and should narrow here. Even if <code>x</code> were purely int literals, we'd want to reveal <code>Never</code> there. (We should probably add a couple additional tests with mixed types and totally-non-string types like this, checking for containment in a string literal.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> reviewed on 2025-03-31 21:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on <code>crates/red_knot_python_semantic/src/types/narrow.rs</code>:327 on 2025-03-31 21:30</div>
+            <div class="timeline-body"><p>Sorry i want to fully understand this, but mypy and pyright both say revealed type is <code>Literal[1, 2, 'a', 'b', 'c', 'd']</code>, and also both error with &quot;Operator &quot;in&quot; not supported for types &quot;Literal[1, 2, 'a', 'b', 'c', 'd']&quot; and &quot;Literal['abc']&quot;&quot;.</p>
+<p>Also the program fails when we do _(1).</p>
+<p>Would you be able to explain more why we should narrow the type when there would be a runtime error.</p>
+<p>Okay maybe if we have an example like this, would this be correct, since if x was 1 or 2, the program would fail?</p>
+<pre><code class="language-python">def _(x: Literal[1, 2, &quot;a&quot;, &quot;b&quot;, &quot;c&quot;]):
+    if x in &quot;abc&quot;:
+        reveal_type(x)  # revealed: Literal[&quot;a&quot;, &quot;b&quot;, &quot;c&quot;]
+    reveal_type(x)  # revealed: Never
+</code></pre>
+<p>Maybe im completely wrong here so any explanation is very helpful, thanks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> reviewed on 2025-03-31 21:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on <code>crates/red_knot_python_semantic/src/types/narrow.rs</code>:327 on 2025-03-31 21:53</div>
+            <div class="timeline-body"><p>Sorry, i can understand you, i think i was overthinking things, ill change the code</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> reviewed on 2025-03-31 21:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on <code>crates/red_knot_python_semantic/src/types/narrow.rs</code>:327 on 2025-03-31 21:59</div>
+            <div class="timeline-body"><p>Do you agree with this test:</p>
+<pre><code class="language-py">from typing import Literal
+
+def _(x: Literal[1, 2, &quot;a&quot;, &quot;b&quot;, &quot;c&quot;, &quot;d&quot;]):
+    # error: [unsupported-operator] &quot;Operator `in` is not supported for types `int` and `str`, in comparing `Literal[1, 2, &quot;a&quot;, &quot;b&quot;, &quot;c&quot;, &quot;d&quot;]` with `Literal[&quot;abc&quot;]`&quot;
+    if x in &quot;abc&quot;:
+        reveal_type(x)  # revealed: Literal[&quot;a&quot;, &quot;b&quot;, &quot;c&quot;]
+    else:
+        reveal_type(x)  # revealed: Literal[&quot;d&quot;]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-03-31 23:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/narrow.rs</code>:327 on 2025-03-31 23:03</div>
+            <div class="timeline-body"><p>Ugh, sorry, I didn't think carefully enough. I do agree with that test, but I also think it's not important that we narrow in an error comparison case, and we shouldn't go out of our way to do it if it doesn't fall out naturally.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-03-31 23:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/narrow.rs</code>:327 on 2025-03-31 23:26</div>
+            <div class="timeline-body"><p>I pushed some changes to more efficiently clarify the implementation I was looking for. It doesn't quite match your test in that we don't eliminate the unsupported-operation values from the union in the else clause, but I think this isn't important enough to add extra complexity for.</p>
+<p>I also decided that <code>Type::is_closed</code> didn't add clarity with only one call site.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> reviewed on 2025-03-31 23:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on <code>crates/red_knot_python_semantic/src/types/narrow.rs</code>:327 on 2025-03-31 23:28</div>
+            <div class="timeline-body"><p>Thank you, looks good</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-03-31 23:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @carljm on 2025-03-31 23:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-03-31 23:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-04-01 23:50</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:41:05 UTC
+    </footer>
+</body>
+</html>

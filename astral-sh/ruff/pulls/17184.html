@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[syntax-errors] Fix multiple assignment for class keyword argument - astral-sh/ruff #17184</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[syntax-errors] Fix multiple assignment for class keyword argument</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/17184">#17184</a>
+        opened by <a href="https://github.com/ntBre">@ntBre</a>
+        on 2025-04-03 19:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ntBre">@ntBre</a> on 2025-04-03 19:55</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Fixes #17181. The cases being tested with multiple <em>keys</em> being equal are actually a slightly different error, more like the error for <code>MatchMapping</code> than like the other multiple assignment errors:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; match x:
+...     case Class(x=x, x=x): ...
+...
+  File &quot;&lt;python-input-249&gt;&quot;, line 2
+    case Class(x=x, x=x): ...
+                      ^
+SyntaxError: attribute name repeated in class pattern: x
+&gt;&gt;&gt; match x:
+...     case {&quot;x&quot;: 1, &quot;x&quot;: 2}: ...
+...
+  File &quot;&lt;python-input-251&gt;&quot;, line 2
+    case {&quot;x&quot;: 1, &quot;x&quot;: 2}: ...
+         ^^^^^^^^^^^^^^^^
+SyntaxError: mapping pattern checks duplicate key ('x')
+&gt;&gt;&gt; match x:
+...     case [x, x]: ...
+...
+  File &quot;&lt;python-input-252&gt;&quot;, line 2
+    case [x, x]: ...
+             ^
+SyntaxError: multiple assignments to name 'x' in pattern
+</code></pre>
+<p>This PR just stops the false positive reported in the issue, but I will quickly follow it up with a new rule (or possibly combined with the mapping rule) catching the repeated attributes separately.</p>
+<h2>Test Plan</h2>
+<p>New inline <code>test_ok</code> and updating the <code>test_err</code> cases to have duplicate values instead of keys.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-04-03 19:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @ntBre on 2025-04-03 19:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @ntBre on 2025-04-03 19:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @ntBre on 2025-04-03 19:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-04-03 20:05</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-04-03 20:35</div>
+            <div class="timeline-body"><p>Interesting, it seems that class patterns needs to be checked differently:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; class Foo: ...
+... 
+... match 1:
+...     case Foo(x=1, y={&quot;x&quot;: x}):
+...         pass
+...     case _:
+...         pass
+...         
+&gt;&gt;&gt; 
+</code></pre>
+<p>Here, the <code>x</code> in class keyword argument is not considered a duplicate from mapping pattern. This makes sense as the <code>x</code> in the class pattern is not binding but just trying to match against the class attribute.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> approved on 2025-04-03 20:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ntBre on 2025-04-03 21:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-04-03 21:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-04-03 21:32</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:41:06 UTC
+    </footer>
+</body>
+</html>

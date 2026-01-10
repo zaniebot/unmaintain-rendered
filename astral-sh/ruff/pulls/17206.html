@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[syntax-errors] Allow `yield` in base classes and annotations - astral-sh/ruff #17206</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[syntax-errors] Allow <code>yield</code> in base classes and annotations</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/17206">#17206</a>
+        opened by <a href="https://github.com/ntBre">@ntBre</a>
+        on 2025-04-04 13:50
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ntBre">@ntBre</a> on 2025-04-04 13:50</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR fixes the issue pointed out by @JelleZijlstra in https://github.com/astral-sh/ruff/pull/17101#issuecomment-2777480204. Namely, I conflated two very different errors from CPython:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; def m[T](x: (yield from 1)): ...
+  File &quot;&lt;python-input-310&gt;&quot;, line 1
+    def m[T](x: (yield from 1)): ...
+                 ^^^^^^^^^^^^
+SyntaxError: yield expression cannot be used within the definition of a generic
+&gt;&gt;&gt; def m(x: (yield from 1)): ...
+  File &quot;&lt;python-input-311&gt;&quot;, line 1
+    def m(x: (yield from 1)): ...
+              ^^^^^^^^^^^^
+SyntaxError: 'yield from' outside function
+&gt;&gt;&gt; def outer():
+...     def m(x: (yield from 1)): ...
+...
+&gt;&gt;&gt;
+</code></pre>
+<p>I thought the second error was the same as the first, but <code>yield</code> (and <code>yield from</code>) is actually valid in this position when inside a function scope. The same is true for base classes, as pointed out in the original comment.</p>
+<p>We don't currently raise an error for <code>yield</code> outside of a function, but that should be handled separately.</p>
+<p>On the upside, this had the benefit of removing the <code>InvalidExpressionPosition::BaseClass</code> variant, the <code>InvalidExpressionPosition::TypeAnnotation</code> variant, and the <code>allow_named_expr</code> field from the visitor because they were all no longer used.</p>
+<h2>Test Plan</h2>
+<p>Updated inline tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-04-04 13:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @ntBre on 2025-04-04 13:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @ntBre on 2025-04-04 13:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> on <code>crates/ruff_python_parser/resources/inline/err/invalid_annotation_function.py</code>:4 on 2025-04-04 13:53</div>
+            <div class="timeline-body"><p>These ones should perhaps stay as errors. They are a syntax error in Python 3.14 (and under <code>from __future__ import annotations</code>). They're legal otherwise in older versions, but yielding in an annotation is a very questionable idea and it will be a SyntaxError in the future, so it would make sense for Ruff to error about it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> reviewed on 2025-04-04 13:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-04-04 14:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_parser/resources/inline/err/invalid_annotation_function.py</code>:4 on 2025-04-04 14:00</div>
+            <div class="timeline-body"><p>Oh, interesting. We can check the version before emitting these errors, but I don't think we have any others that depend on <code>from __future__ import annotations</code> yet. It does seem easiest just to make this an error on any version in that case. Thanks!</p>
+<p>And it looks like my error message was very similar to CPython in that case too:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; from __future__ import annotations
+&gt;&gt;&gt; def i(x: (yield 1)): ...
+  File &quot;&lt;python-input-1&gt;&quot;, line 1
+    def i(x: (yield 1)): ...
+              ^^^^^^^
+SyntaxError: yield expression cannot be used within an annotation
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-04-04 14:00</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> reviewed on 2025-04-04 14:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> on <code>crates/ruff_python_parser/resources/inline/err/invalid_annotation_function.py</code>:4 on 2025-04-04 14:00</div>
+            <div class="timeline-body"><p>For reference: https://peps.python.org/pep-0649/#changes-to-allowable-annotations-syntax</p>
+<p>Up to you how to handle this in Ruff. You could raise a SyntaxError on all versions for simplicity (pro: helps prepare people for the error, simpler to implement; con: not strictly accurate on 3.13 and earlier, might have false positives in the unlikely case people are actually using <code>yield</code> etc. in annotations). You could also add a new error code specifically for this case, so people can ignore it if they want. Or you can just leave it as in this PR for now, and make it a SyntaxError for &gt;3.14 only once you add 3.14 support.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-04-04 14:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_parser/resources/inline/err/invalid_annotation_function.py</code>:4 on 2025-04-04 14:03</div>
+            <div class="timeline-body"><p>Oh is this the same for named expressions too? I had already skipped those in the initial PR because they were allowed in 3.13:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; def i(x: (x:=1)): ...
+...
+&gt;&gt;&gt; from __future__ import annotations
+&gt;&gt;&gt; def i(x: (x:=1)): ...
+  File &quot;&lt;python-input-2&gt;&quot;, line 1
+    def i(x: (x:=1)): ...
+              ^^^^
+SyntaxError: named expression cannot be used within an annotation
+&gt;&gt;&gt;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> reviewed on 2025-04-04 14:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> on <code>crates/ruff_python_parser/resources/inline/err/invalid_annotation_function.py</code>:4 on 2025-04-04 14:37</div>
+            <div class="timeline-body"><p>Yes, and <code>await</code>. (The comment above was written before I saw your reply.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-04-04 15:38</div>
+            <div class="timeline-body"><p>I added a <code>SemanticSyntaxContext::future_annotations_or_stub</code> method for checking future annotations and restored the function annotations check in that case (or on Python 3.14). I also added <code>await</code> handling in these positions to #11934 since I left them out of the initial PR here. For now I just want to fix the existing false positive before the hotfix release.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:210 on 2025-04-04 15:47</div>
+            <div class="timeline-body"><p>Do we need the same future check here to determine the position or are functions different?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-04-04 15:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-04-04 15:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-04-04 16:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:210 on 2025-04-04 16:02</div>
+            <div class="timeline-body"><p>I think base classes still allow this, at least with future annotations:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; from __future__ import annotations
+&gt;&gt;&gt; class F(y := list): ...
+... def f[T]():
+...     class G((yield 1)): ...
+...     class H((yield from 1)): ...
+...
+</code></pre>
+<p>Although I'm now realizing that this applies to other annotations not considered in this PR:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; def f():
+...     x: (yield 1)
+...
+&gt;&gt;&gt; from __future__ import annotations
+&gt;&gt;&gt; def f():
+...     x: (yield 1)
+...
+  File &quot;&lt;python-input-2&gt;&quot;, line 2
+    x: (yield 1)
+        ^^^^^^^
+SyntaxError: yield expression cannot be used within an annotation
+</code></pre>
+<p>Another addition to #11934...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ntBre on 2025-04-04 17:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-04-04 17:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-04-04 17:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @ntBre on 2025-04-04 17:48</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:41:06 UTC
+    </footer>
+</body>
+</html>

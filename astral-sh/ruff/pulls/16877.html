@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Special-case value-expression inference of special form subscriptions - astral-sh/ruff #16877</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Special-case value-expression inference of special form subscriptions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/16877">#16877</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-03-20 17:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-03-20 17:40</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Currently for something like <code>X = typing.Tuple[str, str]</code>, we infer the value of <code>X</code> as <code>object</code>. That's because <code>Tuple</code> (like many of the symbols in the typing module) is annotated as a <code>_SpecialForm</code> instance in typeshed's stubs:</p>
+<p>https://github.com/astral-sh/ruff/blob/23382f5f8c7b4e356368cdeb1049b8c1910baff3/crates/red_knot_vendored/vendor/typeshed/stdlib/typing.pyi#L215</p>
+<p>and we don't understand implicit type aliases yet, and the stub for <code>_SpecialForm.__getitem__</code> says it always returns <code>object</code>:</p>
+<p>https://github.com/astral-sh/ruff/blob/23382f5f8c7b4e356368cdeb1049b8c1910baff3/crates/red_knot_vendored/vendor/typeshed/stdlib/typing.pyi#L198-L200</p>
+<p>We have existing false positives in our test suite due to this:</p>
+<p>https://github.com/astral-sh/ruff/blob/23382f5f8c7b4e356368cdeb1049b8c1910baff3/crates/red_knot_python_semantic/resources/mdtest/annotations/annotated.md?plain=1#L76-L78</p>
+<p>and it's causing <em>many</em> new false positives in #16872, which tries to make our annotation-expression parsing stricter in some ways.</p>
+<p>This PR therefore adds some small special casing for <code>KnownInstanceType</code> variants that fallback to <code>_SpecialForm</code>, so that these false positives can be avoided.</p>
+<h2>Test Plan</h2>
+<p>Existing mdtest altered.</p>
+<p>Cc. @MatthewMckee4</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2025-03-20 17:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @AlexWaygood on 2025-03-20 17:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @AlexWaygood on 2025-03-20 17:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @AlexWaygood on 2025-03-20 17:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-03-20 17:48</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">black (https://github.com/psf/black)
+- error[lint:non-subscriptable] /tmp/mypy_primer/projects/black/src/black/trans.py:54:11: Cannot subscript object of type `object` with no `__getitem__` method
+- Found 289 diagnostics
++ Found 288 diagnostics
+
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-03-20 17:50</div>
+            <div class="timeline-body"><blockquote>
+<h2><code>mypy_primer</code> results</h2>
+<p>Changes were detected when running on open source projects</p>
+<pre><code class="language-diff">black (https://github.com/psf/black)
+- error[lint:non-subscriptable] /tmp/mypy_primer/projects/black/src/black/trans.py:54:11: Cannot subscript object of type `object` with no `__getitem__` method
+- Found 289 diagnostics
++ Found 288 diagnostics
+</code></pre>
+</blockquote>
+<p>Here's the link to the line in question: https://github.com/psf/black/blob/dd278cb316d75868716a0478c35b1fcd600a5249/src/black/trans.py#L54</p>
+<p><code>Result</code> is a type alias to a <code>Union[]</code> subscription, and <code>Union</code> is stubbed as an instance of <code>_SpecialForm</code> in typeshed:</p>
+<p>https://github.com/psf/black/blob/dd278cb316d75868716a0478c35b1fcd600a5249/src/black/rusty.py#L28</p>
+<p>So it's good that we no longer emit this error!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-03-20 21:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2025-03-20 21:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-03-20 21:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-03-20 21:46</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:41:05 UTC
+    </footer>
+</body>
+</html>

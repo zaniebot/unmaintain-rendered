@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Disjointness for callable types - astral-sh/ruff #17094</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Disjointness for callable types</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/17094">#17094</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2025-03-31 14:04
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-03-31 14:04</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Part of #15382, this PR adds support for disjointness between two callable types. They are never disjoint because there exists a callable type that's a subtype of all other callable types:</p>
+<pre><code class="language-py">(*args: object, **kwargs: object) -&gt; Never
+</code></pre>
+<p>The <code>Never</code> is a subtype of every fully static type thus a callable type that has the return type of <code>Never</code> means that it is a subtype of every return type.</p>
+<h2>Test Plan</h2>
+<p>Add test cases related to mixed parameter kinds, gradual form (<code>...</code>) and <code>Never</code> type.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @dhruvmanila on 2025-03-31 14:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-03-31 14:06</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-03-31 16:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/resources/mdtest/type_properties/is_disjoint_from.md</code>:92 on 2025-03-31 16:36</div>
+            <div class="timeline-body"><p>This is not related to this PR but it helped my understanding when I discussed <code>Never</code> usage with Alex and David last week so I added some test cases for it as they were missing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @dhruvmanila on 2025-04-01 14:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @dhruvmanila on 2025-04-01 14:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @dhruvmanila on 2025-04-01 14:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @dhruvmanila on 2025-04-01 14:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @dhruvmanila on 2025-04-01 14:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/resources/mdtest/type_properties/is_disjoint_from.md</code>:84 on 2025-04-01 14:42</div>
+            <div class="timeline-body"><p>Maybe expand on <em>why</em> it's similar to <code>Never</code>:</p>
+<pre><code class="language-suggestion">If a tuple type contains a `Never` element, then it cannot be instantiated. Like `Never`, the
+type contains no objects, and is therefore disjoint from any other type.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-04-01 14:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/type_properties/is_disjoint_from.md</code>:84 on 2025-04-01 17:22</div>
+            <div class="timeline-body"><p>I think this comment is slightly confusing. <code>tuple[int, Never]</code> is not <em>like</em> <code>Never</code> in our model -- it literally <em>is</em> <code>Never</code>! We view <code>tuple[int, Never]</code> and <code>Never</code> as being exactly the same type: <code>tuple[int, Never]</code> is just eagerly simplified to <code>Never</code> in our model; <code>Never</code> should never appear as a <code>Type::Tuple()</code> element in our representation https://playknot.ruff.rs/bd45448d-5c21-49db-ab98-093d57b24768</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-04-01 17:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/type_properties/is_disjoint_from.md</code>:84 on 2025-04-01 17:29</div>
+            <div class="timeline-body"><p>It's great to add some tests for this. But I think I'd prefer just some tests like this; I think they'd be clearer:</p>
+<pre><code class="language-py">def f(x: tuple[Never], y: tuple[int, Never], z: tuple[Never, int]):
+    reveal_type(x)  # revealed: Never
+    reveal_type(y)  # revealed: Never
+    reveal_type(z)  # revealed: Never
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/type_properties/is_disjoint_from.md</code>:360 on 2025-04-01 17:30</div>
+            <div class="timeline-body"><p>(optional)</p>
+<pre><code class="language-suggestion">`(*args: object, **kwargs: object) -&gt; Never` that is a subtype of all fully static callable types.
+As such, for any two callable types, it is possible to conceive of a runtime callable object that would
+inhabit both types simultaneously.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1337 on 2025-04-01 17:35</div>
+            <div class="timeline-body"><p>What's the reason for the asymmetry here? Could this be</p>
+<pre><code class="language-suggestion">            (
+                Type::Callable(CallableType::General(_)) | Type::FunctionLiteral(_),
+                Type::Callable(CallableType::General(_)) | Type::FunctionLiteral(_),
+            ) =&gt; {
+</code></pre>
+<p>or</p>
+<pre><code class="language-suggestion">            (
+                Type::Callable(CallableType::General(_)) | Type::FunctionLiteral(_),
+                Type::Callable(CallableType::General(_)),
+            )
+            | (
+                Type::Callable(CallableType::General(_)),
+                Type::Callable(CallableType::General(_)) | Type::FunctionLiteral(_),
+            ) =&gt; {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-04-01 17:35</div>
+            <div class="timeline-body"><p>Nice, this looks great. A couple of small points</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-04-01 17:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/resources/mdtest/type_properties/is_disjoint_from.md</code>:84 on 2025-04-01 17:48</div>
+            <div class="timeline-body"><blockquote>
+<p>I think this comment is slightly confusing. <code>tuple[int, Never]</code> is not <em>like</em> <code>Never</code> in our model -- it literally <em>is</em> <code>Never</code>!</p>
+</blockquote>
+<p>Ah, got it! Does that suggest that we want this to be an explicit invariant of our representation? Is our intent to have <code>Type::Never</code> be the <em>only</em> empty type? Are there other types that we would need to make sure simplify to <code>Never</code>? (I know intersection with <code>Never</code> is already simplified like this.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-04-01 17:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/type_properties/is_disjoint_from.md</code>:84 on 2025-04-01 17:52</div>
+            <div class="timeline-body"><p>It would certainly be nice if we <em>can</em> maintain this invariant going forward! It makes a lot of things simpler to think about 😄 I can't say for sure whether it will always be feasible to eagerly detect (and simplify to <code>Never</code>) all types that are known to be empty, though</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/type_properties/is_disjoint_from.md</code>:84 on 2025-04-01 18:16</div>
+            <div class="timeline-body"><p>Yes, I think we want this to be an invariant of our representation -- and I think it should be possible.</p>
+<p>And I also agree that it would be better to test this simplification not in this file, and not using <code>is_disjoint_from</code>, but rather the way Alex suggests, and over in the tuple type tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/type_properties/is_disjoint_from.md</code>:360 on 2025-04-01 18:19</div>
+            <div class="timeline-body"><p>Similar to Alex's suggestion, but I think it's important to clarify that it's a non-empty subtype, because even disjoint types have the common subtype <code>Never</code>. And personally I think once we clarify that, it's sufficient without adding an entirely new sentence: if two types have a non-empty common subtype, then obviously they share some inhabitants. But I don't feel strongly, we can add another sentence driving that point home.</p>
+<pre><code class="language-suggestion">No two callable types are disjoint because there exists a non-empty callable type
+`(*args: object, **kwargs: object) -&gt; Never` that is a subtype of all fully static callable types.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1337 on 2025-04-01 18:20</div>
+            <div class="timeline-body"><p>The second suggestion could work, but not the first. Two <code>FunctionLiteral</code> types can definitely be disjoint from each other (in fact they always are.)</p>
+<p>I think the reason for the asymmetry in the current version is simply avoiding redundancy. The case of two general-callable-types is always handled by the first clause, so doesn't need to be represented in the second clause.</p>
+<p>I don't think it matters much but IMO the clearest version might be to have three separate ORed outer clauses, with no interior OR: function-literal vs general-callable, general-callable vs function-literal, and general-callable vs general-callable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-04-01 18:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-04-01 18:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1337 on 2025-04-01 18:28</div>
+            <div class="timeline-body"><blockquote>
+<p>The second suggestion could work, but not the first. Two <code>FunctionLiteral</code> types can definitely be disjoint from each other (in fact they always are.)</p>
+</blockquote>
+<p>Yes, and they're handled a bit above in the match expression.</p>
+<blockquote>
+<p>I think the reason for the asymmetry in the current version is simply avoiding redundancy. The case of two general-callable-types is always handled by the first clause, so doesn't need to be represented in the second clause.</p>
+</blockquote>
+<p>Yup, this is the reason (I was about to comment this :)).</p>
+<blockquote>
+<p>I don't think it matters much but IMO the clearest version might be to have three separate clauses: function-literal vs general-callable, general-callable vs function-literal, and general-callable vs general-callable.</p>
+</blockquote>
+<p>I started out with this but clippy complains about &quot;unnested or-patterns&quot; which then suggests to collapse it into what the current pattern is in the PR. We would need to have separate branches for it to work but I think I'd want to avoid that so that the comment explanation remains present in the same branch for all related cases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-04-01 18:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/resources/mdtest/type_properties/is_disjoint_from.md</code>:84 on 2025-04-01 18:29</div>
+            <div class="timeline-body"><blockquote>
+<p>Yes, I think we want this to be an invariant of our representation -- and I think it should be possible.</p>
+</blockquote>
+<p>I can try and create a follow-up for this.</p>
+<blockquote>
+<p>And I also agree that it would be better to test this simplification not in this file, and not using <code>is_disjoint_from</code>, but rather the way Alex suggests, and over in the tuple type tests.</p>
+</blockquote>
+<p>Make sense</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2025-04-01 19:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2025-04-01 19:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-04-01 19:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-04-01 21:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/tuple.md</code>:15 on 2025-04-01 21:10</div>
+            <div class="timeline-body"><p>We have existing tests for this in <code>type_properties/tuples_containing_never.md</code>. Can we merge these new tests into the existing test suite, in case they increase coverage?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-04-02 02:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/tuple.md</code>:15 on 2025-04-02 02:35</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/ruff/pull/17137</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:41:05 UTC
+    </footer>
+</body>
+</html>

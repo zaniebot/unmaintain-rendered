@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] partially migrate to new `Diagnostic` types, delete old diagnostic code - astral-sh/ruff #17130</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] partially migrate to new <code>Diagnostic</code> types, delete old diagnostic code</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/17130">#17130</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2025-04-01 18:59
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-04-01 18:59</div>
+            <div class="timeline-body"><p>This &quot;surgically&quot; replaces Red Knot's use of &quot;old&quot; diagnostic types
+with the new <code>Diagnostic</code> type. It is surgical because it doesn't
+change how Red Knot type checking actually creates diagnostics.
+That is, the <code>InferContext</code> APIs to report diagnostics all remain
+the same. What this PR does is change out the implementation of the
+<code>InferContext</code> APIs to use the new <code>Diagnostic</code> types. This lays
+the ground work for refactoring <code>InferContext</code> to expose the new
+<code>Diagnostic</code> data model.</p>
+<p>(I had originally planned for this refactor to include moving Red Knot
+over to the new <code>Diagnostic</code> data model as well, but this got rather
+big on its own. So I thought it would be better to split the work up.)</p>
+<p>As discussed with @MichaReiser, this PR also removes the &quot;fake&quot; linear
+typing for <code>Diagnostic</code>. That is, you'll no longer get a panic if you
+drop a <code>Diagnostic</code> without printing it. It is thought that Salsa
+specifically can make this akward to deal with, and there may be cases
+in the future where diagnostics get dropped without us having an
+opportunity to explicitly ignore them. In any case, while it is perhaps
+still a good thing to have, it is not well motivated. Notably, Ruff
+doesn't seem to have a problem of accidentally ignoring diagnostics. If
+we do end up seeing this become a problem, we can think more carefully
+about how to re-introduce the linear typing fakery.</p>
+<p>Ref #16809</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @BurntSushi on 2025-04-01 18:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @BurntSushi on 2025-04-01 18:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @BurntSushi on 2025-04-01 18:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @BurntSushi on 2025-04-01 18:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @BurntSushi on 2025-04-01 18:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @BurntSushi on 2025-04-01 18:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">diagnostics</span> added by @BurntSushi on 2025-04-01 18:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-04-01 19:01</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-04-01 19:14</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_project/src/metadata/options.rs</code>:400 on 2025-04-02 06:52</div>
+            <div class="timeline-body"><p>Should this be <code>into_diagnostic</code> to avoid cloning <code>self</code> or is it <code>to_diagnostic</code> because most salsa queries only return refs?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/context.rs</code>:208 on 2025-04-02 06:56</div>
+            <div class="timeline-body"><p>I don't think this is necessary anymore, now that we removed the &quot;drop bomb&quot; from diagnostics.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/diagnostic.rs</code>:909 on 2025-04-02 07:04</div>
+            <div class="timeline-body"><p>I'm not sure what the solution for this is but it may still be desired to wrap the <code>Diagnostic</code>s in <code>self.diagnostics</code> in an <code>Arc</code> because we now create multiple deep-clones of every diagnostic, which I suspect can be fairly expensive (diagnostics aren't lightweight structs).</p>
+<p>The diagnostics in Red Knot are collected as part of type inference and type inference is done at three different levels:</p>
+<ol>
+<li><p>Per scope (calls into expressions and definition inference)</p>
+</li>
+<li><p>Per definition (class, function, variable), calls into expression inference</p>
+</li>
+<li><p>Per expression (only some expressions)</p>
+</li>
+<li><p>and 2. both have to &quot;copy over&quot; the diagnostics from the inner inferences operations. That means, a diagnostic created when infering an expression may be copied twice: Once to aggregate the diagnostics at the definition level and once when aggregating the diagnostics at a scope level.</p>
+</li>
+</ol>
+<p>We later perform one last copy (clone) inside <code>check_types</code></p>
+<p>This is why the old implementation used an <code>Arc</code> to make those clones as cheap as possible. Alternatives are to use <code>salsa::interned</code> (but that comes with extra bookkeeping but it has the advantage that it's arena allocated) or salsa accumulated (which now avoids cloning internally and only requires cloning at the boundaries)</p>
+<p>Unless we say that cloning <code>Diagnostic</code>s isn't a performance concern relative to the cost of generating and printing them</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:5886 on 2025-04-02 07:06</div>
+            <div class="timeline-body"><p>Nit</p>
+<pre><code class="language-suggestion">        self.types.diagnostics = self.context.finish();
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_test/src/lib.rs</code>:327 on 2025-04-02 07:12</div>
+            <div class="timeline-body"><p>I believe you mentioned in one of your reviews that it was a very intentional decision to implement <code>print</code> over <code>std::io::Write</code>. I don't remember the details but I noticed that it results in many places where it's necessary to use <code>Vec&lt;u8&gt;</code> in combination with a <code>String::from_utf8().unwrap</code> which is somewhat unfortunate.</p>
+<p>I don't really have a solution for this, it's just something I noticed (e.g. also in my tests).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_test/Cargo.toml</code>:16 on 2025-04-02 07:14</div>
+            <div class="timeline-body"><p>It's not clear to me what changed that the <code>os</code> feature is now required or is this a feature we already missed declaring as dependency before?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_wasm/src/lib.rs</code>:227 on 2025-04-02 07:16</div>
+            <div class="timeline-body"><p>The <code>RefCell</code> might no longer be necessary, now that <code>Diagnostic::print</code> takes <code>&amp;self</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_wasm/src/lib.rs</code>:280 on 2025-04-02 07:17</div>
+            <div class="timeline-body"><p>You could also change the return type to <code>Result</code> without breaking the JS Api if you want to avoid the <code>unwrap</code> here</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/diagnostic/mod.rs</code>:143 on 2025-04-02 07:18</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">            .unwrap_or_default()
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/diagnostic/mod.rs</code>:620 on 2025-04-02 07:19</div>
+            <div class="timeline-body"><p>A use case for your <code>IntoDiagnostic</code> trait ;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/diagnostic.rs</code>:909 on 2025-04-02 07:23</div>
+            <div class="timeline-body"><p>Now that I'm through with my review: I see that you made <code>Diagnostic</code> use an <code>Arc</code> which addresses this concern. I liked that the &quot;old&quot; new diagnostic was salsa agnositc in the sense that it only used the <code>Arc</code> where necessary but I think this also makes sense.</p>
+<p>It does have the downside that Ruff's diagnostics get <code>Arc</code>ed where this isn't technically necessary. It will be interesting to see how this impacts performance.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-04-02 07:23</div>
+            <div class="timeline-body"><p>Nice, thank you</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-04-02 12:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/red_knot_project/src/metadata/options.rs</code>:400 on 2025-04-02 12:41</div>
+            <div class="timeline-body"><p>The <code>Diagnostic</code> API doesn't really support accepting ownership of things, so you have to clone anyway. For example:</p>
+<pre><code class="language-rust">    /// Attach a message to this annotation.
+    ///
+    /// An annotation without a message will still have a presence in
+    /// rendering. In particular, it will highlight the span association with
+    /// this annotation in some way.
+    ///
+    /// When a message is attached to an annotation, then it will be associated
+    /// with the highlighted span in some way during rendering.
+    pub fn message&lt;'a&gt;(self, message: impl std::fmt::Display + 'a) -&gt; Annotation {
+        let message = Some(message.to_string().into_boxed_str());
+        Annotation { message, ..self }
+    }
+</code></pre>
+<p>We may want to add alternative APIs to <code>Diagnostic</code> (and its constituent types) that accept ownership to avoid clones, but this isn't doing any more work AFAIK than the status quo:</p>
+<p>https://github.com/astral-sh/ruff/blob/a15404a5c1f6319e511c7f2239c02a3ff8f4bf17/crates/red_knot_python_semantic/src/types/context.rs#L153-L160</p>
+<p>I know we've been <em>talking</em> about an <code>IntoDiagnostic</code> trait, but it might actually make more sense for it to be a <code>ToDiagnostic</code> trait. Or, alternatively, an <code>IntoDiagnostic</code> trait if we decide to add ownership consuming construction APIs to <code>Diagnostic</code>. I think I'd prefer that decision to be lead by profiling/benchmarking. (I guess this could matter in cases where Red Knot reports an avalanche of diagnostics. But even then, I'm skeptical that these sorts of copies are going to be anything but marginal compared to whatever other work Red Knot is doing in cases like that. But I'm mostly just guessing.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-04-02 12:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/red_knot_python_semantic/src/types/context.rs</code>:208 on 2025-04-02 12:43</div>
+            <div class="timeline-body"><p>Oops! I thought I caught everything. This was actually scaffolding code I was using to aide the refactor. Nice catch. Removed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/red_knot_python_semantic/src/types/diagnostic.rs</code>:909 on 2025-04-02 12:56</div>
+            <div class="timeline-body"><p>Yeah I like sticking with <code>Arc</code> for now. I do this sort of thing all the time in my Rust libraries. It generally works very well.</p>
+<p>You are of course correct that using <code>Arc</code> for these sorts of things isn't free. But I try to look at what the marginal cost of the <code>Arc</code> is. You're only getting a new <code>Arc</code> when you <em>create</em> a diagnostic, and creating a diagnostic is already likely going to require allocs and formatting machinery and all that stuff.</p>
+<p>I will be <em>very happy</em> to eat crow and optimize if we can find use cases for which getting rid of these allocs helps perf. But I'll note that, at some point, you do have to actually <em>create</em> strings somewhere in order to create a diagnostic, even if it had ownership accepting APIs. e.g., <code>Diagnostic::new(blah, blah, format_args!(&quot;some message about {foo}&quot;))</code> has to do a <code>to_string()</code> on that <code>std::fmt::Arguments</code> <em>somewhere</em>. And unless we want a lifetime parameter infecting the <code>Diagnostic</code> types (which I would guess would be unworkable), it probably makes the most sense to do it at construction time.</p>
+<p>I think even in alternative designs (e.g., a <code>Diagnostic</code> trait), there have to be clones and formatting happening somewhere, although precisely where might get shifted around a bit.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-04-02 12:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-04-02 12:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/red_knot_test/src/lib.rs</code>:327 on 2025-04-02 12:59</div>
+            <div class="timeline-body"><p>Yeah... right... good point. The reason was related to the linear type fakery. Namely, using <code>std::io::Write</code> as a destination makes it &quot;more likely&quot; that printing is actually going to stdout or similar, and not just some string in memory that could get accidentally ignored.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @AlexWaygood removed by @AlexWaygood on 2025-04-02 13:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/red_knot_test/src/lib.rs</code>:327 on 2025-04-02 13:15</div>
+            <div class="timeline-body"><p>I don't think I have any strong feelings about reverting this back to just a <code>Display</code> impl or some such (the internal renderer already works that way, so it's an overall small change). One note though is that the <code>unwrap()</code> calls you're referencing I believe only occur in tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-04-02 13:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-04-02 13:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/red_knot_test/src/lib.rs</code>:327 on 2025-04-02 13:16</div>
+            <div class="timeline-body"><p>I'm leaning towards offering a <code>Display</code> impl. But might do that in a follow-up PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-04-02 13:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/red_knot_test/Cargo.toml</code>:16 on 2025-04-02 13:17</div>
+            <div class="timeline-body"><p>It was missed before. It came up when I was trying to run tests via <code>-p red_knot_test</code> I believe. Sorry, I meant to call this out in its own commit, but it slipped through.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-04-02 13:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/red_knot_wasm/src/lib.rs</code>:227 on 2025-04-02 13:18</div>
+            <div class="timeline-body"><p>Nice catch!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-04-02 13:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/red_knot_wasm/src/lib.rs</code>:280 on 2025-04-02 13:19</div>
+            <div class="timeline-body"><p>Ah, and this is a non-test instance of the <code>unwrap()</code> that I previously claimed was only in tests. Nice.</p>
+<p>OK, that convinces me to switch back to a <code>Display</code> impl, kinda like how the old diagnostics work.</p>
+<p>But I'll do that in a follow-up PR if that's okay with you. (Which will fix this too.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-04-02 13:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_db/src/diagnostic/mod.rs</code>:143 on 2025-04-02 13:19</div>
+            <div class="timeline-body"><p>I'm surprised Clippy didn't catch this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-04-02 13:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_db/src/diagnostic/mod.rs</code>:620 on 2025-04-02 13:21</div>
+            <div class="timeline-body"><p>Hmmm. I don't <em>think</em> this on its own asks for generics. If it weren't for the dependency graph (which we briefly talked about fixing at the on-site), then this could &quot;just&quot; be a concrete method on <code>ParseError</code> and things would be fine.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-04-02 13:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/red_knot_test/src/lib.rs</code>:327 on 2025-04-02 13:23</div>
+            <div class="timeline-body"><blockquote>
+<p>One note though is that the unwrap() calls you're referencing I believe only occur in tests.</p>
+</blockquote>
+<p>This was wrong! See: https://github.com/astral-sh/ruff/pull/17130#discussion_r2024815794</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-04-02 13:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_wasm/src/lib.rs</code>:280 on 2025-04-02 13:25</div>
+            <div class="timeline-body"><p>Sure</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @BurntSushi on 2025-04-02 14:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2025-04-02 14:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-04-02 14:10</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:41:05 UTC
+    </footer>
+</body>
+</html>

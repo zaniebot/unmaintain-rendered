@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[syntax-errors] Multiple assignments in `case` pattern - astral-sh/ruff #16957</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[syntax-errors] Multiple assignments in <code>case</code> pattern</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/16957">#16957</a>
+        opened by <a href="https://github.com/ntBre">@ntBre</a>
+        on 2025-03-24 16:43
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ntBre">@ntBre</a> on 2025-03-24 16:43</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR detects multiple assignments to the same name in <code>case</code> patterns by recursively visiting each pattern.</p>
+<h2>Test Plan</h2>
+<p>New inline tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2025-03-24 16:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @ntBre on 2025-03-24 16:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @ntBre on 2025-03-24 16:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-03-24 16:52</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:338 on 2025-03-24 17:04</div>
+            <div class="timeline-body"><p>It seems that we only need the range comparison here because we visit the <code>PatternMatchAs</code> fields not in the source order. That took me a while to realise. I think I'd prefer to, instead, change <code>visit_pattern</code> so that it visits all fields in source order, so that we can remove the range handling here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:332 on 2025-03-24 17:06</div>
+            <div class="timeline-body"><p>This is <code>O(n^2)</code>. Should we change the visitor to first collect all names, then sort by name (<code>log (n)</code>), then identify duplicate names by comparing neighboring elements (<code>n</code>)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/tests/snapshots/invalid_syntax@multiple_assignment_in_case_pattern.py.snap</code>:683 on 2025-03-24 17:08</div>
+            <div class="timeline-body"><p>Do you think we should mention the variable name here? It wasn't clear to me from the error message what's wrong in this example:  Can I only have a single variable? It might be especially hard to realize what's wrong if the use of the same identifier isn't next to each other (<code>{ 1: x, 2: aaaa_very_long_key, ..., 4: x }</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-03-24 17:10</div>
+            <div class="timeline-body"><p>This looks good to me. I've a few smaller suggestions</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-03-24 17:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:338 on 2025-03-24 17:56</div>
+            <div class="timeline-body"><p>Ah yes, I thought I had tried that first and got surprised when they didn't come out in source order, but I think I just had the order wrong in the <code>MatchAs</code> case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-03-24 18:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:332 on 2025-03-24 18:23</div>
+            <div class="timeline-body"><p>That's closer to what I had initially, but I ran into some issues with <code>MatchOr</code>, where the patterns needed to be visited independently. I found a way to work around it and think this is better, thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_parser/tests/snapshots/invalid_syntax@multiple_assignment_in_case_pattern.py.snap</code>:683 on 2025-03-24 18:26</div>
+            <div class="timeline-body"><p>That's a good point. I was trying to avoid putting data into the <code>SemanticSyntaxErrorKind</code> variants, but we can give better error messages if we do. I'll try something more like Python:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; match 2:
+...     case x as x: ...
+...
+  File &quot;&lt;python-input-4&gt;&quot;, line 2
+    case x as x: ...
+         ^^^^^^
+SyntaxError: multiple assignments to name 'x' in pattern
+&gt;&gt;&gt; match 2:
+...     case [x, y, *x]: ...
+...
+  File &quot;&lt;python-input-5&gt;&quot;, line 2
+    case [x, y, *x]: ...
+                ^^
+SyntaxError: multiple assignments to name 'x' in pattern
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-03-24 18:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @ntBre on 2025-03-24 18:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-03-24 21:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:399 on 2025-03-24 21:24</div>
+            <div class="timeline-body"><p>I think it would be useful to provide the reason for why should this be done. From what I understand, I think it's because they're separate patterns and checking for duplicate names are isolated to a single pattern.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> approved on 2025-03-24 21:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-03-25 17:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:399 on 2025-03-25 17:56</div>
+            <div class="timeline-body"><p>I expanded the comment and also moved the relevant <code>test_ok</code> case down.</p>
+<p>I also switched to the hash set implementation we discussed yesterday and cleaned up some of the docs and code locations.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ntBre on 2025-03-26 17:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-03-26 17:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-03-26 17:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sammorley-short">@sammorley-short</a> on 2025-04-04 14:10</div>
+            <div class="timeline-body"><p>@ntBre I am seeing an linting error thrown for <code>case Class(x=x)</code>. This hasn't been an issue for us in our code (i.e. it compiles and runs just fine), but it's not clear from the python docs whether this should or shouldn't be allowed.</p>
+<p>Any idea what should be happening here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-04-04 14:14</div>
+            <div class="timeline-body"><p>@sammorley-short Yeah that was a bug in this PR, first reported in #17181. It's been fixed but not released yet. 0.11.4 should come out with the fix today. Thanks for the report!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:41:05 UTC
+    </footer>
+</body>
+</html>

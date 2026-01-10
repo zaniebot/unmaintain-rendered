@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Recognize an assignment in a function/class scopes as a global-scope definition for purposes of `*` imports if the assigned symbol is declared `global` - astral-sh/ruff #16959</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Recognize an assignment in a function/class scopes as a global-scope definition for purposes of <code>*</code> imports if the assigned symbol is declared <code>global</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/16959">#16959</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-03-24 20:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-03-24 20:53</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Further work towards https://github.com/astral-sh/ruff/issues/14169. If something like this exists in a <code>foo.py</code> module:</p>
+<pre><code class="language-py">def f():
+    global a
+    a: bool = True
+</code></pre>
+<p>and a <code>bar.py</code> module has this:</p>
+<pre><code class="language-py">from foo import *
+
+reveal_type(a)
+</code></pre>
+<p>then we will now recognize <code>a</code> as bound in <code>bar.py</code>. We don't <em>yet</em> reveal <code>bool</code> as the inferred type, but that depends on fixing https://github.com/astral-sh/ty/issues/220.</p>
+<h2>Test Plan</h2>
+<p>Assertions in existing mdtests are modified, and some new assertions are added</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2025-03-24 20:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @AlexWaygood on 2025-03-24 20:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @AlexWaygood on 2025-03-24 20:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @AlexWaygood on 2025-03-24 20:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[red-knot] Recognize an assignment in a function/class scopes as a global-scope definition if the assigned symbol is declared `global`" to "[red-knot] Recognize an assignment in a function/class scopes as a global-scope definition for purposes of `*` imports if the assigned symbol is declared `global`" by @AlexWaygood on 2025-03-24 20:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-03-24 20:59</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/re_exports.rs</code>:35 on 2025-03-24 21:17</div>
+            <div class="timeline-body"><p>Nit: I prefer to store the owned hash set on the finder and return it from there. It results in fewer lifetimes</p>
+<pre><code class="language-suggestion">    finder.exports
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/re_exports.rs</code>:62 on 2025-03-24 21:19</div>
+            <div class="timeline-body"><p>I don't know how hot this code path is but we could consider using hashbrown's hash table to only compute the hash key once (for <code>global_declarations_in_scope</code> and <code>exports</code>). But that's probably a premature optimization :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/re_exports.rs</code>:35 on 2025-03-24 21:21</div>
+            <div class="timeline-body"><p>Okay, I think it makes sense now, seeing how you use it as a nested visitor. You could use <code>std::mem::take</code> to take the exports and then assign it to the inner visitor but not sure if that's worth getting rid of the lifetime.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/re_exports.rs</code>:313 on 2025-03-24 21:22</div>
+            <div class="timeline-body"><p>Do we need the second lifetime here or could we use <code>'a</code> in places of both <code>'a</code> and <code>'b</code> (without the borrow checker getting upset?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-03-24 21:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-03-24 21:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/semantic_index/re_exports.rs</code>:35 on 2025-03-24 21:35</div>
+            <div class="timeline-body"><p>Nice, the suggestion of using <code>std::mem::take()</code> made things a lot cleaner!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-03-24 21:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/semantic_index/re_exports.rs</code>:62 on 2025-03-24 21:37</div>
+            <div class="timeline-body"><p>I'll leave this for now (following our in-person conversation) but happy to look into this later if it shows up in profiling etc.!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @sharkdp removed by @sharkdp on 2025-03-28 12:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-03-28 16:29</div>
+            <div class="timeline-body"><p>Sorry for not getting to clarity on this sooner, but I feel like we shouldn't support this. While this PR doesn't add a lot of complexity, fully supporting this pattern will, because it means that the types of symbols in an outer scope can depend on an arbitrary nested scope.</p>
+<p>I think it is reasonable to require that if you use <code>global</code> in a function and assign to that name, the name must explicitly exist in the global scope.</p>
+<p>If we do end up deciding we have to support this pattern, I want to add full support for it altogether (that is, not do star-import support for it separately from actual type inference support) so we can see the full picture of what it requires.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-03-28 18:04</div>
+            <div class="timeline-body"><p>yes, after discussing this with you the other day, I agree that we probably shouldn't do this right now. Let's add support for <code>global</code> statements generally first, and see where we land on that. We can possibly revive this after we do that, but it doesn't seem like a priority in any event.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-03-28 18:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-03-28 18:04</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:41:05 UTC
+    </footer>
+</body>
+</html>

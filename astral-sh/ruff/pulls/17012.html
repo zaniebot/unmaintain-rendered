@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] resolve instance attributes bound in nested scopes - astral-sh/ruff #17012</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] resolve instance attributes bound in nested scopes</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/17012">#17012</a>
+        opened by <a href="https://github.com/mtshiba">@mtshiba</a>
+        on 2025-03-27 15:13
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/mtshiba">@mtshiba</a> on 2025-03-27 15:13</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR closes astral-sh/ty#147.</p>
+<p>Instance attributes bound in nested scopes are now accessible from the instance.</p>
+<h2>Test Plan</h2>
+<p>New test cases are added to <code>mdtest/attributes.md</code>, and <a href="https://github.com/astral-sh/ruff/blob/main/crates/red_knot_python_semantic/resources/mdtest/attributes.md#attributes-defined-in-comprehensions">this test case</a> now passes correctly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @mtshiba on 2025-03-27 15:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @mtshiba on 2025-03-27 15:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @mtshiba on 2025-03-27 15:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @mtshiba on 2025-03-27 15:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-03-27 15:20</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2025-03-27 16:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-03-27 16:04</div>
+            <div class="timeline-body"><p>This seems like a good one for @sharkdp</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @sharkdp by @MichaReiser on 2025-03-27 16:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:157 on 2025-03-28 15:23</div>
+            <div class="timeline-body"><p>Maybe</p>
+<pre><code class="language-suggestion">    fn class_scope_of_method(&amp;self, attribute_access_target: Option&lt;&amp;str&gt;) -&gt; Option&lt;FileScopeId&gt; {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:588 on 2025-03-28 15:23</div>
+            <div class="timeline-body"><p>Similar here: maybe</p>
+<pre><code class="language-suggestion">        let attribute_access_target = object.as_name_expr().map(|name| name.id().as_str());
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:156 on 2025-03-28 15:24</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    /// function body (or nested within a function body).
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:168 on 2025-03-28 15:31</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                    // The current scope is a function (method) in which the attribute assignment appeared.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-03-28 16:47</div>
+            <div class="timeline-body"><p>Haven't looked at the code, just a general comment that I think it's not clear we need to support this at all. Mypy does, but pyright does not. I'm not <em>opposed</em> to supporting it, but I don't think it's a priority, and I wouldn't want to spend a lot of time on it if it is tricky.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-03-28 17:36</div>
+            <div class="timeline-body"><p>I discussed these changes with @AlexWaygood and we think that this approach is problematic in some cases. Consider for example:</p>
+<pre><code class="language-py">class Unrelated:
+    x: int
+
+class C:
+    def __init__(self):
+        def g():
+            self = Unrelated()
+            self.x = 42
+
+reveal_type(C().x)
+</code></pre>
+<p>where we emit <code>Unrelated | Literal[42]</code> at the moment, but <code>C</code> instances don't have an <code>x</code> attribute. Similarly, if you have something like</p>
+<pre><code class="language-py">class C:
+    def __init__(self):
+        def g(this):
+            this.x = 42
+
+        g(self)
+
+reveal_type(C().x)
+</code></pre>
+<p>we would not find that attribute assignment, even though it seems conceptually similar to the test case we are solving here. So I agree with @carljm that it seems questionable if we want to support this (now).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mtshiba">@mtshiba</a> on 2025-03-30 05:57</div>
+            <div class="timeline-body"><p>I see. To confirm that <code>self</code> in <code>self.foo = ...</code> is actually the first argument of the method, it is not enough to check the first parameter of the method; we also need to check that <code>self</code> has not been overwritten before the attribute assignment.</p>
+<p>To check this, we would need to call <code>UseDefMap::bindings_at_use</code> by using <code>self</code>'s <code>ScopedUseId</code>, I guess. However, this is not possible at the time when <code>SemanticIndexBuilder::register_attribute_assignment</code> is called, because the building of <code>UseDefMap</code> has not been completed.</p>
+<p>Also, even if the parameter name is different, the method can actually write to <code>self</code> by receiving <code>self</code> as an argument.</p>
+<p>Thus, trying to get this right would require some tricky handling... I certainly don't see much need to implement such a handling at this time.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @mtshiba on 2025-03-30 05:57</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:41:05 UTC
+    </footer>
+</body>
+</html>

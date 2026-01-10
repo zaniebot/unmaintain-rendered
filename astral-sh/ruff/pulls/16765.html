@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Emit error if int/float/complex/bytes/boolean literals appear in type expressions outside `typing.Literal[]` - astral-sh/ruff #16765</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Emit error if int/float/complex/bytes/boolean literals appear in type expressions outside <code>typing.Literal[]</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/16765">#16765</a>
+        opened by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a>
+        on 2025-03-15 17:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on 2025-03-15 17:46</div>
+            <div class="timeline-body"><p>Expand <code>InvalidTypeExpression</code> enum to include number, bytes and boolean in type expression</p>
+<!--
+Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>Fixes https://github.com/astral-sh/ruff/issues/16532</p>
+<h2>Test Plan</h2>
+<p>Still need to look into where tests should be put for this improvement</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on 2025-03-15 18:14</div>
+            <div class="timeline-body"><p>I may be wrong, but it seems that byte literals are already handled here:
+https://github.com/astral-sh/ruff/blob/44aec36e341dafa3932b11f856f368b0e14b9ec6/crates/red_knot_python_semantic/src/types/infer.rs#L5445-L5452.</p>
+<p>And tested here:
+https://github.com/astral-sh/ruff/blob/44aec36e341dafa3932b11f856f368b0e14b9ec6/crates/red_knot_python_semantic/resources/mdtest/annotations/string.md?plain=1#L88-L89</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2025-03-15 18:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on 2025-03-16 12:38</div>
+            <div class="timeline-body"><p>There's now a test failing at
+https://github.com/astral-sh/ruff/blob/ccec3647a38eb8c514d9b69124500b374d308f95/crates/red_knot_python_semantic/resources/mdtest/annotations/literal.md?plain=1#L141</p>
+<p>I think this is expected though, as the generics are not implemented for SpecialForm i think?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MatthewMckee4 on 2025-03-16 12:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @MatthewMckee4 on 2025-03-16 12:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @MatthewMckee4 on 2025-03-16 12:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @MatthewMckee4 on 2025-03-16 12:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @MatthewMckee4 on 2025-03-16 12:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:3280 on 2025-03-16 20:54</div>
+            <div class="timeline-body"><p>Hmm, I'm not sure we need the new branches in this method? The existing code already leads to this method returning an <code>Err</code> for all of these variants, and I think the existing error message is okay? All tests pass if I revert all the changes you've made to this file :-)</p>
+<p>The difference between the <code>match</code> statement in this method and the <code>match</code> statement in <code>infer.rs</code> is that this method operates on <em>types</em> whereas the one in <code>infer.rs</code> operates on <em>AST nodes</em>. So the one in <code>infer.rs</code> rejects things like this, where you have AST nodes that are just never valid in type expressions, such as int literals, e.g.</p>
+<pre><code class="language-py">def f(x: 1): ...
+</code></pre>
+<p>but this <code>match</code> statement here rejects <em>types</em> that are invalid in type expressions, even if the <em>AST nodes</em> representing them are valid in type expressions. E.g. here, <code>x</code> is an <code>Name</code> node, and <code>Name</code> nodes are fine in type expressions. But the inferred <em>type</em> of the node is <code>Literal[42]</code>, and that's still invalid in a type expression. So the <code>x`` would pass through the check in </code>infer.rs` but then would be rejected by the check here in this file at a later stage:</p>
+<pre><code class="language-py">x = 42
+
+def f(y: x): ...
+</code></pre>
+<p>the <code>match</code> in this method is more or less complete (except for the <code>KnownInstance</code> branch; I don't think it should need any changes in this PR</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/literal.md</code>:131 on 2025-03-16 21:04</div>
+            <div class="timeline-body"><p>we need to make sure we <em>avoid</em> emitting an error here: this is a valid type annotation!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/invalid.md</code>:50 on 2025-03-16 21:05</div>
+            <div class="timeline-body"><p>it would be nice if we could specifically say &quot;int literal&quot;, &quot;float literal&quot; or &quot;complex literal&quot; in the error message -- &quot;number literal&quot; is a slightly odd phrase that I doubt our users would be familiar with</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-03-16 21:11</div>
+            <div class="timeline-body"><p>Thanks! I think you're mostly on the right track, but there's a few issues here to sort out</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-03-16 21:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:3280 on 2025-03-16 21:14</div>
+            <div class="timeline-body"><blockquote>
+<p>All tests pass if I revert all the changes you've made to this file</p>
+</blockquote>
+<p>Ah, your latest tests you added in https://github.com/astral-sh/ruff/pull/16765/commits/4f120d9308f7a7841c304eed38f16172cca41b65 now fail. But that's just because you're asserting the exact error message, which you've changed as part of this PR. I think the existing error messages for these branches were okay!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> reviewed on 2025-03-16 21:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:3280 on 2025-03-16 21:15</div>
+            <div class="timeline-body"><p>Yeah okay i see what you mean, ill revert these changes and update the tests</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-03-16 21:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/literal.md</code>:131 on 2025-03-16 21:18</div>
+            <div class="timeline-body"><p>Oh, I'm sorry. This <em>is</em> an invalid type annotation, because this is <code>other.Literal</code> rather than <code>typing.Literal</code>. So this is a great change! I should have looked more closely.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> reviewed on 2025-03-16 21:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/literal.md</code>:131 on 2025-03-16 21:19</div>
+            <div class="timeline-body"><p>I think we still need to implement this functionality though right? Specifically for SpecialForm (As usually this should be invalid if not SpecialForm)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-03-16 21:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:6123 on 2025-03-16 21:19</div>
+            <div class="timeline-body"><p>I think we can delete this comment as part of your PR: it's incorrect and confusing. We avoid calling this method at all when inferring the slice expressions for special forms such as <code>Literal</code>, etc.</p>
+<pre><code class="language-suggestion"></code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-03-16 21:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/literal.md</code>:131 on 2025-03-16 21:21</div>
+            <div class="timeline-body"><p>We don't want to allow numeric literals inside arbitrary special forms, just inside specific special forms such as <code>typing.Literal</code> and <code>typing.Annotated</code>. And we already do that. My original comment here was totally off-base here, sorry!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/literal.md</code>:131 on 2025-03-16 21:29</div>
+            <div class="timeline-body"><p>All good, is this test still useful then? Do you think it would be better suited in the invalid.md file?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> reviewed on 2025-03-16 21:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> reviewed on 2025-03-16 21:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:3280 on 2025-03-16 21:31</div>
+            <div class="timeline-body"><p>Do you think we should keep the 'instance of float' check?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> reviewed on 2025-03-16 21:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/invalid.md</code>:50 on 2025-03-16 21:38</div>
+            <div class="timeline-body"><p>Sounds good, i dont think i know the best way to get the type of the Expr::NumberLiteral as a string representation</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-03-16 21:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/literal.md</code>:131 on 2025-03-16 21:39</div>
+            <div class="timeline-body"><p>It's still useful, yeah! I think it makes sense where it is, as it demonstrates that a <code>Literal</code> symbol must be imported from the <code>typing</code> module in order for us to give it <code>typing.Literal</code>'s special semantics</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> reviewed on 2025-03-16 21:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:3280 on 2025-03-16 21:40</div>
+            <div class="timeline-body"><p>Should i also add check for complex number?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-03-16 21:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/invalid.md</code>:50 on 2025-03-16 21:44</div>
+            <div class="timeline-body"><p>I think you can do something like this:</p>
+<pre><code class="language-diff">diff --git a/crates/red_knot_python_semantic/src/types/infer.rs b/crates/red_knot_python_semantic/src/types/infer.rs
+index 8ad821fe3..90e6a325b 100644
+--- a/crates/red_knot_python_semantic/src/types/infer.rs
++++ b/crates/red_knot_python_semantic/src/types/infer.rs
+@@ -6126,11 +6126,36 @@ impl&lt;'db&gt; TypeInferenceBuilder&lt;'db&gt; {
+                 );
+                 Type::unknown()
+             }
+-            ast::Expr::NumberLiteral(_literal) =&gt; {
++            ast::Expr::NumberLiteral(ast::ExprNumberLiteral {
++                value: ast::Number::Int(_),
++                ..
++            }) =&gt; {
++                self.context.report_lint(
++                    &amp;INVALID_TYPE_FORM,
++                    expression,
++                    format_args!(&quot;Int literal is not allowed in type expressions&quot;),
++                );
++                Type::unknown()
++            }
++            ast::Expr::NumberLiteral(ast::ExprNumberLiteral {
++                value: ast::Number::Float(_),
++                ..
++            }) =&gt; {
++                self.context.report_lint(
++                    &amp;INVALID_TYPE_FORM,
++                    expression,
++                    format_args!(&quot;Float literal is not allowed in type expressions&quot;),
++                );
++                Type::unknown()
++            }
++            ast::Expr::NumberLiteral(ast::ExprNumberLiteral {
++                value: ast::Number::Complex { .. },
++                ..
++            }) =&gt; {
+                 self.context.report_lint(
+                     &amp;INVALID_TYPE_FORM,
+                     expression,
+-                    format_args!(&quot;Number Literal is not allowed in type expressions&quot;),
++                    format_args!(&quot;Complex literal is not allowed in type expressions&quot;),
+                 );
+                 Type::unknown()
+             }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-03-16 21:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:3280 on 2025-03-16 21:52</div>
+            <div class="timeline-body"><blockquote>
+<p>Do you think we should keep the 'instance of float' check?</p>
+</blockquote>
+<p>We do want to disallow <code>float</code> instances in type expressions. But I think we'll want to do it in a more general way than what you've got here right now. Nearly all <code>Instance</code> types are actually invalid in type expressions; the only <code>Instance</code> types that we want to <em>avoid</em> emitting an error on are specific classes from the <code>typing</code> module such as <code>typing.TypeVar</code>, <code>typing.ParamSpec</code>, <code>typing.TypeVarTuple</code>, etc.</p>
+<p>Overall I think I'd defer all that for this PR. It's a separate issue. So I'd revert the 'instance of float' check for now</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> reviewed on 2025-03-16 21:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/invalid.md</code>:50 on 2025-03-16 21:52</div>
+            <div class="timeline-body"><p>Thanks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> reviewed on 2025-03-16 21:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:3280 on 2025-03-16 21:56</div>
+            <div class="timeline-body"><p>Okay, removed it for now</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> reviewed on 2025-03-16 21:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:3280 on 2025-03-16 21:57</div>
+            <div class="timeline-body"><p>How does that look?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:6169 on 2025-03-16 22:01</div>
+            <div class="timeline-body"><p>I think we could make this less repetitive by defining a small closure at the top of the method:</p>
+<pre><code class="language-diff">diff --git a/crates/red_knot_python_semantic/src/types/infer.rs b/crates/red_knot_python_semantic/src/types/infer.rs
+index b91beeec7..ddb729cce 100644
+--- a/crates/red_knot_python_semantic/src/types/infer.rs
++++ b/crates/red_knot_python_semantic/src/types/infer.rs
+@@ -6088,6 +6088,13 @@ impl&lt;'db&gt; TypeInferenceBuilder&lt;'db&gt; {
+     /// Infer the type of a type expression without storing the result.
+     fn infer_type_expression_no_store(&amp;mut self, expression: &amp;ast::Expr) -&gt; Type&lt;'db&gt; {
+         // https://typing.readthedocs.io/en/latest/spec/annotations.html#grammar-token-expression-grammar-type_expression
++
++        let report_invalid_type_expression = |message: std::fmt::Arguments| {
++            self.context
++                .report_lint(&amp;INVALID_TYPE_FORM, expression, message);
++            Type::unknown()
++        };
++
+         match expression {
+             ast::Expr::Name(name) =&gt; match name.ctx {
+                 ast::ExprContext::Load =&gt; self
+@@ -6118,55 +6125,30 @@ impl&lt;'db&gt; TypeInferenceBuilder&lt;'db&gt; {
+                 todo_type!(&quot;ellipsis literal in type expression&quot;)
+             }
+ 
+-            ast::Expr::BytesLiteral(_literal) =&gt; {
+-                self.context.report_lint(
+-                    &amp;INVALID_TYPE_FORM,
+-                    expression,
+-                    format_args!(&quot;Bytes literal is not allowed in type expressions&quot;),
+-                );
+-                Type::unknown()
+-            }
++            ast::Expr::BytesLiteral(_literal) =&gt; report_invalid_type_expression(format_args!(
++                &quot;Bytes literals are not allowed in type expressions&quot;
++            )),
+             ast::Expr::NumberLiteral(ast::ExprNumberLiteral {
+                 value: ast::Number::Int(_),
+                 ..
+-            }) =&gt; {
+-                self.context.report_lint(
+-                    &amp;INVALID_TYPE_FORM,
+-                    expression,
+-                    format_args!(&quot;Int literal is not allowed in type expressions&quot;),
+-                );
+-                Type::unknown()
+-            }
++            }) =&gt; report_invalid_type_expression(format_args!(
++                &quot;Int literals are not allowed in type expressions&quot;
++            )),
+             ast::Expr::NumberLiteral(ast::ExprNumberLiteral {
+                 value: ast::Number::Float(_),
+                 ..
+-            }) =&gt; {
+-                self.context.report_lint(
+-                    &amp;INVALID_TYPE_FORM,
+-                    expression,
+-                    format_args!(&quot;Float literal is not allowed in type expressions&quot;),
+-                );
+-                Type::unknown()
+-            }
++            }) =&gt; report_invalid_type_expression(format_args!(
++                &quot;Float literals are not allowed in type expressions&quot;
++            )),
+             ast::Expr::NumberLiteral(ast::ExprNumberLiteral {
+                 value: ast::Number::Complex { .. },
+                 ..
+-            }) =&gt; {
+-                self.context.report_lint(
+-                    &amp;INVALID_TYPE_FORM,
+-                    expression,
+-                    format_args!(&quot;Complex literal is not allowed in type expressions&quot;),
+-                );
+-                Type::unknown()
+-            }
+-            ast::Expr::BooleanLiteral(_literal) =&gt; {
+-                self.context.report_lint(
+-                    &amp;INVALID_TYPE_FORM,
+-                    expression,
+-                    format_args!(&quot;Boolean literal is not allowed in type expressions&quot;),
+-                );
+-                Type::unknown()
+-            }
++            }) =&gt; report_invalid_type_expression(format_args!(
++                &quot;Complex literals are not allowed in type expressions&quot;
++            )),
++            ast::Expr::BooleanLiteral(_literal) =&gt; report_invalid_type_expression(format_args!(
++                &quot;Boolean literals are not allowed in type expressions&quot;
++            )),
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/invalid.md</code>:123 on 2025-03-16 22:04</div>
+            <div class="timeline-body"><p>I'd be inclined to make these tests more concise, similar to the existing tests in this file, e.g.</p>
+<pre><code class="language-suggestion">## Invalid AST nodes
+
+```py
+def _(
+    a: 1,  # error [invalid-type-form] &quot;Int literals are not allowed in type expressions&quot;
+    b: 2.3,  # error [invalid-type-form] &quot;Float literals are not allowed in type expressions&quot;
+    c: 4j,  # error [invalid-type-form] &quot;Complex literals are not allowed in type expressions&quot;
+    d: True,  # error [invalid-type-form] &quot;Boolean literals are not allowed in type expressions&quot;
+    e: b&quot;foo&quot;,  # error [invalid-type-form] &quot;Bytes literals are not allowed in type expressions&quot;
+):
+    reveal_type(a)  # revealed: Unknown
+    reveal_type(b)  # revealed: Unknown
+    reveal_type(c)  # revealed: Unknown
+    reveal_type(d)  # revealed: Unknown
+    reveal_type(e)  # revealed: Unknown
+```
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-03-16 22:05</div>
+            <div class="timeline-body"><p>Looks close!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> reviewed on 2025-03-16 22:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/invalid.md</code>:123 on 2025-03-16 22:11</div>
+            <div class="timeline-body"><p>Looks good. with the byte string here, the error is:</p>
+<pre><code class="language-bash">[byte-string-type-annotation] &quot;Type expressions cannot use bytes literal&quot;
+</code></pre>
+<p>Hence why i had included &quot;int |&quot;, what do you want to do?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/invalid.md</code>:123 on 2025-03-16 22:13</div>
+            <div class="timeline-body"><p>Oh, I see! Yes, using <code>int | b&quot;a&quot;</code> would work well for that one :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-03-16 22:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:6128 on 2025-03-16 22:20</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">            ast::Expr::BytesLiteral(_) =&gt; report_invalid_type_expression(format_args!(
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:6149 on 2025-03-16 22:21</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">            ast::Expr::BooleanLiteral(_) =&gt; report_invalid_type_expression(format_args!(
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-03-16 22:21</div>
+            <div class="timeline-body"><p>looks great, thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-03-16 22:25</div>
+            <div class="timeline-body"><p>I'll wait until our CI's back up and running before merging this (everything's disabled at the moment due to https://github.com/astral-sh/ruff/issues/16768, we should get it up again tomorrow)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on 2025-03-16 22:35</div>
+            <div class="timeline-body"><p>Sounds good, thank you for the feedback!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-03-17 07:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @MichaReiser on 2025-03-17 07:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-03-17 07:57</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-03-17 08:06</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Add invalid type expressions." to "[red-knot] Emit error if int/float/complex/bytes/boolean literals appear in type expressions outside `typing.Literal[]`" by @AlexWaygood on 2025-03-17 11:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:6130 on 2025-03-17 11:30</div>
+            <div class="timeline-body"><p>Should we include <code>typing.Annotated</code> here as <code>Annotated[int, b&quot;hello&quot;]</code> is valid? Similar comment for other messages.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-03-17 11:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-03-17 11:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:6130 on 2025-03-17 11:33</div>
+            <div class="timeline-body"><p>We could do. It feels sort-of like a rare edge-case, though? I think maybe we can revisit this error message when we have subdiagnostics and make it more precise with additional notes.</p>
+<p>(Another nice improvement would be to have an autofix in your editor that imports <code>typing.Literal</code> and changes the annotation from <code>b&quot;foo&quot;</code> to <code>Literal[b&quot;foo&quot;]</code>, since that's what you <em>probably</em> meant)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-03-17 11:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:6130 on 2025-03-17 11:38</div>
+            <div class="timeline-body"><p>Yeah, I think including all possible context would become a bit too verbose i.e., including both Literal and Annotated. We could probably just say &quot;Invalid type expression&quot; or &quot;Bytes literals are not allowed as type expressions in this context&quot;.</p>
+<p>That said, we can move forward with you have here and can iterate later.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-03-17 11:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:6130 on 2025-03-17 11:39</div>
+            <div class="timeline-body"><p>&quot;in this context&quot; sounds like a good compromise for now until we have subdiagnostics!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2025-03-17 11:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-03-17 11:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-03-17 20:55</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:41:04 UTC
+    </footer>
+</body>
+</html>

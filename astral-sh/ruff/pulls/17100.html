@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Add redundant-cast error - astral-sh/ruff #17100</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Add redundant-cast error</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/17100">#17100</a>
+        opened by <a href="https://github.com/manzt">@manzt</a>
+        on 2025-03-31 18:38
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/manzt">@manzt</a> on 2025-03-31 18:38</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Following up from earlier discussion on Discord, this PR adds logic to flag casts as redundant when the inferred type of the expression is the same as the target type. It should follow the semantics from <a href="https://github.com/python/mypy/pull/1705">mypy</a>.</p>
+<p>Example:</p>
+<pre><code class="language-python">def f() -&gt; int:
+    return 10
+
+# error: [redundant-cast] &quot;Value is already of type `int`&quot;
+cast(int, f())
+</code></pre>
+<p>~However, I don't think the comparison is quite right yet...there's probably some type comparison behavior I'm misunderstanding. Hopefully it's close enough that the fix is straightforward.~</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @manzt on 2025-03-31 18:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @manzt on 2025-03-31 18:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @manzt on 2025-03-31 18:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @manzt on 2025-03-31 18:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2025-03-31 18:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-03-31 18:41</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-03-31 18:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/diagnostic.rs</code>:896 on 2025-03-31 18:47</div>
+            <div class="timeline-body"><p>Nit: This should probably be <code>Warn</code> by default</p>
+<pre><code class="language-suggestion">        default_level: Level::Warning,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/manzt">@manzt</a> reviewed on 2025-03-31 18:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/manzt">@manzt</a> on <code>crates/red_knot_python_semantic/src/types/diagnostic.rs</code>:896 on 2025-03-31 18:51</div>
+            <div class="timeline-body"><p>Thanks, i couldn't figure out how to assert a warning in the markdown tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/call/bind.rs</code>:401 on 2025-03-31 18:51</div>
+            <div class="timeline-body"><p>I think we probably want <code>is_gradual_equivalent_to</code> here, and add a test using a non-fully-static type, e.g. simplest case we should also see the warning on <code>cast(Any, function_returning_any())</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/call/bind.rs</code>:403 on 2025-03-31 18:52</div>
+            <div class="timeline-body"><p>Why do we need the <code>redundant_cast_error</code> variable instead of just pushing the error directly to <code>overload.errors</code> here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/diagnostic.rs</code>:891 on 2025-03-31 18:54</div>
+            <div class="timeline-body"><p>This is not a good example since we would infer the <code>1</code> as type <code>Literal[1]</code>, not <code>int</code>, and would not flag this as a redundant cast. Better to use an example like <code>def f() -&gt; int: ...; cast(int, f())</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/directives/cast.md</code>:31 on 2025-03-31 18:59</div>
+            <div class="timeline-body"><p>This is failing because when we see <code>a: int = 10</code>, we still track that our inferred type for <code>a</code> is <code>Literal[10]</code>; we don't throw away that information. (We also track that the &quot;declared type&quot; for <code>a</code> is <code>int</code>, meaning you can't assign anything outside of <code>int</code> to it, but that doesn't change our inferred type for it.) So the cast is not seen as redundant because <code>int</code> is not equivalent to <code>Literal[10]</code>.</p>
+<p>Using a function that returns <code>int</code> instead of a simple variable would work better as a test (and is a more realistic case anyway.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/call/bind.rs</code>:1049 on 2025-03-31 19:03</div>
+            <div class="timeline-body"><p>This is a good implementation, great work figuring it out on your first contribution! But I think our preference is to avoid adding too many hyper-specific cases that apply to just one known function as binding errors.</p>
+<p>I think the preferred approach here would be to add a case for <code>KnownFunction::Cast</code> out in <code>TypeInferenceBuilder::infer_call_expression</code> (where we already have cases for <code>RevealType</code> etc), compare the types and emit the diagnostic there.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/diagnostic.rs</code>:896 on 2025-03-31 19:07</div>
+            <div class="timeline-body"><p>It's actually exactly the same (even though we use <code>error:</code> in the assertions). The only way to test the distinction would be to write a test that uses our configuration support to suppress warnings (not sure if our test config support is up to that yet?) and then show that no diagnostic occurs. But I don't think you need to explicitly test that it's a warning here, just make it one.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-03-31 19:07</div>
+            <div class="timeline-body"><p>This is great, really impressive first PR, thank you! I do have some suggestions, though ;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-03-31 19:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/diagnostic.rs</code>:896 on 2025-03-31 19:07</div>
+            <div class="timeline-body"><p>It should be the same as for errors. At least, that's what we do for other errors that have a warning severity by default</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/manzt">@manzt</a> reviewed on 2025-03-31 19:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/manzt">@manzt</a> on <code>crates/red_knot_python_semantic/src/types/diagnostic.rs</code>:891 on 2025-03-31 19:23</div>
+            <div class="timeline-body"><p>Right, I understand now. Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/manzt">@manzt</a> reviewed on 2025-03-31 19:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/manzt">@manzt</a> on <code>crates/red_knot_python_semantic/resources/mdtest/directives/cast.md</code>:31 on 2025-03-31 19:24</div>
+            <div class="timeline-body"><p>Ah interesting! I changed the example to a function that returns an <code>int</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/manzt">@manzt</a> reviewed on 2025-03-31 19:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/manzt">@manzt</a> on <code>crates/red_knot_python_semantic/src/types/call/bind.rs</code>:401 on 2025-03-31 19:26</div>
+            <div class="timeline-body"><p>Added. thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/manzt">@manzt</a> reviewed on 2025-03-31 19:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/manzt">@manzt</a> on <code>crates/red_knot_python_semantic/src/types/call/bind.rs</code>:403 on 2025-03-31 19:27</div>
+            <div class="timeline-body"><p>Sorry, I was fighting the borrow checker a bit... <code>overload.parameter_types()</code> takes an immutable borrow, which I'm not savvy enough to know the workaround.</p>
+<pre><code class="language-sh">❯ cargo test -p red_knot_python_semantic -- mdtest__directives_cast
+   Compiling red_knot_python_semantic v0.0.0 (/Users/manzt/github/manzt/ruff/crates/red_knot_python_semantic)
+error[E0502]: cannot borrow `overload.errors` as mutable because it is also borrowed as immutable
+   --&gt; crates/red_knot_python_semantic/src/types/call/bind.rs:400:33
+    |
+398 |                           if let [Some(casted_ty), Some(source_ty)] = overload.parameter_types() {
+    |                                                                       -------- immutable borrow occurs here
+399 |                               if source_ty.is_gradual_equivalent_to(db, *casted_ty) {
+400 | /                                 overload
+401 | |                                     .errors
+402 | |                                     .push(BindingError::RedundantCast { ty: *casted_ty });
+    | |_________________________________________________________________________________________^ mutable borrow occurs here
+403 |                               }
+404 |                               overload.set_return_type(*casted_ty);
+    |                                                        ---------- immutable borrow later used here
+
+For more information about this error, try `rustc --explain E0502`.
+error: could not compile `red_knot_python_semantic` (lib) due to 1 previous error
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/manzt">@manzt</a> reviewed on 2025-03-31 19:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/manzt">@manzt</a> on <code>crates/red_knot_python_semantic/src/types/call/bind.rs</code>:403 on 2025-03-31 19:39</div>
+            <div class="timeline-body"><p>This is no longer necessary with the changes now in <code>infer.rs</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/manzt">@manzt</a> reviewed on 2025-03-31 19:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/manzt">@manzt</a> on <code>crates/red_knot_python_semantic/src/types/call/bind.rs</code>:1049 on 2025-03-31 19:41</div>
+            <div class="timeline-body"><p>Thanks! yeah I just found a way here spelunking into the code base. I see now its a better fit for where you mentioned, and moved the diagnostics to <code>TypeInferenceBuilder::infer_call_expression</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/manzt">@manzt</a> reviewed on 2025-03-31 19:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/manzt">@manzt</a> on <code>knot.schema.json</code>:614 on 2025-03-31 19:46</div>
+            <div class="timeline-body"><p>Should this be capitalized? I saw some rule titles are capitalized and others are not.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>knot.schema.json</code>:614 on 2025-03-31 19:51</div>
+            <div class="timeline-body"><p>If we're already inconsistent, then I think it doesn't matter for this PR; we need to pick a preference and run through them to make them consistent either way. I'm not sure what's better at the moment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-03-31 19:51</div>
+            <div class="timeline-body"><p>Looks great!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-03-31 20:11</div>
+            <div class="timeline-body"><p>The mypy_primer hits don't look ideal: we may want to special-case <code>Todo</code> types so that a &quot;cast to a Todo type&quot; is never reported as redundant</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/manzt">@manzt</a> on 2025-03-31 20:11</div>
+            <div class="timeline-body"><p>Sorry... I ran cargo and black on the docs to fix the errors.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-03-31 20:29</div>
+            <div class="timeline-body"><blockquote>
+<p>The mypy_primer hits don't look ideal: we may want to special-case <code>Todo</code> types so that a &quot;cast to a Todo type&quot; is never reported as redundant</p>
+</blockquote>
+<p>Oh yeah, good call. We probably should do that before landing this, to avoid adding new false positives. Looks like we need to special case &quot;Todo type&quot; and &quot;union with todo type&quot; to avoid adding new false positives.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/manzt">@manzt</a> on 2025-03-31 20:48</div>
+            <div class="timeline-body"><blockquote>
+<p>Looks like we need to special case &quot;Todo type&quot; and &quot;union with todo type&quot; to avoid adding new false positives.</p>
+</blockquote>
+<p>Would this be some check <code>is_todo_type(source_ty)</code> or some equivalent within <code>infer.rs</code> before deciding to report an error?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-03-31 21:02</div>
+            <div class="timeline-body"><p>We usually just add methods on <code>Type</code>; looks like we already have <code>Type::is_todo</code> but might want to add <code>Type::contains_todo</code> to cover the union case. Then that can be checked in the new clause you added in <code>infer_call_expression</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/manzt">@manzt</a> on 2025-04-01 00:27</div>
+            <div class="timeline-body"><blockquote>
+<p>but might want to add Type::contains_todo to cover the union case.</p>
+</blockquote>
+<p>Ok, I <em>think</em> I was able to implement this. I wasn't sure how to specify an explicity Todo type in <code>cast.md</code> to test the case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/manzt">@manzt</a> reviewed on 2025-04-01 00:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/manzt">@manzt</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:329 on 2025-04-01 00:29</div>
+            <div class="timeline-body"><p>Not sure if this should internally check <code>self.is_todo()</code> and short circuit.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-04-01 00:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:329 on 2025-04-01 00:30</div>
+            <div class="timeline-body"><p>That is what I'd expected, yeah... a todo type &quot;contains todo&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/manzt">@manzt</a> reviewed on 2025-04-01 00:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/manzt">@manzt</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:329 on 2025-04-01 00:31</div>
+            <div class="timeline-body"><p>Ok right, I figured and pushed the changes already.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-04-01 00:32</div>
+            <div class="timeline-body"><p>I think it's OK not to add a test for this -- it's not important behavior we want to preserve, it's just a temporary thing to reduce false positives from the ecosystem check. So the ecosystem check itself will avoid regression (and whenever it doesn't see any false positives anymore, then we also don't want to keep this code around anymore.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-04-01 00:34</div>
+            <div class="timeline-body"><p>Looks great, thanks! And ecosystem check is now reporting no changes. Setting to auto-merge when CI finishes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @carljm on 2025-04-01 00:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-04-01 00:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-04-01 00:39</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:41:05 UTC
+    </footer>
+</body>
+</html>
