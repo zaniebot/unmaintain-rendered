@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fix docs and add overlap test for negated per-file-ignores  - astral-sh/ruff #10863</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fix docs and add overlap test for negated per-file-ignores</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/10863">#10863</a>
+        opened by <a href="https://github.com/carljm">@carljm</a>
+        on 2024-04-10 18:23
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/carljm">@carljm</a> on 2024-04-10 18:23</div>
+            <div class="timeline-body"><p>Refs #3172</p>
+<h2>Summary</h2>
+<p>Fix a typo in the docs example, and add a test for the case where a negative pattern and a positive pattern overlap.</p>
+<p>The behavior here is simple: patterns (positive or negative) are always additive if they hit (i.e. match for a positive pattern, don't match for a negated pattern). We never &quot;un-ignore&quot; previously-ignored rules based on a pattern (positive or negative) failing to hit.</p>
+<p>It's simple enough that I don't really see other cases we need to add tests for (the tests we have cover all branches in the ignores_from_path function that implements the core logic), but open to reviewer feedback.</p>
+<p>I also didn't end up changing the docs to explain this more, because I think they are accurate as written and don't wrongly imply any more complex behavior. Open to reviewer feedback on this as well!</p>
+<p>After some discussion, I think allowing negative patterns to un-ignore rules is too confusing and easy to get wrong; if we need that, we should add <code>per-file-selects</code> instead.</p>
+<h2>Test Plan</h2>
+<p>Test/docs only change; tests pass, docs render and look right.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @carljm on 2024-04-10 18:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @carljm on 2024-04-10 18:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff/tests/lint.rs</code>:1252 on 2024-04-10 18:39</div>
+            <div class="timeline-body"><p>Is this something we are locked into? I can imagine this being somewhat unintuitive since things like <code>.gitignore</code> lets you un-ignore things.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-04-10 18:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-04-10 19:00</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-04-10 19:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff/tests/lint.rs</code>:1252 on 2024-04-10 19:15</div>
+            <div class="timeline-body"><p>Thanks for asking the question! I'm not set on this behavior, just was favoring the simplest option to understand, unless we had a clear need for something more complex. But it's true that it will be hard to change this once shipped, so it's good to think through what we prefer now.</p>
+<p>The main difference I see between this case and gitignore is that a negative pattern in gitignore serves exactly one purpose: to un-ignore whatever it matches. It doesn't also mean &quot;ignore everything that doesn't match this pattern.&quot;</p>
+<p>In our case we do want &quot;ignore everything that doesn't match this pattern&quot; for negative patterns, so there's more risk of overloading the meaning if we also add &quot;un-ignore everything that does match this pattern.&quot;</p>
+<p>For instance, here's a case to consider:</p>
+<pre><code># ignore D rules in all __init__.py files
+&quot;__init__.py&quot; = [&quot;D&quot;]
+# ignore D rules everywhere outside src/
+# - does this also mean &quot;actually, don't ignore in __init__.py files inside src/&quot;?
+&quot;!src/**.py&quot; = [&quot;D&quot;]
+</code></pre>
+<p>I'm not sure which behavior is more intuitive for this example. But if we did add un-ignoring, and you did want to ignore in all <code>__init__.py</code> files inside <code>src/</code> too, you can always just switch the order of the two patterns; the rule would be &quot;last one wins.&quot; I think between this and the option of adding another more-specific positive pattern after the negative one, there shouldn't be any cases you can't express at all, if we add this.</p>
+<p>Initially it seemed odd to me that a negative pattern would un-ignore on failure to hit, while a positive pattern wouldn't do that, but after thinking through some examples, I think that behavior works out OK; for a negative pattern the no-hit cases are more narrowly targeted, so it's more intuitive to un-ignore in that case.</p>
+<p>I guess my last concern: is it too confusing if a negative pattern in <code>extend-per-file-ignores</code> (in a different config location from <code>per-file-ignores</code>) overrides some of what's specified in <code>per-file-ignores</code>? (This isn't possible today, since everything is just additive.) Or is this fine?</p>
+<p>cc @charliermarsh @zanieb for opinions also</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-04-11 11:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff/tests/lint.rs</code>:1252 on 2024-04-11 11:57</div>
+            <div class="timeline-body"><p>The typical way I like to do filtering for whitelist/blacklist situations like this is as follows:</p>
+<ul>
+<li>Every rule is either a whitelist or a blacklist rule.</li>
+<li>The rules are ordered. Later rules take priority over earlier rules.</li>
+<li>When there are 1 or more whitelist rules, then in order for a subject to pass the filter, the last matching rule must be a whitelist rule.</li>
+<li>When there are 0 whitelist rules, a subject passes the filter when it matches 0 blacklist rules.</li>
+<li>Otherwise, the filter rejects the subject.</li>
+</ul>
+<p>I find that these semantics overall provide a lot of flexibility. But you're right that gitignore doesn't neatly map on to this model. The other complication that seems present here is that the rules aren't just ignore/not-ignore, but they also come with lint rules associated with the filter. I haven't thought through fully how that might impact things.</p>
+<p>I think the model above overall matches what you're saying around adding un-ignoring, particularly with the last rule matching being the winner. I think I overall personally like this style. I don't have a good answer for what to do about <code>extend-per-file-ignores</code> though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Add test and fix doc for negated per-file-ignores" to "Allow negated per-file-ignore patterns to un-ignore rules" by @carljm on 2024-04-11 20:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @carljm on 2024-04-11 20:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff/tests/lint.rs</code>:1252 on 2024-04-11 20:35</div>
+            <div class="timeline-body"><p>I think the fact that we're not just making a pass/fail ruling for a subject, but building up an ignore-ruleset for the subject, means that the algorithm you outlined doesn't quite work here. Specifically the part that doesn't work (or at least has to be more complex) is &quot;a negative rule can only cause a subject to pass the filter if there are no positive rules.&quot; The problem is illustrated by a case like this:</p>
+<pre><code>&quot;__init__.py&quot; = [&quot;F401&quot;]
+&quot;!src/**/*.py&quot; = [&quot;E&quot;]
+</code></pre>
+<p>IMO the intent here is clearly that <code>F401</code> is ignored in all <code>__init__.py</code> files, whereas <code>E</code> is ignored in all files outside the <code>src/</code> directory. But since there is both a positive pattern and a negative pattern present, according to the algorithm you listed, the negative rule here would be a no-op.</p>
+<p>We could try a more complex version of it, where &quot;1 or more positive patterns&quot; and &quot;0 positive patterns&quot; are replaced by &quot;1 or more positive patterns with overlapping ruleset&quot; and &quot;0 positive patterns with overlapping ruleset.&quot; But I think this is too subtle.</p>
+<p>What I've pushed here is instead a variant of your algorithm. It's still last-one-wins where there are conflicts, but a negative pattern always applies in both directions: it always adds ignores to anything that doesn't match, and removes them from anything that does.</p>
+<p>Let me know what you think.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-04-11 20:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-04-11 21:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff/tests/lint.rs</code>:1252 on 2024-04-11 21:28</div>
+            <div class="timeline-body"><p>After more discussion off-line, it feels like allowing un-ignores is too unpredictable. The case that seems like the most obvious for un-ignores is something like this:</p>
+<pre><code>[lint.per-file-ignores]
+&quot;src/**/*.py&quot; = &quot;[X]&quot;
+&quot;!src/foo/bar/**/*.py&quot; = &quot;[X]&quot;
+</code></pre>
+<p>But even that is subtly wrong, because it doesn't just make a carve-out from the prior rule, it ends up ignoring <code>X</code> <em>everywhere</em> outside <code>src/foo/bar</code>, rendering the first rule redundant.</p>
+<p>I'm going to roll back this PR to just test the existing purely-additive behavior (which we actually already released this morning); my suspicion is that if we want per-file selects it will be a lot clearer to add a <code>per-file-selects</code> config. But we should have more discussion and do that in a separate PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Allow negated per-file-ignore patterns to un-ignore rules" to "Fix docs and add overlap test for negated per-file-ignores " by @carljm on 2024-04-11 22:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @carljm on 2024-04-11 22:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-04-12 01:30</div>
+            <div class="timeline-body"><p>Going to go ahead and merge this without further review; we should get the doc fix out, and this is just a minor doc fix and a test that passes.</p>
+<p>This doesn't preclude revisiting the behavior of negated patterns, but that can be another PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @carljm on 2024-04-12 01:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2024-04-12 01:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-04-12 01:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-04-12 01:35</div>
+            <div class="timeline-body"><p>👍  Good call, sorry for the delay.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-04-12 13:29</div>
+            <div class="timeline-body"><p>LGTM</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-04-12 13:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff/tests/lint.rs</code>:1252 on 2024-04-12 13:31</div>
+            <div class="timeline-body"><p>SGTM. Thanks for thinking through this. :)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 22:37:33 UTC
+    </footer>
+</body>
+</html>

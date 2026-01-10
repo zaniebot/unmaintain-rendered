@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Red Knot - Add symbol flags - astral-sh/ruff #11134</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Red Knot - Add symbol flags</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/11134">#11134</a>
+        opened by <a href="https://github.com/plredmond">@plredmond</a>
+        on 2024-04-24 19:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/plredmond">@plredmond</a> on 2024-04-24 19:02</div>
+            <div class="timeline-body"><ul>
+<li>Adds <code>Symbol.flag</code> bitfield. Populates it from (the three renamed) <code>add_or_update_symbol*</code> methods.</li>
+<li>Currently there are these flags supported:<ul>
+<li><code>IS_DEFINED</code> is set in a scope where a variable is defined.</li>
+<li><code>IS_USED</code> is set in a scope where a variable is referenced. (To have both this and <code>IS_DEFINED</code> would require two separate appearances of a variable in the same scope-- one def and one use.)</li>
+<li><code>MARKED_GLOBAL</code> and <code>MARKED_NONLOCAL</code> are <strong>not yet implemented</strong>. (<em>TODO: While traversing, if you find these declarations, add these flags to the variable.</em>)</li>
+</ul>
+</li>
+<li>Adds <code>Symbol.kind</code> field (commented) and the data structure which will populate it: <code>Kind</code> which is an enum of freevar, cellvar, implicit_global, and implicit_local. <strong>Not yet populated</strong>. (<em>TODO: a second pass over the scope (or the ast?) will observe the <code>MARKED_GLOBAL</code> and <code>MARKED_NONLOCAL</code> flags to populate this field. When that's added, we'll uncomment the field.</em>)</li>
+<li>Adds a few tests that the <code>IS_DEFINED</code> and <code>IS_USED</code> fields are correctly set and/or merged:<ul>
+<li>Unit test that subsequent calls to <code>add_or_update_symbol</code> will merge the flag arguments.</li>
+<li>Unit test that in the statement <code>x = foo</code>, the variable <code>foo</code> is considered used but not defined.</li>
+<li>Unit test that in the statement <code>from bar import foo</code>, the variable <code>foo</code> is considered defined but not used.</li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @plredmond on 2024-04-24 19:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/symbols.rs</code>:105 on 2024-04-24 19:58</div>
+            <div class="timeline-body"><p>I think it will need to be a field, because it depends (in some cases) not only on our own flags, but on what symbols exist with the same name (and with what flags) in ancestor and enclosed scopes. We will want to do this analysis in one pass and store it for all symbols, we don't want to have to redo it every time we ask about a symbol.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/symbols.rs</code>:84 on 2024-04-24 20:00</div>
+            <div class="timeline-body"><p>naming nit, but I'd probably go for <code>Kind</code> here. Both <code>Kind</code> and <code>Disposition</code> seem equally generic (as in, <code>Disposition</code> doesn't communicate useful additional context, at least to me), and <code>Kind</code> is shorter :)</p>
+<p>But if you have arguments for preferring <code>Disposition</code>, I'm all ears.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/symbols.rs</code>:269 on 2024-04-24 20:02</div>
+            <div class="timeline-body"><p>I would say go ahead and rename this to <code>add_or_update_symbol</code> (I think we can just drop <code>_to_scope</code> without losing anything valuable.) I think this PR is the right place to do that rename, since adding the flags really adds &quot;update&quot; as a possibility for the first time.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/symbols.rs</code>:398 on 2024-04-24 20:05</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    fn add_or_update_symbol(&amp;mut self, identifier: &amp;str, flags: SymbolFlags) -&gt; SymbolId {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/symbols.rs</code>:403 on 2024-04-24 20:05</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    fn add_or_update_symbol_with_def(&amp;mut self, identifier: &amp;str, definition: Definition) -&gt; SymbolId {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/symbols.rs</code>:774 on 2024-04-24 20:07</div>
+            <div class="timeline-body"><p>Would be good to also add/modify tests above here to actually verify flags are set correctly</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-04-24 20:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/plredmond">@plredmond</a> reviewed on 2024-04-25 16:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/plredmond">@plredmond</a> on <code>crates/red_knot/src/symbols.rs</code>:269 on 2024-04-25 16:45</div>
+            <div class="timeline-body"><p>I'll do this, but probably not until the rest of the work is done and the review is looking like :+1:. Renaming it now might make rebases annoying.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-04-25 17:21</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/plredmond">@plredmond</a> reviewed on 2024-04-29 22:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/plredmond">@plredmond</a> on <code>crates/red_knot/src/symbols.rs</code>:105 on 2024-04-29 22:12</div>
+            <div class="timeline-body"><p>Uncommenting this before merge with a docstring that says it's not yet implemented.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/plredmond">@plredmond</a> reviewed on 2024-04-29 22:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/plredmond">@plredmond</a> on <code>crates/red_knot/src/symbols.rs</code>:269 on 2024-04-29 22:14</div>
+            <div class="timeline-body"><p>Doing this now ahead of rereview/merge.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/plredmond">@plredmond</a> reviewed on 2024-04-29 22:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/plredmond">@plredmond</a> on <code>crates/red_knot/src/symbols.rs</code>:398 on 2024-04-29 22:14</div>
+            <div class="timeline-body"><p>Doing this now ahead of rereview/merge.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/plredmond">@plredmond</a> reviewed on 2024-04-29 22:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/plredmond">@plredmond</a> on <code>crates/red_knot/src/symbols.rs</code>:403 on 2024-04-29 22:14</div>
+            <div class="timeline-body"><p>Doing this now ahead of rereview/merge.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-04-29 22:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/symbols.rs</code>:105 on 2024-04-29 22:28</div>
+            <div class="timeline-body"><p>Also fine to just leave it out of this PR entirely and include it in the next one.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/plredmond">@plredmond</a> reviewed on 2024-04-29 22:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/plredmond">@plredmond</a> on <code>crates/red_knot/src/symbols.rs</code>:774 on 2024-04-29 22:46</div>
+            <div class="timeline-body"><p>I added a few assertions to existing tests. If that's not alright, lmk and I'll make distinct tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @plredmond on 2024-04-29 22:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/symbols.rs</code>:492 on 2024-04-29 23:01</div>
+            <div class="timeline-body"><p>Oh, this isn't something we ever discussed, but type params are defined by the annotation scope that introduces them. And we should test for this case as well. (There are already tests for generic func and generic class.)</p>
+<pre><code class="language-suggestion">                self.add_or_update_symbol(name, SymbolFlags::IS_DEFINED);
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/symbols.rs</code>:512 on 2024-04-29 23:04</div>
+            <div class="timeline-body"><p>Now that you're already matching on ctx above, this line might be simpler as a flags intersection check?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/symbols.rs</code>:99 on 2024-04-29 23:09</div>
+            <div class="timeline-body"><p>let's add a TODO here to note that we aren't setting these flags yet</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> requested changes on 2024-04-29 23:11</div>
+            <div class="timeline-body"><p>Looks good! Couple comments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/plredmond">@plredmond</a> reviewed on 2024-04-29 23:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/plredmond">@plredmond</a> on <code>crates/red_knot/src/symbols.rs</code>:492 on 2024-04-29 23:17</div>
+            <div class="timeline-body"><p>Great; was wondering about that! I'll add a test.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/plredmond">@plredmond</a> reviewed on 2024-04-29 23:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/plredmond">@plredmond</a> on <code>crates/red_knot/src/symbols.rs</code>:512 on 2024-04-29 23:18</div>
+            <div class="timeline-body"><p>Yes, I was wondering about this redundancy. Willfix.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/plredmond">@plredmond</a> reviewed on 2024-04-29 23:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/plredmond">@plredmond</a> on <code>crates/red_knot/src/symbols.rs</code>:512 on 2024-04-29 23:26</div>
+            <div class="timeline-body"><p>Added Copy+Clone on SymbolFlags:u8</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-04-29 23:42</div>
+            <div class="timeline-body"><p>Awesome!</p>
+<p>Couple comments on the PR description:</p>
+<ol>
+<li>It says three flags are supported, but it seems like just two?</li>
+<li>This is more a forward-looking comment for the TODOs, but I realized from some conversation this morning that we will probably want to track both <code>CellVar</code> and <code>CellVarAssigned</code> as separate kinds, where the former is &quot;defined in current scope, used in at least one nested scope&quot; and the latter is &quot;defined in current scope, defined and marked_nonlocal in at least one nested scope&quot;, because the latter will have different implications for type checking.</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/plredmond">@plredmond</a> on 2024-04-30 00:06</div>
+            <div class="timeline-body"><blockquote>
+<p>It says three flags are supported, but it seems like just two?</p>
+</blockquote>
+<p>That was a typo of &quot;these&quot;. Sorry.</p>
+<p>I've added a commit for the other variant of Kind.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @plredmond on 2024-04-30 00:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @plredmond on 2024-04-30 00:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-04-30 00:07</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 22:37:40 UTC
+    </footer>
+</body>
+</html>

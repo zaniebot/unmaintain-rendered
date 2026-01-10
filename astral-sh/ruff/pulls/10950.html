@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`ruff server`: Resolve configuration for each document individually - astral-sh/ruff #10950</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1><code>ruff server</code>: Resolve configuration for each document individually</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/10950">#10950</a>
+        opened by <a href="https://github.com/snowsignal">@snowsignal</a>
+        on 2024-04-15 08:43
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/snowsignal">@snowsignal</a> on 2024-04-15 08:43</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Configuration is no longer the property of a workspace but rather of individual documents. Just like the Ruff CLI, each document is configured based on the 'nearest' project configuration. See <a href="https://docs.astral.sh/ruff/configuration/#config-file-discovery">the Ruff documentation</a> for more details.</p>
+<p>To reduce the amount of times we resolve configuration for a file, we have an index for each workspace that stores a reference-counted pointer to a configuration for a given folder. If another file in the same folder is opened, the configuration is simply re-used rather than us re-resolving it.</p>
+<h2>Guide for reviewing</h2>
+<p>The first commit is just the restructuring work, which adds some noise to the diff. If you want to quickly understand what's actually changed, I recommend looking at the two commits that come after it. f7c073d4412242dfe09fd620371432735ffa0c18 makes configuration a property of <code>DocumentController</code>/<code>DocumentRef</code>, moving it out of <code>Workspace</code>, and it also sets up the <code>ConfigurationIndex</code>, though it doesn't implement its key function, <code>get_or_insert</code>. In the commit after it, fc35618f17f761de170125f089ce7fc054df356b, we implement <code>get_or_insert</code>.</p>
+<h2>Test Plan</h2>
+<p>The best way to test this would be to ensure that the behavior matches the Ruff CLI. Open a project with multiple configuration files (or add them yourself), and then introduce problems in certain files that won't show due to their configuration. Add those same problems to a section of the project where those rules are run. Confirm that the lint rules are run as expected with <code>ruff check</code>. Then, open your editor and confirm that the diagnostics shown match the CLI output.</p>
+<p>As an example - I have a workspace with two separate folders, <code>pandas</code> and <code>scipy</code>. I created a <code>pyproject.toml</code> file in <code>pandas/pandas/io</code> and a <code>ruff.toml</code> file in <code>pandas/pandas/api</code>. I changed the <code>select</code> and <code>preview</code> settings in the sub-folder configuration files and confirmed that these were reflected in the diagnostics. I also confirmed that this did not change the diagnostics for the <code>scipy</code> folder whatsoever.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @snowsignal on 2024-04-15 08:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @snowsignal on 2024-04-15 08:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @snowsignal on 2024-04-15 08:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_server/src/session/workspace/configuration.rs</code>:24 on 2024-04-15 08:55</div>
+            <div class="timeline-body"><p>This is just an understand question. Could we return a reference here instead of cloning the configuration?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-04-15 08:56</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_server/src/session/workspace/configuration.rs</code>:53 on 2024-04-15 09:04</div>
+            <div class="timeline-body"><p>Calling <code>find_settings_toml</code> is probably fine for the LSP but it means that it traverses the entire ancestory chain for each directory once, and parse the settings. That means for projects with a single configuration file that we'll reparse (and store in meory) the same configuration once for every possible directory.</p>
+<p>I think I would prefer if we either:</p>
+<ul>
+<li>Discover all setting files during startup and setup the configuration index. The index only contains entries for directories that contain a configuration. Resolving a configuration is the same as before. Use the <code>BTreeMap</code> to find the closest directory that contains a configuration. I think that's my preferred solution because it also &quot;just works&quot; when deleting a configuration. All that is necessary is to remove (or add) the deleted (or added) configuration from the <code>ConfigurationsIndex</code> and it isn't necessary to invalidat any sub paths. It may also avoid the need for using an <code>Arc</code>.</li>
+<li>Or we change the logic here to iterate over the anchestor in the <code>ConfigurationIndex</code> starting at the current folder and see if it contains any configuration. If yes, parse it and set it in the Index. If not, go up the ancestory chain and check the parent directory (after testing that the index doesn't already contains an entry for this path).</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_server/src/session/workspace/configuration.rs</code>:16 on 2024-04-15 09:05</div>
+            <div class="timeline-body"><p>The naming here becomes slightly confusing. I can see why you would name it <code>Configuration</code> but we generally  use the term <code>Settings</code> for deserialized, merged and resolved &quot;ruff configurations&quot; and only use the term <code>Configuration</code> for deserialized configuration files (but not resolved).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-04-15 09:10</div>
+            <div class="timeline-body"><p>I like the laziness of the current design but I think has the downside (as far as I understand) that we deserialize and store a resolved configuration for each directory. That's unlikely a huge memory issue. It's also unclear to me if the <code>ConfigurationIndex</code> gets correctly invalidated when:</p>
+<ul>
+<li>I open a file in a directory that inherits the configuration from the parent directory (the configuration is now stored in the index)</li>
+<li>I close the file</li>
+<li>I change the parent configuration (that reloads the configurations of all paths with open documents)</li>
+<li>I reopen the file (I suspect it reuses the old configuration)</li>
+</ul>
+<p>I think there's a similar case where creating a new configuration in a specific directory must correctly propagate to all sub-directories). The easiest fix is to simply prune all sub-directory entries, but maybe we can do better?</p>
+<p>I wonder if we should instead traverse the workspace eagerly and discovers all configurations or model the index in a way that it tracks whether a path has its own configuration or inherits from the parent (finding the configuration is then the same as finding the first entry where the configuration is not inherited).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-04-15 16:54</div>
+            <div class="timeline-body"><p>It's not uncommon for a language server to spend some time initially to setup the workspace. This could potentially include building up the configuration index as suggested by Micha but I'm ok with the lazy approach as well.</p>
+<p>Thank you for providing the test plan. Can you expand it by listing down any/all the scenarios that you've tested against? This way I can make sure to not repeat it and come up with any other possible project structure to test this change against.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/snowsignal">@snowsignal</a> on 2024-04-15 18:45</div>
+            <div class="timeline-body"><blockquote>
+<p>It's also unclear to me if the ConfigurationIndex gets correctly invalidated when:</p>
+<ul>
+<li>I open a file in a directory that inherits the configuration from the parent directory (the configuration is now stored in the index)</li>
+<li>I close the file</li>
+<li>I change the parent configuration (that reloads the configurations of all paths with open documents)</li>
+<li>I reopen the file (I suspect it reuses the old configuration)</li>
+</ul>
+</blockquote>
+<p>It should be correctly invalidated - any time a configuration file gets changed, we clear the entire configuration index before we start the configuration reload (see <a href="https://github.com/astral-sh/ruff/pull/10950/files#diff-41e088f72fc9e84d5e26c2456d6ecd5e4c108bd438f037eef4c54eff185ea99dR207">this line</a>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/snowsignal">@snowsignal</a> on 2024-04-15 18:49</div>
+            <div class="timeline-body"><blockquote>
+<p>I wonder if we should instead traverse the workspace eagerly and discovers all configurations or model the index in a way that it tracks whether a path has its own configuration or inherits from the parent (finding the configuration is then the same as finding the first entry where the configuration is not inherited).</p>
+</blockquote>
+<blockquote>
+<p>It's not uncommon for a language server to spend some time initially to setup the workspace. This could potentially include building up the configuration index as suggested by Micha but I'm ok with the lazy approach as well.</p>
+</blockquote>
+<p>I'm cool with the eager approach! It would definitely be more efficient.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/snowsignal">@snowsignal</a> reviewed on 2024-04-15 18:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_server/src/session/workspace/configuration.rs</code>:24 on 2024-04-15 18:51</div>
+            <div class="timeline-body"><p>We could - this is mostly a matter of convenience for the caller, since we immediately consume the return value where this is called.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/snowsignal">@snowsignal</a> reviewed on 2024-04-15 18:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_server/src/session/workspace/configuration.rs</code>:24 on 2024-04-15 18:58</div>
+            <div class="timeline-body"><p>I'm not against changing this to return a reference, though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/snowsignal">@snowsignal</a> on 2024-04-16 02:05</div>
+            <div class="timeline-body"><blockquote>
+<p>Thank you for providing the test plan. Can you expand it by listing down any/all the scenarios that you've tested against? This way I can make sure to not repeat it and come up with any other possible project structure to test this change against.</p>
+</blockquote>
+<p>I've added them to the test plan!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @snowsignal on 2024-04-16 02:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_server/src/server/api/notifications/did_change_watched_files.rs</code>:22 on 2024-04-16 06:07</div>
+            <div class="timeline-body"><p>nit: do we have any other kind of settings? If not, I'd drop the &quot;ruff&quot; word here to make it <code>reload_settings</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_server/src/server/api/requests/code_action.rs</code>:108 on 2024-04-16 06:07</div>
+            <div class="timeline-body"><p>nit: same as above to drop the &quot;ruff&quot; here to make it <code>&amp;snapshot.settings().linter</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_server/src/session/workspace.rs</code>:214 on 2024-04-16 06:15</div>
+            <div class="timeline-body"><p>nit: we could potentially drop <code>reload</code> and <code>clear</code> from the index and re-create the settings with the same method:</p>
+<pre><code class="language-diff">diff --git a/crates/ruff_server/src/session/workspace.rs b/crates/ruff_server/src/session/workspace.rs
+index 10d2b8a56..068236f8c 100644
+--- a/crates/ruff_server/src/session/workspace.rs
++++ b/crates/ruff_server/src/session/workspace.rs
+@@ -210,7 +210,7 @@ impl OpenDocuments {
+     }
+ 
+     fn reload_ruff_settings(&amp;mut self, root: &amp;Path) {
+-        self.ruff_settings_index.reload(root);
++        self.ruff_settings_index = RuffSettingsIndex::new(root);
+     }
+ }
+ 
+diff --git a/crates/ruff_server/src/session/workspace/ruff_settings.rs b/crates/ruff_server/src/session/workspace/ruff_settings.rs
+index 6bff2a975..376c850a5 100644
+--- a/crates/ruff_server/src/session/workspace/ruff_settings.rs
++++ b/crates/ruff_server/src/session/workspace/ruff_settings.rs
+@@ -38,20 +38,9 @@ impl std::fmt::Display for RuffSettings {
+ 
+ impl RuffSettingsIndex {
+     pub(super) fn new(path: &amp;Path) -&gt; Self {
+-        let mut index = Self {
+-            index: BTreeMap::default(),
+-            fallback: Arc::default(),
+-        };
++        let mut index = BTreeMap::default();
+ 
+-        index.reload(path);
+-
+-        index
+-    }
+-
+-    pub(super) fn reload(&amp;mut self, root: &amp;Path) {
+-        self.clear();
+-
+-        for directory in WalkDir::new(root)
++        for directory in WalkDir::new(path)
+             .into_iter()
+             .filter_map(Result::ok)
+             .filter(|entry| entry.file_type().is_dir())
+@@ -65,7 +54,7 @@ impl RuffSettingsIndex {
+                 ) else {
+                     continue;
+                 };
+-                self.index.insert(
++                index.insert(
+                     directory,
+                     Arc::new(RuffSettings {
+                         linter: settings.linter,
+@@ -74,6 +63,11 @@ impl RuffSettingsIndex {
+                 );
+             }
+         }
++
++        Self {
++            index,
++            fallback: Arc::default(),
++        }
+     }
+ 
+     pub(super) fn get(&amp;self, document_path: &amp;Path) -&gt; &amp;Arc&lt;RuffSettings&gt; {
+@@ -90,10 +84,6 @@ impl RuffSettingsIndex {
+ 
+         &amp;self.fallback
+     }
+-
+-    fn clear(&amp;mut self) {
+-        self.index.clear();
+-    }
+ }
+ 
+ struct LSPConfigTransformer;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_server/src/session/workspace/ruff_settings.rs</code>:79 on 2024-04-16 06:17</div>
+            <div class="timeline-body"><p>Do we still need the <code>Arc</code> if we're returning a reference to <code>Settings</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-04-16 06:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_server/src/session/workspace/ruff_settings.rs</code>:91 on 2024-04-16 07:42</div>
+            <div class="timeline-body"><p>Nit: Could we insert the fallback into the <code>index</code> with a path of <code>/</code> or <code>&quot;&quot;</code>? Or do you prefer the explicit fallback to be able to log a warning if no configuration was found</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-04-16 07:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_server/src/session/workspace/ruff_settings.rs</code>:89 on 2024-04-16 08:20</div>
+            <div class="timeline-body"><p>I'm not sure if this should be a warning, I think it's fine to put this at info level, as users might just open an editor to write a standalone Python script instead of working in a project.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> approved on 2024-04-16 08:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/snowsignal">@snowsignal</a> reviewed on 2024-04-16 17:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_server/src/session/workspace/ruff_settings.rs</code>:79 on 2024-04-16 17:55</div>
+            <div class="timeline-body"><p>We do, since callers of this method need to create a new <code>Arc</code> from its return value. Maybe I should go back to return an owned value to make this more clear.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/snowsignal">@snowsignal</a> reviewed on 2024-04-16 17:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_server/src/session/workspace/ruff_settings.rs</code>:91 on 2024-04-16 17:57</div>
+            <div class="timeline-body"><p>I prefer the explicit fallback so that we can log about it 👍</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @snowsignal on 2024-04-16 18:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @snowsignal on 2024-04-16 18:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-04-16 18:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Ruff Server: Beta" by @snowsignal on 2024-04-16 21:39</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 22:37:35 UTC
+    </footer>
+</body>
+</html>

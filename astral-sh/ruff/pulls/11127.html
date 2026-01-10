@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Red knot: Add file watching and cancellation - astral-sh/ruff #11127</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Red knot: Add file watching and cancellation</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/11127">#11127</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2024-04-24 13:23
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-04-24 13:23</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Okay, I must admit this PR does more than what the title says.</p>
+<p>The changes not covered by the title are:</p>
+<ol>
+<li>It adds a new <code>lint_syntax</code> method that performs two checks. It mainly serves to see if file changes are correctly picked up. The implemented checks are:</li>
+<li>Whether any line contains more than 88 characters (yeah, it should be the line width, but I didn't bother for the prototype)</li>
+<li>Whether any string literal uses single quotes instead of double quotes (again, a very dumb implementation. It even flags strings that contain double quotes, which normally would be considered okay)</li>
+<li>It changes <code>Source</code> to use <code>SourceKind</code> instead of always an <code>Arc&lt;str&gt;</code>. This is necessary to support IPython notebooks. There's absolutely no good reason why this is part of this PR and I'm happy to split it out if people find that useful. I think it doesn't matter much.</li>
+</ol>
+<p>The main change of the PR is that red-knot now accepts an &quot;entry path&quot; and runs the analysis in watch mode. This is interesting because it tackles a few challenges:</p>
+<ul>
+<li>How to wait for file changes or until the user presses Ctrl+C without using a spin loop. That's not conceptually difficult, but it's something I've never done before, so it took me a few approaches to get it right.</li>
+<li>How can we ensure that we get a mutable reference to <code>program</code> after all scheduled analysis have been completed</li>
+<li>How to cancel pending analysis.</li>
+</ul>
+<p>I'm undecided if the ultimate goal should be that this code is isolated and reused across the LSP, CLI watch mode and regular CLI. It would certainly be nice, but I could also see this be part of the &quot;Host&quot; specific code, and each host should have as much flexibility as possible to implement the most efficient scheduling for its needs.</p>
+<p>Future Improvements:</p>
+<ul>
+<li>We should ignore changes to files that are ignored in the settings and isn't a dependency of Program</li>
+<li>The current error handling is mostly unwrapping. We should do better.</li>
+<li>File watching...: Correctly handle folders, new files, cases where a user deletes a file and creates a folder with the same name etc.</li>
+<li>The invalidation logic requires more love, but I don't think it's important to fully implement it right now because the PR proves the important point, that we can get a mutable Program (db)</li>
+</ul>
+<h2>Test plan</h2>
+<p>I ran the CLI locally, then made changes to the test file by adding a new single quoted string and I then verified that the console showed the new diagnostic.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @MichaReiser on 2024-04-24 13:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2024-04-24 13:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-04-24 13:41</div>
+            <div class="timeline-body"><p>CC: @BurntSushi for the case I do anything horrible inside of <code>main.rs</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-04-24 13:41</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-04-24 15:46</div>
+            <div class="timeline-body"><p>Okay, I think what I want to do tomorrow is:</p>
+<ul>
+<li>Figure out if we can move the orchestration thread out of the main loop. I suspect that this should be straightforward by adding one more channel :laughing:</li>
+<li>Add a <code>program.check(context)</code> and <code>program.check_file(id, context)</code> functions and move the logic for checking a program there. The <code>context</code> would expose a method to schedule a dependency so that it's up to the host to decide if that should run on the same thread (queuing) or on a thread pool.</li>
+</ul>
+<p>Edit: I think I should also be able to move the <code>Arc&lt;AtomicUsize&gt;</code> counting the pending analysis into the orchestrator by adding a new <code>StartAnalysis</code> message (it means some more messaging but it allows isolating the logic and I could even use a regular <code>usize</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/lint.rs</code>:35 on 2024-04-24 22:11</div>
+            <div class="timeline-body"><p>I guess maybe the parsing errors should be raised as diagnostics here? Could just be a TODO</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/lint.rs</code>:67 on 2024-04-24 22:15</div>
+            <div class="timeline-body"><p>Obviously there are a couple things in this file that are just prototype stubs; is it useful to include TODO comments to remind ourselves later where those things are?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/program.rs</code>:46 on 2024-04-24 22:40</div>
+            <div class="timeline-body"><p>Now that we cache symbol tables, they should also be removed here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/main.rs</code>:278 on 2024-04-24 22:42</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                        // Deletion after creation means that ruff never saw the file.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/main.rs</code>:294 on 2024-04-24 22:43</div>
+            <div class="timeline-body"><p>maybe better to assert here if we really think it shouldn't happen?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/watch.rs</code>:62 on 2024-04-24 22:48</div>
+            <div class="timeline-body"><p>if we at least know error handling will change the signature (e.g. should <code>FileWatcher::from_handler</code> return a <code>Result</code>?) it might be good to at least reflect that in the signature sooner rather than later, since it will affect other code?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-04-24 22:50</div>
+            <div class="timeline-body"><p>Very cool! Sorry I didn't see this / review it sooner so you could have landed it today.</p>
+<p>I didn't carefully follow every detail in <code>main.rs</code>; hoping that as you mentioned some of that will get broken up and be a little easier to follow.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/lint.rs</code>:67 on 2024-04-25 07:28</div>
+            <div class="timeline-body"><p>I don't think so. We'll replace the implementation with the actual rules from ruff.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-04-25 07:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-04-25 07:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/main.rs</code>:294 on 2024-04-25 07:30</div>
+            <div class="timeline-body"><p>Yeah, not sure. I don't think it's something I want to drip Ruff over. I think we probably want a <code>Change</code> that means <code>anything</code> happened to the file so that we can take the most defensive invalidation for that file.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-04-25 07:33</div>
+            <div class="timeline-body"><blockquote>
+<p>Very cool! Sorry I didn't see this / review it sooner so you could have landed it today.</p>
+</blockquote>
+<p>All good. I'm not in a rush. Having the review next morning is still a perfectly quick review and I should have tagged you as reviewer! Thank you</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2024-04-25 07:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-04-25 07:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-04-25 07:54</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 22:37:40 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`ruff server`: Support a custom TOML configuration file - astral-sh/ruff #11140</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1><code>ruff server</code>: Support a custom TOML configuration file</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/11140">#11140</a>
+        opened by <a href="https://github.com/snowsignal">@snowsignal</a>
+        on 2024-04-25 02:35
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/snowsignal">@snowsignal</a> on 2024-04-25 02:35</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Closes #10985.</p>
+<p>The server now supports a custom TOML configuration file as a client setting. The setting must be an absolute path to a file. If the file is called <code>pyproject.toml</code>, the server will attempt to parse it as a pyproject file - otherwise, it will attempt to parse it as a <code>ruff.toml</code> file, even if the file has a name besides <code>ruff.toml</code>.</p>
+<p>If an option is set in both the custom TOML configuration file and in the client settings directly, the latter will be used.</p>
+<h2>Test Plan</h2>
+<ol>
+<li>Create a <code>ruff.toml</code> file outside of the workspace you are testing. Set an option that is different from the one in the configuration for your test workspace.</li>
+<li>Set the path to the configuration in NeoVim:</li>
+</ol>
+<pre><code class="language-lua">require('lspconfig').ruff.setup {
+    init_options = {
+      settings = {
+        configuration = &quot;absolute/path/to/your/configuration&quot;
+      }
+    }
+}
+</code></pre>
+<ol start="3">
+<li>Confirm that the option in the configuration file is used, regardless of what the option is set to in the workspace configuration.</li>
+<li>Add the same option, with a different value, to the NeoVim configuration directly. For example:</li>
+</ol>
+<pre><code class="language-lua">require('lspconfig').ruff.setup {
+    init_options = {
+      settings = {
+        configuration = &quot;absolute/path/to/your/configuration&quot;,
+        lint = {
+          select = []
+        }
+      }
+    }
+}
+</code></pre>
+<ol start="5">
+<li>Confirm that the option set in client settings is used, regardless of the value in either the custom configuration file or in the workspace configuration.</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @snowsignal on 2024-04-25 02:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @snowsignal on 2024-04-25 02:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "`ruff server` supports a custom TOML configuration file" to "`ruff server`: support a custom TOML configuration file" by @snowsignal on 2024-04-25 02:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "`ruff server`: support a custom TOML configuration file" to "`ruff server`: Support a custom TOML configuration file" by @snowsignal on 2024-04-25 02:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/snowsignal">@snowsignal</a> reviewed on 2024-04-25 02:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_server/src/session/settings.rs</code>:34 on 2024-04-25 02:38</div>
+            <div class="timeline-body"><p>I'm open to using a better name for this 😅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-04-25 02:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_server/src/session/workspace/ruff_settings.rs</code>:162 on 2024-04-25 02:50</div>
+            <div class="timeline-body"><p>If <code>configuration</code> is specified, should we ignore project configuration entirely? (My read is that we're merging them.) That's how <code>--config</code> works in the Ruff CLI.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-04-25 02:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_server/src/session/settings.rs</code>:34 on 2024-04-25 02:51</div>
+            <div class="timeline-body"><p>I think we'll need to expand tildes and environment variables for settings that users provide in VS Code. (We do this within Ruff when you pass <code>--config</code>.) Should that happen within the LSP?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-04-25 02:53</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/snowsignal">@snowsignal</a> reviewed on 2024-04-25 03:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_server/src/session/workspace/ruff_settings.rs</code>:162 on 2024-04-25 03:16</div>
+            <div class="timeline-body"><p>My plan was to merge them - if we wanted to allow for this behavior, we could introduce an additional resolution strategy that ignores project configuration entirely.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-04-25 03:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_server/src/session/workspace/ruff_settings.rs</code>:162 on 2024-04-25 03:18</div>
+            <div class="timeline-body"><p>I worry about adding a bunch of resolution strategies. They're hard to reason about -- even I'm having trouble keeping the rules straight.</p>
+<p>I think merging here is surprising given that the Ruff CLI does <em>not</em> do this -- if you provide a configuration file, that's the configuration you get.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-04-25 07:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_server/src/session/settings.rs</code>:34 on 2024-04-25 07:07</div>
+            <div class="timeline-body"><p>I would expect this to be a VS Code extension functionality, except if we support it for <code>ruff check --config</code> too. Except if we think that's something that's also useful for neovim (does neovim support expanding environment variables).</p>
+<p>Relevant issue https://github.com/astral-sh/ruff-vscode/issues/448</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/GaetanLepage">@GaetanLepage</a> on 2024-04-25 13:42</div>
+            <div class="timeline-body"><p>In the absence of a project configuration for ruff, will the LS load the seetings from <code>~/.config/ruff/ruff.toml</code> like the CLI does ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-04-26 00:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_server/src/session/workspace/ruff_settings.rs</code>:162 on 2024-04-26 00:22</div>
+            <div class="timeline-body"><p>What's your current thinking here @snowsignal?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-26 00:22</div>
+            <div class="timeline-body"><p>It should yes -- not sure if it does yet though @snowsignal?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/snowsignal">@snowsignal</a> on 2024-04-26 07:55</div>
+            <div class="timeline-body"><p>@GaetanLepage @charliermarsh I actually don't think we do this, yet - I've <a href="https://github.com/astral-sh/ruff/issues/11158">filed an issue</a> to support this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/snowsignal">@snowsignal</a> reviewed on 2024-04-26 07:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_server/src/session/workspace/ruff_settings.rs</code>:162 on 2024-04-26 07:56</div>
+            <div class="timeline-body"><p>I've been deliberating over this, and I actually do think it makes sense to have this reflect the behavior of <code>--config</code>. Having three different groups of options merging into each other is a lot of cognitive complexity, and a full override does feel like a more 'intuitive' option.</p>
+<p>My assumption is that if we were using a <code>prioritizeWorkspace</code> resolution strategy, this configuration file would be ignored.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/snowsignal">@snowsignal</a> reviewed on 2024-04-26 22:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_server/src/session/settings.rs</code>:34 on 2024-04-26 22:22</div>
+            <div class="timeline-body"><p>Environment variable resolution is definitely something we should have, but I think that's beyond the scope of this PR. As for tilde resolution - shouldn't that be resolved already in <code>parse_pyproject_toml</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @snowsignal on 2024-04-26 22:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-04-26 22:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_server/src/session/workspace/ruff_settings.rs</code>:161 on 2024-04-26 22:37</div>
+            <div class="timeline-body"><p>Haha yeah, three sources of configuration is kind of a lot. But maybe we can reframe this as two sources, since the <code>config_from_file</code> is actually just part of the editor configuration, right...?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-04-26 22:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_server/src/session/workspace/ruff_settings.rs</code>:161 on 2024-04-26 22:37</div>
+            <div class="timeline-body"><p>How about this:</p>
+<pre><code class="language-diff">diff --git a/crates/ruff_server/src/session/workspace/ruff_settings.rs b/crates/ruff_server/src/session/workspace/ruff_settings.rs
+index ab8a8447e..766b2aa61 100644
+--- a/crates/ruff_server/src/session/workspace/ruff_settings.rs
++++ b/crates/ruff_server/src/session/workspace/ruff_settings.rs
+@@ -151,18 +151,18 @@ impl&lt;'a&gt; ConfigurationTransformer for EditorConfigurationTransformer&lt;'a&gt; {
+             ..Default::default()
+         };
+ 
+-        if let Some(config_file_path) = configuration {
++        // Merge in the editor-specified configuration file, if any.
++        let editor_configuration = if let Some(config_file_path) = configuration {
+             match open_configuration_file(&amp;config_file_path, project_root) {
+-                // if a custom configuration file was given and the configuration preference is
+-                // _not_ filesystem-first, return early with the combined editor configuration.
+-                Ok(config_from_file) =&gt; {
+-                    if configuration_preference != ConfigurationPreference::FilesystemFirst {
+-                        return editor_configuration.combine(config_from_file);
+-                    }
++                Ok(config_from_file) =&gt; editor_configuration.combine(config_from_file),
++                Err(err) =&gt; {
++                    tracing::error!(&quot;Unable to find custom configuration file {err}&quot;);
++                    editor_configuration
+                 }
+-                Err(err) =&gt; tracing::error!(&quot;Unable to find custom configuration file {err}&quot;),
+             }
+-        }
++        } else {
++            editor_configuration
++        };
+ 
+         match configuration_preference {
+             ConfigurationPreference::EditorFirst =&gt; {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-04-26 22:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_server/src/session/workspace/ruff_settings.rs</code>:161 on 2024-04-26 22:38</div>
+            <div class="timeline-body"><p>The basic idea being: the editor configuration is always <code>editor_configuration.combine(config_from_file)</code> (if it exists); then, we just follow the match below.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-04-26 22:38</div>
+            <div class="timeline-body"><p>I have one suggestion to simplify the implementation and semantics.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/snowsignal">@snowsignal</a> reviewed on 2024-04-26 22:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_server/src/session/settings.rs</code>:34 on 2024-04-26 22:41</div>
+            <div class="timeline-body"><p>Okay, I did some testing and it looks like tilde expansion isn't handled by the standard library automatically. I'll open a follow-up PR that uses <code>shellexpand</code> to expand tildes and environment variables.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/snowsignal">@snowsignal</a> reviewed on 2024-04-26 22:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_server/src/session/workspace/ruff_settings.rs</code>:161 on 2024-04-26 22:48</div>
+            <div class="timeline-body"><p>Wouldn't this mean that the custom configuration file would get merged with filesystem configuration, though? I thought we wanted to ignore filesystem configuration similar to <code>--config</code>.</p>
+<p>That being said, we already have another way to ignore filesystem configuration (with the <code>EditorFirst</code> configuration preference), so maybe those behaviors should be detached and it's up to the user. But it might not be the most intuitive experience.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-04-26 23:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_server/src/session/workspace/ruff_settings.rs</code>:161 on 2024-04-26 23:14</div>
+            <div class="timeline-body"><p>I thought <code>EditorOnly</code> was the solution to this, though?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_server/src/session/workspace/ruff_settings.rs</code>:161 on 2024-04-26 23:15</div>
+            <div class="timeline-body"><p>Sorry, I meant to say <code>EditorOnly</code> instead of <code>EditorFirst</code>. I'm fine with that as a solution, I just wanted to make sure we were on the same page 👍</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/snowsignal">@snowsignal</a> reviewed on 2024-04-26 23:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-04-26 23:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_server/src/session/workspace/ruff_settings.rs</code>:161 on 2024-04-26 23:21</div>
+            <div class="timeline-body"><p>I think it's ok.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @snowsignal on 2024-04-26 23:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @snowsignal on 2024-04-26 23:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-04-26 23:46</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 22:37:41 UTC
+    </footer>
+</body>
+</html>

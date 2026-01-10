@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`flake8-bugbear`] Implement `loop-iterator-mutation` (`B909`) - astral-sh/ruff #9578</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>flake8-bugbear</code>] Implement <code>loop-iterator-mutation</code> (<code>B909</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/9578">#9578</a>
+        opened by <a href="https://github.com/mimre25">@mimre25</a>
+        on 2024-01-19 15:12
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/mimre25">@mimre25</a> on 2024-01-19 15:12</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR adds the implementation for the current <a href="https://github.com/PyCQA/flake8-bugbear">flake8-bugbear</a>'s B038 rule.
+The B038 rule checks for mutation of loop iterators in the body of a for loop and alerts when found.</p>
+<p>Rational:
+Editing the loop iterator can lead to undesired behavior and is probably a bug in most cases.</p>
+<p>Closes #9511.</p>
+<p>Note there will be a second iteration of B038 implemented in <code>flake8-bugbear</code> soon, and this PR currently only implements the weakest form of the rule.
+I'd be happy to also implement the further improvements to B038 here in ruff :slightly_smiling_face:
+See https://github.com/PyCQA/flake8-bugbear/issues/454 for more information on the planned improvements.</p>
+<h2>Test Plan</h2>
+<p>Re-using the same test file that I've used for <code>flake8-bugbear</code>, which is included in this PR (look for the <code>B038.py</code> file).</p>
+<p>Note: this is my first time using <code>rust</code> (beside <code>rustlings</code>) - I'd be very happy about thorough feedback on what I could've done better :slightly_smiling_face:  - Bring it on :grinning:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @charliermarsh on 2024-01-19 16:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2024-01-19 16:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @charliermarsh on 2024-01-19 16:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-19 16:16</div>
+            <div class="timeline-body"><p>Awesome, thank you! Excited to review, I'll give it a close read per request :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/flake8_bugbear/rules/loop_iterator_mutated.rs</code>:35 on 2024-01-21 15:18</div>
+            <div class="timeline-body"><p>Nit: can we rename to <code>LoopIteratorMutation</code>? Gramatically we want the names to work in a sentence like &quot;allow [rule name]&quot;, as in &quot;allow loop iterator mutation&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-21 15:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-21 15:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/flake8_bugbear/rules/loop_iterator_mutated.rs</code>:107 on 2024-01-21 15:19</div>
+            <div class="timeline-body"><p>Nit: should be able to omit the <code>{}</code> after <code>LoopIteratorMutated</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-21 15:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/flake8_bugbear/rules/loop_iterator_mutated.rs</code>:95 on 2024-01-21 15:20</div>
+            <div class="timeline-body"><p>We should remove this -- if it's an actual invariant, we should find a way to enforce it with the type system! And if it's actually an error, we should log it with <code>error!</code> or similar.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/flake8_bugbear/rules/loop_iterator_mutated.rs</code>:111 on 2024-01-21 15:22</div>
+            <div class="timeline-body"><p>In Rust, you almost always want <code>&amp;str</code> over <code>&amp;String</code>. There's more detail on it here: https://doc.rust-lang.org/nightly/book/ch04-03-slices.html. But one way to think of why it's <em>useful</em> is... if you have <code>String</code>, you can convert to <code>&amp;String</code> or <code>&amp;str</code> (a reference to a string). But if you have <code>&amp;str</code>, there's no way to convert to <code>&amp;String</code> without allocating.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-21 15:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-21 15:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/flake8_bugbear/rules/loop_iterator_mutated.rs</code>:112 on 2024-01-21 15:23</div>
+            <div class="timeline-body"><p>I'd suggest just making this <code>Vec&lt;TextRange&gt;</code>. Using <code>Box&lt;dyn ...&gt;</code> means we need to allocate that data on the heap, and that we need to use dynamic dispatch on methods calls, both of which have (small) costs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-21 15:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/flake8_bugbear/rules/loop_iterator_mutated.rs</code>:14 on 2024-01-21 15:24</div>
+            <div class="timeline-body"><p>We typically write this kind of thing as a method to enable the compiler to optimize it... Grep for <code>is_feature_name</code> as an example of what that looks like.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-21 15:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/flake8_bugbear/rules/loop_iterator_mutated.rs</code>:71 on 2024-01-21 15:25</div>
+            <div class="timeline-body"><p>This feels off to me... Can you give me some more context on what this function is intended to do?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-21 15:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/flake8_bugbear/rules/loop_iterator_mutated.rs</code>:68 on 2024-01-21 15:25</div>
+            <div class="timeline-body"><p>Does this mean that <code>foo().bar</code> and <code>foo.bar</code> would be considered identical?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-21 15:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/flake8_bugbear/rules/loop_iterator_mutated.rs</code>:44 on 2024-01-21 15:26</div>
+            <div class="timeline-body"><p>You may want <code>collect_call_path</code> for this, we have an abstraction for this exact thing, but it stores structured components (like a vector of the dot-separated pieces) rather than a <code>String</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/flake8_bugbear/rules/loop_iterator_mutated.rs</code>:156 on 2024-01-21 15:27</div>
+            <div class="timeline-body"><p>Do we need this, if we're already look at <code>Stmt::Delete</code> above?</p>
+<p>Separately, what about <code>ExprContext::Store</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-21 15:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-21 15:27</div>
+            <div class="timeline-body"><p>Thank you! Left some comments -- feel free to ask questions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mimre25">@mimre25</a> reviewed on 2024-01-25 11:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/mimre25">@mimre25</a> on <code>crates/ruff_linter/src/rules/flake8_bugbear/rules/loop_iterator_mutated.rs</code>:68 on 2024-01-25 11:56</div>
+            <div class="timeline-body"><p>I tried out <code>collect_call_path</code> and <code>compose_call_path</code> as you've suggested below, and both of them return <code>None</code> for <code>a().foo</code>.</p>
+<p>Not 100% sure how I should go about this - should this be the case?</p>
+<p>Also wondering, would you say the following should be caught?:</p>
+<pre><code class="language-py">for bar in a().foo:
+  del a().foo
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mimre25">@mimre25</a> reviewed on 2024-01-25 11:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/mimre25">@mimre25</a> on <code>crates/ruff_linter/src/rules/flake8_bugbear/rules/loop_iterator_mutated.rs</code>:71 on 2024-01-25 11:58</div>
+            <div class="timeline-body"><p>I think this is just the base case of the recursion.</p>
+<p>Probably gonna remove this function anyway in favor of <code>compose_call_path</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mimre25">@mimre25</a> reviewed on 2024-01-25 12:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/mimre25">@mimre25</a> on <code>crates/ruff_linter/src/rules/flake8_bugbear/rules/loop_iterator_mutated.rs</code>:111 on 2024-01-25 12:00</div>
+            <div class="timeline-body"><p>Thank you for that - finally understand <code>str</code> vs <code>String</code> :slightly_smiling_face:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mimre25">@mimre25</a> reviewed on 2024-01-25 12:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/mimre25">@mimre25</a> on <code>crates/ruff_linter/src/rules/flake8_bugbear/rules/loop_iterator_mutated.rs</code>:112 on 2024-01-25 12:00</div>
+            <div class="timeline-body"><p>I wanted to do that and forgot about it :sweat_smile:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mimre25">@mimre25</a> reviewed on 2024-01-25 12:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/mimre25">@mimre25</a> on <code>crates/ruff_linter/src/rules/flake8_bugbear/rules/loop_iterator_mutated.rs</code>:14 on 2024-01-25 12:01</div>
+            <div class="timeline-body"><p>Oh cool - I thought anyway that this seems to be not very rust-like.</p>
+<p>Guess I've spent too much time in python :grimacing:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mimre25">@mimre25</a> reviewed on 2024-01-25 13:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/mimre25">@mimre25</a> on <code>crates/ruff_linter/src/rules/flake8_bugbear/rules/loop_iterator_mutated.rs</code>:95 on 2024-01-25 13:31</div>
+            <div class="timeline-body"><p>How wold you go about ensuring this with the type system?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mimre25">@mimre25</a> reviewed on 2024-01-25 13:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/mimre25">@mimre25</a> on <code>crates/ruff_linter/src/rules/flake8_bugbear/rules/loop_iterator_mutated.rs</code>:156 on 2024-01-25 13:32</div>
+            <div class="timeline-body"><p>We will need <code>ExprContext::Store</code>, and quite some more additions (see https://github.com/PyCQA/flake8-bugbear/issues/454), but I don't want to pollute the current review with this for your ease.</p>
+<p>I'd add all these improvements later on, once this PR would be ready.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mimre25">@mimre25</a> on 2024-01-25 13:37</div>
+            <div class="timeline-body"><p>Do you have any suggestion on how to set up the work environment?</p>
+<p>In general I think <code>rust</code>'s incremental builds are a good idea, but damn they eat up like 10+gb for this project :grimacing:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-25 14:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/flake8_bugbear/rules/loop_iterator_mutated.rs</code>:68 on 2024-01-25 14:39</div>
+            <div class="timeline-body"><p>I would say that should not be caught, since we can't know that <code>a()</code> returns the same object.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-25 15:03</div>
+            <div class="timeline-body"><p>Awesome, I should be able to review and merge this today!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/trag1c">@trag1c</a> on <code>crates/ruff_linter/src/rules/flake8_bugbear/rules/loop_iterator_mutated.rs</code>:95 on 2024-01-25 15:24</div>
+            <div class="timeline-body"><p>I think you should use the <a href="https://doc.rust-lang.org/std/macro.unreachable.html"><code>unreachable!()</code></a> macro.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/trag1c">@trag1c</a> reviewed on 2024-01-25 15:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mimre25">@mimre25</a> reviewed on 2024-01-25 17:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/mimre25">@mimre25</a> on <code>crates/ruff_linter/src/rules/flake8_bugbear/rules/loop_iterator_mutated.rs</code>:68 on 2024-01-25 17:04</div>
+            <div class="timeline-body"><p>ok, then I think I can use <code>compose_call_path</code> - I was just worrying that it returns <code>None</code> whenever there is <code>a()</code> in the call path.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mimre25">@mimre25</a> on 2024-01-25 17:07</div>
+            <div class="timeline-body"><p>@charliermarsh please hold off from merging, I still want to remote the <code>to_name_str</code> function and use <code>collect_call_path</code> instead.</p>
+<p>Also, in <code>flake8-bugbear</code> there is currently the motion going on to make this an optional rule (disabled per default) as there are some false positives stemming from the python standard library - See the discussion in https://github.com/PyCQA/flake8-bugbear/issues/455</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-25 17:22</div>
+            <div class="timeline-body"><p>@mimre25 - Roger that!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @charliermarsh on 2024-01-25 17:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-25 17:30</div>
+            <div class="timeline-body"><p>@mimre25 - I'm going to convert to draft for now just to help manage our review workflow.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-04-08 07:00</div>
+            <div class="timeline-body"><p>I close because it is stale. Please re-open if you plan to follow up on the remaining work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-04-08 07:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mimre25">@mimre25</a> on 2024-04-08 14:16</div>
+            <div class="timeline-body"><p>Sorry for leaving this stale for so long.</p>
+<p>I was quite busy and had planned to finish this up in the next couple of weeks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @MichaReiser on 2024-04-08 16:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/mimre25">@mimre25</a> on <code>crates/ruff_linter/src/rules/flake8_bugbear/rules/loop_iterator_mutated.rs</code>:44 on 2024-04-11 15:11</div>
+            <div class="timeline-body"><p>Could it be that the function was removed or renamed? I can't find it anymore.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mimre25">@mimre25</a> reviewed on 2024-04-11 15:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mimre25">@mimre25</a> on 2024-04-11 15:15</div>
+            <div class="timeline-body"><p>Alright, I finally got around to finish this.</p>
+<p>This is now on parity with flake8-bugbear's B909 (it was renamed).</p>
+<p>Main new features in the new commits are described in https://github.com/PyCQA/flake8-bugbear/issues/454.
+Further, the rule now allows mutations before an unconditional break.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @mimre25 on 2024-04-11 15:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-04-11 15:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-11 15:30</div>
+            <div class="timeline-body"><p>Thanks! I'll take a look.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/trag1c">@trag1c</a> on <code>crates/ruff_linter/resources/test/fixtures/flake8_bugbear/B909.py</code>:3 on 2024-04-11 16:25</div>
+            <div class="timeline-body"><p>Assuming a typo :D</p>
+<pre><code class="language-suggestion">B909 - on lines 11, 25, 26, 40, 46
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/trag1c">@trag1c</a> reviewed on 2024-04-11 16:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "feat(rules): Implement flake8-bugbear B038 rule" to "[`flake8-bugbear`] Implement `B909`" by @charliermarsh on 2024-04-11 17:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[`flake8-bugbear`] Implement `B909`" to "[`flake8-bugbear`] Implement `loop-iterator-mutation` (`B909`)" by @charliermarsh on 2024-04-11 18:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-04-11 18:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/flake8_bugbear/rules/loop_iterator_mutation.rs</code>:182 on 2024-04-11 18:27</div>
+            <div class="timeline-body"><p>All these <code>&amp;Box&lt;Expr&gt;</code> were changed to <code>&amp;Expr</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-04-11 18:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-04-11 18:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/flake8_bugbear/rules/loop_iterator_mutation.rs</code>:161 on 2024-04-11 18:27</div>
+            <div class="timeline-body"><p>All these <code>&amp;Vec&lt;Expr&gt;</code> were changed to <code>&amp;[Expr]</code>. You almost always want the latter -- it's a lot more flexible, because any reference to a vector can be passed in, but so can other kinds of slices.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-04-11 19:00</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>ℹ️ ecosystem check <strong>encountered linter errors</strong>. (no lint changes; 1 project error)</p>
+<details><summary><a href="https://github.com/pypa/setuptools">pypa/setuptools</a> (error)</summary>
+<p>
+
+<pre><code>Cannot overwrite a value (at line 26, column 2)
+</code></pre>
+</p>
+</details>
+
+<h3>Linter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+5 -0 violations, +0 -0 fixes in 3 projects; 1 project error; 40 projects unchanged)</p>
+<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+2 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/apache/airflow/blob/05ba268d05787bfbec6b1f5eefde2c90c64bf6b5/airflow/models/taskinstance.py#L3758'>airflow/models/taskinstance.py:3758:17:</a> B909 Mutation to loop iterable `new_dict` during iteration
++ <a href='https://github.com/apache/airflow/blob/05ba268d05787bfbec6b1f5eefde2c90c64bf6b5/airflow/providers/openlineage/sqlparser.py#L353'>airflow/providers/openlineage/sqlparser.py:353:13:</a> B909 Mutation to loop iterable `tables` during iteration
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/python/mypy">python/mypy</a> (+1 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/python/mypy/blob/e2fc1f28935806ca04b18fab277217f583b51594/mypy/build.py#L3200'>mypy/build.py:3200:21:</a> B909 Mutation to loop iterable `new` during iteration
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/scikit-build/scikit-build">scikit-build/scikit-build</a> (+2 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/scikit-build/scikit-build/blob/c97af94e3a5d4ba2228cd5425e1290e5bb4ee30a/tests/pytest_helpers.py#L49'>tests/pytest_helpers.py:49:13:</a> B909 Mutation to loop iterable `expected_content` during iteration
++ <a href='https://github.com/scikit-build/scikit-build/blob/c97af94e3a5d4ba2228cd5425e1290e5bb4ee30a/tests/pytest_helpers.py#L92'>tests/pytest_helpers.py:92:13:</a> B909 Mutation to loop iterable `expected_content` during iteration
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/pypa/setuptools">pypa/setuptools</a> (error)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre><code>Cannot overwrite a value (at line 26, column 2)
+</code></pre>
+</p>
+</details>
+<details><summary>Changes by rule (1 rules affected)</summary>
+<p>
+
+<p>| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| B909 | 5 | 5 | 0 | 0 | 0 |</p>
+</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-11 19:16</div>
+            <div class="timeline-body"><p>There are some false positives in here. For example:</p>
+<pre><code class="language-python">for auth_method in authentication_methods_dict:
+    authentication_methods_dict[auth_method] = True
+</code></pre>
+<p>That's probably the most common?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-04-11 19:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-04-11 19:52</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 22:37:32 UTC
+    </footer>
+</body>
+</html>

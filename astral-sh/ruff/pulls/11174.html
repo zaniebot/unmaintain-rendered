@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add convenience methods for iterating over all parameter nodes in a function - astral-sh/ruff #11174</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add convenience methods for iterating over all parameter nodes in a function</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/11174">#11174</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2024-04-27 12:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-04-27 12:53</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>A pretty common pattern in our linter rules is the need to iterate over all parameters in a function. That ends up looking pretty verbose currently -- something like this:</p>
+<pre><code class="language-rs">for parameter in parameters
+    .posonlyargs
+    .iter()
+    .chain(&amp;parameters.args)
+    .map(|param| param.parameter)
+    .chain(parameters.vararg.as_deref())
+    .chain(parameters.kwonlyargs.iter().map(|param| param.parameter))
+    .chain(parameters.kwarg.as_deref())
+{
+    do_the_check()
+}
+</code></pre>
+<p>It's also pretty easy to get this pattern subtly incorrect: for example, several of our rules currently incorrectly do <code>parameters.args.iter().chain(&amp;parameters.posonlyargs)</code>, but positional-only parameters always precede positional-or-keyword parameters in Python.</p>
+<p>This PR adds two convenience methods to the <code>ast::Parameters</code> struct in <code>ruff_python_ast/src/nodes.rs</code>, to make iterating over all parameters more ergonomic. <code>iter_non_variadic_params()</code> iterates over just the non-variadic parameters (<code>posonlyargs</code>, <code>args</code> and <code>kwonlyargs</code>), and <code>iter_all_params()</code> iterates over all parameters in a function, including any variadic paramerers (<code>vararg</code> and <code>kwarg</code>). Using these convenience methods in our linter rules significantly reduces duplication.</p>
+<h2>Test Plan</h2>
+<p><code>cargo test</code>. One parser snapshot changes slightly, but I think it's for the better: the syntax errors are now reported in the order that they appear in the source code. Previously, they were reported out of order.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @AlexWaygood on 2024-04-27 12:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @AlexWaygood on 2024-04-27 12:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @AlexWaygood on 2024-04-27 12:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Add convenience methods for iterating over all parameters in a function" to "Add convenience methods for iterating over all parameter nodes in a function" by @AlexWaygood on 2024-04-27 12:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-04-27 13:11</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:3181 on 2024-04-27 17:36</div>
+            <div class="timeline-body"><p>Nit: I think we should call this <code>AnyParameterRef</code> to make it clear that it is a reference and not an owned parameter (we could expose the same iterators with owned values)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:3275 on 2024-04-27 17:37</div>
+            <div class="timeline-body"><p>I would name this <code>iter()</code> which is the first method that I normally try on any iterable type.</p>
+<p>You can also consider implementing</p>
+<pre><code class="language-rust">impl&lt;'a&gt; IntoIterator&lt;Item=&amp;'a AnyParameter&gt; for &amp;'a Parameters {
+	// 
+
+}
+</code></pre>
+<p>It will probably require you to write a manual implementation of the <code>Iterator</code> or write up a very long type for the <code>IntoIter</code> type.</p>
+<p>What it gives you is that</p>
+<pre><code class="language-rust">for parameter in &amp;parameters {
+	/// 
+}
+</code></pre>
+<p>works.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pylint/rules/property_with_parameters.rs</code>:67 on 2024-04-27 17:40</div>
+            <div class="timeline-body"><p>The advantage of defining your own iterator type (vs using chaining) is that you could implement <code>ExactSizeIterator</code> and you could then call <code>.len()</code> here.</p>
+<p>But I think the better solution here is to add a method to <code>parameters</code> to get this length</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-04-27 17:40</div>
+            <div class="timeline-body"><p>I like this a lot. I did not review all code changes. But we should have done this a long time ago :D</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-04-27 17:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:3275 on 2024-04-27 17:46</div>
+            <div class="timeline-body"><blockquote>
+<p>I would name this <code>iter()</code> which is the first method that I normally try on any iterable type.</p>
+</blockquote>
+<p>I wondered about this. In the end I opted for the name I have now, as I felt like it emphasised the fact that <code>iter_all_params()</code> and <code>iter_non_variadic_params()</code> return iterators of different types. But I see your point; I'll go for the more conventional name 👍</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-04-27 18:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:3275 on 2024-04-27 18:38</div>
+            <div class="timeline-body"><blockquote>
+<p>or write up a very long type for the <code>IntoIter</code> type.</p>
+</blockquote>
+<p>Seems like it would be something like</p>
+<pre><code class="language-rs">type ParameterIterator&lt;'a&gt; = Chain&lt;
+    Chain&lt;
+        Chain&lt;
+            Map&lt;
+                Chain&lt;
+                    std::slice::Iter&lt;'a, ParameterWithDefault&gt;,
+                    std::slice::Iter&lt;'a, ParameterWithDefault&gt;,
+                &gt;,
+                dyn FnOnce(&amp;ParameterWithDefault) -&gt; AnyParameterRef&lt;'a&gt;,
+            &gt;,
+            std::option::IntoIter&lt;AnyParameterRef&lt;'a&gt;&gt;,
+        &gt;,
+        Map&lt;
+            std::slice::Iter&lt;'a, ParameterWithDefault&gt;,
+            dyn FnOnce(ParameterWithDefault) -&gt; AnyParameterRef&lt;'a&gt;,
+        &gt;,
+    &gt;,
+    std::option::IntoIter&lt;AnyParameterRef&lt;'a&gt;&gt;,
+&gt;;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-04-27 19:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:3275 on 2024-04-27 19:11</div>
+            <div class="timeline-body"><p>Hehe yep :D The dyn part surprises me a bit</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/pylint/rules/property_with_parameters.rs</code>:67 on 2024-04-27 21:38</div>
+            <div class="timeline-body"><blockquote>
+<p>But I think the better solution here is to add a method to <code>parameters</code> to get this length</p>
+</blockquote>
+<p>Currently the rule is doing something a little odd: it's checking how many nonvariadic parameters there are in this function, but paying no attention to how many variadic parameters there are. That makes no sense to me based on what the rule is supposed to be checking: I think it makes just as much sense to emit an error if an <code>@property</code>-decorated function has <code>*args</code> or <code>**kwargs</code> parameters, as that's just as invalid.</p>
+<p>I think maybe I'll just revert all changes to this file for now, and fix the bug (at least, I think it's a bug) in a separate PR, with added tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-04-27 21:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-04-27 21:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:3275 on 2024-04-27 21:56</div>
+            <div class="timeline-body"><blockquote>
+<p>The dyn part surprises me a bit</p>
+</blockquote>
+<p>Yeah, that part is the only bit that doesn't compile, and I don't know how to make it compile :P</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:3275 on 2024-04-28 07:34</div>
+            <div class="timeline-body"><p>It might be easier to write your own iterator type. It will require a lot of boilerplate</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-04-28 07:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-04-28 14:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:3275 on 2024-04-28 14:44</div>
+            <div class="timeline-body"><p>I managed to get a custom iterator type working. It did indeed take a lot of boilerplate. I'm not sure that it's worth it right now, as there would only be three callsites currently where we'd be able to directly make use of the <code>impl&lt;'a&gt; IntoIterator for &amp;'a Parameters</code> implementation:</p>
+<details>
+
+<pre><code class="language-diff">diff --git a/crates/ruff_linter/src/checkers/ast/mod.rs b/crates/ruff_linter/src/checkers/ast/mod.rs
+index c4794749f..566924b53 100644
+--- a/crates/ruff_linter/src/checkers/ast/mod.rs
++++ b/crates/ruff_linter/src/checkers/ast/mod.rs
+@@ -604,7 +604,7 @@ impl&lt;'a&gt; Visitor&lt;'a&gt; for Checker&lt;'a&gt; {
+                     self.visit_type_params(type_params);
+                 }
+ 
+-                for parameter in parameters.iter() {
++                for parameter in &amp;**parameters {
+                     if let Some(expr) = parameter.annotation() {
+                         if singledispatch &amp;&amp; !parameter.is_variadic() {
+                             self.visit_runtime_required_annotation(expr);
+diff --git a/crates/ruff_python_ast/src/node.rs b/crates/ruff_python_ast/src/node.rs
+index 3599e49c8..d3192e275 100644
+--- a/crates/ruff_python_ast/src/node.rs
++++ b/crates/ruff_python_ast/src/node.rs
+@@ -4222,7 +4222,7 @@ impl AstNode for Parameters {
+     where
+         V: PreorderVisitor&lt;'a&gt; + ?Sized,
+     {
+-        for parameter in self.iter() {
++        for parameter in self {
+             match parameter {
+                 AnyParameterRef::NonVariadic(parameter_with_default) =&gt; {
+                     visitor.visit_parameter_with_default(parameter_with_default);
+diff --git a/crates/ruff_python_ast/src/nodes.rs b/crates/ruff_python_ast/src/nodes.rs
+index b464ffe68..568703fba 100644
+--- a/crates/ruff_python_ast/src/nodes.rs
++++ b/crates/ruff_python_ast/src/nodes.rs
+@@ -2,6 +2,7 @@
+ 
+ use std::fmt;
+ use std::fmt::Debug;
++use std::iter::FusedIterator;
+ use std::ops::Deref;
+ use std::slice::{Iter, IterMut};
+ use std::sync::OnceLock;
+@@ -3271,14 +3272,8 @@ impl Parameters {
+     }
+ 
+     /// Returns an iterator over all parameters included in this [`Parameters`] node.
+-    pub fn iter(&amp;self) -&gt; impl Iterator&lt;Item = AnyParameterRef&gt; {
+-        self.posonlyargs
+-            .iter()
+-            .chain(&amp;self.args)
+-            .map(AnyParameterRef::NonVariadic)
+-            .chain(self.vararg.as_deref().map(AnyParameterRef::Variadic))
+-            .chain(self.kwonlyargs.iter().map(AnyParameterRef::NonVariadic))
+-            .chain(self.kwarg.as_deref().map(AnyParameterRef::Variadic))
++    pub fn iter(&amp;self) -&gt; ParametersIterator {
++        ParametersIterator::new(self)
+     }
+ 
+     /// Returns the total number of parameters included in this [`Parameters`] node.
+@@ -3305,6 +3300,81 @@ impl Parameters {
+     }
+ }
+ 
++pub struct ParametersIterator&lt;'a&gt; {
++    parameters: &amp;'a Parameters,
++    index: usize,
++}
++
++impl&lt;'a&gt; ParametersIterator&lt;'a&gt; {
++    fn new(parameters: &amp;'a Parameters) -&gt; Self {
++        Self {
++            parameters,
++            index: 0,
++        }
++    }
++}
++
++impl&lt;'a&gt; Iterator for ParametersIterator&lt;'a&gt; {
++    type Item = AnyParameterRef&lt;'a&gt;;
++
++    fn next(&amp;mut self) -&gt; Option&lt;Self::Item&gt; {
++        if self.index &gt;= self.parameters.len() {
++            return None;
++        }
++
++        let mut index = self.index;
++        self.index += 1;
++
++        let Parameters {
++            range: _,
++            posonlyargs,
++            args,
++            vararg,
++            kwonlyargs,
++            kwarg,
++        } = self.parameters;
++
++        if index &lt; posonlyargs.len() {
++            return Some(AnyParameterRef::NonVariadic(&amp;posonlyargs[index]));
++        }
++        index -= posonlyargs.len();
++        if index &lt; args.len() {
++            return Some(AnyParameterRef::NonVariadic(&amp;args[index]));
++        }
++        index -= args.len();
++        if let Some(vararg) = vararg {
++            if index == 0 {
++                return Some(AnyParameterRef::Variadic(vararg));
++            }
++            index -= 1;
++        }
++        if index &lt; kwonlyargs.len() {
++            return Some(AnyParameterRef::NonVariadic(&amp;kwonlyargs[index]));
++        }
++        if let Some(kwarg) = kwarg.as_deref() {
++            Some(AnyParameterRef::Variadic(kwarg))
++        } else {
++            unreachable!()
++        }
++    }
++
++    fn size_hint(&amp;self) -&gt; (usize, Option&lt;usize&gt;) {
++        let remaining = self.parameters.len() - self.index;
++        (remaining, Some(remaining))
++    }
++}
++
++impl&lt;'a&gt; ExactSizeIterator for ParametersIterator&lt;'a&gt; {}
++impl&lt;'a&gt; FusedIterator for ParametersIterator&lt;'a&gt; {}
++
++impl&lt;'a&gt; IntoIterator for &amp;'a Parameters {
++    type IntoIter = ParametersIterator&lt;'a&gt;;
++    type Item = AnyParameterRef&lt;'a&gt;;
++    fn into_iter(self) -&gt; Self::IntoIter {
++        self.iter()
++    }
++}
++
+ /// An alternative type of AST `arg`. This is used for each function argument that might have a default value.
+ /// Used by `Arguments` original type.
+ ///
+diff --git a/crates/ruff_python_parser/src/parser/statement.rs b/crates/ruff_python_parser/src/parser/statement.rs
+index 80603ecbc..69d7ec8a5 100644
+--- a/crates/ruff_python_parser/src/parser/statement.rs
++++ b/crates/ruff_python_parser/src/parser/statement.rs
+@@ -3374,7 +3374,7 @@ impl&lt;'src&gt; Parser&lt;'src&gt; {
+         let mut all_arg_names =
+             FxHashSet::with_capacity_and_hasher(parameters.len(), BuildHasherDefault::default());
+ 
+-        for parameter in parameters.iter() {
++        for parameter in parameters {
+             let range = parameter.name().range();
+             let param_name = parameter.name().as_str();
+             if !all_arg_names.insert(param_name) {
+</code></pre>
+</details>
+
+<p>What do you think? Worth it or not?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:3275 on 2024-04-29 07:06</div>
+            <div class="timeline-body"><p>I personally don't mind the iterator boiler plate. It's code that we write once and we benefit from an improved API in all our downstream crates.</p>
+<p>I would probably write this without using indices (which is closer to the iterator chain).</p>
+<pre><code class="language-rust">struct ParametersIter&lt;'a&gt; {
+    posonlyargs: std::slice::Iter&lt;'a, ParameterWithDefault&gt;,
+    args: std::slice::Iter&lt;'a, ParameterWithDefault&gt;,
+    vararg: Option&lt;&amp;'a Parameter&gt;,
+    kwonlyargs: std::slice::Iter&lt;'a, ParameterWithDefault&gt;,
+    kwarg: Option&lt;&amp;'a Parameter&gt;,
+}
+
+impl&lt;'a&gt; Iterator for ParametersIter&lt;'a&gt; {
+    type Item = AnyParameterRef&lt;'a&gt;;
+
+    fn next(&amp;mut self) -&gt; Option&lt;Self::Item&gt; {
+        if let Some(posonly) = self.posonlyargs.next() {
+            return Some(AnyParameterRef::NonVariadic(posonly));
+        }
+
+        if let Some(arg) = self.args.next() {
+            return Some(AnyParameterRef::NonVariadic(arg));
+        }
+
+        if let Some(vararg) = self.vararg.take() {
+            return Some(AnyParameterRef::Variadic(vararg));
+        }
+
+        if let Some(kwonly) = self.kwonlyargs.next() {
+            return Some(AnyParameterRef::NonVariadic(kwonly));
+        }
+
+        Some(AnyParameterRef::Variadic(self.kwarg.take()?))
+    }
+
+    fn size_hint(&amp;self) -&gt; (usize, Option&lt;usize&gt;) {
+        let posonlyargs_len = self.posonlyargs.len();
+        let args_len = self.args.len();
+        let kwonlyargs_len = self.kwonlyargs.len();
+        let vararg_len = self.vararg.is_some() as usize;
+        let kwarg_len = self.kwarg.is_some() as usize;
+
+        let compute_upper = || {
+            posonlyargs_len
+                .checked_add(args_len)?
+                .checked_add(kwonlyargs_len)?
+                .checked_add(vararg_len)?
+                .checked_add(kwarg_len)
+        };
+
+        let lower = posonlyargs_len
+            .saturating_add(args_len)
+            .saturating_add(kwonlyargs_len)
+            .saturating_add(vararg_len)
+            .saturating_add(kwarg_len);
+
+        let upper = compute_upper();
+        (lower, upper)
+    }
+}
+
+impl FusedIterator for ParametersIter&lt;'_&gt; {}
+
+impl DoubleEndedIterator for ParametersIter&lt;'_&gt; {
+    fn next_back(&amp;mut self) -&gt; Option&lt;Self::Item&gt; {
+        if let Some(kwarg) = self.kwarg.take() {
+            return Some(AnyParameterRef::Variadic(kwarg));
+        }
+
+        if let Some(kwonly) = self.kwonlyargs.next() {
+            return Some(AnyParameterRef::NonVariadic(kwonly));
+        }
+
+        if let Some(vararg) = self.vararg.take() {
+            return Some(AnyParameterRef::Variadic(vararg));
+        }
+
+        if let Some(arg) = self.args.next() {
+            return Some(AnyParameterRef::NonVariadic(arg));
+        }
+
+        Some(AnyParameterRef::NonVariadic(self.posonlyargs.next()?))
+    }
+}
+</code></pre>
+<p>If we want to be picky, then implementing <code>ExactSizeIterator</code> isn't possible because adding the length of two vectors can, in theory, overflow.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-04-29 07:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> approved on 2024-04-29 08:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-04-29 08:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:3275 on 2024-04-29 08:47</div>
+            <div class="timeline-body"><blockquote>
+<p>If we want to be picky, then implementing <code>ExactSizeIterator</code> isn't possible because adding the length of two vectors can, in theory, overlap.</p>
+</blockquote>
+<p>I had thought that there was a hard limit of 255 on the number of parameters a Python function was allowed to have. But it seems like that was actually removed many versions ago. So this indeed isn't safe; thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-04-29 09:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:3275 on 2024-04-29 09:13</div>
+            <div class="timeline-body"><p>We could argue that implementing <code>ExactSizeIterator</code> is safe for us (by calling .unwrap() on the <code>checked_add chain</code>). it is safe because no program with a max text size of 4GB can have more than u32 parameters. However, that's only true on platforms where <code>usize</code> is at least a <code>u32</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:3302 on 2024-04-29 09:14</div>
+            <div class="timeline-body"><p>Oh, I suppose this could theoretically overflow, given that Python functions can have an arbitrary number of parameters, so the number of parameters could theoretically exceed <code>usize::MAX</code>. This isn't a new issue -- we were already doing this calculation in <code>crates/ruff_python_formatter/src/other/parameters.rs</code> and <code>crates/ruff_python_parser/src/parser/statement.rs</code>. But maybe we should do <code>checked_add()</code> here and return an <code>Option</code>?</p>
+<p>The formatter function that uses this method returns a <code>Result</code>, so we should be able to gracefully handle an <code>Option</code> there. The parser function that calls this might be slightly trickier to refactor.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-04-29 09:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-04-29 09:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:3302 on 2024-04-29 09:18</div>
+            <div class="timeline-body"><p>I would need to look into the supported platforms. But I think it's safe to say that it's impossible that this overflows for files that are &lt;= 4GB and the platform uses at least a <code>u32</code> as <code>usize</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2024-04-29 10:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2024-04-29 10:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-04-29 10:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-04-29 11:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/pylint/rules/property_with_parameters.rs</code>:67 on 2024-04-29 11:31</div>
+            <div class="timeline-body"><p>Followup PR at #11200</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 22:37:43 UTC
+    </footer>
+</body>
+</html>

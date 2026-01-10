@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`pycodestyle`] Do not trigger `E3` rules on defs following a function/method with a dummy body - astral-sh/ruff #10704</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>pycodestyle</code>] Do not trigger <code>E3</code> rules on defs following a function/method with a dummy body</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/10704">#10704</a>
+        opened by <a href="https://github.com/hoel-bagard">@hoel-bagard</a>
+        on 2024-04-01 12:21
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/hoel-bagard">@hoel-bagard</a> on 2024-04-01 12:21</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Closes #10211</p>
+<p>This PR keeps track of functions with a dummy body, and does not trigger <code>E301</code>, <code>E302</code> or <code>E306</code> on defs following functions with a dummy body.</p>
+<h2>Test Plan</h2>
+<p>The code snippets from the issue have been added to the fixture.
+On that note, so far the test cases for the <code>E3</code> rules have been grouped by rule, since it made things easier when checking the results by hand. However it now makes it harder to review the snapshots (here nothing really changed, only line numbers), so I can add the new tests at the end of the fixture file if that makes things easier.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-04-01 12:40</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+0 -5 violations, +0 -0 fixes in 1 projects; 43 projects unchanged)</p>
+<details><summary><a href="https://github.com/zulip/zulip">zulip/zulip</a> (+0 -5 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/zulip/zulip/blob/e7a19aca757820fe53f896ab15ad4128bf94838a/scripts/lib/zulip_tools.py#L601'>scripts/lib/zulip_tools.py:601:1:</a> E302 [*] Expected 2 blank lines, found 0
+- <a href='https://github.com/zulip/zulip/blob/e7a19aca757820fe53f896ab15ad4128bf94838a/zerver/decorator.py#L556'>zerver/decorator.py:556:1:</a> E302 [*] Expected 2 blank lines, found 0
+- <a href='https://github.com/zulip/zulip/blob/e7a19aca757820fe53f896ab15ad4128bf94838a/zerver/lib/validator.py#L268'>zerver/lib/validator.py:268:1:</a> E302 [*] Expected 2 blank lines, found 0
+- <a href='https://github.com/zulip/zulip/blob/e7a19aca757820fe53f896ab15ad4128bf94838a/zproject/config.py#L33'>zproject/config.py:33:1:</a> E302 [*] Expected 2 blank lines, found 0
+- <a href='https://github.com/zulip/zulip/blob/e7a19aca757820fe53f896ab15ad4128bf94838a/zproject/config.py#L56'>zproject/config.py:56:1:</a> E302 [*] Expected 2 blank lines, found 0
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (1 rules affected)</summary>
+<p>
+
+<p>| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| E302 | 5 | 0 | 5 | 0 | 0 |</p>
+</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @hoel-bagard on 2024-04-01 12:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2024-04-08 13:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @MichaReiser on 2024-04-08 13:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/resources/test/fixtures/pycodestyle/E30.py</code>:457 on 2024-04-08 13:26</div>
+            <div class="timeline-body"><p>Would you mind adding a test where the <code>...</code> is on its own line?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pycodestyle/rules/blank_lines.rs</code>:782 on 2024-04-08 13:30</div>
+            <div class="timeline-body"><p>Should we move this check into the <code>Function</code> branch of the above match statement? Because I think it shouldn't apply if we have</p>
+<pre><code class="language-python">class A:...
+class B: ...
+</code></pre>
+<p>We could write it as:</p>
+<pre><code>state.follows = if logical_line.last_token == TokenKind::Ellipsis {
+    Follows::DumyDef
+} else {
+    Follows::Def
+};
+</code></pre>
+<p>(could be worth adding a test for this)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pycodestyle/rules/blank_lines.rs</code>:1039 on 2024-04-08 13:31</div>
+            <div class="timeline-body"><p>Nit: It might be worth extracting this check into a small helper function to avoid repeating it three times (and it gives as the opportunity to give it a meaningful name).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-04-08 13:31</div>
+            <div class="timeline-body"><p>Thank you.</p>
+<p>The ecosystem checks look good to me. I recommend adding a few more tests (see inline comments) but we can then land your change.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/hoel-bagard">@hoel-bagard</a> reviewed on 2024-04-10 13:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/hoel-bagard">@hoel-bagard</a> on <code>crates/ruff_linter/src/rules/pycodestyle/rules/blank_lines.rs</code>:782 on 2024-04-10 13:41</div>
+            <div class="timeline-body"><p>Done in 09d0bdd27.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/hoel-bagard">@hoel-bagard</a> reviewed on 2024-04-10 13:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/hoel-bagard">@hoel-bagard</a> on <code>crates/ruff_linter/resources/test/fixtures/pycodestyle/E30.py</code>:457 on 2024-04-10 13:47</div>
+            <div class="timeline-body"><p>I can, but that should be a violation, right ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-04-10 13:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/resources/test/fixtures/pycodestyle/E30.py</code>:457 on 2024-04-10 13:54</div>
+            <div class="timeline-body"><p>Yes, it should require a blank line if the body is not collapsed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/hoel-bagard">@hoel-bagard</a> reviewed on 2024-04-10 14:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/hoel-bagard">@hoel-bagard</a> on <code>crates/ruff_linter/resources/test/fixtures/pycodestyle/E30.py</code>:457 on 2024-04-10 14:23</div>
+            <div class="timeline-body"><p>Done in <a href="https://github.com/astral-sh/ruff/pull/10704/commits/71975001dce8113be4e0e0b8f32550233a7ac74a">7197500</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/hoel-bagard">@hoel-bagard</a> reviewed on 2024-04-10 14:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/hoel-bagard">@hoel-bagard</a> on <code>crates/ruff_linter/src/rules/pycodestyle/rules/blank_lines.rs</code>:1039 on 2024-04-10 14:23</div>
+            <div class="timeline-body"><p>Done in <a href="https://github.com/astral-sh/ruff/pull/10704/commits/6751ef14b5673432b40a8b5c8a44b95a4bc02d70">6751ef1</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-04-11 06:48</div>
+            <div class="timeline-body"><p>Thanks for addressing the feedback. I overlooked this last time but the rule should continue to error if there's only one blank line between two functions (it should either be 0 or 2, but never 1).  I found this in the ecosystem checks.</p>
+<pre><code class="language-python">@overload
+def components(models: dict[str, Model], wrap_script: bool = ..., # type: ignore[overload-overlap] # XXX: mypy bug
+    wrap_plot_info: Literal[True] = ..., theme: ThemeLike = ...) -&gt; tuple[str, dict[str, str]]: ...
+@overload
+def components(models: dict[str, Model], wrap_script: bool = ..., wrap_plot_info: Literal[False] = ...,
+    theme: ThemeLike = ...) -&gt; tuple[str, dict[str, RenderRoot]]: ...
+
+def components(models: Model | Sequence[Model] | dict[str, Model], wrap_script: bool = True,
+               wrap_plot_info: bool = True, theme: ThemeLike = None) -&gt; tuple[str, Any]:
+    ''' Return HTML components to embed a Bokeh plot. The data for the plot is
+    stored directly in the returned HTML.
+
+    An example can be found in examples/embed/embed_multiple.py'''
+</code></pre>
+<p>This should error because there's only a single blank line between the implementation and the last <code>@overload</code> declaration.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @hoel-bagard on 2024-04-13 09:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hoel-bagard">@hoel-bagard</a> on 2024-04-13 09:05</div>
+            <div class="timeline-body"><p>I didn't think about that, I've fixed it in <a href="https://github.com/astral-sh/ruff/pull/10704/commits/ad7e466444904a3b1c3bc035ce91e9af23e9b72d">ad7e466</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-04-15 08:23</div>
+            <div class="timeline-body"><p>Thanks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2024-04-15 08:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-04-15 08:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-04-15 08:27</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 22:37:32 UTC
+    </footer>
+</body>
+</html>

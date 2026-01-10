@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Implement hover menu support for ruff-server; Issue #10595 - astral-sh/ruff #11096</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Implement hover menu support for ruff-server; Issue #10595</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/11096">#11096</a>
+        opened by <a href="https://github.com/nolanking90">@nolanking90</a>
+        on 2024-04-23 00:36
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/nolanking90">@nolanking90</a> on 2024-04-23 00:36</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>Add support for hover menu to ruff_server, as requested in <a href="https://github.com/astral-sh/ruff/issues/10595">10595</a>.
+Majority of new code is in hover.rs.
+I reused the regex from ruff-lsp's implementation. Also reused the format_rule_text function from ruff/src/commands/rule.rs
+Added capability registration in server.rs, and added the handler to api.rs.</p>
+<h2>Test Plan</h2>
+<p>Tested in NVIM v0.10.0-dev-2582+g2a8cef6bd, configured with lspconfig using the default options (other than cmd pointing to my test build, with options &quot;server&quot; and &quot;--preview&quot;). OS: Ubuntu 24.04, kernel 6.8.0-22.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2024-04-23 00:42</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/nolanking90:main">CodSpeed Performance Report</a></h2>
+<h3>Merging #11096 will <strong>not alter performance</strong></h3>
+<p><sub>Comparing <code>nolanking90:main</code> (8c3130e) with <code>main</code> (455d22c)</sub></p>
+<h3>Summary</h3>
+<p><code>✅ 30</code> untouched benchmarks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @snowsignal on 2024-04-23 00:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>Cargo.lock</code>:350 on 2024-04-23 00:51</div>
+            <div class="timeline-body"><p>The lockfile changes seem unrelated to this PR - can you revert them?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-04-23 00:54</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @snowsignal by @charliermarsh on 2024-04-23 01:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @snowsignal by @charliermarsh on 2024-04-23 01:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_server/src/server/api/requests/hover.rs</code>:21 on 2024-04-23 02:19</div>
+            <div class="timeline-body"><p>You can borrow the URL here:</p>
+<pre><code class="language-suggestion">        std::borrow::Cow::Borrowed(&amp;params.text_document_position_params.text_document.uri)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_server/src/server/api/requests/hover.rs</code>:36 on 2024-04-23 02:38</div>
+            <div class="timeline-body"><p>I recommend removing <code>Result</code> from the return type and wrapping it in <code>Ok(...)</code> inside of <code>Hover::run_with_snapshot</code>. This would also let you remove the <code>allow(clippy::unnecessary_wraps)</code>.</p>
+<pre><code class="language-suggestion">pub(crate) fn hover(
+    snapshot: &amp;DocumentSnapshot,
+    position: &amp;types::TextDocumentPositionParams,
+) -&gt; Option&lt;types::Hover&gt; {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_server/src/server/api/requests/hover.rs</code>:40 on 2024-04-23 02:47</div>
+            <div class="timeline-body"><p>The document already has a line index on it, so you can utilize it without having to allocate a new string.</p>
+<pre><code class="language-suggestion">    let document = snapshot.document();
+    let line_number: usize = position
+        .position
+        .line
+        .try_into()
+        .expect(&quot;line number should fit within a usize&quot;);
+    let line_range = document.index().line_range(
+        OneIndexed::from_zero_indexed(line_number),
+        document.contents(),
+    );
+    let line = &amp;document.contents()[line_range];
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_server/src/server/api/requests/hover.rs</code>:68 on 2024-04-23 03:26</div>
+            <div class="timeline-body"><p>I think we could simplify things here by using a second regex, similar to <a href="https://github.com/astral-sh/ruff-lsp/blob/905bf3620581f2c9efd6692aca199ddc9b8d9373/ruff_lsp/server.py#L774-L798"><code>ruff-lsp</code>'s implementation</a>. Also, we should favor early returns over <code>.unwrap()</code>ing, just to be safe.</p>
+<p>(This suggestion assumes that the function return value was changed to <code>Option&lt;types::Hover&gt;</code>)</p>
+<pre><code class="language-suggestion">    let noqa_regex = Regex::new(r&quot;(?i:# (?:(?:ruff|flake8): )?(?P&lt;noqa&gt;noqa))(?::\s?(?P&lt;codes&gt;([A-Z]+[0-9]+(?:[,\s]+)?)+))?&quot;).unwrap();
+    let noqa_captures = noqa_regex.captures(line)?;
+    let codes_match = noqa_captures.name(&quot;codes&quot;)?;
+    let codes_start = codes_match.start();
+    let code_regex = Regex::new(r&quot;[A-Z]+[0-9]+&quot;).unwrap();
+    let cursor: usize = position
+        .position
+        .character
+        .try_into()
+        .expect(&quot;column number should fit within a usize&quot;);
+    let word = code_regex.find_iter(codes_match.as_str()).find(|code| {
+        cursor &gt; (code.start() + codes_start) &amp;&amp; cursor &lt;= (code.end() + codes_start)
+    })?;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_server/src/server/api/requests/hover.rs</code>:116 on 2024-04-23 03:27</div>
+            <div class="timeline-body"><p>My fault for not explaining this better, but we should still include this line in the output, just in a modified form since this isn't the CLI:</p>
+<pre><code class="language-suggestion">    if rule.is_preview() || rule.is_nursery() {
+        output.push_str(r&quot;This rule is in preview and is not stable.&quot;);
+        output.push('\n');
+        output.push('\n');
+    }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_server/src/server/api/requests/hover.rs</code>:127 on 2024-04-23 03:41</div>
+            <div class="timeline-body"><p>Nit: I think we can tweak the message slightly to be more descriptive of the issue, and also log this problem.</p>
+<pre><code class="language-suggestion">    if let Some(explanation) = rule.explanation() {
+        output.push_str(explanation.trim());
+    } else {
+        tracing::warn!(&quot;Rule {} does not have an explanation&quot;, rule.noqa_code());
+        output.push_str(&quot;An issue occurred: an explanation for this rule was not found.&quot;);
+    }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/snowsignal">@snowsignal</a> requested changes on 2024-04-23 04:02</div>
+            <div class="timeline-body"><p>Thank you for getting this done! You have the honor of being the first outside contributor for <code>ruff server</code> 😄</p>
+<p>There are a few things I'd like to improve before we merge this:</p>
+<ol>
+<li><strong>Error resiliency</strong> - there's a lot of <code>.unwrap()</code>s in here that could potentially panic in a real-world scenario. When I was testing this PR, I noticed that hovering over an incomplete <code>noqa</code> comment would cause the server to panic (for example: <code># noqa: RUF</code>). I've made some suggestions that use early returns in the place of potentially panicking functions like <code>.unwrap()</code>.</li>
+<li><strong>Code complexity</strong> - sections of this implementation are actually more complicated than they need to be. I've left suggestions on how we can simplify them.</li>
+</ol>
+<p>Once again, I appreciate you taking the time to implement this! This is going to be a nifty feature.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/nolanking90">@nolanking90</a> on <code>Cargo.lock</code>:350 on 2024-04-23 12:56</div>
+            <div class="timeline-body"><p>I reverted the lock file and pushed a commit, but now it's failing the check about the cargo.lock file. I'm not sure what's going on here (I assume I'm doing something wrong in git). Will return to this after I finish the other fixes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/nolanking90">@nolanking90</a> reviewed on 2024-04-23 12:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @snowsignal by @nolanking90 on 2024-04-23 18:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_server/src/server/api/requests/hover.rs</code>:57 on 2024-04-23 19:59</div>
+            <div class="timeline-body"><p>Nit:</p>
+<pre><code class="language-suggestion">        cursor &gt;= (code.start() + codes_start) &amp;&amp; cursor &lt; (code.end() + codes_start)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/snowsignal">@snowsignal</a> approved on 2024-04-23 20:03</div>
+            <div class="timeline-body"><p>Excellent! This seems to be working great on VS Code. Good catch with the comparison operators! I have one small nit, but otherwise you are free to merge 👍</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/snowsignal">@snowsignal</a> on 2024-04-23 20:07</div>
+            <div class="timeline-body"><p>My bad, I actually have to run the merge. Thanks for bearing with me 🤦‍♀️</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @snowsignal on 2024-04-23 20:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @snowsignal on 2024-04-23 20:16</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 22:37:39 UTC
+    </footer>
+</body>
+</html>

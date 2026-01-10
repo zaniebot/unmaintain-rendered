@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Unresolved imports lint rule - astral-sh/ruff #11164</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Unresolved imports lint rule</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/11164">#11164</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2024-04-26 12:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-04-26 12:08</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR is based on https://github.com/astral-sh/ruff/pull/11157/ and https://github.com/astral-sh/ruff/pull/11148</p>
+<p>It implements a very basic check for detecting unknown imports. It doesn't do anything fancy but it demonstrates the cross-module resolution infrastructure.</p>
+<p>The <code>lint_semantic</code> isn't yet correctly retriggered when a dependency changes. That's something we have to follow up with.</p>
+<h2>Test Plan</h2>
+<p>I imported the <code>test</code> function from <code>match.py</code>. No lint error. I imported the non existing <code>test2</code> function from <code>match.py</code> and it shows a diagnostic.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/lint.rs</code>:81 on 2024-04-27 00:40</div>
+            <div class="timeline-body"><p>What's the advantage of putting these directly in the context, rather than just giving the lint rule the db and letting it ask for what it needs?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/lint.rs</code>:108 on 2024-04-27 00:45</div>
+            <div class="timeline-body"><p>An <code>ImportFrom</code> with <code>Some(module)</code> is not necessarily a relative import. Only if <code>level &gt; 0</code>. Otherwise it's just like <code>from foo.bar import baz</code>, which is an <code>ImportFrom</code>, but it's absolute, not relative.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/lint.rs</code>:114 on 2024-04-27 00:47</div>
+            <div class="timeline-body"><p>The case where <code>module</code> is <code>None</code> is definitely always a relative import (and must have <code>level &gt; 0</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/lint.rs</code>:94 on 2024-04-27 00:50</div>
+            <div class="timeline-body"><p>On a typical large real-world module, we might have literally thousands of definitions (every assignment statement), out of which tens are imports. Maybe we should index the import definitions separately? That could also unify <code>definitions</code> and <code>dependencies</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/types.rs</code>:56 on 2024-04-27 00:54</div>
+            <div class="timeline-body"><p>This change should go along with a TODO in this impl for proper synchronization. (I had put the TODO out on <code>eval_symbols</code> (now <code>infer_symbol_types</code>) since I hadn't changed its db ref to non-mut yet.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-04-27 00:56</div>
+            <div class="timeline-body"><p>Looks great! Sorry about the rebase pain due to the changes I made to my PR before merge.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/lint.rs</code>:81 on 2024-04-27 09:12</div>
+            <div class="timeline-body"><p>A large portion of lint rules need access to these struct. Resolving them once reduces the number of hash table lookups and arc clones that are needed.</p>
+<p>I also don't want to give lint rules access to <code>db</code>. I think we instead want to expose some methods on context (e.g. I don't know if I want lint rules to read the source text of other files).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-04-27 09:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/lint.rs</code>:94 on 2024-04-27 09:13</div>
+            <div class="timeline-body"><p>That's a good point. Let's solve this when we implement the real rule ;) I thought I was already pretty clever by using definitions instead of iterating over the entire AST again</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-04-27 09:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/types.rs</code>:56 on 2024-04-27 14:44</div>
+            <div class="timeline-body"><p>Never mind, there's already a TODO here that's sufficient.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-04-27 14:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @MichaReiser on 2024-04-27 17:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-04-27 17:45</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2024-04-28 10:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-04-28 10:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-04-28 10:12</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 22:37:42 UTC
+    </footer>
+</body>
+</html>

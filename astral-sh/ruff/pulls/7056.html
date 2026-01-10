@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parse human-readable names in noqa and rule selectors - astral-sh/ruff #7056</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Parse human-readable names in noqa and rule selectors</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/7056">#7056</a>
+        opened by <a href="https://github.com/hotpxl">@hotpxl</a>
+        on 2023-09-01 23:59
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/hotpxl">@hotpxl</a> on 2023-09-01 23:59</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>Allow using human-readable rule names in <code>noqa</code> and rule selectors</p>
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+<h2>Test Plan</h2>
+<ul>
+<li>ran <code>cargo test</code></li>
+<li>manually tested putting human-readable rule name as <code>noqa</code> code</li>
+<li>manually tested rule selector on the command line</li>
+</ul>
+<!-- How was it tested? -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-09-02 00:42</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @MichaReiser on 2023-09-02 08:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/noqa.rs</code>:204 on 2023-09-02 16:49</div>
+            <div class="timeline-body"><p>We should probably add similar redirect support for named rules. This can be a TODO for now...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/noqa.rs</code>:179 on 2023-09-02 16:51</div>
+            <div class="timeline-body"><p>We could make this a bit stricter by first doing <code>lex_code</code>, then if it returns <code>None</code>, try a new <code>lex_name</code>, and change that method to require at least one dash (and only lowercase characters, no digits).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rule_selector.rs</code>:62 on 2023-09-02 16:55</div>
+            <div class="timeline-body"><p>Maybe clearer as:</p>
+<pre><code class="language-rust">// If a human-readable name is provided, convert it back to a structured code.
+// For example, given `unused-import`, convert to `F401`.
+let s = if let Ok(rule) = Rule::from_name(&amp;s) {
+    Cow::Owned(rule.noqa_code().to_string())
+} else {
+    Cow::Borrowed(s)
+};
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rule_selector.rs</code>:62 on 2023-09-02 16:55</div>
+            <div class="timeline-body"><p>We can probably improve the ergonomics of the rule APIs to reduce the number of lookups happening here, but it wouldn't need to be a requirement of this PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/registry.rs</code>:29 on 2023-09-02 17:00</div>
+            <div class="timeline-body"><p>I think there are some usages in <code>crates/ruff/src/checkers/noqa.rs</code> that need to be adjusted too (look for <code>if let Ok(rule) = Rule::from_code(code) {</code> and <code>let code = get_redirect_target(code).unwrap_or(code)</code>). In short, we need to audit all the usages of <code>noqa_code()</code>, in that file too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/noqa.rs</code>:179 on 2023-09-02 17:03</div>
+            <div class="timeline-body"><p>These could even be separate methods, and then the caller would do <code>Self::lex_code(...).or_else(|| Self::lex_name(...))</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-09-02 17:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-09-02 17:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/registry.rs</code>:29 on 2023-09-02 17:06</div>
+            <div class="timeline-body"><p>It may end up being useful to have separate wrapper types to make this all clearer (I haven't tried this myself but it's worth exploring), like:</p>
+<pre><code>pub struct RuleCodeId(String);
+pub struct RuleNameId(String);
+</code></pre>
+<p>Which would ensure that we only compare <code>RuleCodeId</code> to <code>NoqaCode</code>, etc.</p>
+<p>(In <code>crates/ruff/src/checkers/noqa.rs</code>, we often pass around the raw codes as <code>&amp;str</code> because we don't yet <em>know</em> if they're valid rule codes, and so we can't pass them around as <code>NoqaCode</code>.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/hotpxl">@hotpxl</a> reviewed on 2023-09-04 01:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/hotpxl">@hotpxl</a> on <code>crates/ruff/src/registry.rs</code>:29 on 2023-09-04 01:44</div>
+            <div class="timeline-body"><p>I refactored the logic in <code>noqa.rs</code> a bit so we can pass around <code>Rule</code>s, which removes the ambiguity between a code and a name. Please let me know how it looks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/hotpxl">@hotpxl</a> reviewed on 2023-09-04 01:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/hotpxl">@hotpxl</a> on <code>crates/ruff/src/noqa.rs</code>:179 on 2023-09-04 01:54</div>
+            <div class="timeline-body"><p>done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/hotpxl">@hotpxl</a> reviewed on 2023-09-04 01:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/hotpxl">@hotpxl</a> on <code>crates/ruff/src/noqa.rs</code>:204 on 2023-09-04 01:54</div>
+            <div class="timeline-body"><p>done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/hotpxl">@hotpxl</a> reviewed on 2023-09-04 01:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/hotpxl">@hotpxl</a> on <code>crates/ruff/src/rule_selector.rs</code>:62 on 2023-09-04 01:54</div>
+            <div class="timeline-body"><p>Done. I don't quite understand how <code>RuleCodePrefix</code> works yet since I don't understand macros :/ Otherwise I may be able to do something clever</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @hotpxl on 2023-09-06 18:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hotpxl">@hotpxl</a> on 2023-09-22 19:10</div>
+            <div class="timeline-body"><p>Is there any appetite in merging this soon, if so I'll rebase and resolve the merge conflicts.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/LukeMarlin">@LukeMarlin</a> on 2024-01-18 09:32</div>
+            <div class="timeline-body"><p>It would be great if this was merged, having names is way nicer when reading/reviewing code :)
+We are starting to replace black/isort/pylint with ruff, and having to revert to codes is a step backward.</p>
+<p>I'd gladly test it on our codebases if that can help</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hotpxl">@hotpxl</a> on 2024-01-18 16:13</div>
+            <div class="timeline-body"><p>@charliermarsh hi there! do you have any comments on the general direction?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @zanieb on 2024-03-12 17:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-12 17:27</div>
+            <div class="timeline-body"><p>Hi sorry this has been left hanging. We've had a busy couple of months.</p>
+<p>@charliermarsh could you take a look at this again or assign someone else?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/william-almy-skydio">@william-almy-skydio</a> on 2024-03-19 22:18</div>
+            <div class="timeline-body"><p>Bump? 👀</p>
+<p>Our company has recently migrated our repo to Ruff this past week, and this is the top feature developers have been asking for. Would be neat to get this over the line 🎉</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-20 01:10</div>
+            <div class="timeline-body"><p>Basically, we will absolute support this in the future but we cannot say when it will happen — there's a lot of moving parts to consider here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-04-08 07:02</div>
+            <div class="timeline-body"><p>I close this PR because we're looking into this as part of #1774 and I don't think we want to merge any interim solution. Thank you @hotpxl for pushing this and we hope to ship some improvement on this front &quot;soon&quot;. CC: @AlexWaygood it may be interesting to take a look at this PR to understand how human readable rule names were implemented.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-04-08 07:02</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 22:37:32 UTC
+    </footer>
+</body>
+</html>

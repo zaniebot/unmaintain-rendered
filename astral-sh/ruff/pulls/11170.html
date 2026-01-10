@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Make ImportFrom level just a u32 - astral-sh/ruff #11170</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Make ImportFrom level just a u32</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/11170">#11170</a>
+        opened by <a href="https://github.com/carljm">@carljm</a>
+        on 2024-04-27 02:09
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/carljm">@carljm</a> on 2024-04-27 02:09</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Currently we represent the <code>level</code> of an <code>ImportFrom</code> (the leading dots) as an <code>Option&lt;u32&gt;</code>, but the parser always parses a non-relative import (<code>from foo import bar</code>) as having <code>level: Some(0)</code>. But various other representations of imports throughout the codebase also use <code>Option&lt;u32&gt;</code>, and inconsistently sometimes use <code>Some(0)</code> and sometimes use <code>None</code> to represent the same situation: an absolute import. And then there's tons of code checking for absolute vs relative import that jumps through various hoops to handle <code>None</code> and <code>Some(0)</code> the same way. And of course it's easy to get this wrong -- in particular, it would be easy to check for <code>None</code> and miss the <code>Some(0)</code> case.</p>
+<p>There is no useful distinction between what <code>None</code> and <code>Some(0)</code> represent here; they are exactly the same import. It's just two different inconsistent representations for the same thing.</p>
+<p>This PR changes our representation of <code>level</code> everywhere to be just <code>u32</code>, so an absolute import always has level <code>0</code>, and simplifying a bunch of code that checks <code>level</code>. This is also consistent with CPython AST, which uses <code>level=0</code>, not <code>level=None</code>.</p>
+<p>It would be possible to go the other way and try to eliminate the use of <code>Some(0)</code> and always use <code>None</code>, but it will be harder to stay consistent with that, since <code>Some(0)</code> will always be possible. And since it's possible, every usage site should technically still check for it.</p>
+<p><code>Option&lt;u32&gt;</code> is twice as big as <code>u32</code>, so this change saves a bit of memory, too. And some CPU instructions, from all the usage sites doing various forms of double checks for <code>None</code> and <code>0</code>.</p>
+<h2>Test Plan</h2>
+<p>Compiles and test suite passes. Updated some <code>insta</code> tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @carljm on 2024-04-27 02:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @carljm on 2024-04-27 02:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @carljm on 2024-04-27 02:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-04-27 02:11</div>
+            <div class="timeline-body"><p>Excellent, thank you.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">great writeup</span> added by @zanieb on 2024-04-27 02:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-27 02:14</div>
+            <div class="timeline-body"><p>(This has bothered me for a while.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-04-27 02:15</div>
+            <div class="timeline-body"><p>Oh, looks like I need to learn to run doc-tests locally, too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-27 02:22</div>
+            <div class="timeline-body"><p>By the way, have you seen <a href="https://doc.rust-lang.org/std/num/type.NonZeroU32.html"><code>NonZeroU32</code></a>? I think that would've been another option here, since <code>Option&lt;NonZeroU32&gt;</code> is the same size as <code>u32</code>. But I think what you have here is simpler.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-04-27 02:24</div>
+            <div class="timeline-body"><p>Oh yeah, <code>Option&lt;NonZeroU32&gt;</code> would be a really good option! Honestly I could see an argument for that over this, since it makes the special case (not relative) more clearly different. And it eliminates the problem of two different representations, and the efficiency argument.</p>
+<p>Now I just have to decide if I like that enough better to do the work to switch...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-04-27 02:25</div>
+            <div class="timeline-body"><p>Going to leave this unmerged for a bit while I think about that :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-04-27 02:32</div>
+            <div class="timeline-body"><p>Nah I think I'll just merge this. <code>u32</code> is nice and simple, everything is slightly less verbose this way, and <code>0</code> is already special enough. I don't see any really convincing advantage for <code>Option&lt;NonZeroU32&gt;</code>. But that's something I'll definitely keep in mind in the future.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-04-27 02:37</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-27 02:37</div>
+            <div class="timeline-body"><p>Agreed, this looks good to me. But <code>NonZeroU32</code> is useful sometimes and thought you'd find it interesting :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @carljm on 2024-04-27 02:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2024-04-27 02:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-04-27 02:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-04-27 06:19</div>
+            <div class="timeline-body"><p>I definitely prefer this over Option<NonZeroUsize>. The thing that bothered me most is that the AST allows for both level and module to be None which should never happen in practice. The new design doesn't prevent this from happening, but at least it's no longer required to handle the case explicitly (you can test if module is set and otherwise take the default case)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-04-29 08:03</div>
+            <div class="timeline-body"><blockquote>
+<p>The thing that bothered me most is that the AST allows for both level and module to be None which should never happen in practice.</p>
+</blockquote>
+<p>This could be useful for error recovery to represent <code>from import y</code>, but of course that depends on the strategy we decide to use for it in the future. This looks good to me for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-04-29 09:01</div>
+            <div class="timeline-body"><blockquote>
+<p>This could be useful for error recovery to represent from import y, but of course that depends on the strategy we decide to use for it in the future. This looks good to me for now.</p>
+</blockquote>
+<p>We can represent this as <code>level = 0</code> and <code>module = None</code>. However, I need to double-check the rune code to see if we support this without blowing up.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 22:37:43 UTC
+    </footer>
+</body>
+</html>

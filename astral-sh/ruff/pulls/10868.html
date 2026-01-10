@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`refurb`] New rule to suggest min/max over sorted() (`FURB192`) - astral-sh/ruff #10868</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>refurb</code>] New rule to suggest min/max over sorted() (<code>FURB192</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/10868">#10868</a>
+        opened by <a href="https://github.com/ottaviohartman">@ottaviohartman</a>
+        on 2024-04-11 00:17
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ottaviohartman">@ottaviohartman</a> on 2024-04-11 00:17</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Fixes #10463</p>
+<p>Add <code>FURB192</code> which detects violations like this:</p>
+<pre><code class="language-python"># Bad
+a = sorted(l)[0]
+
+# Good
+a = min(l)
+</code></pre>
+<p>There is a caveat that @Skylion007 has pointed out, which is that violations with <code>reverse=True</code> technically aren't compatible with this change, in the edge case where the unstable behavior is intended. For example:</p>
+<pre><code class="language-python">from operator import itemgetter
+data = [('red', 1), ('blue', 1), ('red', 2), ('blue', 2)]
+
+min(data, key=itemgetter(0))  # ('blue', 1)
+sorted(data, key=itemgetter(0))[0]  # ('blue', 1)
+sorted(data, key=itemgetter(0), reverse=True)[-1]  # ('blue, 2')
+</code></pre>
+<p>This seems like a rare edge case, but I can make the <code>reverse=True</code> fixes unsafe if that's best.</p>
+<h2>Test Plan</h2>
+<p>This is unit tested.</p>
+<h2>References</h2>
+<p>https://github.com/dosisod/refurb/pull/333/files</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ottaviohartman">@ottaviohartman</a> reviewed on 2024-04-11 00:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ottaviohartman">@ottaviohartman</a> on <code>ruff.schema.json</code>:3080 on 2024-04-11 00:19</div>
+            <div class="timeline-body"><p>This auto-generated <code>FURB19</code> but I can't figure out why</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ottaviohartman">@ottaviohartman</a> reviewed on 2024-04-11 00:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ottaviohartman">@ottaviohartman</a> on <code>crates/ruff_linter/src/rules/refurb/rules/sorted_min_max.rs</code>:169 on 2024-04-11 00:23</div>
+            <div class="timeline-body"><p>Is there a cleaner or more canonical way to generate this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-04-11 00:31</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+4 -0 violations, +0 -0 fixes in 3 projects; 41 projects unchanged)</p>
+<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+1 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/apache/airflow/blob/bcbcb8e39cccab4cb375c6f972add9762a151ae8/airflow/providers/yandex/secrets/lockbox.py#L258'>airflow/providers/yandex/secrets/lockbox.py:258:16:</a> FURB192 [*] Prefer `min` over `sorted()` to compute the minimum value in a sequence
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/rotki/rotki">rotki/rotki</a> (+2 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/rotki/rotki/blob/a10139e2e26d35553f26d7479999ff79adaed6cc/rotkehlchen/db/dbhandler.py#L269'>rotkehlchen/db/dbhandler.py:269:25:</a> FURB192 [*] Prefer `max` over `sorted()` to compute the maximum value in a sequence
++ <a href='https://github.com/rotki/rotki/blob/a10139e2e26d35553f26d7479999ff79adaed6cc/rotkehlchen/globaldb/handler.py#L127'>rotkehlchen/globaldb/handler.py:127:21:</a> FURB192 [*] Prefer `max` over `sorted()` to compute the maximum value in a sequence
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/indico/indico">indico/indico</a> (+1 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/indico/indico/blob/841bc6039dd426a31eaf78c797e84e4f5b8f110c/indico/modules/events/registration/util.py#L272'>indico/modules/events/registration/util.py:272:16:</a> FURB192 [*] Prefer `min` over `sorted()` to compute the minimum value in a sequence
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (1 rules affected)</summary>
+<p>
+
+<p>| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| FURB192 | 4 | 4 | 0 | 0 | 0 |</p>
+</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2024-04-11 06:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">accepted</span> added by @MichaReiser on 2024-04-11 06:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/VascoSch92">@VascoSch92</a> on <code>crates/ruff_linter/resources/test/fixtures/refurb/FURB192.py</code>:23 on 2024-04-11 10:50</div>
+            <div class="timeline-body"><p>Why is this example not an error? Because the list is already sorted?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/VascoSch92">@VascoSch92</a> reviewed on 2024-04-11 10:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ottaviohartman">@ottaviohartman</a> reviewed on 2024-04-11 21:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ottaviohartman">@ottaviohartman</a> on <code>crates/ruff_linter/resources/test/fixtures/refurb/FURB192.py</code>:23 on 2024-04-11 21:27</div>
+            <div class="timeline-body"><p>Oops - it should be. I forgot to match on <code>ExprList</code> as well <a href="https://github.com/astral-sh/ruff/blob/b73e47c81cac55ada626532fca795a3b7e2e3eb6/crates/ruff_linter/src/rules/refurb/rules/sorted_min_max.rs#L82">here</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ottaviohartman">@ottaviohartman</a> reviewed on 2024-04-12 13:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ottaviohartman">@ottaviohartman</a> on <code>crates/ruff_linter/resources/test/fixtures/refurb/FURB192.py</code>:23 on 2024-04-12 13:35</div>
+            <div class="timeline-body"><p>I haven't found another example of outputting an <code>ast::ExprList</code> into a String, if there is an example to follow that would be great. I'll keep looking</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Skylion007">@Skylion007</a> on 2024-04-12 14:18</div>
+            <div class="timeline-body"><p>I'd definitely advocate for making unstable sort fixes unsafe. Otherwise, it could unknowingly change user code. I'd also argue we may want add to add a config option for this rule that ignores unstable sorts.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ottaviohartman">@ottaviohartman</a> reviewed on 2024-04-16 01:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ottaviohartman">@ottaviohartman</a> on <code>crates/ruff_linter/src/rules/refurb/rules/sorted_min_max.rs</code>:161 on 2024-04-16 01:23</div>
+            <div class="timeline-body"><p>Is there a cleaner or more canonical way to generate this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ottaviohartman">@ottaviohartman</a> reviewed on 2024-04-16 01:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ottaviohartman">@ottaviohartman</a> on <code>crates/ruff_linter/src/registry/rule_set.rs</code>:6 on 2024-04-16 01:36</div>
+            <div class="timeline-body"><p>Had to increase this, otherwise received</p>
+<pre><code>Rule index out of bounds. Increase the size of the bitset array.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ottaviohartman">@ottaviohartman</a> on 2024-04-16 01:40</div>
+            <div class="timeline-body"><p>@Skylion007</p>
+<blockquote>
+<p>I'd definitely advocate for making unstable sort fixes unsafe. Otherwise, it could unknowingly change user code.</p>
+</blockquote>
+<p>Agreed, and updated!</p>
+<blockquote>
+<p>I'd also argue we may want add to add a config option for this rule that ignores unstable sorts.</p>
+</blockquote>
+<p>Shall I do this too? Haven't heard anyone else chime in yet.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @VascoSch92 by @ottaviohartman on 2024-04-16 01:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2024-04-16 01:45</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/ottaviohartman:thartman/furb192">CodSpeed Performance Report</a></h2>
+<h3>Merging #10868 will <strong>not alter performance</strong></h3>
+<p><sub>Comparing <code>ottaviohartman:thartman/furb192</code> (da36bfc) with <code>main</code> (925c7f8)</sub></p>
+<h3>Summary</h3>
+<p><code>✅ 30</code> untouched benchmarks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ottaviohartman">@ottaviohartman</a> reviewed on 2024-04-16 01:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ottaviohartman">@ottaviohartman</a> on <code>crates/ruff_linter/src/registry/rule_set.rs</code>:6 on 2024-04-16 01:54</div>
+            <div class="timeline-body"><p>I think this slowed down performance tests, but I'm continuing to look.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ottaviohartman">@ottaviohartman</a> reviewed on 2024-04-16 01:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ottaviohartman">@ottaviohartman</a> on <code>crates/ruff_linter/src/registry/rule_set.rs</code>:6 on 2024-04-16 01:57</div>
+            <div class="timeline-body"><p>Yes, seems to have slowed down similar to the last PR #9384 that increased this value.</p>
+<p>That benchmark is here: https://codspeed.io/astral-sh/ruff/branches/qdegraaf:rule/S504</p>
+<p>Please correct me if I'm wrong!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-16 03:29</div>
+            <div class="timeline-body"><blockquote>
+<p>Shall I do this too? Haven't heard anyone else chime in yet.</p>
+</blockquote>
+<p>I probably wouldn't implement it now since the rule is just going into preview. We can use preview feedback to consider adding an option. I'd just open a tracking issue when this is merged.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-04-16 03:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ruff_linter/src/registry/rule_set.rs</code>:6 on 2024-04-16 03:32</div>
+            <div class="timeline-body"><p>cc @MichaReiser who I believe designed this in https://github.com/astral-sh/ruff/pull/3606</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-04-16 07:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/registry/rule_set.rs</code>:6 on 2024-04-16 07:15</div>
+            <div class="timeline-body"><p>Bumping is the right step here and I don't think there's much we can do about perf (although I'm surprised by the amount). I would need to do some profiling to exactly understand why it slows down expressions so significantly (we may now hit a case where optimisations get disabled because of the size of the bitset?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-04-23 00:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-04-23 00:59</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-04-23 01:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-04-23 01:13</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 22:37:33 UTC
+    </footer>
+</body>
+</html>

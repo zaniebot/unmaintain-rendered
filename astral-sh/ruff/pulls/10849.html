@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kick off Red-knot - astral-sh/ruff #10849</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Kick off Red-knot</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/10849">#10849</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2024-04-09 16:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-04-09 16:27</div>
+            <div class="timeline-body"><p>The beginning of multifile analysis. We'll eventually merge this with ruff but are using a dedicated crate to flesh out the basic infrastructure first.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2024-04-09 16:32</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/red-knot">CodSpeed Performance Report</a></h2>
+<h3>Merging #10849 will <strong>not alter performance</strong></h3>
+<p><sub>Comparing <code>red-knot</code> (dd4748b) with <code>main</code> (845ba7c)</sub></p>
+<h3>Summary</h3>
+<p><code>✅ 30</code> untouched benchmarks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/check.rs</code>:11 on 2024-04-10 07:18</div>
+            <div class="timeline-body"><p>It looks like it is possible to have lazy inputs in salsa: https://salsa-rs.github.io/salsa/common_patterns/on_demand_inputs.html</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/check.rs</code>:14 on 2024-04-10 07:28</div>
+            <div class="timeline-body"><p>This could be an issue. In looking at the six year old salsa issue for persistent cache, I found this comment from someone with experience building these kinds of tools that recommends against persistent caches entirely: https://github.com/rust-lang/rfcs/pull/1317#issuecomment-150965895</p>
+<p>I’m not convinced, though, particularly for the CLI use case where laziness doesn’t help much.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-04-10 07:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-04-10 08:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/check.rs</code>:11 on 2024-04-10 08:57</div>
+            <div class="timeline-body"><p>Yeah I saw that. Trying it right now. There's still the problem that we can never purge the files</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-04-10 08:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/check.rs</code>:14 on 2024-04-10 08:59</div>
+            <div class="timeline-body"><p>Yeah, I think this is different for a CLI where you e.g. want to check your entire program. I think rust-analyzer does some indexing during startup and that can easily take 10 seconds. I don't think our users would appreciate it if Ruff suddenly takes 10s in CI.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-04-10 23:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/files.rs</code>:63 on 2024-04-10 23:56</div>
+            <div class="timeline-body"><p>So I found this a bit confusing, let me see if I understand it now. This looks like effectively a hashset of <code>FileId</code>, but the reason the name <code>by_path</code> makes sense for it is that we actually use the hash of the path as the hash of each <code>FileId</code> in the set, as a way to determine if a path is already in the set, without actually storing the path in the set. Is that about right?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-04-10 23:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/files.rs</code>:78 on 2024-04-10 23:59</div>
+            <div class="timeline-body"><p>why do we need to re-hash here when we definitely already hashed the same path above?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/files.rs</code>:78 on 2024-04-11 02:17</div>
+            <div class="timeline-body"><p>Oh, I guess this isn't immediately  rehashing, it's providing a hash function to be used later.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-04-11 02:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-04-11 07:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/files.rs</code>:63 on 2024-04-11 07:21</div>
+            <div class="timeline-body"><p>Yes, the idea is to avoid allocating each path twice: once in the <code>Map</code> and once in the index.</p>
+<p>It indeed is a <code>HashSet</code> but the <code>hashbrown::HashSet</code> doesn't provide access to <code>raw_entry</code> (at least the last time I checked). But it's not really a big deal because <code>HashSet&lt;V&gt; = HashMap&lt;V, ()&gt;</code> anyway.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-04-11 07:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/files.rs</code>:78 on 2024-04-11 07:22</div>
+            <div class="timeline-body"><p>Yeah, it's a hash function to rehash when growing the hash map. But it's possible that we could use the pre-computed hash.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/ast_ids.rs</code>:146 on 2024-04-11 12:25</div>
+            <div class="timeline-body"><p>Whoopsi, this should be create_id</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-04-11 12:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-04-11 13:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/files.rs</code>:63 on 2024-04-11 13:26</div>
+            <div class="timeline-body"><p>Right; using a hashmap with unit values as a hashset wasn't confusing to me; the confusing part is that from the type annotation it looks like just a hashset of FileId but &quot;really&quot; it's a hashset of paths, with the file id as just kind of a placeholder.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/Cargo.toml</code>:26 on 2024-04-12 00:06</div>
+            <div class="timeline-body"><p>Why depend on <code>withered-magic</code> fork of salsa rather than on the main salsa repo (at <code>salsa-rs/salsa</code>)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/ast_ids.rs</code>:30 on 2024-04-12 00:33</div>
+            <div class="timeline-body"><p>Why do we need this marker?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/ast_ids.rs</code>:203 on 2024-04-12 04:35</div>
+            <div class="timeline-body"><p>I'm not sure I understand the function of this <code>AstNodeKey</code> wrapper around <code>SyntaxNodeKey</code>, or why we need it. I'm guessing it has to do with typing and the PhantomData marker, but I haven't put it all together.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/hir.rs</code>:4 on 2024-04-12 04:56</div>
+            <div class="timeline-body"><p>I don't see where an arena is used; is this an aspirational comment, or a comment borrowed from rust-analyzer describing something we aren't doing here (yet)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/ast_ids.rs</code>:20 on 2024-04-12 05:03</div>
+            <div class="timeline-body"><p>Why do we need this wrapper around an <code>AstId</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/db.rs</code>:297 on 2024-04-12 05:11</div>
+            <div class="timeline-body"><p>Any reason this is defined in <code>db.rs</code> rather than either in <code>ast_id.rs</code> or <code>hir.rs</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-04-12 05:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-04-12 05:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/ast_ids.rs</code>:96 on 2024-04-12 05:41</div>
+            <div class="timeline-body"><p>I think that functions should be deferred but class bodies probably should not be, because at runtime the class body is evaluated immediately to create the class, and anything referenced in it needs to already be defined. and we need the class body to know the members of the class</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-04-12 07:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/Cargo.toml</code>:26 on 2024-04-12 07:38</div>
+            <div class="timeline-body"><p>Lol, because I did copy paste this...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-04-12 07:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/ast_ids.rs</code>:30 on 2024-04-12 07:41</div>
+            <div class="timeline-body"><p>Rust requires for structs that each type parameter is used by at least one field. Now, <code>AstId</code> isn't generic over <code>N</code>.</p>
+<p>We can work around this by using <code>PhantomData</code>. <code>PhantomData</code> has no runtime cost (it compiles down to a zero size type) and it's only purpose is to capture the type <code>N</code>.</p>
+<p>You can think of the pattern applied here as compile-time only generics similar to Java where the generic arguments are erased at runtime but we want them at compile time to catch typing errors (e.g. we want to prevent that you use a <code>AstId</code> for an <code>IfStmt</code> to load a <code>FunctionDef</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-04-12 07:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/ast_ids.rs</code>:203 on 2024-04-12 07:42</div>
+            <div class="timeline-body"><p>Yes. You can think of it as compile-time generics:</p>
+<ul>
+<li><code>SyntaxNodeKey</code>: The &quot;runtime&quot; value with erased type generic type arguments</li>
+<li><code>AstNodeKey</code>: The &quot;compile-time&quot; generic type that prevents using an <code>AstNodeKey&lt;IfStmt&gt;</code> to retrieve an <code>AstNodeKey&lt;FunctionDef&gt;</code>.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-04-12 07:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/hir.rs</code>:4 on 2024-04-12 07:44</div>
+            <div class="timeline-body"><p>The <code>Module</code> has an <code>IndexVec</code> for each node type which &quot;acts&quot; as an arena because we don't make a heap allocation for each node but instead make a single vector allocation and write each node into that vec.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/ast_ids.rs</code>:20 on 2024-04-12 07:44</div>
+            <div class="timeline-body"><p>This is related to the PhantomData. See https://github.com/astral-sh/ruff/pull/10849#discussion_r1562158940</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-04-12 07:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-04-12 07:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/db.rs</code>:297 on 2024-04-12 07:44</div>
+            <div class="timeline-body"><p>No, there's none. I should probably have moved it when I introduced <code>hir.rs</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-04-12 07:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/ast_ids.rs</code>:96 on 2024-04-12 07:53</div>
+            <div class="timeline-body"><p>Maybe, I don't know. I think the ID generation is tightly tied to the HIR design and it's currently unclear to me what the HIR should capture exactly (as discussed over Discord).</p>
+<p>Overall, the goal of the HIR is to isolated changes and I could see it being beneficial if adding a class member doesn't change the IDs of functions coming after. The assignment of the ID also doesn't mean that these nodes don't have IDs. It only means that they have less stable IDs than the class itself.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/symbols.rs</code>:119 on 2024-04-18 08:19</div>
+            <div class="timeline-body"><p>Nit: We should consider using <code>smol_str</code> to avoid allocating for short symbol names.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/symbols.rs</code>:85 on 2024-04-18 08:20</div>
+            <div class="timeline-body"><p>Nit: I would remove <code>Default</code> because a <code>SymbolTable</code> without a module scope is invalid.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-04-18 08:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-04-18 18:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/symbols.rs</code>:85 on 2024-04-18 18:42</div>
+            <div class="timeline-body"><p>Done.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-04-18 18:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/symbols.rs</code>:119 on 2024-04-18 18:45</div>
+            <div class="timeline-body"><p>Done.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-04-18 18:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/ast_ids.rs</code>:30 on 2024-04-18 18:50</div>
+            <div class="timeline-body"><p>The thing I find a bit odd here is the <code>fn() -&gt; N</code>; why is it not just <code>PhantomData&lt;N&gt;</code>? It seems like putting the typevar in return position like that might be intended to make <code>TypedAstId</code> contravariant in <code>N</code> rather than variant? But since Rust doesn't have struct subtyping, I'm not really sure what that would even mean; I thought Rust only really has variance for lifetimes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/module.rs</code>:40 on 2024-04-18 21:13</div>
+            <div class="timeline-body"><p>random musing: single string is more storage-efficient and doesn't require heap allocation for short module names, but it means we'll have to spend time splitting it by dot. Will it be more efficient overall to store it as a vector and avoid repeated splitting?</p>
+<p>Maybe we don't actually split it by dot more than once, if we are caching the resolution to <code>ModulePath</code> anyway.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/module.rs</code>:54 on 2024-04-18 21:23</div>
+            <div class="timeline-body"><p>Perhaps somewhere in here we should validate that the extensions is <code>.py</code> or <code>.pyi</code>?</p>
+<p>This actually makes me think that perhaps <code>from_relative_path</code> should not exist at the <code>ModuleName</code> layer but at a layer where it returns several pieces of information: a <code>ModuleName</code>, a <code>ModuleKind</code> (e.g. <code>::Python</code> or <code>::Stub</code>), and also maybe <code>is_package</code> boolean (e.g. true for <code>foo/__init__.py</code>, false for <code>foo.py</code>). We will need all of those at some point; as implemented currently this <code>from_relative_path</code> is a lossy operation, since it returns only one of those.</p>
+<p>Perhaps those other two fields, and this method, belong on <code>Module/ModuleData</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/module.rs</code>:49 on 2024-04-18 21:28</div>
+            <div class="timeline-body"><p>The algorithm here will be simpler if instead of taking a full <code>Path</code> for <code>_to</code> parameter, we just take a <code>ModuleName</code> and <code>is_package</code> boolean (or some structure that encompasses both, might just be <code>Module</code>).</p>
+<p>We need <code>is_package</code> because in <code>foo/bar/__init__.py</code>, <code>from . import baz</code> means <code>foo.bar.baz</code>, but from <code>foo/bar.py</code>, <code>from . import baz</code> means <code>foo.baz</code>.</p>
+<p>If we take a full <code>Path</code> here, then we effectively have to re-implement (or call) <code>from_relative_path</code> again as part of this method, but in the places we will likely call this from (resolving a relative import we find in the AST) we will already have all the data of the current module handy, so it will be wasteful to recalculate that from <code>Path</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/module.rs</code>:68 on 2024-04-18 21:32</div>
+            <div class="timeline-body"><p>I think there's a missing &quot;push dot if name not empty&quot; here? (Unless the above &quot;push dot&quot; case is moved down as I suggested.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/module.rs</code>:42 on 2024-04-18 21:33</div>
+            <div class="timeline-body"><p>This could be moved below the <code>name.push_str(...)</code> immediately following, and then it wouldn't need the &quot;if name is empty&quot; check, and it would also eliminate the need for another &quot;push dot if name not empty where I commented below.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/module.rs</code>:70 on 2024-04-18 21:36</div>
+            <div class="timeline-body"><p>We need a check here for the special case where <code>path.file_stem() == &quot;__init__&quot;</code>, in which case we should not push that to the module name; in fact we should remove a trailing dot instead and be done.</p>
+<p>(In Python I'd avoid the need to manually add/remove dots by building up a list of strings instead of a single string, and then joining them on dot once done. But that may not be quite as efficient.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/module.rs</code>:180 on 2024-04-18 21:56</div>
+            <div class="timeline-body"><p>So this means we duplicate every module name, once inside the <code>ModuleData</code> and once inside this hashmap. In the symbol table I used your hashing trick from <code>Files</code> to avoid this double storage. Do you think that's generally worth it, or no?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/module.rs</code>:423 on 2024-04-18 22:12</div>
+            <div class="timeline-body"><p>Why should these be separated? What's the use case for resolving a module and not getting its SourceText in the same operation? I think in the doc I suggested that the resolver would query the VFS for a path and get back both the resolved path and the sourcetext at the same time (or &quot;does not exist&quot;) which would eliminate this issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/module.rs</code>:315 on 2024-04-18 23:23</div>
+            <div class="timeline-body"><p>I think this function shouldn't need to know anything about the specifics of the priority algorithm; that should be the responsibility only of <code>resolve_name</code>. In principle all we need to do here is compare the fully normalized version of the path we were given with the fully normalized path of the resolved module, and if they are not the same, then clearly the module name doesn't resolve to this file, and we return <code>None</code>.</p>
+<p>Comparing roots first could be fine if its an optimization, but it shouldn't be necessary for correctness.</p>
+<p>The inner &quot;starts_with&quot; check doesn't really make sense to me, it seems overfit to one particular priority case (<code>__init__.py</code>), and not necessary; it could just be an equality check instead. (Maybe this is covering for the bug in <code>from_relative_path</code> where it doesn't handle <code>__init__.py</code> correctly?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/module.rs</code>:322 on 2024-04-18 23:50</div>
+            <div class="timeline-body"><p>I think the other approach here is that this method should take a path, not a ModuleId (more parallel to <code>add_module</code>). Because as I understand it, the only use case for this is the VFS telling us that a file is deleted. In that case the VFS will already have the path, not a ModuleId. It seems like resolving the path to a ModuleId should be our responsibility.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/module.rs</code>:356 on 2024-04-19 00:08</div>
+            <div class="timeline-body"><p>It is not actually required for a Python package to contain <code>__init__.py</code> or <code>__init__.pyi</code>, so we don't need to check that here.</p>
+<p>There's actually a more subtle thing here we might need to support for correct resolution, which I failed to mention in the doc.</p>
+<p>If a directory does not contain <code>__init__.py</code>, then it is a &quot;namespace package&quot; which can be spread across multiple search paths. In other words, <code>foo.bar</code> could resolve to <code>search-path-one/foo/bar.py</code> while <code>foo.baz</code> could resolve to <code>search-path-two/foo/baz.py</code>. But if <code>search-path-one/foo/__init__.py</code> exists (and <code>search-path-one</code> is higher priority than <code>search-path-two</code>), then that is not allowed! No module under <code>foo.</code> can resolve to anywhere other than <code>search-path-one/foo/...</code>.</p>
+<p>You can see https://peps.python.org/pep-0420/ for the gory details, but I think I summarized it pretty well above :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/module.rs</code>:374 on 2024-04-19 00:27</div>
+            <div class="timeline-body"><p>I think ultimately we will want to separate responsibility for &quot;generating list of candidate paths&quot; (<code>ModuleResolver</code> must do this) from &quot;checking what path actually exists&quot; (VFS should do this, because it might have unsaved contents from editor too). (And ideally I think &quot;check if file exists&quot; and &quot;read file contents&quot; should be a single atomic operation to avoid race conditions; or at least they should always happen in the same method, one right after the other, so we can handle a read error the same as &quot;doesn't exist&quot; )</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/module.rs</code>:372 on 2024-04-19 00:29</div>
+            <div class="timeline-body"><p>@AlexWaygood also pointed out that there are a few extra wrinkles we'll want to implement support for at some point, outlined in https://peps.python.org/pep-0561/#type-checker-module-resolution-order</p>
+<p>Specifically, the extra wrinkles are:</p>
+<ol>
+<li>We should give users a way to add extra search paths at the start of the list (this just generally makes sense as a feature.)</li>
+<li>When looking at third-party packages in <code>site-packages</code>, we should a) look for a <code>foo-stubs/</code> package first if looking for types for the <code>foo/</code> package, and b) ignore types from a package that doesn't include a <code>py.typed</code> file.</li>
+</ol>
+<p>I don't think this is high priority to implement now, but we should probably at least have a TODO for it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/module.rs</code>:626 on 2024-04-19 00:52</div>
+            <div class="timeline-body"><p>As mentioned above, this test isn't quite right, because namespace packages (packages without <code>__init__.py</code>) are also allowed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/module.rs</code>:678 on 2024-04-19 01:19</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        std::os::unix::fs::symlink(&amp;foo, bar.clone())?;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/module.rs</code>:904 on 2024-04-19 01:23</div>
+            <div class="timeline-body"><p>Yes, we definitely need to consider it as separate modules, since that's how Python will see it.</p>
+<p>But you're right that we can actually store SourceText, physical-line diagnostics, and SyntaxTree keyed only by FileId, not by ModuleId -- that's a great point I hadn't considered.</p>
+<p>If it adds any complexity it may not be worth it, though, because I think this case is very rare in practice: there's no good use case for having two identical modules in your source tree. (In fact it's generally a really bad idea, since it will lead to very confusing results like &quot;expected FooClass, but got FooClass&quot; etc.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/module.rs</code>:905 on 2024-04-19 01:24</div>
+            <div class="timeline-body"><p>Would it be worth asserting here also that the modules should actually share the same <code>FileId</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-04-19 01:24</div>
+            <div class="timeline-body"><p>The module stuff looks great! Sorry for leaving so many comments; many of them can probably just turn into TODOs for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Exploration of a salsa like compilation model (does not compile)" to "Red Knot" by @MichaReiser on 2024-04-19 05:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-04-19 06:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/ast_ids.rs</code>:30 on 2024-04-19 06:01</div>
+            <div class="timeline-body"><p>The reason is (and I was surprised by it) that <code>Phantom&lt;Data&gt;</code> made the type non-copyable, <code>NonEq</code> etc.</p>
+<p>I guess the alternative would have been to implement all these types manually https://users.rust-lang.org/t/how-to-copy-phantomdata-of-un-clone-able-types/82229</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/module.rs</code>:40 on 2024-04-19 06:04</div>
+            <div class="timeline-body"><p>I thought about this as well and don't have a final conclusion. The good thing, it's nicely abstracted away, so we can play with it when we have real world usage.</p>
+<p>My thinking why I left it as is:</p>
+<ul>
+<li>We could use a <code>SmallVec</code> with a size of 2-3 in combination with a <code>SmolStr</code>. That means we should avoid allocating in many cases. However, it does have the downside that <code>ModuleName</code> now becomes a 3 * 24 bytes struct. That's probably not too bad because it is not used in many places but something to consider.</li>
+<li>The worst case is that we need 1 + n where <code>n</code> is the number of segments allocations</li>
+<li>I think splitting by <code>.</code> is cheap. <code>PathBuf</code> uses a single vector internally and <code>.components</code> splits on demand.</li>
+</ul>
+<p>I went with the string because it felt simpler for now and I don't think splitting by components is a very common (hot) operation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-04-19 06:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-04-19 06:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/module.rs</code>:54 on 2024-04-19 06:08</div>
+            <div class="timeline-body"><p>I think <code>ModuleKind</code> and whether it is a package belongs on <code>ModuleData</code>. <code>ModuleName</code> is just the full qualified name of a package. The only reason I see for adding them to <code>ModuleName</code> is if we want to support explicitly querying modules by their kind, but I don't think this is something we want. That's why I think <code>from_relative_path</code> is fine. All it should do is to create the full qualified name from a relative import (it shouldn't perform any IO).</p>
+<blockquote>
+<p>Perhaps somewhere in here we should validate that the extensions is .py or .pyi?</p>
+</blockquote>
+<p>Yeah, early returning when it is not a <code>py</code> or <code>pyi</code> file makes sense.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/module.rs</code>:49 on 2024-04-19 06:10</div>
+            <div class="timeline-body"><p>That makes sense, it also avoids the need to check if the file has a <code>.py</code> extension haha</p>
+<p>The only challenge with this is that we need to analyze files that aren't modules (and may not have a module name):</p>
+<ul>
+<li>Jupyter notebooks</li>
+<li>Files that don't have a <code>py</code> or <code>pyi</code> extension (Ruff supports configuring additional extensions that should be handled as python files)</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-04-19 06:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-04-19 06:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/module.rs</code>:180 on 2024-04-19 06:13</div>
+            <div class="timeline-body"><p>It would be nice if we could do that but I didn't find a way using <code>DashMap</code> because it doesn't expose <code>RawEntry</code>.</p>
+<p>An alternative that I considered is to wrap <code>ModuleName</code> in an <code>Arc</code>, but that kind of defeats the purpose of using a <code>SmalStr</code> (In this case we can just use a <code>Arc&lt;str&gt;</code>).</p>
+<p>My current thinking is: Resolving modules is expensive because of all the IO and the additional allocation shouldn't matter (there are also not that many modules).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-04-19 06:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/module.rs</code>:423 on 2024-04-19 06:18</div>
+            <div class="timeline-body"><p>It would result in us eagerly loading files even if they're unchanged.</p>
+<p>Let's say we load a persistent cache and only have to recheck a single file. The deserialization layer of the persistent cache must acquire module ids for each cached file (and potentially remap them in case it gets assigned a new module id). What we want to avoid is to load the file content at this stage (because it would be very expensive).</p>
+<p>Overall, I think there are a handful operations in the analysis where we just need to know to which module an import resolves but we don't want to analyze the file's content yet (and may not have to because it's either a local analysis or we determine that we have all data cached)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-04-19 06:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/module.rs</code>:322 on 2024-04-19 06:20</div>
+            <div class="timeline-body"><p>I don't disagree but I just don't know. I think that's something we can change when using the API.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-04-19 06:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/module.rs</code>:374 on 2024-04-19 06:22</div>
+            <div class="timeline-body"><p>I'm not sure I understand. What other use cases do we have for getting the list of candidate paths?</p>
+<p>I do agree that we should use the VFS here. But I intentionally didn't build this out yet and used the real file system as a pretty good mock ;)</p>
+<blockquote>
+<p>(And ideally I think &quot;check if file exists&quot; and &quot;read file contents&quot; should be a single atomic operation to avoid race conditions; or at least they should always happen in the same method, one right after the other, so we can handle a read error the same as &quot;doesn't exist&quot; )</p>
+</blockquote>
+<p>See my comment above. I think we just need to handle this gracefully upstream. The <code>ModuleResolver</code> must query the (V)FS here to resolve the path, but we don't necessarily want to load that file's content yet. For example, we need to know the module to test if we can resolve a cached type.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-04-19 06:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/module.rs</code>:904 on 2024-04-19 06:23</div>
+            <div class="timeline-body"><p><code>ModulePath</code> gives you a <code>FileId</code> which uniquely identifies the file. So that TODO is actually resolved.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/module.rs</code>:315 on 2024-04-19 06:27</div>
+            <div class="timeline-body"><blockquote>
+<p>I think this function shouldn't need to know anything about the specifics of the priority algorithm; that should be the responsibility only of resolve_name. In principle all we need to do here is compare the fully normalized version of the path we were given with the fully normalized path of the resolved module, and if they are not the same, then clearly the module name doesn't resolve to this file, and we return None.</p>
+</blockquote>
+<p>I'm okay testing by normalized path. I used startswith because of my comment in <code>resolve_package</code></p>
+<pre><code>assert_eq!(foo_id, resolver.resolve_path(&amp;foo_path));
+
+  // TODO: Should resolving by the directory name resolve a module or not?
+  assert_eq!(foo_id, resolver.resolve_path(&amp;foo_dir));
+
+  Ok(())
+</code></pre>
+<p>where <code>foo_dir</code> is <code>foo</code> but there's only a <code>foo/__init__.py</code>. So the question is if that should work. If yes, then we need a check similar to what I have, otherwise we don't :P</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-04-19 06:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-04-19 06:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/module.rs</code>:70 on 2024-04-19 06:36</div>
+            <div class="timeline-body"><p>Nice find. I now pop <code>__init__</code> at the entry of the function.</p>
+<blockquote>
+<p>(In Python I'd avoid the need to manually add/remove dots by building up a list of strings instead of a single string, and then joining them on dot once done. But that may not be quite as efficient.)</p>
+</blockquote>
+<p>Yeah, we could do this here too. The way I would implement this (to avoid an extra <code>Vec</code> allocation) is to join two iterators, one over <code>components</code> and one with the module name. The only issue is that <code>to_str</code> can return <code>None</code> in case the path isn't UTF8, in which case this function should return <code>None</code>. That's where a single <code>iter.chain(other_iter).map(...).collect()</code> doesn't work anymore.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-04-19 06:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/module.rs</code>:356 on 2024-04-19 06:41</div>
+            <div class="timeline-body"><p>Okay, so that means my current implementation implements namespace packages... but not &quot;normal&quot; packages.</p>
+<p>I'm not sure how much of this I want to implement now, a 100% correct module resolver isn't really a goal of the prototype.</p>
+<p>One thing we have to consider too is the case where<code> foo</code> contains no <code>__init__.py</code> but <code>foo/baz</code> does.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/module.rs</code>:372 on 2024-04-19 06:44</div>
+            <div class="timeline-body"><blockquote>
+<p>We should give users a way to add extra search paths at the start of the list (this just generally makes sense as a feature.)</p>
+</blockquote>
+<p>In general? This should be &quot;easy&quot;, it just means initializing <code>search_paths</code> with more entries</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-04-19 06:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-04-19 06:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/module.rs</code>:678 on 2024-04-19 06:45</div>
+            <div class="timeline-body"><p>Thanks. No need to clone, we can pass a reference <code>&amp;bar</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-04-19 06:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/module.rs</code>:581 on 2024-04-19 06:48</div>
+            <div class="timeline-body"><p>Hmm this is kind of annoying. It now tests more than it should. Anyway, I think we should add a helper for the assertion to avoid that future us add a test that incorrectly compares paths in the future</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-04-19 06:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/module.rs</code>:581 on 2024-04-19 06:51</div>
+            <div class="timeline-body"><p>Actually. I think the better idea is to fixup the <code>TestCase</code> construction and canonicalize the directory paths there (once)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-04-19 09:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/module.rs</code>:626 on 2024-04-19 09:00</div>
+            <div class="timeline-body"><p>I added more tests. I hope my understanding of namespace packages is correct. But I think it should definitely be sufficient for this prototype ;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-04-19 10:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/module.rs</code>:423 on 2024-04-19 10:57</div>
+            <div class="timeline-body"><p>Another reason for storing them separately is that we probably want to implement some garbage collection mechanism for source text and AST but I don't think it is necessary for modules, because the data that we store is relatively small.</p>
+<p>The idea for source text and the AST is that we can evict files that haven't been from the cache. For example, we may need to load all files for the initial checking but we can evict most data from the cache (and only keeping the type level cache) once the initialization is over.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-04-19 12:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/symbols.rs</code>:144 on 2024-04-19 12:47</div>
+            <div class="timeline-body"><p>Ideally, Iterators don't allocate.</p>
+<p>We can rewrite the iterator to be generic over any <code>Iterator</code> that returns a <code>SymbolId</code>.</p>
+<pre><code class="language-rust">struct SymbolIterator&lt;'a, I&gt; {
+    table: &amp;'a SymbolTable,
+    ids: I,
+}
+
+impl&lt;'a, I&gt; Iterator for SymbolIterator&lt;'a, I&gt;
+where
+    I: Iterator&lt;Item = SymbolId&gt;,
+{
+    type Item = &amp;'a Symbol;
+
+    fn next(&amp;mut self) -&gt; Option&lt;Self::Item&gt; {
+        let id = self.ids.next()?;
+        Some(&amp;self.table.symbols_by_id[id])
+    }
+
+    fn size_hint(&amp;self) -&gt; (usize, Option&lt;usize&gt;) {
+        self.ids.size_hint()
+    }
+}
+
+impl&lt;'a, I&gt; FusedIterator for SymbolIterator&lt;'a, I&gt; where
+    I: Iterator&lt;Item = SymbolId&gt; + FusedIterator
+{
+}
+
+impl&lt;'a, I&gt; ExactSizeIterator for SymbolIterator&lt;'a, I&gt; where
+    I: Iterator&lt;Item = SymbolId&gt; + ExactSizeIterator
+{
+}
+
+impl&lt;'a, I&gt; DoubleEndedIterator for SymbolIterator&lt;'a, I&gt;
+where
+    I: DoubleEndedIterator + Iterator&lt;Item = SymbolId&gt;,
+{
+    fn next_back(&amp;mut self) -&gt; Option&lt;Self::Item&gt; {
+        let id = self.ids.next_back()?;
+        Some(&amp;self.table.symbols_by_id[id])
+    }
+}
+</code></pre>
+<p>You can then use it with</p>
+<pre><code class="language-rust">    pub(crate) fn symbols_for_scope(
+        &amp;self,
+        scope_id: ScopeId,
+    ) -&gt; SymbolIterator&lt;std::iter::Copied&lt;hashbrown::hash_map::Keys&lt;SymbolId, ()&gt;&gt;&gt; {
+        let scope = &amp;self.scopes_by_id[scope_id];
+        SymbolIterator {
+            table: self,
+            ids: scope.symbols_by_name.keys().copied(),
+        }
+    }
+</code></pre>
+<p>It could make sense to define an alias for it. Note. the old implementation poped the IDs from the back (not sure why). The new implementation consumes the Ids in the order returned by <code>keys</code>.</p>
+<p>General advice when implementing iterators:</p>
+<ul>
+<li>Override <code>size_hint</code> if you can estimate the number of elements. It is used when e.g. collecting into a vec</li>
+<li>Implement <code>FusedIterator</code> when it is guaranteed that the iterator returns no <code>Some</code> elements after it returned one <code>None</code> element.</li>
+<li>Implement <code>DoubleEndedIterator</code> and <code>ExactSizeIterator</code> if possible.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/module.rs</code>:49 on 2024-04-19 14:52</div>
+            <div class="timeline-body"><p>I don't know much about Jupyter notebooks, but I would assume they just can't have relative imports?</p>
+<p>For files that don't have a <code>py</code> or <code>pyi</code> extension, I would assume we still treat them as modules as if they did? I'm not sure what the use cases for this is.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/module.rs</code>:54 on 2024-04-19 14:54</div>
+            <div class="timeline-body"><p>Oh, I agree this data belongs on <code>ModuleData</code>, not on <code>ModuleName</code>, I wasn't suggesting to put it on <code>ModuleName</code>.</p>
+<p>What I was suggesting was that <code>from_relative_path</code> should not be implemented like this as a <code>ModuleName</code> constructor, because then we throw away information from the path that we will need. I think <code>from_relative_path</code> should instead be implemented at a higher level where it returns all of the data that we can glean from the path, including the <code>ModuleName</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/module.rs</code>:180 on 2024-04-19 14:56</div>
+            <div class="timeline-body"><p>Yes, makes sense -- there are orders of magnitude more symbols and AST nodes than there are modules, so it's more important to maximize efficiency in those cases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/module.rs</code>:315 on 2024-04-19 14:59</div>
+            <div class="timeline-body"><p>Ah, I see. Yeah I don't think we should support resolving packages by their directory name.</p>
+<p>For packages with an <code>__init__.py</code> I definitely don't think it makes sense.</p>
+<p>The only case I can think of where it might make sense is a namespace package, but I don't think we need to (or should) ever resolve those directly or store them, because they cannot have contents. The only thing we care about is their submodules, which are resolved by their own path.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/module.rs</code>:423 on 2024-04-19 18:50</div>
+            <div class="timeline-body"><p>Re the first comment, I'm not totally clear which are the cases where we would cache the content of a file but not also cache the resolution from module name to that file.</p>
+<p>The idea that we may end up having module information without the source text due to cache eviction makes sense.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-04-19 18:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-04-19 18:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/ast_ids.rs</code>:30 on 2024-04-19 18:52</div>
+            <div class="timeline-body"><p>Oh weird! So basically it's just that Rust knows how to implement <code>Eq</code> for <code>fn() -&gt; N</code> but not necessarily for <code>N</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/module.rs</code>:818 on 2024-04-19 18:57</div>
+            <div class="timeline-body"><p>nit</p>
+<pre><code class="language-suggestion">        //       __init__.py
+        //       one.py
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-04-19 18:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-04-19 21:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/module.rs</code>:54 on 2024-04-19 21:31</div>
+            <div class="timeline-body"><p>I don't see us throwing away any information, considering that this method doesn't do any Io. The idea here is that we get a full qualified name that we can then throw into the resolve function (that retrieves all information)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-04-19 23:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/module.rs</code>:54 on 2024-04-19 23:50</div>
+            <div class="timeline-body"><p>Ah, yeah, I was looking at this method in isolation; I see the only place it's actually used is in <code>resolve_path</code>, where the very next step is to resolve that module name back to a path (and make sure it actually resolves to the right path). So I agree, we will get all that information from resolving, and that's where we should get it from.</p>
+<p>I would still prefer for this to be a private method of <code>ModuleResolver</code> rather than a public constructor of <code>ModuleName</code>, because I think it's kind of important to ensure that it only be used in the context of <code>resolve_path</code>, as just described. We don't want some code in the future constructing <code>ModuleName</code> using <code>ModuleName::from_relative_path</code> and assuming that means it has a correct module name to path correspondence. But this is more a future thing for robustness, not an important prototype consideration.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-04-19 23:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/module.rs</code>:374 on 2024-04-19 23:53</div>
+            <div class="timeline-body"><p>Ok, I buy that we will need to be able to resolve modules without necessarily reading their contents.</p>
+<p>It sounds like you are already planning that in future we should ensure that all filesystem access happens through VFS; in that case, we are on the same page. E.g. I want to be able to write tests for the logic of <code>ModuleResolver</code> using a mock VFS that don't require actual filesystem access.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-04-20 14:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/module.rs</code>:54 on 2024-04-20 14:24</div>
+            <div class="timeline-body"><p>Yeah I don't mind making it private and agree, the only two methods that need to be public are <code>relative</code> and <code>new</code> (or absolute).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JonathanPlasse">@JonathanPlasse</a> on 2024-04-22 06:25</div>
+            <div class="timeline-body"><blockquote>
+<p>https://excalidraw.com/#json=-Thvh6hnezji3DT3SfFYs,Hjt_fOpRTgpgNKy9Hfb9-Q</p>
+</blockquote>
+<p>The link does not seem to be public.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-04-22 06:34</div>
+            <div class="timeline-body"><p>@JonathanPlasse I just opened it in a private session without any problems. Do you get an error that the link is invalid? Also, the link is a bit outdated.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/trag1c">@trag1c</a> on 2024-04-22 06:47</div>
+            <div class="timeline-body"><p>I can open it just fine :+1:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JonathanPlasse">@JonathanPlasse</a> on 2024-04-22 13:35</div>
+            <div class="timeline-body"><p>It works for me too in private session. Sorry for the noise.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-04-23 09:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/types.rs</code>:9 on 2024-04-23 09:51</div>
+            <div class="timeline-body"><p>Nit :It's common in the rust community to name this <code>ty</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-04-23 09:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/types.rs</code>:54 on 2024-04-23 09:52</div>
+            <div class="timeline-body"><p>Nit: I would rename this to <code>ClassType</code> because it's not a type class (a subset of a class) but instead it's the type representation of a class.</p>
+<p>Same for <code>TypeFunction</code>, rename to <code>FunctionType</code>. I think that also reads better with <code>LiteralType</code> rather than <code>TypeLiteral</code> (I think a type literal is something else, if it even exists).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-04-23 09:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/types.rs</code>:17 on 2024-04-23 09:53</div>
+            <div class="timeline-body"><p>I think it will be interesting if we can come up with a more stable id for types than relying on inference order.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-04-23 18:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/types.rs</code>:17 on 2024-04-23 18:24</div>
+            <div class="timeline-body"><p>Yeah, it's a good point, I thought about this. I don't think <code>TypeId</code> (as in, the index into this <code>IndexVec</code>) can be stable; that's not really compatible with lazy type evaluation. But we may want to have another, more stable identifier (based on fully qualified name?) that we use most places instead of <code>TypeId</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-04-23 18:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/types.rs</code>:54 on 2024-04-23 18:25</div>
+            <div class="timeline-body"><p>Yeah, I agree. I did this in parallel with how AST names its types, e.g. <code>Stmt::ClassDef</code> contains a <code>StmtClassDef</code>. But I don't like how it works in this case, I prefer <code>Type</code> as suffix also.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/types.rs</code>:17 on 2024-04-23 18:34</div>
+            <div class="timeline-body"><p>I could also abandon using the <code>IndexVec</code> arena in this case? But we will have a lot of types...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-04-23 18:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-04-23 19:24</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @MichaReiser on 2024-04-27 08:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2024-04-27 08:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Red Knot" to "Kick off Red-knot" by @MichaReiser on 2024-04-27 08:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2024-04-27 08:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-04-27 08:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-04-27 08:34</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 22:37:33 UTC
+    </footer>
+</body>
+</html>

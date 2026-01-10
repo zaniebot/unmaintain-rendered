@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`ruff`] Detect duplicate codes as part of `unused-noqa` (`RUF100`) - astral-sh/ruff #10850</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>ruff</code>] Detect duplicate codes as part of <code>unused-noqa</code> (<code>RUF100</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/10850">#10850</a>
+        opened by <a href="https://github.com/augustelalande">@augustelalande</a>
+        on 2024-04-09 23:00
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/augustelalande">@augustelalande</a> on 2024-04-09 23:00</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>Implement duplicate code detection as part of <code>RUF100</code>, mirroring the behavior of <code>flake8-noqa</code> (<code>NQA005</code>) mentioned in #850. The idea to merge the rule into <code>RUF100</code> was suggested by @MichaReiser https://github.com/astral-sh/ruff/pull/10325#issuecomment-2025535444.</p>
+<h2>Test Plan</h2>
+<p>Test cases were added to the fixture.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-04-09 23:15</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/augustelalande">@augustelalande</a> on 2024-04-09 23:33</div>
+            <div class="timeline-body"><p>Given the violations in the ecosystem check (<code># noqa: PGH001, S307</code>), there is a question of whether duplicates should be detected based on rule (i.e. <code>PGH001</code> and <code>S307</code> are the same rule) or code (i.e. <code>PGH001</code> and <code>S307</code> are different codes).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-04-10 04:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @charliermarsh on 2024-04-10 04:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2024-04-10 04:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-10 04:28</div>
+            <div class="timeline-body"><p>Hmm yeah... I think it would make sense to match based on <em>rule</em>, but it's confusing that the diagnostic lists the redirected code (and so, presumedly, the one that should stay).</p>
+<p>I'd say let's do the duplicate detection based on code for now. Seems simpler.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/augustelalande">@augustelalande</a> on 2024-04-10 15:53</div>
+            <div class="timeline-body"><p>Ok I modified it to use the original code. I also had to modify the list of valid codes, to also use the original code for the fix to work. This has the added effect that redirects will no longer be updated if another rule is violated. But this might be less confusing behavior for users since codes will no longer be updated to new codes without explanation.</p>
+<p>If we want to detect redirects and lint against them, then the user should probably be notified that they are using a redirect.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-10 15:58</div>
+            <div class="timeline-body"><p>Could we add a separate &quot;reason&quot; for redirected codes?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/augustelalande">@augustelalande</a> on 2024-04-10 15:59</div>
+            <div class="timeline-body"><p>Ya I was just thinking about that. Do you want me to do it in this PR, or a separate one?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-10 16:00</div>
+            <div class="timeline-body"><p>I'm cool with either, whichever is easier for you.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/augustelalande">@augustelalande</a> on 2024-04-10 16:00</div>
+            <div class="timeline-body"><p>Ok I will add it to this one</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/augustelalande">@augustelalande</a> on 2024-04-10 16:28</div>
+            <div class="timeline-body"><p>Should redirects be a seperate rule? Technically <code>RUF100</code> is <code>unused-noqa</code> which isn't strictly true of redirects.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/noqa.rs</code>:95 on 2024-04-11 06:21</div>
+            <div class="timeline-body"><p>Nit: you can use <code>at</code> to avoid having to offset the end by <code>codes_end</code></p>
+<pre><code class="language-suggestion">                            TextRange::at(
+                                TextSize::try_from(codes_end).unwrap(),
+                                code.text_len(),
+                            )
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/noqa.rs</code>:192 on 2024-04-11 06:39</div>
+            <div class="timeline-body"><p>I think it's fine to use two vectors here but we could also use a single vector if we want. However, I think it's important that we don't leak the fact that <code>codes</code> and <code>code_ranges</code> must contain exactly the same number of elements (which it currently does because the rule implementation uses <code>zip</code>).</p>
+<p>I would change the implementation to</p>
+<pre><code class="language-rust">impl&lt;'a&gt; Codes&lt;'a&gt; {
+    /// The codes that are ignored by the `noqa` directive.
+    pub(crate) fn names(&amp;self) -&gt; impl Iterator&lt;Item=&amp;'a str&gt; + '_ {
+        self.codes.iter().map(|(code, _)| *code)
+    }
+
+    pub(crate) fn iter(&amp;self) -&gt; std::slice::Iter&lt;(&amp;str, TextRange)&gt; {
+        self.codes.iter()
+    }
+
+    /// Returns `true` if the string list of `codes` includes `code` (or an alias
+    /// thereof).
+    pub(crate) fn includes(&amp;self, needle: Rule) -&gt; bool {
+        let needle = needle.noqa_code();
+
+        self.names()
+            .any(|code| needle == get_redirect_target(code).unwrap_or(code))
+    }
+
+    pub(crate) fn ranges(&amp;self) -&gt; impl Iterator&lt;Item=TextRange&gt; + '_ {
+        self.codes.iter().map(|&amp;(_, range)| range)
+    }
+}
+</code></pre>
+<p>and then only use these methods in the calling code. It's then up to the implementation to decide if it wants to use a <code>Vec</code> storing a tuple for each code or two vectors (and I leave that decision to you).</p>
+<p>(Note I moved the <code>includes</code> function to <code>Codes</code>. That means we should delete the <code>noqa::includes</code> function and instead use <code>codes.includes(rule)</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/redirected_noqa.rs</code>:66 on 2024-04-11 06:41</div>
+            <div class="timeline-body"><p>Nit</p>
+<pre><code class="language-suggestion">            if let Some(redirected) = get_redirect_target(original_code) {
+                let mut diagnostic = Diagnostic::new(
+                    RedirectedNOQA {
+                        original: (*original_code).to_string(),
+                        target: redirected.to_string(),
+                    },
+                    *code_range,
+                );
+
+                diagnostic.set_fix(Fix::safe_edit(Edit::range_replacement(
+                    code.to_string(),
+                    *code_range,
+                )));
+                diagnostics.push(diagnostic);
+            }
+        }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-04-11 06:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/augustelalande">@augustelalande</a> reviewed on 2024-04-11 17:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/augustelalande">@augustelalande</a> on <code>crates/ruff_linter/src/noqa.rs</code>:95 on 2024-04-11 17:24</div>
+            <div class="timeline-body"><p>Nice</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/augustelalande">@augustelalande</a> reviewed on 2024-04-11 17:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/augustelalande">@augustelalande</a> on <code>crates/ruff_linter/src/rules/ruff/rules/redirected_noqa.rs</code>:66 on 2024-04-11 17:27</div>
+            <div class="timeline-body"><p>Clean 👍</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/augustelalande">@augustelalande</a> reviewed on 2024-04-11 18:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/augustelalande">@augustelalande</a> on <code>crates/ruff_linter/src/noqa.rs</code>:192 on 2024-04-11 18:22</div>
+            <div class="timeline-body"><p>Makes sense. Done.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[`ruff`] Detect duplicate codes as part of `unused-noqa` (`RUF100`)" to "[`ruff`] Implement `redirected-noqa` (`RUF101`), also detect duplicate codes as part of `unused-noqa` (`RUF100`)" by @augustelalande on 2024-04-11 18:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/augustelalande">@augustelalande</a> on 2024-04-20 01:44</div>
+            <div class="timeline-body"><p>I'm gonna split this to help merge it</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @augustelalande on 2024-04-20 01:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[`ruff`] Implement `redirected-noqa` (`RUF101`), also detect duplicate codes as part of `unused-noqa` (`RUF100`)" to "[`ruff`] Detect duplicate codes as part of `unused-noqa` (`RUF100`)" by @augustelalande on 2024-04-27 04:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @augustelalande on 2024-04-27 04:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/augustelalande">@augustelalande</a> on 2024-04-27 04:13</div>
+            <div class="timeline-body"><p>@charliermarsh hopefully this should be an easy merge now 😉</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-04-27 12:18</div>
+            <div class="timeline-body"><p>Great, thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-04-27 12:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-04-27 12:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-04-27 17:10</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 22:37:33 UTC
+    </footer>
+</body>
+</html>

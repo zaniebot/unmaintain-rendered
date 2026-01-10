@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enable ruff-specific source actions - astral-sh/ruff #10916</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Enable ruff-specific source actions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/10916">#10916</a>
+        opened by <a href="https://github.com/snowsignal">@snowsignal</a>
+        on 2024-04-13 06:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/snowsignal">@snowsignal</a> on 2024-04-13 06:27</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Fixes #10780.</p>
+<p>The server now send code actions to the client with a Ruff-specific kind, <code>source.*.ruff</code>. The kind filtering logic has also been reworked to support this.</p>
+<h2>Test Plan</h2>
+<p>Add this to your <code>settings.json</code> in VS Code:</p>
+<pre><code class="language-json">{
+  &quot;[python]&quot;: {
+    &quot;editor.codeActionsOnSave&quot;: {
+      &quot;source.organizeImports.ruff&quot;: &quot;explicit&quot;,
+    },
+  }
+}
+</code></pre>
+<p>Imports should be automatically organized when you manually save with <code>Ctrl/Cmd+S</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @snowsignal on 2024-04-13 06:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @snowsignal on 2024-04-13 06:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-04-13 06:40</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_server/src/server/api/requests/code_action.rs</code>:117 on 2024-04-15 07:55</div>
+            <div class="timeline-body"><p>Nit and unrelated to this PR: <code>kinds</code> could return a static slice:</p>
+<pre><code>    fn kinds(self) -&gt; &amp;'static [CodeActionKind] {
+        match self {
+            Self::QuickFix =&gt; {
+                static QUICKFIX: [CodeActionKind; 1] = [CodeActionKind::QUICKFIX];
+                &amp;QUICKFIX
+            }
+            Self::SourceFixAll =&gt; {
+                static FIXALL: [CodeActionKind; 2] =
+                    [CodeActionKind::SOURCE_FIX_ALL, crate::SOURCE_FIX_ALL_RUFF];
+                &amp;FIXALL
+            }
+            Self::SourceOrganizeImports =&gt; {
+                static ORGANIZE_IMPORTS: [CodeActionKind; 2] = [
+                    CodeActionKind::SOURCE_ORGANIZE_IMPORTS,
+                    crate::SOURCE_ORGANIZE_IMPORTS_RUFF,
+                ];
+
+                &amp;ORGANIZE_IMPORTS
+            }
+        }
+    }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-04-15 08:07</div>
+            <div class="timeline-body"><p>It looks good. I would have found it useful if the PR summary contained a small description of how this PR fixes the issue.</p>
+<p>What happens if you put the following in your configuration</p>
+<pre><code>{
+  &quot;[python]&quot;: {
+    &quot;editor.codeActionsOnSave&quot;: {
+      &quot;source.organizeImports&quot;: &quot;explicit&quot;,
+      &quot;source.organizeImports.ruff&quot;: &quot;explicit&quot;,
+    },
+  }
+}
+</code></pre>
+<p>Is this the same way we promote both actions today? Could the LSP know which code actions the client enables to avoid generating unnecessary actions?</p>
+<p>I looked at ESLint, and it seems they only generate the <code>source.fixAll.eslint</code> action (and not <code>source.fixAll</code>). I tried to test this locally and it seems to work (There's the chance that I messed up my testing setup but I'm somewhat confident):</p>
+<p>VS code configurations:</p>
+<pre><code>  &quot;editor.codeActionsOnSave&quot;: {
+    &quot;source.fixAll&quot;: &quot;always&quot;
+  }
+</code></pre>
+<p><code>fix_all</code></p>
+<pre><code class="language-rust">    dbg!(&quot;Source fix all ruff only&quot;);
+    Ok([SOURCE_FIX_ALL_RUFF]
+        .into_iter()
+        .map(move |kind| types::CodeAction {
+            title: format!(&quot;{DIAGNOSTIC_NAME}: Fix all auto-fixable problems&quot;),
+            kind: Some(kind),
+            edit: edit.clone(),
+            data: data.clone(),
+            ..Default::default()
+        })
+        .map(CodeActionOrCommand::CodeAction)
+        .collect())
+</code></pre>
+<p>And VS code automatically applied the fixes. So maybe generating the fixes twice isn't necessary after all.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-04-15 13:21</div>
+            <div class="timeline-body"><p>(I was in the middle of writing the review comment when I pressed the back button which erased everything, I'll try my best to write everything again.)</p>
+<p>I don’t think the server should return two code actions if the user has provided both <code>source.organizeImports</code> and <code>source.organizeImports.ruff</code>. The main reason for having a <code>.ruff</code> specific code action kinds is to allow users to explicitly mention that the client should only apply Ruff specific <code>organizeImports</code> action. For example, a user might have multiple language servers enabled for a specific language but only wants Ruff to apply the organize imports action.</p>
+<p>Think of it more as a hierarchy where a more specific code action kind wins. Here’s a snippet from the LSP spec:</p>
+<pre><code class="language-jsx">/**
+ * The kind of a code action.
+ *
+ * Kinds are a hierarchical list of identifiers separated by `.`,
+ * e.g. `&quot;refactor.extract.function&quot;`.
+ *
+ * The set of kinds is open and client needs to announce the kinds it supports
+ * to the server during initialization.
+ */
+export type CodeActionKind = string;
+</code></pre>
+<p>I’d also recommend testing this out with different values of <code>codeActionOnKind</code> which I believe are <code>explicit</code>, <code>always</code> , and <code>off</code> (confirm the values). What happens in a scenario when <code>source.organizeImports</code> is <code>explicit</code> while <code>source.organizeImports.ruff</code> is <code>always</code>. This might probably be handled by the editor but it would be useful to know the outcome of such scenarios.</p>
+<p>I did a small test locally and saw a difference in the response between <code>ruff</code> and <code>ruff-lsp</code>. I’m not sure if it matters but something to check. If I ask only for <code>source.organizeImports.ruff</code> to both the server, the code action kind in the response is different: <code>ruff</code> gives <code>source.organizeImports</code> while <code>ruff-lsp</code> gives (possibly correct?) <code>source.organizeImports.ruff</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/snowsignal">@snowsignal</a> on 2024-04-16 04:14</div>
+            <div class="timeline-body"><p>@MichaReiser @dhruvmanila I've tried to address your feedback as best as I could.</p>
+<p>We now only return the ruff-specific code actions (<code>source.*.ruff</code>) in the code action response. I also reworked how we check supported code actions to account for this.</p>
+<p>Here are the various configurations I've tested with the latest changes:</p>
+<p><strong>Configuration</strong>:</p>
+<pre><code class="language-json">{
+  &quot;[python]&quot;: {
+    &quot;editor.codeActionsOnSave&quot;: {
+      &quot;source.fixAll&quot;: &quot;explicit&quot;,
+    },
+  }
+}
+</code></pre>
+<p><strong>Result</strong>: Manually saving automatically fixes all problems in the file.</p>
+<p><strong>Configuration</strong>:</p>
+<pre><code class="language-json">{
+  &quot;[python]&quot;: {
+    &quot;editor.codeActionsOnSave&quot;: {
+      &quot;source.fixAll.ruff&quot;: &quot;explicit&quot;,
+    },
+  }
+}
+</code></pre>
+<p><strong>Result</strong>: Manually saving automatically fixes all problems in the file.</p>
+<p><strong>Configuration</strong>:</p>
+<pre><code class="language-json">{
+  &quot;[python]&quot;: {
+    &quot;editor.codeActionsOnSave&quot;: {
+      &quot;source.fixAll&quot;: &quot;never&quot;,
+      &quot;source.fixAll.ruff&quot;: &quot;explicit&quot;
+    },
+  }
+}
+</code></pre>
+<p><strong>Result</strong>: Manually saving automatically fixes all problems in the file.</p>
+<p><strong>Configuration</strong>:</p>
+<pre><code class="language-json">{
+  &quot;[python]&quot;: {
+    &quot;editor.codeActionsOnSave&quot;: {
+      &quot;source.fixAll&quot;: &quot;explicit&quot;,
+      &quot;source.fixAll.ruff&quot;: &quot;explicit&quot;
+    },
+  }
+}
+</code></pre>
+<p><strong>Result</strong>: Manually saving automatically fixes all problems in the file.</p>
+<p><strong>Configuration</strong>:</p>
+<pre><code class="language-json">{
+  &quot;[python]&quot;: {
+    &quot;editor.codeActionsOnSave&quot;: {
+      &quot;source.fixAll&quot;: &quot;explicit&quot;,
+      &quot;source.fixAll.ruff&quot;: &quot;never&quot;
+    },
+  }
+}
+</code></pre>
+<p><strong>Result</strong>: Manual saving does nothing.</p>
+<p>It's the same for <code>source.organizeImports</code>. Do these match what you expected? I think these behave the same as <code>ruff-lsp</code> except for the last one.</p>
+<p>One strange thing I noticed is that the <code>always</code> value for the setting seemed to have no difference compared to <code>explicit</code> - that is, it didn't apply the code action on auto-saves, and you still had to save manually. This is also what <code>ruff-lsp</code> did, so I'm not sure whether this is the expected behavior or not.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @snowsignal on 2024-04-16 04:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @snowsignal on 2024-04-16 04:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-04-16 05:24</div>
+            <div class="timeline-body"><blockquote>
+<p>It's the same for <code>source.organizeImports</code>. Do these match what you expected? I think these behave the same as <code>ruff-lsp</code> except for the last one.</p>
+</blockquote>
+<p>Yeah, I think the behavior in this PR is correct for the last example. I also confirmed with ESLint with the following VS Code settings:</p>
+<pre><code class="language-json">  &quot;[javascript]&quot;: {
+    &quot;editor.codeActionsOnSave&quot;: {
+      &quot;source.fixAll&quot;: &quot;explicit&quot;,
+      &quot;source.fixAll.eslint&quot;: &quot;never&quot;
+    }
+  }
+</code></pre>
+<p>And the following code:</p>
+<pre><code class="language-js">/* eslint curly: &quot;error&quot;*/
+
+if (foo) foo++;
+</code></pre>
+<p>I think <code>ruff-lsp</code> must be doing an &quot;or&quot; check where if the kind is either of them, return the said code action.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> approved on 2024-04-16 05:51</div>
+            <div class="timeline-body"><p>Thank you for addressing all the feedback and providing all of the test scenarios.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-04-16 05:52</div>
+            <div class="timeline-body"><p>Any reason why is this PR labeled as &quot;bug&quot;? I don't think there was support for it before this PR so I wouldn't classify it as a bug.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_server/src/server/api/requests/code_action.rs</code>:121 on 2024-04-16 06:05</div>
+            <div class="timeline-body"><p>The clones aren't necessary</p>
+<pre><code class="language-suggestion">        kind: Some(crate::SOURCE_FIX_ALL_RUFF),
+        edit,
+        data,
+        ..Default::default()
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_server/src/server/api/requests/code_action.rs</code>:156 on 2024-04-16 06:05</div>
+            <div class="timeline-body"><p>The clones aren't necessary (weren't needed before)</p>
+<pre><code class="language-suggestion">        edit,
+        data,
+        ..Default::default()
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_server/src/server.rs</code>:299 on 2024-04-16 06:07</div>
+            <div class="timeline-body"><p>Nit: I think I would return the owned value here (or remove the <code>static</code> aliases)</p>
+<pre><code class="language-suggestion">    fn to_kind(self) -&gt; CodeActionKind {
+        match self {
+            Self::QuickFix =&gt; CodeActionKind::QUICKFIX,
+            Self::SourceFixAll =&gt; crate::SOURCE_FIX_ALL_RUFF,
+            Self::SourceOrganizeImports =&gt; crate::SOURCE_ORGANIZE_IMPORTS_RUFF,
+        }
+    }
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-04-16 06:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/snowsignal">@snowsignal</a> on 2024-04-16 18:09</div>
+            <div class="timeline-body"><p>@dhruvmanila:</p>
+<blockquote>
+<p>Any reason why is this PR labeled as &quot;bug&quot;? I don't think there was support for it before this PR so I wouldn't classify it as a bug.</p>
+</blockquote>
+<p>The original issue that this PR solves was that we <em>should</em> have supported this but that support was broken.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @snowsignal on 2024-04-16 18:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @snowsignal on 2024-04-16 18:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-04-16 18:21</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 22:37:33 UTC
+    </footer>
+</body>
+</html>

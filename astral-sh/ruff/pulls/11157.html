@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] implement eval_symbol for from-import and class-def - astral-sh/ruff #11157</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] implement eval_symbol for from-import and class-def</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/11157">#11157</a>
+        opened by <a href="https://github.com/carljm">@carljm</a>
+        on 2024-04-26 02:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/carljm">@carljm</a> on 2024-04-26 02:47</div>
+            <div class="timeline-body"><p>This PR demonstrates resolving an import from one module to a class type from another module!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-04-26 03:02</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/types/eval.rs</code>:23 on 2024-04-26 07:15</div>
+            <div class="timeline-body"><p>Is allowing multiple threads to race resolution intentional if we don't have a cache hit? Or how does the locking work here between: No cache entry found and writing a new cache entry.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/types/eval.rs</code>:66 on 2024-04-26 07:17</div>
+            <div class="timeline-body"><p>Same here. Is it intentional that we allow multiple concurrent threads to race for the type resolution?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/types/eval.rs</code>:67 on 2024-04-26 07:18</div>
+            <div class="timeline-body"><p>Nit</p>
+<pre><code class="language-suggestion">            let Some(ty) = db.jar().type_store.get_cached_node_type(file_id, node_key) else {
+                let parsed = db.parse(file_id);
+                let ast = parsed.ast();
+                let node = StmtClassDef::cast_ref(
+                    node_key
+                        .resolve(ast.as_any_node_ref())
+                        .expect(&quot;node key should resolve&quot;),
+                )
+                .expect(&quot;node key should cast&quot;);
+
+                let store = &amp;mut db.jar_mut().type_store;
+                let ty = store.add_class(file_id, &amp;node.name.id);
+                store.cache_node_type(file_id, *node_key, ty);
+                ty
+            }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-04-26 07:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/program/mod.rs</code>:102 on 2024-04-26 07:52</div>
+            <div class="timeline-body"><p>Nit: I would probably have named this <code>resolve_symbol</code> because we aren't evaluating the symbol (I would use <code>eval</code> for a static interpretation of e.g. an expression that tries to compute its value)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-04-26 07:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-04-26 11:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/db.rs</code>:38 on 2024-04-26 11:12</div>
+            <div class="timeline-body"><p>I think this should be a query and not a mutation</p>
+<ul>
+<li>Move up to other queries</li>
+<li>Change <code>self</code> to take a readonly reference.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-04-26 11:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/program/mod.rs</code>:102 on 2024-04-26 11:13</div>
+            <div class="timeline-body"><p>Now using the API, I think <code>resolve_symbol</code> doesn't make sense. We should reserve that name for e.g. <code>resolve_symbol(expr)</code>.</p>
+<p>I'm not sure what a better name is, but I think it wouldn't be what I immediately would look for when trying to find if a symbol resolves. But that might again come down that I wouldn't use types for this :laughing:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-04-26 11:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/types/eval.rs</code>:65 on 2024-04-26 11:58</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">            if let Some(ty) = db.jar().type_store.get_cached_node_type(file_id, node_key.erased()) {
+                ty
+            } else {
+                let parsed = db.parse(file_id);
+                let ast = parsed.ast();
+                let node = node_key.resolve(ast.as_any_node_ref()).expect(&quot;node key should resolve&quot;);
+
+                let store = &amp;mut db.jar_mut().type_store;
+                let ty = store.add_class(file_id, &amp;node.name.id);
+                store.cache_node_type(file_id, node_key.resolved(), ty);
+</code></pre>
+<p>We could also consider adding a <code>resolve_unwrap</code> method</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-04-26 16:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/program/mod.rs</code>:102 on 2024-04-26 16:02</div>
+            <div class="timeline-body"><p>I think <code>infer_symbol_type</code> is probably the best name here, will update.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-04-26 16:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/db.rs</code>:38 on 2024-04-26 16:03</div>
+            <div class="timeline-body"><p>yes agreed, I'll make this update, and use internal mutability on the type store for the caching instead</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-04-26 16:35</div>
+            <div class="timeline-body"><p>We can follow up on proper synchronization if we add a FIXME</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-04-26 18:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/types/eval.rs</code>:23 on 2024-04-26 18:48</div>
+            <div class="timeline-body"><p>This is a great question. Currently of course it's &quot;not an issue&quot; because I was lazy and just took a mutable reference to the entire db, but as you pointed out above, that's a much bigger problem :) I will have to think more about the right strategy here. Ideally we do want to lock here to avoid multiple threads racing to resolve the same symbol, but ideally we want it to be somewhat fine-grained. But keeping a lock for every symbol might be too much.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-04-26 18:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/types/eval.rs</code>:65 on 2024-04-26 18:50</div>
+            <div class="timeline-body"><p>Oh hey thanks, you really can tell I was in a hurry with this last night :) I wondered why suddenly I had to cast here, and totally failed to notice it was because I'd erased above 🤦</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-04-26 18:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/types/eval.rs</code>:66 on 2024-04-26 18:51</div>
+            <div class="timeline-body"><p>Discussed above.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-04-26 19:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/types/eval.rs</code>:67 on 2024-04-26 19:29</div>
+            <div class="timeline-body"><p>The suggested change here doesn't work as-is, because this arm of the match needs to actually evaluate to a Type (ty). From what I can tell, it seems like <code>let-else</code> is for cases where the <code>else</code> diverges, but doesn't evaluate to an expression. I could restructure this to use a mutable <code>ty</code> I guess, but that doesn't seem like an improvement over the <code>if-let-else</code> I have now.</p>
+<p>Let me know if I'm missing a way for this suggestion to work out better than the <code>if-let-else</code>!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/db.rs</code>:38 on 2024-04-26 19:55</div>
+            <div class="timeline-body"><p>Going to do this in a follow up</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-04-26 19:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @carljm on 2024-04-26 20:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @carljm on 2024-04-26 20:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2024-04-26 20:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-04-26 20:05</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 22:37:41 UTC
+    </footer>
+</body>
+</html>

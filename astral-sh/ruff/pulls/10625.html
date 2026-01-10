@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avoid parsing the root configuration twice - astral-sh/ruff #10625</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Avoid parsing the root configuration twice</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/10625">#10625</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2024-03-27 09:20
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-03-27 09:20</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>I debugged #10622 and noticed that the root configuration is always resolved twice. This PR changes <code>python_files_in_path</code> to stop searching for configurations if it reached the root-configuration directory (because we can't find any more specific configuration).</p>
+<h2>Test Plan</h2>
+<p>I added debug statements to verify that <code>into_settings</code> is no longer called twice for the root configuration.</p>
+<p>I see a 4% speedup when running the CPython all cached benchmarks with the default rule selection</p>
+<pre><code>hyperfine --warmup 10 --runs 20 \
+        &quot;./target/release/ruff-main check crates/ruff_linter/resources/test/cpython -e&quot; \
+        &quot;./target/release/ruff check crates/ruff_linter/resources/test/cpython -e&quot;
+Benchmark 1: ./target/release/ruff-main check crates/ruff_linter/resources/test/cpython -e
+  Time (mean ± σ):      37.1 ms ±   1.1 ms    [User: 43.6 ms, System: 43.6 ms]
+  Range (min … max):    35.1 ms …  39.4 ms    20 runs
+ 
+Benchmark 2: ./target/release/ruff check crates/ruff_linter/resources/test/cpython -e
+  Time (mean ± σ):      35.3 ms ±   0.7 ms    [User: 36.7 ms, System: 51.0 ms]
+  Range (min … max):    34.0 ms …  36.4 ms    20 runs
+ 
+Summary
+  ./target/release/ruff check crates/ruff_linter/resources/test/cpython -e ran
+    1.05 ± 0.04 times faster than ./target/release/ruff-main check crates/ruff_linter/resources/test/cpython -e
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-03-27 09:34</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/registry/rule_set.rs</code>:211 on 2024-03-27 09:49</div>
+            <div class="timeline-body"><p>This is kind of unrelated but I noticed that we can simplify <code>configuration.rs</code> a bit</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_workspace/src/configuration.rs</code>:1100 on 2024-03-27 09:49</div>
+            <div class="timeline-body"><p>Another unrelated config change. It avoids allocating a new <code>Vec</code> and instead reuses the existing vector.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-03-27 09:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @MichaReiser on 2024-03-27 09:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @MichaReiser on 2024-03-27 09:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-03-27 14:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2024-05-01 09:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2024-05-01 09:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-05-01 09:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-05-01 09:28</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 22:37:32 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] add more types - astral-sh/ruff #11135</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] add more types</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/11135">#11135</a>
+        opened by <a href="https://github.com/carljm">@carljm</a>
+        on 2024-04-24 21:42
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/carljm">@carljm</a> on 2024-04-24 21:42</div>
+            <div class="timeline-body"><p>Fill out the representation of types to a few more cases (especially unions and intersections) before going too far with type evaluation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @carljm on 2024-04-24 21:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @carljm on 2024-04-24 21:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-04-24 21:55</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/types.rs</code>:45 on 2024-04-25 06:32</div>
+            <div class="timeline-body"><p>What's an MRO? Can we add a link or spell the word out?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/types.rs</code>:46 on 2024-04-25 06:32</div>
+            <div class="timeline-body"><p>It's a bit confusing that the type is called <code>ClassType</code> but the variant is <code>Instance</code>. I think I would align the two.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/types.rs</code>:43 on 2024-04-25 06:33</div>
+            <div class="timeline-body"><p>Nit: Use <code>///</code> for member documentation. <code>//</code> is for inline comments</p>
+<pre><code class="language-suggestion">    /// a specific function
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/types.rs</code>:56 on 2024-04-25 06:35</div>
+            <div class="timeline-body"><p>I associate the never type with the <code>!</code> type in rust or <code>never</code> in TypeScript where it indicates that a function never returns (e.g. it always throws). But what I understand is that this is more like a <code>unit</code> type</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/types.rs</code>:85 on 2024-04-25 06:45</div>
+            <div class="timeline-body"><p>It's a bit more annoying. But a common pattern here (see e.g. <code>Path</code>) is to have a <code>DisplayType</code> struct that implements <code>std::fmt::Display</code> and have the <code>display</code> function return that struct. It has the advantage that you can you the <code>display</code> function in <code>format_args</code> places (<code>write</code>, <code>format</code> <code>tracing</code> etc macros).</p>
+<pre><code class="language-suggestion">    fn display(&amp;self, env: &amp;TypeEnvironment) -&gt; DisplayType {
+        DisplayType { ty: self, environment: env }
+    }
+    
+    #[derive(Copy, Clone, Debug)]
+    struct DisplayType&lt;'a&gt; {
+    	ty: &amp;'a Type,
+    	environment: &amp;'a TypeEnvironment
+  	}
+  	
+  	impl std::fmt::Display for DisplayType&lt;'_&gt; {
+  		fn fmt(&amp;self, &amp;mut std::fmt::Formatter) -&gt; std::fmt::Result {
+  			if let Some(name) = self.ty.name() {
+            write!(f, &quot;{}&quot;, name)
+        } else {
+            match self {
+                Type::Union(inner) =&gt; inner.display(f, env),
+                Type::Intersection(inner) =&gt; inner.display(f, env),
+                _ =&gt; Err(std::fmt::Error),
+            }
+        }			}
+		}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/types.rs</code>:77 on 2024-04-25 06:46</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">            f.write_str(name)
+</code></pre>
+<p>Using <code>write_str</code> bypasses the somewhat heavy format args compiler infrastructure</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/types.rs</code>:82 on 2024-04-25 06:48</div>
+            <div class="timeline-body"><p>I would panic here. This is a programming error. It otherwise feels like it's a conditional <code>Display</code> where it returns <code>NotImplemented</code> if you call it on a value for which it isn't supported.</p>
+<p>I think it's overall also unexpected because e.g. a common assumption is that writing to a <code>String</code> never fails... well, that would no longer be true. I think I would write it as</p>
+<pre><code class="language-rust">match self {
+	Type::Union(inner) =&gt; inner.display(f, env), 
+	Type::Intersection(inner) =&gt; inner.display(f, env),
+	_ =&gt; {
+		let name = self.name.expect(&quot;Expect type to have a name&quot;);
+		f.write_str(name)
+	}
+}
+</code></pre>
+<p>or you make it more explicit and implement <code>display</code> (and possibly name) on each type so that <code>display</code> becomes a simple static dispatch call.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/types.rs</code>:118 on 2024-04-25 06:51</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        f.write_str(&quot;(&quot;)?;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/types.rs</code>:127 on 2024-04-25 06:52</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">            if !first {
+                f.write_str(&quot; | &quot;)?;
+            };
+            
+            first = false;
+            let ty = env.type_for_id(*elem_id);
+            ty.display(f, env)?;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/types.rs</code>:127 on 2024-04-25 06:54</div>
+            <div class="timeline-body"><p>or you could even move the first out of the loop</p>
+<pre><code class="language-suggestion">	let mut elements = self.elements.iter();
+	
+	if let Some(first) = elements.next();
+		let ty = env.type_for_id(*elem_id);
+		ty.display(f, env)?;
+	}
+	
+	for rest in elements {
+		let ty = env.type_for_id(*elem_id);
+		write!(f, &quot; | {}&quot;, ty.display())?;
+	}
+		
+	Ok()
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/types.rs</code>:158 on 2024-04-25 06:56</div>
+            <div class="timeline-body"><p>How common are negations? We could consider boxing the <code>HashSet</code> to avoid increasing the size of all other types (this is now by far the largest type).</p>
+<p>This is untrue if we make <code>TypeEnvironment</code> a struct of array where we use a different arena for each type and define <code>TypeId</code> as</p>
+<pre><code class="language-rust">#[derive(Copy, Clone, Debug, Eq, PartialEq, Hash)]
+enum TypeId {
+	/// Singleton types first
+	Any,
+	Unknown,
+	...,
+	Function(FunctionTypeId),
+	Class(ClassTypeId),
+	...
+}
+</code></pre>
+<p>I think that might be overall interesting to explore because:</p>
+<ul>
+<li>We don't need to store singleton types. We can just construct them anew everytime they're used (no need to write them to an arena)</li>
+<li>Increasing a single type is less problematic because it doesn't increase the size of all type elements</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/types.rs</code>:158 on 2024-04-25 06:56</div>
+            <div class="timeline-body"><p>What happens if a type is both in the positive and in the negative set? Is that possible? Should that be disallowed?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-04-25 06:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-04-25 12:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/types.rs</code>:45 on 2024-04-25 12:20</div>
+            <div class="timeline-body"><p>method resolution order -- the linearized list of base classes for a class. I'll spell it out.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-04-25 12:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/types.rs</code>:56 on 2024-04-25 12:26</div>
+            <div class="timeline-body"><p>No, this is like the <code>!</code> type in Rust or <code>never</code> in typescript: it's the bottom type. It can be used as a return annotation to indicate that a function never returns, but there are other cases where it can show up; it tends to indicate dead code, because for an expression to have the bottom type means that there is no possible value for that expression. This is what &quot;the empty set of values&quot; comment means. In a set-theoretic model, a type can be considered as representing a set of possible values, and the never type represents &quot;no possible values.&quot; This is not the same thing as Rust's unit type: that's a type with exactly one possible value. (In that sense, unit type is more like the type of <code>None</code> in Python, a type whose only possible value is <code>None</code>. And much like Rust's unit type, in Python we spell both the type and the value the same way).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-04-25 12:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/types.rs</code>:85 on 2024-04-25 12:27</div>
+            <div class="timeline-body"><p>This makes a ton of sense, thank you!</p>
+<p>You don't have to take the time to write out the code for a suggestion like this, unless you want to :) It's clear enough from the text.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-04-25 12:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot/src/types.rs</code>:46 on 2024-04-25 12:32</div>
+            <div class="timeline-body"><p>Or you could have something like</p>
+<pre><code class="language-suggestion">    Instance { instance_of: ClassType },
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-04-25 12:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/types.rs</code>:127 on 2024-04-25 12:40</div>
+            <div class="timeline-body"><p>I like the first suggestion; don't like duplicating most of the contents of the loop</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-04-25 12:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot/src/types.rs</code>:54 on 2024-04-25 12:40</div>
+            <div class="timeline-body"><p>Any, Unknown and Unbound seem to all be types that represent dynamic or unsafe typing in some way. That reminds me of this in the mypy codebase (which is really an enum, though it doesn't use Python's <code>enum</code> module, I think for performance and/or mypyc reasons): https://github.com/python/mypy/blob/82ebd866830cd79e25bf9d59e9f9474bd280c4f5/mypy/types.py#L187</p>
+<p>I wonder if it might make sense to have a single Dynamic variant here:</p>
+<pre><code class="language-suggestion">    Dynamic(DynamicType),
+</code></pre>
+<p>And have a separate DynamicType enum, e.g.</p>
+<pre><code class="language-rs">/// Enumeration of types that are fundamentally unsafe in some way
+enum DynamicType {
+    Any,
+    Unbound,
+    Unknown
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-04-25 12:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/types.rs</code>:158 on 2024-04-25 12:44</div>
+            <div class="timeline-body"><p>It would mean the Intersection should resolve to <code>Never</code>, because if type <code>X</code> is in both positive and negative, that means the intersection specifies the set of values which must be type <code>X</code> and must not be type <code>X</code>. Which is the empty set of values :) But this is not something we can represent in the type itself; we will need code to construct and simplify algebraic types, which will need to handle cases like this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-04-25 12:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot/src/types.rs</code>:128 on 2024-04-25 12:52</div>
+            <div class="timeline-body"><p>I have a vague sense of unease about using an unordered collection for this field. While the elements in a union should definitely be flattened and deduplicated, I think the order of elements in a union <em>might</em> sometimes matter in situations involving dynamic types. <code>Any | None</code> might be more dynamic than <code>None | Any</code>. But I don't have any concrete examples/I'm not sure if this is true.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-04-25 12:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/types.rs</code>:54 on 2024-04-25 12:54</div>
+            <div class="timeline-body"><p>I think the semantics of <code>Unbound</code> are quite different; it doesn't represent dynamic typing, it represents cases where we know for sure that a name either is unbound, or may be unbound (in this case we'd use a union with unbound). So I wouldn't want to include <code>Unbound</code> in such a <code>DynamicType</code> enum.</p>
+<p>(FWIW, I'm also not totally sold on representing <code>Unbound</code> as a type at all. It will result in a lot more union types, and maybe confusing error messages too. And I don't think it fully fits into the model, since a name can be unbound, but an expression can't be. So I'm leaning towards just removing <code>Unbound</code> here and modeling it differently.)</p>
+<p>We could have a <code>DynamicType</code> enum, but it also doesn't seem clearly necessary, so I'd rather wait and see if the type evaluation code suggests that it would be beneficial in some way.</p>
+<p>For instance, if we want to have a strict mode where <code>Unknown</code> acts like <code>object</code>, then I think grouping <code>Any</code> and <code>Unknown</code> together like this might cause more harm than good.</p>
+<p>It may be that at some point we want to track more fine-grained versions of <code>Any</code> like mypy does; at that point I think grouping them would make more sense.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-04-25 12:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/types.rs</code>:128 on 2024-04-25 12:57</div>
+            <div class="timeline-body"><p>I think it's pretty important that in terms of the type system, unions are not ordered. I'm not aware of anything in the spec that suggests they should be, and I think it would have really bad implications for the consistency of the type system.</p>
+<p>There was some discussion in the ongoing intersection-PEP effort about making intersections ordered, but I think the latest conclusion there (which I think is the correct conclusion) is that intersections should not be ordered either.</p>
+<p>My only unease here is about whether it's important for UX to feed unions that originate in type annotations back to the user (e.g. in error messages) in the same order the user specified the union in their annotation. But I'm not sure if this is important enough to warrant the extra complexity and inefficiency of e.g. having to deduplicate unions ourselves.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-04-25 13:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/types.rs</code>:158 on 2024-04-25 13:00</div>
+            <div class="timeline-body"><p>I really like this idea. It doesn't really make sense to have the singleton types even belong to a module at all; they are singletons, after all. Let me explore this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-04-25 13:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/types.rs</code>:46 on 2024-04-25 13:10</div>
+            <div class="timeline-body"><p>Yeah, let me think about this a bit more. I think I like Alex's version. The inner struct is really a representation of a class,  but the type represents instances of that class.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-04-25 13:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/types.rs</code>:158 on 2024-04-25 13:41</div>
+            <div class="timeline-body"><p>This has a lot of interactions with my other WIP on per-module arena instead of global arena, so I'm going to explore it in the next PR instead of in this one.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @carljm on 2024-04-25 13:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2024-04-25 13:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-04-25 13:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-04-25 23:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/types.rs</code>:158 on 2024-04-25 23:23</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/ruff/pull/11152</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-04-25 23:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/types.rs</code>:128 on 2024-04-25 23:23</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/ruff/pull/11152 makes these ordered using IndexSet.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @carljm on 2024-04-26 20:05</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 22:37:41 UTC
+    </footer>
+</body>
+</html>

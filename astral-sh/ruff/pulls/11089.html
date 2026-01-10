@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add a new CI job to fuzz the parser - astral-sh/ruff #11089</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add a new CI job to fuzz the parser</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/11089">#11089</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2024-04-22 12:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-04-22 12:27</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR adds a new CI job that tests the parser by running the new <code>scripts/fuzz-parser</code> script. The job runs the parser over 1,000 randomly generated (but all syntactically valid) Python source files. For any files that the parser fails to parse, the script minimises the generated source code into a minimal reproducible example. On completion of the script, if any bugs were encountered, the script fails with exit code 1.</p>
+<h2>How many seeds should we pass to the script?</h2>
+<p>This PR currently passes 1,001 seeds to the script for it to test. In an ideal world, we'd obviously run it over a larger range of seeds, but I think 1,001 seeds is enough for it to serve as a useful regression test (I discovered the bug that was fixed in #11009 on seed 6 with an early version of the <code>fuzz-parser</code> script).</p>
+<p>The new job takes around ten minutes to run in CI. That's quicker than the ecosystem job if the ecosystem job runs both the formatter and linter ecosystem checks, but it's slower than the ecosystem job if that job runs only the linter ecosystem checks. If we think 10 minutes is too long for this job, we could pass a smaller range of seeds to the script in CI.</p>
+<p>One way we could get the &quot;best of both worlds&quot; might be to pass it a small range of seeds for CI on PRs (500?) but have a nightly job that passes a large range of seeds (5,000? 10,000?). We could have a bot that automatically opens an issue when the nightly job fails -- we do something like this at typeshed: https://github.com/python/typeshed/issues/11801</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @AlexWaygood on 2024-04-22 12:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @AlexWaygood on 2024-04-22 12:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-04-22 12:44</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ci</span> added by @MichaReiser on 2024-04-23 07:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-04-23 07:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>.github/workflows/ci.yaml</code>:246 on 2024-04-23 08:20</div>
+            <div class="timeline-body"><p>Does having the same seed value mean that we'll be fuzzing over the <em>same</em> randomly generated source code? It seems like so:</p>
+<pre><code>In [7]: for i in range(100):
+   ...:     a = generate(i)
+   ...:     b = generate(i)
+   ...:     print(f&quot;{i}: {a == b}&quot;)
+   ...: 
+0: True
+1: True
+2: True
+3: True
+4: True
+5: True
+6: True
+7: True
+8: True
+9: True
+10: True
+11: True
+12: True
+13: True
+14: True
+15: True
+...
+</code></pre>
+<p>Do you think it would be useful to have a randomly generated seed value in here? I don't know how easy it is to add something like that to GitHub Actions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> approved on 2024-04-23 08:26</div>
+            <div class="timeline-body"><p>Thank you! I'm not exactly sure about having this in CI, but I'm fine adding it for now. For now, I just run the fuzzer locally with random seed numbers for around 2-3k inputs. Do you know how this affects the CI minutes?</p>
+<blockquote>
+<p>The new job takes around ten minutes to run in CI. That's quicker than the ecosystem job if the ecosystem job runs both the formatter and linter ecosystem checks, but it's slower than the ecosystem job if that job runs only the linter ecosystem checks. If we think 10 minutes is too long for this job, we could pass a smaller range of seeds to the script in CI.</p>
+</blockquote>
+<p>I think we can start with 500 for now if it's possible to add a random seed number for every invocation of the CI.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>.github/workflows/ci.yaml</code>:246 on 2024-04-23 08:31</div>
+            <div class="timeline-body"><p>Yup, the script is deterministic — the same seed always generates the same random source file.</p>
+<p>I think it depends on whether we think the purpose of running it in CI is primarily to catch regressions or to find previously unknown bugs. If the purpose is to catch regressions, we should run it over the same set of seeds on each PR (because otherwise we won't know that it's a <em>new</em> bug without doing some investigation). If the purpose is to find <em>unknown</em> bugs (new or pre-existing), then maybe a nightly workflow running it over a large set of randomly selected seeds would be better. If both, then maybe we should do both 😛</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-04-23 08:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-04-23 08:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>.github/workflows/ci.yaml</code>:246 on 2024-04-23 08:33</div>
+            <div class="timeline-body"><blockquote>
+<p>Do you think it would be useful to have a randomly generated seed value in here? I don't know how easy it is to add something like that to GitHub Actions.</p>
+</blockquote>
+<p>If we want to do this, my instinct would be to just add a CLI option <code>--random-seeds</code> or something, and then use Python's <code>random</code> module to generate the seeds from inside the script</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-04-23 08:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>.github/workflows/ci.yaml</code>:246 on 2024-04-23 08:38</div>
+            <div class="timeline-body"><p>Oh, that's a good point. I think it's fine to run it on the same set of seeds and I can provide some context in the contributing docs regarding this. Thanks for the context.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-04-23 10:17</div>
+            <div class="timeline-body"><p>I've reduced the number of seeds in CI to 501. I'll land this now as a regression test to run on PRs, and I'll separately explore running a larger, random set of seeds as a nightly workflow</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2024-04-23 10:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2024-04-23 10:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-04-23 10:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-04-23 10:28</div>
+            <div class="timeline-body"><blockquote>
+<p>For now, I just run the fuzzer locally with random seed numbers for around 2-3k inputs. Do you know how this affects the CI minutes?</p>
+</blockquote>
+<p>It seems like in CI (which uses a debug build and runs on machines with only a few cores, so seems to be a fair bit slower than running the script locally), it reliably fuzzes around 100 seeds a minute. So passing 500 seeds means the script takes 5 minutes; passing 1,000 seeds means the script takes 10 minutes; etc.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 22:37:39 UTC
+    </footer>
+</body>
+</html>

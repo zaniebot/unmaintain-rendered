@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add `ExpressionContext` for expression parsing - astral-sh/ruff #11055</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add <code>ExpressionContext</code> for expression parsing</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/11055">#11055</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2024-04-20 09:43
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-04-20 09:43</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR adds a new <code>ExpressionContext</code> struct which is used in expression parsing.</p>
+<p>This solves the following problem:</p>
+<ol>
+<li>Allowing starred expression with different precedence</li>
+<li>Allowing yield expression in certain context</li>
+<li>Remove ambiguity with <code>in</code> keyword when parsing a <code>for ... in</code> statement</li>
+</ol>
+<p>For context, (1) was solved by adding <code>parse_star_expression_list</code> and <code>parse_star_expression_or_higher</code> in #10623, (2) was solved by by adding <code>parse_yield_expression_or_else</code> in #10809, and (3) was fixed in #11009. All of the mentioned functions have been removed in favor of the context flags.</p>
+<p>As mentioned in #11009, an ideal solution would be to implement an expression context which is what this PR implements. This is passed around as function parameter and the call stack is used to automatically reset the context.</p>
+<h3>Recovery</h3>
+<p>How should the parser recover if the target expression is invalid when an expression can consume the <code>in</code> keyword?</p>
+<ol>
+<li>Should the <code>in</code> keyword be part of the target expression?</li>
+<li>Or, should the expression parsing stop as soon as <code>in</code> keyword is encountered, no matter the expression?</li>
+</ol>
+<p>For example:</p>
+<pre><code class="language-python">for yield x in y: ...
+
+# Here, should this be parsed as
+for (yield x) in (y): ...
+# Or
+for (yield x in y): ...
+# where the `in iter` part is missing
+</code></pre>
+<p>Or, for binary expression parsing:</p>
+<pre><code class="language-python">for x or y in z: ...
+
+# Should this be parsed as
+for (x or y) in z: ...
+# Or
+for (x or y in z): ...
+# where the `in iter` part is missing
+</code></pre>
+<p>This need not be solved now, but is very easy to change. For context this PR does the following:</p>
+<ul>
+<li>For binary, comparison, and unary expressions, stop at <code>in</code></li>
+<li>For lambda, yield expressions, consume the <code>in</code></li>
+</ul>
+<h2>Test Plan</h2>
+<ol>
+<li>Add test cases for the <code>for ... in</code> statement and verify the snapshots</li>
+<li>Make sure the existing test suite pass</li>
+<li>Run the fuzzer for around 3000 generated source code</li>
+<li>Run the updated logic on a dozen or so open source repositories (codename &quot;parser-checkouts&quot;)</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @dhruvmanila on 2024-04-20 09:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">parser</span> added by @dhruvmanila on 2024-04-20 09:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @dhruvmanila on 2024-04-20 09:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-04-20 10:12</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-04-20 14:14</div>
+            <div class="timeline-body"><p>I'll review on Monday but a few ahead of time questions</p>
+<p>For recovery, I assume the recovery is unchanged or did you change the recover?</p>
+<blockquote>
+<p>For binary, comparison, and unary expressions, stop at in</p>
+</blockquote>
+<p>I think the whole point of disallowing in is to disallow ambiguity in this case. For example, you could have <code>for a in b + c + d + e in 4:</code> which isn't valid but detecting this would be more involved. That's why I think hard stopping for binary expression is the right call.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-04-21 05:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/tests/snapshots/invalid_syntax@expressions__named__invalid_target.py.snap</code>:201 on 2024-04-21 05:26</div>
+            <div class="timeline-body"><blockquote>
+<p>For recovery, I assume the recovery is unchanged or did you change the recover?</p>
+</blockquote>
+<p>The recovery for <code>star_named_expression</code> got better as a side effect. Why better? Because a named expression is actually allowed here, but it's the target expression which is invalid.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-04-21 05:31</div>
+            <div class="timeline-body"><blockquote>
+<p>For recovery, I assume the recovery is unchanged or did you change the recover?</p>
+</blockquote>
+<p>Actually, it's changed in one specific case:</p>
+<pre><code class="language-python">for yield x in y: ...
+for lambda x, y: x in y: ...
+</code></pre>
+<p>The previous logic would hard stop at <code>in</code> keyword here. It would actually hard stop in every expression. But now, this PR doesn't pass in the context in <code>yield</code> and <code>lambda</code> expression and thus the <code>in</code> is part of the <code>yield</code> and <code>lambda</code> expression now.</p>
+<p>Before this PR:</p>
+<pre><code>Syntax Error: Yield expression cannot be used here at byte range 4..11
+  |
+1 | for yield x in y: ...
+  |     ^^^^^^^ Syntax Error: Yield expression cannot be used here
+  |
+</code></pre>
+<p>This PR:</p>
+<pre><code>Syntax Error: Yield expression cannot be used here at byte range 4..16
+  |
+1 | for yield x in y: ...
+  |     ^^^^^^^^^^^^ Syntax Error: Yield expression cannot be used here
+  |
+
+
+Syntax Error: Expected 'in', found ':' at byte range 16..17
+  |
+1 | for yield x in y: ...
+  |                 ^ Syntax Error: Expected 'in', found ':'
+  |
+</code></pre>
+<p>I think we should change this to retain the behavior in <code>yield</code> expression and is also the same for Biome's JS parser (<a href="https://biomejs.dev/playground/?code=eQBpAGUAbABkACAAeAAgAGkAbgAgAHkAOwAKAGYAbwByACAAKAB5AGkAZQBsAGQAIAB4ACAAaQBuACAAeQApACAAewB9AA%3D%3D">playground</a>).</p>
+<p>For <code>lambda</code> expression, I think the new behavior is correct.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-04-22 07:19</div>
+            <div class="timeline-body"><blockquote>
+<p>I think we should change this to retain the behavior in yield expression and is also the same for Biome's JS parser (<a href="https://biomejs.dev/playground/?code=eQBpAGUAbABkACAAeAAgAGkAbgAgAHkAOwAKAGYAbwByACAAKAB5AGkAZQBsAGQAIAB4ACAAaQBuACAAeQApACAAewB9AA%3D%3D">playground</a>).</p>
+</blockquote>
+<p>By retain you mean retaining the existing or the new behavior?</p>
+<p>I think I would find it more correct if the yield would stop before the <code>in</code> but I don't feel strongly, especially if it complicates the logic.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/parser/expression.rs</code>:111 on 2024-04-22 07:21</div>
+            <div class="timeline-body"><p>Nit: I would move this to the end of the file, considering that it is an implementation detail (what I'm most interested when jumping to this file is to see how expression parsing works)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/parser/expression.rs</code>:128 on 2024-04-22 07:21</div>
+            <div class="timeline-body"><p>Nit: You could change it to <code>EXCLUDE_IN</code> so that you can remove the <code>default</code> implementation</p>
+<p>Nit: I think it should otherwise be <code>ALLOW_IN</code> to align with the other flags.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/parser/expression.rs</code>:157 on 2024-04-22 07:24</div>
+            <div class="timeline-body"><p>I think this method is incorrect in the sense that it only adds the <code>ALLOW_STARRED_EXPRESSION</code> flags but never removes them. We should either rename the method or ensure to correctly unset the flags (at least the <code>BITWISE_OR_PRECEDENCE</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/parser/expression.rs</code>:137 on 2024-04-22 07:26</div>
+            <div class="timeline-body"><p>Nit: The name here doesn't really fit with the other flags and it seems specific to <code>star</code> expression but the name doesn't say so.</p>
+<p><code>STARRED_BITWISE_OR_PRECEDENCE</code>, <code>ALLOW_STARRED_CONDITIONAL_PRECEDENCE</code> or <code>DISALLOW_STARRED_CONDITIONAL_PRECEDENCE</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-04-22 07:32</div>
+            <div class="timeline-body"><blockquote>
+<p>By retain you mean retaining the existing or the new behavior?</p>
+</blockquote>
+<p>Retaining the existing behavior i.e., stopping before the <code>in</code> keyword.</p>
+<p>I don't think it <em>should</em> complicate the logic as it just involves passing the context and set / unset the flags.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/parser/expression.rs</code>:267 on 2024-04-22 07:33</div>
+            <div class="timeline-body"><p>Nit: The context seems to always be <code>default</code> except when called from <code>parse_named_expression_or_higher</code> or the list parsing.</p>
+<p>Should we split the method into a <code>parse_conditional_expression_or_higher</code> that defaults to <code>ExpressionContext::default</code> and have a <code>parse_conditional_expression_or_higher_impl</code> that has an optional <code>ExpressionContext</code>? It could help making writing new expression parsing easier if the default context is what should be used in all places where <code>parse_conditional_expression_or_higher</code> is used (I don't need to think that hard about what context I need to pass)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-04-22 07:34</div>
+            <div class="timeline-body"><p>That said, I won't be making that change in this PR. I'll do it as a follow-up to avoid mixing things up. You can review this PR in the current state.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/parser/expression.rs</code>:1920 on 2024-04-22 07:36</div>
+            <div class="timeline-body"><p>Nit: You could offer a helper to create the context: <code>ExpressionContext::starred_allowed(...)</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/parser/expression.rs</code>:1915 on 2024-04-22 07:37</div>
+            <div class="timeline-body"><p>There's a difference between the new and old parsing in that the previous implementation didn't unset the <code>INCLUDE_IN</code> flag because it was stored on the parser context.</p>
+<p>I think that's correct, considering that we're inside of a list. Did you verify that all call sites that now create a new context can omit setting the <code>INCLUDE_IN</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/parser/expression.rs</code>:2264 on 2024-04-22 07:39</div>
+            <div class="timeline-body"><p>I'm not sure if we should inherit the context here, to avoid unsetting the <code>INCLUDE_IN</code></p>
+<pre><code class="language-suggestion">                    context
+                        .with_starred_expression_allowed(StarredExpressionPrecedence::BitwiseOr),
+                )
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/parser/expression.rs</code>:2333 on 2024-04-22 07:39</div>
+            <div class="timeline-body"><p>Should we inherit the context here to avoid <code>for a:= in b</code> to eat the <code>in</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/parser/statement.rs</code>:1110 on 2024-04-22 07:44</div>
+            <div class="timeline-body"><p>Nit: I would inline <code>context</code> similar to how you do it in other call-sites.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/parser/statement.rs</code>:1199 on 2024-04-22 07:45</div>
+            <div class="timeline-body"><p>Nit: I would probably have kept <code>parse_star_expression_list</code> to avoid the repetition of the context creation (or have a helper that creates the star expression context)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-04-22 07:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-04-23 02:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/parser/expression.rs</code>:157 on 2024-04-23 02:47</div>
+            <div class="timeline-body"><p>Good catch! I'll change it to remove the flag in the <code>StarredExpressionPrecedence::Conditional</code> case and use a <code>match</code> expression to make it explicit in case any new variant is added in the future.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-04-23 02:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/parser/expression.rs</code>:137 on 2024-04-23 02:59</div>
+            <div class="timeline-body"><p>Yeah, I agree. I'm renaming it to <code>STARRED_BITWISE_OR_PRECEDENCE</code> because, by default, starred expression would be at <code>Conditional</code> precedence.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-04-23 03:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/parser/expression.rs</code>:267 on 2024-04-23 03:09</div>
+            <div class="timeline-body"><p>Yeah, I didn't realize that. I just counted them and it seems like so:</p>
+<p>  | default | non-default | inherit
+-- | -- | -- | --
+expression list | 6 | 11 |  
+named expression | 5 | 11 |  
+conditional expression | 19 | 3 | 1</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-04-23 03:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/parser/expression.rs</code>:702 on 2024-04-23 03:24</div>
+            <div class="timeline-body"><p>@MichaReiser we unset the <code>FOR_TARGET</code> flag here which allowed the <code>in</code> keyword to be part of a binary expression. For example, <code>[a, b in c, d]</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-04-23 03:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/parser/expression.rs</code>:1915 on 2024-04-23 03:26</div>
+            <div class="timeline-body"><p>We did unset the <code>FOR_TARGET</code> flag which is equivalent to setting the <code>INCLUDE_IN</code>. Here, the default context sets the <code>INCLUDE_IN</code> flag. Refer: https://github.com/astral-sh/ruff/pull/11055/files#r1575593474</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-04-23 03:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/parser/expression.rs</code>:2264 on 2024-04-23 03:29</div>
+            <div class="timeline-body"><p>I'm assuming this is specific to the yield expression for which I commented on the PR. If so, I'll create a follow-up to pass in the context to yield expressions in a later PR. I think it makes sense to avoid consuming the <code>in</code> keyword in a yield expression.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-04-23 03:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/parser/expression.rs</code>:2333 on 2024-04-23 03:31</div>
+            <div class="timeline-body"><p>I don't think that's required at this point because the target value of a <code>for</code> statement uses the <code>expressions</code> (<code>parse_expression_list</code>) grammar rule which will stop at <code>:=</code> token as it doesn't parse a named expression. Maybe something to lookout for when working on error recovery.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/parser/statement.rs</code>:1199 on 2024-04-23 03:32</div>
+            <div class="timeline-body"><p>Yeah, I'm thinking of going through the <code>ExpressionContext</code> creation sites and creating methods for the most common case(s).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-04-23 03:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-04-23 03:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/parser/expression.rs</code>:128 on 2024-04-23 03:52</div>
+            <div class="timeline-body"><p>I like the <code>EXCLUDE_IN</code> which is what we actually want to set. Thanks for the suggestion!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-04-23 04:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/parser/statement.rs</code>:1199 on 2024-04-23 04:10</div>
+            <div class="timeline-body"><p>invocations | count
+-- | --
+starred, conditional | 5
+starred, bitwise | 11
+starred, bitwise, yield | 7
+others | ...</p>
+<p>Based on the above table, I'm adding the following methods:</p>
+<ul>
+<li><code>ExpressionContext::starred_conditional</code></li>
+<li><code>ExpressionContext::starred_bitwise_or</code></li>
+<li><code>ExpressionContext::yield_or_starred_bitwise_or</code></li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2024-04-23 04:17</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/dhruv/expr-context">CodSpeed Performance Report</a></h2>
+<h3>Merging #11055 will <strong>improve performances by 6.64%</strong></h3>
+<p><sub>Comparing <code>dhruv/expr-context</code> (d980e27) with <code>main</code> (62478c3)</sub></p>
+<h3>Summary</h3>
+<p><code>⚡ 2</code> improvements
+<code>✅ 28</code> untouched benchmarks</p>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Benchmark | <code>main</code> | <code>dhruv/expr-context</code> | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| ⚡ | <code>parser[numpy/ctypeslib.py]</code> | 5.4 ms | 5.1 ms | +6.64% |
+| ⚡ | <code>parser[pydantic/types.py]</code> | 11.4 ms | 10.9 ms | +4.53% |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2024-04-23 04:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2024-04-23 04:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-04-23 04:19</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 22:37:38 UTC
+    </footer>
+</body>
+</html>

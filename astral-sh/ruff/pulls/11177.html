@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fix `cargo build --release` - astral-sh/ruff #11177</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fix <code>cargo build --release</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/11177">#11177</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2024-04-27 15:20
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-04-27 15:20</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p><code>cargo build --release</code> currently fails to compile on <code>main</code>:</p>
+<details>
+
+<pre><code>error[E0599]: no method named `hit` found for struct `ReleaseStatistics` in the current scope
+   --&gt; crates/red_knot/src/cache.rs:22:29
+    |
+22  |             self.statistics.hit();
+    |                             ^^^ method not found in `ReleaseStatistics`
+...
+145 | pub struct ReleaseStatistics;
+    | ---------------------------- method `hit` not found for this struct
+
+error[E0599]: no method named `miss` found for struct `ReleaseStatistics` in the current scope
+   --&gt; crates/red_knot/src/cache.rs:25:29
+    |
+25  |             self.statistics.miss();
+    |                             ^^^^ method not found in `ReleaseStatistics`
+...
+145 | pub struct ReleaseStatistics;
+    | ---------------------------- method `miss` not found for this struct
+
+error[E0599]: no method named `hit` found for struct `ReleaseStatistics` in the current scope
+   --&gt; crates/red_knot/src/cache.rs:36:33
+    |
+36  |                 self.statistics.hit();
+    |                                 ^^^ method not found in `ReleaseStatistics`
+...
+145 | pub struct ReleaseStatistics;
+    | ---------------------------- method `hit` not found for this struct
+
+error[E0599]: no method named `miss` found for struct `ReleaseStatistics` in the current scope
+   --&gt; crates/red_knot/src/cache.rs:41:33
+    |
+41  |                 self.statistics.miss();
+    |                                 ^^^^ method not found in `ReleaseStatistics`
+...
+145 | pub struct ReleaseStatistics;
+    | ---------------------------- method `miss` not found for this struct
+</code></pre>
+</details>
+
+<p>This is because in a release build, <code>CacheStatistics</code> is a type alias for <code>ReleaseStatistics</code>, and <code>ReleaseStatistics</code> doesn't have <code>hit()</code> or <code>miss()</code> methods. (In a debug build, <code>CacheStatistics</code> is a type alias for <code>DebugStatistics</code>, which <em>does</em> have those methods.)</p>
+<p>Possibly we could make this less likely to happen in the future by making both structs implement a common trait instead of using type aliases that vary depending on whether it's a debug build or not? For now, though, this PR just brings the two structs in sync w.r.t. the methods they expose.</p>
+<h2>Test Plan</h2>
+<p><code>cargo build --release</code> now once again compiles for me locally</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @AlexWaygood on 2024-04-27 15:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @AlexWaygood on 2024-04-27 15:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @AlexWaygood on 2024-04-27 15:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-04-27 15:32</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-04-27 15:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-04-27 15:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-04-27 15:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-27 15:45</div>
+            <div class="timeline-body"><p>Seems fine for now, merging to get builds passing. Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-04-27 15:47</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 22:37:43 UTC
+    </footer>
+</body>
+</html>

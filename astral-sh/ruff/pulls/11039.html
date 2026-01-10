@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`scripts/fuzz-parser`: work around race condition from running `cargo build` concurrently - astral-sh/ruff #11039</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1><code>scripts/fuzz-parser</code>: work around race condition from running <code>cargo build</code> concurrently</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/11039">#11039</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2024-04-19 13:16
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-04-19 13:16</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Running this script over a larger range of seeds, I noticed an occasional race condition due to the fact that the script runs <code>cargo run</code> in multiple processes concurrently.</p>
+<p>The script was very occasionally reporting bugs where none actually existed. The <code>cargo run</code> subprocess would fail to run the checked-out <code>ruff</code> branch due to the race condition, so would exit with a nonzero exit code. The script then incorrectly assumed that that meant that ruff itself had failed to parse the generated code.</p>
+<p>This PR works around the race condition by double-checking that the original snippet actually <em>does</em> reproduce buggy behaviour if we get to a point where the original subprocess had a nonzero exit code but subsequent calls to <code>pysource_minimize.minimize()</code> then fail to reproduce the bug.</p>
+<h2>Test Plan</h2>
+<p>In a Python virtual environment, I ran <code>uv pip install -r scripts/fuzz-parser/requirements.txt</code>, and then ran <code>py scripts/fuzz-parser/fuzz.py 0-10_000</code>. (Warning: this may make your computer fans whirr quite loudly.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @AlexWaygood on 2024-04-19 13:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "`scripts/fuzz-parser`: workaround race condition from running `cargo build` concurrently" to "`scripts/fuzz-parser`: work around race condition from running `cargo build` concurrently" by @AlexWaygood on 2024-04-19 13:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> approved on 2024-04-19 13:40</div>
+            <div class="timeline-body"><p>Oh, I didn't realize it builds the release target. It doesn't need to be done in this PR or even now, but I think we should just take  path of two <code>ruff</code> executables via the CLI arguments similar to how <code>ruff-ecosystem</code> does. I don't think the script should be responsible to build <code>ruff</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-04-19 13:41</div>
+            <div class="timeline-body"><blockquote>
+<p>Oh, I didn't realize it builds the release target. It doesn't need to be done in this PR or even now, but I think we should just take path of two <code>ruff</code> executables via the CLI arguments similar to how <code>ruff-ecosystem</code> does. I don't think the script should be responsible to build <code>ruff</code>.</p>
+</blockquote>
+<p>Oh, right. Yeah, that's probably a better way of doing things! Well, I'll merge this now, anyway, and look into how <code>ruff-ecosystem</code> does it later.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2024-04-19 13:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2024-04-19 13:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-04-19 13:42</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 22:37:37 UTC
+    </footer>
+</body>
+</html>

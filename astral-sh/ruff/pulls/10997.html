@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Preserve comma with starred expr in subscript - astral-sh/ruff #10997</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Preserve comma with starred expr in subscript</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/10997">#10997</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2024-04-17 11:41
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-04-17 11:41</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>There have been some grammar changes in <a href="https://peps.python.org/pep-0646/#change-1-star-expressions-in-indexes">PEP 646</a> which were not accounted for in the old parser. The new parser has been updated with the correct AST. This is the case when there's a starred expression inside a subscript expression like the following example:</p>
+<pre><code class="language-python">data[*x]
+</code></pre>
+<p>This gives us the AST where the slice element is actually a tuple expression with one element (starred expression) instead of just a starred expression. Now, the formatter's current behavior is to always add a trailing comma in a tuple with a single element.</p>
+<p>This PR updates the formatter to use the &quot;preserve&quot; behavior in trailing comma as well. So, trailing comma will not be added in the above example and if there's a trailing comma in the above example, it'll be preserved. This retains the current behavior without the AST change.</p>
+<h2>Test Plan</h2>
+<p>Run <code>cargo insta test -p ruff_python_formatter</code> and make sure there are no changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @dhruvmanila on 2024-04-17 11:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @dhruvmanila on 2024-04-17 11:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2024-04-17 11:46</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/dhruv/preserve-comma-with-pep-646">CodSpeed Performance Report</a></h2>
+<h3>Merging #10997 will <strong>not alter performance</strong></h3>
+<p><sub>Comparing <code>dhruv/preserve-comma-with-pep-646</code> (4a382e5) with <code>dhruv/parser</code> (c30057a)</sub></p>
+<h3>Summary</h3>
+<p><code>✅ 30</code> untouched benchmarks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-04-17 12:10</div>
+            <div class="timeline-body"><p>We should add a few tests for this new syntax. Or are there pre-existing tests for this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-04-17 12:13</div>
+            <div class="timeline-body"><blockquote>
+<p>We should add a few tests for this new syntax. Or are there pre-existing tests for this?</p>
+</blockquote>
+<p>There are: https://github.com/astral-sh/ruff/blob/a2e71a8460b07761bd280eac3ab9dd4bd013ba92/crates/ruff_python_formatter/resources/test/fixtures/black/cases/pep_646.py although it seems there's none for trailing commas. I'll add them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @dhruvmanila on 2024-04-17 12:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/tests/snapshots/format@statement__function.py.snap</code>:1029 on 2024-04-17 12:39</div>
+            <div class="timeline-body"><p>Is it intentional that you test here what happens if you have a trailing parameter comma? Should it instead test if there's a trailing tuple comma (in the subscript?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-04-17 12:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-04-17 12:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_formatter/tests/snapshots/format@statement__function.py.snap</code>:1029 on 2024-04-17 12:43</div>
+            <div class="timeline-body"><p>Yes, in the presence of variadic generics, the parameter formatting shouldn't change even though this PR doesn't touch that part of the code. It's mostly to make sure of any future changes, probably not needed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2024-04-17 12:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2024-04-17 12:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-04-17 12:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-04-17 12:58</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 22:37:37 UTC
+    </footer>
+</body>
+</html>

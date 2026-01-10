@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add decorator types to function type - astral-sh/ruff #11253</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add decorator types to function type</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/11253">#11253</a>
+        opened by <a href="https://github.com/plredmond">@plredmond</a>
+        on 2024-05-02 23:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/plredmond">@plredmond</a> on 2024-05-02 23:08</div>
+            <div class="timeline-body"><ul>
+<li>Add <code>decorators: Vec&lt;Type&gt;</code> to <code>FunctionType</code> struct</li>
+<li>Thread decorators through two <code>add_function</code> definitions</li>
+<li>Populate decorators at the callsite in <code>infer_symbol_type</code></li>
+<li>Small test</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @plredmond on 2024-05-02 23:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/plredmond">@plredmond</a> reviewed on 2024-05-02 23:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/plredmond">@plredmond</a> on <code>crates/red_knot/src/types/infer.rs</code>:88 on 2024-05-02 23:11</div>
+            <div class="timeline-body"><p>I'm doing an <code>.expect(..)</code> which could panic. Pretty sure we shouldn't do that, but not sure what pattern to follow there. Drop failures silently? Log into some kind of warnings-structure?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/plredmond">@plredmond</a> reviewed on 2024-05-02 23:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/plredmond">@plredmond</a> on <code>crates/red_knot/src/types/infer.rs</code>:87 on 2024-05-02 23:11</div>
+            <div class="timeline-body"><p>I'm currently using the given <code>file_id</code> for the call to <code>infer_expr_type</code> but that might be wrong. I'm not sure if that's meant to be the <code>file_id</code> where the <code>expr</code> exists (if so, then this is correct?) or something else.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/plredmond">@plredmond</a> reviewed on 2024-05-02 23:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/plredmond">@plredmond</a> on <code>crates/red_knot/src/types.rs</code>:519 on 2024-05-02 23:12</div>
+            <div class="timeline-body"><p>Is use of a random placeholder type in this test ok?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-05-02 23:21</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/types.rs</code>:519 on 2024-05-02 23:23</div>
+            <div class="timeline-body"><p>Yep for sure, in a test it's fine.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/types/infer.rs</code>:87 on 2024-05-02 23:24</div>
+            <div class="timeline-body"><p>It's meant to be the file_id in which the expr exists (it's used for calling back into <code>infer_symbol_type</code> to resolve names in the expression), so this is correct!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/types/infer.rs</code>:88 on 2024-05-02 23:26</div>
+            <div class="timeline-body"><p>This function (<code>infer_symbol_type</code>) also returns a <code>QueryResult&lt;Type&gt;</code>, so you can just use the <code>?</code> operator here to bubble up the error condition, if we get one, and unwrap the type.</p>
+<p>I think currently the only error condition is <code>QueryCancelled</code>, meaning conditions (i.e. files) have changed and this query is already obsolete so we should stop working on it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-05-02 23:27</div>
+            <div class="timeline-body"><p>Just make the expect -&gt; ? change and then I think this is good to merge!</p>
+<p>EDIT: also look into the pre-commit failure?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-05-02 23:33</div>
+            <div class="timeline-body"><blockquote>
+<p>Should I add more cases to infer_expr_type which is currently a todo?</p>
+</blockquote>
+<p>Not in this PR! We will want to flesh that out eventually, but it's separable from this PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/plredmond">@plredmond</a> reviewed on 2024-05-02 23:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/plredmond">@plredmond</a> on <code>crates/red_knot/src/types/infer.rs</code>:87 on 2024-05-02 23:37</div>
+            <div class="timeline-body"><p>Great. Thanks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/plredmond">@plredmond</a> reviewed on 2024-05-02 23:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/plredmond">@plredmond</a> on <code>crates/red_knot/src/types/infer.rs</code>:88 on 2024-05-02 23:38</div>
+            <div class="timeline-body"><p>Whoops, I forgot rust has maybe/either monads. Thanks! Willfix :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @plredmond on 2024-05-02 23:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-05-02 23:49</div>
+            <div class="timeline-body"><p>Looks great, thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @plredmond on 2024-05-02 23:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @plredmond on 2024-05-02 23:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @plredmond on 2024-05-02 23:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-05-02 23:58</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 22:37:44 UTC
+    </footer>
+</body>
+</html>

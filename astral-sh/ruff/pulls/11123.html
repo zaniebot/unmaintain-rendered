@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avoid multiline expression if format specifier is present - astral-sh/ruff #11123</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Avoid multiline expression if format specifier is present</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/11123">#11123</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2024-04-24 10:35
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-04-24 10:35</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR fixes the bug where the formatter would format an f-string and could potentially change the AST.</p>
+<p>For a triple-quoted f-string, the element can't be formatted into multiline if it has a format specifier because otherwise the newline would be treated as part of the format specifier.</p>
+<p>Given the following f-string:</p>
+<pre><code class="language-python">f&quot;&quot;&quot;aaaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbb ccccccccccc {
+    variable:.3f} ddddddddddddddd eeeeeeee&quot;&quot;&quot;
+</code></pre>
+<p>The formatter sees that the f-string is already multiline so it assumes that it can contain line breaks i.e., broken into multiple lines. But, in this specific case we can't format it as:</p>
+<pre><code class="language-python">f&quot;&quot;&quot;aaaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbb ccccccccccc {
+    variable:.3f
+} ddddddddddddddd eeeeeeee&quot;&quot;&quot;
+</code></pre>
+<pre><code>                 </code></pre>
+<p>Because the format specifier string would become &quot;.3f\n&quot;, which is not the original string (<code>.3f</code>).</p>
+<p>If the original source code already contained a newline, they'll be preserved. For example:</p>
+<pre><code class="language-python">f&quot;&quot;&quot;aaaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbb ccccccccccc {
+    variable:.3f
+} ddddddddddddddd eeeeeeee&quot;&quot;&quot;
+</code></pre>
+<p>The above will be formatted as:</p>
+<pre><code class="language-py">f&quot;&quot;&quot;aaaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbb ccccccccccc {variable:.3f
+} ddddddddddddddd eeeeeeee&quot;&quot;&quot;
+</code></pre>
+<p>Note that the newline after <code>.3f</code> is part of the format specifier which needs to be preserved.
+The Python version is irrelevant in this case.</p>
+<p>fixes: #10040</p>
+<h2>Test Plan</h2>
+<p>Add some test cases to verify this behavior.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @dhruvmanila on 2024-04-24 10:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @dhruvmanila on 2024-04-24 10:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-04-24 10:50</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_formatter/src/other/f_string_element.rs</code>:257 on 2024-04-25 10:07</div>
+            <div class="timeline-body"><p>This is an additional change which isn't relevant to this PR but should be a follow-up. I've included it in here for simplicity. For example,</p>
+<pre><code class="language-py">x = f&quot;aaaaaaaaaaaaaaa {
+    {'aaaaaaaaaaaaaaaaaa', 'dddddddddddddddddd'}!s
+}&quot;
+</code></pre>
+<p>This should be formatted as:</p>
+<pre><code class="language-py">x = f&quot;aaaaaaaaaaaaaaa { {'aaaaaaaaaaaaaaaaaa', 'dddddddddddddddddd'}!s}&quot;
+</code></pre>
+<p>Instead of:</p>
+<pre><code class="language-py">x = f&quot;aaaaaaaaaaaaaaa { {'aaaaaaaaaaaaaaaaaa', 'dddddddddddddddddd'}!s }&quot;
+#                                                                     ^ this isn't required if there's format spec or conversion spec
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-04-25 10:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @dhruvmanila on 2024-04-25 10:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @dhruvmanila on 2024-04-25 10:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-04-26 07:36</div>
+            <div class="timeline-body"><p>I'm confused, you say:</p>
+<blockquote>
+<p>Note that the newline after .3f is part of the format specifier which needs to be preserved.</p>
+</blockquote>
+<pre><code class="language-python">f&quot;&quot;&quot;aaaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbb ccccccccccc {variable:.3f
+} ddddddddddddddd eeeeeeee&quot;&quot;&quot;
+</code></pre>
+<p>But the original example had no newline after <code>3f</code>.</p>
+<pre><code class="language-python">f&quot;&quot;&quot;aaaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbb ccccccccccc {
+    variable:.3f} ddddddddddddddd eeeeeeee&quot;&quot;&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/resources/test/fixtures/ruff/expression/fstring.py</code>:219 on 2024-04-26 07:37</div>
+            <div class="timeline-body"><pre><code class="language-suggestion"># But, if it's triple-quoted then we can't or the format specificer will have a
+# trailing newline
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/resources/test/fixtures/ruff/expression/fstring.py</code>:235 on 2024-04-26 07:38</div>
+            <div class="timeline-body"><p>Lol what so <code># comment</code> here is not a comment :rofl:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-04-26 07:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-04-26 08:20</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm confused, you say:</p>
+<blockquote>
+<p>Note that the newline after .3f is part of the format specifier which needs to be preserved.</p>
+</blockquote>
+<pre><code class="language-python">f&quot;&quot;&quot;aaaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbb ccccccccccc {variable:.3f
+} ddddddddddddddd eeeeeeee&quot;&quot;&quot;
+</code></pre>
+<p>But the original example had no newline after <code>3f</code>.</p>
+<pre><code class="language-python">f&quot;&quot;&quot;aaaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbb ccccccccccc {
+    variable:.3f} ddddddddddddddd eeeeeeee&quot;&quot;&quot;
+</code></pre>
+</blockquote>
+<p>The note is for the two snippets above it. The two code snippets you've provided aren't connected. I meant that the following code</p>
+<pre><code class="language-py">f&quot;&quot;&quot;aaaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbb ccccccccccc {
+    variable:.3f
+} ddddddddddddddd eeeeeeee&quot;&quot;&quot;
+</code></pre>
+<p>will be formatted as</p>
+<pre><code class="language-diff">-f&quot;&quot;&quot;aaaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbb ccccccccccc {
+-    variable:.3f
++f&quot;&quot;&quot;aaaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbb ccccccccccc {variable:.3f
+ } ddddddddddddddd eeeeeeee&quot;&quot;&quot;
+</code></pre>
+<p>The formatter collapsed the f-string expression element but there's still a newline in the format spec which is why you see that the f-string is still multiline.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-04-26 08:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_formatter/resources/test/fixtures/ruff/expression/fstring.py</code>:235 on 2024-04-26 08:21</div>
+            <div class="timeline-body"><p>Yeah, it isn't but only if it's a triple-quoted f-string</p>
+<p>https://play.ruff.rs/b1d0326b-f8dc-4724-870f-db3770fb09c5</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-04-26 10:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2024-04-26 13:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2024-04-26 13:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-04-26 13:34</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 22:37:40 UTC
+    </footer>
+</body>
+</html>

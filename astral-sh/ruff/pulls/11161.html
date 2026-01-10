@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Resolve and check dependencies - astral-sh/ruff #11161</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Resolve and check dependencies</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/11161">#11161</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2024-04-26 08:58
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-04-26 08:58</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Discover a modules dependencies and schedule them for checking.</p>
+<p>This does not yet support native dependencies of which we don't have access to the source.</p>
+<h2>Test Plan</h2>
+<p>I created a <code>test.py</code> and ran <code>red_knot test.py</code>. The test.py imports <code>match.py</code>.</p>
+<p>I can see from the logs that <code>match.py</code> is correctly scheduled for checking. Cyclic dependencies work too.
+Red knot won't emit any diagnostics for <code>match.py</code> because it isn't an open file.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @MichaReiser on 2024-04-26 08:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-04-26 09:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/module.rs</code>:242 on 2024-04-26 09:01</div>
+            <div class="timeline-body"><p>I think that's actually fine. There's no risk for deadlocks because the function only ever holds on to a single lock (and not multiple ones). Any mutations happen through <code>resolve_module</code> which must be idempotent. The only overhead here is that we might end up calling <code>resolve_module</code> unnecessary but that's fine.</p>
+<p>we could even consider not making this method a query. Searching the root paths is cheap. I think the only place where we safe some performance is that we avoid the <code>canoncialize</code> call. So that's why I think it's still worth keeping the cache for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-04-26 09:22</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/module.rs</code>:56 on 2024-04-26 23:54</div>
+            <div class="timeline-body"><p>Unfortunately this isn't quite correct :/ The resolution of a relative import can't be determined solely from a module name, it requires knowing whether the module is an <code>__init__.py</code> file or not.</p>
+<p>Both <code>foo/bar.py</code> and <code>foo/bar/__init__.py</code> have module name <code>foo.bar</code>. But if you have <code>from . import baz</code> in <code>foo/bar.py</code>, that resolves to <code>foo.baz</code>. If you have <code>from . import baz</code> in <code>foo/bar/__init__.py</code>, that resolves to <code>foo.bar.baz</code>.</p>
+<p>So this operation isn't possible to implement correctly on <code>ModuleName</code> without adding to <code>ModuleName</code> a boolean flag for whether it is a package or not.</p>
+<p>Or we could use <code>ModuleName</code> less, since we are already indexing most things by <code>FileId</code> anyway, and just have it be a name, and implement all the interesting operations on <code>Module</code> instead, which knows its path.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/program/check.rs</code>:53 on 2024-04-27 00:04</div>
+            <div class="timeline-body"><p>Will we need dependencies of a module in cases where we don't also need its symbol table anyway?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/program/check.rs</code>:58 on 2024-04-27 00:07</div>
+            <div class="timeline-body"><p>I think this TODO is a little confusing, because we'll never support &quot;native dependencies.&quot; What we'll support in the future is stub files, and stub files in typeshed. Which are used to provide type information both for native and non-native dependencies in the standard library. (And also for some third-party code, and sometimes first-party code too.)</p>
+<p>Also this seems like an odd place for the TODO, because nothing here will need to change to support that.</p>
+<pre><code class="language-suggestion">                    // TODO The resolver doesn't support stub files or typeshed yet.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/program/check.rs</code>:63 on 2024-04-27 00:09</div>
+            <div class="timeline-body"><p>We may want to distinguish between <code>schedule_check_file</code> and <code>schedule_index_file</code>. For non-first-party dependencies, there's no point in scheduling a check of them (since we won't check them) but we may still want to eagerly schedule indexing them (that is, parsing and creating symbol tables).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/symbols.rs</code>:504 on 2024-04-27 00:24</div>
+            <div class="timeline-body"><p>Our AST is confusing/redundant, because it has level as an <code>Option</code>, but it is never <code>None</code>. An import like <code>from foo import bar</code> (no dots) is represented in our AST with <code>level</code> as <code>Some(0)</code>, not <code>None</code>.</p>
+<p>So if we leave the AST as-is, this code needs to be fixed to also push a <code>Module</code> dependency if <code>level</code> is <code>Some(0)</code>. I think we should fix the AST, though -- it should either not use <code>Option</code> at all, or it should set <code>None</code> instead of <code>Some(0)</code>. (I think the latter is clearer; removing the <code>Option</code> would save 4 bytes, but I don't think that matters since <code>StmtImportFrom</code> is not close to being the largest statement.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-04-27 00:28</div>
+            <div class="timeline-body"><p>Some comments in here (the <code>__init__.py</code> thing for relative imports, and the <code>level = Some(0)</code> thing) that should definitely at least get TODO comments, if not fixed before merge.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-04-27 08:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/program/check.rs</code>:53 on 2024-04-27 08:56</div>
+            <div class="timeline-body"><p>Maybe not if we can short-circuit the entire <code>check_file</code> operation. I'll look into this next week</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @MichaReiser on 2024-04-27 08:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-04-27 08:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/symbols.rs</code>:504 on 2024-04-27 08:56</div>
+            <div class="timeline-body"><p>Thanks for resolving this for me :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-04-27 09:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/program/check.rs</code>:63 on 2024-04-27 09:27</div>
+            <div class="timeline-body"><p>Yeah, that might be good. The scheduling is still very much unclear to me. So I'll defer figuring out the right solution for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-04-27 09:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/module.rs</code>:56 on 2024-04-27 09:28</div>
+            <div class="timeline-body"><p>I think I still like to have <code>ModuleName</code> used where we know it is a module name. It makes it clear what kind of name it is. We might also want to do this for other names.</p>
+<p>I think moving this to module makes sense (I don't think it's something we need to cache.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-04-27 12:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/program/check.rs</code>:63 on 2024-04-27 12:03</div>
+            <div class="timeline-body"><p>Maybe a TODO here then?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-04-27 15:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/program/check.rs</code>:63 on 2024-04-27 15:40</div>
+            <div class="timeline-body"><p>I rephrased the native dependencies todo</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2024-04-27 15:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-04-27 15:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-04-27 15:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-04-27 15:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/module.rs</code>:66 on 2024-04-27 15:59</div>
+            <div class="timeline-body"><p>I think this is still off-by-one, because ranges are half-open?</p>
+<p>If we have a module (of kind module) <code>foo.bar</code>, and we an import with level 1, that should resolve to <code>foo</code> (strip one level). But this code would resolve it to <code>foo.bar</code> (strip nothing), because <code>0..1</code> is empty.</p>
+<p>This kind of code is where it's really useful to add a few isolated unit tests of the logic, so it's easy to eyeball that it's doing what we expect.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-04-27 16:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/module.rs</code>:66 on 2024-04-27 16:04</div>
+            <div class="timeline-body"><p>Haha and I see you did exactly that! I should read the whole change before commenting, sorry. Let me look at the tests and see where my reading of the code is wrong, or the tests are.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/module.rs</code>:1003 on 2024-04-27 16:12</div>
+            <div class="timeline-body"><p>This one isn't right, <code>from baz import bar</code> is not a relative import (no dots), it's an absolute import, so this should resolve to just <code>baz</code>.</p>
+<p>Either <code>relative_import</code> should error on <code>level = 0</code> (and we should never call it that way), or it should just resolve it as an absolute import.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/module.rs</code>:1024 on 2024-04-27 16:13</div>
+            <div class="timeline-body"><p>this one is also wrong for the same reason mentioned above</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/module.rs</code>:66 on 2024-04-27 16:15</div>
+            <div class="timeline-body"><p>Oh of course I'm wrong, 0..1 is not empty, the range is half-open, that has 0 in it. Sorry, clearly haven't woken up yet this morning.</p>
+<p>Reviewing the tests found a different issue (level = 0 is not a relative import), but this logic here looks just fine.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-04-27 16:15</div>
+            <div class="timeline-body"></div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 22:37:42 UTC
+    </footer>
+</body>
+</html>

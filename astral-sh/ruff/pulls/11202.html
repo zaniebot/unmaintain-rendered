@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Refactor `program.check` scheduling - astral-sh/ruff #11202</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Refactor <code>program.check</code> scheduling</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/11202">#11202</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2024-04-29 12:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-04-29 12:28</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR refactors <code>program.check</code>, specifically the part around custom schedulers.</p>
+<p>What I found awkward in the old implementation is that <code>check</code> owned the orchestration. Normally, that's something the scheduler wants to take care of. Giving that control to the scheduler gives it more freedom how to do the scheduling.</p>
+<p>Inversing control further has the advantage that the <code>SingleThreadedScheduler</code> can use lock-free data structures exclusively (it had to communicate with the main thread before by using a channel). The <code>SingleThreadedScheduler</code> implementation now also looks roughly how I would have wanted to write it: a single queue with all the tasks and a loop that processes the tasks until done.</p>
+<p>I don't know if this is fundamentally better, but it feels less around the corner to me (although, it required some going around the corner to make it work :laughing:)</p>
+<p>This PR also fixes an issue in the <code>MultithreadedExecutor</code> where it would dead lock when the open files is larger than the available parallelism. It also fixes that it uses the thread pool size (<code>current_num_threads</code>) over the system supported max number of threads (<code>max_num_threads</code>).</p>
+<h2>Test Plan</h2>
+<p>I used the slow lint to test that cancellation works correctly.</p>
+<h2>Alternative design</h2>
+<p>I think it would still be possible for <code>program.check</code> to accept an <code>impl Executor</code> and we may want to do this in the future (and should only require making some methods public). For now, having an enum seems sufficient.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @MichaReiser on 2024-04-29 12:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @MichaReiser on 2024-04-29 12:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-04-29 12:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/main.rs</code>:147 on 2024-04-29 12:35</div>
+            <div class="timeline-body"><p>It feels cleaner now that the <code>rayon::scope</code> is no longer leaking.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-04-29 12:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/program/check.rs</code>:147 on 2024-04-29 12:45</div>
+            <div class="timeline-body"><p>We could possibly make this an enum now that <code>program.check</code> only accepts an enum over two variants. However, I want to keep this a trait for now until we know how many scheduling strategies we have.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-04-29 12:46</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2024-04-29 13:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-04-30 00:01</div>
+            <div class="timeline-body"><p>Nice! This seems much cleaner to me; it basically fixes all the things that didn't feel quite right in the previous version.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2024-04-30 07:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-04-30 07:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-04-30 07:23</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 22:37:44 UTC
+    </footer>
+</body>
+</html>

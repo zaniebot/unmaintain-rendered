@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>red-knot: Introduce `program.check` - astral-sh/ruff #11148</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>red-knot: Introduce <code>program.check</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/11148">#11148</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2024-04-25 16:31
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-04-25 16:31</div>
+            <div class="timeline-body"><p>This PR refactors the <code>main.rs</code> by:</p>
+<ul>
+<li>Extracting the <code>check</code> logic and moving it to <code>program.check</code>. There's some complication involved because we want the host environment to control how checks are scheduled (concurrently, or on the same thread). What I have now kind of works and isn't too much of a mess, but I feel like I manually implemented <code>Future</code>s. @BurntSushi do you know if it's possible to use <code>Future</code>s with out async? Yeah, it sounds stupid, hehe but what I want is something that starts some work and an orchestration thread can later poll the results without knowing if the computation runs on the same or another thread.</li>
+<li>I refactored the <code>main</code> loop to prevent that we create a new orchestration thread for every loop. Instead, the orchestration thread is now started once and it sends messages to the main thread, telling it what the next operation is that it should perform (react to file changes, print diagnostics, check the program)</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-04-25 18:25</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-04-26 07:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/files.rs</code>:35 on 2024-04-26 07:03</div>
+            <div class="timeline-body"><p>We could by using an unsafe transmute similar to salsa.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "red knot program check" to "red-knot: Introduce `program.check`" by @MichaReiser on 2024-04-26 07:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @MichaReiser on 2024-04-26 07:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2024-04-26 07:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @MichaReiser on 2024-04-26 08:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/main.rs</code>:116 on 2024-04-26 21:54</div>
+            <div class="timeline-body"><p>Why do we need to clone this when it isn't used anywhere else? Won't the original one just be immediately dropped unused?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/main.rs</code>:93 on 2024-04-26 21:56</div>
+            <div class="timeline-body"><p>nit, but at some point I'd move everything from here down out of <code>main.rs</code> and into a lib module. I assume <code>main.rs</code> is really just for temporary testing and should ultimately go away when we are integrated with ruff, so anything that is intended to survive integration with ruff should be in lib?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/main.rs</code>:223 on 2024-04-26 22:38</div>
+            <div class="timeline-body"><p>Let me see if I understand the division of responsibilities between <code>MainLoop</code> and <code>Orchestrator</code> threads. <code>MainLoop</code> does the actual checking, using a rayon thread pool to parallelize checking. The job of <code>Orchestrator</code> is to a) collect file changes from a notification source, debounce them, and then hand them off to <code>MainLoop</code>, which applies them to the <code>Program</code> and then re-checks, and b) receive check results (diagnostics) from the rayon thread running the actual check, and hand those off to <code>MainLoop</code> for display?</p>
+<p>The term &quot;Orchestrator&quot; initially had me thinking it would actually coordinate the checking work, but it doesn't really do that; that's <code>RayonCheckScheduler</code>. <code>Orchestrator</code> is really just orchestrating at the higher level of check requests and results.</p>
+<p>It's not clear to me yet how these pieces will fit together in an editor context when we are handling requests much smaller than &quot;check the whole program.&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/main.rs</code>:239 on 2024-04-26 22:43</div>
+            <div class="timeline-body"><p>I guess <code>pending_analysis</code> represents the fact that we know <code>MainLoop</code> is currently running an analysis. Would it make sense for each analysis request to have a unique ID that gets carried along with all the relevant messages (<code>CheckProgram</code>, <code>CheckProgramStarted</code>, <code>CheckProgramCompleted</code>, <code>CheckProgramCancelled</code>, etc) and also stored in the <code>PendingAnalysisState</code>, just to help us validate our assumptions about what corresponds to what, rather than implicitly relying on the two state machines always having their states matched up correctly?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/main.rs</code>:153 on 2024-04-26 22:51</div>
+            <div class="timeline-body"><p>This blocks until checking is all done, right? So then we'll go to the next tick and probably find a <code>CheckCompleted</code> message waiting for us already? (Or else just a new <code>ApplyChanges</code> and <code>CheckProgram</code>, if this check got cancelled.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/main.rs</code>:296 on 2024-04-26 22:56</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                        Ok(OrchestratorMessage::CheckProgramStarted {..}| OrchestratorMessage::CheckProgramCompleted(_) | OrchestratorMessage::CheckProgramCancelled) =&gt; unreachable!(&quot;No program check should be running while debouncing changes.&quot;),
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/main.rs</code>:48 on 2024-04-26 23:02</div>
+            <div class="timeline-body"><p>It's not clear to me that <code>Workspace</code> shouldn't just be rolled directly into <code>Program</code> instead of being a separate struct. But maybe there will be benefits in having <code>Workspace</code> separate.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/program/check.rs</code>:107 on 2024-04-26 23:07</div>
+            <div class="timeline-body"><p>Are &quot;later&quot; and &quot;earlier&quot; reversed in this sentence? If queued checks run immediately, that suggests that earlier-scheduled checks will run first and block later-scheduled checks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/program/check.rs</code>:37 on 2024-04-26 23:09</div>
+            <div class="timeline-body"><p>This name seems confusing -- it doesn't really clarify how it is different from <code>check_file</code>. It's more like <code>actually_check_file</code>. The fact that it takes a context is clear from the signature, doesn't really add anything in the name. Maybe just <code>do_check</code>?</p>
+<p>Right now it doesn't even really need the context (<code>CheckFileTask::run</code> could check for cancellation), but in future when we do more complex and slower checks, we'll probably want to do more cancellation checks internally here, not just one at the start?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-04-26 23:25</div>
+            <div class="timeline-body"><p>This is great! Much easier to follow, I think I got my head around all of it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-04-27 08:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/main.rs</code>:116 on 2024-04-27 08:38</div>
+            <div class="timeline-body"><p>Nice catch. I refactored this code like 10 times and must have overlooked that the clone is no longer necessary. I'm surprised that clippy wasn't yelling at me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-04-27 08:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/main.rs</code>:93 on 2024-04-27 08:39</div>
+            <div class="timeline-body"><p>That's a good point. Although I think that <code>MainLooop</code> is something that will not be reused across hosts. The LSP has its own main loop. So the goal is to have as little as possible in main loop that isn't host specific.</p>
+<p>But yes, we should move more into lib (and start splitting <code>red_knot</code> into multiple crates like <code>red_knot_syntax, </code>red_knot_semantic<code>, </code>red_knot_types`.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-04-27 08:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/main.rs</code>:223 on 2024-04-27 08:42</div>
+            <div class="timeline-body"><p>Yes, that's correct. The <code>Orchestrator</code> orchestrates the individual moving pieces. It needs to run on it' own thread so that it can react to incoming events. But it's the main loop that does the actual work</p>
+<blockquote>
+<p>It's not clear to me yet how these pieces will fit together in an editor context when we are handling requests much smaller than &quot;check the whole program.&quot;</p>
+</blockquote>
+<p><code>program.check</code> should only recheck files that need rechecking since the last <code>program.check</code> call. That's what needs to be called inside of the LSPs pull diagnostics/push_diagnostics handlers.</p>
+<blockquote>
+<p>The term &quot;Orchestrator&quot; initially had me thinking it would actually coordinate the checking work, but it doesn't really do that; that's RayonCheckScheduler. Orchestrator is really just orchestrating at the higher level of check requests and results.</p>
+</blockquote>
+<p>I'm open to better names for <code>Orchestrator</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-04-27 08:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/main.rs</code>:239 on 2024-04-27 08:43</div>
+            <div class="timeline-body"><p>I consider it a bug if the state machines are out of sync and would prefer if we panic over trying to make it work somehow (and leak memory).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/main.rs</code>:153 on 2024-04-27 08:45</div>
+            <div class="timeline-body"><p>Yes, that's correct. Although the <code>ApplyChanges</code> might gets debounced first to wait for new incoming file change message. It would be nice if this could all be in a single place but the challenge I faced is that we need to have a single &quot;input&quot; on which the orchestrator thread can wait on (suspend).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-04-27 08:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-04-27 08:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/main.rs</code>:48 on 2024-04-27 08:47</div>
+            <div class="timeline-body"><p>Yeah, <code>workspace</code> might just be rolled into <code>Program</code>. Although it's somewhat a different entity in that it doesn't represent the program state, but the project state. For example, we could discover all files in a workspace (which is different from all files in a Program because the workspace does not include third party dependencies), what configurations exist etc independent of the program.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-04-27 08:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/program/check.rs</code>:107 on 2024-04-27 08:48</div>
+            <div class="timeline-body"><p>Lol, I think that's actually no longer true because new files always get queued at the end (by using a channel).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-04-27 08:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/program/check.rs</code>:37 on 2024-04-27 08:49</div>
+            <div class="timeline-body"><p>My idea is to make cancellation checks on every query, and expose an API so that we can perform checks even inside of queries.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2024-04-27 09:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-04-27 09:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-04-27 09:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-04-27 12:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/main.rs</code>:239 on 2024-04-27 12:15</div>
+            <div class="timeline-body"><p>That's reasonable. I wasn't suggesting we try to recover, more just that this could help clarify what happened in the bug case. But maybe tracing is sufficient for that.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 22:37:41 UTC
+    </footer>
+</body>
+</html>

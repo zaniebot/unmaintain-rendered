@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Use empty range when there's &quot;gap&quot; in token source - astral-sh/ruff #11032</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Use empty range when there's &quot;gap&quot; in token source</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/11032">#11032</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2024-04-19 10:09
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-04-19 10:09</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This fixes a bug where the parser would panic when there is a &quot;gap&quot; in
+the token source.</p>
+<p>What's a gap?</p>
+<p>The reason it's <code>&lt;=</code> instead of just <code>==</code> is because there could be whitespaces between
+the two tokens. For example:</p>
+<pre><code class="language-python">#     last token end
+#     | current token (newline) start
+#     v v
+def foo \n
+#      ^
+#      assume there's trailing whitespace here
+</code></pre>
+<p>Or, there could tokens that are considered &quot;trivia&quot; and thus aren't emitted by the token
+source. These are comments and non-logical newlines. For example:</p>
+<pre><code class="language-python">#     last token end
+#     v
+def foo # comment\n
+#                ^ current token (newline) start
+</code></pre>
+<p>In either of the above cases, there's a &quot;gap&quot; between the end of the last token and start
+of the current token.</p>
+<h2>Test Plan</h2>
+<p>Add test cases and update the snapshots.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @dhruvmanila on 2024-04-19 10:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">parser</span> added by @dhruvmanila on 2024-04-19 10:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @dhruvmanila on 2024-04-19 10:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-04-19 10:26</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+0 -1 violations, +0 -0 fixes in 1 projects; 43 projects unchanged)</p>
+<details><summary><a href="https://github.com/python/typeshed">python/typeshed</a> (+0 -1 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview --select E,F,FA,I,PYI,RUF,UP,W</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/python/typeshed/blob/ce049d505f1960e95a47f24cff29d15ce3cadb0b/stdlib/pathlib.pyi#L111'>stdlib/pathlib.pyi:111:89:</a> E999 SyntaxError: Expected ':', found newline
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (1 rules affected)</summary>
+<p>
+
+<p>| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| E999 | 1 | 0 | 1 | 0 | 0 |</p>
+</p>
+</details>
+
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/parser/mod.rs</code>:268 on 2024-04-19 11:02</div>
+            <div class="timeline-body"><p>Nit: i think this is specific to error recovery and instead is true for all &quot;empty&quot; nodes that don't consist of any tokens?</p>
+<p>If that's the case, then I think we can remove the <code>missing_node_range</code> method that was only added to handle empty node ranges.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-04-19 11:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-04-19 11:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/parser/mod.rs</code>:268 on 2024-04-19 11:28</div>
+            <div class="timeline-body"><p>I think <code>missing_node_range</code> is still useful in places where you don't have the <code>start</code> value or rather the start value itself is the current token start.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2024-04-19 11:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2024-04-19 11:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-04-19 11:36</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 22:37:37 UTC
+    </footer>
+</body>
+</html>

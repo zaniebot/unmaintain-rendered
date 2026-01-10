@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add tests for top level statement parsing - astral-sh/ruff #10860</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add tests for top level statement parsing</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/10860">#10860</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2024-04-10 14:13
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-04-10 14:13</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR adds test cases for top level statement parsing functions. This mainly tests the following:</p>
+<ol>
+<li>Simple statements on same line with and without semicolons</li>
+<li>Simple and compound statement on same line with and without semicolon</li>
+<li>Compound statement and their respective clause on same line with and without semicolon (for example, <code>if True: pass else: pass</code>)</li>
+</ol>
+<p>This PR also makes the following changes:</p>
+<ol>
+<li>Use the current token change to highlight the above errors. Previously, it would use a combined range of previous statement <em>and</em> current token.</li>
+<li>Improved messages for the above errors.</li>
+</ol>
+<p>For (1), you'll notice that some of the errors disappeared. The reason is that they now overlap with an existing error.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">parser</span> added by @dhruvmanila on 2024-04-10 14:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">testing</span> added by @dhruvmanila on 2024-04-10 14:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @dhruvmanila on 2024-04-10 14:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-04-10 14:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/parser/statement.rs</code>:126 on 2024-04-10 14:16</div>
+            <div class="timeline-body"><p>The reason this is required is because there's no dedicated node to capture a list of simple statements on the same line. This means that each statement needs to be parsed and returned one by one. This requires having a dedicated function to only parse a single statement.</p>
+<p>Pyright has a dedicated node for this (<code>StatementListNode</code>) but this clutters the AST because then every single simple statement will be a <code>StatementListNode</code> with a single simple statement in it. <a href="https://zzzen.github.io/pyright-ast-viewer/#code/IYbgBARuDGBQywrOBLAZmAKgJwK4FMAuWMMUSEsyiIA">Pyright AST playground</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/parser/statement.rs</code>:144 on 2024-04-10 14:18</div>
+            <div class="timeline-body"><p>The change here is going from:</p>
+<pre><code>Syntax Error: use `;` to separate simple statements at byte range 0..11
+  |
+1 | x + y + z a + b + c
+  | ^^^^^^^^^^^ Syntax Error: use `;` to separate simple statements
+  |
+</code></pre>
+<p>To:</p>
+<pre><code>Errors:
+-------
+Syntax Error: Simple statements must be separated by newlines or semicolons at byte range 10..11
+  |
+1 | x + y + z a + b + c
+  |           ^ Syntax Error: Simple statements must be separated by newlines or semicolons
+  |
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/parser/statement.rs</code>:221 on 2024-04-10 14:19</div>
+            <div class="timeline-body"><p>If there's no newline and it's not a compound statement, then we'll fallback to using <code>expect</code>. The bug which I was talking about on Discord.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-04-10 14:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/parser/statement.rs</code>:144 on 2024-04-10 16:20</div>
+            <div class="timeline-body"><p>Much better. It's now clear where I need to fix the error. Thanks for improving the message.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/parser/statement.rs</code>:148 on 2024-04-10 16:21</div>
+            <div class="timeline-body"><p>Nit: You could move the <code>!heas_eaten_newline</code> one layer higher</p>
+<pre><code>if !has_eaten_newline {
+    if !has_eaten_semicolon &amp;&amp; self.at_simple_stmt() {
+        ...
+    } else if self.at_compount_stmt() {
+        ...
+    }
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/parser/statement.rs</code>:195 on 2024-04-10 16:24</div>
+            <div class="timeline-body"><p>Nit: I think that's covered by the same check on line 197 (but I'm okay keeping it)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/parser/statement.rs</code>:221 on 2024-04-10 16:26</div>
+            <div class="timeline-body"><p>Nit: Could we push the error directly instead of calling <code>expect</code> or does that require a lot of code. The call looks redudant on the first glance (but it's not).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/tests/snapshots/invalid_syntax@async_unexpected_token.py.snap</code>:224 on 2024-04-10 16:28</div>
+            <div class="timeline-body"><p>Future: We should change the range to the start of the current token (an empty range), once our message rendering supports rendering empty ranges.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-04-10 16:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-04-11 09:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/parser/statement.rs</code>:221 on 2024-04-11 09:17</div>
+            <div class="timeline-body"><p>I see. Yeah, it does look redundant on first glance. I'll make the change.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2024-04-11 09:20</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/dhruv/test-simple-stmts">CodSpeed Performance Report</a></h2>
+<h3>Merging #10860 will <strong>degrade performances by 5.23%</strong></h3>
+<p><sub>Comparing <code>dhruv/test-simple-stmts</code> (be7313d) with <code>dhruv/parser</code> (3603ca8)</sub></p>
+<h3>Summary</h3>
+<p><code>⚡ 2</code> improvements
+<code>❌ 1</code> regressions
+<code>✅ 27</code> untouched benchmarks</p>
+<blockquote>
+<p>:warning: <em>Please fix the performance issues or <a href="https://codspeed.io/astral-sh/ruff/branches/dhruv/test-simple-stmts">acknowledge them on CodSpeed</a>.</em></p>
+</blockquote>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Benchmark | <code>dhruv/parser</code> | <code>dhruv/test-simple-stmts</code> | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| ⚡ | <code>parser[large/dataset.py]</code> | 28.9 ms | 26.7 ms | +8.21% |
+| ⚡ | <code>parser[pydantic/types.py]</code> | 11.8 ms | 10.9 ms | +8.77% |
+| ❌ | <code>parser[unicode/pypinyin.py]</code> | 1.6 ms | 1.7 ms | -5.23% |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2024-04-11 09:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2024-04-11 09:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-04-11 09:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-04-11 09:42</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 22:37:33 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Improve handling of builtin symbols in linter rules - astral-sh/ruff #10919</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Improve handling of builtin symbols in linter rules</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/10919">#10919</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2024-04-13 18:09
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-04-13 18:09</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>A pattern that shows up a lot in the <code>ruff_linter</code> crate currently is to do something like this to determine whether an <code>ast::Expr</code> node refers to a builtin symbol:</p>
+<pre><code class="language-rs">fn do_the_check(checker: &amp;mut Checker, expr: &amp;ast::Expr) {
+    let ast::Expr::Name(ast::ExprName { id, .. }) = expr else {
+        return;
+    }
+    if id != &quot;zip&quot; {
+        return;
+    }
+    if !checker.semantic().is_builtin(&quot;zip&quot;) {
+        return;
+    }
+    // and now we do the check that only applies to the builtin zip function...
+}
+</code></pre>
+<p>This has two problems:</p>
+<ol>
+<li>It's pretty verbose and repetitive, and <em>lots</em> of our checks have some interaction with a builtin function or class in some way</li>
+<li>This pattern doesn't account for the fact that it's perfectly possible to explicitly import the <code>builtins</code> module and e.g. refer to <code>zip</code> by using <code>builtins.zip</code> rather than just <code>zip</code></li>
+</ol>
+<p>This PR adds a new method to the semantic model that means that this kind of logic becomes both more concise and more accurate. The above logic can now be replaced with this, which will also (unlike the old function) recognise <code>builtins.zip</code> as being a reference to the builtin <code>zip</code> function:</p>
+<pre><code class="language-rs">fn do_the_check(checker: &amp;mut Checker, expr: &amp;ast::Expr) {
+    if !checker.semantic().match_builtin_expr(expr, &quot;zip&quot;) {
+        return;
+    }
+    // and now we do the check that only applies to the builtin zip function...
+}
+</code></pre>
+<p>A new method is also added to <code>crates/ruff_linter/src/importer/mod.rs</code> to enable us to provide autofixes involving builtin functions/classes, even when they've been shadowed by a user-defined function or class in the current scope.</p>
+<h2>Test Plan</h2>
+<p><code>cargo test</code>. Several fixtures have been extended with new examples to test the new functionality.</p>
+<p>This PR should be easiest to review commit-by-commit: each commit passes the full test suite by itself.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Add a new method to check whether an Expr refers to a builtin symbol" to "Improve handling of builtin symbols in linter rules" by @AlexWaygood on 2024-04-13 18:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">linter</span> added by @AlexWaygood on 2024-04-13 18:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-04-13 18:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_semantic/src/model.rs</code>:271 on 2024-04-13 18:18</div>
+            <div class="timeline-body"><p>As written I believe this method will do two lookups in the symbol table in some cases (<code>self.is_builtin</code> performs one lookup, and <code>self. resolve_qualified_name</code> performs another).</p>
+<p>I think you could modify it to look something like this:</p>
+<pre><code class="language-rust">if self.seen_module(Modules::BUILTINS) || expr.as_name_expr().is_some_and(|name| name.id == symbol) {
+    self
+        .resolve_qualified_name(expr)
+         // This next line is pseudo-code.
+        .is_some_and(|qualified_name| qualified_name.segments() == [&quot;&quot; | &quot;builtins&quot;, symbol])
+} else {
+  false
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-04-13 18:22</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-04-13 18:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_semantic/src/model.rs</code>:271 on 2024-04-13 18:23</div>
+            <div class="timeline-body"><blockquote>
+<p>As written I believe this method will do two lookups in the symbol table in some cases (<code>self.is_builtin</code> performs one lookup, and <code>self. resolve_qualified_name</code> performs another).</p>
+</blockquote>
+<p>Hmm, will it? Currently:</p>
+<ul>
+<li>If it's an <code>Expr::Name</code>, we take the fast(er) path, and we never actually call <code>resolve_qualified_name()</code><ul>
+<li>we return <code>true</code> if the <code>id</code> of the <code>Name</code> matches the symbol and <code>self.is_builtin(symbol)</code> is also true</li>
+<li>else, we return <code>false</code></li>
+</ul>
+</li>
+<li>Otherwise, in the slow path, we don't actually call <code>self.is_builtin(symbol)</code> at all, since as you say it's redundant if we have to call <code>resolve_qualified_name()</code></li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-04-13 18:31</div>
+            <div class="timeline-body"><blockquote>
+<ul>
+<li><a href="https://github.com/python/typeshed/blob/b61d90c6f5dc4600055916f98c0e63deec0546e9/stdlib/asyncio/trsock.pyi#L93">stdlib/asyncio/trsock.pyi:93:29:</a> PYI036 The first argument in <code>__exit__</code> should be annotated with <code>object</code> or <code>type[BaseException] | None</code></li>
+</ul>
+</blockquote>
+<p>Ah, that's a regression: something can be imported explicitly from <code>builtins</code> even if it's not an <code>ast::Name</code> node. My fast path doesn't work as it's currently written.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-04-13 18:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_semantic/src/model.rs</code>:271 on 2024-04-13 18:35</div>
+            <div class="timeline-body"><p>Oh, then the function logic is incorrect, right? Since a name node could be imported from builtins, as in <code>from builtins import bool</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-04-13 18:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_semantic/src/model.rs</code>:271 on 2024-04-13 18:38</div>
+            <div class="timeline-body"><p>Correct. Fixed in https://github.com/astral-sh/ruff/pull/10919/commits/f11bf9807199ac286098b4d7a07af17044aaf3c6 :) Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-04-13 18:47</div>
+            <div class="timeline-body"><p>Seems like this leads to a 1% perf regression overall, with regressions of 2-3% on some linter benchmarks: https://codspeed.io/astral-sh/ruff/branches/AlexWaygood:improve-builtins-handling</p>
+<p>I don't know whether that's worth it or not — it's less repetitive code for us and it's more principled in that we're handling the semantics of Python more accurately, but importing <code>builtins</code> explicitly also isn't that common.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @AlexWaygood on 2024-04-13 18:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-04-13 18:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_semantic/src/model.rs</code>:266 on 2024-04-13 18:58</div>
+            <div class="timeline-body"><p>I would remove this <code>return</code>, it's roughly what tripped me up in the first read. E.g., I find this clearer:</p>
+<pre><code class="language-rust">/// Return `true` if `member` is a reference to `builtins.$target`,
+/// i.e. either `object` (where `object` is not overridden in the global scope),
+/// or `builtins.object` (where `builtins` is imported as a module at the top level)
+pub fn match_builtin_expr(&amp;self, expr: &amp;Expr, symbol: &amp;str) -&gt; bool {
+    debug_assert!(!symbol.contains('.'));
+    if self.seen_module(Modules::BUILTINS) {
+        self.resolve_qualified_name(expr)
+            .is_some_and(|qualified_name| match qualified_name.segments() {
+                [&quot;builtins&quot; | &quot;&quot;, member] =&gt; *member == symbol,
+                _ =&gt; false,
+            })
+    } else {
+        match expr {
+            Expr::Name(ast::ExprName { id, .. }) =&gt; id == symbol &amp;&amp; self.is_builtin(symbol),
+            _ =&gt; false,
+        }
+    }
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-13 19:01</div>
+            <div class="timeline-body"><p>Would you have expected ~no change here for benchmarks that don't import <code>builtins</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-04-13 19:05</div>
+            <div class="timeline-body"><blockquote>
+<p>Would you have expected ~no change here for benchmarks that don't import <code>builtins</code>?</p>
+</blockquote>
+<p>yeah. I would have hoped that the fast path from the <code>if self.seen_modules(Modules::BUILTINS)</code> check would mean that performance would be basically unchanged for those benchmarks.</p>
+<p>Any idea what might be the cause of the slowdown? <code>pyflakes::rules::unused_import</code> seems to be showing up in a bunch of the codspeed flamegraphs, which is weird, because I haven't touched that function in this PR</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-04-13 19:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_semantic/src/model.rs</code>:264 on 2024-04-13 19:29</div>
+            <div class="timeline-body"><p>Let me know if this isn't the right thing to do here, but it improved performance by 3-4% on some benchmarks locally</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-04-13 19:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_semantic/src/model.rs</code>:264 on 2024-04-13 19:35</div>
+            <div class="timeline-body"><p>But apparently not enough to make much of a dent on how codspeed sees things... https://codspeed.io/astral-sh/ruff/branches/AlexWaygood:improve-builtins-handling</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_semantic/src/model.rs</code>:264 on 2024-04-13 21:46</div>
+            <div class="timeline-body"><p>Ah yeah, I don't think this should be necessary. If anything you might consider finding a way to mark the <code>if seen(BUILTINS)</code> branch as cold, but we don't really do that anywhere else.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-04-13 21:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-13 21:48</div>
+            <div class="timeline-body"><p>No, I'm not sure. I looked through the changes again and my expectation would've been no change. You can try just pushing again and see if the benchmarks move in the other direction, since it might just be noise. I wouldn't read into the flamegraph diff though -- I think CodSpeed is just confused.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-13 21:49</div>
+            <div class="timeline-body"><p>The other thing you might consider doing is benchmarking locally with Hyperfine. E.g., you could build a release build on main, stash it (<code>mv ./target/release/ruff ./target/release/main</code>), then build on your branch and do something like:</p>
+<pre><code>hyperfine --warmup 10 --runs 100 \
+    &quot;./target/release/main ./crates/ruff/resources/test/cpython/ --no-cache --silent -e&quot; \ 
+    &quot;./target/release/ruff ./crates/ruff/resources/test/cpython/ --no-cache --silent -e&quot; 
+</code></pre>
+<p>I'd suggest running it a few times and switching the order of <code>main</code> and <code>ruff</code> around to reach a safe conclusion.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-04-13 22:20</div>
+            <div class="timeline-body"><blockquote>
+<p>since it might just be noise.</p>
+</blockquote>
+<p>I'm getting similar results from running <code>cargo benchmark</code> locally (tried it a few times earlier), so I don't <em>think</em> it's just noise :/ I'll try tomorrow with hyperfine to see if the macrobenchmark shows anything different to the microbenchmarks...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-13 22:51</div>
+            <div class="timeline-body"><p>If you run the micro-benchmarks locally, I suggest running them a few times consecutively for each PR. At least on my machine, the second run of the same binary is always significant faster.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-04-14 11:26</div>
+            <div class="timeline-body"><p>It seems like this PR is doing two separable things: improving detection of what is a builtin, and allowing auto-fixes that want to use a builtin to import it via <code>builtins</code> module if the name is shadowed.</p>
+<p>Have you benchmarked those changes in isolation, to clarify which one the regression is coming from? IIUC we always eagerly generate fixes, so it seems like a change that allows more fixes in more cases could easily cause a regression?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-14 11:43</div>
+            <div class="timeline-body"><p>Yeah, although we should only be generating more diagnostics (and therefore more fixes) for files that import builtins, and we don’t have any such files in our benchmarks (IIUC).</p>
+<p>It <em>could</em> be that computing the fixes become more expensive (the use of get_or_import_symbol will be more expensive) even in the case that the file doesn’t import builtins, though I don’t have intuition on whether that could account for the delta here. You could try removing the changes that involve modifying the fixes, to see if the benchmarks return to normal as Carl suggests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-04-14 16:37</div>
+            <div class="timeline-body"><p>It looks to me like all the rules that are changed to use <code>try_set_fix</code> with the new <code>get_or_import_builtin_symbol</code> (e.g. <code>unreliable_call_check</code> is one example) will now generate more fixes than before in any file where the builtin they want to add a reference to is shadowed. E.g. in a module that contains <code>callable = ...</code>, <code>unreliable_call_check</code> will now generate a fix that imports <code>builtins</code> and uses <code>builtins.callable</code>, rather than bailing and not generating a fix at all. Similar for a number of other rules. So this would generate more fixes even in files that don't currently import <code>builtins</code>.</p>
+<p>I haven't checked whether the benchmarks in question do this, but this change seems entirely separable from the better detection of imported builtins, so if there are any mysteries it seems like a good first step is to separate the changes and narrow down the cause. (And if it's still a mystery, perhaps further separate by only changing one rule at a time.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-14 17:16</div>
+            <div class="timeline-body"><p>Oh, that's true! Good call. I would be surprised if we had any instances of those in our benchmark files (and especially not in <em>all</em> of them) but it's possible there are a few and it's definitely a good idea to isolate the changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-04-14 18:07</div>
+            <div class="timeline-body"><p>Yet another possibility: the change to the fixes also involves changing a bunch of fixes to use <code>Fix::safe_edits</code> instead of <code>Fix::safe_edit</code>, even if a builtin symbol is not overridden in the relevant scope. It's possible <code>safe_edits</code> is slower than <code>safe_edit</code>, even if only a single edit is passed? Anyway, I didn't get to it today, but I'll do some benchmarking tomorrow without the changes to the fixes, as @carljm suggests :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_semantic/src/model.rs</code>:274 on 2024-04-15 07:16</div>
+            <div class="timeline-body"><p>Nit, you could use <code>matches!</code> here</p>
+<pre><code class="language-suggestion">            matches!(expr, Expr::Name(ast::ExprName { id, .. }) if id == symbol &amp;&amp; self.is_builtin(symbol))
+        }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_semantic/src/model.rs</code>:265 on 2024-04-15 07:18</div>
+            <div class="timeline-body"><p>This is the case where I don't like our clippy rule that switches the <code>if</code> and` else if the if condition is negated. Naturally, I would expect that the &quot;fast&quot; path comes first (and that's also what branch predictors assume by default, as far as I know).</p>
+<p>You could try to use</p>
+<pre><code>        // fast path
+        if !self.seen_module(Modules::BUILTINS) {
+            return matches!(expr, Expr::Name(ast::ExprName { id, .. }) if id == symbol &amp;&amp; self.is_builtin(symbol));
+        }
+
+        self.resolve_qualified_name(expr)
+            .is_some_and(|qualified_name| match qualified_name.segments() {
+                [&quot;builtins&quot; | &quot;&quot;, member] =&gt; *member == symbol,
+                _ =&gt; false,
+            })
+</code></pre>
+<p>which gets you around the clippy rule and lays out the code so that the &quot;default&quot; branch comes first.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/mutable_fromkeys_value.rs</code>:82 on 2024-04-15 07:22</div>
+            <div class="timeline-body"><p>Is it intentional that <code>is_builtin</code> uses <code>lookup_symbol</code> but the new implementation now uses <code>resolve_qualified_name</code> (which also works for member expression which the old implementation didn't)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/mutable_fromkeys_value.rs</code>:76 on 2024-04-15 07:24</div>
+            <div class="timeline-body"><p>Will this generate a syntatically correct fix if we have <code>builtins.dict.fromkeys()</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/refurb/rules/verbose_decimal_constructor.rs</code>:119 on 2024-04-15 07:27</div>
+            <div class="timeline-body"><p>I think this change negatively impacts performance. The idea was to have all cheap tests early. Calling <code>resolve_symbol</code> isn't cheap. It might be worth adding a &quot;fast&quot; path in the slow path of <code>match_builtin_expr</code> that exits early if <code>expr</code> is a name but doesn't match the builtin name (except if you want to support <code>from builtins import float as f</code>)</p>
+<p>You may want to move this check further down. The same applies for other places where we now perform this check as the very first thing in the function.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/refurb/rules/write_whole_file.rs</code>:57 on 2024-04-15 07:30</div>
+            <div class="timeline-body"><p>I think it would be good to add additional tests that cover the newly added logic. E.g. that it now supports <code>builtins.open</code> or <code>from bultins import open as o</code> (assuming this is indeed now supported).</p>
+<p>Another test could be</p>
+<pre><code>with (a as open, open(b) as b):
+    ...
+</code></pre>
+<p>The added tests would also demonstrate that the genrated fixes work correctly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pylint/rules/bad_open_mode.rs</code>:98 on 2024-04-15 07:32</div>
+            <div class="timeline-body"><p>Is this check still necessary considering that <code>match_builtin_expr</code> should test that it is the open function?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pylint/rules/bad_open_mode.rs</code>:99 on 2024-04-15 07:34</div>
+            <div class="timeline-body"><p>Nit: This code confused me a lot because the line above rebinds <code>func</code> which I assumed was the <code>open</code> function. It might be worth giving it another name.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pylint/rules/nested_min_max.rs</code>:75 on 2024-04-15 07:36</div>
+            <div class="timeline-body"><p>Nit: Consider adding a method <code>is_builtin</code> to <code>QualifiedName</code> that tests the segments</p>
+<pre><code>if qualified_name.is_builtin(&quot;min&quot;) {
+    Some(MinMax::Min)
+} else if qualified_name.is_builtin(&quot;max&quot;) {
+    Some(MinMax::Max)
+} else {
+    None
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_semantic/src/model.rs</code>:295 on 2024-04-15 07:42</div>
+            <div class="timeline-body"><p>I wonder if we could instead change the method to return a <code>QualifiedName</code> where constructing the <code>QualifiedName</code> short-circuits if <code>Modules::BUILTINS</code> isn't imported.</p>
+<p>I'm bringing this up because <code>QualifiedName</code> already has methods for handling builtins (that might be incorrect?)</p>
+<pre><code>pub fn is_builtin(&amp;self) -&gt; bool {
+    matches!(self.segments(), [&quot;&quot;, ..])
+}
+</code></pre>
+<p>So what I would have in mind is</p>
+<pre><code>model.resolve_builtin_name(expr).is_some_and(|builtin| builtin.is_builtin_name(&quot;open&quot;))
+</code></pre>
+<p>We could still have a helper as you have today to avoid some of the repetition (<code>is_some_and</code> is somewhat annoying). But it would build up on the same concepts.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-04-15 07:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-04-15 07:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_semantic/src/model.rs</code>:265 on 2024-04-15 07:48</div>
+            <div class="timeline-body"><p>Heh, that's what I had originally! But @charliermarsh complained ;) https://github.com/astral-sh/ruff/pull/10919#discussion_r1564197567</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/pylint/rules/nested_min_max.rs</code>:75 on 2024-04-15 07:49</div>
+            <div class="timeline-body"><p><code>QualifiedName</code> already has an <code>is_builtin</code> method, which does something slightly different right now:</p>
+<p>https://github.com/astral-sh/ruff/blob/cbd500141f1b1dd30467945700cba3469646cd80/crates/ruff_python_ast/src/name.rs#L50-L54</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-04-15 07:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-04-15 07:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/pylint/rules/bad_open_mode.rs</code>:98 on 2024-04-15 07:53</div>
+            <div class="timeline-body"><p>Yes. <code>match_builtin_expr</code> above checks whether the func represents either <code>open(&quot;foo&quot;)</code> or <code>builtins.open(&quot;foo&quot;)</code>, both of which are calls to the <code>builtins.open()</code> function. A this point, we're now checking to see whether the func represents either <code>Path(&quot;foo&quot;).open()</code> or <code>pathlib.Path(&quot;foo&quot;).open()</code>, which are different function calls but have similar semantics to <code>builtins.open()</code>, so are treated equivalently by this pylint rule.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-04-15 07:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_semantic/src/model.rs</code>:274 on 2024-04-15 07:54</div>
+            <div class="timeline-body"><p>TIL :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-04-15 07:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/refurb/rules/verbose_decimal_constructor.rs</code>:119 on 2024-04-15 07:56</div>
+            <div class="timeline-body"><blockquote>
+<p>except if you want to support <code>from builtins import float as f</code></p>
+</blockquote>
+<p>I do, and we already support that in several of our rules. I tried the fast path you're suggesting here in the initial version of this PR, and it caused a regression in the ecosystem check: https://github.com/astral-sh/ruff/pull/10919#issuecomment-2053725755</p>
+<p>Also Charlie told me off for not getting Python's semantics correct :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-04-15 07:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/refurb/rules/verbose_decimal_constructor.rs</code>:119 on 2024-04-15 07:56</div>
+            <div class="timeline-body"><blockquote>
+<p>You may want to move this check further down. The same applies for other places where we now perform this check as the very first thing in the function.</p>
+</blockquote>
+<p>that makes sense, I'll look at moving these checks down</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-04-15 07:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/ruff/rules/mutable_fromkeys_value.rs</code>:76 on 2024-04-15 07:58</div>
+            <div class="timeline-body"><p>I think so</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/ruff/rules/mutable_fromkeys_value.rs</code>:76 on 2024-04-15 08:11</div>
+            <div class="timeline-body"><p>I added a test for it in <code>crates/ruff_linter/resources/test/fixtures/ruff/RUF024.py</code>, and the snapshot looks fine to me</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-04-15 08:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-04-15 09:06</div>
+            <div class="timeline-body"><p>@MichaReiser's suggestions to move the symbol lookups lower down the function for each rule got rid of the performance regression 🥳🥳</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-04-15 11:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_semantic/src/model.rs</code>:265 on 2024-04-15 11:41</div>
+            <div class="timeline-body"><p>I misread that version which suggests to me that others will do the same in the future. I find this much clearer, but don't feel strongly and not important enough to debate it so defer to you. If you use that version, I'd suggest at least adding comments and a newline between the closing <code>}</code> and the method call as above.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-04-15 11:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_semantic/src/model.rs</code>:265 on 2024-04-15 11:43</div>
+            <div class="timeline-body"><p>To be clear, I'm personally fine with either; I can see both points of view here!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-15 11:44</div>
+            <div class="timeline-body"><p>That's great! In my head those lookups didn't matter since they were only occurring when we saw the &quot;right&quot; name (e.g., <code>open</code> for a rule that cares about open), but of course that's not true -- we were doing them far more frequently on this branch.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-04-15 11:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/ruff/rules/mutable_fromkeys_value.rs</code>:82 on 2024-04-15 11:47</div>
+            <div class="timeline-body"><p>I <em>don't</em> think there's a need for the new abstraction to work with member expressions. I just used <code>resolve_qualified_name</code> because it seemed like the simplest way to implement the new abstraction. Do you think using <code>lookup_symbol</code> would be more efficient here? (<em>Goes to compare the two definitions...</em>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/flake8_bugbear/rules/getattr_with_constant.rs</code>:72 on 2024-04-15 11:47</div>
+            <div class="timeline-body"><p>The counterpoint is that we're now doing <em>other</em> work that isn't strictly necessary (for example, if this is a name, and builtins isn't imported, and the name isn't <code>getattr</code>, then the call to <code>is_mangled_private</code> wasn't necessary -- we could've exited much earlier; similarly, we risk calling <code>is_identifier</code> on many more function calls that won't ever match).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-04-15 11:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-04-15 11:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/flake8_bugbear/rules/getattr_with_constant.rs</code>:72 on 2024-04-15 11:48</div>
+            <div class="timeline-body"><p>This is clearly still the right tradeoff, but that's the tradeoff.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-04-15 11:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/flake8_bugbear/rules/getattr_with_constant.rs</code>:72 on 2024-04-15 11:48</div>
+            <div class="timeline-body"><p>Correct</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-04-15 11:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/flake8_bugbear/rules/getattr_with_constant.rs</code>:72 on 2024-04-15 11:49</div>
+            <div class="timeline-body"><p>The only way around this would be to, like, have some <code>could_be_builtin(&quot;getattr&quot;)</code> method you call at the top that returns <code>false</code> if builtins isn't imported, it's not a name, or the name isn't <code>getattr</code>, but IDK, that seems not great / worthwhile.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-04-15 11:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/flake8_bugbear/rules/getattr_with_constant.rs</code>:72 on 2024-04-15 11:50</div>
+            <div class="timeline-body"><p>These things (like <code>is_identifier</code>) <em>do</em> show up in traces sometimes because we tend to be calling these rules for <em>every</em> function call, which is why being able to gate on something as cheap as &quot;the name of the function&quot; is useful.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-04-15 11:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/flake8_bugbear/rules/getattr_with_constant.rs</code>:72 on 2024-04-15 11:50</div>
+            <div class="timeline-body"><p>I don't think we need to change anything here but wanted to raise visibility on it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-04-15 11:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_semantic/src/model.rs</code>:265 on 2024-04-15 11:52</div>
+            <div class="timeline-body"><p>Me too :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-04-15 11:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-04-15 11:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_semantic/src/model.rs</code>:265 on 2024-04-15 11:53</div>
+            <div class="timeline-body"><p>I'll leave this as-is for now; the status quo wins ;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-04-15 11:56</div>
+            <div class="timeline-body"><p>Benchmarks are now showing an... improvement? Not sure how that's possible, but I'll take it https://codspeed.io/astral-sh/ruff/branches/AlexWaygood:improve-builtins-handling</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-04-15 11:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/ruff/rules/mutable_fromkeys_value.rs</code>:82 on 2024-04-15 11:59</div>
+            <div class="timeline-body"><p>I'm not sure how we would be able to use <code>lookup_symbol</code> here, as <code>lookup_symbol</code> takes <code>&amp;str</code> (representing the name of the symbol) rather than an AST node. And we don't know the name of the symbol -- even if it's a builtin, as you can do <code>from builtins import open as o</code> -- unless we resolve the qualified name</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_semantic/src/model.rs</code>:295 on 2024-04-15 12:57</div>
+            <div class="timeline-body"><p>I think https://github.com/astral-sh/ruff/pull/10919/commits/4f627176cbc3a3b55787b9906c02d6bfdd3820bf goes some way to addressing this comment, though I haven't implemented your suggestion in exactly the way you suggested. What do you think of that solution?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-04-15 12:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @AlexWaygood on 2024-04-15 12:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-04-16 10:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_semantic/src/model.rs</code>:295 on 2024-04-16 10:32</div>
+            <div class="timeline-body"><p>I like it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2024-04-16 10:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2024-04-16 10:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-04-16 10:37</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 22:37:33 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] follow simple assignments - astral-sh/ruff #11181</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] follow simple assignments</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/11181">#11181</a>
+        opened by <a href="https://github.com/carljm">@carljm</a>
+        on 2024-04-27 17:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/carljm">@carljm</a> on 2024-04-27 17:55</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Follow simple assignments in type resolution.</p>
+<h2>Test Plan</h2>
+<p>cargo test</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @carljm on 2024-04-27 17:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/symbols.rs</code>:539 on 2024-04-27 18:01</div>
+            <div class="timeline-body"><p>Take is mainly used when you want to do something with the return value</p>
+<pre><code class="language-suggestion">                self.current_definition = None
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/symbols.rs</code>:457 on 2024-04-27 18:02</div>
+            <div class="timeline-body"><p>How expensive to we expect <code>Definition</code> becomes. Let's say we have a function definition with all its parameters (all have a name). The worst case is that this allocates a lot of new strings. Shoul definition be wrapped in an <code>Rc</code>? Or should <code>definitions</code> be interned in an <code>Arena</code> so that we can reference definitions by ID instead?</p>
+<p>What are the cases where we have multiple definitions out of a single enclosing definition? Should we use <code>take</code> here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/symbols.rs</code>:537 on 2024-04-27 18:03</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                self.current_definition = Some(Definition::Assignment(TypedNodeKey::from_node(node))));
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/types/infer.rs</code>:92 on 2024-04-27 18:04</div>
+            <div class="timeline-body"><p>I can see how resolving definitions might become expensive :laughing:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-04-27 18:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-04-27 18:07</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-04-27 18:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/symbols.rs</code>:457 on 2024-04-27 18:11</div>
+            <div class="timeline-body"><p>My intention is for Definition to stay quite small, because in most cases it should just hold a <code>TypedNodeKey</code> -- we don't want to copy lots of stuff from the AST when we can just reference the AST instead.</p>
+<p>The case for shared Definition is something like <code>x = y = z</code>, or even more complex (why we need the nested visit), <code>(x, (y, z)) = foo</code>.</p>
+<p>Ideally I might like to only reference the <code>Expr</code> on the RHS here (or even just part of it, for the unpacking case), but we have the general problem that we can't have a <code>TypedNodeKey</code> to arbitrary <code>Expr</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-04-27 18:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/types/infer.rs</code>:92 on 2024-04-27 18:12</div>
+            <div class="timeline-body"><p>Yes, it would be awesome if we could directly reference AST nodes instead of having to search to resolve :/</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-04-27 18:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/symbols.rs</code>:457 on 2024-04-27 18:13</div>
+            <div class="timeline-body"><p>We can have a <code>TypedNodeKey</code> to arbitrary expressions. You can use <code>ExpressionRef</code> (maybe?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @MichaReiser on 2024-04-27 18:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-04-27 18:13</div>
+            <div class="timeline-body"><p>You know have to label your PRs or they'll show up in the changelog :laughing:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-04-27 18:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/symbols.rs</code>:457 on 2024-04-27 18:13</div>
+            <div class="timeline-body"><p>Ooh very good, I'll need to look at that in more detail.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-04-27 18:15</div>
+            <div class="timeline-body"><p>Ugh, yes I know, I did remember to label one of them today! https://github.com/astral-sh/ruff/pull/11176</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-04-27 18:15</div>
+            <div class="timeline-body"><p>I think I would have remembered before merging :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-04-29 21:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/symbols.rs</code>:457 on 2024-04-29 21:36</div>
+            <div class="timeline-body"><p>It looks like using <code>ExpressionRef</code> <em>should</em> be possible (it can be cast to <code>AnyNodeRef</code>), but it will take a bit more investigation, because <code>ExpressionRef</code> doesn't impl <code>AstNode</code>, and currently <code>TypedNodeKey</code> only works for <code>N: AstNode</code>. Not going to hold up this PR on figuring this out, but I'll add a TODO to look at it later.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-04-29 21:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/symbols.rs</code>:457 on 2024-04-29 21:41</div>
+            <div class="timeline-body"><p>Actually on second thought as I try to write the TODO, I don't even think we can / want to store just Exprs for Assignments. The RHS of an unpacking assigment may be an expression that returns a sequence type, but isn't a tuple or list literal, so we can't necessarily pick it apart to its component bits at AST level. We will need the whole LHS and the whole RHS to do the unpacking at type level, and so effectively we need the whole statement. So although there may be other cases where we'd like to reference an Expr, this isn't actually one of them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @carljm on 2024-04-29 22:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2024-04-29 22:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-04-29 22:05</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 22:37:43 UTC
+    </footer>
+</body>
+</html>

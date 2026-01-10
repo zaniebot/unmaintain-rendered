@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Improvements to the `fuzz-parser` script - astral-sh/ruff #11071</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Improvements to the <code>fuzz-parser</code> script</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/11071">#11071</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2024-04-21 14:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-04-21 14:47</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<ul>
+<li>Properly fix the race condition identified in https://github.com/astral-sh/ruff/pull/11039. Instead of running the version of Ruff we're testing by invoking <code>cargo run --release</code> on each generated source file, we either (1) accept a path to an executable on the command line or (2) if that's not specified, we run <code>cargo build --release</code> once at the start and then invoke the executable found in <code>target/release/ruff</code> directly.</li>
+<li>Now that the race condition is properly fixed, remove the workaround for the race condition added in https://github.com/astral-sh/ruff/pull/11039.</li>
+<li>Also allow users to pass in an executable to compare against for the <code>--only-new-bugs</code> argument (previously it was hardcoded to always compare against the version of Ruff installed into the Python environment)</li>
+<li>Use <code>argparse.RawDescriptionHelpFormatter</code> as the formatter class rather than <code>argparse.RawTextHelpFormatter</code>. This means that long help texts for the individual arguments will be wrapped to a sensible width.</li>
+<li>On completion of the script, indicate success or failure of the script overall by raising <code>SytemExit</code> with the appropriate exit code.</li>
+<li>Add myself as a codeowner for the script</li>
+</ul>
+<h2>Test Plan</h2>
+<p>After activating a Python virtual environment with the requirements for the script installed into it, I ran the following invocations locally to check that the script still worked as expected:</p>
+<ul>
+<li><code>py scripts/fuzz-parser/fuzz.py 0-5_000</code></li>
+<li><code>py scripts/fuzz-parser/fuzz.py -h</code></li>
+<li><code>py scripts/fuzz-parser/fuzz.py 0-10 --baseline-executable ruff</code> (should error gracefully)</li>
+<li><code>py scripts/fuzz-parser/fuzz.py 0-10 --only-new-bugs --baseline-executable foo</code> (should error gracefully)</li>
+<li><code>py scripts/fuzz-parser/fuzz.py 0-10 --only-new-bugs --baseline-executable ruff</code></li>
+<li><code>py scripts/fuzz-parser/fuzz.py 0-10 --test-executable target/release/ruff</code></li>
+<li><code>py scripts/fuzz-parser/fuzz.py 0-10 --test-executable target/release/ruff --only-new-bugs --baseline-executable ruff</code></li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @MichaReiser on 2024-04-22 06:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-04-22 06:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2024-04-22 06:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2024-04-22 06:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-04-22 06:47</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 22:37:38 UTC
+    </footer>
+</body>
+</html>

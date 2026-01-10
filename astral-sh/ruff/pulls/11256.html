@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] resolve class members - astral-sh/ruff #11256</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] resolve class members</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/11256">#11256</a>
+        opened by <a href="https://github.com/carljm">@carljm</a>
+        on 2024-05-03 01:09
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/carljm">@carljm</a> on 2024-05-03 01:09</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Add the ability to (lazily) resolve members of a class type.</p>
+<h2>Test Plan</h2>
+<p>cargo test</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @carljm on 2024-05-03 01:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @plredmond by @carljm on 2024-05-03 01:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @carljm on 2024-05-03 01:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-05-03 01:26</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @MichaReiser on 2024-05-03 06:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/symbols.rs</code>:542 on 2024-05-03 06:52</div>
+            <div class="timeline-body"><p>Should we remove the first argument. It always seems to be <code>builder.cur_scope</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/types.rs</code>:418 on 2024-05-03 06:55</div>
+            <div class="timeline-body"><p>Including <code>FileId</code> here is interesting because the symbol table itself is all scoped by the <code>FileId</code>. That means, having the <code>FileId</code> kind of feels redundant. But I assume it is necessary when we start referring to this type from other modules.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/types.rs</code>:417 on 2024-05-03 06:56</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    /// File in which the class was defined
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/types/infer.rs</code>:123 on 2024-05-03 06:57</div>
+            <div class="timeline-body"><p>This query wouldn't work with salsa because <code>name</code> isn't an ingredient. Or at least, it couldn't be a cached query which I think it also isn't here.</p>
+<p>I think the way this would be implemented in salsa is that this is a method on <code>ClassTypeId</code>.</p>
+<p><code>class.get_member(db, name: &amp;Name)</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-05-03 07:07</div>
+            <div class="timeline-body"><p>Looks good.</p>
+<p>What's unclear to me is whether we use the <code>FileId</code> on <code>ClassType</code>, considering that it is already part of <code>ClassTypeId</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot/src/types/infer.rs</code>:123 on 2024-05-03 10:35</div>
+            <div class="timeline-body"><p>Two questions:</p>
+<ol>
+<li><p>Should this recurse up into superclasses to search for the member in those class bodies, if it can't find them in the class itself? I'm anticipating there are three possible answers to this: &quot;yes&quot;, &quot;no (we'll do the proper recursive searching through the mro somewhere else)&quot;, and &quot;yes, but not now&quot;. Whichever answer you choose, I think it would be good to add a comment noting the behaviour we choose and explaining why we've chosen it ;)</p>
+</li>
+<li><p>How are we distinguishing between class variables and instance variables here? I can think of two possible solutions (though there may be more):</p>
+<ol>
+<li>Rather than returning a <code>QueryResult&lt;Option&lt;Type&gt;&gt;</code>, the function could return <code>QueryResult&lt;Option&lt;ClassMember&gt;&gt;</code>, where <code>ClassMember</code> is an enum:<pre><code class="language-rs">enum ClassMember {
+    /// e.g. `x: int` at the class scope,
+    /// or `self.${var}` assignments within methods
+    InstanceMember(Type),
+    /// e.g. `x: ClassVar[int]` at the class scope,
+    /// method definitions, or `x = 42` in the class scope,
+    /// or `cls.${var}` assignments within classmethods
+    ClassMember(Type),
+}
+</code></pre>
+</li>
+<li>We could have two different functions, one for retrieving class variables and the other for retrieving instance variables.</li>
+</ol>
+<p>Again, it's okay if this question is deferred for now to keep things simple, but some kind of TODO comment might be in order.</p>
+</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2024-05-03 10:36</div>
+            <div class="timeline-body"><p>You deleted all the code I wrote yesterday with you 😭</p>
+<p>j/k, it makes sense to do this lazily! Left some questions below, but basically looks good</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-05-03 14:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/types.rs</code>:418 on 2024-05-03 14:00</div>
+            <div class="timeline-body"><p>I think it is not redundant due to symbol table being scoped by <code>FileId</code>, because the type will travel across modules, and doesn't itself hold a reference to its symbol table.</p>
+<p>But I think it is redundant for the reason you noted above, that <code>ClassTypeId</code> already carries the <code>FileId</code>! So I will remove it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-05-03 14:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/types/infer.rs</code>:123 on 2024-05-03 14:07</div>
+            <div class="timeline-body"><p>This isn't a query at all (i.e. it's not exposed as part of any Db trait), it's just a free function that happens to take a db as an argument. (The same is currently true of <code>infer_expr_type</code>, though that one almost certainly will become a real query.)</p>
+<p>This is not directly cached because it's just a thin convenience wrapper over <code>infer_symbol_type</code>, which is cached.</p>
+<p>Whether this is a free function or a method on <code>ClassTypeId</code> is just a question of which API we prefer, it's not related to whether or not it's a query (a free function can just be a regular function, not a query), so it's not related to salsa either.</p>
+<p>But I do think having it be a method on <code>ClassTypeId</code> is nice, in particular because it means we don't need a <code>FileId</code> on <code>ClassType</code> anymore, nor an extra <code>file_id</code> argument. I'll make that change.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/types/infer.rs</code>:123 on 2024-05-03 14:21</div>
+            <div class="timeline-body"><p>Great points!</p>
+<blockquote>
+<p>Should this recurse up into superclasses</p>
+</blockquote>
+<p>I think we will need both a method that does, and a method that doesn't (which the method that does will need to use). So I think it's fine to first add the method that doesn't, though when I actually add the override-check lint rule, it may make sense to add the recursive lookup method then.</p>
+<p>I'll add a comment and/or rename this method for better clarity.</p>
+<blockquote>
+<p>How are we distinguishing between class variables and instance variables here?</p>
+</blockquote>
+<p>Currently we aren't, and we will need to at some point. It's good to at least consider now how we will want to.</p>
+<p>I think one tricky thing here is that there are really three variants: instance member, class member, and instance-or-class member. (<code>x = 2</code> in class body without a <code>ClassVar</code> annotation is the latter, in general, though we may want to do additional analysis of whether any method includes <code>self.x = ...</code> to possibly narrow it down to &quot;class member&quot; if not.)</p>
+<p>Because of that, I think I'm inclined to do this as two methods, where for some names, both methods would return the result? But I'm not sure, and I think it can be deferred. I'll add a TODO.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-05-03 14:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @carljm on 2024-05-03 17:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2024-05-03 17:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-05-03 17:34</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 22:37:45 UTC
+    </footer>
+</body>
+</html>

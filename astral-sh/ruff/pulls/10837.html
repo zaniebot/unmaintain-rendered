@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Localize cleanup for FunctionDef and ClassDef - astral-sh/ruff #10837</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Localize cleanup for FunctionDef and ClassDef</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/10837">#10837</a>
+        opened by <a href="https://github.com/carljm">@carljm</a>
+        on 2024-04-08 19:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/carljm">@carljm</a> on 2024-04-08 19:15</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Came across this code while digging into the semantic model with @AlexWaygood, and found it confusing because of how it splits <code>push_scope</code> from the paired <code>pop_scope</code> (took me a few minutes to even figure out if/where we were popping the pushed scope). Since this &quot;cleanup&quot; is already totally split by node type, there doesn't seem to be any gain in having it as a separate &quot;step&quot; rather than just incorporating it into the traversal clauses for those node types.</p>
+<p>I left the equivalent cleanup step alone for the expression case, because in that case it is actually generic across several different node types, and due to the use of the common <code>visit_generators</code> utility there isn't a clear way to keep the pushes and corresponding pops localized.</p>
+<p>Feel free to just reject this if I've missed a good reason for it to stay this way!</p>
+<h2>Test Plan</h2>
+<p>Tests and clippy.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-04-08 19:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:916 on 2024-04-08 19:16</div>
+            <div class="timeline-body"><p>Nit: should we remove this, and change the next comment (&quot;Step 4&quot; to &quot;Step 3&quot;)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-04-08 19:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-08 19:17</div>
+            <div class="timeline-body"><p>Do you mind adding the &quot;Internal&quot; label to this one? We have our release infrastructure configured such that PRs labeled &quot;Internal&quot; are automatically filtered out from the release notes, so saves us some time later.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @carljm on 2024-04-08 19:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-04-08 19:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:916 on 2024-04-08 19:18</div>
+            <div class="timeline-body"><p>I actually did that initially, and then I reverted it because the &quot;four steps&quot; are a consistent and common pattern throughout this file, and they are always the same, so I thought it better to leave the empty marker and stay consistent.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-04-08 19:18</div>
+            <div class="timeline-body"><p>Gah, one of these days I'll actually remember to tag my own PR 🙄</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-04-08 19:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:916 on 2024-04-08 19:19</div>
+            <div class="timeline-body"><p>But I can remove the empty step and re-number if you prefer that</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-04-08 19:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:916 on 2024-04-08 19:23</div>
+            <div class="timeline-body"><p>No, on second thought, you're right!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-04-08 19:28</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @carljm on 2024-04-08 19:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2024-04-08 19:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-04-08 19:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/davisagli">@davisagli</a> on 2024-04-09 05:12</div>
+            <div class="timeline-body"><p>Hey there, I'm lurking because I wanted to see what @carljm is up to in his first days at Astral. :) We have a similar scheme for release notes based on labels in a project I work on, and we use https://github.com/agilepathway/label-checker to set a failed check on the PR if it doesn't have one of the required labels.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-04-09 05:58</div>
+            <div class="timeline-body"><p>Hi @davisagli !</p>
+<p>I just brought up this automation idea the other day :) But then I withdrew it; I think it would make sense for a private project, but for a project with lots of contributors like ruff, where most PR authors don't even have the rights to set labels, I think it's a bad contributor experience (and a bad reviewer experience!) for every PR to by default get the big red X until a maintainer comes along to set a label. I'd rather have the maintainers need to remember to do it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/T-256">@T-256</a> on 2024-04-11 23:35</div>
+            <div class="timeline-body"><p>(Just my thoughts and possible solutions on mentioned issues at here)</p>
+<blockquote>
+<p>most PR authors don't even have the rights to set labels</p>
+</blockquote>
+<p>Isn't it possible to specify this for label-checker to validate if PR author has label right or not?</p>
+<blockquote>
+<p>get the big red X until a maintainer comes along to set a label.</p>
+</blockquote>
+<p>I think it could be as <em>Skipped</em> task instead of <em>big red X</em></p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 22:37:33 UTC
+    </footer>
+</body>
+</html>
