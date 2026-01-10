@@ -1,0 +1,196 @@
+```yaml
+number: 14719
+title: Update pre-commit dependencies
+type: pull_request
+state: merged
+author: renovate
+labels:
+  - internal
+assignees: []
+merged: true
+base: main
+head: renovate/pre-commit-dependencies
+created_at: 2024-12-02T01:06:37Z
+updated_at: 2024-12-02T06:05:23Z
+url: https://github.com/astral-sh/ruff/pull/14719
+synced_at: 2026-01-10T20:42:27Z
+```
+
+# Update pre-commit dependencies
+
+---
+
+_Pull request opened by @renovate on 2024-12-02 01:06_
+
+This PR contains the following updates:
+
+| Package | Type | Update | Change |
+|---|---|---|---|
+| [astral-sh/ruff-pre-commit](https://redirect.github.com/astral-sh/ruff-pre-commit) | repository | minor | `v0.7.4` -> `v0.8.1` |
+| [crate-ci/typos](https://redirect.github.com/crate-ci/typos) | repository | minor | `v1.27.3` -> `v1.28.1` |
+| [executablebooks/mdformat](https://redirect.github.com/executablebooks/mdformat) | repository | patch | `0.7.18` -> `0.7.19` |
+| [igorshubovych/markdownlint-cli](https://redirect.github.com/igorshubovych/markdownlint-cli) | repository | minor | `v0.42.0` -> `v0.43.0` |
+| [rbubley/mirrors-prettier](https://redirect.github.com/rbubley/mirrors-prettier) | repository | minor | `v3.3.3` -> `v3.4.1` |
+
+Note: The `pre-commit` manager in Renovate is not supported by the `pre-commit` maintainers or community. Please do not report any problems there, instead [create a Discussion in the Renovate repository](https://redirect.github.com/renovatebot/renovate/discussions/new) if you have any questions.
+
+---
+
+### Release Notes
+
+<details>
+<summary>astral-sh/ruff-pre-commit (astral-sh/ruff-pre-commit)</summary>
+
+### [`v0.8.1`](https://redirect.github.com/astral-sh/ruff-pre-commit/releases/tag/v0.8.1)
+
+[Compare Source](https://redirect.github.com/astral-sh/ruff-pre-commit/compare/v0.8.0...v0.8.1)
+
+See: https://github.com/astral-sh/ruff/releases/tag/0.8.1
+
+### [`v0.8.0`](https://redirect.github.com/astral-sh/ruff-pre-commit/releases/tag/v0.8.0)
+
+[Compare Source](https://redirect.github.com/astral-sh/ruff-pre-commit/compare/v0.7.4...v0.8.0)
+
+See: https://github.com/astral-sh/ruff/releases/tag/0.8.0
+
+</details>
+
+<details>
+<summary>crate-ci/typos (crate-ci/typos)</summary>
+
+### [`v1.28.1`](https://redirect.github.com/crate-ci/typos/releases/tag/v1.28.1)
+
+[Compare Source](https://redirect.github.com/crate-ci/typos/compare/v1.28.0...v1.28.1)
+
+#### \[1.28.1] - 2024-11-26
+
+##### Fixes
+
+-   Add back in `lock` file types accidentally removed in 1.28 (`go.sum`, `requirements.txt`)
+
+### [`v1.28.0`](https://redirect.github.com/crate-ci/typos/releases/tag/v1.28.0)
+
+[Compare Source](https://redirect.github.com/crate-ci/typos/compare/v1.27.3...v1.28.0)
+
+#### \[1.28.0] - 2024-11-25
+
+##### Features
+
+-   Updated the dictionary with the [November 2024](https://redirect.github.com/crate-ci/typos/issues/1139) changes
+-   Add many new types and file extensions to the `--type-list`, including ada, alire, bat, candid, carp, cml, devicetree, dita, dockercompose, grpbuild, graphql, hare, lean, meson, prolog, raku, reasonml, rescript, solidity, svelte, usd, v, wgsl
+
+</details>
+
+<details>
+<summary>executablebooks/mdformat (executablebooks/mdformat)</summary>
+
+### [`v0.7.19`](https://redirect.github.com/executablebooks/mdformat/compare/0.7.18...0.7.19)
+
+[Compare Source](https://redirect.github.com/executablebooks/mdformat/compare/0.7.18...0.7.19)
+
+</details>
+
+<details>
+<summary>igorshubovych/markdownlint-cli (igorshubovych/markdownlint-cli)</summary>
+
+### [`v0.43.0`](https://redirect.github.com/igorshubovych/markdownlint-cli/releases/tag/v0.43.0)
+
+[Compare Source](https://redirect.github.com/igorshubovych/markdownlint-cli/compare/v0.42.0...v0.43.0)
+
+-   Update `markdownlint` dependency to `0.36.1`
+    -   Improve `MD051`
+    -   Make `micromark` parser available to custom rules
+    -   Improve performance
+-   Update all dependencies via `Dependabot`
+
+</details>
+
+<details>
+<summary>rbubley/mirrors-prettier (rbubley/mirrors-prettier)</summary>
+
+### [`v3.4.1`](https://redirect.github.com/rbubley/mirrors-prettier/compare/v3.4.0...v3.4.1)
+
+[Compare Source](https://redirect.github.com/rbubley/mirrors-prettier/compare/v3.4.0...v3.4.1)
+
+### [`v3.4.0`](https://redirect.github.com/rbubley/mirrors-prettier/compare/v3.3.3...v3.4.0)
+
+[Compare Source](https://redirect.github.com/rbubley/mirrors-prettier/compare/v3.3.3...v3.4.0)
+
+</details>
+
+---
+
+### Configuration
+
+📅 **Schedule**: Branch creation - "before 4am on Monday" (UTC), Automerge - At any time (no schedule defined).
+
+🚦 **Automerge**: Disabled by config. Please merge this manually once you are satisfied.
+
+♻ **Rebasing**: Whenever PR becomes conflicted, or you tick the rebase/retry checkbox.
+
+👻 **Immortal**: This PR will be recreated if closed unmerged. Get [config help](https://redirect.github.com/renovatebot/renovate/discussions) if that's undesired.
+
+---
+
+ - [ ] <!-- rebase-check -->If you want to rebase/retry this PR, check this box
+
+---
+
+This PR was generated by [Mend Renovate](https://mend.io/renovate/). View the [repository job log](https://developer.mend.io/github/astral-sh/ruff).
+<!--renovate-debug:eyJjcmVhdGVkSW5WZXIiOiIzOS4xOS4wIiwidXBkYXRlZEluVmVyIjoiMzkuMTkuMCIsInRhcmdldEJyYW5jaCI6Im1haW4iLCJsYWJlbHMiOlsiaW50ZXJuYWwiXX0=-->
+
+
+---
+
+_Label `internal` added by @renovate[bot] on 2024-12-02 01:06_
+
+---
+
+_Review requested from @carljm by @dhruvmanila on 2024-12-02 05:57_
+
+---
+
+_Review requested from @MichaReiser by @dhruvmanila on 2024-12-02 05:57_
+
+---
+
+_Review requested from @AlexWaygood by @dhruvmanila on 2024-12-02 05:57_
+
+---
+
+_Review requested from @sharkdp by @dhruvmanila on 2024-12-02 05:57_
+
+---
+
+_Merged by @charliermarsh on 2024-12-02 06:02_
+
+---
+
+_Closed by @charliermarsh on 2024-12-02 06:02_
+
+---
+
+_Branch deleted on 2024-12-02 06:02_
+
+---
+
+_Comment by @github-actions[bot] on 2024-12-02 06:05_
+
+<!-- generated-comment ecosystem -->
+## `ruff-ecosystem` results
+### Linter (stable)
+✅ ecosystem check detected no linter changes.
+
+### Linter (preview)
+✅ ecosystem check detected no linter changes.
+
+### Formatter (stable)
+✅ ecosystem check detected no format changes.
+
+### Formatter (preview)
+✅ ecosystem check detected no format changes.
+
+
+
+
+---

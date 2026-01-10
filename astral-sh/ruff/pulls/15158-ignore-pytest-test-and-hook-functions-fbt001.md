@@ -1,0 +1,453 @@
+```yaml
+number: 15158
+title: "Ignore Pytest test and hook functions (`FBT001`, `PLR0917`)"
+type: pull_request
+state: closed
+author: InSyncWithFoo
+labels:
+  - rule
+  - needs-decision
+assignees: []
+base: main
+head: FBT001
+created_at: 2024-12-27T00:14:22Z
+updated_at: 2025-01-03T09:26:19Z
+url: https://github.com/astral-sh/ruff/pull/15158
+synced_at: 2026-01-10T20:42:27Z
+```
+
+# Ignore Pytest test and hook functions (`FBT001`, `PLR0917`)
+
+---
+
+_Pull request opened by @InSyncWithFoo on 2024-12-27 00:14_
+
+## Summary
+
+Resolves #7286.
+
+## Test Plan
+
+`cargo nextest run` and `cargo insta test`.
+
+
+---
+
+_Comment by @github-actions[bot] on 2024-12-27 00:20_
+
+<!-- generated-comment ecosystem -->
+## `ruff-ecosystem` results
+### Linter (stable)
+ℹ️ ecosystem check **detected linter changes**. (+0 -70 violations, +0 -0 fixes in 5 projects; 50 projects unchanged)
+
+<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+0 -39 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --no-preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/apache/airflow/blob/f09bd4ed1bdb09cac3070a7c26ea90b8209e026d/dev/breeze/tests/test_packages.py#L428'>dev/breeze/tests/test_packages.py:428:73:</a> FBT001 Boolean-typed positional argument in function definition
+- <a href='https://github.com/apache/airflow/blob/f09bd4ed1bdb09cac3070a7c26ea90b8209e026d/dev/breeze/tests/test_provider_documentation.py#L226'>dev/breeze/tests/test_provider_documentation.py:226:64:</a> FBT001 Boolean-typed positional argument in function definition
+- <a href='https://github.com/apache/airflow/blob/f09bd4ed1bdb09cac3070a7c26ea90b8209e026d/dev/breeze/tests/test_provider_documentation.py#L280'>dev/breeze/tests/test_provider_documentation.py:280:5:</a> FBT001 Boolean-typed positional argument in function definition
+- <a href='https://github.com/apache/airflow/blob/f09bd4ed1bdb09cac3070a7c26ea90b8209e026d/dev/breeze/tests/test_provider_documentation.py#L281'>dev/breeze/tests/test_provider_documentation.py:281:5:</a> FBT001 Boolean-typed positional argument in function definition
+- <a href='https://github.com/apache/airflow/blob/f09bd4ed1bdb09cac3070a7c26ea90b8209e026d/dev/breeze/tests/test_selective_checks.py#L2302'>dev/breeze/tests/test_selective_checks.py:2302:5:</a> FBT001 Boolean-typed positional argument in function definition
+- <a href='https://github.com/apache/airflow/blob/f09bd4ed1bdb09cac3070a7c26ea90b8209e026d/dev/breeze/tests/test_selective_checks.py#L2348'>dev/breeze/tests/test_selective_checks.py:2348:49:</a> FBT001 Boolean-typed positional argument in function definition
+- <a href='https://github.com/apache/airflow/blob/f09bd4ed1bdb09cac3070a7c26ea90b8209e026d/helm_tests/airflow_aux/test_pod_template_file.py#L682'>helm_tests/airflow_aux/test_pod_template_file.py:682:45:</a> FBT001 Boolean-typed positional argument in function definition
+- <a href='https://github.com/apache/airflow/blob/f09bd4ed1bdb09cac3070a7c26ea90b8209e026d/providers/tests/cncf/kubernetes/operators/test_spark_kubernetes.py#L845'>providers/tests/cncf/kubernetes/operators/test_spark_kubernetes.py:845:26:</a> FBT001 Boolean-typed positional argument in function definition
+- <a href='https://github.com/apache/airflow/blob/f09bd4ed1bdb09cac3070a7c26ea90b8209e026d/providers/tests/fab/auth_manager/test_security.py#L1162'>providers/tests/fab/auth_manager/test_security.py:1162:9:</a> FBT001 Boolean-typed positional argument in function definition
+- <a href='https://github.com/apache/airflow/blob/f09bd4ed1bdb09cac3070a7c26ea90b8209e026d/providers/tests/google/cloud/sensors/test_dataform.py#L53'>providers/tests/google/cloud/sensors/test_dataform.py:53:9:</a> FBT001 Boolean-typed positional argument in function definition
+- <a href='https://github.com/apache/airflow/blob/f09bd4ed1bdb09cac3070a7c26ea90b8209e026d/providers/tests/papermill/operators/test_papermill.py#L75'>providers/tests/papermill/operators/test_papermill.py:75:9:</a> FBT001 Boolean-typed positional argument in function definition
+- <a href='https://github.com/apache/airflow/blob/f09bd4ed1bdb09cac3070a7c26ea90b8209e026d/providers/tests/papermill/operators/test_papermill.py#L76'>providers/tests/papermill/operators/test_papermill.py:76:9:</a> FBT001 Boolean-typed positional argument in function definition
+- <a href='https://github.com/apache/airflow/blob/f09bd4ed1bdb09cac3070a7c26ea90b8209e026d/task_sdk/tests/defintions/test_dag.py#L309'>task_sdk/tests/defintions/test_dag.py:309:40:</a> FBT001 Boolean-typed positional argument in function definition
+- <a href='https://github.com/apache/airflow/blob/f09bd4ed1bdb09cac3070a7c26ea90b8209e026d/task_sdk/tests/execution_time/test_task_runner.py#L592'>task_sdk/tests/execution_time/test_task_runner.py:592:9:</a> FBT001 Boolean-typed positional argument in function definition
+- <a href='https://github.com/apache/airflow/blob/f09bd4ed1bdb09cac3070a7c26ea90b8209e026d/task_sdk/tests/execution_time/test_task_runner.py#L593'>task_sdk/tests/execution_time/test_task_runner.py:593:9:</a> FBT001 Boolean-typed positional argument in function definition
+- <a href='https://github.com/apache/airflow/blob/f09bd4ed1bdb09cac3070a7c26ea90b8209e026d/tests/api_connexion/endpoints/test_xcom_endpoint.py#L284'>tests/api_connexion/endpoints/test_xcom_endpoint.py:284:15:</a> FBT001 Boolean-typed positional argument in function definition
+- <a href='https://github.com/apache/airflow/blob/f09bd4ed1bdb09cac3070a7c26ea90b8209e026d/tests/api_fastapi/core_api/routes/public/test_xcom.py#L198'>tests/api_fastapi/core_api/routes/public/test_xcom.py:198:15:</a> FBT001 Boolean-typed positional argument in function definition
+- <a href='https://github.com/apache/airflow/blob/f09bd4ed1bdb09cac3070a7c26ea90b8209e026d/tests/auth/managers/test_base_auth_manager.py#L276'>tests/auth/managers/test_base_auth_manager.py:276:29:</a> FBT001 Boolean-typed positional argument in function definition
+- <a href='https://github.com/apache/airflow/blob/f09bd4ed1bdb09cac3070a7c26ea90b8209e026d/tests/core/test_configuration.py#L1129'>tests/core/test_configuration.py:1129:65:</a> FBT001 Boolean-typed positional argument in function definition
+- <a href='https://github.com/apache/airflow/blob/f09bd4ed1bdb09cac3070a7c26ea90b8209e026d/tests/core/test_configuration.py#L1151'>tests/core/test_configuration.py:1151:78:</a> FBT001 Boolean-typed positional argument in function definition
+- <a href='https://github.com/apache/airflow/blob/f09bd4ed1bdb09cac3070a7c26ea90b8209e026d/tests/core/test_configuration.py#L1174'>tests/core/test_configuration.py:1174:15:</a> FBT001 Boolean-typed positional argument in function definition
+- <a href='https://github.com/apache/airflow/blob/f09bd4ed1bdb09cac3070a7c26ea90b8209e026d/tests/core/test_configuration.py#L1197'>tests/core/test_configuration.py:1197:62:</a> FBT001 Boolean-typed positional argument in function definition
+- <a href='https://github.com/apache/airflow/blob/f09bd4ed1bdb09cac3070a7c26ea90b8209e026d/tests/core/test_configuration.py#L1215'>tests/core/test_configuration.py:1215:66:</a> FBT001 Boolean-typed positional argument in function definition
+- <a href='https://github.com/apache/airflow/blob/f09bd4ed1bdb09cac3070a7c26ea90b8209e026d/tests/core/test_configuration.py#L1233'>tests/core/test_configuration.py:1233:69:</a> FBT001 Boolean-typed positional argument in function definition
+- <a href='https://github.com/apache/airflow/blob/f09bd4ed1bdb09cac3070a7c26ea90b8209e026d/tests/core/test_configuration.py#L1257'>tests/core/test_configuration.py:1257:66:</a> FBT001 Boolean-typed positional argument in function definition
+- <a href='https://github.com/apache/airflow/blob/f09bd4ed1bdb09cac3070a7c26ea90b8209e026d/tests/core/test_configuration.py#L1281'>tests/core/test_configuration.py:1281:75:</a> FBT001 Boolean-typed positional argument in function definition
+- <a href='https://github.com/apache/airflow/blob/f09bd4ed1bdb09cac3070a7c26ea90b8209e026d/tests/core/test_configuration.py#L1304'>tests/core/test_configuration.py:1304:78:</a> FBT001 Boolean-typed positional argument in function definition
+... 12 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/apache/superset">apache/superset</a> (+0 -24 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --no-preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/apache/superset/blob/91d16482301f8dd944e0e137b7c185da50aeb991/tests/unit_tests/db_engine_specs/test_base.py#L165'>tests/unit_tests/db_engine_specs/test_base.py:165:5:</a> FBT001 Boolean-typed positional argument in function definition
+- <a href='https://github.com/apache/superset/blob/91d16482301f8dd944e0e137b7c185da50aeb991/tests/unit_tests/db_engine_specs/test_clickhouse.py#L205'>tests/unit_tests/db_engine_specs/test_clickhouse.py:205:5:</a> FBT001 Boolean-typed positional argument in function definition
+- <a href='https://github.com/apache/superset/blob/91d16482301f8dd944e0e137b7c185da50aeb991/tests/unit_tests/db_engine_specs/test_couchbase.py#L91'>tests/unit_tests/db_engine_specs/test_couchbase.py:91:5:</a> FBT001 Boolean-typed positional argument in function definition
+- <a href='https://github.com/apache/superset/blob/91d16482301f8dd944e0e137b7c185da50aeb991/tests/unit_tests/db_engine_specs/test_databend.py#L118'>tests/unit_tests/db_engine_specs/test_databend.py:118:5:</a> FBT001 Boolean-typed positional argument in function definition
+- <a href='https://github.com/apache/superset/blob/91d16482301f8dd944e0e137b7c185da50aeb991/tests/unit_tests/db_engine_specs/test_denodo.py#L93'>tests/unit_tests/db_engine_specs/test_denodo.py:93:5:</a> FBT001 Boolean-typed positional argument in function definition
+- <a href='https://github.com/apache/superset/blob/91d16482301f8dd944e0e137b7c185da50aeb991/tests/unit_tests/db_engine_specs/test_doris.py#L75'>tests/unit_tests/db_engine_specs/test_doris.py:75:5:</a> FBT001 Boolean-typed positional argument in function definition
+- <a href='https://github.com/apache/superset/blob/91d16482301f8dd944e0e137b7c185da50aeb991/tests/unit_tests/db_engine_specs/test_kusto.py#L38'>tests/unit_tests/db_engine_specs/test_kusto.py:38:37:</a> FBT001 Boolean-typed positional argument in function definition
+- <a href='https://github.com/apache/superset/blob/91d16482301f8dd944e0e137b7c185da50aeb991/tests/unit_tests/db_engine_specs/test_kusto.py#L62'>tests/unit_tests/db_engine_specs/test_kusto.py:62:40:</a> FBT001 Boolean-typed positional argument in function definition
+- <a href='https://github.com/apache/superset/blob/91d16482301f8dd944e0e137b7c185da50aeb991/tests/unit_tests/db_engine_specs/test_kusto.py#L86'>tests/unit_tests/db_engine_specs/test_kusto.py:86:37:</a> FBT001 Boolean-typed positional argument in function definition
+- <a href='https://github.com/apache/superset/blob/91d16482301f8dd944e0e137b7c185da50aeb991/tests/unit_tests/db_engine_specs/test_mssql.py#L58'>tests/unit_tests/db_engine_specs/test_mssql.py:58:5:</a> FBT001 Boolean-typed positional argument in function definition
+- <a href='https://github.com/apache/superset/blob/91d16482301f8dd944e0e137b7c185da50aeb991/tests/unit_tests/db_engine_specs/test_mysql.py#L117'>tests/unit_tests/db_engine_specs/test_mysql.py:117:53:</a> FBT001 Boolean-typed positional argument in function definition
+- <a href='https://github.com/apache/superset/blob/91d16482301f8dd944e0e137b7c185da50aeb991/tests/unit_tests/db_engine_specs/test_mysql.py#L78'>tests/unit_tests/db_engine_specs/test_mysql.py:78:5:</a> FBT001 Boolean-typed positional argument in function definition
+- <a href='https://github.com/apache/superset/blob/91d16482301f8dd944e0e137b7c185da50aeb991/tests/unit_tests/db_engine_specs/test_oceanbase.py#L55'>tests/unit_tests/db_engine_specs/test_oceanbase.py:55:5:</a> FBT001 Boolean-typed positional argument in function definition
+- <a href='https://github.com/apache/superset/blob/91d16482301f8dd944e0e137b7c185da50aeb991/tests/unit_tests/db_engine_specs/test_postgres.py#L91'>tests/unit_tests/db_engine_specs/test_postgres.py:91:5:</a> FBT001 Boolean-typed positional argument in function definition
+- <a href='https://github.com/apache/superset/blob/91d16482301f8dd944e0e137b7c185da50aeb991/tests/unit_tests/db_engine_specs/test_presto.py#L84'>tests/unit_tests/db_engine_specs/test_presto.py:84:5:</a> FBT001 Boolean-typed positional argument in function definition
+- <a href='https://github.com/apache/superset/blob/91d16482301f8dd944e0e137b7c185da50aeb991/tests/unit_tests/db_engine_specs/test_starrocks.py#L67'>tests/unit_tests/db_engine_specs/test_starrocks.py:67:5:</a> FBT001 Boolean-typed positional argument in function definition
+- <a href='https://github.com/apache/superset/blob/91d16482301f8dd944e0e137b7c185da50aeb991/tests/unit_tests/db_engine_specs/test_trino.py#L292'>tests/unit_tests/db_engine_specs/test_trino.py:292:5:</a> FBT001 Boolean-typed positional argument in function definition
+... 7 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/bokeh/bokeh">bokeh/bokeh</a> (+0 -5 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --no-preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/plotting/test_contour.py#L119'>tests/unit/bokeh/plotting/test_contour.py:119:54:</a> FBT001 Boolean-typed positional argument in function definition
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/plotting/test_contour.py#L119'>tests/unit/bokeh/plotting/test_contour.py:119:71:</a> FBT001 Boolean-typed positional argument in function definition
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/plotting/test_contour.py#L83'>tests/unit/bokeh/plotting/test_contour.py:83:54:</a> FBT001 Boolean-typed positional argument in function definition
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/plotting/test_contour.py#L83'>tests/unit/bokeh/plotting/test_contour.py:83:71:</a> FBT001 Boolean-typed positional argument in function definition
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/test_settings.py#L139'>tests/unit/bokeh/test_settings.py:139:42:</a> FBT001 Boolean-typed positional argument in function definition
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/pandas-dev/pandas">pandas-dev/pandas</a> (+0 -0 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/zulip/zulip">zulip/zulip</a> (+0 -2 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --no-preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/zulip/zulip/blob/58822372d5a4865120b5f2274822a46daffdd11c/tools/lib/test_server.py#L56'>tools/lib/test_server.py:56:5:</a> FBT001 Boolean-typed positional argument in function definition
+- <a href='https://github.com/zulip/zulip/blob/58822372d5a4865120b5f2274822a46daffdd11c/tools/lib/test_server.py#L59'>tools/lib/test_server.py:59:5:</a> FBT001 Boolean-typed positional argument in function definition
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (1 rules affected)</summary>
+<p>
+
+| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| FBT001 | 70 | 0 | 70 | 0 | 0 |
+
+</p>
+</details>
+
+### Linter (preview)
+ℹ️ ecosystem check **detected linter changes**. (+0 -517 violations, +0 -0 fixes in 11 projects; 44 projects unchanged)
+
+<details><summary><a href="https://github.com/PlasmaPy/PlasmaPy">PlasmaPy/PlasmaPy</a> (+0 -8 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/PlasmaPy/PlasmaPy/blob/300b0a6a8b9c1e22844bbce34c6dc7714a46356e/tests/analysis/time_series/test_conditioanl_averaging.py#L220'>tests/analysis/time_series/test_conditioanl_averaging.py:220:5:</a> PLR0917 Too many positional arguments (8/5)
+- <a href='https://github.com/PlasmaPy/PlasmaPy/blob/300b0a6a8b9c1e22844bbce34c6dc7714a46356e/tests/analysis/time_series/test_conditioanl_averaging.py#L302'>tests/analysis/time_series/test_conditioanl_averaging.py:302:5:</a> PLR0917 Too many positional arguments (9/5)
+- <a href='https://github.com/PlasmaPy/PlasmaPy/blob/300b0a6a8b9c1e22844bbce34c6dc7714a46356e/tests/analysis/time_series/test_conditioanl_averaging.py#L39'>tests/analysis/time_series/test_conditioanl_averaging.py:39:5:</a> PLR0917 Too many positional arguments (8/5)
+- <a href='https://github.com/PlasmaPy/PlasmaPy/blob/300b0a6a8b9c1e22844bbce34c6dc7714a46356e/tests/analysis/time_series/test_excess_statistics.py#L86'>tests/analysis/time_series/test_excess_statistics.py:86:5:</a> PLR0917 Too many positional arguments (6/5)
+- <a href='https://github.com/PlasmaPy/PlasmaPy/blob/300b0a6a8b9c1e22844bbce34c6dc7714a46356e/tests/particles/test_ionization_collection.py#L871'>tests/particles/test_ionization_collection.py:871:5:</a> PLR0917 Too many positional arguments (6/5)
+- <a href='https://github.com/PlasmaPy/PlasmaPy/blob/300b0a6a8b9c1e22844bbce34c6dc7714a46356e/tests/plasma/test_grids.py#L336'>tests/plasma/test_grids.py:336:5:</a> PLR0917 Too many positional arguments (6/5)
+- <a href='https://github.com/PlasmaPy/PlasmaPy/blob/300b0a6a8b9c1e22844bbce34c6dc7714a46356e/tests/plasma/test_grids.py#L383'>tests/plasma/test_grids.py:383:5:</a> PLR0917 Too many positional arguments (6/5)
+- <a href='https://github.com/PlasmaPy/PlasmaPy/blob/300b0a6a8b9c1e22844bbce34c6dc7714a46356e/tests/plasma/test_grids.py#L466'>tests/plasma/test_grids.py:466:5:</a> PLR0917 Too many positional arguments (6/5)
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+0 -250 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/apache/airflow/blob/f09bd4ed1bdb09cac3070a7c26ea90b8209e026d/dev/breeze/tests/test_packages.py#L428'>dev/breeze/tests/test_packages.py:428:73:</a> FBT001 Boolean-typed positional argument in function definition
+- <a href='https://github.com/apache/airflow/blob/f09bd4ed1bdb09cac3070a7c26ea90b8209e026d/dev/breeze/tests/test_provider_documentation.py#L226'>dev/breeze/tests/test_provider_documentation.py:226:64:</a> FBT001 Boolean-typed positional argument in function definition
+- <a href='https://github.com/apache/airflow/blob/f09bd4ed1bdb09cac3070a7c26ea90b8209e026d/dev/breeze/tests/test_provider_documentation.py#L278'>dev/breeze/tests/test_provider_documentation.py:278:5:</a> PLR0917 Too many positional arguments (9/5)
+- <a href='https://github.com/apache/airflow/blob/f09bd4ed1bdb09cac3070a7c26ea90b8209e026d/dev/breeze/tests/test_provider_documentation.py#L280'>dev/breeze/tests/test_provider_documentation.py:280:5:</a> FBT001 Boolean-typed positional argument in function definition
+- <a href='https://github.com/apache/airflow/blob/f09bd4ed1bdb09cac3070a7c26ea90b8209e026d/dev/breeze/tests/test_provider_documentation.py#L281'>dev/breeze/tests/test_provider_documentation.py:281:5:</a> FBT001 Boolean-typed positional argument in function definition
+- <a href='https://github.com/apache/airflow/blob/f09bd4ed1bdb09cac3070a7c26ea90b8209e026d/dev/breeze/tests/test_selective_checks.py#L2288'>dev/breeze/tests/test_selective_checks.py:2288:5:</a> PLR0917 Too many positional arguments (14/5)
+- <a href='https://github.com/apache/airflow/blob/f09bd4ed1bdb09cac3070a7c26ea90b8209e026d/dev/breeze/tests/test_selective_checks.py#L2302'>dev/breeze/tests/test_selective_checks.py:2302:5:</a> FBT001 Boolean-typed positional argument in function definition
+- <a href='https://github.com/apache/airflow/blob/f09bd4ed1bdb09cac3070a7c26ea90b8209e026d/dev/breeze/tests/test_selective_checks.py#L2348'>dev/breeze/tests/test_selective_checks.py:2348:49:</a> FBT001 Boolean-typed positional argument in function definition
+- <a href='https://github.com/apache/airflow/blob/f09bd4ed1bdb09cac3070a7c26ea90b8209e026d/helm_tests/airflow_aux/test_pod_template_file.py#L682'>helm_tests/airflow_aux/test_pod_template_file.py:682:45:</a> FBT001 Boolean-typed positional argument in function definition
+- <a href='https://github.com/apache/airflow/blob/f09bd4ed1bdb09cac3070a7c26ea90b8209e026d/kubernetes_tests/test_kubernetes_pod_operator.py#L919'>kubernetes_tests/test_kubernetes_pod_operator.py:919:9:</a> PLR0917 Too many positional arguments (7/5)
+- <a href='https://github.com/apache/airflow/blob/f09bd4ed1bdb09cac3070a7c26ea90b8209e026d/providers/tests/amazon/aws/auth_manager/avp/test_facade.py#L166'>providers/tests/amazon/aws/auth_manager/avp/test_facade.py:166:9:</a> PLR0917 Too many positional arguments (8/5)
+- <a href='https://github.com/apache/airflow/blob/f09bd4ed1bdb09cac3070a7c26ea90b8209e026d/providers/tests/amazon/aws/auth_manager/test_aws_auth_manager.py#L199'>providers/tests/amazon/aws/auth_manager/test_aws_auth_manager.py:199:9:</a> PLR0917 Too many positional arguments (7/5)
+- <a href='https://github.com/apache/airflow/blob/f09bd4ed1bdb09cac3070a7c26ea90b8209e026d/providers/tests/amazon/aws/auth_manager/test_aws_auth_manager.py#L234'>providers/tests/amazon/aws/auth_manager/test_aws_auth_manager.py:234:9:</a> PLR0917 Too many positional arguments (7/5)
+- <a href='https://github.com/apache/airflow/blob/f09bd4ed1bdb09cac3070a7c26ea90b8209e026d/providers/tests/amazon/aws/auth_manager/test_aws_auth_manager.py#L281'>providers/tests/amazon/aws/auth_manager/test_aws_auth_manager.py:281:9:</a> PLR0917 Too many positional arguments (9/5)
+- <a href='https://github.com/apache/airflow/blob/f09bd4ed1bdb09cac3070a7c26ea90b8209e026d/providers/tests/amazon/aws/auth_manager/test_aws_auth_manager.py#L321'>providers/tests/amazon/aws/auth_manager/test_aws_auth_manager.py:321:9:</a> PLR0917 Too many positional arguments (7/5)
+- <a href='https://github.com/apache/airflow/blob/f09bd4ed1bdb09cac3070a7c26ea90b8209e026d/providers/tests/amazon/aws/auth_manager/test_aws_auth_manager.py#L353'>providers/tests/amazon/aws/auth_manager/test_aws_auth_manager.py:353:9:</a> PLR0917 Too many positional arguments (7/5)
+- <a href='https://github.com/apache/airflow/blob/f09bd4ed1bdb09cac3070a7c26ea90b8209e026d/providers/tests/amazon/aws/auth_manager/test_aws_auth_manager.py#L385'>providers/tests/amazon/aws/auth_manager/test_aws_auth_manager.py:385:9:</a> PLR0917 Too many positional arguments (7/5)
+- <a href='https://github.com/apache/airflow/blob/f09bd4ed1bdb09cac3070a7c26ea90b8209e026d/providers/tests/amazon/aws/auth_manager/test_aws_auth_manager.py#L417'>providers/tests/amazon/aws/auth_manager/test_aws_auth_manager.py:417:9:</a> PLR0917 Too many positional arguments (6/5)
+- <a href='https://github.com/apache/airflow/blob/f09bd4ed1bdb09cac3070a7c26ea90b8209e026d/providers/tests/amazon/aws/hooks/test_eks.py#L737'>providers/tests/amazon/aws/hooks/test_eks.py:737:9:</a> PLR0917 Too many positional arguments (6/5)
+- <a href='https://github.com/apache/airflow/blob/f09bd4ed1bdb09cac3070a7c26ea90b8209e026d/providers/tests/amazon/aws/hooks/test_quicksight.py#L105'>providers/tests/amazon/aws/hooks/test_quicksight.py:105:9:</a> PLR0917 Too many positional arguments (6/5)
+... 199 additional changes omitted for rule PLR0917
+- <a href='https://github.com/apache/airflow/blob/f09bd4ed1bdb09cac3070a7c26ea90b8209e026d/providers/tests/cncf/kubernetes/operators/test_spark_kubernetes.py#L845'>providers/tests/cncf/kubernetes/operators/test_spark_kubernetes.py:845:26:</a> FBT001 Boolean-typed positional argument in function definition
+- <a href='https://github.com/apache/airflow/blob/f09bd4ed1bdb09cac3070a7c26ea90b8209e026d/providers/tests/fab/auth_manager/test_security.py#L1162'>providers/tests/fab/auth_manager/test_security.py:1162:9:</a> FBT001 Boolean-typed positional argument in function definition
+- <a href='https://github.com/apache/airflow/blob/f09bd4ed1bdb09cac3070a7c26ea90b8209e026d/providers/tests/google/cloud/sensors/test_dataform.py#L53'>providers/tests/google/cloud/sensors/test_dataform.py:53:9:</a> FBT001 Boolean-typed positional argument in function definition
+- <a href='https://github.com/apache/airflow/blob/f09bd4ed1bdb09cac3070a7c26ea90b8209e026d/providers/tests/papermill/operators/test_papermill.py#L75'>providers/tests/papermill/operators/test_papermill.py:75:9:</a> FBT001 Boolean-typed positional argument in function definition
+... 226 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/apache/superset">apache/superset</a> (+0 -31 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/apache/superset/blob/91d16482301f8dd944e0e137b7c185da50aeb991/tests/integration_tests/tasks/test_cache.py#L43'>tests/integration_tests/tasks/test_cache.py:43:5:</a> PLR0917 Too many positional arguments (6/5)
+- <a href='https://github.com/apache/superset/blob/91d16482301f8dd944e0e137b7c185da50aeb991/tests/unit_tests/databases/api_test.py#L1273'>tests/unit_tests/databases/api_test.py:1273:5:</a> PLR0917 Too many positional arguments (6/5)
+- <a href='https://github.com/apache/superset/blob/91d16482301f8dd944e0e137b7c185da50aeb991/tests/unit_tests/databases/api_test.py#L1479'>tests/unit_tests/databases/api_test.py:1479:5:</a> PLR0917 Too many positional arguments (6/5)
+- <a href='https://github.com/apache/superset/blob/91d16482301f8dd944e0e137b7c185da50aeb991/tests/unit_tests/databases/api_test.py#L931'>tests/unit_tests/databases/api_test.py:931:5:</a> PLR0917 Too many positional arguments (6/5)
+- <a href='https://github.com/apache/superset/blob/91d16482301f8dd944e0e137b7c185da50aeb991/tests/unit_tests/db_engine_specs/test_base.py#L165'>tests/unit_tests/db_engine_specs/test_base.py:165:5:</a> FBT001 Boolean-typed positional argument in function definition
+- <a href='https://github.com/apache/superset/blob/91d16482301f8dd944e0e137b7c185da50aeb991/tests/unit_tests/db_engine_specs/test_clickhouse.py#L205'>tests/unit_tests/db_engine_specs/test_clickhouse.py:205:5:</a> FBT001 Boolean-typed positional argument in function definition
+- <a href='https://github.com/apache/superset/blob/91d16482301f8dd944e0e137b7c185da50aeb991/tests/unit_tests/db_engine_specs/test_couchbase.py#L91'>tests/unit_tests/db_engine_specs/test_couchbase.py:91:5:</a> FBT001 Boolean-typed positional argument in function definition
+- <a href='https://github.com/apache/superset/blob/91d16482301f8dd944e0e137b7c185da50aeb991/tests/unit_tests/db_engine_specs/test_databend.py#L118'>tests/unit_tests/db_engine_specs/test_databend.py:118:5:</a> FBT001 Boolean-typed positional argument in function definition
+- <a href='https://github.com/apache/superset/blob/91d16482301f8dd944e0e137b7c185da50aeb991/tests/unit_tests/db_engine_specs/test_denodo.py#L93'>tests/unit_tests/db_engine_specs/test_denodo.py:93:5:</a> FBT001 Boolean-typed positional argument in function definition
+- <a href='https://github.com/apache/superset/blob/91d16482301f8dd944e0e137b7c185da50aeb991/tests/unit_tests/db_engine_specs/test_doris.py#L75'>tests/unit_tests/db_engine_specs/test_doris.py:75:5:</a> FBT001 Boolean-typed positional argument in function definition
+... 19 additional changes omitted for rule FBT001
+... 21 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/aws/aws-sam-cli">aws/aws-sam-cli</a> (+0 -119 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/aws/aws-sam-cli/blob/59abce37aec1450683d5310771d7799a27336ca5/tests/integration/buildcmd/test_build_cmd_node.py#L112'>tests/integration/buildcmd/test_build_cmd_node.py:112:9:</a> PLR0917 Too many positional arguments (6/5)
+- <a href='https://github.com/aws/aws-sam-cli/blob/59abce37aec1450683d5310771d7799a27336ca5/tests/integration/buildcmd/test_build_cmd_node.py#L68'>tests/integration/buildcmd/test_build_cmd_node.py:68:9:</a> PLR0917 Too many positional arguments (6/5)
+- <a href='https://github.com/aws/aws-sam-cli/blob/59abce37aec1450683d5310771d7799a27336ca5/tests/integration/buildcmd/test_build_cmd_node.py#L80'>tests/integration/buildcmd/test_build_cmd_node.py:80:9:</a> PLR0917 Too many positional arguments (6/5)
+- <a href='https://github.com/aws/aws-sam-cli/blob/59abce37aec1450683d5310771d7799a27336ca5/tests/unit/commands/buildcmd/test_build_context.py#L1107'>tests/unit/commands/buildcmd/test_build_context.py:1107:9:</a> PLR0917 Too many positional arguments (15/5)
+- <a href='https://github.com/aws/aws-sam-cli/blob/59abce37aec1450683d5310771d7799a27336ca5/tests/unit/commands/buildcmd/test_build_context.py#L1187'>tests/unit/commands/buildcmd/test_build_context.py:1187:9:</a> PLR0917 Too many positional arguments (13/5)
+- <a href='https://github.com/aws/aws-sam-cli/blob/59abce37aec1450683d5310771d7799a27336ca5/tests/unit/commands/buildcmd/test_build_context.py#L1257'>tests/unit/commands/buildcmd/test_build_context.py:1257:9:</a> PLR0917 Too many positional arguments (6/5)
+- <a href='https://github.com/aws/aws-sam-cli/blob/59abce37aec1450683d5310771d7799a27336ca5/tests/unit/commands/buildcmd/test_build_context.py#L180'>tests/unit/commands/buildcmd/test_build_context.py:180:9:</a> PLR0917 Too many positional arguments (6/5)
+- <a href='https://github.com/aws/aws-sam-cli/blob/59abce37aec1450683d5310771d7799a27336ca5/tests/unit/commands/buildcmd/test_build_context.py#L237'>tests/unit/commands/buildcmd/test_build_context.py:237:9:</a> PLR0917 Too many positional arguments (6/5)
+- <a href='https://github.com/aws/aws-sam-cli/blob/59abce37aec1450683d5310771d7799a27336ca5/tests/unit/commands/buildcmd/test_build_context.py#L292'>tests/unit/commands/buildcmd/test_build_context.py:292:9:</a> PLR0917 Too many positional arguments (6/5)
+- <a href='https://github.com/aws/aws-sam-cli/blob/59abce37aec1450683d5310771d7799a27336ca5/tests/unit/commands/buildcmd/test_build_context.py#L353'>tests/unit/commands/buildcmd/test_build_context.py:353:9:</a> PLR0917 Too many positional arguments (6/5)
+- <a href='https://github.com/aws/aws-sam-cli/blob/59abce37aec1450683d5310771d7799a27336ca5/tests/unit/commands/buildcmd/test_build_context.py#L409'>tests/unit/commands/buildcmd/test_build_context.py:409:9:</a> PLR0917 Too many positional arguments (6/5)
+... 108 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/bokeh/bokeh">bokeh/bokeh</a> (+0 -10 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/embed/test_bundle.py#L300'>tests/unit/bokeh/embed/test_bundle.py:300:9:</a> PLR0917 Too many positional arguments (6/5)
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/embed/test_bundle.py#L314'>tests/unit/bokeh/embed/test_bundle.py:314:9:</a> PLR0917 Too many positional arguments (7/5)
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/embed/test_bundle.py#L330'>tests/unit/bokeh/embed/test_bundle.py:330:9:</a> PLR0917 Too many positional arguments (6/5)
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/plotting/test_contour.py#L119'>tests/unit/bokeh/plotting/test_contour.py:119:54:</a> FBT001 Boolean-typed positional argument in function definition
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/plotting/test_contour.py#L119'>tests/unit/bokeh/plotting/test_contour.py:119:71:</a> FBT001 Boolean-typed positional argument in function definition
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/plotting/test_contour.py#L83'>tests/unit/bokeh/plotting/test_contour.py:83:54:</a> FBT001 Boolean-typed positional argument in function definition
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/plotting/test_contour.py#L83'>tests/unit/bokeh/plotting/test_contour.py:83:71:</a> FBT001 Boolean-typed positional argument in function definition
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/test_settings.py#L131'>tests/unit/bokeh/test_settings.py:131:33:</a> FBT001 Boolean-typed positional argument in function definition
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/test_settings.py#L135'>tests/unit/bokeh/test_settings.py:135:39:</a> FBT001 Boolean-typed positional argument in function definition
+... 2 additional changes omitted for rule FBT001
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/freedomofpress/securedrop">freedomofpress/securedrop</a> (+0 -3 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/freedomofpress/securedrop/blob/760148440271d4b9bdca5ce97ab0e511f9c8d8f2/securedrop/tests/test_journalist.py#L3517'>securedrop/tests/test_journalist.py:3517:5:</a> PLR0917 Too many positional arguments (6/5)
+- <a href='https://github.com/freedomofpress/securedrop/blob/760148440271d4b9bdca5ce97ab0e511f9c8d8f2/securedrop/tests/test_journalist.py#L3555'>securedrop/tests/test_journalist.py:3555:5:</a> PLR0917 Too many positional arguments (6/5)
+- <a href='https://github.com/freedomofpress/securedrop/blob/760148440271d4b9bdca5ce97ab0e511f9c8d8f2/securedrop/tests/test_journalist_api.py#L771'>securedrop/tests/test_journalist_api.py:771:5:</a> PLR0917 Too many positional arguments (6/5)
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/fronzbot/blinkpy">fronzbot/blinkpy</a> (+0 -2 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/fronzbot/blinkpy/blob/e2c747b5ad295424b08ff4fb03204129155666fc/tests/test_blinkpy.py#L200'>tests/test_blinkpy.py:200:15:</a> PLR0917 Too many positional arguments (6/5)
+- <a href='https://github.com/fronzbot/blinkpy/blob/e2c747b5ad295424b08ff4fb03204129155666fc/tests/test_blinkpy.py#L550'>tests/test_blinkpy.py:550:15:</a> PLR0917 Too many positional arguments (7/5)
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/ibis-project/ibis">ibis-project/ibis</a> (+0 -64 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/ibis-project/ibis/blob/4583dee336a7dbe1eba528477287d07fe22cdd0c/ibis/backends/clickhouse/tests/test_select.py#L205'>ibis/backends/clickhouse/tests/test_select.py:205:5:</a> PLR0917 Too many positional arguments (6/5)
+- <a href='https://github.com/ibis-project/ibis/blob/4583dee336a7dbe1eba528477287d07fe22cdd0c/ibis/backends/duckdb/tests/test_geospatial.py#L511'>ibis/backends/duckdb/tests/test_geospatial.py:511:5:</a> PLR0917 Too many positional arguments (6/5)
+- <a href='https://github.com/ibis-project/ibis/blob/4583dee336a7dbe1eba528477287d07fe22cdd0c/ibis/backends/flink/tests/test_ddl.py#L346'>ibis/backends/flink/tests/test_ddl.py:346:5:</a> PLR0917 Too many positional arguments (6/5)
+- <a href='https://github.com/ibis-project/ibis/blob/4583dee336a7dbe1eba528477287d07fe22cdd0c/ibis/backends/impala/tests/test_udf.py#L307'>ibis/backends/impala/tests/test_udf.py:307:5:</a> PLR0917 Too many positional arguments (7/5)
+- <a href='https://github.com/ibis-project/ibis/blob/4583dee336a7dbe1eba528477287d07fe22cdd0c/ibis/backends/tests/test_aggregation.py#L1112'>ibis/backends/tests/test_aggregation.py:1112:5:</a> PLR0917 Too many positional arguments (7/5)
+- <a href='https://github.com/ibis-project/ibis/blob/4583dee336a7dbe1eba528477287d07fe22cdd0c/ibis/backends/tests/test_aggregation.py#L1301'>ibis/backends/tests/test_aggregation.py:1301:5:</a> PLR0917 Too many positional arguments (7/5)
+- <a href='https://github.com/ibis-project/ibis/blob/4583dee336a7dbe1eba528477287d07fe22cdd0c/ibis/backends/tests/test_aggregation.py#L1410'>ibis/backends/tests/test_aggregation.py:1410:5:</a> PLR0917 Too many positional arguments (6/5)
+- <a href='https://github.com/ibis-project/ibis/blob/4583dee336a7dbe1eba528477287d07fe22cdd0c/ibis/backends/tests/test_aggregation.py#L548'>ibis/backends/tests/test_aggregation.py:548:5:</a> PLR0917 Too many positional arguments (7/5)
+- <a href='https://github.com/ibis-project/ibis/blob/4583dee336a7dbe1eba528477287d07fe22cdd0c/ibis/backends/tests/test_aggregation.py#L883'>ibis/backends/tests/test_aggregation.py:883:5:</a> PLR0917 Too many positional arguments (6/5)
+- <a href='https://github.com/ibis-project/ibis/blob/4583dee336a7dbe1eba528477287d07fe22cdd0c/ibis/backends/tests/test_array.py#L1497'>ibis/backends/tests/test_array.py:1497:5:</a> PLR0917 Too many positional arguments (6/5)
+... 54 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+
+_... Truncated remaining completed project reports due to GitHub comment length restrictions_
+
+<details><summary>Changes by rule (2 rules affected)</summary>
+<p>
+
+| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| PLR0917 | 445 | 0 | 445 | 0 | 0 |
+| FBT001 | 72 | 0 | 72 | 0 | 0 |
+
+</p>
+</details>
+
+
+
+
+---
+
+_Comment by @InSyncWithFoo on 2024-12-27 00:20_
+
+All of the ecosystem changes I have checked are good, even though some of them are non-Pytest tests.
+
+If this implementation of `is_likely_pytest_test_file()` is accepted, it will fix #10645 as well.
+
+---
+
+_Label `rule` added by @MichaReiser on 2024-12-30 14:34_
+
+---
+
+_@MichaReiser reviewed on 2024-12-30 14:47_
+
+I'm not sure if this is the right approach, for two reasons:
+1. I don't think we want to skip all test functions. We only want to skip functions where pytest requires the function to have a very specific signature (e.g. when using `fixture`). A parametrized test that has too many arguments should still be flagged
+2. I'm a bit concerned about the precedence this sets. We now ignore pytest, what about other frameworks that require very specific function signatures? 
+
+It makes me wonder if we could come up with a more generic approach? E.g. should we disable those rules for all functions decorated with a decorator (because Ruff can't know if the decorator requires very specific parameters?). However, this might lead to too many false-negatives. So maybe special casing pytest is the right approach here. However, I don't think we should special case hooks. They aren't that common and a user can easily disable the rules by configuring a `per_file_ignores`.
+
+ 
+
+---
+
+_Comment by @MichaReiser on 2024-12-30 14:48_
+
+For example, I think https://github.com/apache/airflow/blob/9178f8f0b1ffd80b8eacf4d02b732528fde218e5/dev/breeze/tests/test_provider_documentation.py#L226 should not be removed. The function uses a boolean parameter and the user could change the test parametrization to avoid it: The user is in full control of the parameters.
+
+---
+
+_Comment by @InSyncWithFoo on 2024-12-30 15:05_
+
+> The function uses a boolean parameter and the user could change the test parametrization to avoid it: The user is in full control of the parameters.
+
+I think the point of `FBT` rules is that they help with preventing the `do_something(True)` pattern. Test functions, especially parametrized ones, are never called in such a manner; the test framework is doing all the invocation, away from human eyes. Refactoring `markdown` out in this case would only make it less idiomatic and more cumbersome to write.
+
+As for hooks, I agree that they are rather rare and thus false positives are perhaps acceptable. Same for other kind of programmatically invoked functions.
+
+---
+
+_Comment by @MichaReiser on 2024-12-30 15:56_
+
+To me, there's simply no difference between a parametrized function where I write the parameters in the decorator vs calling the function directly:
+
+```py
+@pytest.mark.parametrize(
+    "native_type,sqla_type,attrs,generic_type,is_dttm",
+    [
+        ("SMALLINT", types.SmallInteger, None, GenericDataType.NUMERIC, False),
+        ("INTEGER", types.Integer, None, GenericDataType.NUMERIC, False),
+        ("BIGINT", types.BigInteger, None, GenericDataType.NUMERIC, False),
+        ("DECIMAL", types.Numeric, None, GenericDataType.NUMERIC, False),
+        ("NUMERIC", types.Numeric, None, GenericDataType.NUMERIC, False),
+        ("REAL", types.REAL, None, GenericDataType.NUMERIC, False),
+        ("MONEY", types.Numeric, None, GenericDataType.NUMERIC, False),
+        # String
+        ("CHAR", types.String, None, GenericDataType.STRING, False),
+        ("VARCHAR", types.String, None, GenericDataType.STRING, False),
+        ("TEXT", types.String, None, GenericDataType.STRING, False),
+        # Temporal
+        ("DATE", types.Date, None, GenericDataType.TEMPORAL, True),
+        ("TIMESTAMP", types.TIMESTAMP, None, GenericDataType.TEMPORAL, True),
+        ("TIME", types.Time, None, GenericDataType.TEMPORAL, True),
+        # Boolean
+        ("BOOLEAN", types.Boolean, None, GenericDataType.BOOLEAN, False),
+    ],
+)
+def test_get_column_spec(
+    native_type: str,
+    sqla_type: type[types.TypeEngine],
+    attrs: Optional[dict[str, Any]],
+    generic_type: GenericDataType,
+    is_dttm: bool,
+) -> None:
+    assert_column_spec(spec, native_type, sqla_type, attrs, generic_type, is_dttm)
+```
+
+vs
+
+```
+test_get_column_spec("SMALLINT", types.SmallInteger, None, GenericDataType.NUMERIC, False)
+```
+
+The boolean argument in both cases is equally hard to read and I think I would want Ruff to flag parametrized pytests if I have the rule enabled or disagree with it in general and disable it globally.
+
+And the same is true for positional arguments. The only case where I think it makes sense to ignore those rules by default is if the function signatures aren't in the user's control, in which case they can't change/fix it.
+
+---
+
+_Label `needs-decision` added by @MichaReiser on 2024-12-30 15:59_
+
+---
+
+_Comment by @MichaReiser on 2025-01-03 09:26_
+
+I'll close this for now and we can follow up on the discussion in the related [issue](https://github.com/astral-sh/ruff/issues/7286)
+
+---
+
+_Closed by @MichaReiser on 2025-01-03 09:26_
+
+---
