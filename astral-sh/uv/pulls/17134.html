@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Nix flake for installing uv from GitHub - astral-sh/uv #17134</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add Nix flake for installing uv from GitHub</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/pull/17134">#17134</a>
+        opened by <a href="https://github.com/deadlovelll">@deadlovelll</a>
+        on 2025-12-15 15:17
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/deadlovelll">@deadlovelll</a> on 2025-12-15 15:17</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Added a Nix flake for uv that builds the package directly from GitHub.
+This allows developers to install and run uv in an isolated environment
+without manually using curl. The flake provides <code>packages.default</code>
+and <code>apps.uv</code> for easy usage via <code>nix develop</code>.</p>
+<h2>Example</h2>
+<p><strong>Before:</strong></p>
+<pre><code class="language-nix">{
+  description = &quot;super-project&quot;;
+
+  inputs = {
+    nixpkgs.url = &quot;github:NixOS/nixpkgs/nixpkgs-unstable&quot;;
+    flake-utils.url = &quot;github:numtide/flake-utils&quot;;
+  };
+
+  outputs = { self, nixpkgs, flake-utils }:
+
+    flake-utils.lib.eachDefaultSystem (system:
+      let
+        pkgs = import nixpkgs { inherit system; };
+        python = pkgs.python313;
+      in
+      {
+        devShell = pkgs.mkShell {
+          buildInputs = [
+            python
+            pkgs.curl
+            pkgs.git
+          ];
+
+          shellHook = ''
+            echo &quot;Setting up Python ${python.version} environment&quot;
+
+            if ! command -v uv &amp;&gt;/dev/null; then
+              echo &quot;Installing uv...&quot;
+              curl -LsSf https://astral.sh/uv/install.sh | sh
+            fi
+
+            .........................
+
+            echo &quot;Dev environment ready&quot;
+          '';
+        };
+      }
+    );
+}
+</code></pre>
+<p><strong>After:</strong></p>
+<pre><code class="language-bash">{
+  description = &quot;super-project&quot;;
+
+  inputs = {
+    nixpkgs.url = &quot;github:NixOS/nixpkgs/nixpkgs-unstable&quot;;
+    flake-utils.url = &quot;github:numtide/flake-utils&quot;;
+    uv.url = &quot;github:deadlovelll/uv-flake&quot;;
+  };
+
+  outputs = { self, nixpkgs, flake-utils, uv }:
+
+    flake-utils.lib.eachDefaultSystem (system:
+      let
+        pkgs = import nixpkgs { inherit system; };
+        python = pkgs.python313;
+      in
+      {
+        devShell = pkgs.mkShell {
+          buildInputs = [
+            python
+            pkgs.curl
+            pkgs.git
+            uv.packages.${system}.default 
+          ];
+
+          shellHook = ''
+            echo &quot;Setting up Python ${python.version} environment&quot;
+
+            ..............
+
+            echo &quot;Dev environment ready&quot;
+          '';
+        };
+      }
+    );
+}
+</code></pre>
+<p>You just need to add uv to inputs instead of writing curl script</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-12-15 15:37</div>
+            <div class="timeline-body"><p>Isn't it a nix anti-pattern to copy a pre-built binary from GitHub like this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-12-18 13:08</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 05:52:39 UTC
+    </footer>
+</body>
+</html>

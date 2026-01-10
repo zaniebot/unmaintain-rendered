@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Added config file settings validation for preview features - astral-sh/uv #17202</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Added config file settings validation for preview features</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/pull/17202">#17202</a>
+        opened by <a href="https://github.com/j-helland">@j-helland</a>
+        on 2025-12-21 02:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/j-helland">@j-helland</a> on 2025-12-21 02:02</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to uv! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<p>Stacked on #16452</p>
+<h2>Summary</h2>
+<blockquote>
+<p>[!NOTE]
+<strong>For reviewers:</strong> see the last commit</p>
+</blockquote>
+<p>Per discussion https://github.com/astral-sh/uv/pull/16452#issuecomment-3677363094, it was determined that we need to have additional config validation for the <code>preview</code> and <code>preview-features</code> fields.</p>
+<p>This is a sketch of how we might approach that via a <code>Validator</code> trait implemented for <code>Options</code> and <code>GlobalOptions</code>.</p>
+<h2>Test Plan</h2>
+<p>New and existing automated tests.</p>
+<h2>Example</h2>
+<pre><code class="language-shell"># Setup
+&gt; mkdir example &amp;&amp; cd example
+&gt; cargo run -- init
+&gt; echo '\n[tool.uv]\npreview = false\npreview-features = [&quot;pylock&quot;]' &gt;&gt; pyproject.toml
+&gt; tail -n3 pyproject.toml
+[tool.uv]
+preview = false
+preview-features = [&quot;pylock&quot;]
+
+# New behavior
+&gt; cargo run -- format
+error: Failed to parse: `pyproject.toml`. Cannot specify both `preview` and `preview-features`.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/j-helland">@j-helland</a> on <code>crates/uv-settings/src/validation.rs</code>:9 on 2025-12-21 02:05</div>
+            <div class="timeline-body"><p>This trait might be overkill. If we think that there will be lots of additional validation rules in the future, something like this makes sense. If not, simplifying to something like <a href="https://github.com/j-helland/uv/blob/main/crates/uv-settings/src/lib.rs#L205">validate_uv_toml</a> would be better.</p>
+<p>YAGNI?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/j-helland">@j-helland</a> on <code>crates/uv-settings/src/lib.rs</code>:53 on 2025-12-21 02:05</div>
+            <div class="timeline-body"><p>I didn't consolidate <code>validate_uv_toml</code> into the validator trait impl because it actually doesn't get called in the <code>pyproject.toml</code> branch and tests would fail if it was called there.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/j-helland">@j-helland</a> reviewed on 2025-12-21 02:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @j-helland on 2025-12-21 02:09</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 05:52:40 UTC
+    </footer>
+</body>
+</html>

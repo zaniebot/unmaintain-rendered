@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ignore `SSL_CERT_FILE` with empty value - astral-sh/uv #16772</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Ignore `SSL_CERT_FILE` with empty value</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/pull/16772">#16772</a>
+        opened by <a href="https://github.com/taearls">@taearls</a>
+        on 2025-11-18 18:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/taearls">@taearls</a> on 2025-11-18 18:19</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Fixes #16712.</p>
+<p>This PR adds empty value filtering to <code>SSL_CERT_FILE</code> environment variable handling, matching the existing behavior of <code>SSL_CERT_DIR</code>.</p>
+<p>Previously, setting <code>SSL_CERT_FILE=&quot;&quot;</code> would cause uv to attempt to use an empty string as a file path, resulting in a &quot;file does not exist&quot; warning. With this change, an empty <code>SSL_CERT_FILE</code> is treated as unset, falling back to default certificate handling.</p>
+<p>The fix adds <code>.filter(|v| !v.is_empty())</code> to the <code>SSL_CERT_FILE</code> processing in <code>crates/uv-client/src/base_client.rs</code>, consistent with the pattern used for <code>SSL_CERT_DIR</code> and other environment variables like <code>NO_COLOR</code> and <code>FORCE_COLOR</code>.</p>
+<h2>Test Plan</h2>
+<p>Added a test case to <code>crates/uv-client/tests/it/ssl_certs.rs</code> that:</p>
+<ol>
+<li>Sets <code>SSL_CERT_FILE</code> to an empty string</li>
+<li>Verifies the connection fails with <code>UnknownCA</code> (indicating default certificate handling was used, not a path-related error)</li>
+</ol>
+<p>Run the test with:</p>
+<pre><code class="language-bash">cargo test --package uv-client --test it -- ssl_env_vars --exact
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @samypr100 by @konstin on 2025-11-19 09:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @konstin on 2025-11-19 09:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @konstin on 2025-11-19 09:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @zanieb by @konstin on 2025-11-19 09:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @konstin on 2025-11-19 09:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "fix: SSL_CERT_FILE ignores empty value" to "Ignore `SSL_CERT_FILE` with empty value" by @konstin on 2025-11-19 09:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>crates/uv-client/tests/it/ssl_certs.rs</code>:216 on 2025-11-20 02:57</div>
+            <div class="timeline-body"><p>Thanks for adding a test!</p>
+<p>In this case the test with <code>SSL_CERT_FILE=&quot;&quot;</code> would behave the same way before and after the code changes given this is a server using a self-signed certificate, hence I don't think its actually verifying the changes.</p>
+<p>Having said that, I'm not quite sure if we should have a test for this change. If we'd like to have a test I believe we can add one to the bottom of this file that specifically tests the warning scenarios for these env vars, e.g. something like</p>
+<pre><code class="language-rust">// SAFETY: This test is meant to run in isolation
+#[tokio::test]
+#[allow(unsafe_code)]
+async fn ssl_env_vars_warnings() -&gt; Result&lt;()&gt; {
+    // Enable user-facing warnings
+    uv_warnings::enable();
+
+    unsafe {
+        std::env::set_var(EnvVars::SSL_CERT_FILE, &quot;&quot;);
+    }
+    let (server_task, addr) = start_http_user_agent_server().await?;
+    let url = DisplaySafeUrl::from_str(&amp;format!(&quot;http://{addr}&quot;))?;
+    let cache = Cache::temp()?.init()?;
+    let client = RegistryClientBuilder::new(BaseClientBuilder::default(), cache).build();
+    let _ = client
+        .cached_client()
+        .uncached()
+        .for_host(&amp;url)
+        .get(Url::from(url))
+        .send()
+        .await;
+    let _ = server_task.await?;
+    unsafe {
+        std::env::remove_var(EnvVars::SSL_CERT_FILE);
+    }
+
+    // Check no warning was emitted
+    let warning = uv_warnings::WARNINGS
+        .lock()
+        .expect(&quot;Failed to retrieve warnings&quot;)
+        .iter()
+        .any(|msg| msg.starts_with(&quot;Ignoring invalid `SSL_CERT_FILE`.&quot;));
+    assert!(!warning, &quot;Unexpected warning emitted&quot;);
+
+    unsafe {
+        std::env::set_var(EnvVars::SSL_CERT_FILE, &quot;foo&quot;);
+    }
+    let (server_task, addr) = start_http_user_agent_server().await?;
+    let url = DisplaySafeUrl::from_str(&amp;format!(&quot;http://{addr}&quot;))?;
+    let cache = Cache::temp()?.init()?;
+    let client = RegistryClientBuilder::new(BaseClientBuilder::default(), cache).build();
+    let _ = client
+        .cached_client()
+        .uncached()
+        .for_host(&amp;url)
+        .get(Url::from(url))
+        .send()
+        .await;
+    let _ = server_task.await?;
+    unsafe {
+        std::env::remove_var(EnvVars::SSL_CERT_FILE);
+    }
+
+    // Check warning was emitted
+    let warning = uv_warnings::WARNINGS
+        .lock()
+        .expect(&quot;Failed to retrieve warnings&quot;)
+        .iter()
+        .any(|msg| msg.starts_with(&quot;Ignoring invalid `SSL_CERT_FILE`.&quot;));
+    assert!(warning, &quot;Expected warning to be emitted&quot;);
+
+    // Disable user-facing warnings
+    uv_warnings::disable();
+
+    Ok(())
+}
+</code></pre>
+<p>Note, this would require you to use nextest to run these tests as you'll need process isolation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/samypr100">@samypr100</a> reviewed on 2025-11-20 02:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/taearls">@taearls</a> reviewed on 2025-11-20 18:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/taearls">@taearls</a> on <code>crates/uv-client/tests/it/ssl_certs.rs</code>:216 on 2025-11-20 18:31</div>
+            <div class="timeline-body"><p>thanks for the feedback! I see what you're saying, good catch.</p>
+<p>It seems like maybe a test isn't necessary for this, but I'd be happy to add the test you suggested if you'd like.</p>
+<p>for now I'll remove the test case I added.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/samypr100">@samypr100</a> approved on 2025-11-21 01:13</div>
+            <div class="timeline-body"><p>looks good to me</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2025-12-02 02:56</div>
+            <div class="timeline-body"><p>@zanieb I believe this one is good to go</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 05:52:32 UTC
+    </footer>
+</body>
+</html>

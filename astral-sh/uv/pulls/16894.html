@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add a Windows manifest to uv binaries - astral-sh/uv #16894</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add a Windows manifest to uv binaries</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/16894">#16894</a>
+        opened by <a href="https://github.com/samypr100">@samypr100</a>
+        on 2025-11-30 00:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/samypr100">@samypr100</a> on 2025-11-30 00:55</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Currently we do not include a Windows manifest on the uv binary for windows builds. This can cause problems such as the one in https://github.com/astral-sh/uv/issues/16877 which can limit what uv can do for some Windows operations (e.g. symlinks) that can have restrictions imposed by the OS unbeknownst to us and make it none obvious to isolate the issue.</p>
+<p>Given we already do this for the <code>uv-trampoline</code>, we should also do it for uv. In the case of uv, I opted for explicit entries in the manifest rather than using the defaults embed_manifest crate provides which are not appropriate in all general cases.</p>
+<p>The manifest now includes declarations for:</p>
+<ul>
+<li>Explicit &quot;system&quot; codepage declaration to retain backwards compat with previous uv releases. We should move to utf-8 codepage in the future to align with <code>uv-trampoline</code>, but it's arguably a breaking change in rare cases. We shouldn't have issues with using utf-8 as we don't really rely on *A calls to begin with.</li>
+<li>Explicit Windows 10+ support to ensure the executables are not treated as a legacy, preventing application compatibility layers being wrongly applied to it all the way back to NT 6.0 (Windows Vista). Note, other Windows compatibility entries do not imply support, rather they imply awareness as a preventive measure.</li>
+<li>Long Path support to avoid Windows operations assuming <a href="https://learn.microsoft.com/en-us/windows/win32/fileio/maximum-file-path-limitation">MAX_PATH</a> applies. This still requires the system to have long paths enabled via <code>HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\FileSystem@LongPathsEnabled</code> dword being set to <code>1</code> (see <a href="https://learn.microsoft.com/en-us/windows/win32/fileio/maximum-file-path-limitation#registry-setting-to-enable-long-paths">ref</a>).</li>
+<li>Standard invoker execution levels for CLI applications to disable UAC virtualization after including the manifest.</li>
+</ul>
+<p>The resulting manifest is the following</p>
+<pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; standalone=&quot;yes&quot;?&gt;
+&lt;assembly xmlns=&quot;urn:schemas-microsoft-com:asm.v1&quot; 
+    xmlns:asmv3=&quot;urn:schemas-microsoft-com:asm.v3&quot; manifestVersion=&quot;1.0&quot;&gt;
+    &lt;assemblyIdentity name=&quot;uv&quot; type=&quot;win32&quot; version=&quot;0.9.13.0&quot;&gt;&lt;/assemblyIdentity&gt;
+    &lt;asmv3:trustInfo&gt;
+        &lt;asmv3:security&gt;
+            &lt;asmv3:requestedPrivileges&gt;
+                &lt;asmv3:requestedExecutionLevel level=&quot;asInvoker&quot; uiAccess=&quot;false&quot;&gt;&lt;/asmv3:requestedExecutionLevel&gt;
+            &lt;/asmv3:requestedPrivileges&gt;
+        &lt;/asmv3:security&gt;
+    &lt;/asmv3:trustInfo&gt;
+    &lt;asmv3:application&gt;
+        &lt;asmv3:windowsSettings&gt;
+            &lt;longPathAware xmlns=&quot;http://schemas.microsoft.com/SMI/2016/WindowsSettings&quot;&gt;true&lt;/longPathAware&gt;
+        &lt;/asmv3:windowsSettings&gt;
+    &lt;/asmv3:application&gt;
+    &lt;ms_compatibility:compatibility xmlns:ms_compatibility=&quot;urn:schemas-microsoft-com:compatibility.v1&quot; 
+        xmlns=&quot;urn:schemas-microsoft-com:compatibility.v1&quot;&gt;
+        &lt;ms_compatibility:application xmlns:ms_compatibility=&quot;urn:schemas-microsoft-com:compatibility.v1&quot;&gt;
+            &lt;ms_compatibility:supportedOS xmlns:ms_compatibility=&quot;urn:schemas-microsoft-com:compatibility.v1&quot; Id=&quot;{35138b9a-5d96-4fbd-8e2d-a2440225f93a}&quot;&gt;&lt;/ms_compatibility:supportedOS&gt;
+            &lt;ms_compatibility:supportedOS xmlns:ms_compatibility=&quot;urn:schemas-microsoft-com:compatibility.v1&quot; Id=&quot;{4a2f28e3-53b9-4441-ba9c-d69d4a4a6e38}&quot;&gt;&lt;/ms_compatibility:supportedOS&gt;
+            &lt;ms_compatibility:supportedOS xmlns:ms_compatibility=&quot;urn:schemas-microsoft-com:compatibility.v1&quot; Id=&quot;{1f676c76-80e1-4239-95bb-83d0f6d0da78}&quot;&gt;&lt;/ms_compatibility:supportedOS&gt;
+            &lt;ms_compatibility:supportedOS xmlns:ms_compatibility=&quot;urn:schemas-microsoft-com:compatibility.v1&quot; Id=&quot;{8e0f7a12-bfb3-4fe8-b9a5-48fd50a15a9a}&quot;&gt;&lt;/ms_compatibility:supportedOS&gt;
+        &lt;/ms_compatibility:application&gt;
+    &lt;/ms_compatibility:compatibility&gt;
+&lt;/assembly&gt;
+</code></pre>
+<p>For reference, here's <code>cargo</code>'s manifest from 1.91</p>
+<pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; standalone=&quot;yes&quot;?&gt;
+&lt;assembly xmlns=&quot;urn:schemas-microsoft-com:asm.v1&quot; manifestVersion=&quot;1.0&quot; 
+    xmlns:asmv3=&quot;urn:schemas-microsoft-com:asm.v3&quot;&gt;
+    &lt;trustInfo xmlns=&quot;urn:schemas-microsoft-com:asm.v3&quot;&gt;
+        &lt;security&gt;
+            &lt;requestedPrivileges&gt;
+                &lt;requestedExecutionLevel level=&quot;asInvoker&quot; uiAccess=&quot;false&quot;&gt;&lt;/requestedExecutionLevel&gt;
+            &lt;/requestedPrivileges&gt;
+        &lt;/security&gt;
+    &lt;/trustInfo&gt;
+    &lt;asmv3:application&gt;
+        &lt;asmv3:windowsSettings xmlns=&quot;http://schemas.microsoft.com/SMI/2019/WindowsSettings&quot; 
+            xmlns:ws2=&quot;http://schemas.microsoft.com/SMI/2016/WindowsSettings&quot;&gt;
+            &lt;ws2:longPathAware&gt;true&lt;/ws2:longPathAware&gt;
+            &lt;activeCodePage&gt;UTF-8&lt;/activeCodePage&gt;
+        &lt;/asmv3:windowsSettings&gt;
+    &lt;/asmv3:application&gt;
+    &lt;ms_compatibility:compatibility xmlns:ms_compatibility=&quot;urn:schemas-microsoft-com:compatibility.v1&quot; 
+        xmlns=&quot;urn:schemas-microsoft-com:compatibility.v1&quot;&gt;
+        &lt;ms_compatibility:application xmlns:ms_compatibility=&quot;urn:schemas-microsoft-com:compatibility.v1&quot;&gt;
+            &lt;ms_compatibility:supportedOS xmlns:ms_compatibility=&quot;urn:schemas-microsoft-com:compatibility.v1&quot; Id=&quot;{35138b9a-5d96-4fbd-8e2d-a2440225f93a}&quot;&gt;&lt;/ms_compatibility:supportedOS&gt;
+            &lt;ms_compatibility:supportedOS xmlns:ms_compatibility=&quot;urn:schemas-microsoft-com:compatibility.v1&quot; Id=&quot;{4a2f28e3-53b9-4441-ba9c-d69d4a4a6e38}&quot;&gt;&lt;/ms_compatibility:supportedOS&gt;
+            &lt;ms_compatibility:supportedOS xmlns:ms_compatibility=&quot;urn:schemas-microsoft-com:compatibility.v1&quot; Id=&quot;{1f676c76-80e1-4239-95bb-83d0f6d0da78}&quot;&gt;&lt;/ms_compatibility:supportedOS&gt;
+            &lt;ms_compatibility:supportedOS xmlns:ms_compatibility=&quot;urn:schemas-microsoft-com:compatibility.v1&quot; Id=&quot;{8e0f7a12-bfb3-4fe8-b9a5-48fd50a15a9a}&quot;&gt;&lt;/ms_compatibility:supportedOS&gt;
+        &lt;/ms_compatibility:application&gt;
+    &lt;/ms_compatibility:compatibility&gt;
+&lt;/assembly&gt;
+</code></pre>
+<p>Closes #16877</p>
+<h2>Test Plan</h2>
+<p>Before changes on Windows 11 25H2 (without SeCreateSymbolicLinkPrivilege)</p>
+<pre><code class="language-console">$ uv init
+$ uv add jupyterlab-widgets==3.0.16 --link-mode=symlink
+...
+Resolved 2 packages in [TIME]
+error: Failed to install: jupyterlab_widgets-3.0.16-py3-none-any.whl (jupyterlab-widgets==3.0.16)
+  Caused by: failed to symlink file from [CACHE_DIR]\archive-v0\aQcqEjLJAkVwuSzohqymc\jupyterlab_widgets-3.0.16.data\data\share\jupyter\labextensions\@jupyter-widgets\jupyterlab-manager\static\packages_base_lib_index_js-webpack_sharing_consume_default_jquery_jquery.5dd13f8e980fa3c50bfe.js to [ROOT]\.venv\Lib\site-packages\jupyterlab_widgets-3.0.16.data\data\share\jupyter\labextensions\@jupyter-widgets\jupyterlab-manager\static\packages_base_lib_index_js-webpack_sharing_consume_default_jquery_jquery.5dd13f8e980fa3c50bfe.js: A required privilege is not held by the client. (os error 1314)
+</code></pre>
+<p>Before changes on Windows 11 25H2 (with SeCreateSymbolicLinkPrivilege)</p>
+<pre><code class="language-console">$ uv init
+$ uv add jupyterlab-widgets==3.0.16 --link-mode=symlink
+...
+Resolved 2 packages in [TIME]
+error: Failed to install: jupyterlab_widgets-3.0.16-py3-none-any.whl (jupyterlab-widgets==3.0.16)
+  Caused by: failed to symlink file from [CACHE_DIR]\archive-v0\aQcqEjLJAkVwuSzohqymc\jupyterlab_widgets-3.0.16.data\data\share\jupyter\labextensions\@jupyter-widgets\jupyterlab-manager\static\packages_base_lib_index_js-webpack_sharing_consume_default_jquery_jquery.5dd13f8e980fa3c50bfe.js to [ROOT]\.venv\Lib\site-packages\jupyterlab_widgets-3.0.16.data\data\share\jupyter\labextensions\@jupyter-widgets\jupyterlab-manager\static\packages_base_lib_index_js-webpack_sharing_consume_default_jquery_jquery.5dd13f8e980fa3c50bfe.js: The parameter is incorrect. (os error 87)
+</code></pre>
+<p>After changes on Windows 11 25H2 (with or without SeCreateSymbolicLinkPrivilege)</p>
+<pre><code class="language-console">$ uv init
+$ uv add jupyterlab-widgets==3.0.16 --link-mode=symlink
+...
+Resolved 2 packages in [TIME]
+Installed 1 package in [TIME]
+ + jupyterlab-widgets==3.0.16
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @samypr100 on 2025-11-30 19:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-12-01 18:20</div>
+            <div class="timeline-body"><p>Do we need anything for uvx and/or uvw?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2025-12-01 18:24</div>
+            <div class="timeline-body"><blockquote>
+<p>Do we need anything for uvx and/or uvw?</p>
+</blockquote>
+<p>Yes, they should all have the same manifest</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2025-12-01 18:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-12-01 18:25</div>
+            <div class="timeline-body"><p>Does it matter though since they just spawn <code>uv</code> immediately? i.e., they don't need long path support right?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @zanieb on 2025-12-01 18:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">windows</span> added by @zanieb on 2025-12-01 18:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2025-12-01 18:26</div>
+            <div class="timeline-body"><blockquote>
+<p>Does it matter though since they just spawn <code>uv</code> immediately? i.e., they don't need long path support right?</p>
+</blockquote>
+<p>Good point, I guess it doesn't matter in this case</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2025-12-01 20:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-12-01 20:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-12-01 20:57</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 05:52:35 UTC
+    </footer>
+</body>
+</html>

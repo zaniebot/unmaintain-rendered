@@ -14,7 +14,7 @@
     <h1>Summarize package changes in `uv sync` json format output</h1>
 
     <div class="meta">
-        <span class="state-icon state-open"></span>
+        <span class="state-icon state-merged"></span>
         <a href="https://github.com/astral-sh/uv/pull/16981">#16981</a>
         opened by <a href="https://github.com/EliteTK">@EliteTK</a>
         on 2025-12-04 15:39
@@ -26,13 +26,7 @@
             <div class="timeline-body"><h2>Summary</h2>
 <p>Implement #16653 by making <code>uv sync --output-format=json</code> output information about package changes.</p>
 <h2>Test Plan</h2>
-<p>So far there are integration tests but they don't quite cover everything that I think they maybe should. A bunch of manual testing was performed too. Test suite passes.</p>
-<h2>Notes/Outstanding issues</h2>
-<p>I am not certain about the whole approach. The crux of the issue is that <code>dry_run</code> doesn't &quot;prepare&quot; remote <code>Dist</code>s and <code>Changelog::new</code> expects <code>CachedDist</code>s. It's possible to make a <code>CachedDist</code> from a <code>Dist</code> using <code>CachedDist::from_remote</code>, <code>hashes</code> and <code>cache_info</code> can understandably be empty. <code>path</code> could maybe be something fake, but the problem comes from <code>filename</code> which is a wheel filename. The issue is that calculating a plausible wheel filename for most <code>Dist::Source</code> <code>Dist</code>s isn't possible without building the wheel.</p>
-<p>So  the current approach involved changing <code>Changelog</code> to accept <code>Dist</code> and dealing with resolving the fallout. This could probably be simplified if <code>ChangedDist</code> was just a <code>PackageName</code> and <code>Option&lt;CanonicalVersion&gt;</code>. There are a lot of places which are using the full <code>InstalledVersion</code> for comparison which can contain a URL despite the fact that in other places (e.g. when it was used in hashsets) the <code>canonical_version</code> is used (which seems correct).</p>
-<p>However, even then, <code>Changelog</code>'s contents are often smuggled through <code>ChangeEvent</code> which expects <code>dist</code> to implement <code>InstalledMetadata</code> a trait which exposes <code>installed_version</code>, but the problem is that <code>Changelog</code> can now contain packages without versions.</p>
-<p>Putting in a fake version is an option, but that strictly presents wrong information to users. I guess one option is to extend <code>Version</code> to be able to hold an empty version (currently explicitly not allowed) or maybe just <code>CanonicalVersion</code> to have an <code>Unknown</code> variant.</p>
-<p>There are some other issues/side effects of the current set of problems.</p>
+<p>Additional tests to test the cases where there is no known package version <em>may</em> be beneficial but as the information used is the same as the information used by the dry run logging now, I don't think that's strictly necessary as those cases are tested.</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -99,17 +93,11 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../pulls/16660.html">astral-sh/uv#16660</a> on 2025-12-04 16:16</div>
-        </div>
-        <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/EliteTK">@EliteTK</a> on 2025-12-04 18:36</div>
             <div class="timeline-body"><p>So, to summarise a discussion from Discord, a suggestion was made to pull out the planning step from <code>pip::operations::install</code> into a separate <code>plan</code> function. Or, alternatively, just return the plan from <code>install</code>.</p>
 <p>The goal being that a <code>PackageChangeReport::from_plan</code> can be added and used in the dry-run case, avoiding going through <code>Changelog</code> entirely, saving a bunch of code.</p>
 <p>I've started to explore the idea of pulling out <code>plan</code>, but I don't think it's worth it. It adds a lot of boilerplate. I'll submit it as a separate PR and then I'll consider the alternative. Then whatever the result of that, this PR can be rebased on top and simplified.</p>
 </div>
-        </div>
-        <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../pulls/16985.html">astral-sh/uv#16985</a> on 2025-12-05 14:30</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/EliteTK">@EliteTK</a> on 2025-12-05 15:01</div>
@@ -155,12 +143,166 @@ Would install 3 packages
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="event">Referenced in <a href="../pulls/17039.html">astral-sh/uv#17039</a> on 2025-12-08 22:11</div>
+            <div class="timeline-header"><a href="https://github.com/EliteTK">@EliteTK</a> reviewed on 2025-12-12 12:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/EliteTK">@EliteTK</a> on <code>crates/uv/src/commands/pip/loggers.rs</code>:157 on 2025-12-12 12:16</div>
+            <div class="timeline-body"><p>Having thought about it further, maybe it doesn't matter much for this usecase.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/EliteTK">@EliteTK</a> on 2025-12-12 12:17</div>
+            <div class="timeline-body"><p>Okay, rebased on top of the new changelog stuff, fixed the package naming and attaching the wrong lifetime to a reference in <code>VersionOrUrlRef</code>. This is ready I think?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @EliteTK on 2025-12-12 12:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-12-15 18:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/project/sync.rs</code>:1370 on 2025-12-15 18:03</div>
+            <div class="timeline-body"><p>I think I'd expect &quot;Uninstalled&quot; and &quot;Installed&quot; here if we're using &quot;Reinstalled&quot;?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/project/sync.rs</code>:1378 on 2025-12-15 18:04</div>
+            <div class="timeline-body"><p>I'm a little confused by the name of this struct. It also appears to be missing from the test coverage?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-12-15 18:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-12-15 18:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/project/sync.rs</code>:1325 on 2025-12-15 18:06</div>
+            <div class="timeline-body"><p>It seems weird for <code>PackageChangeReport::from_changelog</code> to return <code>Vec&lt;Self&gt;</code>? I guess I'd expect a <code>PackageChangesReport(Vec&lt;PackageChangeReport&gt;)</code> new-type?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-12-15 18:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/project/sync.rs</code>:1339 on 2025-12-15 18:06</div>
+            <div class="timeline-body"><p>Have you thought more about what other information we'll want to include here? I don't think we need to expand on it in this pull request but we should at least open an issue for discussion.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-12-15 18:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/project/sync.rs</code>:1378 on 2025-12-15 18:07</div>
+            <div class="timeline-body"><p>I think the name makes sense in the context of the parent, but I'm still a bit confused on the scope here. Isn't the source an enum? like &quot;registry&quot;, &quot;path&quot;, &quot;url&quot;, etc.?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/EliteTK">@EliteTK</a> reviewed on 2025-12-15 18:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/EliteTK">@EliteTK</a> on <code>crates/uv/src/commands/project/sync.rs</code>:1325 on 2025-12-15 18:14</div>
+            <div class="timeline-body"><p>Yes I thought this was weird too. I will adjust it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/EliteTK">@EliteTK</a> reviewed on 2025-12-15 18:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/EliteTK">@EliteTK</a> on <code>crates/uv/src/commands/project/sync.rs</code>:1378 on 2025-12-15 18:22</div>
+            <div class="timeline-body"><p>Yes I agree that this would make more sense as the definition of source.</p>
+<p>But I don't think we should necessarily try to put that in yet, although it's not the worst idea for something to put in here. I think in this case the nesting is unnecessary and I would probably rather just see an <code>Option&lt;DisplaySafeUrl&gt;</code> one level up for now. Would that work?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/EliteTK">@EliteTK</a> reviewed on 2025-12-15 18:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/EliteTK">@EliteTK</a> on <code>crates/uv/src/commands/project/sync.rs</code>:1339 on 2025-12-15 18:23</div>
+            <div class="timeline-body"><p>Well part of changing the changelog to just store the dist was also in preparation for this. We can more or less put anything in here we want that can be found in a Dist/LocalDist at this point. But I will make an issue tomorrow.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/EliteTK">@EliteTK</a> reviewed on 2025-12-15 18:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/EliteTK">@EliteTK</a> on <code>crates/uv/src/commands/project/sync.rs</code>:1370 on 2025-12-15 18:28</div>
+            <div class="timeline-body"><p>I imagine it's because of the <code>ChangeEventKind</code> wording, but that doesn't justify it, <code>DefaultInstallLogger</code> uses <code>Installed</code>, and <code>Uninstalled</code>. <code>UpgradeInstallLogger</code> uses <code>Added</code> and <code>Removed</code>. Maybe this sort of thing should be in a style guide?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-12-15 18:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/project/sync.rs</code>:1378 on 2025-12-15 18:53</div>
+            <div class="timeline-body"><p>That could be okay or I'd just omit it entirely until we handle sources more comprehensively?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2025-12-15 18:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/EliteTK">@EliteTK</a> reviewed on 2025-12-15 19:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/EliteTK">@EliteTK</a> on <code>crates/uv/src/commands/project/sync.rs</code>:1378 on 2025-12-15 19:58</div>
+            <div class="timeline-body"><p>Hmm, but we do print it in the stderr change log in those cases. But I am somewhat indifferent.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/EliteTK">@EliteTK</a> reviewed on 2025-12-18 13:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/EliteTK">@EliteTK</a> on <code>crates/uv/src/commands/project/sync.rs</code>:1339 on 2025-12-18 13:28</div>
+            <div class="timeline-body"><p>Maybe the package details should be in their own specific sub-structure so that the top level is just &quot;what happened&quot; and &quot;to what&quot; instead of &quot;what happened&quot; and a bunch of metadata about what it happened to. I'll make this change.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-12-18 13:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/project/sync.rs</code>:1339 on 2025-12-18 13:30</div>
+            <div class="timeline-body"><p>Can you sketch what you're thinking of first? I don't want you to waste your time if we don't have consensus on the structure.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/EliteTK">@EliteTK</a> on <code>crates/uv/src/commands/project/sync.rs</code>:1339 on 2025-12-18 13:56</div>
+            <div class="timeline-body"><p>I'll propose something in the issue I made. For now I've left it alone.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/EliteTK">@EliteTK</a> reviewed on 2025-12-18 13:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @EliteTK on 2025-12-18 19:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @EliteTK on 2025-12-18 19:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-12-18 19:37</div>
         </div>
     </div>
 
     <footer>
-        Synced at 2026-01-10 01:33:16 UTC
+        Synced at 2026-01-10 05:52:36 UTC
     </footer>
 </body>
 </html>

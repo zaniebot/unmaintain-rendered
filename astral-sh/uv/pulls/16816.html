@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Content-address distributions in the archive - astral-sh/uv #16816</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Content-address distributions in the archive</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/pull/16816">#16816</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2025-11-22 03:05
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-11-22 03:05</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>The idea here is to <em>always</em> compute at least a SHA256 hash for all wheels, then store unzipped wheels in a content-address location in the archive directory. This will help with disk space (since we'll avoid storing multiple copies of the same wheel contents) and cache reuse, since we can now reuse unzipped distributions from <code>uv pip install</code> in <code>uv sync</code> commands (which always require hashes <em>already</em>).</p>
+<p>Closes #1061.</p>
+<p>Closes #13995.</p>
+<p>Closes #16786.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-11-22 03:55</div>
+            <div class="timeline-body"><p>Still a few things I want to improve here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-11-22 14:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-distribution/src/distribution_database.rs</code>:1086 on 2025-11-22 14:38</div>
+            <div class="timeline-body"><p>This change I am a little worried about, because it will be a regression to move away from our parallel synchronous zip reader (https://github.com/GoogleChrome/ripunzip) to streaming. On the other hand, it means we'll no longer have two zip implementations.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @charliermarsh on 2025-11-22 14:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2025-11-22 14:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2025-11-22 14:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-11-22 15:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>docs/reference/troubleshooting/build-failures.md</code>:59 on 2025-11-22 15:09</div>
+            <div class="timeline-body"><p>Another risk here is that this is significantly longer which hurts path length.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-11-22 15:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>docs/reference/troubleshooting/build-failures.md</code>:59 on 2025-11-22 15:11</div>
+            <div class="timeline-body"><p>We could <code>base64.urlsafe_b64encode</code> it which would be ~43 characters (less than the 64 here, but more than the 21 we used before).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-11-22 17:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>docs/reference/troubleshooting/build-failures.md</code>:59 on 2025-11-22 17:10</div>
+            <div class="timeline-body"><p>A few ideas...</p>
+<ol>
+<li>base64 encoding seems reasonable</li>
+<li>we might want to store it as <code>{:2}/{2:}</code>? git and npm do this to shard directories. I guess we don't have that problem today but if we're changing it maybe we should consider it? It looks like you did in https://github.com/astral-sh/uv/pull/16816/commits/3bf79e2adab015b9fd81b148b03d0c72064f9576 ?</li>
+<li>We could do a truncated hash with a package id for collisions? <code>{:8}/{package-id}</code> (I guess the <code>package-id</code> could come first?). We'd could persist the full hash to a file for a safety check too.</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-11-22 17:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>docs/reference/troubleshooting/build-failures.md</code>:59 on 2025-11-22 17:31</div>
+            <div class="timeline-body"><p>Yes. I did it as <code>{:2}/{2:4}/{4:}</code> in an earlier commit then rolled it back because it makes various things more complicated (e.g., for cache prune we have to figure out if we can prune the directories recursively). I can re-add it if it seems compelling.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>docs/reference/troubleshooting/build-failures.md</code>:59 on 2025-11-22 17:33</div>
+            <div class="timeline-body"><blockquote>
+<p>We could do a truncated hash with a package id for collisions?</p>
+</blockquote>
+<p>I'd prefer not to couple the content-addressed storage to a concept like &quot;package names&quot; if possible. It's meant to be more general (e.g., we also use it for cached environments).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-11-22 17:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>docs/reference/troubleshooting/build-failures.md</code>:59 on 2025-11-22 17:34</div>
+            <div class="timeline-body"><p>(<code>{:2}/{2:4}/{4:}</code> is what PyPI uses; it looks like pip does <code>{:2}/{2:4}/{4:6}/{6:}</code>?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-11-22 17:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-11-22 17:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>docs/reference/troubleshooting/build-failures.md</code>:59 on 2025-11-22 17:40</div>
+            <div class="timeline-body"><blockquote>
+<p>then rolled it back because it makes various things more complicated</p>
+</blockquote>
+<p>Fair enough. I think people do it to avoid directory size limits (i.e., the number of items allowed in a single directory). I think we'd have had this problem already though if it was a concern for us? It seems fairly trivial to check both locations in the future if we determine we need it.</p>
+<blockquote>
+<p>I'd prefer not to couple the content-addressed storage to a concept like &quot;package names&quot; if possible.</p>
+</blockquote>
+<p>I think the idea that there's a &quot;disambiguating&quot; component for collisions if we truncate the hash doesn't need to be tied to &quot;package names&quot; specifically. The most generic way to do it would be to have <code>/0</code>, <code>/1</code>, ... directories with <code>/{id}/HASH</code> files and iterate over them? I sort of don't like that though :)</p>
+<p>It's broadly unclear to me how much engineering we should do to avoid a long path length.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-11-22 17:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>docs/reference/troubleshooting/build-failures.md</code>:59 on 2025-11-22 17:49</div>
+            <div class="timeline-body"><p>It may not really matter. I can't remember the specifics but what ends up happening here is: we create a temp dir, unzip it, then we move the temp dir into this location and hardlink from this location. So I don't think we end up referencing paths within these archives?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-11-22 19:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-distribution/src/distribution_database.rs</code>:1086 on 2025-11-22 19:47</div>
+            <div class="timeline-body"><p>Unfortunately I probably need to benchmark this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-distribution/src/distribution_database.rs</code>:1086 on 2025-11-22 20:08</div>
+            <div class="timeline-body"><p>A huge performance degradation for large files (300ms to 1.3s):</p>
+<pre><code>unzip_sync_small        time:   [5.4237 ms 5.5621 ms 5.7425 ms]
+                        change: [-13.499% -7.9934% -2.6150%] (p = 0.00 &lt; 0.05)
+                        Performance has improved.
+Found 6 outliers among 100 measurements (6.00%)
+  1 (1.00%) high mild
+  5 (5.00%) high severe
+
+unzip_sync_medium       time:   [12.587 ms 13.109 ms 13.788 ms]
+                        change: [+3.3102% +8.3958% +15.174%] (p = 0.00 &lt; 0.05)
+                        Performance has regressed.
+Found 8 outliers among 100 measurements (8.00%)
+  2 (2.00%) high mild
+  6 (6.00%) high severe
+
+Benchmarking unzip_sync_large: Warming up for 3.0000 s
+Warning: Unable to complete 100 samples in 5.0s. You may wish to increase target time to 34.9s, or reduce sample count to 10.
+unzip_sync_large        time:   [328.01 ms 331.20 ms 334.39 ms]
+                        change: [-2.9970% +0.4267% +3.5014%] (p = 0.80 &gt; 0.05)
+                        No change in performance detected.
+Found 1 outliers among 100 measurements (1.00%)
+  1 (1.00%) high mild
+
+unzip_stream_small      time:   [5.5436 ms 5.6239 ms 5.7148 ms]
+                        change: [-9.3797% -6.8046% -4.0946%] (p = 0.00 &lt; 0.05)
+                        Performance has improved.
+Found 2 outliers among 100 measurements (2.00%)
+  1 (1.00%) high mild
+  1 (1.00%) high severe
+
+unzip_stream_medium     time:   [16.696 ms 17.381 ms 18.161 ms]
+                        change: [+16.309% +21.820% +27.116%] (p = 0.00 &lt; 0.05)
+                        Performance has regressed.
+Found 14 outliers among 100 measurements (14.00%)
+  4 (4.00%) high mild
+  10 (10.00%) high severe
+
+Benchmarking unzip_stream_large: Warming up for 3.0000 s
+Warning: Unable to complete 100 samples in 5.0s. You may wish to increase target time to 118.7s, or reduce sample count to 10.
+unzip_stream_large      time:   [1.2877 s 1.3015 s 1.3146 s]
+                        change: [+12.395% +14.194% +15.823%] (p = 0.00 &lt; 0.05)
+                        Performance has regressed.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-11-22 20:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-11-22 20:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-distribution/src/distribution_database.rs</code>:1086 on 2025-11-22 20:17</div>
+            <div class="timeline-body"><p>What we could do instead is: keep our parallel unzip, then use blake3's parallelized mmap hash for files that we have on-disk (at least for wheels build ourselves, since we never validate hashes for those).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-11-22 20:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-distribution/src/distribution_database.rs</code>:1086 on 2025-11-22 20:23</div>
+            <div class="timeline-body"><p>I guess this wouldn't work for path-based wheels that are provided in <code>uv add</code> though. (Although in that case, we already do hash them for <code>uv add</code> even if not in <code>uv pip install</code>, so the regression only affects <code>uv pip</code>.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-11-22 20:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-distribution/src/distribution_database.rs</code>:1086 on 2025-11-22 20:24</div>
+            <div class="timeline-body"><p>We could consider always computing the blake3 instead of always computing the sha256 (so, compute <em>both</em> the blake3 and the sha256 if the sha256 is needed).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-distribution/src/distribution_database.rs</code>:1086 on 2025-11-22 22:23</div>
+            <div class="timeline-body"><p>Ah that's pretty unfortunate. I'm curious about content addressing by blake3 and just computing the sha256 where needed, that idea sounds compelling.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-11-22 22:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-distribution/src/distribution_database.rs</code>:1086 on 2025-11-24 00:31</div>
+            <div class="timeline-body"><p>We'd still have to compute the SHA256 for any local wheels used in <code>uv add</code> or similar (unless we changed the lockfile to also use Blake3, which could be a good idea?). The only benefit would be for wheels we build ourselves (since we'd no longer need to hash those).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-11-24 00:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-11-28 09:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-distribution/src/distribution_database.rs</code>:1086 on 2025-11-28 09:48</div>
+            <div class="timeline-body"><p>Trying to understand the impact of this regression vs the gains of content-addressable caching and one unzip implementation less, there are three cases where we have local wheels:</p>
+<ul>
+<li>A wheel comes from a build: The build an building the wheel should already be much slower than our hashing and unpacking.</li>
+<li>A local path dependency as an index override: There is a regression, but it only applies to one or few wheels. If it's the torch wheel, it becomes noticeable.</li>
+<li>Vendoring with a large find-links directory: This is the case where we lose most compared to parallel unzipping.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-11-28 13:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-distribution/src/distribution_database.rs</code>:1086 on 2025-11-28 13:28</div>
+            <div class="timeline-body"><p>I think this is correct. However, the latter two only apply to <code>uv pip</code>, since we <em>already</em> pay that cost in <code>uv sync</code> et al (to include a hash in the lockfile).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @konstin on 2025-12-01 08:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @konstin on 2025-12-01 08:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-12-02 10:02</div>
+            <div class="timeline-body"><p>How does this relate to https://github.com/astral-sh/uv/issues/888?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-12-02 12:37</div>
+            <div class="timeline-body"><p>iirc The hash checking ideas of RECORD never materialized, pip doesn't check the RECORD and neither does uv, and there's plans to remove it (https://discuss.python.org/t/discouraging-deprecating-pep-427-style-signatures/94968). The consensus has shifted to using hashes and signature for the entire archive that are presented outside of the archive, on the index page, instead of being shipped with the archive.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-12-02 12:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-distribution/src/distribution_database.rs</code>:1086 on 2025-12-02 12:41</div>
+            <div class="timeline-body"><p>With increased focus on this project API, this only being a slowdown for <code>uv pip</code> makes the tradeoff sound even better.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 05:52:33 UTC
+    </footer>
+</body>
+</html>

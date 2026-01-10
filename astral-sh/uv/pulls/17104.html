@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fix retry counts in cached client - astral-sh/uv #17104</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fix retry counts in cached client</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/17104">#17104</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2025-12-12 17:01
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2025-12-12 17:01</div>
+            <div class="timeline-body"><p>Previously, we dropped the counts from the middleware layer, potentially doing to many retries and/or reporting too few.</p>
+<p>Not pretty but fixes the bug.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @EliteTK by @zanieb on 2025-12-12 18:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/EliteTK">@EliteTK</a> on <code>crates/uv-client/src/cached_client.rs</code>:711 on 2025-12-15 13:34</div>
+            <div class="timeline-body"><p>nitpick: I think the second comment doesn't make much sense now the addition (consideration) has moved.</p>
+<pre><code class="language-suggestion">                Err(err) =&gt; {
+                    // Check if the middleware already performed retries and consider it in our retry budget
+                    total_retries += err.retries().unwrap_or_default();
+                    if is_transient_network_error(err.error()) {
+                        let retry_decision = retry_policy.should_retry(start_time, total_retries);
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-12-15 13:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-client/src/cached_client.rs</code>:129 on 2025-12-15 13:46</div>
+            <div class="timeline-body"><p>Removed the optional as zero retries is indistinguishable from <code>None</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @konstin on 2025-12-15 13:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @konstin on 2025-12-15 13:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/EliteTK">@EliteTK</a> on <code>crates/uv-client/src/cached_client.rs</code>:734 on 2025-12-15 15:38</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                    return Err(err.with_retries(total_retries));
+</code></pre>
+<p>Since the retry count is non-optional, conditionally doing <code>with_retries</code> here is now somewhat meaningless.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/EliteTK">@EliteTK</a> approved on 2025-12-15 17:16</div>
+            <div class="timeline-body"><p>I'm a little bit too unfamiliar with the underlying code to understand why you consider this to be a hack but I've given it a thorough looking over and I can't see anything that stands out.</p>
+<p>The surrounding code may benefit from some future rework, but I haven't looked deeply into it here as it's not really related to this specific PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-12-15 17:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-client/src/cached_client.rs</code>:711 on 2025-12-15 17:46</div>
+            <div class="timeline-body"><p>Both of those should be better in the upstack PR: https://github.com/astral-sh/uv/pull/17105/changes#diff-554df8b1efa8f690930e0d00e1c7302751a6e9193fd812a9b1f7305859ceee29R1171-R1201</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/EliteTK">@EliteTK</a> reviewed on 2025-12-15 17:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/EliteTK">@EliteTK</a> on <code>crates/uv-client/src/cached_client.rs</code>:711 on 2025-12-15 17:47</div>
+            <div class="timeline-body"><p>Will look at it tomorrow.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @konstin on 2025-12-18 10:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2025-12-18 10:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-12-18 10:51</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 05:52:39 UTC
+    </footer>
+</body>
+</html>

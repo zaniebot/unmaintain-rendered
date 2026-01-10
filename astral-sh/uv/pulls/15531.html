@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add `uv tree --show-sizes` to show package sizes - astral-sh/uv #15531</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add `uv tree --show-sizes` to show package sizes</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/15531">#15531</a>
+        opened by <a href="https://github.com/harsh-ps-2003">@harsh-ps-2003</a>
+        on 2025-08-26 13:42
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/harsh-ps-2003">@harsh-ps-2003</a> on 2025-08-26 13:42</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to uv! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>Adds the enhancement proposed in #15470. Each package in the dependency tree now shows its compressed wheel file size, reading the wheel sizes directly from the lockfile (uv.lock). Doesn't break existing tree formatting or options. If no wheel size is available, nothing is added.</p>
+<p>Now, developers can identify large packages in their dependency tree.</p>
+<p>The tree still shows extras exactly as before, and then appends a size for the package.</p>
+<h2>Test Plan</h2>
+<p>Manually tested :</p>
+<pre><code>harsh@fcr-node:~/uv/test-uv-tree-sizes$ ../target/debug/uv tree
+Using CPython 3.13.7
+warning: No `requires-python` value found in the workspace. Defaulting to `&gt;=3.13`.
+Resolved 4 packages in 6ms
+pure-python v0.1.0
+├── click v8.2.1
+└── six v1.17.0
+harsh@fcr-node:~/uv/test-uv-tree-sizes$ ../target/debug/uv tree --show-sizes
+Using CPython 3.13.7
+warning: No `requires-python` value found in the workspace. Defaulting to `&gt;=3.13`.
+Resolved 4 packages in 6ms
+pure-python v0.1.0
+├── click v8.2.1 (99.8KiB)
+└── six v1.17.0 (10.8KiB)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-26 14:01</div>
+            <div class="timeline-body"><p>I think this should probably be gated by <code>--show-sizes</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-08-26 18:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-resolver/src/lock/tree.rs</code>:697 on 2025-08-26 18:10</div>
+            <div class="timeline-body"><p>Do we need to do all this? Doesn't wrapping or sign loss seem important?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-08-26 18:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/project/tree.rs</code>:290 on 2025-08-26 18:11</div>
+            <div class="timeline-body"><p>Why use a <code>.with...</code> pattern here instead of passing the value to <code>new</code> like all the other settings?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-26 18:13</div>
+            <div class="timeline-body"><p>We'll need a new test case in <code>it/tree</code>. What does this do with extras?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/harsh-ps-2003">@harsh-ps-2003</a> reviewed on 2025-08-26 18:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/harsh-ps-2003">@harsh-ps-2003</a> on <code>crates/uv-resolver/src/lock/tree.rs</code>:697 on 2025-08-26 18:35</div>
+            <div class="timeline-body"><p>I saw a very similar implementation <a href="https://github.com/astral-sh/uv/blob/9eb5fc240ca28d8222f1be6d62379fd795e2f09e/crates/uv/src/commands/mod.rs#L192">here</a>.</p>
+<p>Just being a bit practical here, file sizes rarely exceed the precision limits of f32 and the slight precision loss should be acceptable for display purposes. They don't seem practically important to me, so I prioritised usability over mathematical precision.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-08-26 18:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-resolver/src/lock/tree.rs</code>:697 on 2025-08-26 18:47</div>
+            <div class="timeline-body"><p>Ah okay if that's pre-existing that seems fine. Can we share the implementation somewhere?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/harsh-ps-2003">@harsh-ps-2003</a> reviewed on 2025-08-27 08:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/harsh-ps-2003">@harsh-ps-2003</a> on <code>crates/uv-resolver/src/lock/tree.rs</code>:697 on 2025-08-27 08:43</div>
+            <div class="timeline-body"><p>The CLI (crates/uv) cannot be depended on by uv-resolver, so if we strictly want to share, we will need to put it in an existing low-level crate. I don't think exporting a UI-ish formatter from uv-resolver as a public API is great for boundaries.</p>
+<p>Again, being a bit practical here, this ~10 LOC duplication keeps dependencies simple. If we expect more byte-formatting call sites or want strict DRY, then maybe some sort of micro-crate is worth it. Otherwise, keeping both copies is not that bad.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/harsh-ps-2003">@harsh-ps-2003</a> on 2025-08-27 08:48</div>
+            <div class="timeline-body"><blockquote>
+<p>What does this do with extras?</p>
+</blockquote>
+<p>It's orthogonal to extras. The size is taken from the first wheel in the lockfile that has a size field. Extras do not change which size is shown; there’s no per-extra size.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/harsh-ps-2003">@harsh-ps-2003</a> on 2025-08-27 16:11</div>
+            <div class="timeline-body"><p>I think the failing test is a flake!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "add size in uv tree" to "Add `uv tree --show-sizes` to show package sizes" by @zanieb on 2025-08-27 16:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-08-27 16:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-resolver/src/lock/tree.rs</code>:697 on 2025-08-27 16:40</div>
+            <div class="timeline-body"><p>It's less about LOC duplication and more about it being a pretty obscure implementation that opts out of a bunch of our typical safety rules.</p>
+<p>I think we could move it into <code>uv-fs</code>, <code>uv-normalize</code>, or some other shared crate.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/harsh-ps-2003">@harsh-ps-2003</a> reviewed on 2025-08-27 17:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/harsh-ps-2003">@harsh-ps-2003</a> on <code>crates/uv-resolver/src/lock/tree.rs</code>:697 on 2025-08-27 17:46</div>
+            <div class="timeline-body"><p>The <code>uv-fs</code> is filesystem utilities; bytes-to-human is unrelated, and <code>uv-normalise</code> normalises names; not generic formatting. What do you think of <code>uv-types</code>? It’s a low-level, tiny, pure helper, which is safe for both crates to depend on, from which both call sites can import it cleanly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-08-27 17:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-resolver/src/lock/tree.rs</code>:697 on 2025-08-27 17:55</div>
+            <div class="timeline-body"><p>🤷‍♀️ I don't think <code>uv-types</code> is any better really, it's just a display function not a type that we need to share across a bunch of interfaces. We could also use <code>uv-console</code> or <code>uv-logging</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2025-08-27 19:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-28 18:07</div>
+            <div class="timeline-body"><p>I can't push the fix</p>
+<pre><code class="language-diff">diff --git a/Cargo.lock b/Cargo.lock
+index a65e547f1..11368662b 100644
+--- a/Cargo.lock
++++ b/Cargo.lock
+@@ -6241,6 +6241,7 @@ dependencies = [
+  &quot;uv-cache-key&quot;,
+  &quot;uv-client&quot;,
+  &quot;uv-configuration&quot;,
++ &quot;uv-console&quot;,
+  &quot;uv-distribution&quot;,
+  &quot;uv-distribution-filename&quot;,
+  &quot;uv-distribution-types&quot;,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/harsh-ps-2003">@harsh-ps-2003</a> on 2025-08-29 09:32</div>
+            <div class="timeline-body"><blockquote>
+<p>I can't push the fix</p>
+</blockquote>
+<p>I pushed for you, but Docker images are failing now! Weird</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-08-29 13:31</div>
+            <div class="timeline-body"><p>The Docker image auth is a GitHub issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2025-08-29 13:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-08-29 13:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-08-29 15:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pablofueros">@pablofueros</a> on 2025-12-03 12:05</div>
+            <div class="timeline-body"><p>Hello everyone. Thanks for this PR, i also proposed this idea a few months ago on #11883 it's great to see it implemented.</p>
+<p>Just wanted to also point it out here, if repeated packages existis, sizes could not be shown more than one time (in my Issue I suggest an idea for that). With this, the total sum computation would trivial, and that was my actual concern, just to make an idea of the total project size.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 05:52:27 UTC
+    </footer>
+</body>
+</html>

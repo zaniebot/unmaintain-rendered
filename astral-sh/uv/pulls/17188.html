@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fix dropped support of `-` in pip constraints/overrides/excludes/build_constraints - astral-sh/uv #17188</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fix dropped support of `-` in pip constraints/overrides/excludes/build_constraints</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/17188">#17188</a>
+        opened by <a href="https://github.com/EndPositive">@EndPositive</a>
+        on 2025-12-19 10:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/EndPositive">@EndPositive</a> on 2025-12-19 10:34</div>
+            <div class="timeline-body"><p>Since #16923, <code>-</code> stdin paths are suddenly only supported on the <code>RequirementsSource::Extensionless</code>. However, parsing of cli arguments using <code>from_requirements_txt</code>, <code>from_constraints_txt</code> <code>from_overrides_txt</code> would always output a <code>RequirementsSource::RequirementsTxt</code>. Resulting in the error:</p>
+<pre><code>$ cat overrides.txt | cargo run --bin uv --profile dev --manifest-path ./uv/crates/uv/Cargo.toml pip install 'numpy' --overrides=-
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.22s
+     Running `./uv/target/debug/uv pip install 'numpy' --overrides=-`
+error: File not found: `-`
+</code></pre>
+<p>In this PR, I've added a small check in those for the <code>-</code> paths to use <code>RequirementsSource::ExtensionLess</code>.</p>
+<p>I'm not too sure about this change though, as it would also implicitly start allowing PEP 723 scripts as input to overrides/constraints. I don't see the direct issue in that, but then maybe we should explicitly handle it so that an <code>--overrides=script.py</code> would also be supported. @zanieb what do you think?</p>
+<p>Relates to #17227</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @konstin on 2025-12-19 12:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-12-19 14:23</div>
+            <div class="timeline-body"><p>Can you add some test coverage for this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2025-12-24 13:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2025-12-24 13:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-12-24 13:47</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 05:52:40 UTC
+    </footer>
+</body>
+</html>

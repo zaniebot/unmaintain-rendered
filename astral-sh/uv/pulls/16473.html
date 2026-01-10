@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add support for SSL_CERT_DIR - astral-sh/uv #16473</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add support for SSL_CERT_DIR</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/16473">#16473</a>
+        opened by <a href="https://github.com/samypr100">@samypr100</a>
+        on 2025-10-27 16:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/samypr100">@samypr100</a> on 2025-10-27 16:26</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Closes https://github.com/astral-sh/uv/issues/16414</p>
+<p>Adds support for the standard <a href="https://docs.openssl.org/3.6/man3/SSL_CTX_load_verify_locations">SSL_CERT_DIR</a> which has gained recent proper support from <a href="https://github.com/rustls/rustls-native-certs/pull/187">rustls-native-certs</a> in v0.8.2.</p>
+<p>In addition, this PR clarifies documentation around <code>SSL_CERT_FILE</code> and <code>SSL_CERT_DIR</code> when used in combination with <code>UV_NATIVE_TLS</code> as mentioned in https://github.com/astral-sh/uv/issues/16412#issuecomment-3434927201</p>
+<h2>Test Plan</h2>
+<p>Manually tested with custom cert chains in multiple directories and loading them via SSL_CERT_DIR. We didn't have tests for <code>SSL_CERT_FILE</code> or <code>SSL_CERT_DIR</code> environment variables so I added a basic one using our own test-only certificate generation and dummy https server. I also moved some things around for better reuse.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2025-10-27 17:04</div>
+            <div class="timeline-body"><p>Please ignore the docker failures as its due to my depot OIDC configuration.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @samypr100 on 2025-10-27 17:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/samypr100">@samypr100</a> reviewed on 2025-10-29 17:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>crates/uv-client/src/base_client.rs</code>:425 on 2025-10-29 17:33</div>
+            <div class="timeline-body"><p>Note, this logic is similar to SSL_CERT_FILE I added back in https://github.com/astral-sh/uv/pull/2401</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/samypr100">@samypr100</a> reviewed on 2025-10-29 17:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>crates/uv-client/tests/it/http_util.rs</code>:222 on 2025-10-29 17:35</div>
+            <div class="timeline-body"><p>This was moved from user_agent_version into it's own function for reusability. No changes were done. The logic is effectively the same as I originally added in https://github.com/astral-sh/uv/pull/2136</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/samypr100">@samypr100</a> reviewed on 2025-10-29 17:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>crates/uv-client/tests/it/http_util.rs</code>:382 on 2025-10-29 17:36</div>
+            <div class="timeline-body"><p>This mimics <code>start_http_user_agent_server</code> except for support for TLS. I will add another test later for mTLS that I added back https://github.com/astral-sh/uv/pull/4171 in a future PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>crates/uv-client/tests/it/ssl_certs.rs</code>:96 on 2025-10-29 17:39</div>
+            <div class="timeline-body"><p>I think asserting that it's an error is sufficient (as it can't even establish a connection due to TLS handshake failing), but I can downcast and assert on the actual errors as well if desired.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/samypr100">@samypr100</a> reviewed on 2025-10-29 17:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/samypr100">@samypr100</a> reviewed on 2025-10-29 20:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>crates/uv-client/tests/it/ssl_certs.rs</code>:96 on 2025-10-29 20:30</div>
+            <div class="timeline-body"><p>Done in 27b7b76d9472885fd983a59ac769eff58f527215, I can revert if we prefer the less verbose</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/samypr100">@samypr100</a> reviewed on 2025-10-30 03:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>crates/uv-client/tests/it/http_util.rs</code>:382 on 2025-10-30 03:21</div>
+            <div class="timeline-body"><p>Ended up adding the mTLS test in this PR in e0816e27f6448c4e9c87f8f6ab0247a4fac4ddee</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/samypr100">@samypr100</a> reviewed on 2025-10-30 18:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>Cargo.toml</code>:225 on 2025-10-30 18:10</div>
+            <div class="timeline-body"><p>@konstin I just noticed your concern with regards to rustls in the comment https://github.com/astral-sh/uv/pull/16245#discussion_r2432205290</p>
+<p>This combination should not affect our current rustls features (no <code>aws-lc-rs</code> yet😄), I was paying close attention to lock file changes.</p>
+<p>I made sure the features didn't change or affected us (outside of what we needed to tests in the new tests).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @samypr100 on 2025-10-30 18:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @samypr100 on 2025-10-31 03:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/samypr100">@samypr100</a> reviewed on 2025-11-02 17:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>crates/uv-client/tests/it/http_util.rs</code>:222 on 2025-11-02 17:23</div>
+            <div class="timeline-body"><p>This was refactored to use a builder as part of 6470d3c774fa112312a00b3bafc3ffbb98b3ce07</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/samypr100">@samypr100</a> reviewed on 2025-11-02 17:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>crates/uv-client/tests/it/http_util.rs</code>:382 on 2025-11-02 17:23</div>
+            <div class="timeline-body"><p>Refactored a bit as part of 6470d3c774fa112312a00b3bafc3ffbb98b3ce07</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>Cargo.lock</code>:1096 on 2025-11-05 21:29</div>
+            <div class="timeline-body"><p>The crate self-describes as</p>
+<blockquote>
+<p>Proof of concept ranged integers in Rust.</p>
+</blockquote>
+<p>which doesn't inspire confidence.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>Cargo.lock</code>:3353 on 2025-11-05 21:31</div>
+            <div class="timeline-body"><p>It's definitely better than with pulling in the other crypto library too, but I still have mixed feelings on those dependencies, we're newly adding legacy crates. It's seem that that's mostly because there's not much activity on rcgen? For example, the rest of our dependency tree uses jiff, having migrated from chrono, while this library adds the time crate.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>.config/nextest.toml</code>:17 on 2025-11-05 21:35</div>
+            <div class="timeline-body"><p>If we got test isolation, why do those tests need to be serial?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-11-10 06:17</div>
+            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+
+<h2><a href="https://codspeed.io/astral-sh/uv/branches/samypr100%3Assl-cert-dir?utm_source=github&amp;utm_medium=comment&amp;utm_content=header">CodSpeed Performance Report</a></h2>
+<h3>Merging #16473 will <strong>not alter performance</strong></h3>
+<p><sub>Comparing <code>samypr100:ssl-cert-dir</code> (013385f) with <code>main</code> (aec4254)</sub></p>
+<h3>Summary</h3>
+<p><code>✅ 6</code> untouched</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-11-11 20:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-client/src/base_client.rs</code>:391 on 2025-11-11 20:09</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                warn_user_once!(&quot;Ignoring invalid `SSL_CERT_DIR`. None of the entries exist.&quot;);
+</code></pre>
+<p>I would also split between &quot;None of the entries exist&quot; and &quot;The directory does not exist&quot; depending on the length of <code>missing</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-11-11 20:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-client/src/base_client.rs</code>:384 on 2025-11-11 20:10</div>
+            <div class="timeline-body"><p>We should filter the empty string, right?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-11-11 20:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-client/src/base_client.rs</code>:386 on 2025-11-11 20:11</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">            // Parse `SSL_CERT_DIR`, with support for multiple entries using a platform-specific delimiter (`:` on Unix, `;` on Windows)
+</code></pre>
+<p>I think the latter half of this comment is just explaining the already clear code</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-11-11 20:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-client/src/base_client.rs</code>:407 on 2025-11-11 20:12</div>
+            <div class="timeline-body"><p>As noted in https://github.com/astral-sh/uv/pull/16473/files#r2515602680 I'd split based on one or more since one is going to be the common case</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-static/src/env_vars.rs</code>:593 on 2025-11-11 20:12</div>
+            <div class="timeline-body"><p>Let's note the support for multiple entries</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-11-11 20:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2025-11-11 20:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/samypr100">@samypr100</a> reviewed on 2025-11-11 20:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>crates/uv-client/src/base_client.rs</code>:384 on 2025-11-11 20:55</div>
+            <div class="timeline-body"><p>I kept it the same as rustls-native-certs to align on behavior https://github.com/rustls/rustls-native-certs/blob/813790a297ad4399efe70a8e5264ca1b420acbec/src/lib.rs#L206</p>
+<p>Are you thinking of the <code>SSL_CERT_DIR=&quot;:some\dir:&quot;</code> scenario?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-11-11 20:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-client/src/base_client.rs</code>:384 on 2025-11-11 20:59</div>
+            <div class="timeline-body"><p>I'm thinking of <code>SSL_CERT_DIR=&quot;&quot;</code> which in uv generally means we ignore the variable entirely but here we'll throw a warning? I think</p>
+<blockquote>
+<p>warn_user_once!(&quot;Ignoring invalid <code>SSL_CERT_DIR</code>. None of the entries exists.&quot;);</p>
+</blockquote>
+<p>I also think empty paths <em>within</em> the variable could be weird and I'd probably ignore them entirely but 🤷‍♀️</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/samypr100">@samypr100</a> reviewed on 2025-11-11 21:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>crates/uv-client/src/base_client.rs</code>:391 on 2025-11-11 21:01</div>
+            <div class="timeline-body"><p>Is b7405d76f952da1c3388c6e85671b317d2d842f1 what you had in mind?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/samypr100">@samypr100</a> reviewed on 2025-11-11 21:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>crates/uv-client/src/base_client.rs</code>:407 on 2025-11-11 21:01</div>
+            <div class="timeline-body"><p>See b7405d76f952da1c3388c6e85671b317d2d842f1, is it better?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/samypr100">@samypr100</a> reviewed on 2025-11-11 21:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>crates/uv-client/src/base_client.rs</code>:386 on 2025-11-11 21:01</div>
+            <div class="timeline-body"><p>Done in b7405d76f952da1c3388c6e85671b317d2d842f1</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/samypr100">@samypr100</a> reviewed on 2025-11-11 21:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>crates/uv-static/src/env_vars.rs</code>:593 on 2025-11-11 21:04</div>
+            <div class="timeline-body"><p>Good point, done in b7405d76f952da1c3388c6e85671b317d2d842f1</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/samypr100">@samypr100</a> reviewed on 2025-11-11 21:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>crates/uv-client/src/base_client.rs</code>:384 on 2025-11-11 21:08</div>
+            <div class="timeline-body"><p>Fair, not sure what's best behavior for everyone. Personally, I'd like to know if I messed up setting the env var contents. I'll proceed to add the empty scenario. Not sure what rustls does on the former case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/samypr100">@samypr100</a> reviewed on 2025-11-11 21:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>crates/uv-client/src/base_client.rs</code>:384 on 2025-11-11 21:19</div>
+            <div class="timeline-body"><p>Done in 6f9065b9e7c723ceb01b8af473476c7b678665b8</p>
+<p>We don't do this for SSL_CERT_FILE, do we want to align there?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-11-12 13:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/samypr100">@samypr100</a> reviewed on 2025-11-12 13:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>Cargo.lock</code>:3353 on 2025-11-12 13:53</div>
+            <div class="timeline-body"><p>Fair, although I'd consider rcgen &quot;stable&quot;. Last activity in rcgen was today. Ading Jiff support to it may be possible if the rustls maintainers are willing to.</p>
+<p>Note, we're no longer adding rcgen in this PR as it was added in another.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>.config/nextest.toml</code>:17 on 2025-11-12 14:07</div>
+            <div class="timeline-body"><p>Good catch, fixed in 2b94775dca8e5ba819d22fd6e56cad011909b179</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/samypr100">@samypr100</a> reviewed on 2025-11-12 14:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-11-12 14:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-client/src/base_client.rs</code>:384 on 2025-11-12 14:56</div>
+            <div class="timeline-body"><p>I guess so! Seems fine to open an issue to track it — it'd be a good first issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-11-12 14:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-client/src/base_client.rs</code>:389 on 2025-11-12 14:57</div>
+            <div class="timeline-body"><p>I don't think a warning is appropriate here, we've gotten complaints about this before — people want to be able to unset variables by using an empty string.</p>
+<p>We usually just use https://github.com/astral-sh/uv/blob/63ab24776566bb76d68751e2ee5180b6cec34090/crates/uv/src/settings.rs#L107</p>
+<p>It seems fine to fail on a value that's whitespace.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-client/src/base_client.rs</code>:404 on 2025-11-12 14:58</div>
+            <div class="timeline-body"><p>Why don't we show the values like we do for the <code>!missing.is_empty()</code> block? (just wondering)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-11-12 14:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/samypr100">@samypr100</a> reviewed on 2025-11-12 20:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>crates/uv-client/src/base_client.rs</code>:389 on 2025-11-12 20:36</div>
+            <div class="timeline-body"><p>Funny, I wrote that line 😆</p>
+<p>Changed in d3316733008bedb95a1008a3a04047adc10db99d</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/samypr100">@samypr100</a> reviewed on 2025-11-12 20:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>crates/uv-client/src/base_client.rs</code>:404 on 2025-11-12 20:37</div>
+            <div class="timeline-body"><p>Good point, changed in d3316733008bedb95a1008a3a04047adc10db99d it's consistent with SSL_CERT_FILE as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/samypr100">@samypr100</a> reviewed on 2025-11-12 20:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>crates/uv-client/src/base_client.rs</code>:384 on 2025-11-12 20:45</div>
+            <div class="timeline-body"><p>Issue made https://github.com/astral-sh/uv/issues/16712</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/samypr100">@samypr100</a> reviewed on 2025-11-12 20:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>crates/uv-client/src/base_client.rs</code>:384 on 2025-11-12 20:46</div>
+            <div class="timeline-body"><p>Changed to no-trimming / no warning version in  d3316733008bedb95a1008a3a04047adc10db99d</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2025-11-16 17:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-11-16 17:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-11-16 18:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/michael-o">@michael-o</a> on 2025-11-18 17:17</div>
+            <div class="timeline-body"><p>This really looks like openssl-probe reinvented. It does already the env var magic. I am confused why uv has to reproduce it?! uv does use openssl-probe.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2025-11-19 02:07</div>
+            <div class="timeline-body"><blockquote>
+<p>This really looks like openssl-probe reinvented. It does already the env var magic. I am confused why uv has to reproduce it?! uv does use openssl-probe.</p>
+</blockquote>
+<p>I'm don't think this is correct as stated as uv does not use openssl-probe by default. It's opt-in when the <code>--native-tls</code> is passed and <code>SSL_CERT_DIR</code> or <code>SSL_CERT_FILE</code> are not set. We delegate to <a href="https://github.com/rustls/rustls-native-certs/blob/main/src/lib.rs#L118-L125">rustls-native-certs</a> and primarily proxy the supported environment variables to provide a better user experience when common user errors are present in the values of these.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 05:52:29 UTC
+    </footer>
+</body>
+</html>

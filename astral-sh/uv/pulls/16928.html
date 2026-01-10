@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Noisily allow redundant entries in `tool.uv.build-backend.module-name` - astral-sh/uv #16928</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Noisily allow redundant entries in `tool.uv.build-backend.module-name`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/16928">#16928</a>
+        opened by <a href="https://github.com/EliteTK">@EliteTK</a>
+        on 2025-12-02 12:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/EliteTK">@EliteTK</a> on 2025-12-02 12:08</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Fix #16906 by pruning modules or submodules which are already included (either directly, or through a parent).</p>
+<p>Generates warnings when this happens.</p>
+<p>Example:</p>
+<pre><code class="language-bash">$ uv build
+Building source distribution (uv build backend)...
+warning: Ignoring redundant module name(s): test_lib.bar test_lib test_lib.bar.baz test_lib.baz
+Building wheel from source distribution (uv build backend)...
+Successfully built dist/test-0.1.0.tar.gz
+Successfully built dist/test-0.1.0-py3-none-any.whl
+</code></pre>
+<h2>Test Plan</h2>
+<p>Added some unit tests for the pruning function and one for the whole build backend. Added an integration test for the warnings. Ran the full test suite. Manually tested.</p>
+<p>The unit test for the function doesn't cater for the fact that it doesn't guarantee an order at the moment. I think this is fine.</p>
+<h2>Outstanding/Questions</h2>
+<ul>
+<li>Figure out how to only present warnings when appropriate (when building something the user controls).</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @EliteTK on 2025-12-02 12:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @EliteTK on 2025-12-02 12:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-build-backend/src/lib.rs</code>:229 on 2025-12-02 12:22</div>
+            <div class="timeline-body"><p>We only show this warning if it's a source distribution the user controls, not for e.g. arbitrary packages from PyPI. The best proxy to use for this is <code>SourceStrategy</code>, if it's enabled we consider it something to warn about.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-build-backend/src/lib.rs</code>:1466 on 2025-12-02 12:25</div>
+            <div class="timeline-body"><p>We don't usually use single character names for functions. An easier approach here would be a function with two arguments that does the assert inside it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-12-02 12:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/EliteTK">@EliteTK</a> reviewed on 2025-12-02 13:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/EliteTK">@EliteTK</a> on <code>crates/uv-build-backend/src/lib.rs</code>:1466 on 2025-12-02 13:30</div>
+            <div class="timeline-body"><p>Thanks for the suggestion. I've changed this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/EliteTK">@EliteTK</a> reviewed on 2025-12-02 14:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/EliteTK">@EliteTK</a> on <code>crates/uv-build-backend/src/lib.rs</code>:229 on 2025-12-02 14:12</div>
+            <div class="timeline-body"><p>Does <code>uv-build</code> have enough information to determine the <code>SourceStrategy</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @EliteTK on 2025-12-02 14:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-build-backend/src/lib.rs</code>:229 on 2025-12-02 14:27</div>
+            <div class="timeline-body"><p>Every time we call <code>uv-build</code>, the caller knows the sources strategy, which we can use, see also https://github.com/astral-sh/uv/pull/15750 for slightly different case that also checks the source strategy.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-12-02 14:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-12-02 14:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-build-backend/src/lib.rs</code>:242 on 2025-12-02 14:47</div>
+            <div class="timeline-body"><p>This is a nit, but we like to get the detail right instead of using &quot;(s)&quot;; so split the message into plural and singular forms based on the number of items. e.g., https://github.com/astral-sh/uv/blob/fd7e6d0a057f7db56b124565c92d847d411fd39e/crates/uv/src/commands/mod.rs#L197</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-build-backend/src/lib.rs</code>:236 on 2025-12-02 14:47</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">/// Wraps [`prune_redundant_modules`] with a warning when modules are ignored
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-12-02 14:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @EliteTK on 2025-12-02 17:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/EliteTK">@EliteTK</a> reviewed on 2025-12-02 17:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/EliteTK">@EliteTK</a> on <code>crates/uv-build-backend/src/lib.rs</code>:229 on 2025-12-02 17:20</div>
+            <div class="timeline-body"><p>Alright, I've implemented this in <a href="https://github.com/astral-sh/uv/pull/16928/commits/9e68685882e2c579c356efa4067ee3e79ec10be2">Make warnings conditional</a>.</p>
+<p>There are two cases where there isn't enough information for this: the hidden build-backend subcommand and the uv-build binary. So I just pass false there (and in a bunch of tests).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-build-backend/src/lib.rs</code>:245 on 2025-12-03 09:22</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">            &quot;Ignoring redundant module name{s} in `tool.uv.build-backend.module-name`: `{}`&quot;,
+            ignored.into_iter().join(&quot;`, `&quot;)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-12-03 09:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2025-12-03 09:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @EliteTK on 2025-12-03 10:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @EliteTK on 2025-12-03 10:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-12-03 11:10</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 05:52:35 UTC
+    </footer>
+</body>
+</html>

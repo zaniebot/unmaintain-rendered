@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Isolating test from accessing global git credential helper config - astral-sh/uv #16895</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Isolating test from accessing global git credential helper config</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/16895">#16895</a>
+        opened by <a href="https://github.com/sid-38">@sid-38</a>
+        on 2025-11-30 01:31
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/sid-38">@sid-38</a> on 2025-11-30 01:31</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Resolves: https://github.com/astral-sh/uv/issues/1980</p>
+<p>Added a utility function to TestContext called <strong>with_git_credential_helper_blocked</strong> that isolates the test from accessing the credential helper value defined in global/system git config. It does so, by writing to a file .gitconfig in the temporary home_dir that is created as part of the TestContext.</p>
+<h2>Test Plan</h2>
+<p>Tested it by running the test pip_install::install_git_private_https_pat_and_username, and making sure it doesn't affect the keyring.</p>
+<h2>Note:</h2>
+<p>The commit hash for the uv-private-package seems to have changed. Kindly, ensure that the modification related to that  is correct.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/samypr100">@samypr100</a> reviewed on 2025-11-30 04:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>crates/uv/tests/it/common/mod.rs</code>:580 on 2025-11-30 04:28</div>
+            <div class="timeline-body"><p>We may be able to leverage the existing assert_fs support, e.g.</p>
+<pre><code class="language-suggestion">    pub fn with_unset_git_credential_helper(self) -&gt; Self {
+        let git_config = self.home_dir.child(&quot;.gitconfig&quot;);
+        git_config
+            .write_str(indoc! {r&quot;
+                [credential]
+                    helper =
+            &quot;})
+            .expect(&quot;Failed to unset git credential helper&quot;);
+        self
+    }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sid-38">@sid-38</a> reviewed on 2025-12-01 04:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sid-38">@sid-38</a> on <code>crates/uv/tests/it/common/mod.rs</code>:580 on 2025-12-01 04:35</div>
+            <div class="timeline-body"><p>Yup that works. Made the change</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-12-01 04:51</div>
+            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+
+<h2><a href="https://codspeed.io/astral-sh/uv/branches/sid-38%3Asid%2Funset-git-cred-helper?utm_source=github&amp;utm_medium=comment&amp;utm_content=header">CodSpeed Performance Report</a></h2>
+<h3>Merging #16895 will <strong>degrade performances by 22.34%</strong></h3>
+<p><sub>Comparing <code>sid-38:sid/unset-git-cred-helper</code> (edca76d) with <code>main</code> (6d8866a)</sub></p>
+<h3>Summary</h3>
+<p><code>❌ 1</code> regression<br />
+<code>✅ 5</code> untouched</p>
+<blockquote>
+<p>:warning: <em>Please fix the performance issues or <a href="https://codspeed.io/astral-sh/uv/branches/sid-38%3Asid%2Funset-git-cred-helper?utm_source=github&amp;utm_medium=comment&amp;utm_content=acknowledge">acknowledge them on CodSpeed</a>.</em></p>
+</blockquote>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Mode | Benchmark | <code>BASE</code> | <code>HEAD</code> | Change |
+| --- | ---- | --------- | ------ | ------ | ------ |
+| ❌ | Simulation | <a href="https://codspeed.io/astral-sh/uv/branches/sid-38%3Asid%2Funset-git-cred-helper?uri=crates%2Fuv-bench%2Fbenches%2Fuv.rs%3A%3Auv%3A%3Aresolve_warm_airflow%3A%3Aresolve_warm_airflow&amp;runnerMode=Instrumentation&amp;utm_source=github&amp;utm_medium=comment&amp;utm_content=benchmark"><code>resolve_warm_airflow</code></a> | 770.4 ms | 992.1 ms | -22.34% |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2025-12-01 11:40</div>
+            <div class="timeline-body"><p>I tested this both on Windows and Linux.</p>
+<p>Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @konstin on 2025-12-01 11:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @konstin on 2025-12-01 11:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2025-12-01 11:41</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 05:52:35 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add support for `--upgrade` in `uv python install` - astral-sh/uv #16676</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add support for `--upgrade` in `uv python install`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/16676">#16676</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2025-11-10 23:37
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/zanieb">@zanieb</a> on 2025-11-10 23:37</div>
+            <div class="timeline-body"><p>This allows us to suggest <code>uv python install --upgrade 3.14</code> as the canonical way to get the latest patch version of a given Python regardless of whether it is installed already. Currently, you can do <code>uv python upgrade 3.14</code> and it will install it, but I'd like to remove that behavior as I find it very surprising.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @zanieb on 2025-11-10 23:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @zanieb on 2025-11-11 17:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @zanieb on 2025-11-11 17:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-11-11 17:31</div>
+            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+
+<h2><a href="https://codspeed.io/astral-sh/uv/branches/zb%2Finstall-upgrade?utm_source=github&amp;utm_medium=comment&amp;utm_content=header">CodSpeed Performance Report</a></h2>
+<h3>Merging #16676 will <strong>not alter performance</strong></h3>
+<p><sub>Comparing <code>zb/install-upgrade</code> (7b05e36) with <code>main</code> (e28dc62)</sub></p>
+<h3>Summary</h3>
+<p><code>✅ 6</code> untouched</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @zanieb on 2025-11-12 13:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/tests/it/python_install.rs</code>:3789 on 2025-11-13 11:13</div>
+            <div class="timeline-body"><p>Upgrade without an explicit version has a quirk: When pinning a patch version in <code>.python_versions</code>, it errors. I expect that some users will do <code>uv python install --upgrade</code> by default because they want to have the latest patch version, and will get confused by this too, especially when they don't realize that there's a <code>.python_versions</code>.</p>
+<pre><code>$ uv python install --upgrade
+error: `uv python install --upgrade` only accepts minor versions, got: 3.14.0
+</code></pre>
+<p>There's a workflow that's between <code>uv python install</code> and <code>uv python upgrade</code>: I want to install Python at the version that the project requires, upgraded to the latest patch version if not already at that, unless the project pins a patch version. Trying to emulate that with <code>uv python install --upgrade</code> can lead to the error above.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/src/commands/python/install.rs</code>:309 on 2025-11-13 11:25</div>
+            <div class="timeline-body"><p>Review note: This is reachable by creating an empty <code>.python_versions</code> file (unlike the branch above, which by default looks at installed Pythons)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/tests/it/python_install.rs</code>:3797 on 2025-11-13 11:40</div>
+            <div class="timeline-body"><p>Another quirk: The output log for plain without any pin is the same with and without upgrade. I'd have expected something like &quot;latest patch version Python 3.14.0 is already installed&quot;.</p>
+<pre><code>$ uv python install
+Python is already installed. Use `uv python install &lt;request&gt;` to install another version.
+$ uv python install --upgrade
+Python is already installed. Use `uv python install &lt;request&gt;` to install another version.
+</code></pre>
+<p>Similar to what an explicit request tells you:</p>
+<pre><code>$ uv python install --upgrade 3.14
+Python 3.14 is already on the latest supported patch release
+</code></pre>
+<p>It's pre-existing, but it would also be nice if <code>uv python install</code> and <code>uv python install --upgrade 3.14</code> would tell me the version that is installed that they consider latest.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2025-11-13 11:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-11-13 14:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/python_install.rs</code>:3789 on 2025-11-13 14:02</div>
+            <div class="timeline-body"><p>Ah thanks. I'll look into that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/python_install.rs</code>:3789 on 2025-11-13 14:02</div>
+            <div class="timeline-body"><p>I think it might just need to be a hint when the request comes from a <code>.python-version</code> file?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-11-13 14:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-11-13 14:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/python_install.rs</code>:3797 on 2025-11-13 14:03</div>
+            <div class="timeline-body"><p>I think I might expect this to error asking for a request? but you're right the message should change if we don't.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-11-13 14:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/tests/it/python_install.rs</code>:3789 on 2025-11-13 14:21</div>
+            <div class="timeline-body"><p>A hint would do it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-11-13 14:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/tests/it/python_install.rs</code>:3797 on 2025-11-13 14:22</div>
+            <div class="timeline-body"><p>Banning <code>uv python install --upgrade</code> without a python input from anywhere sounds good to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-11-13 14:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/python_install.rs</code>:3789 on 2025-11-13 14:30</div>
+            <div class="timeline-body"><p>I think we can do even better, but I'll plan to do that in a follow-up.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2025-11-13 15:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-11-13 15:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-11-13 15:55</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 05:52:30 UTC
+    </footer>
+</body>
+</html>

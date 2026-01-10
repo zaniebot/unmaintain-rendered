@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Disable always-authenticate when running under Dependabot - astral-sh/uv #16773</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Disable always-authenticate when running under Dependabot</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/16773">#16773</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2025-11-18 19:18
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/zanieb">@zanieb</a> on 2025-11-18 19:18</div>
+            <div class="timeline-body"><p>Dependabot appears to run a proxy which intercepts all requests and adds credentials — credentials are <em>not</em> provided via the CLI or environment variables and there's no way for a user to do so. This means that when <code>authenticate = &quot;always&quot;</code> is used (or when the index URL is on a pyx domain), uv will fail even though Dependabot may intercept the request and add credentials.</p>
+<p>See https://github.com/dependabot/dependabot-core/#private-registry-credential-management</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Disable always-authenticate when running under `DEPENDABOT`" to "Disable always-authenticate when running under Dependabot" by @zanieb on 2025-11-18 19:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @zanieb on 2025-11-18 21:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @zanieb on 2025-11-18 21:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/woodruffw">@woodruffw</a> approved on 2025-11-18 21:42</div>
+            <div class="timeline-body"><p>Distressing, but makes sense.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2025-11-18 21:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-11-18 21:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-11-18 21:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-11-18 21:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-auth/src/middleware.rs</code>:364 on 2025-11-18 21:52</div>
+            <div class="timeline-body"><p>Should we avoid doing re-reading this in this hot path?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-auth/src/middleware.rs</code>:364 on 2025-11-18 23:26</div>
+            <div class="timeline-body"><p>Uh we could. I assumed it was very cheap. I guess we're validating that the value is utf-8 and allocating a string?</p>
+<p>I'm a little wary of the indirection of moving it out, I'm not sure where I'd put it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-11-18 23:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-11-18 23:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-auth/src/middleware.rs</code>:364 on 2025-11-18 23:33</div>
+            <div class="timeline-body"><p>Make it a once cell?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/woodruffw">@woodruffw</a> reviewed on 2025-11-19 02:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/woodruffw">@woodruffw</a> on <code>crates/uv-auth/src/middleware.rs</code>:364 on 2025-11-19 02:53</div>
+            <div class="timeline-body"><p>Yeah, environment accesses are somewhat expensive in Rust, since Rust acquires a lock on the entire environment (at least on macOS/Linux) for individual variable accesses. That wouldn't matter much in a lot of workloads, but I can imagine we'd have environment read contention in our setting because of work-splitting across multiple tokio-managed threads.</p>
+<p>(It's probably still not a <em>ton</em>, but a OnceCell or LazyLock would avoid it as a concern.)</p>
+<p>Ref: https://doc.rust-lang.org/src/std/sys/env/unix.rs.html</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 05:52:32 UTC
+    </footer>
+</body>
+</html>

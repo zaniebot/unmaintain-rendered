@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fix handling of `python install --default` for pre-release Python versions - astral-sh/uv #16706</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fix handling of `python install --default` for pre-release Python versions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/16706">#16706</a>
+        opened by <a href="https://github.com/nooscraft">@nooscraft</a>
+        on 2025-11-12 14:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/nooscraft">@nooscraft</a> on 2025-11-12 14:56</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Fixes <code>--default</code> not creating default executable links for pre-release Python versions.</p>
+<p>When using <code>--default</code> with a pre-release version like <code>3.15.0a1</code>, the code was checking <code>matches_installation()</code> against the download request instead of the original user request. This caused the check to fail since the download request doesn't match pre-release versions the same way.</p>
+<p>Changed it to use <code>installation.satisfies(&amp;first_request.request)</code> when <code>--default</code> is used, which checks against the original user request.</p>
+<p>Fixes #16696</p>
+<h2>Test Plan</h2>
+<p>Added <code>python_install_default_prerelease</code> test that installs Python 3.15 with <code>--default</code> and verifies all three executable links (<code>python3.15</code>, <code>python3</code>, <code>python</code>) are created. The test skips gracefully if 3.15 isn't available.</p>
+<p>All existing tests pass.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-11-12 15:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/python/install.rs</code>:789 on 2025-11-12 15:40</div>
+            <div class="timeline-body"><p>When <code>--default</code> is used, we'll only allow one request anyway, right? so we could skip the check entirely?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/nooscraft">@nooscraft</a> on <code>crates/uv/src/commands/python/install.rs</code>:789 on 2025-11-12 16:00</div>
+            <div class="timeline-body"><p>@zanieb you're right. Since <code>--default</code> only allows one request, all installations in the loop already match that request, so the check is redundant. I've simplified it to skip the check when default is true. All tests still pass.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/nooscraft">@nooscraft</a> reviewed on 2025-11-12 16:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-11-12 17:54</div>
+            <div class="timeline-body"><p>Sorry another question here... isn't the entire <code>first_request</code> matching meaningless then? Can we just remove that.. ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nooscraft">@nooscraft</a> on 2025-11-12 18:07</div>
+            <div class="timeline-body"><blockquote>
+<p>Sorry another question here... isn't the entire <code>first_request</code> matching meaningless then? Can we just remove that.. ?</p>
+</blockquote>
+<p>Yes, When is_default_install is true, there's only one request and all installations in the loop already match it, so the check was redundant.
+I've removed the <code>first_request.matches_installation(installation)</code> check and the unused <code>first_request</code> variable. The code now just checks <code>default || (is_default_install &amp;&amp; preview.is_enabled(...))</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-11-12 18:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/python_install.rs</code>:2280 on 2025-11-12 18:11</div>
+            <div class="timeline-body"><p>We should <code>.assert().success()</code> here instead. 3.15 <em>is</em> available, we shouldn't let the test silently fail.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-11-12 18:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/python_install.rs</code>:2305 on 2025-11-12 18:11</div>
+            <div class="timeline-body"><p>We don't need this, the tests run in isolated contexts</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-11-12 18:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/python_install.rs</code>:2262 on 2025-11-12 18:12</div>
+            <div class="timeline-body"><p>This belongs in a doc comment <code>/// </code> above the function</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/nooscraft">@nooscraft</a> reviewed on 2025-11-12 18:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/nooscraft">@nooscraft</a> on <code>crates/uv/tests/it/python_install.rs</code>:2280 on 2025-11-12 18:19</div>
+            <div class="timeline-body"><p>Yup, fixed this!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/nooscraft">@nooscraft</a> reviewed on 2025-11-12 18:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/nooscraft">@nooscraft</a> on <code>crates/uv/tests/it/python_install.rs</code>:2305 on 2025-11-12 18:20</div>
+            <div class="timeline-body"><p>Done!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/nooscraft">@nooscraft</a> reviewed on 2025-11-12 18:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/nooscraft">@nooscraft</a> on <code>crates/uv/tests/it/python_install.rs</code>:2262 on 2025-11-12 18:20</div>
+            <div class="timeline-body"><p>Moved to doc comment</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Fix --default flag for pre-release Python versions" to "Fix handling of `python install --default` for pre-release Python versions" by @zanieb on 2025-11-12 18:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2025-11-12 18:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-11-12 18:33</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2025-11-12 18:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-11-12 18:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2025-11-12 18:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @zanieb on 2025-11-12 18:34</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 05:52:31 UTC
+    </footer>
+</body>
+</html>

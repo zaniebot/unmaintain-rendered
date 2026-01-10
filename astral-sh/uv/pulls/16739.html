@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Let env variables override embedded credentials for private registries - astral-sh/uv #16739</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Let env variables override embedded credentials for private registries</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/pull/16739">#16739</a>
+        opened by <a href="https://github.com/MarthinusBosman">@MarthinusBosman</a>
+        on 2025-11-14 16:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MarthinusBosman">@MarthinusBosman</a> on 2025-11-14 16:53</div>
+            <div class="timeline-body"><p>This PR fixes an issue where environment variable credentials (<code>UV_INDEX_*_USERNAME</code> and <code>UV_INDEX_*_PASSWORD</code>) were not properly overriding credentials embedded in index URLs.</p>
+<p>When an index URL contained embedded credentials (e.g., <code>https://VssSessionToken@pkgs.dev.azure.com/.../simple/</code>) and environment variables were set to override them, uv would fail to authenticate properly. This was particularly problematic for Azure Artifacts users who wanted to use <code>VssSessionToken@</code> in the URL for local keyring-based authentication while overriding with explicit credentials in CI/CD pipelines via environment variables.</p>
+<h2>Summary</h2>
+<p>This PR implements a two-part fix to ensure environment variable credentials always override URL-embedded credentials for named indexes:</p>
+<ol>
+<li><p><strong>Credential caching improvement</strong> (<code>index_url.rs</code>): When environment credentials are provided for a named index, the embedded URL credentials are now stripped before caching. This ensures environment-provided credentials are cached against a clean URL without the embedded username/password.</p>
+</li>
+<li><p><strong>Auth middleware fallback</strong> (<code>middleware.rs</code>): Added a username-agnostic credential lookup fallback in the authentication middleware. When a request contains a username in the URL but no cached credentials match that username, the middleware now falls back to looking up credentials without considering the username. This allows environment-provided credentials to be used even when the URL contains a different username.</p>
+</li>
+</ol>
+<p>These changes enable the following workflow:</p>
+<ul>
+<li>Developers can use <code>https://VssSessionToken@pkgs.dev.azure.com/.../simple/</code> in <code>pyproject.toml</code> for local keyring authentication</li>
+<li>CI/CD pipelines can override with explicit credentials via <code>UV_INDEX_PRIVATE_REGISTRY_USERNAME=dummy</code> and <code>UV_INDEX_PRIVATE_REGISTRY_PASSWORD=$(System.AccessToken)</code></li>
+<li>No changes to <code>pyproject.toml</code> are needed between environments</li>
+</ul>
+<h2>Test Plan</h2>
+<ul>
+<li><p>Added <code>env_credentials_override_url_credentials()</code> test in <code>pip_compile.rs</code> that verifies:</p>
+<ul>
+<li>Wrong credentials in URL cause authentication to fail (401 Unauthorized)</li>
+<li>Environment variables successfully override the URL credentials and allow authentication</li>
+</ul>
+</li>
+<li><p>Added <code>lock_env_credentials_override_url_credentials()</code> test in <code>lock.rs</code> with the same verification</p>
+</li>
+<li><p>Updated documentation in <code>alternative-indexes.md</code> to clarify that environment variables override URL credentials</p>
+</li>
+</ul>
+<p>Both tests pass successfully, confirming that environment credentials now properly override URL-embedded credentials for named indexes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @MarthinusBosman on 2025-11-14 17:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MarthinusBosman on 2025-11-14 17:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MarthinusBosman on 2025-11-15 13:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MarthinusBosman">@MarthinusBosman</a> on 2025-11-15 13:17</div>
+            <div class="timeline-body"><p>Messed up the fork, not dealing with it now</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 05:52:31 UTC
+    </footer>
+</body>
+</html>

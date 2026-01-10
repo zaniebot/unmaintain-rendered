@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Respect `NO_COLOR` and always show the command as a header when paging `uv help` output - astral-sh/uv #16908</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Respect `NO_COLOR` and always show the command as a header when paging `uv help` output</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/16908">#16908</a>
+        opened by <a href="https://github.com/EliteTK">@EliteTK</a>
+        on 2025-12-01 12:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/EliteTK">@EliteTK</a> on 2025-12-01 12:28</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Fix #16015 and address an additional issue where the pager prompt would be bold
+regardless of NO_COLOR.</p>
+<p><img width="1437" height="483" alt="image" src="https://github.com/user-attachments/assets/7234129a-364b-40c6-834a-57ac34212925" /></p>
+<h2>Test Plan</h2>
+<p>Ran the test suite and manually verified against less 679 and busybox v1.34.1.
+Checked with and without <code>NO_COLOR</code> on both less, busybox less, and more.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Fix 16879 less p" to "Fix #16879 and respect NO_COLOR" by @EliteTK on 2025-12-01 12:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @konstin on 2025-12-01 12:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Fix #16879 and respect NO_COLOR" to "Respect `NO_COLOR` and always show the command as a header when paging `uv help` output" by @EliteTK on 2025-12-01 12:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/src/commands/help.rs</code>:92 on 2025-12-01 12:59</div>
+            <div class="timeline-body"><p>Doing this with a match isn't ideal but that's a pre-existing pattern</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2025-12-01 12:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @konstin on 2025-12-01 12:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/EliteTK">@EliteTK</a> reviewed on 2025-12-01 13:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/EliteTK">@EliteTK</a> on <code>crates/uv/src/commands/help.rs</code>:92 on 2025-12-01 13:01</div>
+            <div class="timeline-body"><p>Yeah I thought so too. There were a few options but this seemed like the least noisy way of getting this sorted out for now.</p>
+<p>I think the way this bit is all handled could be improved but maybe as a separate change.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-12-01 14:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/help.rs</code>:92 on 2025-12-01 14:21</div>
+            <div class="timeline-body"><p>I think this is pretty confusing as a <code>match</code>. It took me a while to understand what the comment meant. In what sense is that a pre-existing pattern here?</p>
+<p>If you're going to be adding colors to the body like this, I'd do the refactor to make the logic clearer too. If you're hesitant to do that in this pull request, maybe I'd defer using the bold until the subsequent change? It does seem like a distraction from the goal of fixing <code>-P</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-12-01 14:34</div>
+            <div class="timeline-body"><p>I'm a little sad to lose <code>-P</code> which I think is a strictly better experience for the majority of users (assuming BusyBox is fairly uncommon) since the prompt stays with you as you scroll. I'm not sure I care that it differs from cargo and git, e.g., cargo using <code>man</code> by default and has pretty simple handling</p>
+<p>https://github.com/rust-lang/cargo/blob/ebd20d2454fb299834f07b8f5f164783b4e24248/src/bin/cargo/commands/help.rs#L82-L100</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-12-01 14:35</div>
+            <div class="timeline-body"><p>I'm not tied to keeping <code>-P</code> though. I do like the header.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/EliteTK">@EliteTK</a> on 2025-12-01 14:44</div>
+            <div class="timeline-body"><p>@zanieb An option to keep <code>-P</code> (although I think it would be good to have both in that case) would be to put it in the <code>LESS</code> environment variable. <code>busybox less</code> silently ignores it then. But I haven't checked if it's possible to smuggle spaces into the prompt in that case. There's also the case of handling user provided LESS values. It's probably fine to just append a space and our <code>-P</code> in that case though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-12-01 14:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/src/commands/help.rs</code>:92 on 2025-12-01 14:46</div>
+            <div class="timeline-body"><p>I was referring to the help_ansi logic above where we first look at stdout and with <code>Either</code> and then do a separate check for the pager with <code>pager.supports_colors()</code>. Looking into the code some more, the <code>StyledStr</code> from clap uses anstream internally, so there seems to be no functional difference between using anstream here directly instead of toggling on <code>.ansi()</code> (except maybe buffer allocation, but our help pages shouldn't be that long)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-12-01 14:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/help.rs</code>:92 on 2025-12-01 14:56</div>
+            <div class="timeline-body"><p>Ah I see. My point was that we weren't matching on the <code>Either</code>.</p>
+<p>Just to make sure we're on the same page: <code>pager.supports_colors()</code> is whether the pager (i.e., <code>more</code>) supports colors as opposed to stdout. It's intentionally that these are composed. I don't recall the details of why I implemented it this way though, it's definitely plausible it could be simplified.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-12-01 14:57</div>
+            <div class="timeline-body"><p>Huh, surprised to find out that <code>echo &quot;hello&quot; | LESS=&quot;-P foo bar&quot; less</code> works. That's kind of fun.</p>
+<p>I don't have strong feelings. I'm happy to go with whatever you think is reasonable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/EliteTK">@EliteTK</a> on <code>crates/uv/src/commands/help.rs</code>:92 on 2025-12-01 15:28</div>
+            <div class="timeline-body"><p>The bold was there already, so I assume you are suggesting just dropping this commit (which fixes the NO_COLOR)?</p>
+<p>I can probably re-factor it though. I don't mind going a bit deeper.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/EliteTK">@EliteTK</a> reviewed on 2025-12-01 15:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-12-01 15:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/help.rs</code>:92 on 2025-12-01 15:35</div>
+            <div class="timeline-body"><p>To me, bold in a pager prompt feels different than bold in the content itself. I think you could just drop the bold entirely when moving it to the header then restore it separately while refactoring color handling? I don't think the sequencing of work is a big deal here though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/EliteTK">@EliteTK</a> reviewed on 2025-12-01 17:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/EliteTK">@EliteTK</a> on <code>crates/uv/src/commands/help.rs</code>:92 on 2025-12-01 17:04</div>
+            <div class="timeline-body"><p>@zanieb fair enough. I hadn't thought of it like that.</p>
+<p>I've done the refactor now though. I think it looks a lot cleaner overall. Although the commit message is no longer that accurate. I can update the commit message or split it.</p>
+<p>I also understand that it's kind of beyond the scope of this one fix too, I'd be happy to split the PRs if you would prefer to keep this one about just adding the title (no bold) and removing <code>-P</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/EliteTK">@EliteTK</a> on 2025-12-01 17:06</div>
+            <div class="timeline-body"><p>Regarding <code>-P</code> in <code>LESS</code>. I'd be happy to re-introduce it in a separate PR. I'd just like to spend a little bit of time understanding how that variable works and how dependable that behaviour is, to make sure it doesn't break some other less implementation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2025-12-01 17:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-12-01 17:48</div>
+            <div class="timeline-body"><p>It's not a high priority so you should probably just open an issue to track the idea and move on to something else that'll build context on uv instead.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @EliteTK on 2025-12-01 18:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @EliteTK on 2025-12-01 18:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-12-01 18:00</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 05:52:35 UTC
+    </footer>
+</body>
+</html>

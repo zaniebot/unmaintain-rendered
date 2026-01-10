@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>feat: wide char based trampoline - astral-sh/uv #11049</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>feat: wide char based trampoline</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/pull/11049">#11049</a>
+        opened by <a href="https://github.com/samypr100">@samypr100</a>
+        on 2025-01-29 02:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/samypr100">@samypr100</a> on 2025-01-29 02:46</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>I've had this branch gathering dust from <a href="https://github.com/astral-sh/uv/pull/5751">a while ago</a> where I had switched the manual CLI parsing into using std::process for the windows trampoline for more consistent argument handling.</p>
+<p>I had come across a few weeks ago with the following blog https://blog.orange.tw/posts/2025-01-worstfit-unveiling-hidden-transformers-in-windows-ansi/ which basically calls out a security flaw that can occur when not using wide-char implementations of certain windows API's such as GetCommandLineA (which we do here).</p>
+<p>I thought this would be an opportunity to revisit some of that previous work in leveraging std::process and also remove any <code>A</code> API usage in favor of <code>W</code> variants. I didn't change mainCRTStartup to wmainCRTStartup since the way we use it doesn't seem like can cause a problems, although I've not investigated further to see the if the ANSI API is loaded regardless.</p>
+<p>Note, this does have the side-effect of bringing along more of core::fmt and doubling the size of the trampoline to about 80kb uncompressed so it's something to consider carefully. I also thought about not using std::process and porting more to use wide-char instead to reduce the size but the implementation started to become a tad unsighly and unsafe for what I'd like it to be and seemed it would only save about 15kb.</p>
+<h2>Test Plan</h2>
+<p>~~I did some initial basic local tests and things seemed functional, although I ideally would like to test a bit more cases with varying code pages before and after hence why I'm marking this as draft for the time being.~~</p>
+<p>~~I've not attempted to do a POC on exploiting the Worst Fit vulnerability via uv with varying code pages, but it may be something worth exploring since command line parsing in the way uv does was a primary category for Worst Fit exploitation.~~</p>
+<p>~~PS. Its possible this vulnerability may also be completely irrelevant and I'm just being paranoid 😆 thoughts welcome.~~</p>
+<p>I did some local tests with varying code pages and things seemed fully functional.</p>
+<p>(edit: POC exploit can be carried out successfully by modifying the manifest in the binary and removing the <code>activeCodePage</code> entry)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @samypr100 on 2025-01-29 02:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">windows</span> added by @samypr100 on 2025-01-29 03:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @Gankra by @konstin on 2025-01-29 08:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-trampoline/src/bounce.rs</code>:338 on 2025-01-29 08:51</div>
+            <div class="timeline-body"><p>Can we skip collecting here? <code>args</code> takes an <code>IntoIterator</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2025-01-29 08:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/samypr100">@samypr100</a> reviewed on 2025-01-29 13:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>crates/uv-trampoline/src/bounce.rs</code>:338 on 2025-01-29 13:13</div>
+            <div class="timeline-body"><p>Ah, good point. https://github.com/astral-sh/uv/pull/11049/commits/dded30bf279ea4553a86dfa39c87f280352b42cd</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-29 14:16</div>
+            <div class="timeline-body"><p>We got a vulnerability report for this and @Gankra verified we were not affected. I'm not sure about the general benefit of the changes :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-01-29 19:48</div>
+            <div class="timeline-body"><p>For reference the crux of the situation is this manifest we add to our binaries via build.rs that turns all the <code>A</code> APIs into UTF-8, making things work even better than if we used the <code>W</code> APIs, and completely avoiding the issue (it continues to be surprising that the worstfit writeups don't mention this solution).</p>
+<p>https://github.com/astral-sh/uv/blob/503f9a97af39abbe05ce47ac8d57397ed8bbf274/crates/uv-trampoline/build.rs#L1-L5</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2025-01-30 00:23</div>
+            <div class="timeline-body"><blockquote>
+<p>For reference the crux of the situation is this manifest we add to our binaries via build.rs that turns all the <code>A</code> APIs into UTF-8, making things work even better than if we used the <code>W</code> APIs, and completely avoiding the issue (it continues to be surprising that the worstfit writeups don't mention this solution).</p>
+<p>https://github.com/astral-sh/uv/blob/503f9a97af39abbe05ce47ac8d57397ed8bbf274/crates/uv-trampoline/build.rs#L1-L5</p>
+</blockquote>
+<p>Indeed, I do remember this manifest setup. It sets <code>&lt;activeCodePage xmlns=&quot;http://schemas.microsoft.com/SMI/2019/WindowsSettings&quot;&gt;UTF-8&lt;/activeCodePage&gt;</code> on the executable manifest. The caveat to consider is that this only works starting with Windows 10 1903, but not older versions or windows gdi-based gui applications regardless of version and falls back to legacy behavior so it depends how far back we'd want to support windows.</p>
+<p>On the other hand, I'm not sure that relying on the manifest guarantees complete protection as a result. The manifest can be very changed easily by exernal manipulation so I can see the risks there and maybe that's why they don't bring that up as a workaround unlike the <code>Use Unicode UTF-8 for worldwide language support</code> setting which will require a full system reboot and its permanent at system runtime after that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-01-30 13:46</div>
+            <div class="timeline-body"><blockquote>
+<p>The caveat to consider is that this only works starting with Windows 10 1903</p>
+</blockquote>
+<p>Windows 10 1903 <a href="https://learn.microsoft.com/en-us/lifecycle/announcements/windows-10-1903-end-of-servicing">has been EOL for about 4 years now</a> and Rust <a href="https://blog.rust-lang.org/2024/02/26/Windows-7.html">has only supported Windows 10 for over a year now</a> and <a href="https://arstechnica.com/gadgets/2025/01/as-it-buries-windows-10-microsoft-declares-2025-year-of-the-windows-11-pc-refresh/">Microsoft plans to EOL Windows 10 by the end of the year</a>.</p>
+<blockquote>
+<p>The manifest can be very changed easily by external manipulation</p>
+</blockquote>
+<p>Could you elaborate? Keep in mind the matter in question is breaking out of command line escaping, so if you can mess with the manifest of a binary you've probably already got way more power than that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2025-01-31 03:07</div>
+            <div class="timeline-body"><blockquote>
+<p>Windows 10 1903 <a href="https://learn.microsoft.com/en-us/lifecycle/announcements/windows-10-1903-end-of-servicing">has been EOL for about 4 years now</a> and Rust <a href="https://blog.rust-lang.org/2024/02/26/Windows-7.html">has only supported Windows 10 for over a year now</a> and <a href="https://arstechnica.com/gadgets/2025/01/as-it-buries-windows-10-microsoft-declares-2025-year-of-the-windows-11-pc-refresh/">Microsoft plans to EOL Windows 10 by the end of the year</a>.</p>
+</blockquote>
+<p>Understood, its roughly around the same timeframe Python 3.8 came out. This also applies to windows server 2016 to some regards. Statistics wise, see the following big query for uv usage on windows for just a single day (sorry free tier).</p>
+<p><img width="373" alt="uv-usage-windows" src="https://github.com/user-attachments/assets/71b2871a-610c-4a4d-b1c9-7019d2ea0698" /></p>
+<blockquote>
+<p>Could you elaborate? Keep in mind the matter in question is breaking out of command line escaping, so if you can mess with the manifest of a binary you've probably already got way more power than that.</p>
+</blockquote>
+<p>Sorry, this part I meant more-so as a general statement as to why I think they don't consider the manifest approach as a solution to the problem and its more-so of a bandaid. I've used tools like Mage in the past to easily modify manifests, although binedit tools can be used too. Yes, if someone can maliciously mess with the manifest of a &quot;trusted executable&quot; (in this case uv trampolines) you have other problems at hand, but it all boils down to the hardening of the system at that point. From my perspective, I'd like for organizations/individuals to be able to trust uv to be free of possible security vulnerabilities under any circumstances but that's just my opinion 😆</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-02-06 15:20</div>
+            <div class="timeline-body"><p>@samypr100 are you still interested in landing the std::process stuff without landing the A-&gt;W changes? (Or does the std::process stuff not make sense without it because OsString stuff is happening?). I like how much spooky code gets removed, although idk how Bad it is that the compiled size is doubling... (80kb is still real small...)</p>
+<p>If moving to W stuff is the crux here, I'd prefer to close this. I appreciate the paranoia but like, binaries have to be able to rely on their manifests for correctness, otherwise the manifest doesn't really make sense at all.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2025-02-08 17:34</div>
+            <div class="timeline-body"><blockquote>
+<p>@samypr100 are you still interested in landing the std::process stuff without landing the A-&gt;W changes? (Or does the std::process stuff not make sense without it because OsString stuff is happening?). I like how much spooky code gets removed, although idk how Bad it is that the compiled size is doubling... (80kb is still real small...)</p>
+<p>If moving to W stuff is the crux here, I'd prefer to close this. I appreciate the paranoia but like, binaries have to be able to rely on their manifests for correctness, otherwise the manifest doesn't really make sense at all.</p>
+</blockquote>
+<p>Hey, appreciate the follow up. I can go either way, let me know. The size ended up being actually much smaller in the compressed uv binary (just 15kb~ increase). Mostly curious, is the concern about this using W APIs or the size increase? I did like the fact we were able to move away from CString and unsafe removals related to CString, although I think that is still possible with W-&gt;A.</p>
+<p>The crux here is both std:process move and A-&gt;W API move to make code more clean, consistent and removal of CString, unsafe and spooky code 😆 . Note, switching the W-&gt;A won't do much help related to size changes (savings of ~0.5kb)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @samypr100 on 2025-02-08 23:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @samypr100 on 2025-09-22 22:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-11-13 06:30</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 05:52:26 UTC
+    </footer>
+</body>
+</html>

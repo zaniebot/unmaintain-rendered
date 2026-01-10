@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shell-escape Python request in manual install hint - astral-sh/uv #17179</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Shell-escape Python request in manual install hint</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/pull/17179">#17179</a>
+        opened by <a href="https://github.com/cls-oi">@cls-oi</a>
+        on 2025-12-18 17:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/cls-oi">@cls-oi</a> on 2025-12-18 17:11</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to uv! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+<p>When printing a hint that Python downloads are set to 'manual' and suggesting that the user &quot;use <code>uv python install &gt;=3.11, &lt;3.12</code>&quot;, the request is now quoted as appropriate for a shell command: &quot;<code>uv python install '&gt;=3.11, &lt;3.12'</code>&quot;.</p>
+<p>This change uses the <code>shell-escape</code> crate, which is already a transitive dependency of uv.</p>
+<p>Closes #17051.</p>
+<h2>Test Plan</h2>
+<!-- How was it tested? -->
+
+<p>I've added a unit test <code>python_install_manual</code> covering the default case and the case of <code>&gt;=3.11, &lt;3.12</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @konstin on 2025-12-18 17:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-12-18 17:44</div>
+            <div class="timeline-body"><p>I know I suggested this in https://github.com/astral-sh/uv/issues/17051#issuecomment-3633659514 but I'm wondering if it makes more sense to just suggest the concrete version that'd be installed?</p>
+<p>Like I think for this example we should just hint</p>
+<blockquote>
+<p>A managed Python download is available for Python &gt;=3.11, &lt;3.12, but Python downloads are set to 'manual', use <code>uv python install 3.11</code> to install the required version</p>
+</blockquote>
+<p>Since we know which version we'd select?</p>
+<p>I think we recently added some logic which lets us &quot;simplify&quot; a Python install key to drop default values.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cls-oi">@cls-oi</a> on 2025-12-18 18:31</div>
+            <div class="timeline-body"><p>That makes sense to me - though I could only find existing 'simplification' functions for <code>PythonDownloadRequest</code>, not for <code>PythonInstallationKey</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-12-18 22:43</div>
+            <div class="timeline-body"><p>You'd use https://github.com/astral-sh/uv/blob/9949f0801f57a386279b067bae94606e20f60f6f/crates/uv-python/src/downloads.rs#L623-L645 first</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cls-oi">@cls-oi</a> on 2025-12-19 09:47</div>
+            <div class="timeline-body"><p>Ah, thanks - I've done a variant of that where I add <code>impl From&lt;&amp;ManagedPythonDownload&gt; for PythonDownloadRequest</code>, similar to that already there for <code>&amp;ManagedPythonInstallation</code>, to avoid having to deal with the fail case (assuming the same assumption holds). It felt cleaner this way, though I can go through the existing <code>TryFrom</code> if preferred.</p>
+<p>One concern I have with this is I'm not sure whether it's valid to do <code>without_patch()</code> as the version range could restrict the patch version, but unless we special-case that then we're being very specific about the install version and I'm not sure how much better it is than just displaying the range. For now I have used it, anyway, to avoid including an arbitrary patch number in the test snapshot, and to match your suggested output.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 05:52:40 UTC
+    </footer>
+</body>
+</html>

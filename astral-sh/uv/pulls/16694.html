@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`pip install --target` (and `sync`) install python if necessary - astral-sh/uv #16694</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`pip install --target` (and `sync`) install python if necessary</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/16694">#16694</a>
+        opened by <a href="https://github.com/mikaylathompson">@mikaylathompson</a>
+        on 2025-11-11 23:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/mikaylathompson">@mikaylathompson</a> on 2025-11-11 23:26</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>As described in https://github.com/astral-sh/uv/issues/12229, <code>pip install</code> with <code>--target</code> or <code>--prefix</code> seem like they should install the necessary python version if it doesn't exist, but they currently don't.</p>
+<p>Most minimal reproduction is something like:</p>
+<pre><code>&gt; uv python uninstall 3.13
+...
+&gt; uv pip install anyio --target target-dir --python 3.13
+error: No interpreter found for Python 3.13 in virtual environments, managed installations, or search path
+</code></pre>
+<p>This also fails without <code>--target</code>, but a venv is expected in that case, so the with <code>--target</code>/<code>--prefix</code> is the only version that needs to be fixed. The same mechanism occurs for <code>uv pip sync</code> as well.</p>
+<h2>Test Plan</h2>
+<p>Added tests for install and sync that failed before fix and now pass.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-11-11 23:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/pip_install.rs</code>:13175 on 2025-11-11 23:32</div>
+            <div class="timeline-body"><p>We should add <code>#[cfg(feature = &quot;python-managed&quot;)]</code> so this test isn't active for downstream people who don't want coverage for those.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-11-11 23:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/pip_install.rs</code>:13182 on 2025-11-11 23:33</div>
+            <div class="timeline-body"><p>This should instead use https://github.com/astral-sh/uv/blob/257243fec5fc1d85817984e7b1c906b6a9ae3e08/crates/uv/tests/it/common/mod.rs#L514</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/pip_install.rs</code>:13182 on 2025-11-11 23:33</div>
+            <div class="timeline-body"><p>and should also use <code>with_python_download_cache</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-11-11 23:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-11-11 23:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-cli/src/lib.rs</code>:1876 on 2025-11-11 23:50</div>
+            <div class="timeline-body"><p>This isn't quite true — if we can't find <em>any</em> usable interpreter on the system we'll also fetch one. I appreciate the documentation, but I would probably not include this commentary since it's uv's general behavior and we'd be hard-pressed if we had to explain it everywhere, e.g., we don't explain this in <code>uv venv</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-11-11 23:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-cli/src/lib.rs</code>:1876 on 2025-11-11 23:52</div>
+            <div class="timeline-body"><p>(I don't feel strongly so if you prefer to keep it you can, but it'll need to say something like &quot;If a suitable Python interpreter to use for resolution cannot be found, uv will install one...&quot;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/mikaylathompson">@mikaylathompson</a> on <code>crates/uv-cli/src/lib.rs</code>:1876 on 2025-11-12 00:08</div>
+            <div class="timeline-body"><p>Ah, got it. I was aiming to add something that would have clarified my &quot;I'm not sure if this is a bug or expected behavior&quot; stance when I was first looking at it, and I think that my confusion, at least, was specific to the pip-specific flows because uv is handling more than the equivalent pip command would.</p>
+<p>The original issue seems somewhat unsure for the same reason:</p>
+<blockquote>
+<p>My expectation was for uv to automatically download the missing Python version as it does with the majority of other uv workflows. Although, I can see this might intentionally not be the case with the &quot;pip compatibility&quot; layer as managing Python versions is not something that pip concerns itself with.</p>
+</blockquote>
+<p>So I think my inclination is to update the wording as you suggested but keep a mention of it in. Fine being overruled on that if you think this is generally an obvious behavior (and only ambiguous if it is missing).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mikaylathompson">@mikaylathompson</a> reviewed on 2025-11-12 00:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-11-12 13:59</div>
+            <div class="timeline-body"><p>It seems like in <code>uv pip compile</code> we also won't download? https://github.com/astral-sh/uv/blob/5c71b5c124a1ed98fb21502693b63069f97bec6c/crates/uv/src/commands/pip/compile.rs#L295-L301</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-11-12 14:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-cli/src/lib.rs</code>:1876 on 2025-11-12 14:04</div>
+            <div class="timeline-body"><p>I think it's mostly ambiguous if the functionality is missing but I don't really mind either way.</p>
+<p>It might be useful to explain why, if we say something... like</p>
+<blockquote>
+<p>Unlike other install operations, this command does not require discovery of an existing Python
+environment and only searches for a Python interpreter to use for package resolution.
+If a suitable Python interpreter cannot be found, ...</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @mikaylathompson on 2025-11-12 18:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-11-12 18:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/pip_install.rs</code>:13183 on 2025-11-12 18:51</div>
+            <div class="timeline-body"><p>The comment is stale</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-11-12 18:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/pip_sync.rs</code>:6205 on 2025-11-12 18:51</div>
+            <div class="timeline-body"><p>This comment is stale</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-11-12 18:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/pip_install.rs</code>:13175 on 2025-11-12 18:52</div>
+            <div class="timeline-body"><p>Should we also have a test case where we do <code>new_with_versions(&amp;[])</code> and no <code>--python</code> request? That should fetch 3.14, I think?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2025-11-12 18:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @zanieb on 2025-11-12 18:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mikaylathompson">@mikaylathompson</a> reviewed on 2025-11-12 21:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/mikaylathompson">@mikaylathompson</a> on <code>crates/uv/tests/it/pip_install.rs</code>:13175 on 2025-11-12 21:41</div>
+            <div class="timeline-body"><p>Ah, yep, that makes sense</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @mikaylathompson on 2025-11-12 22:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @mikaylathompson on 2025-11-12 22:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-11-12 22:42</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 05:52:31 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,1082 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>feat: upgrade dependencies in pyproject.toml - astral-sh/uv #13934</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>feat: upgrade dependencies in pyproject.toml</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/pull/13934">#13934</a>
+        opened by <a href="https://github.com/reneleonhardt">@reneleonhardt</a>
+        on 2025-06-09 20:35
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/reneleonhardt">@reneleonhardt</a> on 2025-06-09 20:35</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Provide <code>uv upgrade</code> to upgrade dependency constraints in pyproject.toml without changing/syncing uv.lock.</p>
+<p>Closes #6794</p>
+<h2>Test Plan</h2>
+<ul>
+<li>Lots of manual testing 😅</li>
+<li>Unit tests</li>
+</ul>
+<h2>Features</h2>
+<ul>
+<li><code>--dry-run</code> to check the diff manually before overwriting pyproject.toml</li>
+<li>Searches like the original find_dependency() method:<ul>
+<li><code>[project.dependencies]</code> (prod)</li>
+<li><code>[project.optional-dependencies]</code> (optional)</li>
+<li><code>[dependency-groups]</code> (groups)</li>
+<li><code>[tool.uv.dev-dependencies]</code> (dev)</li>
+</ul>
+</li>
+<li><code>--types=prod,dev,optional,groups</code> searches given sections only</li>
+<li><code>--allow=1,2,3,4</code> filters version digits (1=major, 2=minor, 3=patch, 4=build number)</li>
+<li>Supports the new <a href="https://github.com/astral-sh/uv/pull/13735">tool.uv.dependency-groups</a> <code>requires-python</code> per group<ol>
+<li>user-override (<code>--python=&gt;=3.12</code>)</li>
+<li>group (<code>[tool.uv.dependency-groups]</code>)</li>
+<li>toml (<code>[project.requires-python]</code>)</li>
+</ol>
+</li>
+<li>Common operators are covered</li>
+<li>Downgrades if needed (current constraint doesn't include latest, i.e. <code>&gt;1000</code>)</li>
+<li><code>--recursive</code> searches skip hidden directories</li>
+<li>Fetches latest versions in parallel</li>
+<li>Caches latest versions for 10 minutes to speed up subsequents runs<ul>
+<li><code>--refresh</code> (cold cache) in this repo: <code>Upgraded 199/860 dependencies in 37 files</code> in 2 seconds</li>
+<li><code>--no-refresh</code> (hot cache) in this repo: <code>Upgraded 199/860 dependencies in 37 files</code> in 1 second</li>
+<li><code>--no-cache</code> (no cache) in this repo: <code>Upgraded 199/860 dependencies in 37 files</code> in 7 seconds</li>
+</ul>
+</li>
+<li>Uses as much uv internals / code as possible</li>
+<li>Stays true to the original formatting except inside the constraints itself<ul>
+<li><code>ollama&lt;0.5, &gt;=0.4</code> becomes <code>ollama&gt;=0.4,&lt;0.6</code> (uv sorts versions and removes inner space)</li>
+<li><code>; python_version &gt;= \&quot;3.11\&quot;</code> becomes <code> ; python_full_version &gt;= '3.11'</code> (internal code)</li>
+</ul>
+</li>
+</ul>
+<p>Added for demonstration purposes:</p>
+<pre><code class="language-toml">[tool.uv.dependency-groups]
+dev = {requires-python = &quot;&gt;3.10&quot;}
+</code></pre>
+<p><img width="997" alt="uv upgrade" src="https://github.com/user-attachments/assets/53edb518-ba2d-4f83-9fb0-b87fbd193c34" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-09 21:25</div>
+            <div class="timeline-body"><p>Thanks for the pull request!</p>
+<p>We're still in the process of designing this feature and are consequently very unlikely to accept this pull request as-is — but hopefully it can be informative for our design and implementation!</p>
+<p>cc @konstin</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-06-10 09:50</div>
+            <div class="timeline-body"><p>One major thing we need to handle in our design is when the latest version of two packages is incompatible, so we can't upgrade both or either to the latest version, another is to handle markers such as <code>python_version</code> which influence resolution, and dependency group requires-python (https://github.com/astral-sh/uv/pull/13735). We also need to design the configuration for how version ranges are updated.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @konstin on 2025-06-10 09:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/reneleonhardt">@reneleonhardt</a> on 2025-06-10 15:07</div>
+            <div class="timeline-body"><p>Example run in astral-sh/uv:</p>
+<pre><code class="language-shell">uv upgrade --recursive
+</code></pre>
+<pre><code class="language-diff">diff --git a/ecosystem/github-wikidata-bot/pyproject.toml b/ecosystem/github-wikidata-bot/pyproject.toml
+index eb430f513..7fceea56d 100644
+--- a/ecosystem/github-wikidata-bot/pyproject.toml
++++ b/ecosystem/github-wikidata-bot/pyproject.toml
+@@ -12,17 +12,17 @@ dependencies = [
+     &quot;CacheControl[filecache]&gt;=0.14,&lt;0.15&quot;,
+     &quot;mwparserfromhell &gt;=0.6.4,&lt;0.7&quot;,
+     &quot;pydantic &gt;=2.7.1&quot;,
+-    &quot;pywikibot &gt;=9.1.2,&lt;10&quot;,
++    &quot;pywikibot&gt;=9.1.2,&lt;11&quot;,
+     &quot;sentry-sdk &gt;=2.0.1,&lt;3&quot;,
+     &quot;yarl &gt;=1.9,&lt;2&quot;,
+ ]
+ 
+ [tool.uv]
+ dev-dependencies = [
+-    &quot;httpx &gt;=0.27.0,&lt;0.28&quot;,
++    &quot;httpx&gt;=0.27.0,&lt;0.29&quot;,
+     &quot;pytest &gt;=8.0.0,&lt;9&quot;,
+-    &quot;ruff &gt;=0.5.0,&lt;0.6&quot;,
+-    &quot;tqdm &gt;=4.66.4,&lt;4.67&quot;,
++    &quot;ruff&gt;=0.5.0,&lt;0.12&quot;,
++    &quot;tqdm&gt;=4.66.4,&lt;4.68&quot;,
+     &quot;types-requests &gt;=2.31.0.20240406,&lt;3&quot;,
+ ]
+ 
+diff --git a/ecosystem/home-assistant-core/pyproject.toml b/ecosystem/home-assistant-core/pyproject.toml
+index 971f321d3..2e149da1a 100644
+--- a/ecosystem/home-assistant-core/pyproject.toml
++++ b/ecosystem/home-assistant-core/pyproject.toml
+@@ -23,53 +23,53 @@ classifiers = [
+ ]
+ requires-python = &quot;&gt;=3.12.0&quot;
+ dependencies    = [
+-    &quot;aiodns==3.2.0&quot;,
+-    &quot;aiohttp==3.9.5&quot;,
+-    &quot;aiohttp_cors==0.7.0&quot;,
+-    &quot;aiohttp-fast-url-dispatcher==0.3.0&quot;,
+-    &quot;aiohttp-fast-zlib==0.1.0&quot;,
+-    &quot;aiozoneinfo==0.2.0&quot;,
+-    &quot;astral==2.2&quot;,
+-    &quot;async-interrupt==1.1.1&quot;,
+-    &quot;attrs==23.2.0&quot;,
++    &quot;aiodns==3.4.0&quot;,
++    &quot;aiohttp==3.12.12&quot;,
++    &quot;aiohttp-cors==0.8.1&quot;,
++    &quot;aiohttp-fast-url-dispatcher==0.3.1&quot;,
++    &quot;aiohttp-fast-zlib==0.3.0&quot;,
++    &quot;aiozoneinfo==0.2.3&quot;,
++    &quot;astral==3.2&quot;,
++    &quot;async-interrupt==1.2.2&quot;,
++    &quot;attrs==25.3.0&quot;,
+     &quot;atomicwrites-homeassistant==1.4.1&quot;,
+-    &quot;awesomeversion==24.2.0&quot;,
+-    &quot;bcrypt==4.1.2&quot;,
++    &quot;awesomeversion==25.5.0&quot;,
++    &quot;bcrypt==4.3.0&quot;,
+     &quot;certifi&gt;=2021.5.30&quot;,
+-    &quot;ciso8601==2.3.1&quot;,
+-    &quot;fnv-hash-fast==0.5.0&quot;,
++    &quot;ciso8601==2.3.2&quot;,
++    &quot;fnv-hash-fast==1.5.0&quot;,
+     # hass-nabucasa is imported by helpers which don't depend on the cloud
+     # integration
+-    &quot;hass-nabucasa==0.81.1&quot;,
++    &quot;hass-nabucasa==0.88.1&quot;,
+     # When bumping httpx, please check the version pins of
+     # httpcore, anyio, and h11 in gen_requirements_all
+-    &quot;httpx==0.27.0&quot;,
+-    &quot;home-assistant-bluetooth==1.12.1&quot;,
++    &quot;httpx==0.28.1&quot;,
++    &quot;home-assistant-bluetooth==1.13.1&quot;,
+     &quot;ifaddr==0.2.0&quot;,
+-    &quot;Jinja2==3.1.4&quot;,
++    &quot;jinja2==3.1.6&quot;,
+     &quot;lru-dict==1.3.0&quot;,
+-    &quot;PyJWT==2.8.0&quot;,
++    &quot;pyjwt==2.10.1&quot;,
+     # PyJWT has loose dependency. We want the latest one.
+-    &quot;cryptography==42.0.8&quot;,
+-    &quot;Pillow==10.3.0&quot;,
+-    &quot;pyOpenSSL==24.1.0&quot;,
+-    &quot;orjson==3.9.15&quot;,
++    &quot;cryptography==45.0.4&quot;,
++    &quot;pillow==11.2.1&quot;,
++    &quot;pyopenssl==25.1.0&quot;,
++    &quot;orjson==3.10.18&quot;,
+     &quot;packaging&gt;=23.1&quot;,
+     &quot;pip&gt;=21.3.1&quot;,
+     &quot;psutil-home-assistant==0.0.1&quot;,
+     &quot;python-slugify==8.0.4&quot;,
+-    &quot;PyYAML==6.0.1&quot;,
+-    &quot;requests==2.32.3&quot;,
+-    &quot;SQLAlchemy==2.0.31&quot;,
++    &quot;pyyaml==6.0.2&quot;,
++    &quot;requests==2.32.4&quot;,
++    &quot;sqlalchemy==2.0.41&quot;,
+     &quot;typing-extensions&gt;=4.12.2,&lt;5.0&quot;,
+-    &quot;ulid-transform==0.9.0&quot;,
++    &quot;ulid-transform==1.4.0&quot;,
+     # Constrain urllib3 to ensure we deal with CVE-2020-26137 and CVE-2021-33503
+     # Temporary setting an upper bound, to prevent compat issues with urllib3&gt;=2
+     # https://github.com/home-assistant/core/issues/97248
+-    &quot;urllib3&gt;=1.26.5,&lt;2&quot;,
+-    &quot;voluptuous==0.13.1&quot;,
++    &quot;urllib3&gt;=1.26.5,&lt;3&quot;,
++    &quot;voluptuous==0.15.2&quot;,
+     &quot;voluptuous-serialize==2.6.0&quot;,
+-    &quot;yarl==1.9.4&quot;,
++    &quot;yarl==1.20.1&quot;,
+ ]
+ 
+ [project.urls]
+diff --git a/ecosystem/saleor/pyproject.toml b/ecosystem/saleor/pyproject.toml
+index 307c54e29..013dbeb35 100644
+--- a/ecosystem/saleor/pyproject.toml
++++ b/ecosystem/saleor/pyproject.toml
+@@ -13,62 +13,62 @@ requires-python = &quot;&gt;=3.12&quot;
+ dependencies = [
+   &quot;chevron-blue&gt;=0.2.1,&lt;0.3.0&quot;,
+   &quot;hatchling&gt;=1.20.0,&lt;2.0.0&quot;,
+-  &quot;msgspec&gt;=0.18.4,&lt;0.19.0&quot;,
++  &quot;msgspec&gt;=0.18.4,&lt;0.20.0&quot;,
+   &quot;pypiserver&gt;=2.0.1,&lt;3.0.0&quot;,
+   &quot;pyyaml&gt;=6.0.1,&lt;7.0.0&quot;,
+-  &quot;setuptools&gt;=71.1.0,&lt;72.0.0&quot;,
+-  &quot;twine&gt;=4.0.2,&lt;5.0.0&quot;,
+-  &quot;watchfiles&gt;=0.21.0,&lt;0.22.0&quot;,
+-  &quot;adyen&gt;=4.0.0,&lt;5.0.0&quot;,
++  &quot;setuptools&gt;=71.1.0,&lt;80.10.0&quot;,
++  &quot;twine&gt;=4.0.2,&lt;6.2.0&quot;,
++  &quot;watchfiles&gt;=0.21.0,&lt;1.1.0&quot;,
++  &quot;adyen&gt;=4.0.0,&lt;13.5.0&quot;,
+   &quot;authlib&gt;=1.3.1,&lt;2.0.0&quot;,
+-  &quot;rx&gt;=1.6.3,&lt;2.0.0&quot;,
+-  &quot;aniso8601&gt;=7.0.0,&lt;8.0.0&quot;,
++  &quot;rx&gt;=1.6.3,&lt;3.3.0&quot;,
++  &quot;aniso8601&gt;=7.0.0,&lt;10.1.0&quot;,
+   &quot;asgiref&gt;=3.7.2,&lt;4.0.0&quot;,
+   &quot;azure-common&gt;=1.1.28,&lt;2.0.0&quot;,
+   &quot;azure-storage-blob&gt;=12.12.0,&lt;13.0.0&quot;,
+   &quot;azure-storage-common&gt;=2.1.0,&lt;3.0.0&quot;,
+-  &quot;babel&gt;=2.8,&lt;2.15&quot;,
++  &quot;babel&gt;=2.8,&lt;2.18&quot;,
+   &quot;boto3&gt;=1.28,&lt;2.0&quot;,
+   &quot;botocore&gt;=1.34,&lt;2.0&quot;,
+-  &quot;braintree&gt;=4.2,&lt;4.30&quot;,
++  &quot;braintree&gt;=4.2,&lt;4.37&quot;,
+   &quot;celery[redis]&gt;=4.4.5,&lt;6.0.0&quot;,
+-  &quot;cryptography&gt;=42.0.5,&lt;43.0.0&quot;,
+-  &quot;dj-database-url&gt;=2,&lt;3&quot;,
++  &quot;cryptography&gt;=42.0.5,&lt;45.1.0&quot;,
++  &quot;dj-database-url&gt;=2,&lt;4&quot;,
+   &quot;dj-email-url&gt;=1,&lt;2&quot;,
+   &quot;django-cache-url&gt;=3.1.2,&lt;4.0.0&quot;,
+   &quot;django-celery-beat&gt;=2.2.1,&lt;3.0.0&quot;,
+   &quot;django-countries&gt;=7.2,&lt;8.0&quot;,
+-  &quot;django-filter&gt;=23.1,&lt;24.0&quot;,
++  &quot;django-filter&gt;=23.1,&lt;25.2&quot;,
+   &quot;django-measurement&gt;=3.0,&lt;4.0&quot;,
+   &quot;django-mptt&gt;=0,&lt;1&quot;,
+-  &quot;django-phonenumber-field&gt;=4,&lt;8&quot;,
++  &quot;django-phonenumber-field&gt;=4,&lt;9&quot;,
+   &quot;django-prices&gt;=2.3,&lt;3.0&quot;,
+   &quot;django-storages[google]&gt;=1.11,&lt;2.0&quot;,
+-  &quot;django-stubs-ext&gt;=4.2.1,&lt;5.0.0&quot;,
+-  &quot;django[bcrypt]&gt;=4.2,&lt;5.0&quot;,
++  &quot;django-stubs-ext&gt;=4.2.1,&lt;5.3.0&quot;,
++  &quot;django[bcrypt]&gt;=4.2,&lt;5.3&quot;,
+   &quot;draftjs-sanitizer&gt;=1.0.0,&lt;2.0.0&quot;,
+-  &quot;faker&gt;=26.0.0,&lt;27.0&quot;,
++  &quot;faker&gt;=26.0.0,&lt;37.4&quot;,
+   &quot;google-cloud-pubsub&gt;=1.7,&lt;3.0&quot;,
+-  &quot;google-cloud-storage&gt;=2.0.0,&lt;3.0.0&quot;,
++  &quot;google-cloud-storage&gt;=2.0.0,&lt;3.2.0&quot;,
+   &quot;google-i18n-address&gt;=3.1.0,&lt;4.0.0&quot;,
+-  &quot;graphene&lt;3.0&quot;,
+-  &quot;graphql-core&gt;=2.3.2,&lt;3.0.0&quot;,
+-  &quot;graphql-relay&gt;=2.0.1,&lt;3.0.0&quot;,
+-  &quot;gunicorn&gt;=22.0.0,&lt;23.0.0&quot;,
++  &quot;graphene&lt;3.5&quot;,
++  &quot;graphql-core&gt;=2.3.2,&lt;3.3.0&quot;,
++  &quot;graphql-relay&gt;=2.0.1,&lt;3.3.0&quot;,
++  &quot;gunicorn&gt;=22.0.0,&lt;23.1.0&quot;,
+   &quot;html-to-draftjs&gt;=1.0.1,&lt;2.0.0&quot;,
+-  &quot;html2text&gt;=2024.2.26,&lt;2025.0.0&quot;,
++  &quot;html2text&gt;=2024.2.26,&lt;2025.5.0&quot;,
+   &quot;jaeger-client&gt;=4.5.0,&lt;5.0.0&quot;,
+-  &quot;lxml&gt;=4.9.3,&lt;5.0.0&quot;,
++  &quot;lxml&gt;=4.9.3,&lt;5.5.0&quot;,
+   &quot;markdown&gt;=3.1.1,&lt;4.0.0&quot;,
+   &quot;measurement&gt;=3.2.2,&lt;4.0.0&quot;,
+   &quot;micawber&gt;=0.5.5,&lt;0.6.0&quot;,
+   &quot;oauthlib&gt;=3.1,&lt;4.0&quot;,
+   &quot;opentracing&gt;=2.3.0,&lt;3.0.0&quot;,
+-  &quot;petl==1.7.15&quot;,
+-  &quot;phonenumberslite&gt;=8.12.25,&lt;9.0.0&quot;,
+-  &quot;pillow&gt;=10.3.0,&lt;11.0.0&quot;,
++  &quot;petl==1.7.16&quot;,
++  &quot;phonenumberslite&gt;=8.12.25,&lt;9.1.0&quot;,
++  &quot;pillow&gt;=10.3.0,&lt;11.3.0&quot;,
+   &quot;pillow-avif-plugin&gt;=1.3.1,&lt;2.0.0&quot;,
+-  &quot;posuto&gt;=2024.7.0,&lt;2025.0.0&quot;,
++  &quot;posuto&gt;=2024.7.0,&lt;2025.7.0&quot;,
+   &quot;prices&gt;=1.0,&lt;2.0&quot;,
+   &quot;promise&gt;=2.3,&lt;3.0&quot;,
+   &quot;psycopg[binary]&gt;=3.1.8,&lt;4.0.0&quot;,
+@@ -76,22 +76,22 @@ dependencies = [
+   &quot;pyjwt&gt;=2.9.0,&lt;3.0.0&quot;,
+   &quot;python-dateutil&gt;=2.8.2,&lt;3.0.0&quot;,
+   &quot;python-http-client&gt;=3.3.7,&lt;4.0.0&quot;,
+-  &quot;python-json-logger&gt;=0.1.11,&lt;2.1.0&quot;,
++  &quot;python-json-logger&gt;=0.1.11,&lt;3.4.0&quot;,
+   &quot;python-magic&gt;=0.4.27,&lt;0.5.0 ; sys_platform != 'win32'&quot;,
+   &quot;python-magic-bin&gt;=0.4.14,&lt;0.5.0 ; sys_platform == 'win32'&quot;,
+   &quot;pytimeparse&gt;=1.1.8,&lt;2.0.0&quot;,
+-  &quot;pytz&gt;=2024.1,&lt;2025.0&quot;,
++  &quot;pytz&gt;=2024.1,&lt;2025.3&quot;,
+   &quot;razorpay&gt;=1.2,&lt;2.0&quot;,
+-  &quot;redis&gt;=5.0.1,&lt;6.0.0&quot;,
++  &quot;redis&gt;=5.0.1,&lt;6.3.0&quot;,
+   &quot;requests&gt;=2.32,&lt;3.0&quot;,
+-  &quot;requests-hardened==1.0.0b3&quot;,
++  &quot;requests-hardened==1.0.0&quot;,
+   &quot;semantic-version&gt;=2.10.0,&lt;3.0.0&quot;,
+   &quot;sendgrid&gt;=6.7.1,&lt;7.0.0&quot;,
+   &quot;sentry-sdk&gt;=2.12,&lt;3.0&quot;,
+-  &quot;stripe&gt;=3.0.0,&lt;4.0.0&quot;,
++  &quot;stripe&gt;=3.0.0,&lt;12.3.0&quot;,
+   &quot;text-unidecode&gt;=1.2,&lt;2.0&quot;,
+-  &quot;urllib3&gt;=1.26.19,&lt;2.0.0&quot;,
+-  &quot;uvicorn[standard]&gt;=0.23.1,&lt;0.24.0&quot;,
++  &quot;urllib3&gt;=1.26.19,&lt;2.5.0&quot;,
++  &quot;uvicorn[standard]&gt;=0.23.1,&lt;0.35.0&quot;,
+ ]
+ 
+ [tool.deptry]
+diff --git a/ecosystem/transformers/pyproject.toml b/ecosystem/transformers/pyproject.toml
+index f3139b46b..52b9a5166 100644
+--- a/ecosystem/transformers/pyproject.toml
++++ b/ecosystem/transformers/pyproject.toml
+@@ -28,7 +28,7 @@ dependencies = [
+     &quot;pyyaml&gt;=5.1&quot;,
+     &quot;regex!=2019.12.17&quot;,
+     &quot;requests&quot;,
+-    &quot;tokenizers&gt;=0.14,&lt;0.19&quot;,
++    &quot;tokenizers&gt;=0.14,&lt;0.22&quot;,
+     &quot;safetensors&gt;=0.4.1&quot;,
+     &quot;tqdm&gt;=4.27&quot;,
+ ]
+@@ -44,33 +44,33 @@ ja = [
+     &quot;unidic&gt;=1.0.2&quot;,
+     &quot;sudachipy&gt;=0.6.6&quot;,
+     &quot;sudachidict_core&gt;=20220729&quot;,
+-    &quot;rhoknp&gt;=1.1.0,&lt;1.3.1&quot;
++    &quot;rhoknp&gt;=1.1.0,&lt;1.8.0&quot;
+ ]
+ sklearn = [&quot;scikit-learn&quot;]
+ tf = [
+-    &quot;tensorflow&gt;=2.6,&lt;2.16&quot;,
++    &quot;tensorflow&gt;=2.6,&lt;2.20&quot;,
+     &quot;onnxconverter-common&quot;,
+     &quot;tf2onnx&quot;,
+-    &quot;tensorflow-text&lt;2.16&quot;,
++    &quot;tensorflow-text&lt;2.20&quot;,
+     &quot;keras-nlp&gt;=0.3.1&quot;
+ ]
+ tf-cpu = [
+-    &quot;tensorflow-cpu&gt;=2.6,&lt;2.16&quot;,
++    &quot;tensorflow-cpu&gt;=2.6,&lt;2.20&quot;,
+     &quot;onnxconverter-common&quot;,
+     &quot;tf2onnx&quot;,
+-    &quot;tensorflow-text&lt;2.16&quot;,
++    &quot;tensorflow-text&lt;2.20&quot;,
+     &quot;keras-nlp&gt;=0.3.1&quot;
+ ]
+ torch = [&quot;torch&quot;, &quot;accelerate&gt;=0.21.0&quot;]
+ accelerate = [&quot;accelerate&gt;=0.21.0&quot;]
+ retrieval = [&quot;faiss-cpu&quot;, &quot;datasets!=2.5.0&quot;]
+ flax = [
+-    &quot;jax&gt;=0.4.1,&lt;=0.4.13&quot;,
+-    &quot;jaxlib&gt;=0.4.1,&lt;=0.4.13&quot;,
+-    &quot;flax&gt;=0.4.1,&lt;=0.7.0&quot;,
+-    &quot;optax&gt;=0.0.8,&lt;=0.1.4&quot;
++    &quot;jax&gt;=0.4.1,&lt;=0.4.30&quot;,
++    &quot;jaxlib&gt;=0.4.1,&lt;=0.4.30&quot;,
++    &quot;flax&gt;=0.4.1,&lt;=0.9.0&quot;,
++    &quot;optax&gt;=0.0.8,&lt;=0.2.4&quot;
+ ]
+-tokenizers = [&quot;tokenizers&gt;=0.14,&lt;0.19&quot;]
++tokenizers = [&quot;tokenizers&gt;=0.14,&lt;0.22&quot;]
+ ftfy = [&quot;ftfy&quot;]
+ onnxruntime = [&quot;onnxruntime&gt;=1.4.0&quot;, &quot;onnxruntime-tools&gt;=1.4.2&quot;]
+ onnx = [
+@@ -79,8 +79,8 @@ onnx = [
+     &quot;onnxruntime&gt;=1.4.0&quot;,
+     &quot;onnxruntime-tools&gt;=1.4.2&quot;
+ ]
+-modelcreation = [&quot;cookiecutter==1.7.3&quot;]
+-sagemaker = [&quot;sagemaker==2.226.1&quot;] # sagemaker&gt;=2.31.0 # TODO(konsti)
++modelcreation = [&quot;cookiecutter==2.6.0&quot;]
++sagemaker = [&quot;sagemaker==2.246.0&quot;] # sagemaker&gt;=2.31.0 # TODO(konsti)
+ deepspeed = [&quot;deepspeed&gt;=0.9.3&quot;, &quot;accelerate&gt;=0.21.0&quot;]
+ optuna = [&quot;optuna&quot;]
+ ray = [&quot;ray[tune]&gt;=2.7.0&quot;]
+@@ -108,27 +108,27 @@ vision = [&quot;Pillow&gt;=10.0.1,&lt;=15.0&quot;]
+ timm = [&quot;timm&quot;]
+ torch-vision = [&quot;torchvision&quot;, &quot;Pillow&gt;=10.0.1,&lt;=15.0&quot;]
+ # natten = [&quot;natten&gt;=0.14.6,&lt;0.15.0&quot;] # TODO(konsti)
+-codecarbon = [&quot;codecarbon==1.2.0&quot;]
++codecarbon = [&quot;codecarbon==3.0.2&quot;]
+ video = [&quot;decord==0.6.0&quot;, &quot;av&quot;]
+ sentencepiece = [&quot;sentencepiece&gt;=0.1.91,!=0.1.92&quot;, &quot;protobuf&quot;]
+ 
+ deepspeed-testing = [
+     &quot;deepspeed&gt;=0.9.3&quot;,
+     &quot;accelerate&gt;=0.21.0&quot;,
+-    &quot;pytest&gt;=7.2.0,&lt;8.0.0&quot;,
++    &quot;pytest&gt;=7.2.0,&lt;8.5.0&quot;,
+     &quot;pytest-xdist&quot;,
+     &quot;timeout-decorator&quot;,
+     &quot;parameterized&quot;,
+     &quot;psutil&quot;,
+     &quot;datasets!=2.5.0&quot;,
+-    &quot;dill&lt;0.3.5&quot;,
++    &quot;dill&lt;0.5.0&quot;,
+     &quot;evaluate&gt;=0.2.0&quot;,
+     &quot;pytest-timeout&quot;,
+-    &quot;ruff==0.1.5&quot;,
+-    &quot;sacrebleu&gt;=1.4.12,&lt;2.0.0&quot;,
++    &quot;ruff==0.11.13&quot;,
++    &quot;sacrebleu&gt;=1.4.12,&lt;2.6.0&quot;,
+     &quot;rouge-score!=0.0.7,!=0.0.8,!=0.1,!=0.1.1&quot;,
+     &quot;nltk&quot;,
+-    &quot;GitPython&lt;3.1.19&quot;,
++    &quot;gitpython&lt;3.2.0&quot;,
+     &quot;hf-doc-builder&gt;=0.3.0&quot;,
+     &quot;protobuf&quot;,
+     &quot;sacremoses&quot;,
+@@ -138,7 +138,7 @@ deepspeed-testing = [
+     &quot;pydantic&quot;,
+     &quot;faiss-cpu&quot;,
+     &quot;datasets!=2.5.0&quot;,
+-    &quot;cookiecutter==1.7.3&quot;,
++    &quot;cookiecutter==2.6.0&quot;,
+     &quot;optuna&quot;,
+     &quot;sentencepiece&gt;=0.1.91,!=0.1.92&quot;,
+     &quot;protobuf&quot;
+@@ -146,26 +146,26 @@ deepspeed-testing = [
+ quality = [
+     &quot;datasets!=2.5.0&quot;,
+     &quot;isort&gt;=5.5.4&quot;,
+-    &quot;ruff==0.1.5&quot;,
+-    &quot;GitPython&lt;3.1.19&quot;,
++    &quot;ruff==0.11.13&quot;,
++    &quot;gitpython&lt;3.2.0&quot;,
+     &quot;hf-doc-builder&gt;=0.3.0&quot;,
+-    &quot;urllib3&lt;2.0.0&quot;
++    &quot;urllib3&lt;2.5.0&quot;
+ ]
+ all = [
+-    &quot;tensorflow&gt;=2.6,&lt;2.16&quot;,
++    &quot;tensorflow&gt;=2.6,&lt;2.20&quot;,
+     &quot;onnxconverter-common&quot;,
+     &quot;tf2onnx&quot;,
+-    &quot;tensorflow-text&lt;2.16&quot;,
++    &quot;tensorflow-text&lt;2.20&quot;,
+     &quot;keras-nlp&gt;=0.3.1&quot;,
+     &quot;torch&quot;,
+     &quot;accelerate&gt;=0.21.0&quot;,
+-    &quot;jax&gt;=0.4.1,&lt;=0.4.13&quot;,
+-    &quot;jaxlib&gt;=0.4.1,&lt;=0.4.13&quot;,
+-    &quot;flax&gt;=0.4.1,&lt;=0.7.0&quot;,
+-    &quot;optax&gt;=0.0.8,&lt;=0.1.4&quot;,
++    &quot;jax&gt;=0.4.1,&lt;=0.4.30&quot;,
++    &quot;jaxlib&gt;=0.4.1,&lt;=0.4.30&quot;,
++    &quot;flax&gt;=0.4.1,&lt;=0.9.0&quot;,
++    &quot;optax&gt;=0.0.8,&lt;=0.2.4&quot;,
+     &quot;sentencepiece&gt;=0.1.91,!=0.1.92&quot;,
+     &quot;protobuf&quot;,
+-    &quot;tokenizers&gt;=0.14,&lt;0.19&quot;,
++    &quot;tokenizers&gt;=0.14,&lt;0.22&quot;,
+     &quot;torchaudio&quot;,
+     &quot;librosa&quot;,
+     &quot;pyctcdecode&gt;=0.4.0&quot;,
+@@ -178,27 +178,27 @@ all = [
+     &quot;timm&quot;,
+     &quot;torchvision&quot;,
+     &quot;Pillow&gt;=10.0.1,&lt;=15.0&quot;,
+-    &quot;codecarbon==1.2.0&quot;,
++    &quot;codecarbon==3.0.2&quot;,
+     &quot;accelerate&gt;=0.21.0&quot;,
+     &quot;decord==0.6.0&quot;,
+     &quot;av&quot;
+ ]
+ docs_specific = [&quot;hf-doc-builder&quot;]
+ docs = [
+-    &quot;tensorflow&gt;=2.6,&lt;2.16&quot;,
++    &quot;tensorflow&gt;=2.6,&lt;2.20&quot;,
+     &quot;onnxconverter-common&quot;,
+     &quot;tf2onnx&quot;,
+-    &quot;tensorflow-text&lt;2.16&quot;,
++    &quot;tensorflow-text&lt;2.20&quot;,
+     &quot;keras-nlp&gt;=0.3.1&quot;,
+     &quot;torch&quot;,
+     &quot;accelerate&gt;=0.21.0&quot;,
+-    &quot;jax&gt;=0.4.1,&lt;=0.4.13&quot;,
+-    &quot;jaxlib&gt;=0.4.1,&lt;=0.4.13&quot;,
+-    &quot;flax&gt;=0.4.1,&lt;=0.7.0&quot;,
+-    &quot;optax&gt;=0.0.8,&lt;=0.1.4&quot;,
++    &quot;jax&gt;=0.4.1,&lt;=0.4.30&quot;,
++    &quot;jaxlib&gt;=0.4.1,&lt;=0.4.30&quot;,
++    &quot;flax&gt;=0.4.1,&lt;=0.9.0&quot;,
++    &quot;optax&gt;=0.0.8,&lt;=0.2.4&quot;,
+     &quot;sentencepiece&gt;=0.1.91,!=0.1.92&quot;,
+     &quot;protobuf&quot;,
+-    &quot;tokenizers&gt;=0.14,&lt;0.19&quot;,
++    &quot;tokenizers&gt;=0.14,&lt;0.22&quot;,
+     &quot;torchaudio&quot;,
+     &quot;librosa&quot;,
+     &quot;pyctcdecode&gt;=0.4.0&quot;,
+@@ -211,7 +211,7 @@ docs = [
+     &quot;timm&quot;,
+     &quot;torchvision&quot;,
+     &quot;Pillow&gt;=10.0.1,&lt;=15.0&quot;,
+-    &quot;codecarbon==1.2.0&quot;,
++    &quot;codecarbon==3.0.2&quot;,
+     &quot;accelerate&gt;=0.21.0&quot;,
+     &quot;decord==0.6.0&quot;,
+     &quot;av&quot;,
+@@ -228,7 +228,7 @@ torchhub = [
+     &quot;requests&quot;,
+     &quot;sentencepiece&gt;=0.1.91,!=0.1.92&quot;,
+     &quot;torch&quot;,
+-    &quot;tokenizers&gt;=0.14,&lt;0.19&quot;,
++    &quot;tokenizers&gt;=0.14,&lt;0.22&quot;,
+     &quot;tqdm&gt;=4.27&quot;
+ ]
+ agents = [
+@@ -243,27 +243,27 @@ agents = [
+ 
+ [dependency-groups]
+ dev = [
+-    &quot;GitPython&lt;3.1.19&quot;,
++    &quot;gitpython&lt;3.2.0&quot;,
+     &quot;Pillow&gt;=10.0.1,&lt;=15.0&quot;,
+     &quot;accelerate&gt;=0.21.0&quot;,
+     &quot;av&quot;,
+     &quot;beautifulsoup4&quot;,
+-    &quot;codecarbon==1.2.0&quot;,
+-    &quot;codecarbon==1.2.0&quot;,
+-    &quot;cookiecutter==1.7.3&quot;,
++    &quot;codecarbon==3.0.2&quot;,
++    &quot;codecarbon==3.0.2&quot;,
++    &quot;cookiecutter==2.6.0&quot;,
+     &quot;datasets!=2.5.0&quot;,
+     &quot;decord==0.6.0&quot;,
+-    &quot;dill&lt;0.3.5&quot;,
++    &quot;dill&lt;0.5.0&quot;,
+     &quot;evaluate&gt;=0.2.0&quot;,
+     &quot;faiss-cpu&quot;,
+-    &quot;flax&gt;=0.4.1,&lt;=0.7.0&quot;,
++    &quot;flax&gt;=0.4.1,&lt;=0.9.0&quot;,
+     &quot;fugashi&gt;=1.0&quot;,
+     &quot;hf-doc-builder&quot;,
+     &quot;hf-doc-builder&gt;=0.3.0&quot;,
+     &quot;ipadic&gt;=1.0.0,&lt;2.0&quot;,
+     &quot;isort&gt;=5.5.4&quot;,
+-    &quot;jax&gt;=0.4.1,&lt;=0.4.13&quot;,
+-    &quot;jaxlib&gt;=0.4.1,&lt;=0.4.13&quot;,
++    &quot;jax&gt;=0.4.1,&lt;=0.4.30&quot;,
++    &quot;jaxlib&gt;=0.4.1,&lt;=0.4.30&quot;,
+     &quot;kenlm&quot;,
+     &quot;keras-nlp&gt;=0.3.1&quot;,
+     &quot;librosa&quot;,
+@@ -271,7 +271,7 @@ dev = [
+     &quot;onnxconverter-common&quot;,
+     &quot;onnxruntime-tools&gt;=1.4.2&quot;,
+     &quot;onnxruntime&gt;=1.4.0&quot;,
+-    &quot;optax&gt;=0.0.8,&lt;=0.1.4&quot;,
++    &quot;optax&gt;=0.0.8,&lt;=0.2.4&quot;,
+     &quot;optuna&quot;,
+     &quot;parameterized&quot;,
+     &quot;phonemizer&quot;,
+@@ -281,13 +281,13 @@ dev = [
+     &quot;pydantic&quot;,
+     &quot;pytest-timeout&quot;,
+     &quot;pytest-xdist&quot;,
+-    &quot;pytest&gt;=7.2.0,&lt;8.0.0&quot;,
++    &quot;pytest&gt;=7.2.0,&lt;8.5.0&quot;,
+     &quot;ray[tune]&gt;=2.7.0&quot;,
+-    &quot;rhoknp&gt;=1.1.0,&lt;1.3.1&quot;,
++    &quot;rhoknp&gt;=1.1.0,&lt;1.8.0&quot;,
+     &quot;rjieba&quot;,
+     &quot;rouge-score!=0.0.7,!=0.0.8,!=0.1,!=0.1.1&quot;,
+-    &quot;ruff==0.1.5&quot;,
+-    &quot;sacrebleu&gt;=1.4.12,&lt;2.0.0&quot;,
++    &quot;ruff==0.11.13&quot;,
++    &quot;sacrebleu&gt;=1.4.12,&lt;2.6.0&quot;,
+     &quot;sacremoses&quot;,
+     &quot;scikit-learn&quot;,
+     &quot;sentencepiece&gt;=0.1.91,!=0.1.92&quot;,
+@@ -295,18 +295,18 @@ dev = [
+     &quot;sudachidict_core&gt;=20220729&quot;,
+     &quot;sudachipy&gt;=0.6.6&quot;,
+     &quot;tensorboard&quot;,
+-    &quot;tensorflow-text&lt;2.16&quot;,
+-    &quot;tensorflow&gt;=2.6,&lt;2.16&quot;,
++    &quot;tensorflow-text&lt;2.20&quot;,
++    &quot;tensorflow&gt;=2.6,&lt;2.20&quot;,
+     &quot;tf2onnx&quot;,
+     &quot;timeout-decorator&quot;,
+     &quot;timm&quot;,
+-    &quot;tokenizers&gt;=0.14,&lt;0.19&quot;,
++    &quot;tokenizers&gt;=0.14,&lt;0.22&quot;,
+     &quot;torch&quot;,
+     &quot;torchaudio&quot;,
+     &quot;torchvision&quot;,
+     &quot;unidic&gt;=1.0.2&quot;,
+     &quot;unidic_lite&gt;=1.0.7&quot;,
+-    &quot;urllib3&lt;2.0.0&quot;
++    &quot;urllib3&lt;2.5.0&quot;
+ ]
+ 
+ [build-system]
+diff --git a/ecosystem/warehouse/pyproject.toml b/ecosystem/warehouse/pyproject.toml
+index 62c4e3c7f..67e3abfc0 100644
+--- a/ecosystem/warehouse/pyproject.toml
++++ b/ecosystem/warehouse/pyproject.toml
+@@ -11,15 +11,15 @@ dependencies = [
+   &quot;Babel&quot;,
+   &quot;bcrypt&quot;,
+   &quot;boto3&quot;,
+-  &quot;celery[sqs]&gt;=5.2.2,&lt;5.3.2&quot;,
++  &quot;celery[sqs]&gt;=5.2.2,&lt;5.6.0&quot;,
+   &quot;celery-redbeat&quot;,
+   &quot;certifi&quot;,
+   &quot;click&quot;,
+   &quot;cryptography&quot;,
+   &quot;datadog&gt;=0.19.0&quot;,
+   &quot;disposable-email-domains&quot;,
+-  &quot;elasticsearch&gt;=7.0.0,&lt;7.11.0&quot;,
+-  &quot;elasticsearch_dsl&gt;=7.0.0,&lt;8.0.0&quot;,
++  &quot;elasticsearch&gt;=7.0.0,&lt;9.1.0&quot;,
++  &quot;elasticsearch-dsl&gt;=7.0.0,&lt;8.19.0&quot;,
+   &quot;first&quot;,
+   &quot;forcediphttpsadapter&quot;,
+   &quot;github-reserved-names&gt;=1.0.0&quot;,
+@@ -30,7 +30,7 @@ dependencies = [
+   &quot;humanize&quot;,
+   &quot;itsdangerous&quot;,
+   &quot;Jinja2&gt;=2.8&quot;,
+-  &quot;kombu[sqs]&lt;5.3.2&quot;, # https://github.com/jazzband/pip-tools/issues/1577
++  &quot;kombu[sqs]&lt;5.6.0&quot;, # https://github.com/jazzband/pip-tools/issues/1577
+   &quot;limits&quot;,
+   &quot;linehaul&quot;,
+   &quot;lxml&quot;,
+@@ -63,7 +63,7 @@ dependencies = [
+   &quot;readme-renderer[md]&gt;=36.0&quot;,
+   &quot;requests&quot;,
+   &quot;requests-aws4auth&quot;,
+-  &quot;redis&gt;=2.8.0,&lt;6.0.0&quot;,
++  &quot;redis&gt;=2.8.0,&lt;6.3.0&quot;,
+   &quot;rfc3986&quot;,
+   &quot;sentry-sdk&quot;,
+   &quot;setuptools&quot;,
+@@ -74,7 +74,7 @@ dependencies = [
+   &quot;transaction&quot;,
+   &quot;trove-classifiers&quot;,
+   &quot;ua-parser&quot;,
+-  &quot;urllib3&lt;2&quot;, # See https://github.com/pypi/warehouse/issues/14671,
++  &quot;urllib3&lt;3&quot;, # See https://github.com/pypi/warehouse/issues/14671,
+   &quot;webauthn&gt;=1.0.0,&lt;3.0.0&quot;,
+   &quot;whitenoise&quot;,
+   &quot;WTForms[email]&gt;=2.0.0&quot;,
+@@ -84,15 +84,15 @@ dependencies = [
+ 
+ [project.optional-dependencies]
+ deploy = [
+-  &quot;gunicorn==22.0.0&quot;,
+-  &quot;ddtrace==2.8.5&quot;
++  &quot;gunicorn==23.0.0&quot;,
++  &quot;ddtrace==3.9.1&quot;
+ ]
+ 
+ [tool.uv]
+ dev-dependencies = [
+   &quot;Sphinx&quot;,
+   &quot;asyncudp&gt;=0.7&quot;,
+-  &quot;black==24.4.2&quot;,
++  &quot;black==25.1.0&quot;,
+   &quot;cairosvg&quot;,
+   &quot;celery-types&quot;,
+   &quot;coverage&quot;,
+@@ -119,7 +119,7 @@ dev-dependencies = [
+   &quot;pretend&quot;,
+   &quot;pyramid_debugtoolbar&gt;=2.5&quot;,
+   &quot;pytest-icdiff&quot;,
+-  &quot;pytest-postgresql&gt;=3.1.3,&lt;7.0.0&quot;,
++  &quot;pytest-postgresql&gt;=3.1.3,&lt;7.1.0&quot;,
+   &quot;pytest-randomly&quot;,
+   &quot;pytest-socket&quot;,
+   &quot;pytest&gt;=3.0.0&quot;,
+@@ -142,7 +142,7 @@ dev-dependencies = [
+   &quot;types-python-slugify&quot;,
+   &quot;types-pytz&quot;,
+   &quot;types-redis&quot;,
+-  &quot;types-requests==2.31.0.6&quot;, # See https://github.com/pypi/warehouse/issues/14671
++  &quot;types-requests==2.32.0.20250602&quot;, # See https://github.com/pypi/warehouse/issues/14671
+   &quot;types-setuptools&quot;,
+   &quot;types-stripe&quot;,
+   &quot;types-zxcvbn&quot;,
+diff --git a/scripts/requirements/transformers/pyproject.toml b/scripts/requirements/transformers/pyproject.toml
+index e247c2829..694383661 100644
+--- a/scripts/requirements/transformers/pyproject.toml
++++ b/scripts/requirements/transformers/pyproject.toml
+@@ -15,7 +15,7 @@ dependencies = [
+     &quot;pyyaml&gt;=5.1&quot;,
+     &quot;regex!=2019.12.17&quot;,
+     &quot;requests&quot;,
+-    &quot;tokenizers&gt;=0.14,&lt;0.19&quot;,
++    &quot;tokenizers&gt;=0.14,&lt;0.22&quot;,
+     &quot;safetensors&gt;=0.4.1&quot;,
+     &quot;tqdm&gt;=4.27&quot;,
+ ]
+@@ -28,33 +28,33 @@ ja = [
+     &quot;unidic&gt;=1.0.2&quot;,
+     &quot;sudachipy&gt;=0.6.6&quot;,
+     &quot;sudachidict_core&gt;=20220729&quot;,
+-    &quot;rhoknp&gt;=1.1.0,&lt;1.3.1&quot;
++    &quot;rhoknp&gt;=1.1.0,&lt;1.8.0&quot;
+ ]
+ sklearn = [&quot;scikit-learn&quot;]
+ tf = [
+-    &quot;tensorflow&gt;=2.6,&lt;2.16&quot;,
++    &quot;tensorflow&gt;=2.6,&lt;2.20&quot;,
+     &quot;onnxconverter-common&quot;,
+     &quot;tf2onnx&quot;,
+-    &quot;tensorflow-text&lt;2.16&quot;,
++    &quot;tensorflow-text&lt;2.20&quot;,
+     &quot;keras-nlp&gt;=0.3.1&quot;
+ ]
+ tf-cpu = [
+-    &quot;tensorflow-cpu&gt;=2.6,&lt;2.16&quot;,
++    &quot;tensorflow-cpu&gt;=2.6,&lt;2.20&quot;,
+     &quot;onnxconverter-common&quot;,
+     &quot;tf2onnx&quot;,
+-    &quot;tensorflow-text&lt;2.16&quot;,
++    &quot;tensorflow-text&lt;2.20&quot;,
+     &quot;keras-nlp&gt;=0.3.1&quot;
+ ]
+ torch = [&quot;torch&quot;, &quot;accelerate&gt;=0.21.0&quot;]
+ accelerate = [&quot;accelerate&gt;=0.21.0&quot;]
+ retrieval = [&quot;faiss-cpu&quot;, &quot;datasets!=2.5.0&quot;]
+ flax = [
+-    &quot;jax&gt;=0.4.1,&lt;=0.4.13&quot;,
+-    &quot;jaxlib&gt;=0.4.1,&lt;=0.4.13&quot;,
+-    &quot;flax&gt;=0.4.1,&lt;=0.7.0&quot;,
+-    &quot;optax&gt;=0.0.8,&lt;=0.1.4&quot;
++    &quot;jax&gt;=0.4.1,&lt;=0.4.30&quot;,
++    &quot;jaxlib&gt;=0.4.1,&lt;=0.4.30&quot;,
++    &quot;flax&gt;=0.4.1,&lt;=0.9.0&quot;,
++    &quot;optax&gt;=0.0.8,&lt;=0.2.4&quot;
+ ]
+-tokenizers = [&quot;tokenizers&gt;=0.14,&lt;0.19&quot;]
++tokenizers = [&quot;tokenizers&gt;=0.14,&lt;0.22&quot;]
+ ftfy = [&quot;ftfy&quot;]
+ onnxruntime = [&quot;onnxruntime&gt;=1.4.0&quot;, &quot;onnxruntime-tools&gt;=1.4.2&quot;]
+ onnx = [
+@@ -63,8 +63,8 @@ onnx = [
+     &quot;onnxruntime&gt;=1.4.0&quot;,
+     &quot;onnxruntime-tools&gt;=1.4.2&quot;
+ ]
+-modelcreation = [&quot;cookiecutter==1.7.3&quot;]
+-sagemaker = [&quot;sagemaker==2.226.1&quot;] # sagemaker&gt;=2.31.0 # TODO(konsti)
++modelcreation = [&quot;cookiecutter==2.6.0&quot;]
++sagemaker = [&quot;sagemaker==2.246.0&quot;] # sagemaker&gt;=2.31.0 # TODO(konsti)
+ deepspeed = [&quot;deepspeed&gt;=0.9.3&quot;, &quot;accelerate&gt;=0.21.0&quot;]
+ optuna = [&quot;optuna&quot;]
+ ray = [&quot;ray[tune]&gt;=2.7.0&quot;]
+@@ -92,27 +92,27 @@ vision = [&quot;Pillow&gt;=10.0.1,&lt;=15.0&quot;]
+ timm = [&quot;timm&quot;]
+ torch-vision = [&quot;torchvision&quot;, &quot;Pillow&gt;=10.0.1,&lt;=15.0&quot;]
+ # natten = [&quot;natten&gt;=0.14.6,&lt;0.15.0&quot;] # TODO(konsti)
+-codecarbon = [&quot;codecarbon==1.2.0&quot;]
+-video = [&quot;decord==0.6.0&quot;, &quot;av==9.2.0&quot;]
++codecarbon = [&quot;codecarbon==3.0.2&quot;]
++video = [&quot;decord==0.6.0&quot;, &quot;av==14.4.0&quot;]
+ sentencepiece = [&quot;sentencepiece&gt;=0.1.91,!=0.1.92&quot;, &quot;protobuf&quot;]
+ 
+ deepspeed-testing = [
+     &quot;deepspeed&gt;=0.9.3&quot;,
+     &quot;accelerate&gt;=0.21.0&quot;,
+-    &quot;pytest&gt;=7.2.0,&lt;8.0.0&quot;,
++    &quot;pytest&gt;=7.2.0,&lt;8.5.0&quot;,
+     &quot;pytest-xdist&quot;,
+     &quot;timeout-decorator&quot;,
+     &quot;parameterized&quot;,
+     &quot;psutil&quot;,
+     &quot;datasets!=2.5.0&quot;,
+-    &quot;dill&lt;0.3.5&quot;,
++    &quot;dill&lt;0.5.0&quot;,
+     &quot;evaluate&gt;=0.2.0&quot;,
+     &quot;pytest-timeout&quot;,
+-    &quot;ruff==0.1.5&quot;,
+-    &quot;sacrebleu&gt;=1.4.12,&lt;2.0.0&quot;,
++    &quot;ruff==0.11.13&quot;,
++    &quot;sacrebleu&gt;=1.4.12,&lt;2.6.0&quot;,
+     &quot;rouge-score!=0.0.7,!=0.0.8,!=0.1,!=0.1.1&quot;,
+     &quot;nltk&quot;,
+-    &quot;GitPython&lt;3.1.19&quot;,
++    &quot;gitpython&lt;3.2.0&quot;,
+     &quot;hf-doc-builder&gt;=0.3.0&quot;,
+     &quot;protobuf&quot;,
+     &quot;sacremoses&quot;,
+@@ -122,7 +122,7 @@ deepspeed-testing = [
+     &quot;pydantic&quot;,
+     &quot;faiss-cpu&quot;,
+     &quot;datasets!=2.5.0&quot;,
+-    &quot;cookiecutter==1.7.3&quot;,
++    &quot;cookiecutter==2.6.0&quot;,
+     &quot;optuna&quot;,
+     &quot;sentencepiece&gt;=0.1.91,!=0.1.92&quot;,
+     &quot;protobuf&quot;
+@@ -130,26 +130,26 @@ deepspeed-testing = [
+ quality = [
+     &quot;datasets!=2.5.0&quot;,
+     &quot;isort&gt;=5.5.4&quot;,
+-    &quot;ruff==0.1.5&quot;,
+-    &quot;GitPython&lt;3.1.19&quot;,
++    &quot;ruff==0.11.13&quot;,
++    &quot;gitpython&lt;3.2.0&quot;,
+     &quot;hf-doc-builder&gt;=0.3.0&quot;,
+-    &quot;urllib3&lt;2.0.0&quot;
++    &quot;urllib3&lt;2.5.0&quot;
+ ]
+ all = [
+-    &quot;tensorflow&gt;=2.6,&lt;2.16&quot;,
++    &quot;tensorflow&gt;=2.6,&lt;2.20&quot;,
+     &quot;onnxconverter-common&quot;,
+     &quot;tf2onnx&quot;,
+-    &quot;tensorflow-text&lt;2.16&quot;,
++    &quot;tensorflow-text&lt;2.20&quot;,
+     &quot;keras-nlp&gt;=0.3.1&quot;,
+     &quot;torch&quot;,
+     &quot;accelerate&gt;=0.21.0&quot;,
+-    &quot;jax&gt;=0.4.1,&lt;=0.4.13&quot;,
+-    &quot;jaxlib&gt;=0.4.1,&lt;=0.4.13&quot;,
+-    &quot;flax&gt;=0.4.1,&lt;=0.7.0&quot;,
+-    &quot;optax&gt;=0.0.8,&lt;=0.1.4&quot;,
++    &quot;jax&gt;=0.4.1,&lt;=0.4.30&quot;,
++    &quot;jaxlib&gt;=0.4.1,&lt;=0.4.30&quot;,
++    &quot;flax&gt;=0.4.1,&lt;=0.9.0&quot;,
++    &quot;optax&gt;=0.0.8,&lt;=0.2.4&quot;,
+     &quot;sentencepiece&gt;=0.1.91,!=0.1.92&quot;,
+     &quot;protobuf&quot;,
+-    &quot;tokenizers&gt;=0.14,&lt;0.19&quot;,
++    &quot;tokenizers&gt;=0.14,&lt;0.22&quot;,
+     &quot;torchaudio&quot;,
+     &quot;librosa&quot;,
+     &quot;pyctcdecode&gt;=0.4.0&quot;,
+@@ -162,27 +162,27 @@ all = [
+     &quot;timm&quot;,
+     &quot;torchvision&quot;,
+     &quot;Pillow&gt;=10.0.1,&lt;=15.0&quot;,
+-    &quot;codecarbon==1.2.0&quot;,
++    &quot;codecarbon==3.0.2&quot;,
+     &quot;accelerate&gt;=0.21.0&quot;,
+     &quot;decord==0.6.0&quot;,
+-    &quot;av==9.2.0&quot;
++    &quot;av==14.4.0&quot;
+ ]
+ docs_specific = [&quot;hf-doc-builder&quot;]
+ docs = [
+-    &quot;tensorflow&gt;=2.6,&lt;2.16&quot;,
++    &quot;tensorflow&gt;=2.6,&lt;2.20&quot;,
+     &quot;onnxconverter-common&quot;,
+     &quot;tf2onnx&quot;,
+-    &quot;tensorflow-text&lt;2.16&quot;,
++    &quot;tensorflow-text&lt;2.20&quot;,
+     &quot;keras-nlp&gt;=0.3.1&quot;,
+     &quot;torch&quot;,
+     &quot;accelerate&gt;=0.21.0&quot;,
+-    &quot;jax&gt;=0.4.1,&lt;=0.4.13&quot;,
+-    &quot;jaxlib&gt;=0.4.1,&lt;=0.4.13&quot;,
+-    &quot;flax&gt;=0.4.1,&lt;=0.7.0&quot;,
+-    &quot;optax&gt;=0.0.8,&lt;=0.1.4&quot;,
++    &quot;jax&gt;=0.4.1,&lt;=0.4.30&quot;,
++    &quot;jaxlib&gt;=0.4.1,&lt;=0.4.30&quot;,
++    &quot;flax&gt;=0.4.1,&lt;=0.9.0&quot;,
++    &quot;optax&gt;=0.0.8,&lt;=0.2.4&quot;,
+     &quot;sentencepiece&gt;=0.1.91,!=0.1.92&quot;,
+     &quot;protobuf&quot;,
+-    &quot;tokenizers&gt;=0.14,&lt;0.19&quot;,
++    &quot;tokenizers&gt;=0.14,&lt;0.22&quot;,
+     &quot;torchaudio&quot;,
+     &quot;librosa&quot;,
+     &quot;pyctcdecode&gt;=0.4.0&quot;,
+@@ -195,10 +195,10 @@ docs = [
+     &quot;timm&quot;,
+     &quot;torchvision&quot;,
+     &quot;Pillow&gt;=10.0.1,&lt;=15.0&quot;,
+-    &quot;codecarbon==1.2.0&quot;,
++    &quot;codecarbon==3.0.2&quot;,
+     &quot;accelerate&gt;=0.21.0&quot;,
+     &quot;decord==0.6.0&quot;,
+-    &quot;av==9.2.0&quot;,
++    &quot;av==14.4.0&quot;,
+     &quot;hf-doc-builder&quot;
+ ]
+ torchhub = [
+@@ -212,7 +212,7 @@ torchhub = [
+     &quot;requests&quot;,
+     &quot;sentencepiece&gt;=0.1.91,!=0.1.92&quot;,
+     &quot;torch&quot;,
+-    &quot;tokenizers&gt;=0.14,&lt;0.19&quot;,
++    &quot;tokenizers&gt;=0.14,&lt;0.22&quot;,
+     &quot;tqdm&gt;=4.27&quot;
+ ]
+ agents = [
+@@ -226,27 +226,27 @@ agents = [
+ ]
+ 
+ dev-dependencies = [
+-    &quot;GitPython&lt;3.1.19&quot;,
++    &quot;gitpython&lt;3.2.0&quot;,
+     &quot;Pillow&gt;=10.0.1,&lt;=15.0&quot;,
+     &quot;accelerate&gt;=0.21.0&quot;,
+-    &quot;av==9.2.0&quot;,
++    &quot;av==14.4.0&quot;,
+     &quot;beautifulsoup4&quot;,
+-    &quot;codecarbon==1.2.0&quot;,
+-    &quot;codecarbon==1.2.0&quot;,
+-    &quot;cookiecutter==1.7.3&quot;,
++    &quot;codecarbon==3.0.2&quot;,
++    &quot;codecarbon==3.0.2&quot;,
++    &quot;cookiecutter==2.6.0&quot;,
+     &quot;datasets!=2.5.0&quot;,
+     &quot;decord==0.6.0&quot;,
+-    &quot;dill&lt;0.3.5&quot;,
++    &quot;dill&lt;0.5.0&quot;,
+     &quot;evaluate&gt;=0.2.0&quot;,
+     &quot;faiss-cpu&quot;,
+-    &quot;flax&gt;=0.4.1,&lt;=0.7.0&quot;,
++    &quot;flax&gt;=0.4.1,&lt;=0.9.0&quot;,
+     &quot;fugashi&gt;=1.0&quot;,
+     &quot;hf-doc-builder&quot;,
+     &quot;hf-doc-builder&gt;=0.3.0&quot;,
+     &quot;ipadic&gt;=1.0.0,&lt;2.0&quot;,
+     &quot;isort&gt;=5.5.4&quot;,
+-    &quot;jax&gt;=0.4.1,&lt;=0.4.13&quot;,
+-    &quot;jaxlib&gt;=0.4.1,&lt;=0.4.13&quot;,
++    &quot;jax&gt;=0.4.1,&lt;=0.4.30&quot;,
++    &quot;jaxlib&gt;=0.4.1,&lt;=0.4.30&quot;,
+     &quot;kenlm&quot;,
+     &quot;keras-nlp&gt;=0.3.1&quot;,
+     &quot;librosa&quot;,
+@@ -254,7 +254,7 @@ dev-dependencies = [
+     &quot;onnxconverter-common&quot;,
+     &quot;onnxruntime-tools&gt;=1.4.2&quot;,
+     &quot;onnxruntime&gt;=1.4.0&quot;,
+-    &quot;optax&gt;=0.0.8,&lt;=0.1.4&quot;,
++    &quot;optax&gt;=0.0.8,&lt;=0.2.4&quot;,
+     &quot;optuna&quot;,
+     &quot;parameterized&quot;,
+     &quot;phonemizer&quot;,
+@@ -264,13 +264,13 @@ dev-dependencies = [
+     &quot;pydantic&quot;,
+     &quot;pytest-timeout&quot;,
+     &quot;pytest-xdist&quot;,
+-    &quot;pytest&gt;=7.2.0,&lt;8.0.0&quot;,
++    &quot;pytest&gt;=7.2.0,&lt;8.5.0&quot;,
+     &quot;ray[tune]&gt;=2.7.0&quot;,
+-    &quot;rhoknp&gt;=1.1.0,&lt;1.3.1&quot;,
++    &quot;rhoknp&gt;=1.1.0,&lt;1.8.0&quot;,
+     &quot;rjieba&quot;,
+     &quot;rouge-score!=0.0.7,!=0.0.8,!=0.1,!=0.1.1&quot;,
+-    &quot;ruff==0.1.5&quot;,
+-    &quot;sacrebleu&gt;=1.4.12,&lt;2.0.0&quot;,
++    &quot;ruff==0.11.13&quot;,
++    &quot;sacrebleu&gt;=1.4.12,&lt;2.6.0&quot;,
+     &quot;sacremoses&quot;,
+     &quot;scikit-learn&quot;,
+     &quot;sentencepiece&gt;=0.1.91,!=0.1.92&quot;,
+@@ -278,18 +278,18 @@ dev-dependencies = [
+     &quot;sudachidict_core&gt;=20220729&quot;,
+     &quot;sudachipy&gt;=0.6.6&quot;,
+     &quot;tensorboard&quot;,
+-    &quot;tensorflow-text&lt;2.16&quot;,
+-    &quot;tensorflow&gt;=2.6,&lt;2.16&quot;,
++    &quot;tensorflow-text&lt;2.20&quot;,
++    &quot;tensorflow&gt;=2.6,&lt;2.20&quot;,
+     &quot;tf2onnx&quot;,
+     &quot;timeout-decorator&quot;,
+     &quot;timm&quot;,
+-    &quot;tokenizers&gt;=0.14,&lt;0.19&quot;,
++    &quot;tokenizers&gt;=0.14,&lt;0.22&quot;,
+     &quot;torch&quot;,
+     &quot;torchaudio&quot;,
+     &quot;torchvision&quot;,
+     &quot;unidic&gt;=1.0.2&quot;,
+     &quot;unidic_lite&gt;=1.0.7&quot;,
+-    &quot;urllib3&lt;2.0.0&quot;
++    &quot;urllib3&lt;2.5.0&quot;
+ ]
+ 
+ [build-system]
+diff --git a/scripts/workspaces/albatross-project-in-excluded/packages/seeds/pyproject.toml b/scripts/workspaces/albatross-project-in-excluded/packages/seeds/pyproject.toml
+index 71d0272ed..b4d3904d9 100644
+--- a/scripts/workspaces/albatross-project-in-excluded/packages/seeds/pyproject.toml
++++ b/scripts/workspaces/albatross-project-in-excluded/packages/seeds/pyproject.toml
+@@ -2,7 +2,7 @@
+ name = &quot;seeds&quot;
+ version = &quot;1.0.0&quot;
+ requires-python = &quot;&gt;=3.12&quot;
+-dependencies = [&quot;idna==3.6&quot;]
++dependencies = [&quot;idna==3.10&quot;]
+ 
+ [build-system]
+ requires = [&quot;hatchling&quot;]
+diff --git a/scripts/workspaces/albatross-root-workspace/packages/seeds/pyproject.toml b/scripts/workspaces/albatross-root-workspace/packages/seeds/pyproject.toml
+index f63b97736..1022fab1b 100644
+--- a/scripts/workspaces/albatross-root-workspace/packages/seeds/pyproject.toml
++++ b/scripts/workspaces/albatross-root-workspace/packages/seeds/pyproject.toml
+@@ -2,7 +2,7 @@
+ name = &quot;seeds&quot;
+ version = &quot;1.0.0&quot;
+ requires-python = &quot;&gt;=3.12&quot;
+-dependencies = [&quot;idna==3.6&quot;]
++dependencies = [&quot;idna==3.10&quot;]
+ 
+ [build-system]
+ requires = [&quot;hatchling&quot;]
+diff --git a/scripts/workspaces/albatross-virtual-workspace/packages/seeds/pyproject.toml b/scripts/workspaces/albatross-virtual-workspace/packages/seeds/pyproject.toml
+index f63b97736..1022fab1b 100644
+--- a/scripts/workspaces/albatross-virtual-workspace/packages/seeds/pyproject.toml
++++ b/scripts/workspaces/albatross-virtual-workspace/packages/seeds/pyproject.toml
+@@ -2,7 +2,7 @@
+ name = &quot;seeds&quot;
+ version = &quot;1.0.0&quot;
+ requires-python = &quot;&gt;=3.12&quot;
+-dependencies = [&quot;idna==3.6&quot;]
++dependencies = [&quot;idna==3.10&quot;]
+ 
+ [build-system]
+ requires = [&quot;hatchling&quot;]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/reneleonhardt">@reneleonhardt</a> on 2025-06-10 18:55</div>
+            <div class="timeline-body"><pre><code class="language-shell">uv upgrade --recursive --types=prod,dev,extra,group
+</code></pre>
+<p><img width="1077" alt="uv upgrade" src="https://github.com/user-attachments/assets/276a5b25-2ba3-43af-baca-852b992cfa5f" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chirizxc">@chirizxc</a> on 2025-08-31 13:44</div>
+            <div class="timeline-body"><p>Hi, maybe make this PR code as a separate package? like https://github.com/nyudenkov/pysentry?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Alan-Chen99">@Alan-Chen99</a> on 2025-11-02 18:07</div>
+            <div class="timeline-body"><p>This seems to only upgrade upper bounds and not lower bounds; Is this the intended behavior?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/reneleonhardt">@reneleonhardt</a> on 2025-11-05 14:24</div>
+            <div class="timeline-body"><blockquote>
+<p>This seems to only upgrade upper bounds and not lower bounds; Is this the intended behavior?</p>
+</blockquote>
+<p>In general, yes: It extends the previous upper bound to include a higher version.</p>
+<ul>
+<li>Your app depends on <code>numpy &gt; 0, &lt; 2</code></li>
+<li>uv upgrade bumps this to <code>numpy &gt; 0, &lt; 3</code> # to include 2.x</li>
+<li>If your CI breaks, or otherwise necessary or recommended in the release notes, you migrate your code to adapt to the new version</li>
+<li>If the migrated code would not be compatible to the lower bound anymore, you bump the lower bound manually to <code>numpy &gt;= 2, &lt; 3</code> to deny 1.x</li>
+</ul>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 05:52:27 UTC
+    </footer>
+</body>
+</html>

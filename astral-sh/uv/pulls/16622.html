@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reject ambiguously parsed URLs - astral-sh/uv #16622</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Reject ambiguously parsed URLs</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/16622">#16622</a>
+        opened by <a href="https://github.com/woodruffw">@woodruffw</a>
+        on 2025-11-06 21:43
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/woodruffw">@woodruffw</a> on 2025-11-06 21:43</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This tweaks <code>DisplaySafeUrl</code> to reject some ambiguous parsing cases that WHATWG and RFC 3986 otherwise consider valid. Specifically, we reject URLs where the path or fragment component <em>looks</em> like it contains a <code>user:pass</code>, indicating that the parser didn't disambiguate a userinfo section.</p>
+<p>The most common underlying reason for this is user error: if a user manually configures something like an index URL with a username or password containing a non-escaped <code>/</code> or <code>#</code>, both RFC 3986 and WHATWG treat that as the beginning of the path/fragment rather than a part of the username/password itself.</p>
+<h2>Test Plan</h2>
+<p>I've added unit and integration tests for this. There's a nonzero chance that this snares real-world URLs out there, but I think that risk is pretty small.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @woodruffw by @woodruffw on 2025-11-06 21:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/woodruffw">@woodruffw</a> reviewed on 2025-11-06 22:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/woodruffw">@woodruffw</a> on <code>crates/uv/tests/it/sync.rs</code>:14758 on 2025-11-06 22:17</div>
+            <div class="timeline-body"><p>Noting: #16623 has some discussion on why we redact the error message but not the TOML spans here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @woodruffw on 2025-11-06 22:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @woodruffw on 2025-11-06 22:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @woodruffw on 2025-11-06 22:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/woodruffw">@woodruffw</a> on <code>crates/uv-pep508/src/verbatim_url.rs</code>:98 on 2025-11-06 22:31</div>
+            <div class="timeline-body"><p>Noting: we do this over the original <code>given</code> input because we want to redact <em>everything</em> between the first <code>:</code> and the last <code>@</code>, not just the parts that happen to be in the path or fragment. We do this because it's hard to be confident that these sensitive values don't end up in other (non-path or fragment) components.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/woodruffw">@woodruffw</a> reviewed on 2025-11-06 22:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-pep508/src/verbatim_url.rs</code>:60 on 2025-11-07 15:37</div>
+            <div class="timeline-body"><p>Should we share this code with <code>DisplaySafeUrl</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @woodruffw on 2025-11-07 19:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-11-10 20:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-pep508/src/verbatim_url.rs</code>:98 on 2025-11-10 20:42</div>
+            <div class="timeline-body"><p>I'm a little confused that these aren't just chained <code>if let Some(...)</code> without the intermediate <code>path_or_fragment_is_fishy</code> variable? Then you don't need to unwrap anything?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/woodruffw">@woodruffw</a> reviewed on 2025-11-10 20:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/woodruffw">@woodruffw</a> on <code>crates/uv-pep508/src/verbatim_url.rs</code>:98 on 2025-11-10 20:47</div>
+            <div class="timeline-body"><p>The thinking there was that we want to check for those characters in <em>only</em> the <code>path</code> and/or <code>fragment</code> components, not the entire user-supplied URL (<code>given</code>). Checking across all of <code>given</code> would mean some (admittedly unlikely) false positives like:</p>
+<pre><code>https://hack:me@example.com/deeply:evil@path
+</code></pre>
+<p>(I could do a chained if-let with those components, but then we'd lose the absolute indexes into <code>given</code>.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-pep508/src/verbatim_url.rs</code>:98 on 2025-11-10 20:58</div>
+            <div class="timeline-body"><p>You can avoid the unwrapping by turning <code>path_or_fragment_is_fishy</code> into an <code>Option&lt;(usize, usize)&gt;</code> with the indexes, plus a <code>debug_assert</code> that <code>path.contains(':') &amp;&amp; path.contains('@') || fragment.contains(':') &amp;&amp; fragment.contains('@')</code> implies it's <code>Some</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-11-10 21:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-11-10 21:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-pep508/src/verbatim_url.rs</code>:98 on 2025-11-10 21:01</div>
+            <div class="timeline-body"><p>I see. I think that makes me a little more wary? i.e., we are now relying on the contents <code>fragment()</code> and <code>path()</code> of a parsed URL matching <code>given</code>? It'd be nice to be safer here, we're pretty adverse to panics.</p>
+<p>I took some time to just write an alternative commit 840586b28</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-11-10 21:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-pep508/src/verbatim_url.rs</code>:98 on 2025-11-10 21:02</div>
+            <div class="timeline-body"><p>(sorry I also re-wrapped your comments to match our usual length for the project)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/woodruffw">@woodruffw</a> reviewed on 2025-11-10 21:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/woodruffw">@woodruffw</a> on <code>crates/uv-pep508/src/verbatim_url.rs</code>:98 on 2025-11-10 21:18</div>
+            <div class="timeline-body"><blockquote>
+<p>I see. I think that makes me a little more wary? i.e., we are now relying on the contents <code>fragment()</code> and <code>path()</code> of a parsed URL matching <code>given</code>? It'd be nice to be safer here, we're pretty adverse to panics.</p>
+</blockquote>
+<p>Yeah, good callout. I can't think of a scenario in which a URL parsed from <code>given</code> wouldn't have that correspondence, but the unwraps do indeed feel icky. Thanks for rewriting it!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-11-10 21:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-pep508/src/verbatim_url.rs</code>:98 on 2025-11-10 21:20</div>
+            <div class="timeline-body"><p>I can't think of one either but I also would want a less murky invariant if we're unwrapping so we're confident it can't regress somehow.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/woodruffw">@woodruffw</a> reviewed on 2025-11-10 21:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/woodruffw">@woodruffw</a> on <code>crates/uv-pep508/src/verbatim_url.rs</code>:60 on 2025-11-10 21:21</div>
+            <div class="timeline-body"><p>Sorry, I somehow missed this review earlier. Yeah, sharing this logic between the two makes a lot of sense to me.</p>
+<p>(I see <code>VerbatimUrl</code> wraps <code>DisplaySafeUrl</code>, so perhaps it makes sense to push this check up to that layer?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-11-11 10:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-pep508/src/verbatim_url.rs</code>:60 on 2025-11-11 10:03</div>
+            <div class="timeline-body"><p>I wanted to say that <code>Url::parse()</code> is still used a lot, but it's ~all test code, so we can use <code>DisplaySafeUrl</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/woodruffw">@woodruffw</a> reviewed on 2025-11-11 12:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/woodruffw">@woodruffw</a> on <code>crates/uv-pep508/src/verbatim_url.rs</code>:60 on 2025-11-11 12:11</div>
+            <div class="timeline-body"><p>Yep! I'll do the refactor for this today.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/woodruffw">@woodruffw</a> on 2025-11-11 17:28</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/uv/pull/16622/commits/635d1f43cb14fc77cb29645786200cc119973ece pushes the logic up to the <code>DisplaySafeUrl</code> layer, but at the cost of a new error type and some invariant preservation risks. I'll flag those in comments on the diff.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/woodruffw">@woodruffw</a> reviewed on 2025-11-11 18:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/woodruffw">@woodruffw</a> on <code>crates/uv-redacted/src/lib.rs</code>:234 on 2025-11-11 18:25</div>
+            <div class="timeline-body"><p>Flagging: we end up assuming a preserved invariant here, since we don't call <code>DisplaySafeUrl::parse</code> to filter out valid-but-ambiguous URLs. I can think of a few different workarounds to this:</p>
+<ol>
+<li>Remove the <code>From&lt;...&gt;</code> impl entirely. This will cause a decent amount of code churn, since we have <code>DisplaySafeUrl::from(...)</code> sprinkled across the codebase. Instead, everything would need to go through <code>DisplaySafeUrl::parse(url.as_str())</code> or similar, i.e. go through a re-parse. @zanieb points out (and I agree) that this might be a performance risk, since we probably parse/create a <em>lot</em> of these URL objects over the lifetime of a uv run.</li>
+<li>Switch to <code>TryFrom</code> here, and devolve the ambiguity check in <code>DisplaySafeUrl::parse</code> into an associated helper so that we can reuse it. This would still require some code churn, but probably not as much as removing the <code>From</code> impl with no replacement.</li>
+</ol>
+<p>Beyond those two options, a third option is to do nothing at all and keep this exactly as it is -- the assumption will then be that we're careful to only call <code>DisplaySafeUrl::from</code> on <code>Url</code> objects that have already had their invariant checked. I <em>think</em> this is currently true, since the main place where <code>DisplaySafeUrl::from</code> seems to get used is with <code>request.url()</code>, where we presumably fed the request a URL that we already validated.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-11-11 18:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-redacted/src/lib.rs</code>:234 on 2025-11-11 18:59</div>
+            <div class="timeline-body"><p>I would reduce the number of <code>From</code> conversions (https://github.com/astral-sh/uv/pull/16689), this should even be perf-positive.</p>
+<p>The remaining ones are URLs we're reading from a request, which look like shouldn't try to do checks on them. Another option is to have an <code>fn from_url</code> that's intentionally not <code>From</code>/<code>Into</code> to annotate that this is not an always-safe conversation, and document the caveat (only call this we <code>Url</code> you already validated or that you don't want to validate).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/woodruffw">@woodruffw</a> reviewed on 2025-11-12 01:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/woodruffw">@woodruffw</a> on <code>crates/uv-redacted/src/lib.rs</code>:234 on 2025-11-12 01:43</div>
+            <div class="timeline-body"><p>Yeah, an explicit <code>from_url</code> makes sense to me -- I'll do that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @konstin on 2025-11-12 10:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2025-11-12 15:42</div>
+            <div class="timeline-body"><p>sure!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @woodruffw on 2025-11-12 16:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @woodruffw on 2025-11-12 16:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-11-12 16:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/matthuisman">@matthuisman</a> on 2025-11-17 03:47</div>
+            <div class="timeline-body"><p>I believe this change has broken local editable installs that contain @ in their directory
+https://github.com/astral-sh/uv/issues/16756</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 05:52:30 UTC
+    </footer>
+</body>
+</html>

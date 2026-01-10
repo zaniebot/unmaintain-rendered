@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allow `pip compile` to fall back to `find_best` for `--python` - astral-sh/uv #17218</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Allow `pip compile` to fall back to `find_best` for `--python`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/pull/17218">#17218</a>
+        opened by <a href="https://github.com/EliteTK">@EliteTK</a>
+        on 2025-12-22 19:16
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/EliteTK">@EliteTK</a> on 2025-12-22 19:16</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Partially address #16709.</p>
+<p>For cases when <code>uv pip compile</code> is used with <code>--python &lt;ver&gt;</code> and this flag is being honoured, allow falling back to <code>find_best</code> in cases where the python version cannot be found or downloaded.</p>
+<h2>Test Plan</h2>
+<p>A number of existing testcases already hit this and have been updated.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @EliteTK on 2025-12-22 19:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @EliteTK on 2025-12-22 19:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/EliteTK">@EliteTK</a> reviewed on 2025-12-22 19:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/EliteTK">@EliteTK</a> on <code>crates/uv/src/commands/pip/compile.rs</code>:369 on 2025-12-22 19:18</div>
+            <div class="timeline-body"><p>There's an argument to be made here that this should print the original error too... Let me know.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/EliteTK">@EliteTK</a> reviewed on 2025-12-22 19:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/EliteTK">@EliteTK</a> on <code>crates/uv/src/commands/pip/compile.rs</code>:327 on 2025-12-22 19:19</div>
+            <div class="timeline-body"><p>These are taken from <code>find_or_download</code>. Maybe this is an argument for some kind of predicate function for <code>uv_python::Error</code> so this case can be tested in one place?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/EliteTK">@EliteTK</a> reviewed on 2025-12-22 19:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/EliteTK">@EliteTK</a> on <code>crates/uv/src/commands/pip/compile.rs</code>:307 on 2025-12-22 19:22</div>
+            <div class="timeline-body"><p>The reason why <code>python_missing_download</code> is an <code>Option</code> instead of a bool is to avoid needing to check a bool <em>and</em> <code>let Some(python) = python.as_ref()</code> a second time.</p>
+<p>The reason why this exists at all is to detect the case when the attempt to download failed in the first place, I couldn't find some way of testing if an <code>interpreter</code> satisfied a specific version. If there is a way to do that, let me know, then this code can simplified.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/EliteTK">@EliteTK</a> on 2025-12-22 19:24</div>
+            <div class="timeline-body"><p>Might be a candidate for the breaking label?</p>
+<p>I guess the previous PR was too...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/EliteTK">@EliteTK</a> reviewed on 2025-12-22 19:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/EliteTK">@EliteTK</a> on <code>crates/uv/src/commands/pip/compile.rs</code>:364 on 2025-12-22 19:46</div>
+            <div class="timeline-body"><p>Maybe this should be <code>is not available and could not be downloaded</code> or it could just be <code>is not available</code> like the other message?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/EliteTK">@EliteTK</a> on 2025-12-23 00:01</div>
+            <div class="timeline-body"><p>I actually don't think this is right. We don't fall back to <code>find_best</code> for other things when <code>--python</code> is specified. e.g.</p>
+<pre><code>$ uv sync --no-python-downloads --python 3.13
+warning: Ignoring existing virtual environment linked to non-existent Python interpreter: .venv/bin/python3 -&gt; python
+error: No interpreter found for Python 3.13 in managed installations or search path
+
+hint: A managed Python download is available for Python 3.13, but Python downloads are set to 'never'
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @EliteTK on 2025-12-29 13:16</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 05:52:40 UTC
+    </footer>
+</body>
+</html>

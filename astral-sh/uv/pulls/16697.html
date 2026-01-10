@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error when a `project.license-files` glob matches nothing - astral-sh/uv #16697</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Error when a `project.license-files` glob matches nothing</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/16697">#16697</a>
+        opened by <a href="https://github.com/terror">@terror</a>
+        on 2025-11-12 02:09
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/terror">@terror</a> on 2025-11-12 02:09</div>
+            <div class="timeline-body"><p>Resolves https://github.com/astral-sh/uv/issues/16693</p>
+<p><a href="https://peps.python.org/pep-0639/#add-license-files-key"><code>PEP 639</code></a> requires build tools to error if any user-specified <code>project.license-files</code> glob fails to match a file, but uv currently allows the build to succeed and produces empty <code>.dist-info/licenses/</code> directories.</p>
+<p>This PR enforces the spec by tracking matches for each glob during metadata generation, raising a clear
+validation error when one is unmatched.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @terror on 2025-11-12 02:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @terror on 2025-11-12 02:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/terror">@terror</a> reviewed on 2025-11-12 03:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/terror">@terror</a> on <code>crates/uv-build-backend/src/metadata.rs</code>:414 on 2025-11-12 03:05</div>
+            <div class="timeline-body"><p>Should we worry about symlinks to non-files? This will probably fail at some point downstream, so something to maybe consider 🤔</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @zanieb on 2025-11-12 15:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-build-backend/src/metadata.rs</code>:376 on 2025-11-13 09:00</div>
+            <div class="timeline-body"><p>Why aren't we using <code>PortableGlobParser::Pep639</code> here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-build-backend/src/metadata.rs</code>:381 on 2025-11-13 09:05</div>
+            <div class="timeline-body"><p>(This was already wrong before)</p>
+<pre><code class="language-suggestion">                        field: &quot;project.license-files&quot;.to_string(),
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/tests/it/build_backend.rs</code>:779 on 2025-11-13 09:07</div>
+            <div class="timeline-body"><p>Can you add a second glob that matches something to test that the errors are on a per-glob basis?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-build-backend/src/metadata.rs</code>:357 on 2025-11-13 09:08</div>
+            <div class="timeline-body"><p>This field is redundant with <code>license_globs</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-build-backend/src/metadata.rs</code>:414 on 2025-11-13 09:13</div>
+            <div class="timeline-body"><p>This seems fine to not handle specifically</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-build-backend/src/metadata.rs</code>:372 on 2025-11-13 09:13</div>
+            <div class="timeline-body"><p>This variable needs a comment why we're doing this</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-build-backend/src/metadata.rs</code>:445 on 2025-11-13 09:14</div>
+            <div class="timeline-body"><p>nit: Just <code>filter</code> is simpler than <code>then_some</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-11-13 09:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/terror">@terror</a> on <code>crates/uv-build-backend/src/metadata.rs</code>:376 on 2025-11-13 17:08</div>
+            <div class="timeline-body"><p>Each one of those globs went through the PEP 639 parser, we're just calling <code>compile_matcher</code> on them here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/terror">@terror</a> reviewed on 2025-11-13 17:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/terror">@terror</a> reviewed on 2025-11-13 17:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/terror">@terror</a> on <code>crates/uv-build-backend/src/metadata.rs</code>:445 on 2025-11-13 17:19</div>
+            <div class="timeline-body"><p>I broke this out into separate <code>find</code> and <code>map</code> calls to make this more clear, using <code>filter</code> here doesn't make sense to me 🤔</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-11-14 08:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-build-backend/src/metadata.rs</code>:445 on 2025-11-14 08:12</div>
+            <div class="timeline-body"><p>You don't need to map explicitly, you can use a <code>Some((_, pattern))</code> pattern</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/terror">@terror</a> reviewed on 2025-11-14 08:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/terror">@terror</a> on <code>crates/uv-build-backend/src/metadata.rs</code>:445 on 2025-11-14 08:15</div>
+            <div class="timeline-body"><p>Ah right, just tweaked this</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Fail build when `project.license-files` globs match nothing" to "Error when a `project.license-files` glob matches nothing" by @konstin on 2025-11-14 10:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @konstin on 2025-11-14 10:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2025-11-14 10:01</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @konstin on 2025-11-14 10:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2025-11-14 10:02</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 05:52:31 UTC
+    </footer>
+</body>
+</html>

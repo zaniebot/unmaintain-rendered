@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Migrate sys_info to sysinfo - astral-sh/uv #16746</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Migrate sys_info to sysinfo</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/pull/16746">#16746</a>
+        opened by <a href="https://github.com/LIghtJUNction">@LIghtJUNction</a>
+        on 2025-11-15 14:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/LIghtJUNction">@LIghtJUNction</a> on 2025-11-15 14:03</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Migrate the usage of the <code>sys_info</code> crate to the <code>sysinfo</code> crate throughout the project.</p>
+<p>Key changes:</p>
+<ul>
+<li>Replace <code>sys_info::os_type()</code> with <code>std::env::consts::OS</code> (standardized to lowercase) or <code>sysinfo</code> equivalents for consistency.</li>
+<li>Replace <code>sys_info::os_release()</code> with <code>sysinfo::System::kernel_version()</code>.</li>
+<li>Replace <code>sys_info::linux_os_release()</code> with <code>sysinfo::System::name()</code> and <code>os_version()</code>, plus custom parsing of <code>/etc/os-release</code> for <code>VERSION_CODENAME</code> (as <code>sysinfo</code> lacks direct support).</li>
+<li>Add <code>heck</code> dependency to <code>uv-python</code> for string case conversion (e.g., title casing OS names).</li>
+<li>Update linehaul.rs and related tests to use the new system info retrieval methods.</li>
+<li>Ensure backward compatibility in user agent and distro detection.</li>
+</ul>
+<p>This migration eliminates reliance on the unmaintained <code>sys_info</code> crate, improves cross-platform system info accuracy, and aligns with modern Rust ecosystem practices.</p>
+<h2>build</h2>
+<p>ubuntu(wsl)
+<img width="1034" height="1207" alt="图片" src="https://github.com/user-attachments/assets/8a7335d8-dd36-47c6-a428-621a9e4c7690" /></p>
+<p>windows(host)
+<img width="712" height="287" alt="图片" src="https://github.com/user-attachments/assets/4da67c6c-46cc-4a0a-adad-ad732b33701f" /></p>
+<p>android(cross)
+<img width="753" height="1397" alt="图片" src="https://github.com/user-attachments/assets/cacd00ce-7645-4ecb-899a-11558cc69601" /></p>
+<h2>Test Plan</h2>
+<ul>
+<li>Compare the differences between the two libraries</li>
+<li>Download this test project, I tested it on Windows (host) and ubuntu (wsl).
+<a href="https://github.com/user-attachments/files/23561495/test_sysinfo.zip">test_sysinfo.zip</a></li>
+</ul>
+<p><img width="722" height="323" alt="图片" src="https://github.com/user-attachments/assets/0bfb4ad0-9441-420c-a35d-8c38801db273" /></p>
+<ul>
+<li>Both changes are not perfect and require developer input</li>
+</ul>
+<ol>
+<li><p>I couldn't find the method to obtain version odename in the sysinfo library. I copied the corresponding function source code directly from the sys info source code and added a private function, which is not elegant, so it still needs to be confirmed by the developer.</p>
+</li>
+<li><p>To ensure consistency, I need to add a string (std::env::consts::OS), for which I added a dependency to the heck library, I'm not sure if I agree to add a dependency, this task is very simple, if you don't want to add a dependency, you can change it to a standard library implementation.</p>
+</li>
+</ol>
+<ul>
+<li>Finally, list the specific substitutions
+sys_info::linux_os_release : remove
+id: info.version_codename --&gt; Find the source code for this function from the sys_info library and apply it.
+name: info.name --&gt; sysinfo::System::name() e.g  Some(&quot;Ubuntu&quot;)
+version: info.version_id --&gt; sysinfo::System::os_version()  Some(&quot;24.04&quot;)</li>
+</ul>
+<p>...
+sys_info::os_release() --&gt;sysinfo::System::kernel_version() e.g Some(&quot;6.6.87.2-microsoft-standard-WSL2&quot;)</p>
+<p>If you find that sysinfo provides version_codename relevant API, please alert me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @LIghtJUNction on 2025-11-15 14:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2025-11-16 00:57</div>
+            <div class="timeline-body"><p>Thanks for the contribution. From a historical perspective, I did not use sysinfo due to its performance at the time and yielding wildly different results than what's expected in linehaul for some distros (when compared to pip). Things may have changed by now though, so I believe we'll need to look at two things here:</p>
+<ol>
+<li>Compatibility: matching existing linehaul information output across different distributions (Ubuntu, Fedora, RHEL, RPI, OSX, etc.), not just WSL. Extensive manual testing was done previously across many OSes to ensure parity with existing tooling (e.g. pip). It would be great to see the user agent output for each platform (before and after) to note any differences (if any).</li>
+<li>Performance: determine how performance is impacted as sys-info only added 50us of overhead. Generally querying system information is expensive and sysinfo was prohibitively expensive at the time (in the 50+ms realm). Some hyperfine results would be great.</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2025-11-16 02:26</div>
+            <div class="timeline-body"><p>If you're trying to build uv for termux, I'd encourage you to take a look at https://github.com/termux/termux-packages/tree/master/packages/uv which shows the minimal patches needed to get uv to build for it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/LIghtJUNction">@LIghtJUNction</a> on 2025-11-16 04:18</div>
+            <div class="timeline-body"><blockquote>
+<p>Thanks for the contribution. From a historical perspective, I did not use sysinfo due to its performance at the time and yielding wildly different results than what's expected in linehaul for some distros (when compared to pip). Things may have changed by now though, so I believe we'll need to look at two things here:</p>
+<ol>
+<li>Compatibility: matching existing linehaul information output across different distributions (Ubuntu, Fedora, RHEL, RPI, OSX, etc.), not just WSL. Extensive manual testing was done previously across many OSes to ensure parity with existing tooling (e.g. pip). It would be great to see the user agent output for each platform (before and after) to note any differences (if any).</li>
+<li>Performance: determine how performance is impacted as sys-info only added 50us of overhead. Generally querying system information is expensive and sysinfo was prohibitively expensive at the time (in the 50+ms realm). Some hyperfine results would be great.</li>
+</ol>
+</blockquote>
+<p>But now is different from the past, sys-info has not been updated for a long time.Sysinfo has been updated in recent months.I can try measuring the performance difference between the two, and I can also test it on a Linux system without using WSL.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/LIghtJUNction">@LIghtJUNction</a> on 2025-11-16 04:21</div>
+            <div class="timeline-body"><blockquote>
+<p>If you're trying to build uv for termux, I'd encourage you to take a look at https://github.com/termux/termux-packages/tree/master/packages/uv which shows the minimal patches needed to get uv to build for it.</p>
+</blockquote>
+<p>Thank you, successfully compiling on termux is not very interesting. Becoming one of the contributors to UV is my goal. I will continue testing, and if I find that it is really as you described, I will close this PR. Thank you</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/LIghtJUNction">@LIghtJUNction</a> on 2025-11-16 05:07</div>
+            <div class="timeline-body"><p>Benchmark-sys-info::os_release vs sysinfo::System::kernel_version
+<img width="734" height="80" alt="图片" src="https://github.com/user-attachments/assets/5952b95f-82db-4018-94f1-67a48e984d39" /></p>
+<p>fn benchmark_os_release() {
+use std::time::Instant;</p>
+<pre><code>const ITERATIONS: u32 = 10000;
+
+// Benchmark sys_info::os_release
+let start = Instant::now();
+for _ in 0..ITERATIONS {
+    let _ = sys_info::os_release();
+}
+let duration = start.elapsed();
+println!(&quot;sys_info::os_release average time: {:.2} μs per call&quot;, duration.as_micros() as f64 / ITERATIONS as f64);
+
+// Benchmark sysinfo::System::kernel_version
+let start = Instant::now();
+for _ in 0..ITERATIONS {
+    let _ = sysinfo::System::kernel_version();
+}
+let duration = start.elapsed();
+println!(&quot;sysinfo::System::kernel_version average time: {:.2} μs per call&quot;, duration.as_micros() as f64 / ITERATIONS as f64);
+
+// Compare values
+if let (Ok(sys_info_rel), Some(sysinfo_rel)) = (sys_info::os_release(), sysinfo::System::kernel_version()) {
+    println!(&quot;Values equal: {}&quot;, sys_info_rel == sysinfo_rel);
+}</code></pre>
+<p>}</p>
+<p>Benchmark-os_type</p>
+<p><img width="1051" height="86" alt="图片" src="https://github.com/user-attachments/assets/df6b96c5-11a5-4394-b039-1e5d94bac23f" /></p>
+<p>fn benchmark_os_type() {
+use std::time::Instant;
+use heck::ToTitleCase;</p>
+<pre><code>const ITERATIONS: u32 = 10000;
+
+// Pre-fetch values to simulate initialization once
+let sys_info_os = sys_info::os_type().unwrap_or_default();
+let env_os_title = std::env::consts::OS.to_title_case();
+
+// Benchmark accessing pre-fetched sys_info value
+let start = Instant::now();
+for _ in 0..ITERATIONS {
+    let _ = &amp;sys_info_os; // Simulate reading the value
+}
+let duration = start.elapsed();
+println!(&quot;Pre-fetched sys_info::os_type value access average time: {:.2} μs per call&quot;, duration.as_micros() as f64 / ITERATIONS as f64);
+
+// Benchmark accessing pre-fetched env OS title case value
+let start = Instant::now();
+for _ in 0..ITERATIONS {
+    let _ = &amp;env_os_title; // Simulate reading the value
+}
+let duration = start.elapsed();
+println!(&quot;Pre-fetched std::env::consts::OS.to_title_case() value access average time: {:.2} μs per call&quot;, duration.as_micros() as f64 / ITERATIONS as f64);
+
+// Compare values
+println!(&quot;Values equal: {}&quot;, sys_info_os == env_os_title);</code></pre>
+<p>}
+Here the latter uses the Heck library to capitalize the initials, but the time difference is almost non-existent.</p>
+<p>Benchmark-sys-info::linux_os_release vs sysinfo::System::name() / sysinfo::System::os_version()
+This is not a fair estimate and is therefore for reference only</p>
+<p><img width="780" height="56" alt="图片" src="https://github.com/user-attachments/assets/fdefd5a9-771e-4062-a87f-5e0be4c104ff" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-11-16 16:34</div>
+            <div class="timeline-body"><p>As an aside, please don't use screenshots of text.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-11-19 09:42</div>
+            <div class="timeline-body"><p>While I agree that sysinfo looks better than sys_info, this PR is hard to review, because we need to ensure that the linehaul data doesn't have regressions from this, and we need to check this for Windows, macOS, and major Linux distros, across several versions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/LIghtJUNction">@LIghtJUNction</a> on 2025-11-21 16:43</div>
+            <div class="timeline-body"><blockquote>
+<p>While I agree that sysinfo looks better than sys_info, this PR is hard to review, because we need to ensure that the linehaul data doesn't have regressions from this, and we need to check this for Windows, macOS, and major Linux distros, across several versions.</p>
+</blockquote>
+<p>By directly comparing the source code, I found the API mappings; only one was missing. Also, feel free to modify the code here; you have a better understanding of this project. I haven't strictly followed the project's coding style here.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 05:52:32 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add SBOM export support - astral-sh/uv #16523</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add SBOM export support</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/16523">#16523</a>
+        opened by <a href="https://github.com/thomasschafer">@thomasschafer</a>
+        on 2025-10-30 19:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/thomasschafer">@thomasschafer</a> on 2025-10-30 19:26</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to uv! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+<p>This PR adds a new SBOM format (CycloneDX v1.5 JSON) to the <code>uv export</code> command.</p>
+<p>One notable point about the implementation is the use of a synthetic root when using the <code>--all-packages</code> flag. This has been discussed separately in more detail, but on a high level, it is possible for workspace packages to be disconnected from the workspace root, so if we had the workspace root as the root component in the SBOM then in such cases there would be unreachable components, which causes issues with some SBOM tooling. By having a synthetic root we ensure that all components can be reached by traversing from the root of the SBOM.</p>
+<p><img width="1346" height="1210" alt="Screenshot 2025-10-30 at 17 38 49" src="https://github.com/user-attachments/assets/98439273-91de-4874-b5c9-cae1bc4a1d62" /></p>
+<p>Resolves https://github.com/astral-sh/uv/issues/6012</p>
+<h2>Test Plan</h2>
+<p>We've tested manually using a variety of uv projects locally, and have added a variety of tests to <code>crates/uv/tests/it/export.rs</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @woodruffw by @konstin on 2025-10-31 09:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @thomasschafer on 2025-10-31 09:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/woodruffw">@woodruffw</a> on <code>crates/uv-resolver/src/lock/export/cyclonedx_json.rs</code>:174 on 2025-10-31 19:07</div>
+            <div class="timeline-body"><p>Hmm, is this from <code>PackageType</code>? If so I think we can remove this and <code>derive(Clone)</code> on <code>PackageType</code>, since it's a trivially clonable enum (all variants are bare or references).</p>
+<pre><code class="language-suggestion"></code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/woodruffw">@woodruffw</a> on <code>crates/uv-resolver/src/lock/export/cyclonedx_json.rs</code>:413 on 2025-10-31 19:07</div>
+            <div class="timeline-body"><p>Per above, this should work 🙂</p>
+<pre><code class="language-suggestion">#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/woodruffw">@woodruffw</a> on <code>crates/uv-resolver/src/lock/export/cyclonedx_json.rs</code>:185 on 2025-10-31 19:10</div>
+            <div class="timeline-body"><p>Q: why not <code>Component::new</code> here? That would save a lot of lines of <code>None</code>s:</p>
+<p>https://docs.rs/cyclonedx-bom/0.8.0/cyclonedx_bom/models/component/struct.Component.html#method.new</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/woodruffw">@woodruffw</a> on <code>crates/uv-resolver/src/lock/export/cyclonedx_json.rs</code>:249 on 2025-10-31 19:16</div>
+            <div class="timeline-body"><p>Same question about <code>Component::new</code>, although maybe it's not a good fit in this case because of <code>properties</code> 🙂</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/woodruffw">@woodruffw</a> on <code>crates/uv-resolver/src/lock/export/cyclonedx_json.rs</code>:295 on 2025-10-31 19:17</div>
+            <div class="timeline-body"><p>Nit: I think this <code>or_else</code> could be placed directly inside the match body, unless I'm missing something -- it could be the evaluation of the fallthrough <code>_</code> pattern, rather than a separate call afterwards.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/woodruffw">@woodruffw</a> on <code>crates/uv-resolver/src/lock/export/cyclonedx_json.rs</code>:340 on 2025-10-31 19:19</div>
+            <div class="timeline-body"><p>Flagging: I don't know uv workspaces well enough to know if this is right 🙂 -- @zanieb or @konstin should confirm this!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/woodruffw">@woodruffw</a> on <code>crates/uv/src/commands/project/export.rs</code>:372 on 2025-10-31 19:25</div>
+            <div class="timeline-body"><p>Q: instead of building an intermediate buffer + string, why not send <code>export.output_as_json_v1_5</code> directly to <code>writer</code>? If I'm following right, that should avoid rebuffering and allocations here.</p>
+<p>Ref: https://docs.rs/cyclonedx-bom/0.8.0/cyclonedx_bom/models/bom/struct.Bom.html#method.output_as_json_v1_5</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/woodruffw">@woodruffw</a> reviewed on 2025-10-31 19:26</div>
+            <div class="timeline-body"><p>Thanks! Some questions and nitpicks 🙂</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/thomasschafer">@thomasschafer</a> reviewed on 2025-10-31 22:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/thomasschafer">@thomasschafer</a> on <code>crates/uv-resolver/src/lock/export/cyclonedx_json.rs</code>:185 on 2025-10-31 22:59</div>
+            <div class="timeline-body"><p>Unfortunately <code>Component::new</code> requires us to pass a value for <code>version</code>, but in this case we want it to be <code>None</code> - there are also no other constructor methods we could use instead (as far as I could see)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/thomasschafer">@thomasschafer</a> reviewed on 2025-10-31 23:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/thomasschafer">@thomasschafer</a> on <code>crates/uv-resolver/src/lock/export/cyclonedx_json.rs</code>:249 on 2025-10-31 23:08</div>
+            <div class="timeline-body"><p>We could make it mutable and manually set <code>properties</code> and <code>purl</code> which can't be passed in via <code>Component::new</code>, but also <code>package.id.version</code> is an option while <code>Component::new</code> requires us to pass in a <code>&amp;str</code>, so we'd need to do something like</p>
+<pre><code class="language-rust">let mut component = Component::new(Classification::Library, name, &quot;&quot;, Some(bom_ref));
+component.version = version.as_deref().map(NormalizedString::new);
+component.purl = purl;
+component.properties = if !properties.is_empty() {
+    Some(Properties(properties))
+} else {
+    None
+};
+component
+</code></pre>
+<p>and just having the verbosity of the manual construction felt a bit cleaner! Open to changing this though if you prefer</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/thomasschafer">@thomasschafer</a> reviewed on 2025-10-31 23:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/thomasschafer">@thomasschafer</a> on <code>crates/uv-resolver/src/lock/export/cyclonedx_json.rs</code>:295 on 2025-10-31 23:12</div>
+            <div class="timeline-body"><p>The branch above i.e.</p>
+<pre><code class="language-rust">        [single_root] =&gt; nodes
+            .iter()
+            .find(|node| &amp;node.package.id.name == *single_root)
+            .map(|node| node.package),
+</code></pre>
+<p>returns an <code>Option&lt;&amp;Package&gt;</code> so the fallback applies to that too - thought it was cleaner to have the fallback in one place rather than duplicated in both arms</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/thomasschafer">@thomasschafer</a> on <code>crates/uv/src/commands/project/export.rs</code>:372 on 2025-10-31 23:24</div>
+            <div class="timeline-body"><p>Had a go at this but seeing the error below - I think it's because <code>output_as_json_v1_5</code> has a bound of <code>std::io::Write</code> which <code>OutputWriter</code> doesn't implement, it just has <code>write_fmt</code> defined</p>
+<pre><code class="language-shell">$ cargo check
+    Checking uv v0.9.7 (/Users/thomasschafer/Development/uv/crates/uv)
+error[E0277]: the trait bound `OutputWriter&lt;'_&gt;: std::io::Write` is not satisfied
+   --&gt; crates/uv/src/commands/project/export.rs:367:40
+    |
+367 |             export.output_as_json_v1_5(&amp;mut writer)?;
+    |                    ------------------- ^^^^^^^^^^^ the trait `std::io::Write` is not implemented for `OutputWriter&lt;'_&gt;`
+    |                    |
+    |                    required by a bound introduced by this call
+    |
+note: required by a bound in `cyclonedx_bom::models::bom::Bom::output_as_json_v1_5`
+   --&gt; /Users/thomasschafer/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/cyclonedx-bom-0.8.0/src/models/bom.rs:315:35
+    |
+315 |     pub fn output_as_json_v1_5&lt;W: std::io::Write&gt;(
+    |                                   ^^^^^^^^^^^^^^ required by this bound in `Bom::output_as_json_v1_5`
+
+For more information about this error, try `rustc --explain E0277`.
+error: could not compile `uv` (lib) due to 1 previous error
+</code></pre>
+<p>I could implement <code>Write</code> for <code>OutputWriter</code> if you think it's worth it? (Or I could be missing something else, let me know!)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/thomasschafer">@thomasschafer</a> reviewed on 2025-10-31 23:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/thomasschafer">@thomasschafer</a> on <code>crates/uv-resolver/src/lock/export/cyclonedx_json.rs</code>:413 on 2025-10-31 23:26</div>
+            <div class="timeline-body"><p>Done!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/thomasschafer">@thomasschafer</a> reviewed on 2025-10-31 23:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/thomasschafer">@thomasschafer</a> reviewed on 2025-10-31 23:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/thomasschafer">@thomasschafer</a> on <code>crates/uv-resolver/src/lock/export/cyclonedx_json.rs</code>:174 on 2025-10-31 23:27</div>
+            <div class="timeline-body"><p>Yes it is from <code>PackageType</code> - good point, derived <code>Copy</code> as mentioned below</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/thomasschafer">@thomasschafer</a> reviewed on 2025-10-31 23:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/thomasschafer">@thomasschafer</a> on <code>crates/uv/src/commands/project/export.rs</code>:372 on 2025-10-31 23:37</div>
+            <div class="timeline-body"><p>Was fairly straightforward to implement <code>Write</code> for <code>OutputWriter</code> and I could then remove the <code>write_fmt</code> method so pushed that up, let me know what you think</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/woodruffw">@woodruffw</a> on <code>crates/uv-resolver/src/lock/export/cyclonedx_json.rs</code>:249 on 2025-11-03 17:09</div>
+            <div class="timeline-body"><p>Nope, makes sense! A single initialization is definitely a lot better than a <code>mut</code> + setters.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/woodruffw">@woodruffw</a> reviewed on 2025-11-03 17:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/woodruffw">@woodruffw</a> reviewed on 2025-11-03 17:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/woodruffw">@woodruffw</a> on <code>crates/uv-resolver/src/lock/export/cyclonedx_json.rs</code>:295 on 2025-11-03 17:10</div>
+            <div class="timeline-body"><p>Oh, makes sense! Yeah, that's fine by me then 🙂</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/woodruffw">@woodruffw</a> on <code>crates/uv/src/commands/project/export.rs</code>:372 on 2025-11-03 17:15</div>
+            <div class="timeline-body"><p>Ah yeah, I missed that this was our own <code>OutputWriter</code> type. I have no objection to doing this all through a <code>Write</code> impl., but @konstin or @zanieb might have context on why this was done with a explicit <code>write_fmt</code> implementation before 🙂</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/woodruffw">@woodruffw</a> reviewed on 2025-11-03 17:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @woodruffw on 2025-11-03 17:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @woodruffw on 2025-11-03 17:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/woodruffw">@woodruffw</a> on <code>crates/uv/tests/it/export.rs</code>:4895 on 2025-11-04 19:44</div>
+            <div class="timeline-body"><p>Thinking out loud: these snapshots are pretty large, in part because <code>anyio==3.7.0</code> has a nontrivial number of dependencies.</p>
+<p>We definitely want to exercise the dependency paths here, but maybe we could pick a slimmer package to use for testcases here? Some candidates:</p>
+<ul>
+<li><code>urllib3</code> has fewer dependencies (particularly when no extras are used)</li>
+<li><code>cryptography</code> has very few dependencies by default, but has extras we could use to exercise dependency cases. It has relatively large wheels, however.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/woodruffw">@woodruffw</a> reviewed on 2025-11-04 19:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-resolver/src/lock/export/cyclonedx_json.rs</code>:340 on 2025-11-05 19:39</div>
+            <div class="timeline-body"><p>That's correct, but can we rewrite this code so it can't panic? If there's a bug elsewhere, we shouldn't panic (at least outside <code>debug_assert</code>), but raise a useful error.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-11-05 19:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-11-05 20:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/src/commands/project/export.rs</code>:372 on 2025-11-05 20:33</div>
+            <div class="timeline-body"><p>I like the new version better, the old one was kinda hacky.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/thomasschafer">@thomasschafer</a> reviewed on 2025-11-05 22:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/thomasschafer">@thomasschafer</a> on <code>crates/uv-resolver/src/lock/export/cyclonedx_json.rs</code>:340 on 2025-11-05 22:52</div>
+            <div class="timeline-body"><p>Sure, done!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/thomasschafer">@thomasschafer</a> on <code>crates/uv/tests/it/export.rs</code>:4895 on 2025-11-06 09:38</div>
+            <div class="timeline-body"><p>Makes sense, I've replaced instances of <code>anyio</code> with <code>urllib3</code> in the cyclonedx tests</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/thomasschafer">@thomasschafer</a> reviewed on 2025-11-06 09:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/woodruffw">@woodruffw</a> on <code>crates/uv/tests/it/export.rs</code>:5057 on 2025-11-10 19:56</div>
+            <div class="timeline-body"><p>Can we pick a smaller dep tree here too?</p>
+<p><code>urllib3</code> has tagged releases on GitHub that would probably suffice 🙂</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/woodruffw">@woodruffw</a> on <code>crates/uv/tests/it/export.rs</code>:5294 on 2025-11-10 19:56</div>
+            <div class="timeline-body"><p>Same dep tree question as above!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/woodruffw">@woodruffw</a> on <code>crates/uv/tests/it/export.rs</code>:6773 on 2025-11-10 20:03</div>
+            <div class="timeline-body"><p>Maybe <code>cryptography</code>? That should allow us to exercise wheel markers but it has fewer dependencies.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/woodruffw">@woodruffw</a> on <code>crates/uv/tests/it/export.rs</code>:7004 on 2025-11-10 20:04</div>
+            <div class="timeline-body"><p><code>cryptograhy[ssh]</code> perhaps?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/woodruffw">@woodruffw</a> on <code>crates/uv/tests/it/export.rs</code>:7204 on 2025-11-10 20:05</div>
+            <div class="timeline-body"><p>Nitpick: I think we can remove this, assuming it was here for cross-referencing when writing the test originally 🙂</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/woodruffw">@woodruffw</a> on <code>crates/uv/tests/it/export.rs</code>:7188 on 2025-11-10 20:06</div>
+            <div class="timeline-body"><p>Should this be pinned to an exact version? I imagine the snapshot will go stale here over time unless we pin.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/woodruffw">@woodruffw</a> on <code>crates/uv/tests/it/export.rs</code>:7602 on 2025-11-10 20:09</div>
+            <div class="timeline-body"><p>I'm fine with this if there isn't another easy example, but it'd be great to pick a pair with a smaller dependency closure here (to keep the snapshot minimal).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/woodruffw">@woodruffw</a> reviewed on 2025-11-10 20:15</div>
+            <div class="timeline-body"><p>Thanks @thomasschafer! I flagged a couple of additional places in the snapshots that IMO would benefit from smaller trees/more hermeticity, but otherwise this looks pretty good to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/woodruffw">@woodruffw</a> reviewed on 2025-11-10 20:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/woodruffw">@woodruffw</a> on <code>crates/uv-resolver/src/lock/export/cyclonedx_json.rs</code>:215 on 2025-11-10 20:24</div>
+            <div class="timeline-body"><p>I saw there was some discussion of this in https://github.com/astral-sh/uv/issues/6012, but I'm still murky on why this should be a <code>uv:</code> prefixed property instead of something more standard/uniform for all Python packaging -- the markers in question here are PEP 508 markers, which uv doesn't define the semantics for.</p>
+<p>(That's not a &quot;no&quot; so much as an &quot;I'd like to understand this&quot; 🙂)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-11-10 20:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-resolver/src/lock/export/cyclonedx_json.rs</code>:215 on 2025-11-10 20:26</div>
+            <div class="timeline-body"><p>ref https://github.com/CycloneDX/cyclonedx-property-taxonomy/pull/142</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-11-10 20:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-resolver/src/lock/export/cyclonedx_json.rs</code>:215 on 2025-11-10 20:28</div>
+            <div class="timeline-body"><p>I don't understand the points made there. I don't think there's a clear understanding upstream about what these markers mean?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/woodruffw">@woodruffw</a> reviewed on 2025-11-10 20:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/woodruffw">@woodruffw</a> on <code>crates/uv-resolver/src/lock/export/cyclonedx_json.rs</code>:215 on 2025-11-10 20:37</div>
+            <div class="timeline-body"><p>Yeah, I don't understand those either -- there seems to be existing precedent in their own markers for things that describe resolution as it occurred (like <code>cdx:python:package:required-extra</code>), so I don't think I understand what makes PEP 508 markers unique.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/thomasschafer">@thomasschafer</a> reviewed on 2025-11-13 12:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/thomasschafer">@thomasschafer</a> on <code>crates/uv/tests/it/export.rs</code>:7204 on 2025-11-13 12:42</div>
+            <div class="timeline-body"><p>I pretty much copied the test <a href="https://github.com/astral-sh/uv/blob/c167146f8/crates/uv/tests/it/export.rs#L364-L373">here</a> (and updated to export an SBOM) which included that comment - removed now</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/thomasschafer">@thomasschafer</a> reviewed on 2025-11-13 12:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/thomasschafer">@thomasschafer</a> on <code>crates/uv-resolver/src/lock/export/cyclonedx_json.rs</code>:215 on 2025-11-13 12:57</div>
+            <div class="timeline-body"><p>Sorry for the slow reply here - yes, I'm still not sure why they are so reluctant to have it under <code>cdx:python</code>. I think their point is that an SBOM should be specific to the final, shippable artifact, and not contain any sort of conditional inclusion. This might work for e.g. <code>sys_platform</code> markers, as we could just generate the SBOM for the relevant platform and then exclude the markers, but there are lots of other markers and I'm not sure how feasible or desirable it is to resolve all of them when generating an SBOM - what do you think? Also I'm guessing that many uv users would rather have a more complete SBOM containing the markers. It just seems like the cyclonedx-property-taxonomy maintainers are completely opposed to having markers though and I'm not sure if I'll be able to convince them otherwise 😅 We can restart that conversation in https://github.com/CycloneDX/cyclonedx-property-taxonomy/pull/142 though if you think it would be worth it!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/thomasschafer">@thomasschafer</a> reviewed on 2025-11-13 13:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/thomasschafer">@thomasschafer</a> on <code>crates/uv/tests/it/export.rs</code>:7188 on 2025-11-13 13:01</div>
+            <div class="timeline-body"><p>Good point, pinned (also updated other tests where a pinned version was missing). However, there are a bunch of tests that I didn't add which also don't have pinned versions e.g. <a href="https://github.com/astral-sh/uv/blob/e28dc6235/crates/uv/tests/it/export.rs#L123">here</a> - want me to update and pin those in this PR too?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/woodruffw">@woodruffw</a> reviewed on 2025-11-13 16:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/woodruffw">@woodruffw</a> on <code>crates/uv/tests/it/export.rs</code>:7188 on 2025-11-13 16:39</div>
+            <div class="timeline-body"><p>Oh hm, didn't realize we had others too. I think it's probably fine to leave the unrelated ones as-is, I'd rather keep the diff in this PR minimal 🙂</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/thomasschafer">@thomasschafer</a> reviewed on 2025-11-13 16:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/thomasschafer">@thomasschafer</a> on <code>crates/uv/tests/it/export.rs</code>:7188 on 2025-11-13 16:52</div>
+            <div class="timeline-body"><p>Okay makes sense</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/thomasschafer">@thomasschafer</a> reviewed on 2025-11-13 17:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/thomasschafer">@thomasschafer</a> on <code>crates/uv/tests/it/export.rs</code>:5057 on 2025-11-13 17:57</div>
+            <div class="timeline-body"><p>Done!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/thomasschafer">@thomasschafer</a> reviewed on 2025-11-13 17:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/thomasschafer">@thomasschafer</a> on <code>crates/uv/tests/it/export.rs</code>:5294 on 2025-11-13 17:58</div>
+            <div class="timeline-body"><p>Updated</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/thomasschafer">@thomasschafer</a> reviewed on 2025-11-13 17:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/thomasschafer">@thomasschafer</a> on <code>crates/uv/tests/it/export.rs</code>:6773 on 2025-11-13 17:58</div>
+            <div class="timeline-body"><p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/thomasschafer">@thomasschafer</a> reviewed on 2025-11-13 17:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/thomasschafer">@thomasschafer</a> on <code>crates/uv/tests/it/export.rs</code>:7004 on 2025-11-13 17:58</div>
+            <div class="timeline-body"><p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/thomasschafer">@thomasschafer</a> reviewed on 2025-11-13 18:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/thomasschafer">@thomasschafer</a> on <code>crates/uv/tests/it/export.rs</code>:7602 on 2025-11-13 18:01</div>
+            <div class="timeline-body"><p>I couldn't find a pair that would result in a smaller snapshot from a bit of testing. If you know of any examples let me know!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @woodruffw by @thomasschafer on 2025-11-13 18:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/woodruffw">@woodruffw</a> reviewed on 2025-11-14 15:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/woodruffw">@woodruffw</a> on <code>crates/uv-resolver/src/lock/export/cyclonedx_json.rs</code>:215 on 2025-11-14 15:28</div>
+            <div class="timeline-body"><p>We discussed this internally, and I think it's okay to keep the <code>uv:</code> namespace for now -- it's arguably pretty confusing given that markers are a fully standard aspect of Python packaging, but I think we'd rather ship this as a preview feature sooner rather than later and not depend on reaching a consensus 🙂</p>
+<p>(We could also always revisit this, if users notice and are confused/complain about the incorrect taxonomy here.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/woodruffw">@woodruffw</a> reviewed on 2025-11-14 15:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/woodruffw">@woodruffw</a> on <code>crates/uv/tests/it/export.rs</code>:7602 on 2025-11-14 15:28</div>
+            <div class="timeline-body"><p>No worries, thanks for checking!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/woodruffw">@woodruffw</a> approved on 2025-11-14 15:45</div>
+            <div class="timeline-body"><p>Thanks @thomasschafer! This looks good to me; I also ran it locally and confirmed that the output and preview warning render as expected.</p>
+<p>I'd like @zanieb or @konstin to do a last review as well for idioms if either has time 🙂</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/thomasschafer">@thomasschafer</a> reviewed on 2025-11-14 16:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/thomasschafer">@thomasschafer</a> on <code>crates/uv-resolver/src/lock/export/cyclonedx_json.rs</code>:215 on 2025-11-14 16:24</div>
+            <div class="timeline-body"><p>Okay sounds good! If we're going with the <code>uv</code> namespace, I can optionally create a PR in https://github.com/CycloneDX/cyclonedx-property-taxonomy to add this to the registered top-level namespaces with a link to some uv docs containing a taxonomy, something like <a href="https://github.com/CycloneDX/cyclonedx-property-taxonomy/pull/27">this</a> - what do you think? This isn't a hard requirement, but some users might look for it. If you do think it would be worth adding, where do you think would be best to add this taxonomy - I could add a page to the docs (in this or another PR) and then link to that?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/woodruffw">@woodruffw</a> on <code>crates/uv-resolver/src/lock/export/cyclonedx_json.rs</code>:215 on 2025-11-17 16:45</div>
+            <div class="timeline-body"><blockquote>
+<p>This isn't a hard requirement, but some users might look for it. If you do think it would be worth adding, where do you think would be best to add this taxonomy - I could add a page to the docs (in this or another PR) and then link to that?</p>
+</blockquote>
+<p>My (weak) 0.02c would be for not adding it -- I don't think we want to establish a formal API contract/expectation around this namespace, since it would ideally be part of the <code>cdx:python:</code> taxonomy in the future.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/woodruffw">@woodruffw</a> reviewed on 2025-11-17 16:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>docs/guides/export.md</code>:84 on 2025-11-17 20:55</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    Support for exporting to CycloneDX is in [preview](../concepts/preview.md), and may change in any future release.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>docs/guides/export.md</code>:62 on 2025-11-17 21:03</div>
+            <div class="timeline-body"><p>There's a number of cases where users need to export <code>requirements.txt</code>, this is something that's totally fine to do if you need to interact with a tool that only understand <code>requirements.txt</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-resolver/src/lock/export/cyclonedx_json.rs</code>:4 on 2025-11-17 21:07</div>
+            <div class="timeline-body"><p>We don't nest imports in uv</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-resolver/src/lock/export/cyclonedx_json.rs</code>:62 on 2025-11-17 21:10</div>
+            <div class="timeline-body"><p>The format in the implementation had id and name flipped</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-resolver/src/lock/export/cyclonedx_json.rs</code>:93 on 2025-11-17 21:14</div>
+            <div class="timeline-body"><p>This can use <code>unwrap_or_default()</code>, or some form of matching, I find this one a bit hard to follow.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-resolver/src/lock/export/cyclonedx_json.rs</code>:96 on 2025-11-17 21:15</div>
+            <div class="timeline-body"><p>Why is this type always pypi, even if we're donwloading from a direct URL, can you add a comment?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-resolver/src/lock/export/cyclonedx_json.rs</code>:322 on 2025-11-17 21:25</div>
+            <div class="timeline-body"><p>We should use a sorted collection here or sort later to ensure the order is deterministic</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-resolver/src/lock/export/cyclonedx_json.rs</code>:303 on 2025-11-17 21:25</div>
+            <div class="timeline-body"><p>Do we need this <code>is_local</code> check?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-cli/src/lib.rs</code>:4548 on 2025-11-17 21:31</div>
+            <div class="timeline-body"><p>nit: if we put CycloneDX in a code block, it looks like it's the flag value, while for this case, name and flag value are different.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-11-17 21:38</div>
+            <div class="timeline-body"><p>Only minor things. Overall, really good work for a first uv PR!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/thomasschafer">@thomasschafer</a> reviewed on 2025-11-18 10:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/thomasschafer">@thomasschafer</a> on <code>crates/uv-resolver/src/lock/export/cyclonedx_json.rs</code>:215 on 2025-11-18 10:14</div>
+            <div class="timeline-body"><p>Okay this makes sense!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/thomasschafer">@thomasschafer</a> on <code>docs/guides/export.md</code>:62 on 2025-11-18 11:21</div>
+            <div class="timeline-body"><p>This is just copied across from <a href="https://github.com/astral-sh/uv/blob/512c0ca5edc34f4eb932d5dd59cc86f842a8817c/docs/concepts/projects/sync.md?plain=1#L193-L194">here</a>, originally added <a href="https://github.com/astral-sh/uv/pull/6778/files#diff-bdfe85a7e0c476def2c69fd9e8de130db9d68a453c7412f97e0809b1a8695697">here</a> - happy to remove it though if you think it's no longer needed!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/thomasschafer">@thomasschafer</a> reviewed on 2025-11-18 11:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/thomasschafer">@thomasschafer</a> reviewed on 2025-11-18 12:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/thomasschafer">@thomasschafer</a> on <code>crates/uv-resolver/src/lock/export/cyclonedx_json.rs</code>:96 on 2025-11-18 12:06</div>
+            <div class="timeline-body"><p>Added a comment to explain! I also updated the logic slightly to add a <code>repository_url</code> qualifier for <code>Registry</code> sources where the URL is not <code>https://pypi.org/...</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/thomasschafer">@thomasschafer</a> reviewed on 2025-11-18 12:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/thomasschafer">@thomasschafer</a> on <code>crates/uv-resolver/src/lock/export/cyclonedx_json.rs</code>:62 on 2025-11-18 12:07</div>
+            <div class="timeline-body"><p>Ah good spot! Fixed</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/thomasschafer">@thomasschafer</a> reviewed on 2025-11-18 12:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/thomasschafer">@thomasschafer</a> on <code>crates/uv-resolver/src/lock/export/cyclonedx_json.rs</code>:4 on 2025-11-18 12:07</div>
+            <div class="timeline-body"><p>Ah I missed that - updated</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/thomasschafer">@thomasschafer</a> reviewed on 2025-11-18 12:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/thomasschafer">@thomasschafer</a> on <code>docs/guides/export.md</code>:84 on 2025-11-18 12:08</div>
+            <div class="timeline-body"><p>Updated</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/thomasschafer">@thomasschafer</a> reviewed on 2025-11-18 12:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/thomasschafer">@thomasschafer</a> on <code>crates/uv-resolver/src/lock/export/cyclonedx_json.rs</code>:93 on 2025-11-18 12:08</div>
+            <div class="timeline-body"><p>Updated to</p>
+<pre><code class="language-rust">        let version = Self::get_version_string(package)
+            .map(|v| format!(&quot;@{}&quot;, percent_encode(v.as_bytes(), PURL_ENCODE_SET)))
+            .unwrap_or_default();
+</code></pre>
+<p>Let me know if that's any better, happy to change if not!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/thomasschafer">@thomasschafer</a> reviewed on 2025-11-18 12:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/thomasschafer">@thomasschafer</a> on <code>crates/uv-cli/src/lib.rs</code>:4548 on 2025-11-18 12:09</div>
+            <div class="timeline-body"><p>Fixed - had to add an <code>#[allow(clippy::doc_markdown)]</code> as clippy was complaining otherwise</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/thomasschafer">@thomasschafer</a> reviewed on 2025-11-18 12:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/thomasschafer">@thomasschafer</a> on <code>crates/uv-resolver/src/lock/export/cyclonedx_json.rs</code>:322 on 2025-11-18 12:19</div>
+            <div class="timeline-body"><p>Added a sort later in the <code>if all_packages {</code> branch, which is the only place we are actually adding <code>workspace_member_ids</code> to the SBOM - elsewhere we are just performing lookups</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/thomasschafer">@thomasschafer</a> reviewed on 2025-11-18 12:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/thomasschafer">@thomasschafer</a> on <code>crates/uv-resolver/src/lock/export/cyclonedx_json.rs</code>:303 on 2025-11-18 12:23</div>
+            <div class="timeline-body"><p>Good point, I guess actually we don't as all workspace members will be local. Removed!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>docs/guides/export.md</code>:62 on 2025-11-18 13:15</div>
+            <div class="timeline-body"><p>oh ok, in this case we don't need to change it in this PR and can keep it copied verbatim.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-11-18 13:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-resolver/src/lock/export/cyclonedx_json.rs</code>:96 on 2025-11-18 13:16</div>
+            <div class="timeline-body"><p>great comment!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-11-18 13:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thomasschafer">@thomasschafer</a> on 2025-11-20 15:33</div>
+            <div class="timeline-body"><p>Thank you both for the comments @konstin and @woodruffw ! Anything else for me to do here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/woodruffw">@woodruffw</a> approved on 2025-11-20 17:52</div>
+            <div class="timeline-body"><p>Thanks a ton @thomasschafer! We really appreciate your hard work on this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @woodruffw on 2025-11-20 17:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @woodruffw on 2025-11-20 17:52</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 05:52:30 UTC
+    </footer>
+</body>
+</html>

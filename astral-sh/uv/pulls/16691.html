@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add `uv workspace list` to list workspace members - astral-sh/uv #16691</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add `uv workspace list` to list workspace members</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/16691">#16691</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2025-11-11 20:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/zanieb">@zanieb</a> on 2025-11-11 20:19</div>
+            <div class="timeline-body"><p>I'm a little wary here, in the sense that it might be silly to have a command that does something so simple that's covered by <code>uv workspace metadata</code>? but I think this could be stabilized much faster than <code>uv workspace metadata</code> and makes it easier to write scripts against workspace members.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @zanieb on 2025-11-11 20:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/terror">@terror</a> reviewed on 2025-11-11 22:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/terror">@terror</a> on <code>crates/uv/src/commands/workspace/list.rs</code>:20 on 2025-11-11 22:37</div>
+            <div class="timeline-body"><p>Looks like this is supposed to be:</p>
+<pre><code class="language-suggestion">    if !preview.is_enabled(PreviewFeatures::WORKSPACE_LIST) {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/terror">@terror</a> on 2025-11-11 22:43</div>
+            <div class="timeline-body"><p>Also, should we add an entry to the <a href="https://github.com/astral-sh/uv/blob/main/docs/concepts/preview.md">preview docs</a>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-11-11 22:47</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @zanieb on 2025-11-11 22:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-11-12 13:16</div>
+            <div class="timeline-body"><p>I'd go for a single API for machine-readable workspace metadata, I'd have expected this to print something more like a <code>uv pip list</code> table with names and paths.</p>
+<p>If we're worried about stabilizing <code>uv workspace metadata</code>, we can stabilize a v1.0 with only workspace member information, and have a v1.1 that populates more fields behind <code>--preview</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-11-12 14:46</div>
+            <div class="timeline-body"><blockquote>
+<p>I'd have expected this to print something more like a uv pip list table with names and paths.</p>
+</blockquote>
+<p>I'm not really into displaying tables. I think I'd expect you to pass items from here to <code>uv workspace dir --package &lt;name&gt;</code> if you want to do this simple composition.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-11-12 14:47</div>
+            <div class="timeline-body"><p>Here I'm mostly thinking of the trivial case where you want to loop over workspace members. I don't want to make people use <code>jq</code> for that?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-11-12 14:48</div>
+            <div class="timeline-body"><p>When do you need to iterate over workspace members?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-11-12 15:12</div>
+            <div class="timeline-body"><p>e.g., I need to run pytest / pyright / deptry in each workspace member</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-11-13 11:50</div>
+            <div class="timeline-body"><p>Does that mean <code>uv workspace</code> will be entirely a primarily machine-readable interface, and human readable output will go into <code>uv tree</code>(?) or another interface?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-11-13 13:55</div>
+            <div class="timeline-body"><p>I'm not sure yet. I just don't think showing the paths in this specific command is worth the added complexity, since they're <em>usually</em> just a bunch of directories next to each other and it breaks composability.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-11-13 13:59</div>
+            <div class="timeline-body"><p>We should pin down whether we want this interface to be specifically machine readable (with a specific format) or not, otherwise it will be hard to change it later. If we want it to be shell-iterable, we should commit to printing a single name per line and document that format.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-11-13 16:03</div>
+            <div class="timeline-body"><blockquote>
+<p>If we want it to be shell-iterable, we should commit to printing a single name per line and document that format.</p>
+</blockquote>
+<p>That's what I want to do here, I'm not sure why we need to document that explicitly? but I can do so. The command is just in preview though, I'm looking for concrete use-cases and feedback to guide the interface of this and the entire <code>workspace</code> namespace.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-11-14 10:06</div>
+            <div class="timeline-body"><p>I really mean just something simple in the docs:</p>
+<blockquote>
+<p>The output is one package name per line.</p>
+</blockquote>
+<p>And maybe an even more explicit:</p>
+<blockquote>
+<p>This interface is machine readable.</p>
+</blockquote>
+<p>As long as it's in preview we can change it again anyway.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2025-11-17 15:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2025-11-17 15:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-11-17 15:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-11-17 15:35</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 05:52:31 UTC
+    </footer>
+</body>
+</html>

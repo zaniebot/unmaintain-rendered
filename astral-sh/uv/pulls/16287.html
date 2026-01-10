@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fix: uv fails if requirements.txt files contain remote constraints - astral-sh/uv #16287</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fix: uv fails if requirements.txt files contain remote constraints</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/pull/16287">#16287</a>
+        opened by <a href="https://github.com/mlanett">@mlanett</a>
+        on 2025-10-13 19:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/mlanett">@mlanett</a> on 2025-10-13 19:53</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Fixes handling of remote constraint files in requirements.txt.</p>
+<p>uv would fail with &quot;Network connectivity is disabled&quot; when trying to recompile a requirements.txt that contains a remote <code>--constraint</code> directive. This is required for AWS MWAA workflows where the constraint must be in the output file.</p>
+<h2>Cause</h2>
+<p>When reading the output file to identify the existing constraints, uv operates in offline mode.
+When it encounters a remote --constraint directive in the output file and tries to process it, because it was is offline mode, it will fail with &quot;Network connectivity is disabled&quot;. This is a bug - we are not specifying offline mode.</p>
+<h2>Fix</h2>
+<p>The fix is to skip the constraints file in this case because it is not needed for preferences.</p>
+<p>This does not affect actual resolution because in true offline mode, the resolution will still fail.</p>
+<h2>Test Code</h2>
+<p>There is a new test case <code>compile_with_remote_constraint_in_output</code>.
+It sets up a mock server for the constraints file, a mock requirement, then compiles it.
+It verifies a successful output which constains the constraint.
+It adds the constraint to the output (as per MWAA), then compiles it again.
+It verifies successful output again, which would have failed previously.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-10-14 17:21</div>
+            <div class="timeline-body"><p>Can you explain more about why we want this behavior? Intuitively, it seems wrong to ignore constraints files when we would otherwise read them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @konstin on 2025-10-21 13:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mlanett">@mlanett</a> on 2025-11-12 01:12</div>
+            <div class="timeline-body"><p>My understanding is that uv reads constraints for two purposes:</p>
+<ul>
+<li>resolve dependencies</li>
+<li>read current dependencies</li>
+</ul>
+<p>The bug is that when uv is reading current dependencies, it forces the client builder into offline mode. This is reasonable because it doesn't actually need to check any remote settings at this time. However if you have a remote constraints file, then it will generate a failure. The code is simply wrong for anyone who uses remote constraint files.</p>
+<p>This fix is to skip a remote constraint files when in offline mode. Because they wouldn't get read ANYWAY, this can't be worse. What it does is to skip the failure. This has no effect on reading current dependencies (because they didn't need the remote constraints) but <em>fixes</em> the problem so people who have remote constraints no longer get a (false) failure.</p>
+<p>For the first case &quot;resolve dependencies&quot;, then this fix doesn't affect it. If someone has a remote constraint but runs in offline mode, it will still fail as expected. I believe install_constraints_respects_offline_mode at https://github.com/astral-sh/uv/blob/main/crates/uv/tests/it/pip_install.rs#L3650 verifies this already.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mlanett">@mlanett</a> on 2025-11-12 01:13</div>
+            <div class="timeline-body"><p>I think I should put this PR back into &quot;ready&quot; state.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @mlanett on 2025-11-12 01:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Fix: Support requirements.txt files which contain a remote constraint file" to "Fix: uv fails if requirements.txt files contain remote constraints" by @mlanett on 2025-11-23 19:59</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 05:52:29 UTC
+    </footer>
+</body>
+</html>
