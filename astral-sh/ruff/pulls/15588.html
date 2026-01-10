@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`ruff`] Exempt `NewType` calls where the original type is immutable (`RUF009`) - astral-sh/ruff #15588</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>ruff</code>] Exempt <code>NewType</code> calls where the original type is immutable (<code>RUF009</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/15588">#15588</a>
+        opened by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a>
+        on 2025-01-20 00:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-01-20 00:27</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Resolves #6447.</p>
+<h2>Test Plan</h2>
+<p><code>cargo nextest run</code> and <code>cargo insta test</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-01-20 00:34</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/ruff/rules/function_call_in_dataclass_default.rs</code>:190 on 2025-01-20 05:24</div>
+            <div class="timeline-body"><p>nit: should we inline this function in <code>is_immutable_newtype_call</code> ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/ruff/rules/function_call_in_dataclass_default.rs</code>:204 on 2025-01-20 05:25</div>
+            <div class="timeline-body"><p>Isn't the following also a valid form (using keyword arguments) ?</p>
+<pre><code class="language-py">from typing import NewType
+
+UserId = NewType(name=&quot;UserId&quot;, tp=int)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-01-20 05:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @dhruvmanila on 2025-01-20 05:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> reviewed on 2025-01-20 05:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on <code>crates/ruff_linter/src/rules/ruff/rules/function_call_in_dataclass_default.rs</code>:204 on 2025-01-20 05:32</div>
+            <div class="timeline-body"><p>I have never seen <code>NewType</code> being used with keyword arguments in the wild. Not to mention, Mypy <a href="https://mypy-play.net/?mypy=1.14.1&amp;python=3.13&amp;flags=strict&amp;gist=6952eb32be908326df80a5872a205a87">requires</a> that <code>NewType</code> be called with two positional arguments. Changing the logic is easy enough, but is it worth it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> reviewed on 2025-01-20 05:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on <code>crates/ruff_linter/src/rules/ruff/rules/function_call_in_dataclass_default.rs</code>:190 on 2025-01-20 05:35</div>
+            <div class="timeline-body"><p>Maybe not. The two are comparably long.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-01-20 05:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/ruff/rules/function_call_in_dataclass_default.rs</code>:204 on 2025-01-20 05:48</div>
+            <div class="timeline-body"><p>That's a good point.</p>
+<p>I don't see any mention of whether <code>NewType</code> is required to be used with positional arguments either on the Python documentation nor in any of the PEPs. I think we should support them as I see usages of that on GitHub: https://github.com/search?q=NewType(name%3D+language:Python&amp;type=code</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-01-20 09:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_semantic/src/analyze/typing.rs</code>:991 on 2025-01-20 09:50</div>
+            <div class="timeline-body"><p>Is this used anywhere?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> reviewed on 2025-01-20 13:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on <code>crates/ruff_python_semantic/src/analyze/typing.rs</code>:991 on 2025-01-20 13:23</div>
+            <div class="timeline-body"><p>If I recall correctly, it was added for completeness. Every other <code>TypeChecker</code> has a corresponding <code>is_*</code> function.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-01-20 13:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_semantic/src/analyze/typing.rs</code>:991 on 2025-01-20 13:24</div>
+            <div class="timeline-body"><p>I prefer only adding code that is used somewhere.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_semantic/src/analyze/typing.rs</code>:886 on 2025-01-20 14:37</div>
+            <div class="timeline-body"><p>I think this is unused now?</p>
+<pre><code class="language-suggestion"></code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> approved on 2025-01-20 14:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-01-20 14:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_semantic/src/analyze/typing.rs</code>:991 on 2025-01-20 14:39</div>
+            <div class="timeline-body"><p>Somehow I missed looking at this file while reviewing 🤦</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2025-01-20 14:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2025-01-20 14:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-01-20 14:51</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 20:06:10 UTC
+    </footer>
+</body>
+</html>

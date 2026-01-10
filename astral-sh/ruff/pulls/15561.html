@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`red-knot`] No `cyclic-class-def` diagnostics for subclasses of cyclic classes - astral-sh/ruff #15561</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>red-knot</code>] No <code>cyclic-class-def</code> diagnostics for subclasses of cyclic classes</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/15561">#15561</a>
+        opened by <a href="https://github.com/wooly18">@wooly18</a>
+        on 2025-01-17 22:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/wooly18">@wooly18</a> on 2025-01-17 22:22</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>Resolves #14223</p>
+<h2>Test Plan</h2>
+<p><code>cargo nextest run</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @wooly18 on 2025-01-17 22:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @wooly18 on 2025-01-17 22:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @wooly18 on 2025-01-17 22:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @wooly18 on 2025-01-17 22:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @wooly18 on 2025-01-17 22:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-01-17 22:35</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @wooly18 on 2025-01-17 22:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2025-01-17 23:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @wooly18 on 2025-01-17 23:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-01-17 23:27</div>
+            <div class="timeline-body"><p>This looks great, thank you for the contribution!</p>
+<p>The algorithm looks good, my only comments are on naming and clarity. Apologies, this is slightly bike-sheddy. I think the <code>Option&lt;bool&gt;</code> return type (and its semantics: <code>Some</code> if there is a cycle, else <code>None</code>, inner bool is true if the class itself is a participant in the cycle) are too non-obvious. I would prefer an explicit <code>InheritanceCycle</code> enum with variants <code>Inherited</code> and <code>Participant</code> (with doc comments clarifying the meaning of each), and return <code>Option&lt;InheritanceCycle&gt;</code> instead. We can define a method like <code>is_participant()</code> to make the usage of this enum in the <code>if</code> test for the diagnostic a bit more ergonomic.</p>
+<p>I'm also not sure that <code>is_involved_in_cyclic_definition</code> adds enough clarity to justify its length. I'm guessing you renamed from <code>is_cyclically_defined</code> because that seems to imply the definition of this class itself is part of the cycle? I agree with that. I'd suggest maybe just <code>inheritance_cycle()</code> as the method name, leading to usages looking like <code>class.inheritance_cycle().is_some()</code>, which reads pretty naturally?</p>
+<p>@AlexWaygood wrote this code and may also have thoughts, not sure if he'll be able to offer them before Monday, though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/wooly18">@wooly18</a> on 2025-01-18 07:18</div>
+            <div class="timeline-body"><p>Thanks for the feedback! The name changes sound good to me and I'm happy to make them soon.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:3664 on 2025-01-20 06:20</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    const fn is_participant(self) -&gt; bool {
+        matches!(self, InheritanceCycle::Participant)
+    }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-01-20 06:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:3654 on 2025-01-20 08:49</div>
+            <div class="timeline-body"><p>Using <code>///</code> over <code>//</code> has the advantage that the text shows up as documentation. It's otherwise considered an inline comment.</p>
+<pre><code class="language-suggestion">    /// The class is cyclically defined and is a participant in the cycle.
+    /// i.e., it inherits either directly or indirectly from itself.
+    Participant,
+    /// The class inherits from a class that is a `Participant` in an inheritance cycle,
+    /// but is not itself a participant.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:4064 on 2025-01-20 08:50</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        /// Return `true` if the class is cyclically defined.
+        ///
+        /// Also, populates `visited_classes` with all base classes of `self`.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-01-20 08:52</div>
+            <div class="timeline-body"><p>Nice</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:4098 on 2025-01-20 12:19</div>
+            <div class="timeline-body"><p>This function now feels like it's neither really a pure function (where you only have to worry about the return value) nor a function that only has side effects. You have to pay attention to the value the function returns, <em>and</em> you have to pay attention to the mutations it's made to the <code>visited_classes</code> set.</p>
+<p>To me it feels like it would be a bit clearer if we got rid of the return value, and instead passed in a mutable <code>bool</code> value? Usually I prefer pure functions, but here that's not possible. Something like this? (It passes all our tests for me locally)</p>
+<pre><code class="language-rs">    /// Return this class' involvement in an inheritance cycle, if any.
+    ///
+    /// A class definition like this will fail at runtime,
+    /// but we must be resilient to it or we could panic.
+    #[salsa::tracked]
+    fn inheritance_cycle(self, db: &amp;'db dyn Db) -&gt; Option&lt;InheritanceCycle&gt; {
+        /// Recursively search this class's bases searching for an inheritance cycle
+        /// and determining the cycle's participants if one exists.
+        fn search_for_cycle&lt;'db&gt;(
+            db: &amp;'db dyn Db,
+            class: Class&lt;'db&gt;,
+            classes_on_stack: &amp;mut IndexSet&lt;Class&lt;'db&gt;&gt;,
+            visited_classes: &amp;mut IndexSet&lt;Class&lt;'db&gt;&gt;,
+            found_cycle: &amp;mut bool,
+        ) {
+            for explicit_base_class in class.fully_static_explicit_bases(db) {
+                if !classes_on_stack.insert(explicit_base_class) {
+                    *found_cycle = true;
+                    return;
+                }
+
+                if visited_classes.insert(explicit_base_class) {
+                    // If we find a cycle, keep searching to check if we can reach the starting class.
+                    search_for_cycle(
+                        db,
+                        explicit_base_class,
+                        classes_on_stack,
+                        visited_classes,
+                        found_cycle,
+                    );
+                }
+
+                classes_on_stack.pop();
+            }
+        }
+
+        let mut classes_on_stack = IndexSet::new();
+        let mut visited_classes = IndexSet::new();
+        let mut found_cycle = false;
+
+        search_for_cycle(
+            db,
+            self,
+            &amp;mut classes_on_stack,
+            &amp;mut visited_classes,
+            &amp;mut found_cycle,
+        );
+
+        if !found_cycle {
+            None
+        } else if visited_classes.contains(&amp;self) {
+            Some(InheritanceCycle::Participant)
+        } else {
+            Some(InheritanceCycle::Inherited)
+        }
+    }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-01-20 12:19</div>
+            <div class="timeline-body"><p>Fantastic -- you make this look easy! Just one comment below</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-01-20 13:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:4098 on 2025-01-20 13:23</div>
+            <div class="timeline-body"><p>This seems more complicated to me (I have to declare <code>found_cycle</code>, pass it, then check it). It seems much easier to get it wrong. I also generally avoid mutating primitive types in function calls, as it can be surprising.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-01-20 13:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:4098 on 2025-01-20 13:30</div>
+            <div class="timeline-body"><p>Alright, let's just land it as it is then :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-01-20 13:31</div>
+            <div class="timeline-body"><p>Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2025-01-20 13:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-01-20 13:35</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 20:06:10 UTC
+    </footer>
+</body>
+</html>

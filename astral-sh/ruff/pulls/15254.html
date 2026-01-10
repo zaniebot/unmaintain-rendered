@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[flake8-bugbear] Catch yield in subexpressions (B901) (#14453) - astral-sh/ruff #15254</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[flake8-bugbear] Catch yield in subexpressions (B901) (#14453)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/15254">#15254</a>
+        opened by <a href="https://github.com/kaspell">@kaspell</a>
+        on 2025-01-04 12:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/kaspell">@kaspell</a> on 2025-01-04 12:40</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Currently, the B901 rule misses yield expressions that are not top-of-tree in a function body. Refactor the rule to find such yield expressions, but otherwise try to follow the flake8-bugbear implementation. Do not search for yield or yield from expressions in assignment statements, or in lambda or function call expressions.</p>
+<p>Closes #14453.</p>
+<h2>Test Plan</h2>
+<p><code>cargo test</code>. Didn't yet manage to get the ecosystem tests to run locally.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-01-04 12:46</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2025-01-06 09:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @MichaReiser on 2025-01-06 09:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_bugbear/rules/return_in_generator.rs</code>:124 on 2025-01-06 10:17</div>
+            <div class="timeline-body"><p>Thanks. I think we can simplify the implementation a fair bit by implementing <code>Visitor</code> instead of <code>StatementVisitor</code>. The difference is that <code>Visitor</code> visits expressionos by default so that you don't have to write that code yourself. This also guarantees that we find <code>yield</code> expressions in arbitary nested expressions.</p>
+<p>I also took a quick look at the upstream <a href="https://github.com/PyCQA/flake8-bugbear/blob/3a140377c8f1f585013a1566f2c8bb3ead9c329c/bugbear.py#L1256-L1291">bugbear implementation</a> and it simply skips over <code>ReturnStmts</code> (it never walks them, it only sets <code>in_return</code> to <code>true</code>).</p>
+<p>The patch would roughly be</p>
+<pre><code class="language-patch">Index: crates/ruff_linter/src/rules/flake8_bugbear/rules/return_in_generator.rs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+&lt;+&gt;UTF-8
+===================================================================
+diff --git a/crates/ruff_linter/src/rules/flake8_bugbear/rules/return_in_generator.rs b/crates/ruff_linter/src/rules/flake8_bugbear/rules/return_in_generator.rs
+--- a/crates/ruff_linter/src/rules/flake8_bugbear/rules/return_in_generator.rs	(revision 6ca384ae891a1f87b5429c2058e591a9d644d96b)
++++ b/crates/ruff_linter/src/rules/flake8_bugbear/rules/return_in_generator.rs	(date 1736158520791)
+@@ -3,7 +3,7 @@
+ use ruff_diagnostics::Diagnostic;
+ use ruff_diagnostics::Violation;
+ use ruff_macros::{derive_message_formats, ViolationMetadata};
+-use ruff_python_ast::{self as ast, visitor::Visitor, Expr, Stmt};
++use ruff_python_ast::{self as ast, visitor, visitor::Visitor, Expr, Stmt};
+ use ruff_text_size::TextRange;
+ 
+ use crate::checkers::ast::Checker;
+@@ -97,7 +97,7 @@
+     }
+ 
+     let mut visitor = ReturnInGeneratorVisitor::default();
+-    ast::statement_visitor::StatementVisitor::visit_body(&amp;mut visitor, &amp;function_def.body);
++    visitor.visit_body(&amp;function_def.body);
+ 
+     if visitor.has_yield {
+         if let Some(return_) = visitor.return_ {
+@@ -117,146 +117,33 @@
+ struct ReturnInGeneratorVisitor {
+     return_: Option&lt;TextRange&gt;,
+     has_yield: bool,
+-    yield_expr_names: HashMap&lt;String, BindState&gt;,
+-    yield_on_last_visit: bool,
+ }
+ 
+-impl ast::statement_visitor::StatementVisitor&lt;'_&gt; for ReturnInGeneratorVisitor {
++impl Visitor&lt;'_&gt; for ReturnInGeneratorVisitor {
+     fn visit_stmt(&amp;mut self, stmt: &amp;Stmt) {
+         match stmt {
+-            Stmt::Expr(ast::StmtExpr { value, .. }) =&gt; match **value {
+-                Expr::Yield(_) | Expr::YieldFrom(_) =&gt; {
+-                    self.has_yield = true;
+-                }
+-                _ =&gt; {
+-                    self.visit_expr(value);
+-                }
+-            },
+             Stmt::FunctionDef(_) =&gt; {
+                 // Do not recurse into nested functions; they're evaluated separately.
+             }
+-            Stmt::Assign(ast::StmtAssign { targets, value, .. }) =&gt; {
+-                for target in targets {
+-                    self.discover_yield_assignments(target, value);
+-                }
+-            }
+-            Stmt::AnnAssign(ast::StmtAnnAssign {
+-                target,
+-                value: Some(value),
+-                ..
+-            }) =&gt; {
+-                self.yield_on_last_visit = false;
+-                self.visit_expr(value);
+-                self.evaluate_target(target);
+-            }
+-            Stmt::Return(ast::StmtReturn {
+-                value: Some(value),
+-                range,
+-            }) =&gt; {
+-                if let Expr::Name(ast::ExprName { ref id, .. }) = **value {
+-                    if !matches!(
+-                        self.yield_expr_names.get(id.as_str()),
+-                        Some(BindState::Reassigned) | None
+-                    ) {
+-                        return;
+-                    }
+-                }
+-                self.return_ = Some(*range);
+-            }
+-            _ =&gt; ast::statement_visitor::walk_stmt(self, stmt),
+-        }
+-    }
+-}
++            Stmt::Return(ast::StmtReturn { value, range }) =&gt; {
++                if value.is_some() {
++                    self.return_ = Some(*range);
++                }
++                return;
++            }
++            _ =&gt; ast::visitor::walk_stmt(self, stmt),
++        }
++    }
+ 
+-impl Visitor&lt;'_&gt; for ReturnInGeneratorVisitor {
+     fn visit_expr(&amp;mut self, expr: &amp;Expr) {
+         match expr {
+             Expr::Yield(_) | Expr::YieldFrom(_) =&gt; {
+                 self.has_yield = true;
+-                self.yield_on_last_visit = true;
+             }
+-            Expr::Lambda(_) | Expr::Call(_) =&gt; {}
++            Expr::Lambda(_) =&gt; {
++                // Don't traverse into call statements
++            }
+             _ =&gt; ast::visitor::walk_expr(self, expr),
+         }
+     }
+ }
+-
+-impl ReturnInGeneratorVisitor {
+-    /// Determine if a target is bound to a yield or a yield from expression and,
+-    /// if so, track that target
+-    fn evaluate_target(&amp;mut self, target: &amp;Expr) {
+-        if let Expr::Name(ast::ExprName { ref id, .. }) = *target {
+-            if self.yield_on_last_visit {
+-                match self.yield_expr_names.get(id.as_str()) {
+-                    Some(BindState::Reassigned) =&gt; {}
+-                    _ =&gt; {
+-                        self.yield_expr_names
+-                            .insert(id.to_string(), BindState::Stored);
+-                    }
+-                }
+-            } else {
+-                if let Some(BindState::Stored) = self.yield_expr_names.get(id.as_str()) {
+-                    self.yield_expr_names
+-                        .insert(id.to_string(), BindState::Reassigned);
+-                }
+-            }
+-        }
+-    }
+-
+-    /// Given a target and a value, track any identifiers that are bound to
+-    /// yield or yield from expressions
+-    fn discover_yield_assignments(&amp;mut self, target: &amp;Expr, value: &amp;Expr) {
+-        match target {
+-            Expr::Name(_) =&gt; {
+-                self.yield_on_last_visit = false;
+-                self.visit_expr(value);
+-                self.evaluate_target(target);
+-            }
+-            Expr::Tuple(ast::ExprTuple { elts: tar_elts, .. })
+-            | Expr::List(ast::ExprList { elts: tar_elts, .. }) =&gt; match value {
+-                Expr::Tuple(ast::ExprTuple { elts: val_elts, .. })
+-                | Expr::List(ast::ExprList { elts: val_elts, .. })
+-                | Expr::Set(ast::ExprSet { elts: val_elts, .. }) =&gt; {
+-                    self.discover_yield_container_assignments(tar_elts, val_elts);
+-                }
+-                Expr::Yield(_) | Expr::YieldFrom(_) =&gt; {
+-                    self.has_yield = true;
+-                    self.yield_on_last_visit = true;
+-                    self.evaluate_target(target);
+-                }
+-                _ =&gt; {}
+-            },
+-            _ =&gt; {}
+-        }
+-    }
+-
+-    fn discover_yield_container_assignments(&amp;mut self, targets: &amp;[Expr], values: &amp;[Expr]) {
+-        for (target, value) in targets.iter().zip(values) {
+-            match target {
+-                Expr::Tuple(ast::ExprTuple { elts: tar_elts, .. })
+-                | Expr::List(ast::ExprList { elts: tar_elts, .. })
+-                | Expr::Set(ast::ExprSet { elts: tar_elts, .. }) =&gt; {
+-                    match value {
+-                        Expr::Tuple(ast::ExprTuple { elts: val_elts, .. })
+-                        | Expr::List(ast::ExprList { elts: val_elts, .. })
+-                        | Expr::Set(ast::ExprSet { elts: val_elts, .. }) =&gt; {
+-                            self.discover_yield_container_assignments(tar_elts, val_elts);
+-                        }
+-                        Expr::Yield(_) | Expr::YieldFrom(_) =&gt; {
+-                            self.has_yield = true;
+-                            self.yield_on_last_visit = true;
+-                            self.evaluate_target(target);
+-                        }
+-                        _ =&gt; {}
+-                    };
+-                }
+-                Expr::Name(_) =&gt; {
+-                    self.yield_on_last_visit = false;
+-                    self.visit_expr(value);
+-                    self.evaluate_target(target);
+-                }
+-                _ =&gt; {}
+-            }
+-        }
+-    }
+-}
+</code></pre>
+<p>This patch goes beyond what bugbear does because bugbear only considers <code>yield</code> in expression statements. Doing exactly what bugbear wouldn't allow us to address the example raised in the issue.</p>
+<p>But I feel like I'm missing an important point because I also see that you added some special handling around <code>return</code> that goes beyond what the bugbear rule does. can you tell me more about the motivation for it?</p>
+<p>Note: The bugbear rule also skips this rule when:</p>
+<blockquote>
+<pre><code># If the user explicitly wrote the 3-argument version of Generator as the
+# return annotation, they probably know what they were doing.
+</code></pre>
+</blockquote>
+<p>This could be a nice addition but doesn't need to be part of this PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-01-06 10:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/kaspell">@kaspell</a> reviewed on 2025-01-06 21:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/kaspell">@kaspell</a> on <code>crates/ruff_linter/src/rules/flake8_bugbear/rules/return_in_generator.rs</code>:124 on 2025-01-06 21:40</div>
+            <div class="timeline-body"><blockquote>
+<p>But I feel like I'm missing an important point because I also see that you added some special handling around return that goes beyond what the bugbear rule does. can you tell me more about the motivation for it?</p>
+</blockquote>
+<p>I think I might have got a bit carried away there by trying to cover as many scenarios as I could think of instead of trying to match the bugbear behavior (to be honest, it only now occurred to me that that might have been the goal!). The idea was that a function returning a variable can be valid or invalid depending on what the variable holds, e.g.</p>
+<pre><code>def f():
+    x = yield from []
+    return x
+	
+def g():
+    x = 0
+    yield from []
+    return x
+</code></pre>
+<p>which would then necessitate some inference on what it is that the function is returning. I can totally drop that part if it's preferable to as closely as possible match what bugbear does!</p>
+<p>Ty for the suggestions and the tip on Visitor! I'll adjust the approach based on these examples, with now a better idea of the constraints involved.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-01-07 09:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_bugbear/rules/return_in_generator.rs</code>:124 on 2025-01-07 09:32</div>
+            <div class="timeline-body"><p>Oh I see, thanks. Covering assignments already means we go beyond what bugbear does. So just matching &quot;bugbear&quot; is a bit tricky 😅</p>
+<p>@AlexWaygood what's your take on this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/kaspell">@kaspell</a> reviewed on 2025-01-11 14:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/kaspell">@kaspell</a> on <code>crates/ruff_linter/src/rules/flake8_bugbear/rules/return_in_generator.rs</code>:124 on 2025-01-11 14:40</div>
+            <div class="timeline-body"><p>Alright, this time there should be subexpression traversal without otherwise straying too much from the bugbear implementation.</p>
+<p>This seems to have required skipping assignment statements when searching for <code>yield</code> or <code>yield from</code> expressions. Bugbear doesn't check for them either but this means that, for example, one of the functions raised in the original issue:</p>
+<pre><code>def f():
+    x = yield
+    print(x)
+    return 42
+</code></pre>
+<p>isn't currently caught. This is because, without tracking the actual return values, I don't think there's a way to catch this while at the same time respecting some of the existing example functions, such as:</p>
+<pre><code>def not_broken7():
+    x = yield from []
+    return x
+</code></pre>
+<p>Aside from this, function call expressions are also ignored (which bugbear does as well). Again, without some stronger machinery, existing example functions such as</p>
+<pre><code>def not_broken8():
+    x = None
+
+    def inner(ex):
+        nonlocal x
+        x = ex
+
+    inner((yield from []))
+    return x
+</code></pre>
+<p>would fail. Let me know if these sound like good tradeoffs, or if you noticed something that I missed!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_bugbear/rules/return_in_generator.rs</code>:126 on 2025-01-20 11:07</div>
+            <div class="timeline-body"><p>Would you mind adding a comment why we aren't traversing into assignments</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_bugbear/rules/return_in_generator.rs</code>:124 on 2025-01-20 11:21</div>
+            <div class="timeline-body"><p>These are great considerations! I'm somewhat inclined to leave the rule as is now, seeing that there are so many valid edge cases that I didn't consider, and re-visit the rule once we have a more precise type inference (to know if the returned value is a generator or not).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-01-20 11:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/kaspell">@kaspell</a> reviewed on 2025-01-20 20:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/kaspell">@kaspell</a> on <code>crates/ruff_linter/src/rules/flake8_bugbear/rules/return_in_generator.rs</code>:124 on 2025-01-20 20:09</div>
+            <div class="timeline-body"><p>Sure! That makes sense. Previously I tried to find something like that but didn't come across anything.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_bugbear/rules/return_in_generator.rs</code>:124 on 2025-01-21 07:34</div>
+            <div class="timeline-body"><p>Thanks for being so understanding and I'm sorry that I incorrectly marked the issue as &quot;good first issue&quot; which it clearly wasn't.</p>
+<p>Thanks again for your work. This was a great PR and you navigated the complexity well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-01-21 07:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-01-21 07:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/kaspell">@kaspell</a> reviewed on 2025-01-21 18:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/kaspell">@kaspell</a> on <code>crates/ruff_linter/src/rules/flake8_bugbear/rules/return_in_generator.rs</code>:124 on 2025-01-21 18:02</div>
+            <div class="timeline-body"><p>Ty! Absolutely np, was fun to work on this regardless!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 20:06:10 UTC
+    </footer>
+</body>
+</html>

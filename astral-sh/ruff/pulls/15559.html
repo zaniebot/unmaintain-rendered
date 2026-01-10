@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`pylint`] Include name of base class in message for `redefined-slots-in-subclass` (`W0244`) - astral-sh/ruff #15559</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>pylint</code>] Include name of base class in message for <code>redefined-slots-in-subclass</code> (<code>W0244</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/15559">#15559</a>
+        opened by <a href="https://github.com/dylwil3">@dylwil3</a>
+        on 2025-01-17 22:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-01-17 22:10</div>
+            <div class="timeline-body"><p>In the following situation:</p>
+<pre><code class="language-python">class Grandparent:
+  __slots__ = &quot;a&quot;
+
+class Parent(Grandparent): ...
+
+class Child(Parent):
+  __slots__ = &quot;a&quot;
+</code></pre>
+<p>the message for <code>W0244</code> now specifies that <code>a</code> is overwriting a slot from <code>Grandparent</code>.</p>
+<p>To implement this, we introduce a helper function <code>iter_super_classes</code> which does a breadth-first traversal of the superclasses of a given class (as long as they are defined in the same file, due to the usual limitations of the semantic model).</p>
+<p>Note: Python does not allow conflicting slots definitions under multiple inheritance. Unless I'm misunderstanding something, I believe It follows that the subposet of superclasses of a given class that redefine a given slot is in fact totally ordered. There is therefore a unique <em>nearest</em> superclass whose slot is being overwritten. So, you know, in case anyone was super worried about that... you can just chill.</p>
+<p>This is a followup to #9640 .</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">diagnostics</span> added by @dylwil3 on 2025-01-17 22:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-01-17 22:18</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/pylint/rules/redefined_slots_in_subclass.rs</code>:72 on 2025-01-18 04:56</div>
+            <div class="timeline-body"><p>I think we should change the function name as it's now returning a <code>Diagnostic</code> and not a boolean. Maybe <code>check_super_slots</code> or something similar?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/pylint/snapshots/ruff_linter__rules__pylint__tests__PLW0244_redefined_slots_in_subclass.py.snap</code>:4 on 2025-01-18 04:57</div>
+            <div class="timeline-body"><p>nit: &quot;Slot <code>a</code> redefined from base class <code>Base</code>&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_semantic/src/analyze/class.rs</code>:82 on 2025-01-18 05:01</div>
+            <div class="timeline-body"><p>What's the reason for doing breadth-first? I think the original implementation did depth-first traversal.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-01-18 05:02</div>
+            <div class="timeline-body"><p>This looks great, thanks for following up quickly on this!</p>
+<p>I just have one question about whether to use depth-first or breath-first traversal otherwise this looks good to go.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dylwil3">@dylwil3</a> reviewed on 2025-01-18 11:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dylwil3">@dylwil3</a> on <code>crates/ruff_python_semantic/src/analyze/class.rs</code>:82 on 2025-01-18 11:19</div>
+            <div class="timeline-body"><p>I guess my intuition is that the superclass graph will usually be deeper than it is wide (but maybe that assumption is off), and that the width is often pretty small in any event. Does that seem right to you?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dylwil3">@dylwil3</a> reviewed on 2025-01-18 15:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dylwil3">@dylwil3</a> on <code>crates/ruff_python_semantic/src/analyze/class.rs</code>:82 on 2025-01-18 15:50</div>
+            <div class="timeline-body"><p>To save you the re-review, I'm gonna merge this in. But if you wake up in the middle of the night shouting &quot;depth first!&quot; I will be happy to change it back 😄</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dylwil3 on 2025-01-18 15:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dylwil3 on 2025-01-18 15:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-01-20 06:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_semantic/src/analyze/class.rs</code>:82 on 2025-01-20 06:41</div>
+            <div class="timeline-body"><p>Haha, no worries.</p>
+<blockquote>
+<p>I guess my intuition is that the superclass graph will usually be deeper than it is wide (but maybe that assumption is off), and that the width is often pretty small in any event. Does that seem right to you?</p>
+</blockquote>
+<p>I'm not sure about this but I don't think this should necessarily affect the performance if that's your concern. One minor nit would be the usage of <code>VecDeque</code> in which the elements in memory are not guaranteed to be contiguous compared to <code>Vec</code>. This also makes the implementation inconsistent with the similar function in the same module <code>any_base_class</code>.</p>
+<p>That said, we don't need to change anything here right now.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 20:06:10 UTC
+    </footer>
+</body>
+</html>
