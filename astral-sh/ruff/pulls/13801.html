@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] revert change to emit fewer division by zero errors - astral-sh/ruff #13801</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] revert change to emit fewer division by zero errors</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/13801">#13801</a>
+        opened by <a href="https://github.com/carljm">@carljm</a>
+        on 2024-10-17 18:52
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/carljm">@carljm</a> on 2024-10-17 18:52</div>
+            <div class="timeline-body"><p>This reverts https://github.com/astral-sh/ruff/pull/13799, and restores the previous behavior, which I think was the most pragmatic and useful version of the divide-by-zero error, if we will emit it at all.</p>
+<p>In general, a type checker <em>does</em> emit diagnostics when it can detect something that will definitely be a problem for some inhabitants of a type, but not others. For example, <code>x.foo</code> if <code>x</code> is typed as <code>object</code> is a type error, even though some inhabitants of the type <code>object</code> will have a <code>foo</code> attribute! The correct fix is to make your type annotations more precise, so that <code>x</code> is assigned a type which definitely has the <code>foo</code> attribute.</p>
+<p>If we will emit it divide-by-zero errors, it should follow the same logic. Dividing an inhabitant of the type <code>int</code> by zero may not emit an error, if the inhabitant is an instance of a subclass of <code>builtins.int</code> that overrides division. But it may emit an error (more likely it will). If you don't want the diagnostic, you can clarify your type annotations to require an instance of your safe subclass.</p>
+<p>Because the Python type system doesn't have the ability to explicitly reflect the fact that divide-by-zero is an error in type annotations (e.g. for <code>int.__truediv__</code>), or conversely to declare a type as safe from divide-by-zero, or include a &quot;nonzero integer&quot; type which it is always safe to divide by, the analogy doesn't fully apply. You can't explicitly mark your subclass of <code>int</code> as safe from divide-by-zero, we just semi-arbitrarily choose to silence the diagnostic for subclasses, to avoid false positives.</p>
+<p>Also, if we fully followed the above logic, we'd have to error on every <code>int / int</code> because the RHS <code>int</code> might be zero! But this would likely cause too many false positives, because of the lack of a &quot;nonzero integer&quot; type.</p>
+<p>So this is just a pragmatic choice to emit the diagnostic when it is very likely to be an error. It's unclear how useful this diagnostic is in practice, but this version of it is at least very unlikely to cause harm.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @carljm on 2024-10-17 18:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @carljm on 2024-10-17 18:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @carljm on 2024-10-17 18:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-10-17 18:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/binary/integers.md</code>:29 on 2024-10-17 18:54</div>
+            <div class="timeline-body"><p>Maybe we should keep this test, but assert the opposite thing, and paste in your great PR description there as a prose introduction to why we're making the assertion the way we are?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-17 18:56</div>
+            <div class="timeline-body"><blockquote>
+<p>The correct fix is to make your type annotations more precise, so that <code>x</code> is assigned a type which definitely has the <code>foo</code> attribute.</p>
+</blockquote>
+<p>Hmm, this doesn't really apply for the &quot;divide-by-zero&quot; case though, right? There's no way to annotate an int subclass to indicate to the type checker that <code>__truediv__</code> never raises <code>ZeroDivisionError</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-10-17 19:06</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-10-17 19:10</div>
+            <div class="timeline-body"><blockquote>
+<p>Hmm, this doesn't really apply for the &quot;divide-by-zero&quot; case though, right? There's no way to annotate an int subclass to indicate to the type checker that <code>__truediv__</code> never raises <code>ZeroDivisionError</code></p>
+</blockquote>
+<p>No, you're right, it doesn't apply precisely, because this isn't expressible in type annotations. But it can still sort of apply, if we just generally decide not to emit the error on subtypes of <code>int</code> and <code>float</code> (which was the previous behavior.)</p>
+<p>The other issue here is that really if we followed the above logic fully, we'd emit a divide-by-zero warning on every <code>int / int</code>, because zero is an inhabitant of <code>int</code>, so it might raise the error. But this is impractical, because most of the time it won't be zero, and there isn't a &quot;nonzero integer&quot; type available in the Python type system.</p>
+<p>So if we go back to the previous behavior, we're really making a pragmatic decision about what is more likely, so we can emit a diagnostic that's really outside the type system. We're saying that &quot;usually&quot; something typed as <code>int</code> is an int, and if it's a custom subclass you can reasonably type it as your custom subclass instead, and then we'll just not emit this diagnostic. And usually an integer is not zero, so we won't emit this diagnostic unless we know the divisor is zero for sure.</p>
+<p>If we are going to emit divide-by-zero diagnostics at all, I still think that's the right pragmatic tradeoff. But I'm also not sure how <em>useful</em> that is -- if you are dividing by a literal zero, it'll always fail at runtime, and it's likely pretty obvious in the source code as well, so how useful is this diagnostic, really? So all this discussion is also just making me feel tempted to rip out this diagnostic entirely, and just say this is outside the type system. Which I think is the only pedantically correct thing to do here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-17 19:22</div>
+            <div class="timeline-body"><blockquote>
+<p>But I'm also not sure how <em>useful</em> that is -- if you are dividing by a literal zero, it'll always fail at runtime</p>
+</blockquote>
+<p>Right... but it could be in a branch rarely taken. To invent a silly scenario, it might be a branch that's only taken if the date indicates it's a leap year or whatever. You might accidentally leave in a <code>1/0</code> you added while debugging, then get really annoyed when three years later your code crashes because you left it in. (More fool you for having bad test coverage, I guess, but it <em>would</em> be cool if we could catch that!)</p>
+<p>So, I guess you have persuaded me that this revert is a good idea, and that the behaviour we had yesterday was a useful one: in situations where the type is inferred as being an <code>int</code>, (and not some subclass of <code>int</code>), we emit the diagnostic; but if we infer it as being an instance of any subclass of <code>int</code>, we do not.</p>
+<p>(FWIW, an argument in favour of your position is that neither mypy nor pyright complains about <code>1 / 0</code>.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-17 19:23</div>
+            <div class="timeline-body"><p>(And I think you are correct that, pedantically, this is outside the type system!)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-10-17 19:54</div>
+            <div class="timeline-body"><p>I suppose in principle you can use overloads to annotate something like this:</p>
+<pre><code>@overload
+def __truediv__(self, divisor: Literal[0]) -&gt; NoReturn: ...
+@overload
+def __truediv__(self, divisor: int) -&gt; float: ...
+</code></pre>
+<p>But this still wouldn't give a clear diagnostic.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-10-17 20:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/binary/integers.md</code>:53 on 2024-10-17 20:00</div>
+            <div class="timeline-body"><p>I think you need to define <code>MyInt</code> (this PR deletes it currently)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-10-17 20:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/binary/integers.md</code>:53 on 2024-10-17 20:10</div>
+            <div class="timeline-body"><p>It's defined four lines above here, on line 51.</p>
+<p>It doesn't actually implement <code>__truediv__</code> to do anything different. I think that's a distraction, since it's irrelevant to the logic we actually implement, which just always silences the diagnostic for all subclasses.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-10-17 20:11</div>
+            <div class="timeline-body"><p>I would still lean toward &quot;it's not worth emitting this as a diagnostic at all.&quot; But I've updated the PR to implement (and explain and test) what I think the best / most pragmatic version of the diagnostic is.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/binary/integers.md</code>:53 on 2024-10-17 20:11</div>
+            <div class="timeline-body"><blockquote>
+<p>It's defined four lines above here, on line 51.</p>
+</blockquote>
+<p>🤦 sorry, trying to do too many things at once</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-10-17 20:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2024-10-17 20:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @carljm on 2024-10-17 20:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2024-10-17 20:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-10-17 20:17</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:00:08 UTC
+    </footer>
+</body>
+</html>

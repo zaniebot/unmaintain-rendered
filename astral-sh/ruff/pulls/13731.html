@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`pylint`] - restrict `iteration-over-set` to only work on sets of literals (`PLC0208`) - astral-sh/ruff #13731</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>pylint</code>] - restrict <code>iteration-over-set</code> to only work on sets of literals (<code>PLC0208</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/13731">#13731</a>
+        opened by <a href="https://github.com/diceroll123">@diceroll123</a>
+        on 2024-10-13 18:50
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/diceroll123">@diceroll123</a> on 2024-10-13 18:50</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Restricts <code>iteration-over-set</code> to only work on sets of literals. There are valid use cases for iterating over a set, for de-duplication purposes.</p>
+<p>Fixes #11694</p>
+<h2>Test Plan</h2>
+<p><code>cargo test</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/diceroll123">@diceroll123</a> on 2024-10-13 18:57</div>
+            <div class="timeline-body"><p>I'm on the fence about still emitting a diagnostic without a fix even for &quot;intentional&quot; use of a set iteration, please advise. 😄</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-10-13 19:04</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2024-10-14 16:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @MichaReiser on 2024-10-14 16:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pylint/rules/iteration_over_set.rs</code>:54 on 2024-10-14 16:13</div>
+            <div class="timeline-body"><p>Technically, this also applies to literals. E.g. it's possible that someone wrote <code>set(1, 2, 2)</code> where fixing it to <code>[1, 2, 2]</code> would result in a semantic change.</p>
+<p>That's why I'm inclined that we should instead use <code>ComparableExpr</code> to test if no two set entries are identical. See e.g.</p>
+<p>https://github.com/astral-sh/ruff/blob/aa0db338d935aa40fafaa05feff7343c42491d8e/crates/ruff_linter/src/rules/pyflakes/rules/repeated_keys.rs#L141</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> requested changes on 2024-10-14 16:13</div>
+            <div class="timeline-body"><p>Limiting the rule to only case where we can prove that the values are unique seems reasonable to me. Wdyt @AlexWaygood</p>
+<p>But I suggest that we use <code>ComparableExpr</code> to ensure that the literals are unique.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/diceroll123">@diceroll123</a> reviewed on 2024-10-18 04:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/diceroll123">@diceroll123</a> on <code>crates/ruff_linter/src/rules/pylint/rules/iteration_over_set.rs</code>:54 on 2024-10-18 04:03</div>
+            <div class="timeline-body"><p>Rule <code>B033</code> catches duplicate set literals, so I've made it so this only emits a diagnostic if the set literals are unique.</p>
+<p>The alternative is that we can still emit a diagnostic <em>without a fix</em> if the set literals are not unique. Let me know what you think! 😄</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pylint/rules/iteration_over_set.rs</code>:64 on 2024-10-18 06:24</div>
+            <div class="timeline-body"><p>Nit: We can avoid building the hash set and then exiting after we added a few values because there's a non-literal by first testing if all entries are literals</p>
+<pre><code class="language-suggestion">		if set.iter().any(|value| !value.is_literal_expr()) {
+			return;
+		}
+		
+		let mut seen_values = FxHashSet::with_capacity(set.len());
+
+    for value in set {
+        let comparable_value = ComparableExpr::from(value);
+        if !seen_values.insert(comparable_value) {
+            // if the set contains a duplicate literal value, early exit.
+            // rule `B033` can catch that.
+            return;
+        }
+     }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-10-18 06:25</div>
+            <div class="timeline-body"><p>LGTM, thank you. I'll let @AlexWaygood chime in to see if he agrees with the behavior change</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @MichaReiser on 2024-10-18 06:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/diceroll123">@diceroll123</a> reviewed on 2024-10-18 06:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/diceroll123">@diceroll123</a> on <code>crates/ruff_linter/src/rules/pylint/rules/iteration_over_set.rs</code>:64 on 2024-10-18 06:40</div>
+            <div class="timeline-body"><p>Good call. Implemented!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-21 11:13</div>
+            <div class="timeline-body"><p>I guess I'm not a massive fan of this rule in general :/</p>
+<ul>
+<li>Iteration over a list or tuple might be slightly more efficient in theory, but in practice it's a micro-optimisation that I would expect to very rarely make a difference</li>
+<li>Using a <code>set</code> rather than a tuple or list can make it clearer to readers of your code that the iteration order doesn't matter, and/or that you expect each element in the iterable to be unique</li>
+<li>Using a <code>set</code> rather than a tuple or list means you have deduplication of elements guaranteed, and means that Ruff will check your code with useful lints such as B033. With a tuple or list you could easily make an accidental typo such as <code>(1, 1, 2, 3)</code> when you meant <code>(1, 2, 3)</code>.</li>
+</ul>
+<p>However, all of that's pretty irrelevant to this PR, which I think pretty clearly makes the rule <em>better</em>!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2024-10-21 11:13</div>
+            <div class="timeline-body"><p>Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2024-10-21 11:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2024-10-21 11:14</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:00:08 UTC
+    </footer>
+</body>
+</html>

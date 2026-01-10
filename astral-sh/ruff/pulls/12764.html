@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add b040: exception with note added not re-raised or used (#12097) - astral-sh/ruff #12764</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add b040: exception with note added not re-raised or used (#12097)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/12764">#12764</a>
+        opened by <a href="https://github.com/divident">@divident</a>
+        on 2024-08-08 21:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/divident">@divident</a> on 2024-08-08 21:30</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR ports the B040 implementation from https://github.com/PyCQA/flake8-bugbear/pull/477.</p>
+<p>It checks whenever the exception is used, except for the `add_note' method.</p>
+<pre><code>def foo():
+  my_exc = ValueError() 
+  my_exc.add_note(&quot;I want to use this variable&quot;)
+  # ... but then completely forgets to raise, should trigger B040
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-08-08 21:53</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @dhruvmanila on 2024-08-09 05:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @dhruvmanila on 2024-08-09 05:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-08-15 17:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/checkers/ast/analyze/statement.rs</code>:1477 on 2024-08-15 17:00</div>
+            <div class="timeline-body"><p>The rule name is very close to <code>SIM105</code> <a href="https://docs.astral.sh/ruff/rules/suppressible-exception/"><code>suppressible-exception</code></a>.</p>
+<p>Which makes me wonder if the rule should be integrated into <code>PLW0133</code>? @AlexWaygood what do you think?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/divident">@divident</a> reviewed on 2024-08-16 14:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/divident">@divident</a> on <code>crates/ruff_linter/src/checkers/ast/analyze/statement.rs</code>:1477 on 2024-08-16 14:45</div>
+            <div class="timeline-body"><p>I agree the name is similar, but this check is about checking if there is only <code>add_note</code> executed on the exception, so it's quite different from SIM105. On the other hand it is similar to PLW0133, but this rule exists in the flake8 bugbear, so it might be worth keeping the same set of rules with upstream..</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-08-16 15:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/checkers/ast/analyze/statement.rs</code>:1477 on 2024-08-16 15:26</div>
+            <div class="timeline-body"><p>Integrating it into <code>PLW0133</code> is appealing because it's a more general rule, and I agree that this is just trying to tackle a variant of that problem.</p>
+<p>But flake8-bugbear is more popular and widely used than pylint, I think, and I believe people much more often select our <code>B</code> rules than our <code>PLW</code> rules. So I agree that consistency with flake8-bugbear is useful here.</p>
+<p>I think that when doing rule recategorisation (a medium-term goal that you don't have to worry about here @divident), we'll probably no longer have categories that refer to older linters, and at that point it would probably make sense to merge <code>PLW0133</code> and this rule. But for now I guess I'd go for a separate check, despite how similar the two rules are.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-08-17 11:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/checkers/ast/analyze/statement.rs</code>:1477 on 2024-08-17 11:57</div>
+            <div class="timeline-body"><p>It feels strange to me to introduce a new rule if we know we'll want to merge it eventually anyway. But I do see the point and redirects are relatively cheap for users.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-08-17 11:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/checkers/ast/analyze/statement.rs</code>:1477 on 2024-08-17 11:57</div>
+            <div class="timeline-body"><p>But I think we have to come up a more specific name to also make it clear that this is a very specific rule and it doesn't aim to catch all suppressed exceptions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/divident">@divident</a> reviewed on 2024-08-18 16:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/divident">@divident</a> on <code>crates/ruff_linter/src/checkers/ast/analyze/statement.rs</code>:1477 on 2024-08-18 16:39</div>
+            <div class="timeline-body"><p>What about the name &quot;add_note_exception_suppression&quot; ?</p>
+<p>A few more suggestions:</p>
+<ol>
+<li>add_note_only_exception</li>
+<li>note_only_exception_suppression</li>
+<li>exclusive_add_note_exception</li>
+<li>exception_note_only</li>
+<li>suppressed_with_add_note</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-08-19 09:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_bugbear/rules/suppressed_exception.rs</code>:103 on 2024-08-19 09:05</div>
+            <div class="timeline-body"><p>I wonder if we can simplify this code by making more use of <code>Binding</code>:</p>
+<ul>
+<li>Resolve the <code>bindings</code> of <code>name</code></li>
+<li>Iterate over all references of <code>binding</code> and<ul>
+<li>exit if any is statement (use <code>SemanticModel::statement(binding.expression_id())</code>) is a a raise statement and the target or cause is the binding node</li>
+<li>count the <code>add_note</code> calls</li>
+</ul>
+</li>
+<li>Create a diagnostic if there's at least one <code>add_note</code> call.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/divident">@divident</a> reviewed on 2024-08-19 18:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/divident">@divident</a> on <code>crates/ruff_linter/src/rules/flake8_bugbear/rules/suppressed_exception.rs</code>:103 on 2024-08-19 18:25</div>
+            <div class="timeline-body"><p>According to the upstream implementation, the following code is safe, which requires checking all <code>raise</code> statements in scope, not just those with binding</p>
+<pre><code>try:
+    ...
+except Exception as e:
+    e.add_note(&quot;...&quot;)
+    raise  # safe
+</code></pre>
+<p>On the last point, just checking for the <code>add_note</code> call is not enough, because exceptions can be used in the print, function calls etc that are considered to be safe, so I'm counting all references to them. Not sure if there is a better way to find all usages of the exception that are referenced.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-08-20 07:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_bugbear/rules/suppressed_exception.rs</code>:103 on 2024-08-20 07:19</div>
+            <div class="timeline-body"><p>I'm not sure I follow. Doesn't</p>
+<pre><code class="language-python">try: ... 
+except Exception as e: 
+    e.add_note(&quot;...&quot;) raise # safe
+</code></pre>
+<p>introduce a binding for <code>e</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/divident">@divident</a> reviewed on 2024-08-20 14:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/divident">@divident</a> on <code>crates/ruff_linter/src/rules/flake8_bugbear/rules/suppressed_exception.rs</code>:103 on 2024-08-20 14:00</div>
+            <div class="timeline-body"><p>It does, but my point is that <code>raise</code> is not included in the references list when I filter by exception name.</p>
+<pre><code>            let bindings: Vec&lt;&amp;Binding&gt; = semantic
+                .current_scope()
+                .get_all(exception_name.id.as_str())
+                .map(|binding_id| semantic.binding(binding_id))
+                .filter(|binding| matches!(binding.kind, BindingKind::UnboundException(_)))
+                .collect();
+
+
+            for binding in bindings.iter() {
+                for reference_id in binding.references() {
+                    let reference = checker.semantic().reference(reference_id);
+                    if let Some(node_id) = reference.expression_id() {
+                        let stmt = checker.semantic().statement(node_id);
+                        
+   
+                        println!(&quot;stmt={:?}&quot;, stmt);
+                       ...
+</code></pre>
+<p>prints just a <code>add_note</code> call</p>
+<pre><code>stmt=Expr(StmtExpr { range: 76..93, value: Call(ExprCall { range: 76..93, func: Attribute(ExprAttribute { range: 76..86, value: Name(ExprName { range: 76..77, id: Name(&quot;e&quot;), ctx: Load }), attr: Identifier { id: Name(&quot;add_note&quot;), range: 78..86 }, ctx: Load }), arguments: Arguments { range: 86..93, args: [StringLiteral(ExprStringLiteral { range: 87..92, value: StringLiteralValue { inner: Single
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @divident on 2024-10-05 11:51</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:00:06 UTC
+    </footer>
+</body>
+</html>

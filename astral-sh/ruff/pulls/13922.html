@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Remove lint-phase - astral-sh/ruff #13922</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Remove lint-phase</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/13922">#13922</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2024-10-25 08:50
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-25 08:50</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>The lint rules are very verbose and distracting when running the CLI and our short term goal is to build a standalone type checker, not a type aware linter.</p>
+<p>That's why I suggest removing the linting phase for now.</p>
+<h2>Test Plan</h2>
+<p><code>cargo test</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @MichaReiser on 2024-10-25 08:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @MichaReiser on 2024-10-25 08:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @MichaReiser on 2024-10-25 08:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2024-10-25 09:20</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/micha/remove-lint">CodSpeed Performance Report</a></h2>
+<h3>Merging #13922 will <strong>improve performances by 4.39%</strong></h3>
+<p><sub>Comparing <code>micha/remove-lint</code> (09b739b) with <code>main</code> (5eb87aa)</sub></p>
+<h3>Summary</h3>
+<p><code>⚡ 1</code> improvements
+<code>✅ 31</code> untouched benchmarks</p>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Benchmark | <code>main</code> | <code>micha/remove-lint</code> | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| ⚡ | <code>red_knot_check_file[incremental]</code> | 4.8 ms | 4.6 ms | +4.39% |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-10-25 09:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_workspace/src/workspace.rs</code>:548 on 2024-10-25 09:22</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    fn check_file_skips_type_checking_when_file_cant_be_read() -&gt; ruff_db::system::Result&lt;()&gt; {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-10-25 09:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_benchmark/benches/red_knot.rs</code>:60 on 2024-10-25 09:26</div>
+            <div class="timeline-body"><p>I agree that the lint rules complaining about double quotes and lines being too long just add noise and distraction. But the lint rule complaining about possibly undefined variables seems like a classic case of a &quot;lint&quot; which is core to a type checker's purpose: if we don't emit these lint diagnostics, we can't say for sure that the program is type-safe (and if we're not capable of doing this analysis significantly better than Ruff's current semantic model, we've failed).</p>
+<p>Moreover, without these lint rules being emitted, I think we're losing valuable signal about the accuracy of our control-flow analysis</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-10-25 09:28</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-10-25 09:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_benchmark/benches/red_knot.rs</code>:60 on 2024-10-25 09:31</div>
+            <div class="timeline-body"><p>Here, for example, these diagnostics indicate a serious deficiency in our control-flow analysis for exception handlers due to the fact that we don't yet understand terminal statements. That's why it's one of my monthly goals to work on that!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-10-25 10:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_benchmark/benches/red_knot.rs</code>:60 on 2024-10-25 10:33</div>
+            <div class="timeline-body"><p>I agree that this rule is useful and helps highlight deficiencies in our control flow analysis. However, I think it should be implemented as part of the type checker rather than as a separate linter phase.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-10-25 10:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_benchmark/benches/red_knot.rs</code>:60 on 2024-10-25 10:44</div>
+            <div class="timeline-body"><p>Okay, that makes sense.</p>
+<p>I would prefer to reimplement the rule as part of the type checker in this PR: otherwise we'll have to just add these entries back to the &quot;expected diagnostics&quot; list in the followup PR when we reimplement the rule. Doing it as part of the same PR reduces churn in this file. It should also help us see whether the performance improvement currently being reported is due to removing the lint phase or due to removing this rule.</p>
+<p>The rule is also very simple; it shouldn't be hard to reimplement it in this PR (just a matter of copying a couple of lines that we currently have in <code>crates/red_knot_workspace/src/lint.rs</code> to <code>crates/red_knot_python_semantic/src/types/infer.rs</code>).</p>
+<p>On the other hand, if you <em>do</em> get rid of the rule entirely in this PR, you also need to get rid of the comment on line 26 :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-10-25 10:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_benchmark/benches/red_knot.rs</code>:60 on 2024-10-25 10:57</div>
+            <div class="timeline-body"><p>I'm not very eager on implementing the rule because i worry that you'll ask me to add tests ;) but I did so anyway</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-10-25 10:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_benchmark/benches/red_knot.rs</code>:60 on 2024-10-25 10:57</div>
+            <div class="timeline-body"><p>Oh god, this breaks so many mdtests</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-10-25 11:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_benchmark/benches/red_knot.rs</code>:60 on 2024-10-25 11:01</div>
+            <div class="timeline-body"><p>Okay, moving this into <code>infer</code> is more work than I currently plan spending on this because it breaks many mdtests that use undefined variables.</p>
+<p>and just doing in <code>infer.rs</code> is too naive</p>
+<pre><code>                let ty = bindings_ty(self.db, definitions, unbound_ty);
+
+                if ty.is_unbound() {
+                    self.add_diagnostic(
+                        name.into(),
+                        &quot;unresolved-reference&quot;,
+                        format_args!(&quot;Name `{}` used when not defined&quot;, id),
+                    );
+                } else if ty.may_be_unbound(self.db) {
+                    self.add_diagnostic(
+                        name.into(),
+                        &quot;unresolved-reference&quot;,
+                        format_args!(&quot;Name `{}` used when possibly not defined&quot;, id),
+                    );
+                }
+
+                ty
+</code></pre>
+<p>We can either close this PR, or create an issue to implement said rule in <code>infer</code> and do all the follow up work</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-10-25 11:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_benchmark/benches/red_knot.rs</code>:60 on 2024-10-25 11:56</div>
+            <div class="timeline-body"><p>This illustrates to me that it's very important that we make this change soon! It makes sense to me that we should do this lint in the type-checking phase, and that errors from this lint should be reported in our mdtests. (If we <em>don't</em> report this lint in our mdtests, it opens up the possibility of us not testing what we wanted to test, because a variable in an mdtest might be undefined when we didn't want it to be.)</p>
+<p>So I think we'll have to update our mdtests to make them resilient to this rule at some point. And that means that we should make the change sooner rather than later (because the longer we defer it, the more mdtests we'll have to update when we do make the change).</p>
+<p>If you're okay with me pushing to your branch, I'd be happy to do the busywork here of moving the rule to <code>infer.rs</code> and updating the mdtests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-10-25 12:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_benchmark/benches/red_knot.rs</code>:60 on 2024-10-25 12:00</div>
+            <div class="timeline-body"><blockquote>
+<p>If you're okay with me pushing to your branch, I'd be happy to do the busywork here of moving the rule to infer.rs and updating the mdtests.</p>
+</blockquote>
+<p>Sure, feel free to go ahead (generally speaking, I don't mind other people pushing to my branch)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-10-25 13:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff_benchmark/benches/red_knot.rs</code>:60 on 2024-10-25 13:52</div>
+            <div class="timeline-body"><p>I assume this is what you're already planning, @AlexWaygood , but I hope that we can in most cases actually update the mdtests to not use undefined variables, rather than updating them to expect the undefined variable error.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-10-25 13:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_benchmark/benches/red_knot.rs</code>:60 on 2024-10-25 13:53</div>
+            <div class="timeline-body"><blockquote>
+<p>I assume this is what you're already planning, @AlexWaygood , but I hope that we can in most cases actually update the mdtests to not use undefined variables, rather than updating them to expect the undefined variable error.</p>
+</blockquote>
+<p>Yes, of course!!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-25 17:11</div>
+            <div class="timeline-body"><p>I've done the following:</p>
+<ul>
+<li>Reimplemented the rule as part of <code>infer.rs</code></li>
+<li>~~Added some logic to make sure that we don't emit the diagnostic twice on any give <code>ExprName</code> node~~ (removed, see discussion below)</li>
+<li>Split it into two separate error codes, <code>unresolved-reference</code> and <code>possibly-unresolved-reference</code>. This enables us to distinguish between these two cases easily in mdtest without asserting the full error message. (It's a bit of an anti-pattern to assert on the full error message too much in mdtest, because we might change the error message in the future, and that would result in us having to change lots of tests)</li>
+<li>Fixed our mdtest suite to pass with all these changes</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2024-10-25 17:22</div>
+            <div class="timeline-body"><p>This LGTM, but I'd now appreciate it if somebody could take a look at the changes <em>I</em> pushed to see if they make sense 😄</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/attributes.md</code>:6 on 2024-10-25 18:11</div>
+            <div class="timeline-body"><p>I think this is the best option for now, but it's a lot of boilerplate noise in a lot of tests. I look forward to rewriting these all again in the near future, once we support inferring types from parameter annotations, to use <code>def f(flag: bool): ...</code> (and put the test body inside the function) instead 😆</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2426 on 2024-10-25 18:15</div>
+            <div class="timeline-body"><p>Add this to the list of things I kinda wish we'd removed Unbound <em>before</em> doing, since it will now need to change to adapt to the removal of Unbound.</p>
+<p>On the other hand, adding this diagnostic might also make it easier to remove Unbound, since it means that our tests that assert on unboundness or maybe-unboundness now already have the ability to keep making those assertions, even after Unbound is no longer part of their revealed type. So that's good.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:296 on 2024-10-25 18:17</div>
+            <div class="timeline-body"><p>In which cases did you see duplicate diagnostics if you didn't do this?</p>
+<p>In general it is supposed to be an invariant that we don't double-infer anything, so this <em>shouldn't</em> be necessary. Unpacking assignment is one known counter-example currently.</p>
+<p>If there are non-unpacking-assignment cases where you saw duplicate diagnostics, that would be interesting, as it might reveal a bug.</p>
+<p>Unless there are so many &quot;bugs&quot; here that it turns out we just can't feasibly maintain this invariant, I would rather not add this and just have duplicate diagnostics in some tests, with TODO comments to fix those cases by not double-inferring the expression.</p>
+<p>If for some reason we can't maintain the no-double-inference invariant, it means we are going to need to generalize this hashset approach to not just unbound-names, but all diagnostics.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-10-25 18:22</div>
+            <div class="timeline-body"><p>Looks good to me! My only issue is with the duplicate-diagnostics avoidance, as commented below. Unless I'm missing something, I think I'd prefer not to include that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-10-25 18:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/attributes.md</code>:6 on 2024-10-25 18:23</div>
+            <div class="timeline-body"><p>Yes, definitely!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-10-25 18:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:296 on 2024-10-25 18:28</div>
+            <div class="timeline-body"><blockquote>
+<p>In which cases did you see duplicate diagnostics if you didn't do this?</p>
+</blockquote>
+<p>Take a look at the change to the assertions in the tomllib benchmark in this PR. Both of these diagnostics were being reported twice with the lint rule as it was previously:</p>
+<pre><code>    &quot;/src/tomllib/_parser.py:104:14: Name `char` used when possibly not defined&quot;,
+    &quot;/src/tomllib/_parser.py:115:14: Name `char` used when possibly not defined&quot;,
+</code></pre>
+<p>Both of these are false positives (due to the fact our control-flow analysis doesn't yet understand terminal statements), but neither appears to be anything to do with unpacking, as far as I can see:</p>
+<ul>
+<li>https://github.com/python/cpython/blob/591f6754b56cb7f6c31fce8c22528bdf0a99556c/Lib/tomllib/_parser.py#L104</li>
+<li>https://github.com/python/cpython/blob/591f6754b56cb7f6c31fce8c22528bdf0a99556c/Lib/tomllib/_parser.py#L115</li>
+</ul>
+<p>I'm okay with keeping the duplicate diagnostics for now if you are!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-10-25 18:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:296 on 2024-10-25 18:35</div>
+            <div class="timeline-body"><p>Oh, but now if I try running the benchmark again without the deduplication logic, I don't see it anymore.</p>
+<p>Hmm, okay. I think we <em>did</em> have duplicated diagnostics when it was implemented outside of <code>infer.rs</code>, but now it's implemented as part of <code>infer.rs</code>, we don't anymore. But for some reason I thought we still did, so tried to fix it. Argh.</p>
+<p>Anyway, you're right, we don't need any of this deduplication logic. Hooray!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2024-10-25 18:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2024-10-25 18:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-10-25 18:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-10-28 08:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2430 on 2024-10-28 08:11</div>
+            <div class="timeline-body"><p>@AlexWaygood what's the motivation for having two different rule codes? I'm in favor of specific rules, but I'm not sure if we need those fine granular diagnostic codes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-10-28 08:11</div>
+            <div class="timeline-body"><p>Thank you @AlexWaygood !</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-10-28 08:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2430 on 2024-10-28 08:39</div>
+            <div class="timeline-body"><p>Partly the motivation I gave in https://github.com/astral-sh/ruff/pull/13922#issuecomment-2438372482: it's much easier to test them robustly if we have two different codes.</p>
+<p>In the long term, I do also think it will be better for users if these are separate codes. <code>unresolved-reference</code> should be a code that we have very high confidence in; I would expect it to be seen as a massive code smell if somebody added a <code># knot: ignore[unresolved-reference]</code> comment in their Python code. <code>possibly-unresolved-reference</code> will by its nature have a lot more false positives, however, so ignoring the error might sometimes be reasonable.</p>
+<p>(For example: a variable might be defined in the body of a loop. From red-knot's perspective, all loops could potentially have zero iterations if the loop loops over an empty sequence — so variables defined as <code>T</code> in a loop are always inferred as being <code>Unbound | T</code> by red-knot from the perspective of code following the loop. But sometimes the user knows for sure that a certain loop will always have &gt;=1 iterations, meaning they can be certain that the variable is defined after the loop even if red-knot can't be. In that situation, it might be reasonable to suppress the <code>possibly-unresolved-reference</code> error that red-knot emits.)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:00:09 UTC
+    </footer>
+</body>
+</html>

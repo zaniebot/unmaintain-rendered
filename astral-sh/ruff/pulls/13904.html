@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Fallback to attributes on types.ModuleType if a symbol can't be found in locals or globals - astral-sh/ruff #13904</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Fallback to attributes on types.ModuleType if a symbol can't be found in locals or globals</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/13904">#13904</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2024-10-24 11:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-24 11:02</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>All modules in Python are instances of <code>types.ModuleType</code>. <a href="https://github.com/python/typeshed/blob/783171b9f7412823ed1a531e9c84feee755f8303/stdlib/types.pyi#L331-L344">Various attributes on <code>types.ModuleType</code> in typeshed</a> represent &quot;implicit globals&quot; that are part of the namespace of every module in Python, even if not explicitly defined. As such, before declaring that a symbol is unbound (and in fact, before looking the symbol up in the <code>builtins</code> scope) we should look the symbol up as an attribute on <code>types.ModuleType</code>. The only attributes on <code>types.ModuleType</code> that are <em>not</em> present as implicit globals are <code>__dict__</code>, <code>__getattr__</code> and <code>__init__</code>.</p>
+<h2>Test Plan</h2>
+<p>Markdown test added as <code>crates/red_knot_python_semantic/resources/mdtest/scopes/moduletype_attrs.md</code>. We also get to remove a false-positive error from the <code>tomllib</code> benchmark 🎉</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2024-10-24 11:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @AlexWaygood on 2024-10-24 11:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @AlexWaygood on 2024-10-24 11:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-10-24 11:15</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @AlexWaygood on 2024-10-24 11:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2024-10-24 11:27</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/moduletype-attrs">CodSpeed Performance Report</a></h2>
+<h3>Merging #13904 will <strong>not alter performance</strong></h3>
+<p><sub>Comparing <code>moduletype-attrs</code> (eee3e80) with <code>main</code> (7dd0c7f)</sub></p>
+<h3>Summary</h3>
+<p><code>✅ 32</code> untouched benchmarks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-10-24 11:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2371 on 2024-10-24 11:31</div>
+            <div class="timeline-body"><p>Hmmm... since we anyway have to hardcode a denylist of attributes <em>not</em> to lookup on <code>types.ModuleType</code>, I suppose I could instead have an allowlist of attributes we <em>should</em> lookup on <code>types.ModuleType</code>.</p>
+<p>That has the downside that new implicit globals might be added to the <code>types.ModuleType</code> stub in the future and we wouldn't automatically recognise them as such unless we updated our hardcoded allowlist. But it might be much better for performance.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @AlexWaygood on 2024-10-24 12:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-10-24 13:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2371 on 2024-10-24 13:49</div>
+            <div class="timeline-body"><p>Interestingly, the regression is for the incremental benchmark. The cold benchmark is barely affected. Not sure why that is. Some local profiling could help to understand the difference.</p>
+<p>To me the main question here is: How common is that we reach unbound here? If it's not very common in valid code (unless we expect specific attributes), than the performance penalty in actual code should be low.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-10-24 13:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2371 on 2024-10-24 13:52</div>
+            <div class="timeline-body"><p>One issue is that we have to lookup symbols on <code>ModuleType</code> before we look them up in the builtins scope. But it's realistically much more likely that a symbol is going to resolve to a symbol in <code>builtins</code> than that it's going to be an attribute on <code>ModuleType</code> :/ So I think it's quite common that we'd reach <code>Unbound</code> here and then have to continue to the next part of the algorithm where we look it up in <code>builtins.pyi</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-10-24 13:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2371 on 2024-10-24 13:55</div>
+            <div class="timeline-body"><p>The allowlist of names could also be created once from typeshed as a cached salsa query? Then we get effectively the same perf benefit but we'd still automatically adjust to typeshed changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-10-24 13:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2371 on 2024-10-24 13:56</div>
+            <div class="timeline-body"><p>True. But let's only do that if this is the root cause</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2371 on 2024-10-24 18:18</div>
+            <div class="timeline-body"><p>Sure -- but I would strongly suspect that the root cause has <em>something</em> to do with looking up <code>ModuleType</code> in typeshed and looking up a member on it, since that's really the only change in this diff. Currently this diff does that work for every lookup of a builtin (which are common), we could instead do it only for those names where it is relevant.</p>
+<p>So my next steps here would be to a) implement a hardcoded version of the name allowlist (because it's quick and easy) and see if that fixes the regression (I strongly suspect it will), and if so, then turn it into a Salsa query allowlist instead, so we remain robust to typeshed changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2332 on 2024-10-24 18:23</div>
+            <div class="timeline-body"><p>I think this change to the structure of the function is not necessary in this PR, and I have mixed feelings about it. One the one hand I see that it removes a couple <code>else</code> clauses and arguably makes the function structure easier to understand. On the other hand, I think it might move this function further away from the structure it will need to have when we remove <code>Type::Unbound</code>, at which point there won't be any reasonable &quot;default&quot; value to set <code>ty</code> to?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> requested changes on 2024-10-24 18:24</div>
+            <div class="timeline-body"><p>Looks good, but I do think we need to resolve the regression here, if at all possible; this is too much of an edge-case to pay that much perf for.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-10-24 18:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2332 on 2024-10-24 18:29</div>
+            <div class="timeline-body"><p>Happy to revert this change, it was just a driveby thing to improve readability</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-10-26 16:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2371 on 2024-10-26 16:39</div>
+            <div class="timeline-body"><p>Confirmed that hardcoding an allowlist rather than a denylist does fix the perf regression! The codspeed benchmarks <a href="https://codspeed.io/astral-sh/ruff/branches/moduletype-attrs">are now neutral</a> on this PR</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/scopes/moduletype_attrs.md</code>:54 on 2024-10-26 16:44</div>
+            <div class="timeline-body"><p>Minor nit: I would say module literal types here. From the perspective of the type checker, type inhabitants are theoretical runtime objects, which we don't have access to, since we aren't the runtime. So we can't access an attribute on an inhabitant, only on a type.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-10-26 16:46</div>
+            <div class="timeline-body"><p>Looks great! I assume you are still planning to try replacing the hard coded allowlist with a salsa query based on actual attributes found in typeshed, just noticed one minor terminology nit.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-10-26 16:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/scopes/moduletype_attrs.md</code>:54 on 2024-10-26 16:51</div>
+            <div class="timeline-body"><p>yes, fair enough</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-27 19:16</div>
+            <div class="timeline-body"><p>Okay, I've switched from the hardcoded allowlist to a Salsa-cached generated allowlist! Locally I'm consistently seeing a regression of 1-2% on the incremental benchmark, but <a href="https://codspeed.io/astral-sh/ruff/branches/moduletype-attrs">Codspeed reports the benchmarks are neutral on this PR</a>, so maybe what I'm seeing locally is just noise.</p>
+<p>In order to obtain a list of symbols that typeshed declares in the body of <code>types.ModuleType</code>, I had to add a new <code>SymbolsFlag</code> member, <code>IS_DECLARED</code>. We had ways of querying whether symbols in a <code>SymbolTable</code> had been <em>defined</em> in that scope, but no way of querying whether symbols in a <code>SymbolTable</code> had been <em>declared</em> in that scope -- and for a stub file, the latter is what's important.</p>
+<p>I've also fixed several edge cases regarding accessing members as attributes on imported modules. In some cases, whether a module &quot;defines&quot; a member can vary depending on whether you access the member as a global variable from inside the module or as an attribute on the module object after it's been imported elsewhere.</p>
+<p>TL;DR: ready for re-review!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @AlexWaygood on 2024-10-27 19:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/symbol.rs</code>:66 on 2024-10-28 07:04</div>
+            <div class="timeline-body"><p>Could you add some comment explaining <code>IS_DECLARED</code>'s meaning?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:93 on 2024-10-28 07:06</div>
+            <div class="timeline-body"><p>How many entries do we expect <code>module_type_symbols</code> to contain? Returning a list is probably fine performance wise if it is a very small number of elements. Otherwise it might be worth considering a <code>HashSet</code> (has the downside that it always requires hashing the entire input string) or a <code>BTreeSet</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:109 on 2024-10-28 07:11</div>
+            <div class="timeline-body"><p>I don't understand enough about <code>ModuleType</code> to assess this and it might be a very dumb question so I'm just gonna raise it here and leave it up to you.</p>
+<p>The symbol table only does lexicographical scoping, meaning it doesn't contain resolved entries from star imports. Is that a problem here or could it become a problem if typeshed adds such a star import?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:110 on 2024-10-28 07:12</div>
+            <div class="timeline-body"><p>It could be more efficient to preserve <code>Name</code> over <code>Box&lt;str&gt;</code> to avoid allocating for very small strings (note, this is probably not worth it when using a <code>Set</code> because <code>contains</code> then requires creating a new Name)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:121 on 2024-10-28 07:15</div>
+            <div class="timeline-body"><p>These assertions feel more like a test than a debug assertion to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-10-28 07:19</div>
+            <div class="timeline-body"><p>It seems unfortunate to me that we now have to track <code>DECLARED</code> for all symbols just for this one use case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-10-28 07:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:93 on 2024-10-28 07:29</div>
+            <div class="timeline-body"><p>The query just returns all symbols declared in the body of this class definition in typeshed (excluding 3 very special attributes): https://github.com/python/typeshed/blob/c225ac758781c0599889b320c0a4f334366c5907/stdlib/types.pyi#L331. Currently that's a list of length 6; it might change in the future (which is why it's a salsa query rather than a hardcoded list) but I do not expect it to ever be very long. For this reason I did not go for a set, as I assumed that the cost of hashing the strings would be more costly than it was worth.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-10-28 07:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:109 on 2024-10-28 07:31</div>
+            <div class="timeline-body"><p>This query just returns a list of the symbols declared in the body of <a href="https://github.com/python/typeshed/blob/c225ac758781c0599889b320c0a4f334366c5907/stdlib/types.pyi#L331">this class in typeshed</a>; I don't think star imports are relevant here :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-10-28 07:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:121 on 2024-10-28 07:33</div>
+            <div class="timeline-body"><p>That's fair. I couldn't see a way of doing an mdtest asserting this, but I suppose I can still just write an old-fashioned unittest for the function!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-10-28 07:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:110 on 2024-10-28 07:34</div>
+            <div class="timeline-body"><p>Oh good call — I forgot that <code>Name</code> avoided allocating for small strings by wrapping a <code>CompactString</code>!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-10-28 11:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/semantic_index/symbol.rs</code>:66 on 2024-10-28 11:30</div>
+            <div class="timeline-body"><p>I added a link to Carl's essay at the top of https://github.com/astral-sh/ruff/blob/main/crates/red_knot_python_semantic/src/semantic_index/use_def.rs</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-28 11:47</div>
+            <div class="timeline-body"><blockquote>
+<p>It seems unfortunate to me that we now have to track <code>DECLARED</code> for all symbols just for this one use case.</p>
+</blockquote>
+<p>I would wager that this information will come in useful in other contexts in the future (though I can't right now say <em>what</em> -- it's just an intuition I have).</p>
+<p><em>However</em>, one alternative way of tackling this would be to write a Python script that inspects the AST of the typeshed stub for <code>types.ModuleType</code> and generates a Rust file that contains a function that returns <code>true</code> if a given symbol is declared in the body of <code>types.ModuleType</code>. (This would be similar to the approach we take in https://github.com/astral-sh/ruff/blob/main/scripts/generate_known_standard_library.py.) We could run the script as part of every typeshed sync, to make sure that the generated function is always up to date with the typeshed stubs.</p>
+<p>This would be a more complicated than the current solution. But it would have the following advantages:</p>
+<ul>
+<li>We could probably use the <a href="https://github.com/JelleZijlstra/typeshed_client"><code>typeshed_client</code></a> library in the Python script, which means that the script itself probably wouldn't be <em>that</em> complicated</li>
+<li>The generated Rust function would likely be more performant than the current solution that uses a Salsa query, because we wouldn't have to look anything up in the cache: the specific symbols that are declared on <code>types.ModuleType</code> would just be hardcoded into the generated Rust function.</li>
+<li>We wouldn't have to track <code>DECLARED</code> for all symbols just for this one use case</li>
+</ul>
+<p>I'm not sure whether this would be better or worse on net than the solution I currently have in this PR -- but it's an alternative to consider, anyway!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-28 12:01</div>
+            <div class="timeline-body"><blockquote>
+<p>I would wager that this information will come in useful in other contexts in the future (though I can't right now say what -- it's just an intuition I have).</p>
+</blockquote>
+<p>Yeah. I'm not a fan of it but I don't consider it blocking. I guess an alternative to this would be to look at the class type and iterate over its members. I don't think we support it today, but I suspect that's a capability we want long-term.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/scopes/moduletype_attrs.md</code>:17 on 2024-10-28 20:29</div>
+            <div class="timeline-body"><p>I assume these will all change when you rebase this on top of #13964 ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/scopes/moduletype_attrs.md</code>:23 on 2024-10-28 21:09</div>
+            <div class="timeline-body"><p>Probably because it's on <code>builtins.object</code>?</p>
+<p>The awkward thing is that I think <code>__doc__</code> might be the only attribute on <code>object</code> that is accessible in every module as a global name.</p>
+<p>I think all of them except for <code>__module__</code> are accessible on module objects as an attribute.</p>
+<p>You'll know better than I whether it's likely we can get <code>__doc__</code> added specifically to <code>ModuleType</code> (despite it already being on <code>object</code>) to help support fixing this TODO with fewer special cases, or whether we should instead just bite the bullet and handle it as a special case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/scopes/moduletype_attrs.md</code>:49 on 2024-10-28 21:13</div>
+            <div class="timeline-body"><p><code>__class__</code> is another one defined on <code>object</code> that is accessible on <code>ModuleType</code> instances, but not as a module global name.</p>
+<p><code>__module__</code> is an odd special case in that typeshed says it exists on <code>object</code> but it does not actually exist on module objects. Probably not worth modeling this LSP violation, it's fine if we just let it exist on all objects?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/scopes/moduletype_attrs.md</code>:92 on 2024-10-28 21:17</div>
+            <div class="timeline-body"><p>can we also test here that accessing <code>__dict__</code> within the module, subsequent to this, does get <code>Literal[&quot;foo&quot;]</code>? But <code>from foo import __dict__ as d</code> gives you the module dictionary?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-10-28 21:26</div>
+            <div class="timeline-body"><p>Looks great! A few comments that I think are worth at least testing and/or mentioning in TODOs, even if we don't make code changes for them right now.</p>
+<blockquote>
+<p>an alternative to this would be to look at the class type and iterate over its members. I don't think we support it today, but I suspect that's a capability we want long-term.</p>
+</blockquote>
+<p>I agree that we'll want this, and I think the best / most efficient way to implement this would be to iterate over symbols in the symbol table that are defined/declared in the class, using <code>IS_DEFINED</code> and <code>IS_DECLARED</code> flags. So I would flip it around and say this is not an alternative approach, rather it's another likely future use case for this flag.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-10-29 10:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/scopes/moduletype_attrs.md</code>:23 on 2024-10-29 10:34</div>
+            <div class="timeline-body"><p>Yeah... I think it would be fine to add <code>__doc__</code> to <code>ModuleType</code> in typeshed if we add a comment saying why we have the &quot;redundant&quot; override from <code>object</code>... I'll try to put up a typeshed PR today...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-10-29 10:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/scopes/moduletype_attrs.md</code>:49 on 2024-10-29 10:36</div>
+            <div class="timeline-body"><blockquote>
+<p><code>__module__</code> is an odd special case in that typeshed says it exists on <code>object</code> but it does not actually exist on module objects. Probably not worth modeling this LSP violation, it's fine if we just let it exist on all objects?</p>
+</blockquote>
+<p><em>Sigh</em>. <code>__module__</code> <a href="https://github.com/python/typeshed/pull/8789">really</a> <a href="https://github.com/python/typeshed/pull/8787">shouldn't</a> be listed as an instance attribute on <code>object</code>; it's just obviously incorrect. But I'm not going to restart that conversation 🙃</p>
+<p>I think this is not worth special-casing in red-knot; we should just accept it as an inaccuracy in type inference that we have to live with unless and until it's fixed in typeshed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-10-29 10:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/scopes/moduletype_attrs.md</code>:92 on 2024-10-29 10:39</div>
+            <div class="timeline-body"><blockquote>
+<p>But <code>from foo import __dict__ as d</code> gives you the module dictionary?</p>
+</blockquote>
+<p>Woah, TIL. That's nuts.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-10-29 10:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/scopes/moduletype_attrs.md</code>:17 on 2024-10-29 10:58</div>
+            <div class="timeline-body"><p>yup, all fixed after the rebase 🎉</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2024-10-29 10:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2024-10-29 10:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-10-29 10:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-10-29 11:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/scopes/moduletype_attrs.md</code>:23 on 2024-10-29 11:26</div>
+            <div class="timeline-body"><p>Filed https://github.com/python/typeshed/pull/12918</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-10-29 11:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/scopes/moduletype_attrs.md</code>:92 on 2024-10-29 11:39</div>
+            <div class="timeline-body"><p>From imports are just syntax sugar for an attribute access!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:00:09 UTC
+    </footer>
+</body>
+</html>

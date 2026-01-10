@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Do not panic if named expressions show up in assignment position - astral-sh/ruff #13711</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Do not panic if named expressions show up in assignment position</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/13711">#13711</a>
+        opened by <a href="https://github.com/rtpg">@rtpg</a>
+        on 2024-10-11 06:38
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/rtpg">@rtpg</a> on 2024-10-11 06:38</div>
+            <div class="timeline-body"><p>Unfortunately the test I added here still fails (I believe due to scoping issues, still trying to wrap my head around how the scoping is supposed to work), but I believe my changes to the builder are correct: it is not incorrect for there to be <code>current_assignment</code>s to juggle, given the existence of named expressions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @carljm on 2024-10-11 19:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:566 on 2024-10-11 19:14</div>
+            <div class="timeline-body"><p>I think it's still correct to assert that the length of <code>self.current_assignments</code> is 0 here? A NamedExpr should be the only kind of assignment that can be nested inside the target of another assignment.</p>
+<p>Same for all other cases, except for <code>NamedExpr</code>, where this assertion was removed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3444 on 2024-10-11 19:41</div>
+            <div class="timeline-body"><p>This is invalid syntax. Red-knot isn't resilient to arbitrary invalid syntax yet (though we should become so). We should make a change so that for now red-knot just always fails fast if there are parser errors, rather than hitting panics that are hard to debug and cause confusion; this isn't the first time we've had this scenario.</p>
+<p>For this to be valid syntax, the namedexpr has to be parenthesized to fix the binding precedence. If we do this, the test passes:</p>
+<pre><code class="language-suggestion">            x[0 if (y := 2) else 1] = 1
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> requested changes on 2024-10-11 19:42</div>
+            <div class="timeline-body"><p>Thank you!! I had totally failed to consider the possibility of a namedexpr in a LHS subscript expression.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-10-11 19:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3444 on 2024-10-11 19:59</div>
+            <div class="timeline-body"><p>The new mdtest framework will already help with this, since it won't hide syntax errors like the current tests do. Currently it will just fail fast on any test with a syntax error in it; once we start working on syntax error resilience we will add features to it to explicitly assert on syntax errors, but tests with accidental syntax errors will still fail with a clear diagnostic.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/rtpg">@rtpg</a> reviewed on 2024-10-12 01:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/rtpg">@rtpg</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3444 on 2024-10-12 01:52</div>
+            <div class="timeline-body"><p>Ah, great catch, will fix the test. Glad to see these changes are able to be handled.</p>
+<p>My current reading is that the semantic index expects everything to be covered so even in the case of syntax errors we would be expected to try and see each symbol anyways... but that might be me buying into the error's premise a bit too much.</p>
+<p>Like should the semantic index cover the entire program? If so, it feels like the underlying error is still a problem. If not, then it feels like there's some concept here of not being covered (and some of the philosophy of #13701, of having lookups be <code>Option</code>/<code>Result</code>-y and falling back, could apply).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/rtpg">@rtpg</a> reviewed on 2024-10-12 02:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/rtpg">@rtpg</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:566 on 2024-10-12 02:03</div>
+            <div class="timeline-body"><p>That's a good point, since you don't have statements in statements. Re-evaluated the changeset and agree with the assertion that we can keep all the assertions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-10-12 02:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3444 on 2024-10-12 02:36</div>
+            <div class="timeline-body"><p>The panic here with the syntax error isn't exactly due to lack of coverage. It's that we currently assume (reasonably!) that if a name is being defined, there will be a Name node with Store context; that's normally how the AST works. <a href="https://play.ruff.rs/566caf2d-66f7-443c-80a3-fc189ab29751">With the malformed syntax</a>, we end up with a Named expression node whose target doesn't contain any Name node with Store context. So we never create any <code>Definition</code> for the <code>Named</code>. But then type inference assumes that every Named node should be associated with a <code>Definition</code>, it tries to look up the <code>Definition</code> and there isn't one.</p>
+<p>I agree with you in general that becoming syntax-error-resilient will probably mean making fewer such invariant assumptions, and being more willing to fall back to Unknown when something just doesn't make sense. The loss with doing this unconditionally is that it becomes easier for bugs to go unnoticed and propagate silently. Ideally perhaps we could relax our invariants only when we actually observe invalid nodes in the AST, rather than doing so unconditionally, to preserve a bit more fail-fast when we have bugs. I'm not sure if this will be feasible or not. The truth is that we have a lot to do and syntax-error-resilience hasn't made it to the top of the list yet!</p>
+<p>I think this particular panic would be fixed by having <code>infer_named_expr</code> in type inference check if the target of the Named node is a Name with Store context (which it always should be, if syntax is valid -- walrus expressions aren't allowed to have complex left-hand side), and if not, bail out and don't try to look up a Definition at all. But I would kind of like to consider our strategy for syntax-error-resilience a bit more holistically.</p>
+<p>cc @dhruvmanila who is intending to take on the syntax-error-resilience at some point.</p>
+<p>I hadn't seen https://github.com/astral-sh/ruff/pull/13701 yet. (Note, I generally won't be alerted to the existence of draft PRs unless explicitly pointed to them; they don't show up in reviewer notifications until marked ready for review.) I'll take a look at it soon (may not be til Monday.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @rtpg on 2024-10-14 06:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @rtpg on 2024-10-14 06:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @rtpg on 2024-10-14 06:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rtpg">@rtpg</a> on 2024-10-14 06:02</div>
+            <div class="timeline-body"><p>I am a bit mystified by the benchmark/ecosystem failures but I think the code changes here are ready for another review.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-14 14:08</div>
+            <div class="timeline-body"><p>The benchmark fail at</p>
+<p>https://github.com/astral-sh/ruff/blob/47a3625f79313971014473664e023514f13816b7/crates/red_knot_python_semantic/src/semantic_index/builder.rs#L420</p>
+<p>Indicating that there are assignments that weren't popped correctly or that the assertion needs updating with your changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:368 on 2024-10-14 14:09</div>
+            <div class="timeline-body"><p>You want to move this out of a debug assertion or the <code>pop</code> call only happens during debugging. It probably makes sense to move this into a helper function.</p>
+<pre><code class="language-suggestion">				let assignment = self.current_assignments.pop();
+				debug_assert_ne!(assignment, None);
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-10-14 14:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/rtpg">@rtpg</a> reviewed on 2024-10-14 22:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/rtpg">@rtpg</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:368 on 2024-10-14 22:37</div>
+            <div class="timeline-body"><p>right, of course. Thanks for pointing that out.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/rtpg">@rtpg</a> reviewed on 2024-10-15 00:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/rtpg">@rtpg</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:368 on 2024-10-15 00:10</div>
+            <div class="timeline-body"><p>Went with adding <code>push_assignment</code> and <code>pop_assignment</code> as a pair of functions for this operation.</p>
+<p>I thought about <code>with_assignment</code> a bit but I am unsure of the relative cost of closure building here. Given the final assert at the end of building being in place, might not be much of an issue in practice.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-10-15 00:23</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:432 on 2024-10-15 09:22</div>
+            <div class="timeline-body"><p>Nit: i like to do</p>
+<pre><code class="language-suggestion">        assert_eq!(&amp;self.current_assignments, &amp;[]);
+</code></pre>
+<p>it gives better error messages if the vec isn't empty by printing all assignments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3671 on 2024-10-15 09:23</div>
+            <div class="timeline-body"><p>We should avoid adding new tests to <code>infer.rs</code> and instead use our type inference testing framework. https://github.com/astral-sh/ruff/tree/main/crates/red_knot_test</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-10-15 09:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @MichaReiser on 2024-10-15 09:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/rtpg">@rtpg</a> reviewed on 2024-10-16 00:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/rtpg">@rtpg</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:432 on 2024-10-16 00:29</div>
+            <div class="timeline-body"><p>OK, changed to that (along with deriving <code>PartialEq</code> on <code>CurrentAssignment</code> to get that to work, turns out we hadn't been doing any equality checks on those before this change)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/rtpg">@rtpg</a> reviewed on 2024-10-16 00:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/rtpg">@rtpg</a> on <code>crates/red_knot_python_semantic/resources/mdtest/literal/collections/list.md</code>:40 on 2024-10-16 00:32</div>
+            <div class="timeline-body"><p>I just realized that this was in <code>literal/collections/list.md</code> and not <code>collections/list.md</code>. Please advise on whether this should be extracted to be placed elsewhere</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/rtpg">@rtpg</a> reviewed on 2024-10-16 01:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/rtpg">@rtpg</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3671 on 2024-10-16 01:55</div>
+            <div class="timeline-body"><p>Moved this over to an md test</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-10-16 12:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/literal/collections/list.md</code>:40 on 2024-10-16 12:30</div>
+            <div class="timeline-body"><p>I would put these tests in <code>subscript/list.md</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-10-16 12:32</div>
+            <div class="timeline-body"><p>Looks great, thank you! I will go ahead and move the tests and then merge.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @carljm on 2024-10-16 12:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2024-10-16 12:42</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:00:08 UTC
+    </footer>
+</body>
+</html>

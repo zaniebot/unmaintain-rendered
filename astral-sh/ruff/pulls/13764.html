@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add scope assertion to `TypeInference.extend` - astral-sh/ruff #13764</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add scope assertion to <code>TypeInference.extend</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/13764">#13764</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2024-10-15 15:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-15 15:22</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>I thought this is an easy change, but many tests are now blowing up. I or someone else has to tacke a second look why and where
+we're merging <code>TypeInference</code> results from different scopes.</p>
+<p>This PR adds a debug assertion that asserts that <code>TypeInference::extend</code> is only called on results that have the same scope.
+This is critical because <code>expressions</code> uses <code>ScopedExpressionId</code> that are local and merging expressions from different
+scopes would lead to incorrect expression types.</p>
+<p>We could consider storing <code>scope</code> only on <code>TypeInference</code> for debug builds. Doing so has the advantage that the <code>TypeInference</code> type is smaller of which we'll have many. However, a <code>ScopeId</code> is a <code>u32</code>... so it shouldn't matter that much and it avoids storing the <code>scope</code> both on <code>TypeInference</code> and <code>TypeInferenceBuilder</code></p>
+<h2>Test Plan</h2>
+<p><code>cargo test</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @MichaReiser on 2024-10-15 15:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @MichaReiser on 2024-10-15 15:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @MichaReiser on 2024-10-15 15:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-15 15:55</div>
+            <div class="timeline-body"><p>Okay I think I know what the bug is... we infer the parameters in the enclosing scope instead of inferring them in the function's scope. Do we even have to infer the parameters? Can't we just let them be inferred lazily</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-15 15:59</div>
+            <div class="timeline-body"><p>I'm sure someone will tell me why my fix is too simple :laughing:</p>
+<p>My thinking is that we can defer inferring parameters until we need to lookup the type of the parameter. We may need to infer parameters eagerly if we want to check the type annotation but we don't do that today.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-10-15 16:13</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Add scope assertion to `TypeInference.extend" to "Add scope assertion to `TypeInference.extend`" by @MichaReiser on 2024-10-15 16:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @MichaReiser on 2024-10-15 19:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-10-16 05:34</div>
+            <div class="timeline-body"><p>I think what the core issue is that the parameters are inferred in either the function's enclosing scope (if type parameters are absent) or the type parameter scope (if type parameters are present) but they're declared in the function scope.</p>
+<p>Now, we can't just move the <code>infer_parameters</code> call into <code>infer_function_body</code> because that would mean that the annotations are evaluated in the function scope which is incorrect.</p>
+<p>One way to fix this would be to use a similar solution as comprehension where we split the inference into annotation and definition. So, the <code>infer_parameters</code> would be split into two functions where one would just call <code>self.infer_optional_expression(parameter.annotation.as_deref());</code> while the other would just call <code>self.infer_definition(parameter_with_default);</code>. So, the following diff which is on top of this PR would still infer the parameter definition and not defer it:</p>
+<pre><code class="language-diff">diff --git a/crates/red_knot_python_semantic/src/types/infer.rs b/crates/red_knot_python_semantic/src/types/infer.rs
+index 63e12b98d..faf002346 100644
+--- a/crates/red_knot_python_semantic/src/types/infer.rs
++++ b/crates/red_knot_python_semantic/src/types/infer.rs
+@@ -672,6 +672,7 @@ impl&lt;'db&gt; TypeInferenceBuilder&lt;'db&gt; {
+     }
+ 
+     fn infer_function_body(&amp;mut self, function: &amp;ast::StmtFunctionDef) {
++        self.infer_parameters_scope(&amp;function.parameters);
+         self.infer_body(&amp;function.body);
+     }
+ 
+@@ -826,6 +827,27 @@ impl&lt;'db&gt; TypeInferenceBuilder&lt;'db&gt; {
+         self.infer_optional_expression(annotation.as_deref());
+     }
+ 
++    fn infer_parameters_scope(&amp;mut self, parameters: &amp;ast::Parameters) {
++        let ast::Parameters {
++            range: _,
++            posonlyargs: _,
++            args: _,
++            vararg,
++            kwonlyargs: _,
++            kwarg,
++        } = parameters;
++
++        for param_with_default in parameters.iter_non_variadic_params() {
++            self.infer_definition(param_with_default);
++        }
++        if let Some(vararg) = vararg.as_deref() {
++            self.infer_definition(vararg);
++        }
++        if let Some(kwarg) = kwarg.as_deref() {
++            self.infer_definition(kwarg);
++        }
++    }
++
+     fn infer_parameter_with_default_definition(
+         &amp;mut self,
+         parameter_with_default: &amp;ast::ParameterWithDefault,
+@@ -2111,6 +2133,9 @@ impl&lt;'db&gt; TypeInferenceBuilder&lt;'db&gt; {
+     }
+ 
+     fn infer_lambda_body(&amp;mut self, lambda_expression: &amp;ast::ExprLambda) {
++        if let Some(parameters) = lambda_expression.parameters.as_deref() {
++            self.infer_parameters_scope(parameters);
++        }
+         self.infer_expression(&amp;lambda_expression.body);
+     }
+ 
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-16 06:19</div>
+            <div class="timeline-body"><p>@dhruvmanila that makes sense and thanks for taking the type to proposing a fix.</p>
+<p>What's unclear to me why we have to infer the parameters today. The tests and benchmarks indicate that the code is useless because removing the inference code doesn't regress any test nor does it break the benchmarks. I think this is because we still infer the types of parameters, but we now do it lazily when the parameter is first referenced in the function's body instead of eagerly when declaring the function. I do think we'll want to eagerly visit the function parameters once we add a check that the default value is assignable to the annotated type. However, it's unclear how that would fit into your proposed fix, because the default value is inferred earlier (and in the outer scope).</p>
+<p>That's why my preference is to land the PR and remove parameter inference and re-add eager parameter visitation when we need it (and as lazily as possible because codspeed suggest that doing it lazly is a 1% perf improvement)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-10-16 08:33</div>
+            <div class="timeline-body"><p>I see your reasoning and I think that's fine. Maybe we could add a one line comment where the <code>infer_definition</code> is removed stating that it's being done lazily when it's used in the function body.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-16 14:23</div>
+            <div class="timeline-body"><p>I'm starting to have second thoughts now that I was supposed to write that comment. Maybe we do need the <code>infer_definition</code> call to trigger the duplicate binding violations. @carljm can you shed some lights on when one is supposed to call <code>infer_definition</code> and when it's okay to do so lazily?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-10-16 15:42</div>
+            <div class="timeline-body"><p>Sorry for delayed review! I think this fix is correct as-is, and I don't even think we need to add a comment, because it is the normal and expected state of affairs that definitions are inferred on-demand, unless we are inferring/checking the entire scope in which they occur. We don't need to infer definitions eagerly for the sake of diagnostics: anytime we care about diagnostics in a file, we should be explicitly checking that file, which will infer all scopes fully.</p>
+<p>The Definition corresponding to a function parameter belongs to the function body scope: that's the scope in which the name is defined. So we shouldn't be trying to infer that definition in the outer scope, and we don't need to infer it eagerly at function definition time; we can wait until we are inferring in the function body scope.</p>
+<p>It is also true that the annotation expression which will provide the binding and declaration type for the parameter Definition must be evaluated in the outer scope! So it is correct that (even after this PR) we explicitly do infer types for the annotations in the outer scope, at function definition time, via <code>infer_parameters</code>. (If we didn't do this, I expect that our coverage test would fail with missing expression type for the parameter annotation.)</p>
+<p>Once we fix the TODO to actually infer the right type for a parameter Definition (instead of just inferring <code>Type::Todo</code> like we do today), <code>infer_parameter_definition</code> will need to look up the type for the annotation expression from the outer scope's type inference. But there's already a TODO comment in place clarifying this, so I don't think we need to do anything about that in this PR.</p>
+<p>Thanks for the PR and figuring out the fix!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-10-16 15:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @carljm on 2024-10-16 15:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2024-10-16 15:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-10-16 15:44</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:00:08 UTC
+    </footer>
+</body>
+</html>

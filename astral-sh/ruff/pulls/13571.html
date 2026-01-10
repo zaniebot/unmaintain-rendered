@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] feat: implement integer comparison - astral-sh/ruff #13571</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] feat: implement integer comparison</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/13571">#13571</a>
+        opened by <a href="https://github.com/Slyces">@Slyces</a>
+        on 2024-09-30 15:16
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/Slyces">@Slyces</a> on 2024-09-30 15:16</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>Implements the comparison operator for <code>[Type::IntLiteral]</code> and <code>[Type::BoolLiteral]</code> (as an artifact of special handling of <code>True</code> and <code>False</code> in python).
+Sets the framework to implement more comparison for types known at static time (e.g. <code>BoolLiteral</code>, <code>StringLiteral</code>), allowing us to only implement cases of the triplet <code>&lt;left&gt; Type</code>, <code>&lt;right&gt; Type</code>, <code>CmpOp</code>.
+Contributes to astral-sh/ty#244 (without checking off an item yet).</p>
+<h2>Implementation Details</h2>
+<p>I couldn't avoid allocating a <code>Vec&lt;Type&gt;</code> for the first evaluation of initial expressions before iterating over pairs of expression types (<code>.windows(2)</code>). Currently, I couldn't use <code>.windows</code> on iterators. This seems to be possible using some crates or an experimental API. If anyone has an idea on how to achieve this without allocation, I'd love to hear it.</p>
+<h2>Test Plan</h2>
+<ul>
+<li>Added a test for the comparison of literals that should include most cases of note.</li>
+<li>Added a test for the comparison of int instances</li>
+</ul>
+<p>Please note that the cases do not cover 100% of the branches as there are many and the current testing strategy with variables make this fairly confusing once we have too many in one test.</p>
+<p>I'll probably open a separate PR with a candidate util function for cases like this (checking the public type of many separate statements).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @Slyces on 2024-09-30 15:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @Slyces on 2024-09-30 15:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @Slyces on 2024-09-30 15:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-09-30 16:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2483 on 2024-09-30 16:58</div>
+            <div class="timeline-body"><p>I haven't looked at the PR as a whole yet, but you might be able to use <a href="https://docs.rs/itertools/latest/itertools/trait.Itertools.html#method.tuple_windows"><code>itertools::Itertools::tuple_windows</code></a> here. The method can be a bit dangerous to use, since it clones the iterator elements -- but <code>Type</code> instances should be very cheap to clone, so I think that's <em>probably</em> a trade worth making to avoid allocating the <code>Vec</code>. You might have to add <code>itertools</code> as a dependency of the crate</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-09-30 17:49</div>
+            <div class="timeline-body"><blockquote>
+<p>I'll probably open a separate PR with a candidate util function for cases like this (checking the public type of many separate statements).</p>
+</blockquote>
+<p>You can do this, but note that I'm also working on a test framework (see discussion in https://github.com/astral-sh/ruff/issues/11664 ) which should also make this a lot less verbose. So it may not be worth investing a lot into test utils like this one in the meantime.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2409 on 2024-09-30 17:53</div>
+            <div class="timeline-body"><p>It's safe to return <code>False</code> for an <code>is</code> comparison or <code>True</code> for <code>is not</code>, if the integers are not equal, but we should never return <code>True</code> for an <code>is</code> comparison or <code>False</code> for an <code>is not</code> comparison, only <code>bool</code>. Integer identity is not reliable in Python and not part of the language spec.</p>
+<pre><code>&gt;&gt;&gt; x = 1024
+&gt;&gt;&gt; y = 1024
+&gt;&gt;&gt; x is y
+False
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2483 on 2024-09-30 17:54</div>
+            <div class="timeline-body"><p>I was going to suggest an approach that I think is pretty similar to what <code>tuple_windows</code> is doing internally, but I think just using <code>tuple_windows</code> makes more sense :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2500 on 2024-09-30 18:37</div>
+            <div class="timeline-body"><p>For better or worse, Python supports returning arbitrary types from comparison dunder methods:</p>
+<pre><code>&gt;&gt;&gt; class C:
+...     def __lt__(self, other):
+...             return &quot;foo&quot;
+...
+&gt;&gt;&gt; C() &lt; 2
+'foo'
+</code></pre>
+<p>So the final inferred type here is not necessarily a boolean, it can be any type.</p>
+<p>The short-circuiting semantics for chained comparisons fall out directly from the equivalence to a sequence of and-ed conditions specified in the quoted language reference spec above, as seen in this more complex example:</p>
+<pre><code>&gt;&gt;&gt; class C:
+...     def __init__(self, val):
+...             self.val = val
+...     def __lt__(self, other):
+...             if self.val &lt; other.val:
+...                     return self
+...             return other
+...     def __bool__(self):
+...             print(f&quot;bool of {self.val}&quot;)
+...             return bool(self.val)
+...     def __repr__(self):
+...             return f&quot;C({self.val})&quot;
+...
+&gt;&gt;&gt; C(1) &lt; C(2)
+C(1)
+&gt;&gt;&gt; C(1) &lt; C(2) &lt; C(3)
+bool of 1
+C(2)
+&gt;&gt;&gt; C(1) &lt; C(2) and C(2) &lt; C(3)
+bool of 1
+C(2)
+</code></pre>
+<p>So I think it is correct that we call <code>Type::bool</code> here to get the <code>Truthiness</code> of the inferred type of each comparison, but only on comparisons other than the last one (and thus never, in the case of non-chained comparisons), in order to determine when to short-circuit. But the type we end up inferring should not be the <code>into_type</code> of the <code>Truthiness</code>, it should be the original type result from the comparison.</p>
+<p>It may make sense to try to actually extract and reuse the logic from our boolean <code>and</code> comparison, once we have here an iterator of types resulting from the comparisons that should be anded together? Or it may not, up to your judgment on that.</p>
+<p>It will be a bit difficult to write tests showing that we're doing this correctly without supporting at least some form of comparison on <code>Type::Instance</code> (via looking up the return type of a comparison dunder method), since no built-in types return non-bools from comparison methods. It may make most sense to go ahead and implement the full dunder-method lookup logic (described at https://docs.python.org/3/reference/datamodel.html#object.<strong>lt</strong> ), but if you can find a reasonable subset to implement with a TODO for the rest, that's fine too.</p>
+<p>(Note also that we should probably avoid tests showing implementing <code>__eq__</code> with a non-bool return, since <code>object</code> in typeshed actually implements <code>__eq__</code> with bool return, meaning that when we implement incompatible override checks, we would error on such a definition. That's why my example above uses <code>__lt__</code> instead.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2415 on 2024-09-30 18:39</div>
+            <div class="timeline-body"><p>This should emit a diagnostic and return <code>Unknown</code>, not <code>BooleanLiteral(false)</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2428 on 2024-09-30 19:39</div>
+            <div class="timeline-body"><p>I don't think we need this TODO; we may end up consolidating some logic around e.g. treating <code>IntLiteral</code> as <code>int</code> when we can't handle it as a special case, but it's not clear if we will, and there's no missing or incomplete feature here we need to remember.</p>
+<pre><code class="language-suggestion"></code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2433 on 2024-09-30 19:41</div>
+            <div class="timeline-body"><p>I think the better approach here is to just recursively call <code>self.infer_binary_type_comparison</code> (as you do in some cases above) with <code>builtins_symbol_ty(self.db, &quot;int&quot;).to_instance(self.db)</code> in place of the <code>IntLiteral</code> type, and then we should fall into the normal Instance vs Instance handling based on typeshed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2446 on 2024-09-30 19:45</div>
+            <div class="timeline-body"><p>I think if we aren't going to do the full <code>Type::Instance</code> handling in this PR, we should just leave this case out entirely, as it will be entirely replaced by generic <code>Type::Instance</code> handling.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> requested changes on 2024-09-30 19:46</div>
+            <div class="timeline-body"><p>Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Slyces">@Slyces</a> reviewed on 2024-09-30 20:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Slyces">@Slyces</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2433 on 2024-09-30 20:11</div>
+            <div class="timeline-body"><p>That's both clever and obvious, I'm not sure why I missed it. Thanks 🙏</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Slyces">@Slyces</a> reviewed on 2024-09-30 20:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Slyces">@Slyces</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2446 on 2024-09-30 20:12</div>
+            <div class="timeline-body"><p>I guess I was seeing the special case of (int, IntLiteral) as a part of IntLiteral's logic, but it does indeed fit better as a generic part of instances</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Slyces">@Slyces</a> reviewed on 2024-09-30 20:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Slyces">@Slyces</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2415 on 2024-09-30 20:14</div>
+            <div class="timeline-body"><p>I don't have a lot of experience coding diagnostics - do we already have an example of the diagnostic I need to emit here?
+Thank you 🙂</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-09-30 20:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2415 on 2024-09-30 20:22</div>
+            <div class="timeline-body"><p>Use <code>self.add_diagnostic</code> method to emit it. At this stage we aren't super picky about error codes or diagnostic messages yet; that will get cleaned up later. For this case I'd use the error code <code>&quot;operator-unsupported&quot;</code> and the diagnostic message <code>Operator &quot;in&quot; not supported for types '{}' and '{}'.</code>. (Where you can use <code>Type::display</code> method to fill in the type display names.) You can look at existing uses of <code>add_diagnostic</code> for more examples.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @carljm on 2024-09-30 21:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> reviewed on 2024-09-30 21:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2500 on 2024-09-30 21:09</div>
+            <div class="timeline-body"><p>Note that the <code>in</code>/<code>not in</code> operations always return bool though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2500 on 2024-09-30 21:18</div>
+            <div class="timeline-body"><p>Yes; also <code>is</code> and <code>not is</code>. But those are cases that will be reflected in the function that actually handles each binary comparison; it doesn't change the implications for this code, which needs to handle the results from any comparison.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-09-30 21:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Slyces">@Slyces</a> reviewed on 2024-10-02 20:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Slyces">@Slyces</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2500 on 2024-10-02 20:40</div>
+            <div class="timeline-body"><p>Hi guys, thank you so much for this very complete comment on the matter.</p>
+<blockquote>
+<p>It may make sense to try to actually extract and reuse the logic from our boolean and comparison, once we have here an iterator of types resulting from the comparisons that should be anded together? Or it may not, up to your judgment on that.</p>
+</blockquote>
+<p>I actually started my PR with this approach. I realised that doing so (with my current rust mastery) led to additional allocations, and I know that a lot of effort went into avoiding allocations in the boolean PR, so I scrapped this approach. I think I will code my PR as a separate logic for now, and happily take suggestions on a direction to share the logic if one seems possible (either by accepting more allocations, or pointing me toward rust concepts that could make having both efficiency and code sharing possible).</p>
+<blockquote>
+<p>It will be a bit difficult to write tests showing that we're doing this correctly without supporting at least some form of comparison on Type::Instance (via looking up the return type of a comparison dunder method), since no built-in types return non-bools from comparison methods. It may make most sense to go ahead and implement the full dunder-method lookup logic (described at https://docs.python.org/3/reference/datamodel.html#object.<strong>lt</strong> ), but if you can find a reasonable subset to implement with a TODO for the rest, that's fine too.</p>
+</blockquote>
+<p>I think understanding thoroughly what to do here and writing tests will take me some time, but I'm happy to try. I will pass the PR as draft in the meantime.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Slyces">@Slyces</a> on 2024-10-02 21:22</div>
+            <div class="timeline-body"><p>Just dropping this here for future reference (@AlexWaygood sent a similar article for astral-sh/ruff#13590):</p>
+<ul>
+<li>https://snarky.ca/unravelling-rich-comparison-operators/: <code>==, !=, &lt;=, &gt;=, &lt;, &gt;</code></li>
+<li>https://snarky.ca/unravelling-is-and-is-not/: <code>is, is not</code></li>
+<li>Couldn't find one for <code>in, not in</code></li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3149 on 2024-10-03 15:28</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    // TODO: `object.__ne__` will call `__eq__` if `__ne__` is not defined
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-10-03 15:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Slyces">@Slyces</a> on 2024-10-03 15:41</div>
+            <div class="timeline-body"><p>I think I have covered all comments (to my knowledge) except the <code>tuple_windows</code>, I'll try to give more details on why I couldn't get that to work with code comments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Slyces">@Slyces</a> reviewed on 2024-10-03 15:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Slyces">@Slyces</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2503 on 2024-10-03 15:45</div>
+            <div class="timeline-body"><p>Using <code>.tuple_windows::&lt;(Type&lt;'db&gt;, Type&lt;'db&gt;)&gt;()</code> creates some problems for me</p>
+<ul>
+<li>Above, <code>line 2500</code>, we borrow <code>*self</code> as mutable to perform the <code>infer_expression</code></li>
+<li>Then below, <code>line 2507</code>, we borrow again <code>self</code> (at the minimum we need to borrow <code>self.db</code>)</li>
+</ul>
+<p>I couldn't do better than that. I could work around some other borrows (remove <code>self</code> from some functions that don't need it, store diagnostics in a <code>Vec</code> to emit later, ...) but I'm not sure how to get out of the borrow issue explained above.</p>
+<p>As always, suggestions welcome!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @Slyces on 2024-10-03 15:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2578 on 2024-10-03 15:48</div>
+            <div class="timeline-body"><p>we added a helper method for this recently:</p>
+<p>https://github.com/astral-sh/ruff/blob/cc1f766622bd27c24e47362503f44f8545710c6f/crates/red_knot_python_semantic/src/types.rs#L392-L394</p>
+<pre><code class="language-suggestion">                Type::builtin_int_instance(self.db),
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2585 on 2024-10-03 15:49</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                Type::builtin_int_instance(self.db),
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-10-03 15:54</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-10-03 15:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-10-03 15:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2578 on 2024-10-03 15:59</div>
+            <div class="timeline-body"><p>You could consider adding a <code>Type::builtin_bool_instance</code> method as part of this PR as well, if you like. But definitely not mandatory :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Slyces">@Slyces</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2578 on 2024-10-03 16:02</div>
+            <div class="timeline-body"><p>I want to make a PR that would provide things around builtins as they seem to proliferate recently. I'll probably start working on it as soon as this one is done.</p>
+<p>I would try to:</p>
+<ul>
+<li>Make all builtins nice to create (probably with an enum)</li>
+<li>On instance creation, check if that instance is a builtin instance</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Slyces">@Slyces</a> reviewed on 2024-10-03 16:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-10-03 16:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2578 on 2024-10-03 16:06</div>
+            <div class="timeline-body"><p>Interesting... I agree that the current situation isn't <em>great</em>, but I don't know that an enum is definitely the way to go. There's a lot of builtins; it might be a pretty big enum if you want to have them all there! And some builtins we are just going to need to access a lot more than others, so it does make sense to treat different builtins differently, I think. But anyway, definitely curious to see what you come up with :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-10-03 16:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2503 on 2024-10-03 16:31</div>
+            <div class="timeline-body"><p>It seems like we have to iterate over all the comparators twice, because we need to:</p>
+<ol>
+<li>Infer expression types for all sub-nodes inside the <code>ast::Compare</code>, but</li>
+<li>Make sure we respect the fact that Python's semantics are such that the comparison might short-circuit</li>
+</ol>
+<p>Given this, I think we can avoid the intermediate allocation here by inferring all the types in a separate loop prior to entering this loop, and then simply looking up the already-inferred types from inside this loop. Something like this?</p>
+<pre><code class="language-diff">--- a/crates/red_knot_python_semantic/src/types/infer.rs
++++ b/crates/red_knot_python_semantic/src/types/infer.rs
+@@ -28,6 +28,7 @@
+ //! definitions once the rest of the types in the scope have been inferred.
+ use std::num::NonZeroU32;
+ 
++use itertools::Itertools;
+ use ruff_db::files::File;
+ use ruff_db::parsed::parsed_module;
+ use ruff_python_ast::{self as ast, AnyNodeRef, ExprContext, UnaryOp};
+@@ -2484,6 +2485,11 @@ impl&lt;'db&gt; TypeInferenceBuilder&lt;'db&gt; {
+             comparators,
+         } = compare;
+ 
++        self.infer_expression(left);
++        for expr in comparators {
++            self.infer_expression(expr);
++        }
++
+         // https://docs.python.org/3/reference/expressions.html#comparisons
+         // &gt; Formally, if `a, b, c, …, y, z` are expressions and `op1, op2, …, opN` are comparison
+         // &gt; operators, then `a op1 b op2 c ... y opN z` is equivalent to a `op1 b and b op2 c and
+@@ -2496,14 +2502,17 @@ impl&lt;'db&gt; TypeInferenceBuilder&lt;'db&gt; {
+             ast::BoolOp::And,
+             std::iter::once(left.as_ref())
+                 .chain(comparators.as_ref().iter())
+-                // Evaluate expressions before iterating through pairs with `windows`
+-                .map(|expr| self.infer_expression(expr))
+-                .collect::&lt;Vec&lt;_&gt;&gt;()
+-                .windows(2)
+-                //.tuple_windows(2)
++                .tuple_windows::&lt;(_, _)&gt;()
+                 .zip(ops.iter())
+-                .map(|(pair, op)| {
+-                    let (left_ty, right_ty) = (pair[0], pair[1]);
++                .map(|((left, right), op)| {
++                    let left_ty = self
++                        .types
++                        .expression_ty(left.scoped_ast_id(self.db, self.scope));
++
++                    let right_ty = self
++                        .types
++                        .expression_ty(right.scoped_ast_id(self.db, self.scope));
++
+                     self.infer_binary_type_comparison(left_ty, *op, right_ty)
+                         .unwrap_or_else(|| {
+                             // Handle unsupported operators (diagnostic, `bool`/`Unknown` outcome)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Slyces">@Slyces</a> reviewed on 2024-10-03 17:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Slyces">@Slyces</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2503 on 2024-10-03 17:12</div>
+            <div class="timeline-body"><p>Are the inferred types cached somehow? Or are we doing the work of inference twice?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-10-03 18:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2503 on 2024-10-03 18:01</div>
+            <div class="timeline-body"><blockquote>
+<p>Are the inferred types cached somehow?</p>
+</blockquote>
+<p>Yup! In fact, there are various places where the code will panic if it detects that it's tried to infer the type of the same expression twice.</p>
+<p><code>self.infer_expression()</code> does this to store the type of the expression in the cache:</p>
+<p>https://github.com/astral-sh/ruff/blob/4aefe523938f7176be0bcaa03b6f126c8ae783fb/crates/red_knot_python_semantic/src/types/infer.rs#L1694-L1698</p>
+<p>And then <code>self.types.expression_ty()</code> would simply look things up in the cache again:</p>
+<p>https://github.com/astral-sh/ruff/blob/4aefe523938f7176be0bcaa03b6f126c8ae783fb/crates/red_knot_python_semantic/src/types/infer.rs#L190-L192</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/brettcannon">@brettcannon</a> on 2024-10-03 18:22</div>
+            <div class="timeline-body"><blockquote>
+<ul>
+<li>Couldn't find one for <code>in, not in</code></li>
+</ul>
+</blockquote>
+<p>https://snarky.ca/unravelling-membership-testing/</p>
+<p>All the blog posts can be found under https://snarky.ca/tag/syntactic-sugar/ . If you want to look the posts up by syntax, https://github.com/brettcannon/desugar/blob/main/README.md is a good way to do that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Slyces">@Slyces</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2503 on 2024-10-03 19:45</div>
+            <div class="timeline-body"><p>Amazing, this solved my problems, thank you!!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Slyces">@Slyces</a> reviewed on 2024-10-03 19:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2449 on 2024-10-04 16:32</div>
+            <div class="timeline-body"><p>This doesn't need to be generic over <code>Into&lt;Type&lt;'db&gt;&gt;</code>, it can just take an <code>IntoIterator</code> over <code>Type&lt;'db&gt;</code>. This change compiles and passes all tests:</p>
+<pre><code class="language-diff">--- a/crates/red_knot_python_semantic/src/types/infer.rs
++++ b/crates/red_knot_python_semantic/src/types/infer.rs
+@@ -2446,10 +2446,10 @@ impl&lt;'db&gt; TypeInferenceBuilder&lt;'db&gt; {
+     /// Computes the output of a chain of (one) boolean operation, consuming as input an iterator
+     /// of types. The iterator is consumed even if the boolean evaluation can be short-circuited,
+     /// in order to ensure the invariant that all expressions are evaluated when inferring types.
+-    fn infer_chained_boolean_types&lt;T: Into&lt;Type&lt;'db&gt;&gt;&gt;(
++    fn infer_chained_boolean_types(
+         db: &amp;'db dyn Db,
+         op: ast::BoolOp,
+-        values: impl IntoIterator&lt;Item = T&gt;,
++        values: impl IntoIterator&lt;Item = Type&lt;'db&gt;&gt;,
+         n_values: usize,
+     ) -&gt; Type&lt;'db&gt; {
+         let mut done = false;
+@@ -2460,17 +2460,16 @@ impl&lt;'db&gt; TypeInferenceBuilder&lt;'db&gt; {
+                     Type::Never
+                 } else {
+                     let is_last = i == n_values - 1;
+-                    let value_ty: Type&lt;'db&gt; = ty.into();
+-                    match (value_ty.bool(db), is_last, op) {
+-                        (Truthiness::Ambiguous, _, _) =&gt; value_ty,
++                    match (ty.bool(db), is_last, op) {
++                        (Truthiness::Ambiguous, _, _) =&gt; ty,
+                         (Truthiness::AlwaysTrue, false, ast::BoolOp::And) =&gt; Type::Never,
+                         (Truthiness::AlwaysFalse, false, ast::BoolOp::Or) =&gt; Type::Never,
+                         (Truthiness::AlwaysFalse, _, ast::BoolOp::And)
+                         | (Truthiness::AlwaysTrue, _, ast::BoolOp::Or) =&gt; {
+                             done = true;
+-                            value_ty
++                            ty
+                         }
+-                        (_, true, _) =&gt; value_ty,
++                        (_, true, _) =&gt; ty,
+                     }
+                 }
+             }),
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2513 on 2024-10-04 16:39</div>
+            <div class="timeline-body"><p>We've got enough occurrences of this verbose pattern now, it's high time for a helper method:</p>
+<pre><code class="language-diff">+    /// Get the already-inferred type of an expression node.
++    ///
++    /// PANIC if no type has been inferred for this node.
++    fn expression_ty(&amp;self, expr: &amp;ast::Expr) -&gt; Type&lt;'db&gt; {
++        self.types
++            .expression_ty(expr.scoped_ast_id(self.db, self.scope))
++    }
++
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2522 on 2024-10-04 16:42</div>
+            <div class="timeline-body"><p>nit, to match our usual diagnostic message style:</p>
+<pre><code class="language-suggestion">                                    &quot;Operator `{}` is not supported for types `{}` and `{}`&quot;,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2559 on 2024-10-04 16:48</div>
+            <div class="timeline-body"><p>minor clarification</p>
+<pre><code class="language-suggestion">        // Note: identity (is, is not) for equal builtin types is unreliable and not part of the language spec.
+        // - `[ast::CompOp::Is]`: return `false` if unequal, `bool` if equal
+        // - `[ast::CompOp::IsNot]`: return `true` if unequal, `bool` if equal
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3139 on 2024-10-04 16:55</div>
+            <div class="timeline-body"><p>This (and all the TODO comments in this function) are a fantastic resource for someone to flesh this out later -- thank you!!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:4138 on 2024-10-04 16:59</div>
+            <div class="timeline-body"><p>This test, and its comments, are fantastic!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Slyces">@Slyces</a> reviewed on 2024-10-04 16:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Slyces">@Slyces</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:4170 on 2024-10-04 16:59</div>
+            <div class="timeline-body"><p>Should that be <code>Literal[False] | A</code>? There is no runtime path where we can end up with <code>Literal[True]</code> here as if the second comparison <code>1 &lt; A()</code> evaluates to <code>True</code> we would return the value of the last comparison which is <code>A</code>.
+Only path where we don't take the value of <code>A</code> here is if we had a <code>Literal[False]</code> in the earlier steps.</p>
+<p>But that is more of a comment on how we handle chained <code>and</code> I guess?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:4170 on 2024-10-04 17:08</div>
+            <div class="timeline-body"><p>Great point! I think this can be done as a separate follow-up so we can go ahead and get this PR merged; it's kind of separate from this PR as it's an improvement to the existing chained-boolean-expression logic.</p>
+<p>I think the logic here is that when we have an actual <code>bool</code> type in a chained boolean expression, in non-last-position, rather than adding <code>bool</code> to the union we can instead add <code>Literal[False]</code> (for AND) or <code>Literal[True]</code> (for OR).</p>
+<p>There's a more generalized version of this where we add <code>Falsy</code> and <code>Truthy</code> types, and then we'd always intersect any type in that position (not just <code>bool</code>) with <code>Falsy</code> or <code>Truthy</code>, and then for bools that would simplify out in the intersection (e.g. <code>bool &amp; Falsy</code> is <code>Literal[False]</code>). I think it's likely we end up doing this for type narrowing anyway, but I don't have strong feelings about whether we go straight for the generalized solution or start with a bool-specific implementation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-10-04 17:09</div>
+            <div class="timeline-body"><p>This is really excellent work, thank you so much!!</p>
+<p>I have a few small nits; but since they were small (and I already implemented some locally to make sure they'd work) I'll just push them myself and then land this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-10-04 17:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2492 on 2024-10-04 17:12</div>
+            <div class="timeline-body"><p>This should fix the MSRV build and also reduce the size of the diff by 2 lines!</p>
+<pre><code class="language-suggestion">        for right in comparators.as_ref() {
+            self.infer_expression(right);
+        }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Slyces">@Slyces</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2465 on 2024-10-04 17:20</div>
+            <div class="timeline-body"><p>See my comment on the last test, but maybe we could fix this by having a special case for <code>builtins.bool</code> (which will be a very common type here)</p>
+<pre><code class="language-suggestion">                        (Truthiness::Ambiguous, false, ast::BoolOp::And) =&gt; match value_ty {
+                            // Ambiguous types that are not the last in the `and` chain can only be
+                            // returned if they are falsy. In the special case of `builtins.bool`,
+                            // being falsy is `Literal[False]`.
+                            // TODO: we could do this optimisation for other literal that have a
+                            // single falsy value (`&quot;&quot;`, `0`, ...?)
+                            Type::Instance(class) =&gt; class
+                                .is_stdlib_symbol(db, &quot;builtins&quot;, &quot;bool&quot;)
+                                .then(|| Type::BooleanLiteral(false))
+                                .unwrap_or_else(|| value_ty),
+                            _ =&gt; value_ty,
+                        },
+                        (Truthiness::Ambiguous, _, _) =&gt; value_ty,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Slyces">@Slyces</a> reviewed on 2024-10-04 17:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-10-04 17:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:4170 on 2024-10-04 17:20</div>
+            <div class="timeline-body"><p>Created https://github.com/astral-sh/ruff/issues/13632 to track this as a follow-up.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-10-04 17:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2465 on 2024-10-04 17:21</div>
+            <div class="timeline-body"><p>Let's do this as a follow-up, I created https://github.com/astral-sh/ruff/issues/13632 with some comments about it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @carljm on 2024-10-04 17:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2024-10-04 17:40</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:00:07 UTC
+    </footer>
+</body>
+</html>

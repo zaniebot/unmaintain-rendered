@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add failing tests for augmented assignments with partial binding - astral-sh/ruff #14002</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add failing tests for augmented assignments with partial binding</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/14002">#14002</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-10-30 17:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-30 17:26</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>These cases aren't handled correctly yet -- some of them are waiting on refactors to <code>Unbound</code> before fixing. Part of #12699.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2024-10-30 17:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @charliermarsh on 2024-10-30 17:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @charliermarsh on 2024-10-30 17:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @charliermarsh on 2024-10-30 17:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/assignment/augmented.md</code>:86 on 2024-10-30 17:41</div>
+            <div class="timeline-body"><pre><code class="language-suggestion"># TODO should emit a diagnostic warning that `Foo` might not have an `__iadd__` method
+reveal_type(f)  # revealed: int
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/assignment/augmented.md</code>:88 on 2024-10-30 17:42</div>
+            <div class="timeline-body"><p>nit</p>
+<pre><code class="language-suggestion">## Partially bound with `__add__`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @MichaReiser on 2024-10-30 17:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/assignment/augmented.md</code>:108 on 2024-10-30 17:42</div>
+            <div class="timeline-body"><p>nit</p>
+<pre><code class="language-suggestion">## Partially bound target union
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2024-10-30 17:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/assignment/augmented.md</code>:95 on 2024-10-30 18:01</div>
+            <div class="timeline-body"><p>I think <code>other: int</code> is wrong for what you're intending to test here, since it would actually mean that the binary fallback should also fail and <code>str</code> would not be possible.</p>
+<pre><code class="language-suggestion">    def __add__(self, other: str) -&gt; str:
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/assignment/augmented.md</code>:118 on 2024-10-30 18:02</div>
+            <div class="timeline-body"><p>In this case I think you need <code>other: int</code> here for <code>int</code> to be part of the result union?</p>
+<pre><code class="language-suggestion">        def __iadd__(self, other: int) -&gt; int:
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/assignment/augmented.md</code>:149 on 2024-10-30 18:04</div>
+            <div class="timeline-body"><p>Shouldn't this be <code>str | float</code>?</p>
+<p>Fixing this doesn't have a dependency on removing <code>Type::Unbound</code>, right?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-10-30 18:10</div>
+            <div class="timeline-body"><p>Looks good, thank you! A few comments that should be addressed before landing (unless I missed something.)</p>
+<p>A couple other cases also occurred to me looking at this, I added a checklist to https://github.com/astral-sh/ruff/issues/12699 of things I'm aware of right now that are to-be-done here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-10-30 18:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/red_knot_python_semantic/resources/mdtest/assignment/augmented.md</code>:95 on 2024-10-30 18:18</div>
+            <div class="timeline-body"><p>Sorry, yes, you're right. (Wouldn't be enforced today IIUC but yes agree.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-10-30 18:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/red_knot_python_semantic/resources/mdtest/assignment/augmented.md</code>:149 on 2024-10-30 18:19</div>
+            <div class="timeline-body"><p>Yeah, I think this is a TODO in binary operation handling, but... I included it anyway.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-10-30 18:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/red_knot_python_semantic/resources/mdtest/assignment/augmented.md</code>:149 on 2024-10-30 18:19</div>
+            <div class="timeline-body"><pre><code class="language-suggestion"># TODO(charlie): This should be `str | float`.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-10-30 18:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-10-30 18:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-10-30 18:22</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:00:09 UTC
+    </footer>
+</body>
+</html>

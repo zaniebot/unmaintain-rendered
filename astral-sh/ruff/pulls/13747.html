@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Add a build.rs file to `red_knot_python_semantic`, and document pitfalls of using `rstest` in combination with `mdtest` - astral-sh/ruff #13747</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Add a build.rs file to <code>red_knot_python_semantic</code>, and document pitfalls of using <code>rstest</code> in combination with <code>mdtest</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/13747">#13747</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2024-10-14 11:07
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-14 11:07</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Fixes #13732. <code>rstest</code> generates tests at build time rather than at runtime, so it doesn't necessarily notice new Markdown tests being added to a <code>resources</code> directory unless you add some mechanism to force a rebuild of the crate. The <a href="https://docs.rs/rstest/0.23.0/rstest/attr.rstest.html#files-path-as-input-arguments"><code>rstest</code> docs</a> recommend using a <code>build.rs</code> script for this purpose; I've done so here for the <code>red_knot_python_semantic</code> crate, and added some docs to the <code>red_knot_test</code> README so that we don't forget to do so when adding <code>mdtest</code>-based tests to other red-knot crates.</p>
+<h2>Test Plan</h2>
+<p>I locally tested by adding a new Markdown test file to <code>crates/red_knot_python_semantic/resources/mdtest</code> with some deliberate errors. I then ran <code>cargo test -p red_knot_python_semantic</code> (without having made any other changes to the crate that would have triggered a rebuild). The <code>build.rs</code> file successfully forced a rebuild, and the test correctly failed.</p>
+<p>~~Here's a screenshot of how the <code>NOTE</code> block I've added to the README is rendered on GitHub:~~</p>
+<details>
+<summary>Screenshot</summary>
+
+<p><img src="https://github.com/user-attachments/assets/830cbf2b-7237-4be1-ab61-09c70d5b076c" alt="image" /></p>
+</details>
+
+<p>~~Unfortunately it doesn't seem to be universal Markdown syntax, e.g. VSCode doesn't render the <code>NOTE</code> block in the same way.~~</p>
+<p>(Edit: I abandoned the fancy Markdown because our linters hated it.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2024-10-14 11:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @AlexWaygood on 2024-10-14 11:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @AlexWaygood on 2024-10-14 11:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">testing</span> added by @AlexWaygood on 2024-10-14 11:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-10-14 11:22</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-14 11:26</div>
+            <div class="timeline-body"><blockquote>
+<p>Here's a screenshot of how the <code>NOTE</code> block I've added to the README is rendered on GitHub:</p>
+</blockquote>
+<p>Ugh, <code>mdformat</code> doesn't like this. I tried adding these plugins to <code>.pre-commit-config.yaml</code>:</p>
+<pre><code class="language-diff">diff --git a/.pre-commit-config.yaml b/.pre-commit-config.yaml
+index 710e128b2..92330acef 100644
+--- a/.pre-commit-config.yaml
++++ b/.pre-commit-config.yaml
+@@ -29,6 +29,8 @@ repos:
+           - mdformat-mkdocs
+           - mdformat-admon
+           - mdformat-footnote
++          - mdformat-gfm
++          - mdformat-gfm-alerts
+         exclude: |
+           (?x)^(
+             docs/formatter/black\.md
+</code></pre>
+<p>but then mdformat fails to parse some other files (I think probably because mkdocs-flavoured Markdown and GitHub-flavoured Markdown are different, so <code>mdformat-mkdocs</code> and <code>mdformat-gfm</code> are pulling it in different directions?</p>
+<pre><code>Error: Could not format &quot;/Users/alexw/dev/ruff/crates/red_knot/docs/tracing.md&quot;.
+
+The formatted Markdown renders to different HTML than the input Markdown. This
+is likely a bug in mdformat. Please create an issue report here, including the
+input Markdown: https://github.com/executablebooks/mdformat/issues
+</code></pre>
+<p>I could use embedded HTML, but that seems over the top; I guess I'll just not be fancy.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-10-14 11:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/build.rs</code>:3 on 2024-10-14 11:40</div>
+            <div class="timeline-body"><p>I ran into #13732 as well this morning, so I appreciate that we try to fix it. But it looks like doing this with a glob forces a recompilation <em>every time</em>, even if nothing has changed in the Markdown files(?).</p>
+<p>When working on these tests, most of the time we're probably just editing Markdown files, not adding new ones. With this change, we make all of of those <code>cargo test</code>/<code>cargo test mdtest</code>/… calls much slower. We can probably workaround this locally by running the test executable directly (not via <code>cargo</code>). But that's another thing that developers would need to be taught :face_with_diagonal_mouth:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-10-14 11:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/build.rs</code>:3 on 2024-10-14 11:50</div>
+            <div class="timeline-body"><blockquote>
+<p>I ran into #13732 as well this morning, so I appreciate that we try to fix it. But it looks like doing this with a glob forces a recompilation <em>every time</em>, even if nothing has changed in the Markdown files(?).</p>
+</blockquote>
+<p>Great catch! It looks like maybe we're not really meant to use globs here. (The <a href="https://doc.rust-lang.org/cargo/reference/build-scripts.html#rerun-if-changed"><code>build.rs</code> docs</a> don't really seem to mention whether you are or aren't.) I pushed https://github.com/astral-sh/ruff/pull/13747/commits/af0466023e9a9503287c89fa95d4d764e7779aa2 which just points straight to the <code>resources/mdtest</code> directory -- for me locally, it now rebuilds the crate if a file <em>changes</em> in the <code>resources/mdtest</code> directory, but not otherwise. This means that the crate will also be rebuilt if non-Markdown files are added/removed from <code>resources/mdtest</code>, but there's unlikely to be many of those anyway (certainly they won't be added/removed on a regular basis).</p>
+<blockquote>
+<p>When working on these tests, most of the time we're probably just editing Markdown files, not adding new ones. With this change, we make all of of those <code>cargo test</code>/<code>cargo test mdtest</code>/… calls much slower.</p>
+</blockquote>
+<p>Yeah, that's harder to fix :/ Luckily recompilation still seems to be faster for me locally than it was using our previous test &quot;framework&quot; that you see for the existing tests in <code>infer.rs</code>. I think the slowdown in having to rebuild the crate to run the tests is a <em>reasonable</em> price to pay for avoiding the confusion from #13732 -- but I do agree it's not ideal.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-10-14 11:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/build.rs</code>:3 on 2024-10-14 11:57</div>
+            <div class="timeline-body"><blockquote>
+<p>It looks like maybe we're not really meant to use globs here</p>
+</blockquote>
+<p>Ah, yes. That was the problem. I can confirm that it works as intended now :+1:</p>
+<blockquote>
+<p>I think the slowdown in having to rebuild the crate to run the tests is a <em>reasonable</em> price to pay for avoiding the confusion from #13732</p>
+</blockquote>
+<p>Agreed, #13732 should be fixed. And I don't have any other ideas on how to solve it... except for a hard-coded list of Markdown files somewhere, and that would be a big downside in terms of ergonomics.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> approved on 2024-10-14 12:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2024-10-14 12:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2024-10-14 12:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-10-14 12:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-10-14 18:23</div>
+            <div class="timeline-body"><p>Looks great, thank you!!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:00:08 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Give non-existent files a durability of at least Medium - astral-sh/ruff #14034</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Give non-existent files a durability of at least Medium</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/14034">#14034</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2024-11-01 08:52
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-01 08:52</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Partially addresses https://github.com/astral-sh/ty/issues/242</p>
+<p>The solution isn't ideal, but our problem is that the module resolves first queries if certain first-party files exist and only then resolves the standard library modules. The issue with that is that any query that depends on a resolved standard library module now depends on non-existing LOW durability files, negating the benefit of giving standard library files high durability.</p>
+<p>This PR changes the durability of the <code>File::status</code> to at least medium. This is still not perfect because it means that all standard library queries that depend on module resolution still have a MEDIUM durability instead of HIGH, but it's better than what we have today, and it should allow Salsa to take the &quot;fast-incremental path&quot; more often.</p>
+<p>This possibly helps with https://github.com/astral-sh/ruff/pull/14024</p>
+<h2>Test Plan</h2>
+<p>See benchmarks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @MichaReiser on 2024-11-01 08:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @MichaReiser on 2024-11-01 08:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @MichaReiser on 2024-11-01 08:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @MichaReiser on 2024-11-01 08:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2024-11-01 08:58</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/micha/file-status-durability">CodSpeed Performance Report</a></h2>
+<h3>Merging astral-sh/ruff#14034 will <strong>improve performances by 7.43%</strong></h3>
+<p><sub>Comparing <code>micha/file-status-durability</code> (c485dce) with <code>main</code> (48fa839)</sub></p>
+<h3>Summary</h3>
+<p><code>⚡ 1</code> improvements
+<code>✅ 31</code> untouched benchmarks</p>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Benchmark | <code>main</code> | <code>micha/file-status-durability</code> | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| ⚡ | <code>red_knot_check_file[incremental]</code> | 4.6 ms | 4.3 ms | +7.43% |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-11-01 09:06</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-11-01 15:42</div>
+            <div class="timeline-body"><p>So just to make sure I understand the effect here: module resolutions that only use typeshed files (but first have to verify that some first-party paths don't exist) will now be MEDIUM instead of LOW durability, meaning we won't have to re-resolve those paths on any change to a first-party file. Adding a previously-not-existent first-party file will count as a MEDIUM durability input change, and cause those queries to have to re-execute. Is that an accurate summary?</p>
+<p>Looks good!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-01 15:43</div>
+            <div class="timeline-body"><blockquote>
+<p>So just to make sure I understand the effect here: module resolutions that only use typeshed files (but first have to verify that some first-party paths don't exist) will now be MEDIUM instead of LOW durability, meaning we won't have to re-resolve those paths on any change to a first-party file. Adding a previously-not-existent first-party file will count as a MEDIUM durability input change, and cause those queries to have to re-execute. Is that an accurate summary?</p>
+<p>Looks good!</p>
+</blockquote>
+<p>Yes, that's a perfect summary.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2024-11-01 15:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-11-01 15:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-11-01 15:44</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:00:09 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Infer subscript expression types for bytes literals - astral-sh/ruff #13901</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Infer subscript expression types for bytes literals</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/13901">#13901</a>
+        opened by <a href="https://github.com/sharkdp">@sharkdp</a>
+        on 2024-10-24 07:38
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/sharkdp">@sharkdp</a> on 2024-10-24 07:38</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Infer subscript expression types for bytes literals:</p>
+<pre><code class="language-py">b = b&quot;\x00abc\xff&quot;
+
+reveal_type(b[0])  # revealed: Literal[b&quot;\x00&quot;]
+reveal_type(b[1])  # revealed: Literal[b&quot;a&quot;]
+reveal_type(b[-1])  # revealed: Literal[b&quot;\xff&quot;]
+reveal_type(b[-2])  # revealed: Literal[b&quot;c&quot;]
+
+reveal_type(b[False])  # revealed: Literal[b&quot;\x00&quot;]
+reveal_type(b[True])  # revealed: Literal[b&quot;a&quot;]
+</code></pre>
+<p>part of #13689 (https://github.com/astral-sh/ruff/issues/13689#issuecomment-2404285064)</p>
+<h2>Test Plan</h2>
+<ul>
+<li>New Markdown-based tests (see <code>mdtest/subscript/bytes.md</code>)</li>
+<li>Added missing test for <code>string_literal[bool_literal]</code></li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @sharkdp on 2024-10-24 07:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @sharkdp on 2024-10-24 07:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @sharkdp on 2024-10-24 07:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @sharkdp on 2024-10-24 07:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-10-24 07:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/subscript/bytes.md</code>:9 on 2024-10-24 07:38</div>
+            <div class="timeline-body"><p>These were placed in the wrong file =&gt; moved to <code>mdtest/literal/bytes.md</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-10-24 07:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/subscript/string.md</code>:24 on 2024-10-24 07:41</div>
+            <div class="timeline-body"><p>I am assuming <code>add</code> was intended to be a function that definitely returns an <code>int</code>, not a <code>LiteralInt</code>. Elsewhere, we just use <code>def int_instance() -&gt; int: ...</code> for this. Let me know if I'm misunderstanding the intention.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-10-24 07:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/subscript/string.md</code>:30 on 2024-10-24 07:41</div>
+            <div class="timeline-body"><p>I understand that we want to infer <code>str</code> here. But I don't understand the &quot;Support overloads&quot; comment. Can someone explain?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-10-24 07:51</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-10-24 08:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3176 on 2024-10-24 08:02</div>
+            <div class="timeline-body"><p>For slice expressions, I intend to move both <code>iterator_at_index</code> and <code>slice_at_index</code> to a separate module, which will then also include functionality to do something similar for slices. I then also intend to add some unit tests for these functions, so maybe don't pay too much attention to these functions for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-10-24 08:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/subscript/string.md</code>:30 on 2024-10-24 08:23</div>
+            <div class="timeline-body"><p>We attempt to infer the type here by looking up <a href="https://github.com/python/typeshed/blob/c417573eb6f59c8f40b7c0dc7b1d75549b8f6e59/stdlib/builtins.pyi#L592"><code>str.__getitem__</code> in typeshed</a> and looking at what that method is annotated as returning. But <code>str.__getitem__</code> is an <a href="https://docs.python.org/3/library/typing.html#typing.overload">overloaded function</a> in typeshed, and we don't yet have the ability to understand those.</p>
+<p>In fact, we just infer <code>@Todo</code> as the return type for all decorated functions currently, since a decorated function (and its return type) is transformed by its decorator(s) before the user sees it. That means it's less simple than just &quot;believe the return type annotation&quot; when it comes to understanding the return type of decorated functions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-10-24 08:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3176 on 2024-10-24 08:44</div>
+            <div class="timeline-body"><p>I decided to add that to this branch after all.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-10-24 08:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/subscript/string.md</code>:30 on 2024-10-24 08:47</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-10-24 09:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3176 on 2024-10-24 09:37</div>
+            <div class="timeline-body"><p>And merged the two functions into a single one.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/util/subscript.rs</code>:1 on 2024-10-24 09:45</div>
+            <div class="timeline-body"><p>I probably would have just had this module as <code>red_knot_python_semantic/src/types/subscript.rs</code>, but don't feel strongly</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2024-10-24 09:47</div>
+            <div class="timeline-body"><p>Nice!! I love the trait solution</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-10-24 10:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/util/subscript.rs</code>:1 on 2024-10-24 10:07</div>
+            <div class="timeline-body"><p>indexing/slicing to me feels like something that is not really related to types, but rather to &quot;const evaluation&quot; of some expressions at type-check time. I'll leave it where it is for now, we can decide again in the next PR which is going to add slices to this module.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @sharkdp on 2024-10-24 10:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2024-10-24 10:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-10-24 10:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-10-24 10:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/util/subscript.rs</code>:1 on 2024-10-24 10:07</div>
+            <div class="timeline-body"><p>SGTM</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:00:09 UTC
+    </footer>
+</body>
+</html>

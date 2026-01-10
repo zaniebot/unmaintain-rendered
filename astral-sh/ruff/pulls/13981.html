@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add augmented assignment inference for `-=` operator - astral-sh/ruff #13981</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add augmented assignment inference for <code>-=</code> operator</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/13981">#13981</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-10-29 17:16
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-29 17:16</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>See: https://github.com/astral-sh/ruff/issues/12699</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @charliermarsh on 2024-10-29 17:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @charliermarsh on 2024-10-29 17:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @charliermarsh on 2024-10-29 17:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-10-29 17:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:962 on 2024-10-29 17:16</div>
+            <div class="timeline-body"><p>Per Discord: the use shouldn't see the definition, so we had to change the order here. (This hasn't mattered up until augmented assignments.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-10-29 17:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1466 on 2024-10-29 17:16</div>
+            <div class="timeline-body"><p>The logic here is meant to mimic:</p>
+<pre><code class="language-python">if hasattr(a, &quot;__isub__&quot;):
+    _value = a.__isub__(b)
+    if _value is not NotImplemented:
+        a = _value
+    else:
+        a = a - b
+    del _value
+ else:
+     a = a - b
+</code></pre>
+<p>As per https://snarky.ca/unravelling-augmented-arithmetic-assignment/.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-10-29 17:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1445 on 2024-10-29 17:17</div>
+            <div class="timeline-body"><p>Should this... fall back to <code>a - b</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-10-29 17:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1466 on 2024-10-29 17:17</div>
+            <div class="timeline-body"><p>However, I don't really know how to handle the <code>NotImplemented</code> case, if at all -- i.e., how we can determine whether to use <code>__isub__</code> or fall back to <code>a - b</code>. Can we even detect that from the type system?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @charliermarsh on 2024-10-29 17:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2418 on 2024-10-29 17:18</div>
+            <div class="timeline-body"><p>The diff here is messy, but this is just: taking the <code>ExprContext::Load</code> branch and moving it into a dedicated method (<code>infer_name_load</code>), then calling it from the aforementioned branch.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-10-29 17:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-10-29 17:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2535 on 2024-10-29 17:18</div>
+            <div class="timeline-body"><p>I assume these still need to happen, even though we're not using the result, since they mutate the inference builder.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-10-29 17:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1466 on 2024-10-29 17:28</div>
+            <div class="timeline-body"><p>The convention for dunder methods is that if calling the dunder would return <code>NotImplemented</code>, it's annotated &quot;as if it were an illegal call&quot;. So <code>int.__sub__</code> is annotated as &quot;not accepting&quot; <code>float</code> in typeshed, even though actually calling it with a <code>float</code> &quot;works fine&quot; (it just returns <code>NotImplemented</code>, allowing the operation to fallback to <code>float.__rsub__</code>):</p>
+<p>https://github.com/astral-sh/ruff/blob/60a2dc53e7b4407c3c0c14093fd8542879997ca8/crates/red_knot_vendored/vendor/typeshed/stdlib/builtins.pyi#L273</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; (42).__sub__(42.0)
+NotImplemented
+</code></pre>
+<p>Currently, though, we don't do any checking of argument types passed into functions, so we can't implement the &quot;fallback to the other method&quot; logic fully right now. There's lots of TODO comments in our tests for binary arithmetic about this currently.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-10-29 17:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1466 on 2024-10-29 17:30</div>
+            <div class="timeline-body"><p>Some example TODOs for you: https://github.com/astral-sh/ruff/blob/60a2dc53e7b4407c3c0c14093fd8542879997ca8/crates/red_knot_python_semantic/resources/mdtest/binary/instances.md?plain=1#L284-L291</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1466 on 2024-10-29 17:39</div>
+            <div class="timeline-body"><p>The way these dunder methods are typically annotated is that their parameter type should reflect the type of argument for which the method will return a value (not <code>Notimplemented</code>), and any other type will return <code>NotImplemented</code>. So we can detect this from the type system, but currently red-knot can't, because we don't yet have call signature checking (it's something I want to work on this week.)</p>
+<p>I'll comment more details above.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1445 on 2024-10-29 17:45</div>
+            <div class="timeline-body"><p>This relates to your question below about <code>NotImplemented</code>. If there is an <code>__isub__</code> method, but it doesn't accept the <code>value_type</code> we try to pass it, then we should fall back to <code>__sub__</code>. For any other call error (e.g. <code>__isub__</code> is set to some non-callable type for some reason) we should just emit a diagnostic and be done here. This will require some more complex matching on the specific error kind we get back from the call -- but this is all a TODO until we have call signature checking.</p>
+<p>I would like to add a test for this case (<code>__isub__</code> exists but doesn't accept the type we pass to it) with a TODO comment in the tests for the right result, to help us remember that this needs fixing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1442 on 2024-10-29 17:48</div>
+            <div class="timeline-body"><p>I think this diagnostic probably should clarify that it's specific to augmented assignment, and should include the <code>value_type</code> as well.</p>
+<pre><code class="language-suggestion">                            &quot;Operator `{op}=` is unsupported for type `{}`&quot;,
+                            target_type.display(self.db),
+                            value_type.display(self.db),
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1429 on 2024-10-29 17:51</div>
+            <div class="timeline-body"><p>The test you added above is great, but it's not even testing this branch at all, since the type won't be <code>Type::Instance</code> but rather <code>Type::IntLiteral</code>, so you're getting the behavior from the fallback to regular binary ops below.</p>
+<p>Let's add a test where we actually define <code>__isub__</code> on a type and show that we take its return type. And a test where we set <code>__isub__</code> to something not callable and show we get an error. (And the TODO test I mention below about <code>__isub__</code> not accepting <code>value_type</code> as argument.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2535 on 2024-10-29 17:52</div>
+            <div class="timeline-body"><p>Yeah, we currently maintain an invariant that every expression gets a type inferred for it, so we have to infer types even if we won't use them. (The theory is that in future an LSP may want to query a type on hover for any expression.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-10-29 17:52</div>
+            <div class="timeline-body"><p>Looks good! Mostly just would like to add a few more tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-10-29 17:56</div>
+            <div class="timeline-body"><p>Oh, just noticed the <code>corpus_no_panic</code> test failure. This is the test that verifies that all expressions get a type. I think the problem here is that when we use <code>infer_name_load</code> and <code>infer_attribute_load</code> to get the type of the LHS for a Name or Attribute, we never actually store the type on the expression node (<code>infer_expression</code> normally takes care of that.)</p>
+<p>But we don't want to store the assume-Load type on the node. So I think we also need to call <code>infer_expression</code> on the LHS node regardless, even if we are also calling <code>infer_name_load</code> or <code>infer_attribute_load</code> on it, just to get the <code>None</code> type stored on it that we currently infer for Store expressions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-10-29 18:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1466 on 2024-10-29 18:05</div>
+            <div class="timeline-body"><p>Oops, didn't see Alex's review before submitting mine.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-10-29 22:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1429 on 2024-10-29 22:27</div>
+            <div class="timeline-body"><p>Hah -- thank you, that's embarrassing :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-29 22:34</div>
+            <div class="timeline-body"><p>Still getting that same failure after calling <code>self.infer_expression</code> (at least locally), will return to it later and see what I can figure out.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-29 22:36</div>
+            <div class="timeline-body"><p>Oh I think it's because we end up visiting the attribute twice, maybe...? Something like that? Because <code>infer_attribute_load</code> calls <code>self.infer_expression</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-10-29 22:47</div>
+            <div class="timeline-body"><p>Ah yeah -- if you look at the error you're getting, I'll bet before it was <code>no entry found for key</code> and now it's a failure of the assertion on line 1900? That is because we end up calling <code>infer_expression</code> twice for the same expression, which we try to maintain an invariant that we don't do.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-10-29 22:55</div>
+            <div class="timeline-body"><p>One option for how to handle this is to extract that code at the end of <code>self.infer_expression</code> (that stores a type into the expression map and asserts there wasn't one there already) into a method, like <code>fn store_expression_type(...)</code>, and then instead of calling <code>self.infer_expression(target)</code> along with <code>self.infer_attribute_load(target)</code>, instead you'd just manually store a <code>None</code> (or like I mentioned, <code>Never</code> is probably better but then you should also update it in <code>infer_attribute_expression</code> and <code>infer_name_expression</code> for consistency) for the target node. This means we end up duplicating the knowledge of what type to store for a <code>Store</code> context expression... there's probably a way to refactor away that duplication.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-10-30 02:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-10-30 02:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-10-30 02:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-10-30 02:23</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>ℹ️ ecosystem check <strong>encountered linter errors</strong>. (no lint changes; 1 project error)</p>
+<details><summary><a href="https://github.com/pandas-dev/pandas">pandas-dev/pandas</a> (+0 -0 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/pypa/setuptools">pypa/setuptools</a> (error)</summary>
+<p>
+
+<pre><code>ruff failed
+  Cause: Failed to parse /home/runner/work/ruff/ruff/checkouts/pypa:setuptools/ruff.toml
+  Cause: TOML parse error at line 1, column 11
+  |
+1 | include = &quot;pyproject.toml&quot;
+  |           ^^^^^^^^^^^^^^^^
+invalid type: string &quot;pyproject.toml&quot;, expected a sequence
+</code></pre>
+</p>
+</details>
+
+<h3>Linter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>encountered linter errors</strong>. (no lint changes; 1 project error)</p>
+<details><summary><a href="https://github.com/pypa/setuptools">pypa/setuptools</a> (error)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre><code>ruff failed
+  Cause: Failed to parse /home/runner/work/ruff/ruff/checkouts/pypa:setuptools/ruff.toml
+  Cause: TOML parse error at line 1, column 11
+  |
+1 | include = &quot;pyproject.toml&quot;
+  |           ^^^^^^^^^^^^^^^^
+invalid type: string &quot;pyproject.toml&quot;, expected a sequence
+</code></pre>
+</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1431 on 2024-10-30 08:09</div>
+            <div class="timeline-body"><p>You need to explicitly pass in the <code>self</code> argument here because we've accessed the method on the class rather than the instance, so you're getting the original function object rather than a method object from the <code>class.class_member</code> call</p>
+<pre><code class="language-suggestion">            let call = class_member.call(self.db, &amp;[target_type, value_type]);
+</code></pre>
+<p>This will matter when we start checking that function calls are being passed arguments of the correct types</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2521 on 2024-10-30 08:13</div>
+            <div class="timeline-body"><p>nit</p>
+<pre><code class="language-suggestion">        value_ty.member(self.db, &amp;Name::new(&amp;attr.id))
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-10-30 08:13</div>
+            <div class="timeline-body"><p>Nice</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:00:09 UTC
+    </footer>
+</body>
+</html>

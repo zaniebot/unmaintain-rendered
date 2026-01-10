@@ -1,0 +1,2185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add rule and autofix to sort the contents of `__all__` - astral-sh/ruff #9474</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add rule and autofix to sort the contents of <code>__all__</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/9474">#9474</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2024-01-11 17:31
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-01-11 17:31</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This implements the rule proposed in #1198 (though it doesn't close the issue, as there are some open questions about configuration that might merit some further discussion). This ended up being a bigger PR than I expected! I've tried to make sure it's well commented, so hopefully it's not too hard to figure out what's going on.</p>
+<h2>Test Plan</h2>
+<p><code>cargo test</code> / <code>cargo insta review</code>. I also ran this rule on the CPython codebase, and it produces this diff, which looks pretty good to me: <a href="https://github.com/astral-sh/ruff/files/13907385/cpython_diff.txt">cpython_diff.txt</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-01-11 18:02</div>
+            <div class="timeline-body"><p>Some miscellaneous notes:</p>
+<ul>
+<li><p>We don't try to sort <code>__all__</code> if there's any implicitly concatenated strings inside <code>__all__</code>.</p>
+</li>
+<li><p>We don't try to sort <code>__all__</code> if there are any parenthesized items inside <code>__all__</code>, e.g.</p>
+<pre><code class="language-py">__all__ = (
+    &quot;foo&quot;,
+    (
+        &quot;why_would_you_do_this?&quot;
+    ),
+    &quot;bar&quot;
+)
+</code></pre>
+</li>
+<li><p>There's no attempt made to deduplicate elements in <code>__all__</code>: elements are first sorted alphabetically, then by the order they originally appeared in.</p>
+</li>
+<li><p>Some people on the issue wanted to also be able to sort elements by definition order as well as by alphabetical order. That could possibly be implemented as a followup, but I'm not sure it's worth it. It feels like it would add significant complexity, and I don't know how many people would use it.</p>
+</li>
+<li><p>The autofix makes a complete hash of <code>__all__</code> definitions like <a href="https://github.com/python/cpython/blob/0d8fec79ca30e67870752c6ad4e299f591271e69/Lib/_pydecimal.py#L115-L148">this</a> or <a href="https://github.com/python/cpython/blob/0d8fec79ca30e67870752c6ad4e299f591271e69/Lib/typing.py#L43-L157">this</a>, which use comments to create subsections in <code>__all__</code>. This is, unfortunately, reasonably common. Ideally, we'd have an option where users could tell ruff to treat all comments on their own line as section delimiters -- if that option was selected, ruff would sort <code>__all__</code> within sections, but wouldn't ever move an element out of the section it's already in. I don't attempt to do that here, however, and there are some open design questions about how we would let users opt into that alternative behaviour (see discussion in https://github.com/astral-sh/ruff/issues/1198).</p>
+</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-01-11 18:05</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+156 -0 violations, +0 -0 fixes in 12 projects; 31 projects unchanged)</p>
+<details><summary><a href="https://github.com/DisnakeDev/disnake">DisnakeDev/disnake</a> (+48 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/DisnakeDev/disnake/blob/a5c1a8f902e9a7e173f71e65827d59de8a445adb/disnake/abc.py#L50'>disnake/abc.py:50:11:</a> RUF022 [*] `__all__` is not sorted
++ <a href='https://github.com/DisnakeDev/disnake/blob/a5c1a8f902e9a7e173f71e65827d59de8a445adb/disnake/activity.py#L13'>disnake/activity.py:13:11:</a> RUF022 [*] `__all__` is not sorted
++ <a href='https://github.com/DisnakeDev/disnake/blob/a5c1a8f902e9a7e173f71e65827d59de8a445adb/disnake/app_commands.py#L49'>disnake/app_commands.py:49:11:</a> RUF022 [*] `__all__` is not sorted
++ <a href='https://github.com/DisnakeDev/disnake/blob/a5c1a8f902e9a7e173f71e65827d59de8a445adb/disnake/appinfo.py#L23'>disnake/appinfo.py:23:11:</a> RUF022 [*] `__all__` is not sorted
++ <a href='https://github.com/DisnakeDev/disnake/blob/a5c1a8f902e9a7e173f71e65827d59de8a445adb/disnake/audit_logs.py#L34'>disnake/audit_logs.py:34:11:</a> RUF022 [*] `__all__` is not sorted
++ <a href='https://github.com/DisnakeDev/disnake/blob/a5c1a8f902e9a7e173f71e65827d59de8a445adb/disnake/automod.py#L51'>disnake/automod.py:51:11:</a> RUF022 [*] `__all__` is not sorted
++ <a href='https://github.com/DisnakeDev/disnake/blob/a5c1a8f902e9a7e173f71e65827d59de8a445adb/disnake/channel.py#L52'>disnake/channel.py:52:11:</a> RUF022 [*] `__all__` is not sorted
++ <a href='https://github.com/DisnakeDev/disnake/blob/a5c1a8f902e9a7e173f71e65827d59de8a445adb/disnake/client.py#L100'>disnake/client.py:100:11:</a> RUF022 [*] `__all__` is not sorted
++ <a href='https://github.com/DisnakeDev/disnake/blob/a5c1a8f902e9a7e173f71e65827d59de8a445adb/disnake/colour.py#L13'>disnake/colour.py:13:11:</a> RUF022 [*] `__all__` is not sorted
++ <a href='https://github.com/DisnakeDev/disnake/blob/a5c1a8f902e9a7e173f71e65827d59de8a445adb/disnake/components.py#L44'>disnake/components.py:44:11:</a> RUF022 [*] `__all__` is not sorted
++ <a href='https://github.com/DisnakeDev/disnake/blob/a5c1a8f902e9a7e173f71e65827d59de8a445adb/disnake/custom_warnings.py#L5'>disnake/custom_warnings.py:5:11:</a> RUF022 [*] `__all__` is not sorted
++ <a href='https://github.com/DisnakeDev/disnake/blob/a5c1a8f902e9a7e173f71e65827d59de8a445adb/disnake/enums.py#L23'>disnake/enums.py:23:11:</a> RUF022 [*] `__all__` is not sorted
++ <a href='https://github.com/DisnakeDev/disnake/blob/a5c1a8f902e9a7e173f71e65827d59de8a445adb/disnake/errors.py#L16'>disnake/errors.py:16:11:</a> RUF022 [*] `__all__` is not sorted
++ <a href='https://github.com/DisnakeDev/disnake/blob/a5c1a8f902e9a7e173f71e65827d59de8a445adb/disnake/ext/commands/bot.py#L32'>disnake/ext/commands/bot.py:32:11:</a> RUF022 [*] `__all__` is not sorted
++ <a href='https://github.com/DisnakeDev/disnake/blob/a5c1a8f902e9a7e173f71e65827d59de8a445adb/disnake/ext/commands/bot_base.py#L32'>disnake/ext/commands/bot_base.py:32:11:</a> RUF022 [*] `__all__` is not sorted
+... 33 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/RasaHQ/rasa">RasaHQ/rasa</a> (+2 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/stubs/aio_pika/__init__.pyi#L23'>stubs/aio_pika/__init__.pyi:23:11:</a> RUF022 [*] `__all__` is not sorted
++ <a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/stubs/sanic.pyi#L11'>stubs/sanic.pyi:11:11:</a> RUF022 [*] `__all__` is not sorted
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+10 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/apache/airflow/blob/57c921193b86569f42bb521a356d28d1c4c619f3/airflow/__init__.py#L54'>airflow/__init__.py:54:11:</a> RUF022 [*] `__all__` is not sorted
++ <a href='https://github.com/apache/airflow/blob/57c921193b86569f42bb521a356d28d1c4c619f3/airflow/decorators/__init__.py#L37'>airflow/decorators/__init__.py:37:11:</a> RUF022 [*] `__all__` is not sorted
++ <a href='https://github.com/apache/airflow/blob/57c921193b86569f42bb521a356d28d1c4c619f3/airflow/decorators/__init__.pyi#L44'>airflow/decorators/__init__.pyi:44:11:</a> RUF022 [*] `__all__` is not sorted
++ <a href='https://github.com/apache/airflow/blob/57c921193b86569f42bb521a356d28d1c4c619f3/airflow/models/__init__.py#L22'>airflow/models/__init__.py:22:11:</a> RUF022 [*] `__all__` is not sorted
++ <a href='https://github.com/apache/airflow/blob/57c921193b86569f42bb521a356d28d1c4c619f3/airflow/providers/amazon/aws/operators/rds.py#L927'>airflow/providers/amazon/aws/operators/rds.py:927:11:</a> RUF022 [*] `__all__` is not sorted
++ <a href='https://github.com/apache/airflow/blob/57c921193b86569f42bb521a356d28d1c4c619f3/airflow/providers/amazon/aws/sensors/rds.py#L189'>airflow/providers/amazon/aws/sensors/rds.py:189:11:</a> RUF022 [*] `__all__` is not sorted
++ <a href='https://github.com/apache/airflow/blob/57c921193b86569f42bb521a356d28d1c4c619f3/airflow/providers/cncf/kubernetes/utils/__init__.py#L19'>airflow/providers/cncf/kubernetes/utils/__init__.py:19:11:</a> RUF022 [*] `__all__` is not sorted
++ <a href='https://github.com/apache/airflow/blob/57c921193b86569f42bb521a356d28d1c4c619f3/airflow/providers/openlineage/extractors/__init__.py#L27'>airflow/providers/openlineage/extractors/__init__.py:27:11:</a> RUF022 [*] `__all__` is not sorted
++ <a href='https://github.com/apache/airflow/blob/57c921193b86569f42bb521a356d28d1c4c619f3/airflow/secrets/__init__.py#L29'>airflow/secrets/__init__.py:29:11:</a> RUF022 [*] `__all__` is not sorted
++ <a href='https://github.com/apache/airflow/blob/57c921193b86569f42bb521a356d28d1c4c619f3/airflow/typing_compat.py#L21'>airflow/typing_compat.py:21:11:</a> RUF022 [*] `__all__` is not sorted
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/bokeh/bokeh">bokeh/bokeh</a> (+53 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/bokeh/bokeh/blob/1e932c157d9e3e973617e39065759a2dae4147a9/release/checks.py#L24'>release/checks.py:24:11:</a> RUF022 [*] `__all__` is not sorted
++ <a href='https://github.com/bokeh/bokeh/blob/1e932c157d9e3e973617e39065759a2dae4147a9/src/bokeh/client/__init__.py#L46'>src/bokeh/client/__init__.py:46:11:</a> RUF022 [*] `__all__` is not sorted
++ <a href='https://github.com/bokeh/bokeh/blob/1e932c157d9e3e973617e39065759a2dae4147a9/src/bokeh/client/states.py#L40'>src/bokeh/client/states.py:40:11:</a> RUF022 [*] `__all__` is not sorted
++ <a href='https://github.com/bokeh/bokeh/blob/1e932c157d9e3e973617e39065759a2dae4147a9/src/bokeh/colors/__init__.py#L37'>src/bokeh/colors/__init__.py:37:11:</a> RUF022 [*] `__all__` is not sorted
++ <a href='https://github.com/bokeh/bokeh/blob/1e932c157d9e3e973617e39065759a2dae4147a9/src/bokeh/core/enums.py#L91'>src/bokeh/core/enums.py:91:11:</a> RUF022 [*] `__all__` is not sorted
++ <a href='https://github.com/bokeh/bokeh/blob/1e932c157d9e3e973617e39065759a2dae4147a9/src/bokeh/core/has_props.py#L81'>src/bokeh/core/has_props.py:81:11:</a> RUF022 [*] `__all__` is not sorted
++ <a href='https://github.com/bokeh/bokeh/blob/1e932c157d9e3e973617e39065759a2dae4147a9/src/bokeh/core/properties.py#L201'>src/bokeh/core/properties.py:201:11:</a> RUF022 [*] `__all__` is not sorted
++ <a href='https://github.com/bokeh/bokeh/blob/1e932c157d9e3e973617e39065759a2dae4147a9/src/bokeh/core/property/color.py#L42'>src/bokeh/core/property/color.py:42:11:</a> RUF022 [*] `__all__` is not sorted
++ <a href='https://github.com/bokeh/bokeh/blob/1e932c157d9e3e973617e39065759a2dae4147a9/src/bokeh/core/property/primitive.py#L40'>src/bokeh/core/property/primitive.py:40:11:</a> RUF022 [*] `__all__` is not sorted
++ <a href='https://github.com/bokeh/bokeh/blob/1e932c157d9e3e973617e39065759a2dae4147a9/src/bokeh/core/property/string.py#L38'>src/bokeh/core/property/string.py:38:11:</a> RUF022 [*] `__all__` is not sorted
++ <a href='https://github.com/bokeh/bokeh/blob/1e932c157d9e3e973617e39065759a2dae4147a9/src/bokeh/core/property/visual.py#L50'>src/bokeh/core/property/visual.py:50:11:</a> RUF022 [*] `__all__` is not sorted
++ <a href='https://github.com/bokeh/bokeh/blob/1e932c157d9e3e973617e39065759a2dae4147a9/src/bokeh/core/property_mixins.py#L126'>src/bokeh/core/property_mixins.py:126:11:</a> RUF022 [*] `__all__` is not sorted
++ <a href='https://github.com/bokeh/bokeh/blob/1e932c157d9e3e973617e39065759a2dae4147a9/src/bokeh/core/query.py#L43'>src/bokeh/core/query.py:43:11:</a> RUF022 [*] `__all__` is not sorted
++ <a href='https://github.com/bokeh/bokeh/blob/1e932c157d9e3e973617e39065759a2dae4147a9/src/bokeh/core/templates.py#L51'>src/bokeh/core/templates.py:51:11:</a> RUF022 [*] `__all__` is not sorted
++ <a href='https://github.com/bokeh/bokeh/blob/1e932c157d9e3e973617e39065759a2dae4147a9/src/bokeh/document/callbacks.py#L63'>src/bokeh/document/callbacks.py:63:11:</a> RUF022 [*] `__all__` is not sorted
++ <a href='https://github.com/bokeh/bokeh/blob/1e932c157d9e3e973617e39065759a2dae4147a9/src/bokeh/document/events.py#L98'>src/bokeh/document/events.py:98:11:</a> RUF022 [*] `__all__` is not sorted
+... 37 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/ibis-project/ibis">ibis-project/ibis</a> (+7 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/ibis-project/ibis/blob/b3f0ee8f29b5ff2d31fcad38fbc4551558ac2c5c/ibis/backends/base/sql/alchemy/__init__.py#L51'>ibis/backends/base/sql/alchemy/__init__.py:51:11:</a> RUF022 [*] `__all__` is not sorted
++ <a href='https://github.com/ibis-project/ibis/blob/b3f0ee8f29b5ff2d31fcad38fbc4551558ac2c5c/ibis/backends/base/sql/compiler/__init__.py#L15'>ibis/backends/base/sql/compiler/__init__.py:15:11:</a> RUF022 [*] `__all__` is not sorted
++ <a href='https://github.com/ibis-project/ibis/blob/b3f0ee8f29b5ff2d31fcad38fbc4551558ac2c5c/ibis/backends/base/sql/ddl.py#L448'>ibis/backends/base/sql/ddl.py:448:11:</a> RUF022 [*] `__all__` is not sorted
++ <a href='https://github.com/ibis-project/ibis/blob/b3f0ee8f29b5ff2d31fcad38fbc4551558ac2c5c/ibis/backends/base/sql/registry/__init__.py#L21'>ibis/backends/base/sql/registry/__init__.py:21:11:</a> RUF022 [*] `__all__` is not sorted
++ <a href='https://github.com/ibis-project/ibis/blob/b3f0ee8f29b5ff2d31fcad38fbc4551558ac2c5c/ibis/backends/impala/compat.py#L20'>ibis/backends/impala/compat.py:20:11:</a> RUF022 [*] `__all__` is not sorted
++ <a href='https://github.com/ibis-project/ibis/blob/b3f0ee8f29b5ff2d31fcad38fbc4551558ac2c5c/ibis/backends/impala/udf.py#L28'>ibis/backends/impala/udf.py:28:11:</a> RUF022 [*] `__all__` is not sorted
++ <a href='https://github.com/ibis-project/ibis/blob/b3f0ee8f29b5ff2d31fcad38fbc4551558ac2c5c/ibis/expr/api.py#L52'>ibis/expr/api.py:52:11:</a> RUF022 [*] `__all__` is not sorted
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/milvus-io/pymilvus">milvus-io/pymilvus</a> (+1 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/milvus-io/pymilvus/blob/d7a402b8cfdd24d3e5626da817de828ca14d8acb/pymilvus/__init__.py#L88'>pymilvus/__init__.py:88:11:</a> RUF022 [*] `__all__` is not sorted
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/pypa/build">pypa/build</a> (+2 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/pypa/build/blob/ee4a8803fe3f632b8937d80dd327469dac96fdc9/src/build/__init__.py#L380'>src/build/__init__.py:380:11:</a> RUF022 [*] `__all__` is not sorted
++ <a href='https://github.com/pypa/build/blob/ee4a8803fe3f632b8937d80dd327469dac96fdc9/src/build/env.py#L287'>src/build/env.py:287:11:</a> RUF022 [*] `__all__` is not sorted
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/pypa/cibuildwheel">pypa/cibuildwheel</a> (+3 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/pypa/cibuildwheel/blob/a6da0692cef215eaccf5a81a2212fbd963de829d/cibuildwheel/_compat/typing.py#L10'>cibuildwheel/_compat/typing.py:10:11:</a> RUF022 [*] `__all__` is not sorted
++ <a href='https://github.com/pypa/cibuildwheel/blob/a6da0692cef215eaccf5a81a2212fbd963de829d/cibuildwheel/typing.py#L8'>cibuildwheel/typing.py:8:11:</a> RUF022 [*] `__all__` is not sorted
++ <a href='https://github.com/pypa/cibuildwheel/blob/a6da0692cef215eaccf5a81a2212fbd963de829d/cibuildwheel/util.py#L37'>cibuildwheel/util.py:37:11:</a> RUF022 [*] `__all__` is not sorted
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/rotki/rotki">rotki/rotki</a> (+3 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/rotki/rotki/blob/7280d6cf5dc4ebc3028dc78df9c580444fee588b/rotkehlchen/chain/ethereum/interfaces/ammswap/__init__.py#L3'>rotkehlchen/chain/ethereum/interfaces/ammswap/__init__.py:3:11:</a> RUF022 [*] `__all__` is not sorted
++ <a href='https://github.com/rotki/rotki/blob/7280d6cf5dc4ebc3028dc78df9c580444fee588b/rotkehlchen/chain/ethereum/modules/__init__.py#L1'>rotkehlchen/chain/ethereum/modules/__init__.py:1:11:</a> RUF022 [*] `__all__` is not sorted
++ <a href='https://github.com/rotki/rotki/blob/7280d6cf5dc4ebc3028dc78df9c580444fee588b/rotkehlchen/chain/ethereum/modules/balancer/__init__.py#L1'>rotkehlchen/chain/ethereum/modules/balancer/__init__.py:1:11:</a> RUF022 [*] `__all__` is not sorted
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/scikit-build/scikit-build">scikit-build/scikit-build</a> (+3 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/scikit-build/scikit-build/blob/030e6c2abb685a74b176dad50dbdc3c612b9f73f/skbuild/__init__.py#L16'>skbuild/__init__.py:16:11:</a> RUF022 [*] `__all__` is not sorted
++ <a href='https://github.com/scikit-build/scikit-build/blob/030e6c2abb685a74b176dad50dbdc3c612b9f73f/skbuild/_compat/typing.py#L10'>skbuild/_compat/typing.py:10:11:</a> RUF022 [*] `__all__` is not sorted
++ <a href='https://github.com/scikit-build/scikit-build/blob/030e6c2abb685a74b176dad50dbdc3c612b9f73f/tests/samples/issue-707-nested-packages/hello_nested/__init__.py#L6'>tests/samples/issue-707-nested-packages/hello_nested/__init__.py:6:11:</a> RUF022 [*] `__all__` is not sorted
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/scikit-build/scikit-build-core">scikit-build/scikit-build-core</a> (+23 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/scikit-build/scikit-build-core/blob/f8c5798897852e107df0683893de59e15c558baf/src/scikit_build_core/_compat/typing.py#L29'>src/scikit_build_core/_compat/typing.py:29:11:</a> RUF022 [*] `__all__` is not sorted
++ <a href='https://github.com/scikit-build/scikit-build-core/blob/f8c5798897852e107df0683893de59e15c558baf/src/scikit_build_core/_logging.py#L10'>src/scikit_build_core/_logging.py:10:11:</a> RUF022 [*] `__all__` is not sorted
++ <a href='https://github.com/scikit-build/scikit-build-core/blob/f8c5798897852e107df0683893de59e15c558baf/src/scikit_build_core/build/__init__.py#L9'>src/scikit_build_core/build/__init__.py:9:11:</a> RUF022 [*] `__all__` is not sorted
++ <a href='https://github.com/scikit-build/scikit-build-core/blob/f8c5798897852e107df0683893de59e15c558baf/src/scikit_build_core/build/_pathutil.py#L12'>src/scikit_build_core/build/_pathutil.py:12:11:</a> RUF022 [*] `__all__` is not sorted
++ <a href='https://github.com/scikit-build/scikit-build-core/blob/f8c5798897852e107df0683893de59e15c558baf/src/scikit_build_core/build/_wheelfile.py#L41'>src/scikit_build_core/build/_wheelfile.py:41:11:</a> RUF022 [*] `__all__` is not sorted
++ <a href='https://github.com/scikit-build/scikit-build-core/blob/f8c5798897852e107df0683893de59e15c558baf/src/scikit_build_core/builder/builder.py#L31'>src/scikit_build_core/builder/builder.py:31:11:</a> RUF022 [*] `__all__` is not sorted
++ <a href='https://github.com/scikit-build/scikit-build-core/blob/f8c5798897852e107df0683893de59e15c558baf/src/scikit_build_core/builder/macos.py#L9'>src/scikit_build_core/builder/macos.py:9:11:</a> RUF022 [*] `__all__` is not sorted
++ <a href='https://github.com/scikit-build/scikit-build-core/blob/f8c5798897852e107df0683893de59e15c558baf/src/scikit_build_core/builder/sysconfig.py#L15'>src/scikit_build_core/builder/sysconfig.py:15:11:</a> RUF022 [*] `__all__` is not sorted
++ <a href='https://github.com/scikit-build/scikit-build-core/blob/f8c5798897852e107df0683893de59e15c558baf/src/scikit_build_core/errors.py#L9'>src/scikit_build_core/errors.py:9:11:</a> RUF022 [*] `__all__` is not sorted
++ <a href='https://github.com/scikit-build/scikit-build-core/blob/f8c5798897852e107df0683893de59e15c558baf/src/scikit_build_core/file_api/_cattrs_converter.py#L18'>src/scikit_build_core/file_api/_cattrs_converter.py:18:11:</a> RUF022 [*] `__all__` is not sorted
+... 13 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/zulip/zulip">zulip/zulip</a> (+1 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/zulip/zulip/blob/906559c2b56bc95700aeaa0062b53b774df8daf2/zerver/lib/url_preview/parsers/__init__.py#L4'>zerver/lib/url_preview/parsers/__init__.py:4:11:</a> RUF022 [*] `__all__` is not sorted
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (1 rules affected)</summary>
+<p>
+
+<p>| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| RUF022 | 156 | 156 | 0 | 0 | 0 |</p>
+</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-01-11 18:11</div>
+            <div class="timeline-body"><p>Oh, one other note: I decided to implement this as an RUF rule, since:</p>
+<ol>
+<li>Although isort has this functionality, it's undocumented, and has always been undocumented</li>
+<li>It doesn't really feel like it has much to do with imports</li>
+</ol>
+<p>Since starting working on the rule, however, I realised that the https://github.com/cpendery/asort tool <em>does</em> also exist, so possibly we could call this rule ASORT001 instead of RUF022. I don't have a strong opinion either way!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-01-11 18:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:265 on 2024-01-11 18:35</div>
+            <div class="timeline-body"><p>This could be an <code>enum</code> e.g. (not necessarily the best names)</p>
+<pre><code class="language-rust">enum SortedDunderAll {
+    AlreadySorted,
+    Sorted(String)
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-01-11 18:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:265 on 2024-01-11 18:46</div>
+            <div class="timeline-body"><p>Oh nice! Will make that change</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2024-01-11 18:53</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/AlexWaygood:sort-dunder-all-2">CodSpeed Performance Report</a></h2>
+<h3>Merging #9474 will <strong>degrade performances by 4.36%</strong></h3>
+<p><sub>Comparing <code>AlexWaygood:sort-dunder-all-2</code> (c89556c) with <code>main</code> (f9191b0)</sub></p>
+<h3>Summary</h3>
+<p><code>❌ 1</code> regressions
+<code>✅ 29</code> untouched benchmarks</p>
+<blockquote>
+<p>:warning: <em>Please fix the performance issues or <a href="https://codspeed.io/astral-sh/ruff/branches/AlexWaygood:sort-dunder-all-2">acknowledge them on CodSpeed</a>.</em></p>
+</blockquote>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Benchmark | <code>main</code> | <code>AlexWaygood:sort-dunder-all-2</code> | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| ❌ | <code>parser[numpy/ctypeslib.py]</code> | 12.2 ms | 12.8 ms | -4.36% |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-11 18:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/checkers/ast/analyze/statement.rs</code>:24 on 2024-01-11 18:54</div>
+            <div class="timeline-body"><p>I'd recommend adding separate methods in <code>sort_dunder_all</code> for <code>Assign</code> and <code>AugAssign</code> (and probably also <code>AnnAssign</code>?), and then have those call into a single method internally that takes the statement and value. That way, we ensure we're only calling this rule on the correct AST nodes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-11 18:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:265 on 2024-01-11 18:57</div>
+            <div class="timeline-body"><p>Alternatively, <code>construct_sorted_all</code> could return <code>Option&lt;SortedDunderAll&gt;</code>, where <code>None</code> indicates &quot;already sorted&quot;. It's the same idea. <code>enum SortedDunderAll</code> is arguably more explicit.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-01-11 19:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:265 on 2024-01-11 19:00</div>
+            <div class="timeline-body"><p>There's three states we need to represent here:</p>
+<ul>
+<li><code>__all__</code> was already sorted; don't emit the violation</li>
+<li><code>__all__</code> was not sorted, so we should emit the violation, but we don't know how to safely fix it here for whatever reason; something failed along the way</li>
+<li><code>__all__</code> was not sorted, and here's the fix</li>
+</ul>
+<p>For now I've gone with the enum, which I think is definitely better than what I originally had, but the naming still doesn't feel <em>ideal</em>. Open to suggestions :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-01-11 19:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/checkers/ast/analyze/statement.rs</code>:24 on 2024-01-11 19:06</div>
+            <div class="timeline-body"><p>I wondered what you might say about this bit :)</p>
+<p>Just to double-check I understand: I should have three separate functions in <code>sort_dunder_all.rs</code>, with these signatures?</p>
+<pre><code class="language-rs">pub(crate) fn sort_dunder_all_assign(checker: &amp;mut Checker, stmt: &amp;ast::StmtAssign) {}
+pub(crate) fn sort_dunder_all_annassign(checker: &amp;mut Checker, stmt: &amp;ast::StmtAnnAssign) {}
+pub(crate) fn sort_dunder_all_assign(checker: &amp;mut Checker, stmt: &amp;ast::StmtAugAssign) {}
+</code></pre>
+<p>And then call out to those from different places in <code>checkers/ast/analyze/statement.rs</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:83 on 2024-01-11 19:21</div>
+            <div class="timeline-body"><p>I think <code>value</code> is a <code>Box&lt;Expr&gt;</code> here right? If so, <a href="https://github.com/rust-lang/rust/issues/62586">using <code>as_ref()</code> outside a context where the target is specifically constrained</a> opens one up to inference regressions. It's a very common way that changes in std actually break Rust code in the wild. (It happens when a new <code>AsRef</code> impl is added in std that in turn causes inference to become ambiguous in some cases.)</p>
+<p>I think you're just looking for a <code>&amp;Expr</code> here right? If so, <code>&amp;value</code> should work. (You can also match <code>value</code> by reference via <code>ast::StmtAssign { ref value, targets, .. }</code>.)</p>
+<p>(Similarly for other uses of <code>as_ref()</code> below.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:83 on 2024-01-11 19:25</div>
+            <div class="timeline-body"><p>(You might actually be okay here because the surrounding context makes it look like, to me, that inference knows the target of <code>AsRef</code> must be <code>Expr</code>. But it's not something that is easy to confirm or reject on inspection.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:219 on 2024-01-11 19:29</div>
+            <div class="timeline-body"><p>I'm fond of doing things like <code>self.items.len().checked_sub(1).expect(&quot;non-empty items&quot;)</code> to make the assumption explicit. Or even better in this case, <code>self.items.last().expect(&quot;non-empty items&quot;)</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:208 on 2024-01-11 19:32</div>
+            <div class="timeline-body"><p>I was slightly confused by the &quot;returned by now&quot; phrasing here, since I assumed that applied to this method. But looking at the code, I think the more precise phrasing is, &quot;construction of <code>DunderAllValue</code> guarantees at least two dunder items.&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:209 on 2024-01-11 19:38</div>
+            <div class="timeline-body"><p>There is also <code>self.items.first().expect(&quot;non-empty items&quot;)</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:139 on 2024-01-11 19:43</div>
+            <div class="timeline-body"><p>Some docs on this type might help. In particular I'm thinking about the invariant that <code>items</code> has length at least 2.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:368 on 2024-01-11 19:51</div>
+            <div class="timeline-body"><p>I would remove this line since it's redundant with the macro.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:331 on 2024-01-11 19:55</div>
+            <div class="timeline-body"><p>It might help to add a short sentence saying what this routine does, and in particular, document its preconditions. (My <em>goal</em> is for docs for each function to include all conditions in which it panics. It is a hard goal to achieve perfect on though.) The standard way to write it is like this:</p>
+<pre><code class="language-rust">/// Builds sequence representing an `__all__` value, where each
+/// element in the sequence is Python code corresponding to
+/// an element in `__all__`.
+///
+/// # Panics
+///
+/// When the given slice contains a line that is neither a comment nor an item.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:331 on 2024-01-11 19:56</div>
+            <div class="timeline-body"><p>I'd do the same for <code>DunderAllLine::new</code> above too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:265 on 2024-01-11 19:58</div>
+            <div class="timeline-body"><p>There is an interesting invariant lurking here I think. Namely, I believe the code calling this function depends on this always returning <code>None</code> or a <code>Vec</code> with greater than 2 items. And I think this invariant is somewhat complicated to explain? Namely, that there is a guaranteed correspondence between the number of items in a particular AST node and the number items extracted from the tokens at the same location. That seems <em>probably</em> true to me, but I'm having trouble convincing myself it is 100% correct. If it isn't, the code here might want to be a little more defensive.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:265 on 2024-01-11 20:00</div>
+            <div class="timeline-body"><p>I also think some comments describing what this function does would be helpful. It seems like a very crucial detail of how  this lint works. In particular, it is the part that tokenizes a region of the code that we already have an AST for. I think I can make some educated guesses as to why you're doing that here (I'm still somewhat new to this code too), but a comment explaining/motivating the technique would be quite helpful I think!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:139 on 2024-01-11 20:01</div>
+            <div class="timeline-body"><p>And I'll say that it isn't obvious to me that this invariant holds, but I think, for example, <code>construct_sorted_all</code> depends on it (it will panic, I believe, if <code>self.items</code> is empty). I was thinking this invariant was upheld by <code>if elts.len() &lt; 2 { return None }</code> below. But <code>elts</code> gets passed through <code>collect_dunder_all_lines</code> and then <code>collect_dunder_all_items</code>. And it's the result of that that is used for <code>DunderAllValue::items</code>. But is the length preserved through those operations? I'm not sure. (I mused about this below too.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-01-11 20:02</div>
+            <div class="timeline-body"><p>Nice work! I think some extra docs on some of the more complicated helper functions/types would be beneficial here. There are some interesting invariants at play here. :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-01-11 20:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_linter/src/checkers/ast/analyze/statement.rs</code>:24 on 2024-01-11 20:07</div>
+            <div class="timeline-body"><p>@charliermarsh Is this how the existing lints work? It is interesting to me because it seems nice for the lint implementation itself to own when it is applicable. Otherwise, you wind up redoing the case analysis. Although I suppose if <em>all</em> lints did this, then every lint would do its own case analysis and maybe that would be bad for perf reasons. I think with your suggested approach, maybe most lints don't need to do any case analysis.</p>
+<p>@AlexWaygood Your code snippet looks right to me. Although I do wonder if you could avoid re-doing case analysis on <code>ast::Stmt</code>. Basically, have your internal function accept a <code>target</code> and <code>original_value</code>. Not 100% sure on that though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-01-11 20:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/checkers/ast/analyze/statement.rs</code>:24 on 2024-01-11 20:13</div>
+            <div class="timeline-body"><blockquote>
+<p>Although I do wonder if you could avoid re-doing case analysis on <code>ast::Stmt</code>. Basically, have your internal function accept a <code>target</code> and <code>original_value</code>. Not 100% sure on that though.</p>
+</blockquote>
+<p>Charlie <a href="https://github.com/astral-sh/ruff/pull/9313#discussion_r1438924016">called me out on that</a> last time I tried to do something like that 😅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-01-11 20:14</div>
+            <div class="timeline-body"><p>Thanks for the extremely helpful review @BurntSushi!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-01-11 21:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_linter/src/checkers/ast/analyze/statement.rs</code>:24 on 2024-01-11 21:22</div>
+            <div class="timeline-body"><p>Right. I don't mean that. I'm still proposing that you have the three functions @charliermarsh suggested above as the <em>public</em> API for your new lint module. But internally, instead of re-materializing an <code>ast::Stmt</code> and just pattern matching on it again, you extract the state you need and pass it to your main internal routine that implements the lint.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-01-11 21:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/checkers/ast/analyze/statement.rs</code>:24 on 2024-01-11 21:24</div>
+            <div class="timeline-body"><p>Ah, I think we're on the same page! I just pushed cc42bf9 -- is that what you had in mind?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-01-11 21:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_linter/src/checkers/ast/analyze/statement.rs</code>:24 on 2024-01-11 21:36</div>
+            <div class="timeline-body"><p>Precisely. :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-01-11 21:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:208 on 2024-01-11 21:46</div>
+            <div class="timeline-body"><p>I had a go at revamping the comments in this function in https://github.com/astral-sh/ruff/pull/9474/commits/454e7301a15e4b3c05bb584338e711ec6e8d05dc. The most important thing is that, while I think you're right that we probably don't have this function called at all unless <code>__all__</code> has at least two items, there's an even stronger reason to be confident in the invariant that <code>self.items</code> must have length &gt;= 2 here: if <code>__all__</code> has one item or less, then <code>self.items</code> and <code>sorted_items</code> <em>have</em> to compare equal, so we short-circuit at this point:</p>
+<pre><code class="language-py">        if sorted_items == self.items {
+            return SortedDunderAll::AlreadySorted;
+        }
+</code></pre>
+<p>...and can safely rely on both <code>self.items</code> and <code>sorted_items</code> having length &gt;=2 for the rest of the function</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-11 22:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:170 on 2024-01-11 22:08</div>
+            <div class="timeline-body"><p>This is a good instinct, but <code>TextRange</code> is small and implements <code>Copy</code>, so it's preferable to just use <code>TextRange</code> here. (You won't even need to <code>.clone()</code> it.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-01-11 22:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:170 on 2024-01-11 22:10</div>
+            <div class="timeline-body"><p>I keep on thinking today will be the day I get to use lifetimes properly for the first time 🙃</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-11 22:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:325 on 2024-01-11 22:12</div>
+            <div class="timeline-body"><p>Can you say more about the bracket handling here? I'm trying to follow. Typically, we do something more like this, where we track all open and closing brackets via a counter, to know if we're at the top level: https://github.com/astral-sh/ruff/blob/eb4ed2471b48d6ccba74064c65e37e32cba41a6c/crates/ruff_python_parser/src/soft_keywords.rs#L67</p>
+<p>In this case, we're aborting if we see nested brackets, is that right? If so, should <code>Lbrace</code> also be included?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-11 22:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:385 on 2024-01-11 22:13</div>
+            <div class="timeline-body"><p>Nit: consider destructuring in the iterator? Like <code>for DunderAllLine { ... } in lines { ... }</code>? Personal preference though, not blocking.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-01-11 22:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:385 on 2024-01-11 22:13</div>
+            <div class="timeline-body"><p>ooh you can do that? did not know</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-11 22:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:404 on 2024-01-11 22:15</div>
+            <div class="timeline-body"><p>I feel like it should be possible to avoid this clone, since we don't need <code>lines</code> beyond this method. We could consider either making <code>lines</code> an owned <code>Vec</code> to this method, or using lifetimes on <code>DunderAllItem</code>, and having it take <code>&amp;str</code> that's tied to the lifetime of <code>lines: &amp;[DunderAllLine]</code>. (I'd probably do the latter.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:480 on 2024-01-11 22:15</div>
+            <div class="timeline-body"><p>Nit: this can be <code>let indent = indentation(locator, parent)?;</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-11 22:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-11 22:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:157 on 2024-01-11 22:16</div>
+            <div class="timeline-body"><p>I tend to think that using unsafe to protect comments is a bit of a misuse of the concept, which is meant to protect against possible breakages via changes in semantics. But, this question has come up before, and I don't know that we have a unified answer.</p>
+<p>\cc @zanieb</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-01-11 22:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:325 on 2024-01-11 22:16</div>
+            <div class="timeline-body"><blockquote>
+<p>In this case, we're aborting if we see nested brackets, is that right?</p>
+</blockquote>
+<p>Yup, that's correct. If there are any parenthesized items in <code>__all__</code>, that would required a lot more complexity to handle, and it seems like a massive edge case, so not worth it.</p>
+<blockquote>
+<p>should <code>Lbrace</code> also be included?</p>
+</blockquote>
+<p>It's currently handled by the catch-all <code>_</code> condition at the end of the <code>match</code> (which just returns <code>None</code> if we encounter any token not explicitly enumerated already), but I can move it here if you like?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-11 22:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:146 on 2024-01-11 22:22</div>
+            <div class="timeline-body"><p>Personal style, I'd probably just inline this wherever it's used, I don't know that the binding adds much but it does add more things named <code>dunder_all_*</code> to worry about.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-11 22:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:217 on 2024-01-11 22:26</div>
+            <div class="timeline-body"><p>Nit: I think idiomatically in Rust you might call this <code>as_sorted()</code> (if it takes <code>&amp;self</code>) or <code>into_sorted()</code>. In this case, I think <code>into_sorted</code> would make sense, then it could take <code>self</code> instead of <code>&amp;self</code> and consume <code>self.items</code> (so no need to <code>.clone()</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-01-11 22:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:404 on 2024-01-11 22:26</div>
+            <div class="timeline-body"><p>I think I initially tried doing the latter, but the borrow checker was very angry with me, so I ran away. I'll have another go tomorrow.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-11 22:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:325 on 2024-01-11 22:27</div>
+            <div class="timeline-body"><p>In that case, though, why  is <code>Lsqb</code> handled here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:347 on 2024-01-11 22:29</div>
+            <div class="timeline-body"><p>Can you walk me through how the comment-handling works here? How are own-line comments handled? (It looks like <code>comment_in_line</code> is for end-of-line comments, like <code>&quot;foo&quot; # bar</code>.) What happens if there are multiple own-lines comments between items?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-11 22:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-11 22:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:347 on 2024-01-11 22:30</div>
+            <div class="timeline-body"><p>Oh, a <code>DunderAllLine</code> can be <em>just</em> a comment, with no item.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-11 22:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:334 on 2024-01-11 22:31</div>
+            <div class="timeline-body"><p>Even though we're breaking, it might be worth adding:</p>
+<pre><code class="language-rust">                    items_in_line.clear();
+                    comment_in_line = None;
+</code></pre>
+<p>...to the end of the <code>if</code> block above, as a consistent &quot;reset condition&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-11 22:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:368 on 2024-01-11 22:31</div>
+            <div class="timeline-body"><p>Nit: I have a preference towards avoiding single-letter variables in favor of more explicit names. E.g., <code>item</code> and <code>range</code> here, maybe?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-11 22:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:368 on 2024-01-11 22:34</div>
+            <div class="timeline-body"><p>I think we should be able to avoid this <code>.to_owned()</code>... E.g., could we pass in <code>&amp;mut Vec</code>? Or maybe we pass in <code>items.drain(..)</code> as the argument?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-11 22:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:403 on 2024-01-11 22:35</div>
+            <div class="timeline-body"><p>Could <code>idx</code> here just be <code>all_items.len()</code>, instead of tracking separately?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/checkers/ast/analyze/statement.rs</code>:1068 on 2024-01-11 22:35</div>
+            <div class="timeline-body"><p>Nit: <code>aug_assign</code> to match the <code>AugAssign</code> casing? Same with the method name.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-11 22:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-11 22:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:265 on 2024-01-11 22:36</div>
+            <div class="timeline-body"><p>Oops, good call!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-11 22:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:83 on 2024-01-11 22:36</div>
+            <div class="timeline-body"><p>I always use <code>.as_ref()</code> for this, FWIW. I might be doing it wrong then :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-11 22:36</div>
+            <div class="timeline-body"><p>@AlexWaygood -- Given:</p>
+<pre><code class="language-python">__all__ = [
+    # Two major classes
+    'Decimal', 'Context',
+
+    # Named tuple representation
+    'DecimalTuple',
+
+    # Contexts
+    'DefaultContext', 'BasicContext', 'ExtendedContext',
+
+    # Exceptions
+    'DecimalException', 'Clamped', 'InvalidOperation', 'DivisionByZero',
+    'Inexact', 'Rounded', 'Subnormal', 'Overflow', 'Underflow',
+    'FloatOperation',
+
+    # Exceptional conditions that trigger InvalidOperation
+    'DivisionImpossible', 'InvalidContext', 'ConversionSyntax', 'DivisionUndefined',
+
+    # Constants for use in setting up contexts
+    'ROUND_DOWN', 'ROUND_HALF_UP', 'ROUND_HALF_EVEN', 'ROUND_CEILING',
+    'ROUND_FLOOR', 'ROUND_UP', 'ROUND_HALF_DOWN', 'ROUND_05UP',
+
+    # Functions for manipulating contexts
+    'setcontext', 'getcontext', 'localcontext',
+
+    # Limits for the C version for compatibility
+    'MAX_PREC',  'MAX_EMAX', 'MIN_EMIN', 'MIN_ETINY',
+
+    # C version: compile time choice that enables the thread local context (deprecated, now always true)
+    'HAVE_THREADS',
+
+    # C version: compile time choice that enables the coroutine local context
+    'HAVE_CONTEXTVAR'
+]
+</code></pre>
+<p>How exactly does that get formatted after this fix? (Just following up per one of your comments above.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-01-11 22:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:325 on 2024-01-11 22:44</div>
+            <div class="timeline-body"><p>Because <code>__all__</code> could be a list, and we don't want to reject the opening square bracket of <code>__all__</code> if it's a list</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-01-11 22:49</div>
+            <div class="timeline-body"><blockquote>
+<p>@AlexWaygood -- Given:</p>
+<pre><code class="language-python">__all__ = [
+    # Two major classes
+    'Decimal', 'Context',
+
+    # Named tuple representation
+    'DecimalTuple',
+
+    # Contexts
+    'DefaultContext', 'BasicContext', 'ExtendedContext',
+
+    # Exceptions
+    'DecimalException', 'Clamped', 'InvalidOperation', 'DivisionByZero',
+    'Inexact', 'Rounded', 'Subnormal', 'Overflow', 'Underflow',
+    'FloatOperation',
+
+    # Exceptional conditions that trigger InvalidOperation
+    'DivisionImpossible', 'InvalidContext', 'ConversionSyntax', 'DivisionUndefined',
+
+    # Constants for use in setting up contexts
+    'ROUND_DOWN', 'ROUND_HALF_UP', 'ROUND_HALF_EVEN', 'ROUND_CEILING',
+    'ROUND_FLOOR', 'ROUND_UP', 'ROUND_HALF_DOWN', 'ROUND_05UP',
+
+    # Functions for manipulating contexts
+    'setcontext', 'getcontext', 'localcontext',
+
+    # Limits for the C version for compatibility
+    'MAX_PREC',  'MAX_EMAX', 'MIN_EMIN', 'MIN_ETINY',
+
+    # C version: compile time choice that enables the thread local context (deprecated, now always true)
+    'HAVE_THREADS',
+
+    # C version: compile time choice that enables the coroutine local context
+    'HAVE_CONTEXTVAR'
+]
+</code></pre>
+<p>How exactly does that get formatted after this fix? (Just following up per one of your comments above.)</p>
+</blockquote>
+<p>Here's the diff:</p>
+<details>
+
+<pre><code class="language-diff">diff --git a/Lib/_pydecimal.py b/Lib/_pydecimal.py
+index 2692f2fcba..382f9c4807 100644
+--- a/Lib/_pydecimal.py
++++ b/Lib/_pydecimal.py
+@@ -113,38 +113,53 @@
+ &quot;&quot;&quot;
+ 
+ __all__ = [
++    'BasicContext',
++    'Clamped',
++    'Context',
++    'ConversionSyntax',
+     # Two major classes
+-    'Decimal', 'Context',
+-
++    'Decimal',
++    # Exceptions
++    'DecimalException',
+     # Named tuple representation
+     'DecimalTuple',
+-
+     # Contexts
+-    'DefaultContext', 'BasicContext', 'ExtendedContext',
+-
+-    # Exceptions
+-    'DecimalException', 'Clamped', 'InvalidOperation', 'DivisionByZero',
+-    'Inexact', 'Rounded', 'Subnormal', 'Overflow', 'Underflow',
+-    'FloatOperation',
+-
++    'DefaultContext',
++    'DivisionByZero',
+     # Exceptional conditions that trigger InvalidOperation
+-    'DivisionImpossible', 'InvalidContext', 'ConversionSyntax', 'DivisionUndefined',
+-
+-    # Constants for use in setting up contexts
+-    'ROUND_DOWN', 'ROUND_HALF_UP', 'ROUND_HALF_EVEN', 'ROUND_CEILING',
+-    'ROUND_FLOOR', 'ROUND_UP', 'ROUND_HALF_DOWN', 'ROUND_05UP',
+-
+-    # Functions for manipulating contexts
+-    'setcontext', 'getcontext', 'localcontext',
+-
+-    # Limits for the C version for compatibility
+-    'MAX_PREC',  'MAX_EMAX', 'MIN_EMIN', 'MIN_ETINY',
+-
++    'DivisionImpossible',
++    'DivisionUndefined',
++    'ExtendedContext',
++    'FloatOperation',
++    # C version: compile time choice that enables the coroutine local context
++    'HAVE_CONTEXTVAR',
+     # C version: compile time choice that enables the thread local context (deprecated, now always true)
+     'HAVE_THREADS',
+-
+-    # C version: compile time choice that enables the coroutine local context
+-    'HAVE_CONTEXTVAR'
++    'Inexact',
++    'InvalidContext',
++    'InvalidOperation',
++    'MAX_EMAX',
++    # Limits for the C version for compatibility
++    'MAX_PREC',
++    'MIN_EMIN',
++    'MIN_ETINY',
++    'Overflow',
++    'ROUND_05UP',
++    'ROUND_CEILING',
++    # Constants for use in setting up contexts
++    'ROUND_DOWN',
++    'ROUND_FLOOR',
++    'ROUND_HALF_DOWN',
++    'ROUND_HALF_EVEN',
++    'ROUND_HALF_UP',
++    'ROUND_UP',
++    'Rounded',
++    'Subnormal',
++    'Underflow',
++    'getcontext',
++    'localcontext',
++    # Functions for manipulating contexts
++    'setcontext',
+ ]
+</code></pre>
+</details>
+
+<p>It's all beautifully alphabetical, and the comments are all preserved, but it's probably not what the original author of that code wanted to happen!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-01-11 22:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:347 on 2024-01-11 22:56</div>
+            <div class="timeline-body"><p>Yeah, at this stage we're not trying to decide which elements in <code>__all__</code> &quot;own&quot; which comments, we're just trying to determine &quot;on line 0 there's a comment&quot;; &quot;on line 1 there's two elements and a comment&quot;; &quot;on line 2 there's an element and no comment&quot;, etc.</p>
+<p>Later, when we pass the list of <code>DunderAllLine</code>s to <code>collect_dunder_all_items()</code>, we try to determine which elements in <code>__all__</code> &quot;own&quot; which comments (meaning the comments should move with the element when the element moves as part of being sorted).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-11 23:04</div>
+            <div class="timeline-body"><p>Oh I see, so we're not preserving the &quot;sections&quot; that they've created in their comments -- got it. Agree we could figure out some better solution there (but doesn't need to be in this PR).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-11 23:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:347 on 2024-01-11 23:05</div>
+            <div class="timeline-body"><p>For clarity, I'm wondering if we should use an enum to represent &quot;line with items, and optionally an end-of-line comment&quot; vs. &quot;own-line comment&quot;? It took me a bit of time to get there in understanding that the struct was being repurposed in this way.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-01-11 23:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:83 on 2024-01-11 23:45</div>
+            <div class="timeline-body"><p>Yeah that's the evil thing about <code>AsRef::as_ref()</code>. It works, and then you upgrade Rust, and maybe it breaks. We haven't gotten one in a while, but there have been lots of reports of breakage in the past because std added a trait impl somewhere.</p>
+<p>(This is an instance of a more general problem where adding trait impls can cause inference to fail where it previously succeeded. <code>AsRef</code> just happens to be one particular instance of it.)</p>
+<p>With all that said, the worst thing that happens is our code will stop compiling when a new version of Rust is released. And a fix is (guaranteed actually) to be simple, so long as you diagnose it correctly. You can never get something wrong. But... these things stand out to me because I've been bitten by it myself and users reporting breakage to me have been bitten by it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-01-11 23:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:208 on 2024-01-11 23:46</div>
+            <div class="timeline-body"><p>I think if some part of this comment made its way into the source code as a comment, that would be great. :-) Thank you for digging in!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-01-11 23:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:385 on 2024-01-11 23:57</div>
+            <div class="timeline-body"><p>The terminology here is that irrefutable patterns are accepted wherever names are assigned. This even includes function parameters!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-01-12 07:19</div>
+            <div class="timeline-body"><blockquote>
+<p>Oh I see, so we're not preserving the &quot;sections&quot; that they've created in their comments -- got it. Agree we could figure out some better solution there (but doesn't need to be in this PR).</p>
+</blockquote>
+<p>Your example makes me wonder if we could use empty lines to recognize sections (regardless if there's a comment or not).</p>
+<p>Doing so has the added benefit that we preserve empty lines between imports (which is probably something that was intended).</p>
+<p>But we can explore this (and other solutions) as a separate PR</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:56 on 2024-01-12 07:28</div>
+            <div class="timeline-body"><p>This is an intereseting use of unsafe, but it fits <code>unsafe</code>'s definition.</p>
+<blockquote>
+<p>The fix may be what the user intended, but it is uncertain; the resulting code will have valid syntax.</p>
+</blockquote>
+<p>I would probably keep the fix as safe if we feel like it does the right thing in the majority of cases even if there are comments. But I'm also okay going wiht unsafe (can also be easily changed later). Interested to hear what other people think.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-01-12 07:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:69 on 2024-01-12 07:31</div>
+            <div class="timeline-body"><p>What do you think of using <a href="https://en.wikipedia.org/wiki/Natural_sort_order">natural ordering</a> instead of strict alphabetic ordering (see <a href="https://docs.rs/natord/latest/natord/">natord</a>)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:127 on 2024-01-12 07:39</div>
+            <div class="timeline-body"><p>This is an extreme edge case which may no be worth handling. But I was wondering what happens if <code>__all__</code> is e.g an imported member (I also don't know what Python does in that case)</p>
+<pre><code class="language-python">from sub import __all__
+
+__all__ = [&quot;evil&quot;]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:56 on 2024-01-12 07:41</div>
+            <div class="timeline-body"><p>I saw that @charliermarsh commented the same below. I'm resolving this to keep the conversation in a single place.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:177 on 2024-01-12 07:47</div>
+            <div class="timeline-body"><p>Let's move this check to the bottom to avoid computing it in case we perform an early return.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:215 on 2024-01-12 07:49</div>
+            <div class="timeline-body"><p>Nit: Some empty lines between the different steps might help with readability</p>
+<pre><code class="language-suggestion">        };
+        
+        // An `__all__` definition with &lt;2 elements can't be unsorted;
+        // no point in proceeding any further here
+        if elts.len() &lt; 2 {
+            return None;
+        }
+
+        for elt in elts {
+            // Only consider sorting it if __all__ only has strings in it
+            let string_literal = elt.as_string_literal_expr()?;
+            // And if any strings are implicitly concatenated, don't bother
+            if string_literal.value.is_implicit_concatenated() {
+                return None;
+            }
+        }
+        
+        // Step (2): parse the `__all__` definition using the raw tokens.
+        //
+        // (2a). Start by collecting information on each line individually:
+        let lines = collect_dunder_all_lines(*range, locator)?;
+
+        // (2b). Group lines together into sortable &quot;items&quot;:
+        //   - Any &quot;item&quot; contains a single element of the `__all__` list/tuple
+        //   - &quot;Items&quot; are ordered according to the element they contain
+        //   - Assume that any comments on their own line are meant to be grouped
+        //     with the element immediately below them: if the element moves,
+        //     the comments above the element move with it.
+        //   - The same goes for any comments on the same line as an element:
+        //     if the element moves, the comment moves with it.
+        let items = collect_dunder_all_items(&amp;lines);
+
+        Some(DunderAllValue {
+            items,
+            range: *range,
+            multiline: is_multiline,
+        })
+    }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:182 on 2024-01-12 07:49</div>
+            <div class="timeline-body"><p>super nit</p>
+<pre><code class="language-suggestion">        // An `__all__` definition with &lt; 2 elements can't be unsorted;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:317 on 2024-01-12 07:55</div>
+            <div class="timeline-body"><p>You may want to consider using <code>lex_starts_at</code> instead of <code>lex</code>. <code>lex_starts_at</code> gives you absolute text ranges instead of relative text ranges (It should help to get rid of the <code>offset + range</code> in <code>DunerAllLine::new</code>). I recommend adding a comment to <code>collect_duner_all_lines</code> that explains that the ranges in <code>DunderAllLines</code> are relative if there's a reason for them to be relative.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-01-12 07:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:334 on 2024-01-12 07:59</div>
+            <div class="timeline-body"><p>I get this warning if I try to do that:</p>
+<pre><code>value assigned to `comment_in_line` is never read
+maybe it is overwritten before being read?
+`#[warn(unused_assignments)]` on by default
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:344 on 2024-01-12 08:00</div>
+            <div class="timeline-body"><p>You might be able to avoid cloning the value inside of <code>DunderAllLine</code> by using <code>std::mem::take</code>. <code>std::mem::take</code> <em>takes</em> the value from <code>items_in_line</code> and replaces it with the <code>Default</code> (an empty list in that case).</p>
+<pre><code class="language-suggestion">                    lines.push(DunderAllLine::new(
+                        std::mem::take(&amp;mut items_in_line),
+                        comment_in_line,
+                        range.start(),
+                    ));
+                    comment_in_line = None;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-01-12 08:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:347 on 2024-01-12 08:02</div>
+            <div class="timeline-body"><blockquote>
+<p>For clarity, I'm wondering if we should use an enum to represent &quot;line with items, and optionally an end-of-line comment&quot; vs. &quot;own-line comment&quot;? It took me a bit of time to get there in understanding that the struct was being repurposed in this way.</p>
+</blockquote>
+<p>That's a really great suggestion -- tried it out, and it makes the code much clearer. Will push shortly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:233 on 2024-01-12 08:06</div>
+            <div class="timeline-body"><p>You can use <code>self.items.is_sorted()</code> to test if the items are sorted (and avoids cloning all elements). This has the advantage that checking if the items are sorted is <code>O(n)</code> instead of <code>O(n log(n))</code> (sorting) + <code>O(n)</code> (comparing). The complexity remains the same if the items aren't sorted because you have to call <code>self.items.sort()</code> to sort the items but that should be less common for projects actively using the lint rule.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:243 on 2024-01-12 08:08</div>
+            <div class="timeline-body"><p>Nit: One thing I like to do is to add a python snippet to give readers a concrete example:</p>
+<pre><code class="language-suggestion">        // As well as the &quot;items&quot; in the `__all__` definition,
+        // there is also a &quot;prelude&quot; and a &quot;postlude&quot;:
+        //  - Prelude == the region of source code from the opening parenthesis
+        //    (if there was one), up to the start of the first element in `__all__`.
+        //  - Postlude == the region of source code from the end of the last
+        //    element in `__all__` up to and including the closing parenthesis
+        //    (if there was one).
+        // 
+        // ```python
+        // __all__ = [
+        //   &quot;first item&quot;,
+        //   &quot;last item&quot;   
+        // ]
+        // ```
+        // The prelude in the above example is the text from right after the `[` up to `&quot;first item&quot;`. The postlude is the text between `&quot;last item&quot;` and `]`.
+        let prelude_end = {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:234 on 2024-01-12 08:10</div>
+            <div class="timeline-body"><p>Nit: You can avoid some of the <code>expect</code> messages below by doing</p>
+<pre><code class="language-rust">let [first, .., last] = self.items.as_slice() else {
+    panic!(&quot;Expected at least two items&quot;)
+};
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-01-12 08:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:403 on 2024-01-12 08:11</div>
+            <div class="timeline-body"><p>done!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:257 on 2024-01-12 08:15</div>
+            <div class="timeline-body"><p>Do I understand this correctly (without having read through all the code) that the fix inserts a trailing comma if the last item is on its own line?</p>
+<p>What about users that prefer not to have trailing commas? Should we instead detect if the source contains a trailing comma and preserve it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:294 on 2024-01-12 08:22</div>
+            <div class="timeline-body"><p>We can avoid allocating here because you're constructing a new string below anyway. Sorry, I'm very picky when it comes to allocations because they tend to be expensive (see https://vimeo.com/649009599)</p>
+<pre><code class="language-suggestion">        let mut prelude = Cow::Borrowed(locator.slice(TextRange::new(self.start(), prelude_end)));
+
+        let joined_items = if self.multiline {
+            let indentation = stylist.indentation();
+            let newline = stylist.line_ending().as_str();
+            prelude = Cow::Owned(format!(&quot;{}{}&quot;, prelude.trim_end(), newline));
+            join_multiline_dunder_all_items(
+                &amp;sorted_items,
+                locator,
+                parent,
+                indentation,
+                newline,
+                needs_trailing_comma,
+            )
+        } else {
+            Some(join_singleline_dunder_all_items(&amp;sorted_items, locator))
+        };
+
+        let postlude = locator.slice(TextRange::new(postlude_start, self.end()));
+
+        let new_dunder_all = joined_items.map(|items| format!(&quot;{prelude}{items}{postlude}&quot;));
+        SortedDunderAll::Sorted(new_dunder_all)
+    }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:431 on 2024-01-12 08:32</div>
+            <div class="timeline-body"><p>We can avoid cloning <code>first_val</code> and <code>value</code> below by passing the owned <code>Vec&lt;DunderAllLine&gt;</code> to <code>collect_dunder_all_items</code> (instead of a slice) and use <code>into_iter</code> here that gives you owned values:</p>
+<pre><code class="language-suggestion">                let mut iter = items.into_iter();
+                let Some((first_val, first_range)) = iter.next() else {
+                    unreachable!(
+                        &quot;LineWithItems::new() should uphold the invariant that this list is always non-empty&quot;
+                    )
+                };
+
+                let rest = iter;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:421 on 2024-01-12 08:34</div>
+            <div class="timeline-body"><p><code>this_range</code> seems to be <code>None</code> except if it is a comment. How about renaming it <code>preceding_comment_range</code>?</p>
+<p>What happens if an item has multiple preceding lines? Should this be changed to <code>this_range.get_or_insert(comment_range)</code> to only set the range when <code>this_range</code> is <code>None</code>?</p>
+<pre><code class="language-python">__all__ = [
+    &quot;test&quot;
+    # comment
+    # another comment only line
+    &quot;item&quot;
+]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:416 on 2024-01-12 08:38</div>
+            <div class="timeline-body"><p>I think a good approximation of the number of <code>items</code> is to use the number of lines if it's a multiline value and the number of items in the first line otherwise.. Initializing items with a specific capacity can help to reduce the number of times the vector needs to be resized.</p>
+<pre><code class="language-suggestion">    let mut all_items = Vec::with_capacity(match lines.as_slice() {
+        [DunderAllLine::OneOrMoreItems(single)] =&gt; single.items.len(),
+        _ =&gt; lines.len(),
+    });
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:741 on 2024-01-12 08:40</div>
+            <div class="timeline-body"><p>What happens with <code>JustAComment</code> if it is the last line?</p>
+<pre><code class="language-python">__all__ = [
+    'test',
+    # comment
+]
+</code></pre>
+<p>I'm asking because <code>this_range</code> then never gets added to all items. Will it be part of the prelude or is there an invariant that prevents that <code>LineWithJustAComment</code> can be the last line?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:434 on 2024-01-12 08:41</div>
+            <div class="timeline-body"><p>A comment here might be helpful explaining why we're extending the range.</p>
+<p><em>Include the range of any preceding comment in the range of the item to ensure the comment gets moved with the item</em>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:449 on 2024-01-12 08:43</div>
+            <div class="timeline-body"><p>We can use <code>Vec::extend</code> here to let <code>Vec</code> know that we intend to push multiple items. It can help <code>Vec</code> to regrow the vector only once</p>
+<pre><code class="language-suggestion">                all_items.extend(rest.map(|(value, range)| DunderAllItem {
+                    value,
+                    original_index: all_items.len(),
+                    range,
+                    additional_comments: None,
+                }));
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:484 on 2024-01-12 08:47</div>
+            <div class="timeline-body"><p>Can you explain (or add a comment) why <code>sort_index</code> is needed. My guess is that it is to preserve the original order, but that's something that Rust's <code>sort</code> method should already give us for free.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:523 on 2024-01-12 08:49</div>
+            <div class="timeline-body"><p>Are <code>additional_comments</code> always comments on the same line as the item? If so, can we rename it to <code>end_of_line_comments</code> or <code>trailing_comments</code> to match the naming convention we use in the formatter.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:524 on 2024-01-12 08:50</div>
+            <div class="timeline-body"><p>This might be a bit opinionated for some :laughing:. Any chance we can preserve the original spacing?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-01-12 08:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-01-12 11:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:449 on 2024-01-12 11:37</div>
+            <div class="timeline-body"><p>(For posterity: we tried this out in a pair-programming session, but the borrow checker was very angry, so we reverted it)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-01-12 11:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:257 on 2024-01-12 11:39</div>
+            <div class="timeline-body"><blockquote>
+<p>Do I understand this correctly (without having read through all the code) that the fix inserts a trailing comma if the last item is on its own line?</p>
+</blockquote>
+<p>yes, that's correct</p>
+<blockquote>
+<p>What about users that prefer not to have trailing commas? Should we instead detect if the source contains a trailing comma and preserve it?</p>
+</blockquote>
+<p>good idea; I'll try to implement that</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-01-12 12:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:368 on 2024-01-12 12:03</div>
+            <div class="timeline-body"><p>@MichaReiser and I vanquished all uses of <code>.clone()</code> in a pair-programming session; this region of code no longer exists :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-01-12 12:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:127 on 2024-01-12 12:05</div>
+            <div class="timeline-body"><p>I think the redefinition here overrides the import at the top (or, if it's an import below the assignment, the import would override the assignment). Python just uses the runtime value of <code>__all__</code>; it doesn't attempt to read the value statically in any way (though some type checkers <em>do</em> do that). So I don't <em>think</em> this edge case should have any impact on the way this rule works</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:741 on 2024-01-12 12:15</div>
+            <div class="timeline-body"><p>Any comments after the last item are discarded here, but are added back as part of the postlude in <code>into_sorted_source_code()</code> (which used to be called <code>construct_sorted_all()</code>; I just renamed it)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-01-12 12:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-01-12 12:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:484 on 2024-01-12 12:19</div>
+            <div class="timeline-body"><p>yup, my worry here was about the possibility of an <code>__all__</code> that had duplicate items in it. I wanted to ensure that in the eventuality where two items in the list compared equal, the item that was originally first in the list remained first in the list. That invariant will hold even if I just use <code>self.value</code> as the key for <code>.sort()</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-01-12 13:25</div>
+            <div class="timeline-body"><p>I discovered a small bug relating to multiline comments -- working on a fix...</p>
+<p>(Edit: fixed in fd1dc54!)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-01-12 13:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:127 on 2024-01-12 13:37</div>
+            <div class="timeline-body"><p>Looks like cpython does indeed not special case <code>__all__</code> at all: https://github.com/search?q=repo%3Apython%2Fcpython+<strong>all</strong>+language%3AC+&amp;type=code</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-01-12 13:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:243 on 2024-01-12 13:54</div>
+            <div class="timeline-body"><p>I added a variant of this in 5e129ade8e77090a2aa1017611258b2c2f65d942. (By the way: writing that up was what made me spot the bug regarding multiline comments that I fixed in fd1dc54c80004d1b2377ca93ad30718d83e77587!)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-01-12 13:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:69 on 2024-01-12 13:55</div>
+            <div class="timeline-body"><p>I like that idea!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-01-12 14:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:69 on 2024-01-12 14:53</div>
+            <div class="timeline-body"><p>Implemented in 382aed21239afd40b378600b3f80a01cd33e3178!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-01-12 16:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:257 on 2024-01-12 16:12</div>
+            <div class="timeline-body"><p>Tweaked it in 6f5f55843c7bfc3ea3f7a336cacfceb33eeeb9c3: we now do not add a trailing comma if there wasn't one in the original source!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:524 on 2024-01-12 16:53</div>
+            <div class="timeline-body"><p>Ew @ anybody who doesn't put two spaces before an inline comment, but: see 655bf67ae3459da6b0bec34ab959d56cd4d26bfe :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-01-12 16:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-01-12 16:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:523 on 2024-01-12 16:58</div>
+            <div class="timeline-body"><p>9e2bae25679168aa15178f622366dee2481e960c</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-01-12 17:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:434 on 2024-01-12 17:02</div>
+            <div class="timeline-body"><p>af6ca0556fe8c3906bd5e52b85f0129a3e41fef0</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-01-12 17:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:294 on 2024-01-12 17:45</div>
+            <div class="timeline-body"><p>Should <code>postlude</code> also be a <code>Cow</code>, or just <code>prelude</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:421 on 2024-01-12 17:46</div>
+            <div class="timeline-body"><blockquote>
+<p>How about renaming it <code>preceding_comment_range</code>?</p>
+</blockquote>
+<p>Sounds good</p>
+<blockquote>
+<p>What happens if an item has multiple preceding lines? Should this be changed to <code>this_range.get_or_insert(comment_range)</code> to only set the range when <code>this_range</code> is <code>None</code>?</p>
+</blockquote>
+<p>Ah, I noticed this and fixed it before seeing this review comment 😄 see fd1dc54c80004d1b2377ca93ad30718d83e77587</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-01-12 17:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-01-12 18:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:265 on 2024-01-12 18:34</div>
+            <div class="timeline-body"><p>Added some more docs on this in my latest push, so I'll mark this as &quot;resolved&quot; for now, but still open to better naming suggestions!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-01-12 18:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:325 on 2024-01-12 18:36</div>
+            <div class="timeline-body"><p>Added a big comment clarifying this in 572bb66546b9d0307b0de8e1e576041890410396 :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-01-12 18:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:741 on 2024-01-12 18:41</div>
+            <div class="timeline-body"><p>Added some more docs about this; is this clearer now?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-01-12 18:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:83 on 2024-01-12 18:43</div>
+            <div class="timeline-body"><p>I had a bit of trouble locally getting it to work without <code>.as_ref()</code> :(</p>
+<p>@burntsushi, would you mind pasting a diff of what you mean here? Or feel free to push straight to my branch if you prefer, whichever's easiest :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-01-12 18:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:177 on 2024-01-12 18:51</div>
+            <div class="timeline-body"><p>Thanks, addressed in 768a3648636e6abbff2ed3373e686c2678b38dc1!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-01-12 18:53</div>
+            <div class="timeline-body"><p>Thanks all for the detailed feedback, really appreciate it! I <em>think</em> I've now either addressed or asked clarification on all comments, but sorry if I missed something :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @AlexWaygood on 2024-01-12 18:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @AlexWaygood on 2024-01-12 18:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @AlexWaygood on 2024-01-12 18:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-01-12 19:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:83 on 2024-01-12 19:13</div>
+            <div class="timeline-body"><p>Yeah! So it looks like there are only two <code>.as_ref()</code> calls left here. This diff is the simplest one that removes them:</p>
+<pre><code>[andrew@duff ruff]$ g diff
+diff --git a/crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs b/crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs
+index d42249f38..227454cea 100644
+--- a/crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs
++++ b/crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs
+@@ -101,7 +101,7 @@ pub(crate) fn sort_dunder_all_aug_assign(
+     else {
+         return;
+     };
+-    let ast::Expr::Name(ast::ExprName { id, .. }) = target.as_ref() else {
++    let ast::Expr::Name(ast::ExprName { id, .. }) = &amp;**target else {
+         return;
+     };
+     sort_dunder_all(checker, id, value, parent);
+@@ -122,7 +122,7 @@ pub(crate) fn sort_dunder_all_ann_assign(
+     else {
+         return;
+     };
+-    let ast::Expr::Name(ast::ExprName { id, .. }) = target.as_ref() else {
++    let ast::Expr::Name(ast::ExprName { id, .. }) = &amp;**target else {
+         return;
+     };
+     sort_dunder_all(checker, id, val, parent);
+</code></pre>
+<p>The key here is noticing that <code>target</code> has type <code>&amp;Box&lt;Expr&gt;</code>. Because you can't pattern match through a <code>Box</code> (a limitation that everyone would like to lift, but is I guess difficult to do so), and since you want to borrow from the AST, you want a <code>&amp;Expr</code> here. To go from a <code>&amp;Box&lt;Expr&gt;</code>, you can dereference twice to get an <code>Expr</code> (temporarily), and then add a <code>&amp;</code> to get a <code>&amp;Expr</code>.</p>
+<p>Now for me personally, this is not how I would write this. The only reason why it works is something called <a href="https://rust-lang.github.io/rfcs/2005-match-ergonomics.html">match ergonomics</a> that essentially tries to remove the need to explicitly mark whether a pattern match is borrowed or not. I think match ergonomics makes code like this less clear because it's harder to tell at a glance what <code>target</code> is just from reading the source code.</p>
+<p>This is how I would write it:</p>
+<pre><code>[andrew@duff ruff]$ g diff
+diff --git a/crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs b/crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs
+index d42249f38..ed3ee0340 100644
+--- a/crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs
++++ b/crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs
+@@ -93,15 +93,15 @@ pub(crate) fn sort_dunder_all_aug_assign(
+     parent: &amp;ast::Stmt,
+ ) {
+     let ast::StmtAugAssign {
+-        value,
+-        target,
++        ref value,
++        ref target,
+         op: ast::Operator::Add,
+         ..
+-    } = node
++    } = *node
+     else {
+         return;
+     };
+-    let ast::Expr::Name(ast::ExprName { id, .. }) = target.as_ref() else {
++    let ast::Expr::Name(ast::ExprName { ref id, .. }) = **target else {
+         return;
+     };
+     sort_dunder_all(checker, id, value, parent);
+@@ -115,14 +115,14 @@ pub(crate) fn sort_dunder_all_ann_assign(
+     parent: &amp;ast::Stmt,
+ ) {
+     let ast::StmtAnnAssign {
+-        target,
+-        value: Some(val),
++        ref target,
++        value: Some(ref val),
+         ..
+     } = node
+     else {
+         return;
+     };
+-    let ast::Expr::Name(ast::ExprName { id, .. }) = target.as_ref() else {
++    let ast::Expr::Name(ast::ExprName { ref id, .. }) = **target else {
+         return;
+     };
+     sort_dunder_all(checker, id, val, parent);
+</code></pre>
+<p>Now you still need the <code>**target</code>, but the fact that you need it is now (maybe) a little clearer. That match on <code>ref target</code> tells you that <code>target</code> <em>has</em> to be a <code>&amp;SOMETHING</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-01-12 19:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:83 on 2024-01-12 19:34</div>
+            <div class="timeline-body"><p>Thanks so much! I applied your suggestion in https://github.com/astral-sh/ruff/pull/9474/commits/229fec17edf6aa1b1ed2c2a365b9e81e740908db.</p>
+<p>I <em>think</em> I understand the solution, but will try to read up a bit more this weekend to check I fully understand what's going on here :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-01-12 19:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:83 on 2024-01-12 19:38</div>
+            <div class="timeline-body"><p>Yeah it will take some getting used to. There's a reason why match ergonomics exists even if I'm no fan. :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-01-12 21:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:157 on 2024-01-12 21:35</div>
+            <div class="timeline-body"><p>I feel like as a <em>user</em> of ruff I'd probably be a little annoyed if ruff did something like https://github.com/astral-sh/ruff/pull/9474#issuecomment-1888091353 to my carefully designed <code>__all__</code> definition, and then claimed it was a &quot;safe&quot; fix 😄 but I'll defer to you and Zanie :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:294 on 2024-01-13 14:08</div>
+            <div class="timeline-body"><p>Having done a bit more reading, I can answer my own question: no, <code>postlude</code> doesn't need to be a <code>Cow</code>, since the type of <code>postlude</code> currently is already a borrowed type (<code>&amp;str</code>), which is what we want, but the type of <code>prelude</code> currently is an owned type (<code>String</code>), which is what we don't want, and what using <code>Cow</code> fixes for us.</p>
+<p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-01-13 14:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-01-13 14:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:294 on 2024-01-13 14:19</div>
+            <div class="timeline-body"><p>bec4a1b714f53fce67b98acaae7b922934537cc2</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-01-13 18:01</div>
+            <div class="timeline-body"><p>Recent changes:</p>
+<ul>
+<li>Lists/tuples passed to <code>__all__.extend()</code> are now sorted in the same way as the rhs of statements such as <code>__all__ = ...</code>, <code>__all__ += ...</code> and <code>__all__: list[str] = ...</code></li>
+<li>Fixed a bunch of formatting edge cases I spotted while leafing through the diff this PR branch produced when running ruff with <code>--fix --unsafe-fixes --preview --select=RUF022</code> on CPython. Here's the new diff on CPython: <a href="https://github.com/astral-sh/ruff/files/13929051/cpython_diff.txt">cpython_diff.txt</a></li>
+<li>Switched to an &quot;isort-style&quot; sort instead of a natural sort: SCREAMING_SNAKE_CASE members come first, then CamelCase members, and then anything else after that. Within each category, items are ordered according to a natural sort.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-01-15 07:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:157 on 2024-01-15 07:10</div>
+            <div class="timeline-body"><p>That's a fair point. We would likely need to mark all fixes as unsafe following that reasoning because:</p>
+<ul>
+<li>some fixes don't handle comments at all</li>
+<li>Many fixes don't produce nicely formatted code. You could use the same argument that we should use unsafe because ruff could mess up my carefully hand-formatted code.</li>
+</ul>
+<p>Let's see what @zanieb thinks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:714 on 2024-01-15 07:59</div>
+            <div class="timeline-body"><p>Can we explain what the index is used for instead of documenting what the code below the comment does (adding an orignal_index to each item)? Explaining the why will be valuable for future readers whereas documenting what the code below means only risks to get outdated.</p>
+<p>What I find a very good and inspiring talk about commenets: https://youtu.be/yhF7OmuIILc?si=naBTAvTxKwhQ5aaC</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:765 on 2024-01-15 08:15</div>
+            <div class="timeline-body"><p>Only comparing the original index can be a nice perf improvement but your <code>PartialEq</code> and <code>Ord</code> implementation now act inconsistently where for a specific <code>a</code> and <code>b</code> <code>a.cmp(b) == Ordering::Eq</code> is true but <code>a.eq(b)</code> might return false.</p>
+<p>All tests keep passing when I replace the implementation with</p>
+<pre><code>impl PartialEq for DunderAllItem {
+    fn eq(&amp;self, other: &amp;Self) -&gt; bool {
+        self.cmp(other) == Ordering::Equal
+    }
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:714 on 2024-01-15 08:15</div>
+            <div class="timeline-body"><p>I can remove the <code>origianl_index</code> field and all tests keep passing (after removing all references). Can you add tests showing why <code>original_index</code> is necessary or remove it instead? That would allow you to use <code>extend</code> in <code>for (value, range) in following_items { ..</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:434 on 2024-01-15 08:24</div>
+            <div class="timeline-body"><p>We managed to remove all allocations except that <code>lex_starts_at</code> allocates a new string for each <code>__all__</code> item (which predominently are strings) and the <code>lines</code> and <code>items</code> vectors. We are lucky, that only few files have <code>__all__</code> usages and most of them have exactly one, or this method would show up in the benchmarks more often.</p>
+<p>Nevertheless, it made me question if we can avoid calling into <code>lex_starts_at</code> in the common case where a fix isn't necessary. Would it be possible to split the rule into two phases:</p>
+<ol>
+<li>An AST based check phase that determines if the items are sorted soley by inspecting the AST (and, in the future, by maybe calling into the <code>SimpleTokenizer</code> to detect the number of empty lines between any two items).</li>
+<li>A fix phase where we use the full machinery that calls into the lexer to extract the precise comment and item positions necessary to build a fix.</li>
+</ol>
+<p>This would have the added benefit that the fix detection works for edge cases that we aren't able to fix (e.g. for parenthesized-items).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:533 on 2024-01-15 08:28</div>
+            <div class="timeline-body"><p>Nit: I would expect a <code>receive</code> function to read or at least return some data because I read <code>x.receive_</code> as <code>x</code> go and receive some content. But instead, it is more of a <code>x</code> take this, which is why I would go with either <code>push</code> (if it is ok to call the function multiple times), <code>extend</code>, or <code>set</code> if it overrides the previous value.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:508 on 2024-01-15 08:36</div>
+            <div class="timeline-body"><p>i think it would help here to document the different possible states this struct represents or would it even be possible to model this as an enum that enforces (and documents) the states.</p>
+<p>I'm happy to explore possible representations once I fully understnad the possible states. What I don't understand yet:</p>
+<ol>
+<li>Is <code>comment_range</code> always trailing own line comment (coming after the items)? I get the impression it must be because <code>receive_string_token</code> always sets the <code>comment_range_start</code> to the end of its token.</li>
+<li>What happens if an item has both leading and trailing own line comments? <code># comment\n &quot;item&quot;\n # comment 2</code>? How is this represented?</li>
+<li>Does <code>comment_in_line</code> represent a comment that's on the same line as an item. If so, I recommend renaming it to <code>trailing_same_line_comment_range</code> to make that explicit.</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:416 on 2024-01-15 08:37</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">/// or if it's an edge case we don't support.
+</code></pre>
+<p>That's less judgmental ;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:468 on 2024-01-15 08:47</div>
+            <div class="timeline-body"><p>The open parentheses handling might be easier to understand if we move it out of the loop.</p>
+<pre><code>let mut lexer = lexer::lex_starts_at(locator::slice(range), Mode::Expression, range.start()).peekable();
+
+// Skip over the opening parentheses of the `__all__` list or tuple (if any).
+let parentheses_open = if matches!(lexer.peek(), Some(Ok((Tok::Lpar | Tok::Lsqb, _))) {
+    lexer.next();
+    true
+} else {
+    false
+};
+
+
+for pair in lexer {
+    ...
+}
+</code></pre>
+<p>Although this is still not entirely correct if you have</p>
+<pre><code class="language-python">__all__ = (&quot;test&quot;), another
+</code></pre>
+<p>Because both implementations would assume that the <code>(</code> belongs to the <code>__all__</code> item.</p>
+<p>Unfortunately, detecting if a tuple is parenthesized isn't straightfoward. See https://github.com/astral-sh/ruff/blob/c7aa816f17e3c6d59f35deb17ea7f253f5c024c0/crates/ruff_python_formatter/src/expression/expr_tuple.rs#L228-L254</p>
+<p>How common are unparenthesized tuples for <code>__all__</code>? I thought <code>__all__</code> is recommended to be a list. Maybe it's not worth supporting fixing tuples?</p>
+<p>That would simply the logic and we could even assert that the first token is a <code>[</code> (because anything else is a programming error)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:741 on 2024-01-15 09:01</div>
+            <div class="timeline-body"><p>Thanks. That helps</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> requested changes on 2024-01-15 09:06</div>
+            <div class="timeline-body"><p>Overall this looks good to me, but there are a few clarification that are needed for me to understand the code and:</p>
+<ul>
+<li>We should align the <code>PartialEq</code> and <code>Ord</code> implementation of <code>AllDunderItems</code></li>
+<li>Let's add some tests around unparenthesized tuples that start with a parenthesized first item (see inline comment). I suspect that things might go wrong in that case</li>
+</ul>
+<p>It would be interesting to explore if we can implement the check as an AST rule and only use lexing for generating the fix. I'll leave that up to you if you want to tackle this and if so, if you want to do it as part of this PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-01-15 09:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:468 on 2024-01-15 09:17</div>
+            <div class="timeline-body"><blockquote>
+<p>How common are unparenthesized tuples for <code>__all__</code>? I thought <code>__all__</code> is recommended to be a list. Maybe it's not worth supporting fixing tuples?</p>
+</blockquote>
+<p>Tuple <code>__all__</code>s are very common; I'd definitely rather support them here. I don't think there's a recommendation w.r.t. whether they should be tuples or lists -- I'm not actually sure which is more common. Conceptually, I sort-of prefer using a tuple for <code>__all__</code>, personally. But I think that's just a vague instinct towards preferring immutable types for global constants, rather than something that's founded on any strong reasoning :)</p>
+<p>Using an <em>unparenthesized</em> tuple for <code>__all__</code> is less common, but not unheard of:</p>
+<ul>
+<li>https://github.com/python/cpython/blob/f8a79109d0c4f408d34d51861cc0a7c447f46d70/Lib/asyncio/base_events.py#L52</li>
+<li>https://github.com/python/cpython/blob/f8a79109d0c4f408d34d51861cc0a7c447f46d70/Lib/asyncio/coroutines.py#L1</li>
+<li>https://github.com/python/cpython/blob/f8a79109d0c4f408d34d51861cc0a7c447f46d70/Lib/asyncio/windows_utils.py#L17</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-01-15 09:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:468 on 2024-01-15 09:26</div>
+            <div class="timeline-body"><p>What happened to</p>
+<blockquote>
+<p>There should be one-- and preferably only one --obvious way to do it.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-01-15 09:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:468 on 2024-01-15 09:27</div>
+            <div class="timeline-body"><blockquote>
+<p>What happened to</p>
+<blockquote>
+<p>There should be one-- and preferably only one --obvious way to do it.</p>
+</blockquote>
+</blockquote>
+<p>many people are saying this</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:533 on 2024-01-15 09:29</div>
+            <div class="timeline-body"><p>I wondered about using <code>visit_*</code> as names for these methods -- thoughts on that?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-01-15 09:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-01-15 09:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:533 on 2024-01-15 09:31</div>
+            <div class="timeline-body"><p>That would work for me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:714 on 2024-01-15 10:18</div>
+            <div class="timeline-body"><p>I think <code>original_index</code> can be removed. I added it out of paranoia that duplicate elements in <code>__all__</code> might be unnecessarily reordered by this autofix. But <code>.sort()</code> is a stable sort, so I don't think there's actually any chance of that happening.</p>
+<p>In any case, having duplicate elements in <code>__all__</code> is likely not what the user wanted, so this is an edge case I probably shouldn't be worrying <em>too</em> much about.</p>
+<p>But I'll add a test, anyway! :D</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-01-15 10:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-01-15 12:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:468 on 2024-01-15 12:50</div>
+            <div class="timeline-body"><p>Well, I'd quite like to use that <code>is_tuple_parenthesized</code> function you've got there in the formatter... what's the best course of action there? Copy-and-paste it into <code>sort_dunder_all.rs</code>, or move it to <code>ruff_python_trivia</code> and import it from that crate in both the formatter and <code>sort_dunder_all.rs</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-01-15 14:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:468 on 2024-01-15 14:15</div>
+            <div class="timeline-body"><p>You could add it to <code>ruff_python_ast</code> and either implement it as a free-standing function or as a method on <code>ExprTuple</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-01-15 17:19</div>
+            <div class="timeline-body"><p>Okay, just pushed some major updates:</p>
+<ul>
+<li>The <em>check</em> is now implemented solely using the AST (but we still look at the raw tokens for the <em>fix</em>)</li>
+<li>We now <em>barely</em> look at the raw tokens at all for fixing single-line <code>__all__</code> definitions.</li>
+<li>The machinery for multiline <code>__all__</code> definitions is much as it was (processes all the raw tokens), but I've tried to add more clarity in the code structure and comments.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:254 on 2024-01-15 17:22</div>
+            <div class="timeline-body"><p>This obviously isn't ideal :(</p>
+<p>I wanted to make this struct generic over a lifetime, i.e.</p>
+<pre><code class="language-rs">struct AllItemSortKey&lt;'a&gt; {
+    category: InferredMemberType,
+    value: &amp;'a str,
+}
+</code></pre>
+<p>But had trouble making it work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-01-15 17:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:508 on 2024-01-15 17:27</div>
+            <div class="timeline-body"><p>I pushed a bunch more comments in my latest commits. But the key point here is that at this stage, we're building up state that represents information on a single source line in a multiline <code>__all__</code> definition. We're <em>not</em> building up state that represents a single &quot;item&quot; in a multiline <code>__all__</code> definition (we do that later).</p>
+<p>Across the rule as a whole, a multiline <code>__all__</code> definition is parsed in two stages:</p>
+<ol>
+<li>We analyse each line of source code on its own, accumulating state until we reach the end of the line. This struct is basically a &quot;bag of state&quot; that collects that state until we get to the end of the line. Once we reach the end of the line, we use that state to produce a variant of the <code>DunderAllLine</code> enum (via <code>into_dunder_all_line()</code>).</li>
+<li>Having constructed a vector of <code>DunderAllLine</code> variants, we then convert that vector into a vector of <code>DunderAllItem</code> variants.</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-01-15 17:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @AlexWaygood on 2024-01-15 17:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-01-15 18:24</div>
+            <div class="timeline-body"><p>Here's the latest diff when running this autofix on CPython, FWIW: <a href="https://github.com/astral-sh/ruff/files/13942003/cpython_diff.txt">cpython_diff.txt</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:159 on 2024-01-16 08:49</div>
+            <div class="timeline-body"><p>We should initialize <code>vec</code> with a length of <code>elts</code> because that's how many items we normally add:</p>
+<pre><code class="language-suggestion">    let mut string_items = Vec::with_capacity(elts.len());
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:184 on 2024-01-16 09:36</div>
+            <div class="timeline-body"><p>It's hard to tell if it's worth it (probably not because <code>__all__</code> items are so uncommon). But we could avoid allocating a new <code>Vec</code> when the items are already sorted.</p>
+<pre><code class="language-suggestion">    let Some(unsorted) = UnsortedDunderAllItems::from_elements(elts) else {
+        return;
+    };
+
+    let mut diagnostic = Diagnostic::new(UnsortedDunderAll, range);
+
+    if !unsorted.implicit_concatenated {
+        if let Some(fix) = get_fix(range, elts, &amp;unsorted.items, &amp;kind, checker) {
+            diagnostic.set_fix(fix);
+        }
+    }
+
+    checker.diagnostics.push(diagnostic);
+}
+
+struct UnsortedDunderAllItems&lt;'a&gt; {
+    items: Vec&lt;&amp;'a str&gt;,
+    implicit_concatenated: bool,
+}
+
+impl&lt;'a&gt; UnsortedDunderAllItems&lt;'a&gt; {
+    fn from_elements(elements: &amp;'a [Expr]) -&gt; Option&lt;Self&gt; {
+        let Some((first, rest)) = elements.split_first() else {
+            return None;
+        };
+
+        if rest.is_empty() {
+            return None;
+        }
+
+        let mut previous = first.as_string_literal_expr()?.value.to_str();
+
+        for element in rest {
+            let current = element.as_string_literal_expr()?.value.to_str();
+
+            if AllItemSortKey::from(current) &lt; AllItemSortKey::from(previous) {
+                let mut implicit_concatenated = false;
+
+                let mut items = Vec::with_capacity(elements.len());
+
+                for element in elements {
+                    let string_literal = element.as_string_literal_expr()?;
+                    implicit_concatenated |= string_literal.value.is_implicit_concatenated();
+                    items.push(string_literal.value.to_str());
+                }
+
+                return Some(Self {
+                    items,
+                    implicit_concatenated,
+                });
+            }
+
+            previous = current;
+        }
+
+        // All Sorted
+        None
+    }
+}
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:178 on 2024-01-16 09:36</div>
+            <div class="timeline-body"><p>Nit: <code>create_fix</code>: Get is most often used to simply read a value (e.g. a field)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:287 on 2024-01-16 09:40</div>
+            <div class="timeline-body"><p>Nit</p>
+<pre><code class="language-suggestion">        } else if value.starts_with(char::is_uppercase) {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:437 on 2024-01-16 09:46</div>
+            <div class="timeline-body"><p>Nit: We could consider to store <code>AllItemSortyKey</code> on the <code>DundarAllItem</code> if we're concerned about the cost. Although I don't think it's necessary because:</p>
+<ul>
+<li>This code path is only exercised for fixes, it's okay if they're somewhat slower</li>
+<li>We can change <code>AllItemSortKey</code> to us a <code>&amp;str</code> to avoid cloning. The complexity then becomes <code>O(n)</code> but only for all capitalized strings.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:227 on 2024-01-16 09:47</div>
+            <div class="timeline-body"><p>We can avoid cloning here by using <code>self.items.sort_by</code> when sorting (I assume that's where you ran into lifetime issues)</p>
+<pre><code class="language-patch">Index: crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+&lt;+&gt;UTF-8
+===================================================================
+diff --git a/crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs b/crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs
+--- a/crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs	(revision d78e931ef1c7cf71946a4ce63ea5669aa2b27dac)
++++ b/crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs	(date 1705398024594)
+-struct AllItemSortKey {
++struct AllItemSortKey&lt;'a&gt; {
+     category: InferredMemberType,
+-    value: String,
++    value: &amp;'a str,
+ }
+ 
+-impl Ord for AllItemSortKey {
++impl Ord for AllItemSortKey&lt;'_&gt; {
+     fn cmp(&amp;self, other: &amp;Self) -&gt; Ordering {
+         self.category
+             .cmp(&amp;other.category)
+@@ -233,31 +249,31 @@
+     }
+ }
+ 
+-impl PartialOrd for AllItemSortKey {
++impl PartialOrd for AllItemSortKey&lt;'_&gt; {
+     fn partial_cmp(&amp;self, other: &amp;Self) -&gt; Option&lt;Ordering&gt; {
+         Some(self.cmp(other))
+     }
+ }
+ 
+-impl PartialEq for AllItemSortKey {
++impl PartialEq for AllItemSortKey&lt;'_&gt; {
+     fn eq(&amp;self, other: &amp;Self) -&gt; bool {
+         self.cmp(other) == Ordering::Equal
+     }
+ }
+ 
+-impl Eq for AllItemSortKey {}
++impl Eq for AllItemSortKey&lt;'_&gt; {}
+ 
+-impl From&lt;&amp;str&gt; for AllItemSortKey {
+-    fn from(value: &amp;str) -&gt; Self {
++impl&lt;'a&gt; From&lt;&amp;'a str&gt; for AllItemSortKey&lt;'a&gt; {
++    fn from(value: &amp;'a str) -&gt; Self {
+         Self {
+             category: InferredMemberType::of(value),
+-            value: String::from(value),
++            value,
+         }
+     }
+ }
+ 
+-impl From&lt;&amp;DunderAllItem&gt; for AllItemSortKey {
+-    fn from(item: &amp;DunderAllItem) -&gt; Self {
++impl&lt;'a&gt; From&lt;&amp;'a DunderAllItem&gt; for AllItemSortKey&lt;'a&gt; {
++    fn from(item: &amp;'a DunderAllItem) -&gt; Self {
+         Self::from(item.value.as_str())
+     }
+ }
+@@ -434,7 +450,7 @@
+         );
+ 
+         self.items
+-            .sort_by_cached_key(|item| AllItemSortKey::from(item));
++            .sort_by(|a, b| AllItemSortKey::from(a).cmp(&amp;AllItemSortKey::from(b)));
+         let joined_items = join_multiline_dunder_all_items(
+             &amp;self.items,
+             locator,
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:848 on 2024-01-16 09:54</div>
+            <div class="timeline-body"><p>The <code>newline</code> returned by <code>Stylist</code> is the newline used for fixing, but it may or may not be the newline used in the <code>postlude</code>. For example, <code>Stylist</code> detects <code>\n</code> for a file with mixed line breaks if the first line uses <code>\n</code> but <code>postlude</code> could use <code>\r\n</code>, in which case this path incorrectly assumes that the postlude doesn't start with a newline.</p>
+<p>I don't understnad the code well enough to understand if that's a problem. If it is, changing it to <code>!postlude.starts_with(['\n', '\r'])</code> might be enough.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:867 on 2024-01-16 09:56</div>
+            <div class="timeline-body"><p>Nit: Using <code>sort_by</code> is probably sufficient now that we can avoid allocating in <code>AllItemSortKey</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:803 on 2024-01-16 09:57</div>
+            <div class="timeline-body"><p>Nit: Rename to <code>last_item_index</code>. It holds slightly more information, because it gives meaning to what item the item with the <code>max</code> index points to.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-01-16 09:58</div>
+            <div class="timeline-body"><p>Overall this looks good to me, but there are a few clarification that are needed for me to understand the code and:</p>
+<ul>
+<li>We should align the <code>PartialEq</code> and <code>Ord</code> implementation of <code>AllDunderItems</code></li>
+<li>Let's add some tests around unparenthesized tuples that start with a parenthesized first item (see inline comment). I suspect that things might go wrong in that case</li>
+</ul>
+<p>It would be interesting to explore if we can implement the check as an AST rule and only use lexing for generating the fix. I'll leave that up to you if you want to tackle this and if so, if you want to do it as part of this PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-01-16 09:59</div>
+            <div class="timeline-body"><p>Nice improvements. I've a few suggestions but this looks good to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-01-16 10:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:287 on 2024-01-16 10:06</div>
+            <div class="timeline-body"><p>Ah, this logic was purely copied-and-pasted from the <code>isort</code> rules 😄</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-01-16 10:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:227 on 2024-01-16 10:15</div>
+            <div class="timeline-body"><blockquote>
+<p>We can avoid cloning here by using <code>self.items.sort_by</code> when sorting (I assume that's where you ran into lifetime issues)</p>
+</blockquote>
+<p>That is indeed where I ran into lifetime issues, yup! TYVM</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:848 on 2024-01-16 11:07</div>
+            <div class="timeline-body"><p>Thanks, good call!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-01-16 11:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:157 on 2024-01-16 11:32</div>
+            <div class="timeline-body"><p>I've pushed 24616f3a55e18640c92b548177842ba65021bd9c to mark the fix as always being safe, but I've kept a note in the docs stating that it might sometimes move comments to unexpected locations</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-01-16 11:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-01-16 13:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:229 on 2024-01-16 13:47</div>
+            <div class="timeline-body"><p>Nit: Maybe <code>Unsupported</code>. It's a valid <code>__all__</code> expression, but not one the fix supports</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-01-16 13:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:229 on 2024-01-16 13:57</div>
+            <div class="timeline-body"><p>Hmm, maybe <code>Unsortable</code> or <code>NotAStringLiteralList</code> would be best. We return this variant for truly invalid things like</p>
+<pre><code class="language-py">__all__ = [1, 2, 3]
+</code></pre>
+<p>But we also return this variant for things that might or might not be valid, like</p>
+<pre><code class="language-py">foo = &quot;whatever&quot;
+__all__ = [foo]
+</code></pre>
+<p>The thing that these have in common is that they're beyond the scope of this rule (not just the fix), so, while they might or might not be valid <code>__all__</code> definitions, we don't emit a violation for them</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-01-16 14:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs</code>:229 on 2024-01-16 14:20</div>
+            <div class="timeline-body"><p>I've gone with <code>NotAListOfStringLiterals</code>, which is slightly verbose but unambiguous</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-01-16 14:21</div>
+            <div class="timeline-body"><p>Thanks all for the reviews!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2024-01-16 14:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2024-01-16 14:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-01-16 14:42</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:00:06 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add known limitation to `C416` with dictionaries - astral-sh/ruff #13627</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add known limitation to <code>C416</code> with dictionaries</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/13627">#13627</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2024-10-04 15:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-04 15:29</div>
+            <div class="timeline-body"><p>Part of https://github.com/astral-sh/ruff/issues/13625</p>
+<p>See also #13629</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">documentation</span> added by @zanieb on 2024-10-04 15:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-10-04 15:54</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-10-04 18:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/flake8_comprehensions/rules/unnecessary_comprehension.rs</code>:34 on 2024-10-04 18:55</div>
+            <div class="timeline-body"><p>Hmm, not sure about this wording. I don't think this issue is specific to dictionaries with <code>tuple</code> keys. Rather, it's specific to when you're iterating over dictionaries. In general, for a given object <code>d</code>, <code>dict(d)</code> is going to give you a different object than <code>{a: b for a, b in d}</code> if <code>d</code> is a dictionary. E.g. you see this also with <code>frozenset</code> keys:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; d = {frozenset({1, 2}): 'foo'}
+&gt;&gt;&gt; dict(d)
+{frozenset({1, 2}): 'foo'}
+&gt;&gt;&gt; {a: b for a, b in d}
+{1: 2}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-10-04 19:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ruff_linter/src/rules/flake8_comprehensions/rules/unnecessary_comprehension.rs</code>:34 on 2024-10-04 19:07</div>
+            <div class="timeline-body"><p>Hm yeah — I thought the example was suggesting that <code>for x, y in dict</code> differed in behavior depending on the type of key. It seems like we just shouldn't raise this violation for dictionaries in general i.e. where <code>d1</code> is a dictionary and <code>.items()</code> is not called?</p>
+<pre><code class="language-python">d1 = {1: 3, 2: 5}
+d2 = {x: y for x, y in d1}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @zanieb on 2024-10-04 19:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-10-04 19:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/flake8_comprehensions/rules/unnecessary_comprehension.rs</code>:34 on 2024-10-04 19:14</div>
+            <div class="timeline-body"><p>Yeah, I think that's correct. Possibly we could try to detect if the type of the binding is a dictionary using something like https://github.com/astral-sh/ruff/blob/020f4d4a54eec15b53a5fd94409600f1ad0a63aa/crates/ruff_python_semantic/src/analyze/typing.rs#L752? But I think it's not fully accurate without generalised type inference, and possibly more expensive. Not sure, WDYT?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-10-04 19:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ruff_linter/src/rules/flake8_comprehensions/rules/unnecessary_comprehension.rs</code>:34 on 2024-10-04 19:15</div>
+            <div class="timeline-body"><p>I think we can do something reasonable with that. I'll look into it, but not with a high priority.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-10-04 19:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ruff_linter/src/rules/flake8_comprehensions/rules/unnecessary_comprehension.rs</code>:34 on 2024-10-04 19:25</div>
+            <div class="timeline-body"><p>I guess this only applies to keys that can be unpacked because otherwise that code is a runtime error. Regardless, it seems like we shouldn't depend on that here and should fix the false positive as I described.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-10-04 19:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/flake8_comprehensions/rules/unnecessary_comprehension.rs</code>:34 on 2024-10-04 19:28</div>
+            <div class="timeline-body"><p>If we're in a situation where we can statically detect that the keys can't be unpacked but the user appears to be trying to unpack them anyway in a comprehension, then we haven't really got any clue what the user wanted, so I don't think we should emit a violation for that situation either tbh. I'd just not emit the violation ever if we can see that they're iterating over a binding that we know is a dictionary, and they haven't called <code>.items()</code> on the dictionary before iterating over it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Add known limitation to `C416` with tuple keys" to "Add known limitation to `C416` with dictionaries" by @zanieb on 2024-10-04 20:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @zanieb on 2024-10-04 20:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @MichaReiser on 2024-10-07 08:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/flake8_comprehensions/rules/unnecessary_comprehension.rs</code>:45 on 2024-10-07 13:05</div>
+            <div class="timeline-body"><p>How about something like this?</p>
+<pre><code class="language-suggestion">/// This rule may produce false positives for `dict` comprehensions due to the fact that
+/// the `dict` constructor method behaves differently depending on whether it is passed
+/// a sequence (such as a `list`) or a mapping (such as a `dict`). If a `dict` comprehension
+/// iterates over the keys of an existing dictionary to create a new one, rewriting the
+/// comprehension to use `dict()` directly according to this rule's suggestion will not
+/// produce the same result.
+///
+/// For example:
+/// ```pycon
+/// &gt;&gt;&gt; d1 = {(1, 2): 3, (4, 5): 6}
+/// &gt;&gt;&gt; {x: y for x, y in d1}  # iterates over the keys and unpacks each tuple key
+/// {1: 2, 4: 5}
+/// &gt;&gt;&gt; dict(d1)               # creates an exact copy of the original mapping
+/// {(1, 2): 3, (4, 5): 6}
+/// ```
+///
+/// The suggested change is still valid for `dict` comprehensions if the object being
+/// iterated over is a `list` or some other iterable, however. Ruff currently has
+/// limited type inference, so cannot reliably infer if the type of the object being
+/// iterated over makes the suggestion valid.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-10-07 13:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-10-07 15:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ruff_linter/src/rules/flake8_comprehensions/rules/unnecessary_comprehension.rs</code>:45 on 2024-10-07 15:58</div>
+            <div class="timeline-body"><p>I took parts of this, but edited it for clarity and for consistency with #13629</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/flake8_comprehensions/rules/unnecessary_comprehension.rs</code>:45 on 2024-10-07 15:59</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">/// &gt;&gt;&gt; dict(d1)               # Suggested (incorrect) fix
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/flake8_comprehensions/rules/unnecessary_comprehension.rs</code>:50 on 2024-10-07 16:00</div>
+            <div class="timeline-body"><p>It's not really just the autofix that's incorrect in these cases: the message and suggestion of the rule's diagnostic is also incorrect in these cases</p>
+<pre><code class="language-suggestion">/// When the comprehension iterates over a sequence, the rule's suggestion is correct. 
+/// However, Ruff cannot consistently infer if the iterable type is a sequence or a mapping.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2024-10-07 16:00</div>
+            <div class="timeline-body"><p>Nice!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-10-07 16:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ruff_linter/src/rules/flake8_comprehensions/rules/unnecessary_comprehension.rs</code>:45 on 2024-10-07 16:02</div>
+            <div class="timeline-body"><p>I wrote it this way initially as &quot;Incorrect suggested fix&quot; but I'm not sure it's better.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-10-07 16:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ruff_linter/src/rules/flake8_comprehensions/rules/unnecessary_comprehension.rs</code>:50 on 2024-10-07 16:03</div>
+            <div class="timeline-body"><p>I mean, it should be <code>dict(iterable.keys())</code> right? I think the rule is correct and just the fix is wrong?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-10-07 16:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/flake8_comprehensions/rules/unnecessary_comprehension.rs</code>:45 on 2024-10-07 16:04</div>
+            <div class="timeline-body"><p>I think otherwise it could possibly be misread by somebody skim-reading as saying that it's what we're suggesting here, in the docs. And that's obviously not the case 😄</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-10-07 16:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/flake8_comprehensions/rules/unnecessary_comprehension.rs</code>:50 on 2024-10-07 16:04</div>
+            <div class="timeline-body"><p>Oh. Yeah, great point :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-10-07 16:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ruff_linter/src/rules/flake8_comprehensions/rules/unnecessary_comprehension.rs</code>:45 on 2024-10-07 16:05</div>
+            <div class="timeline-body"><p>I pushed a fix that should resolve review comments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2024-10-07 16:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-07 16:06</div>
+            <div class="timeline-body"><p>I think we should try to improve C416 before it's stabilized, so it's not wrong so often. The fix could be safe for non-dict comprehensions if we don't mind dropping some comments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-07 16:08</div>
+            <div class="timeline-body"><p>The policy I've been using for the minor releases I've been shepherding has been not to stabilise any rules that have significant open issues on the tracker</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2024-10-07 16:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-10-07 16:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-10-07 16:20</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:00:07 UTC
+    </footer>
+</body>
+</html>

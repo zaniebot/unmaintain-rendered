@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Use the right scope when considering class bases - astral-sh/ruff #13766</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Use the right scope when considering class bases</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/13766">#13766</a>
+        opened by <a href="https://github.com/rtpg">@rtpg</a>
+        on 2024-10-16 01:57
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/rtpg">@rtpg</a> on 2024-10-16 01:57</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>PEP 695 Generics introduce a scope inside a class statement's arguments and keywords.</p>
+<pre><code>class C[T](A[T]):  # the T in A[T] is not from the global scope but from a type-param-specfic scope
+   ...
+</code></pre>
+<p>When doing inference on the class bases, we currently have been doing base class expression lookups in the global scope. Not an issue without generics (since a scope is only created when generics are present).</p>
+<p>This change instead makes sure to stop the global scope inference from going into expressions within this sub-scope. Since there is a separate scope, <code>check_file</code> and friends will trigger inference on these expressions still.</p>
+<p>Another change as a part of this is making sure that <code>ClassType</code> looks up its bases in the right scope. I do not believe the way I do the lookup in this change is the most precise way, and would appreciate comments on that fragment.</p>
+<h2>Test Plan</h2>
+<p><code>cargo test --package red_knot_python_semantic generics</code> will run the markdown test that previously would panic due to scope lookup issues</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @rtpg on 2024-10-16 01:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @rtpg on 2024-10-16 01:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @rtpg on 2024-10-16 01:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Use the right scope when considering class bases" to "[red-knot] Use the right scope when considering class bases" by @rtpg on 2024-10-16 01:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/rtpg">@rtpg</a> reviewed on 2024-10-16 01:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/rtpg">@rtpg</a> on <code>crates/red_knot_python_semantic/src/semantic_index/ast_ids.rs</code>:41 on 2024-10-16 01:59</div>
+            <div class="timeline-body"><p>This is very helpful because debug output on <code>ExpressionNodeKey</code> includes the range, which is usually enough in context to identify what text fragment is causing issues.</p>
+<p>I put this in under the idea that this doesn't cost much but I might be wrong</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/rtpg">@rtpg</a> reviewed on 2024-10-16 02:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/rtpg">@rtpg</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1428 on 2024-10-16 02:02</div>
+            <div class="timeline-body"><p>It's unclear to me what the cost of the <code>semantic_index</code> lookup would be in practice. I just want to know what scope I need to be looking at. While <code>ClassType</code> does have <code>body_scope</code>, that is a separate scope from the type parameter scope.</p>
+<p>Would it make sense to add <code>bases_scope</code> to <code>ClassType</code> here to avoid needing this index build up?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/rtpg">@rtpg</a> reviewed on 2024-10-16 02:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/rtpg">@rtpg</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1442 on 2024-10-16 02:04</div>
+            <div class="timeline-body"><p>the mapper is pulled out here because if we build up separate closures in different <code>if</code> branches, we hit the &quot;no two closures are alike&quot; issue. Hence the <code>type_scope_info</code> <code>Option</code> song and dance.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-10-16 02:11</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @MichaReiser on 2024-10-16 06:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/ast_ids.rs</code>:43 on 2024-10-16 06:41</div>
+            <div class="timeline-body"><p>I like this. You could do</p>
+<pre><code class="language-suggestion">        let key = ;
+        match self.expressions_map.get(&amp;key.into()).unwrap_or_else(|| {
+	        panic!(&quot;Could not find expression ID for {key:?}&quot;);
+        }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1428 on 2024-10-16 06:46</div>
+            <div class="timeline-body"><p>I would expect that we could reuse the <code>self.file</code> and <code>self.index</code> because all the expressions in the class's base should be in the same file and from the same index.</p>
+<p>However, we probably don't want to call <code>infer_scope_types</code> because inferring the class's bases then suddenly becomes dependent of <strong>all</strong> types in that other scope, resulting in poor incremental caching.</p>
+<p>I'm not quiet sure but maybe <code>definition_expression_ty</code> is a better fit?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-10-16 06:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-10-16 12:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1428 on 2024-10-16 12:56</div>
+            <div class="timeline-body"><p>I don't think we can use <code>definition_expression_ty</code> because, in a type params scope, the class bases aren't &quot;part of a definition&quot; (the class definition is in the outer scope.)</p>
+<p>We could mark the class bases as a &quot;standalone expression&quot; (or set of them) so we can query for their types directly, but I don't think this is worth the extra Salsa tracked structs. The &quot;type params scope&quot; is automatically generated and implicit and contains nothing but definitions for type parameters, and the class bases/keywords. There isn't &quot;all types in that scope&quot; to be worried about, because there are no other types in that scope. So I think <code>infer_scope_types</code> is the best option here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-10-16 13:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1428 on 2024-10-16 13:02</div>
+            <div class="timeline-body"><blockquote>
+<p>I would expect that we could reuse the self.file and self.index</p>
+</blockquote>
+<p>We aren't in <code>TypeInferenceBuilder</code> here, so those aren't available.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-10-16 13:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1428 on 2024-10-16 13:10</div>
+            <div class="timeline-body"><p>I think perhaps the simpler way to get the type params scope is that it must always be the parent scope of the body scope (for a class with type params.) We should be able to add a <code>ScopeId::parent</code> method (it would need to use the symbol table, but not the semantic index.)</p>
+<p>I'm also not opposed to adding <code>bases_scope</code> (or optional <code>type_params_scope</code>) to <code>ClassType</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-10-16 13:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1437 on 2024-10-16 13:12</div>
+            <div class="timeline-body"><p>Is there a reason to use <code>has_type_params</code> and then <code>type_scope_info.unwrap()</code> rather than just <code>if let Some(...) = type_scope_info {</code> ? They rely on the same invariants, but the latter seems simpler.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/generics.md</code>:24 on 2024-10-16 13:13</div>
+            <div class="timeline-body"><p>I would like to also add a test that in a stub file (<code>pyi</code>) we can have a generic class that refers to itself in its own bases. We have a similar test already for non-generic classes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> requested changes on 2024-10-16 13:14</div>
+            <div class="timeline-body"><p>This looks really good, thank you!! Comments aren't anything major, but there are a few things to address, so I'll request changes for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/rtpg">@rtpg</a> reviewed on 2024-10-16 13:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/rtpg">@rtpg</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1437 on 2024-10-16 13:16</div>
+            <div class="timeline-body"><p>Hmm... your suggestion is cleaner and this code isn't big, but I dislike the hiding of the &quot;the branching is due to type parameter-ness&quot;.</p>
+<p>I believe my concerns can be resolved with a more well thought out variable name for the scope info. Will ruminate on it overnight</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-10-16 13:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1428 on 2024-10-16 13:24</div>
+            <div class="timeline-body"><p>You can also use <code>index.scopes_by_node</code> when the query already depends on the index anyway (which <code>parent</code> would as well?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-10-16 15:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1428 on 2024-10-16 15:47</div>
+            <div class="timeline-body"><p><code>ScopeId::parent</code> would rely on just the symbol table, which is part of the index, but in principle could be backdated independently if it didn't change? Unlikely though; I don't think depending on the index here is a problem.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/rtpg">@rtpg</a> reviewed on 2024-10-17 00:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/rtpg">@rtpg</a> on <code>crates/red_knot_python_semantic/resources/mdtest/generics.md</code>:24 on 2024-10-17 00:39</div>
+            <div class="timeline-body"><p>Added</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/rtpg">@rtpg</a> reviewed on 2024-10-17 00:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/rtpg">@rtpg</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1437 on 2024-10-17 00:40</div>
+            <div class="timeline-body"><p>Changed this up to <code>bases_scope_info</code>. It's still an <code>Option</code> (instead of doing something like checking if <code>bases_scope</code> is equal to some other scope to determine specialized-ness), but good enough for me to feel comfortable with the cleaner <code>if let</code> solution.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/rtpg">@rtpg</a> reviewed on 2024-10-17 00:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/rtpg">@rtpg</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1428 on 2024-10-17 00:45</div>
+            <div class="timeline-body"><p>Ended up storing the bases scope in <code>ClassType</code> (which gets built up in the inference builder so we have access to the index right there). Definitely feels right after having written it up.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/rtpg">@rtpg</a> reviewed on 2024-10-17 00:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/rtpg">@rtpg</a> on <code>crates/red_knot_python_semantic/src/semantic_index/ast_ids.rs</code>:43 on 2024-10-17 00:46</div>
+            <div class="timeline-body"><p>Went with this, thanks for the suggestion!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/rtpg">@rtpg</a> reviewed on 2024-10-17 00:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/rtpg">@rtpg</a> on <code>crates/red_knot_python_semantic/src/semantic_index/ast_ids.rs</code>:43 on 2024-10-17 00:49</div>
+            <div class="timeline-body"><p>Great, went with that</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1433 on 2024-10-17 05:43</div>
+            <div class="timeline-body"><p>Nit: We could consider to just call <code>base_expr.ty(...)</code> over repeating the entire ceremony of storing the base specialized scope, fingering the scope, and calling <code>expression_ty</code>. However, it would be slightly less efficient.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1439 on 2024-10-17 05:44</div>
+            <div class="timeline-body"><p>Nit</p>
+<pre><code class="language-suggestion">        class_stmt_node.bases().iter().map(move |base_expr: &amp;ast::Expr| {
+            if let Some((bases_scope, inferences)) = bases_scope_info {
+                // when we have a specialized scope, we'll look up the inference
+                // within that scope
+                inferences.expression_ty(base_expr.scoped_ast_id(db, bases_scope))
+            } else {
+                // Otherwise, we can do the lookup based on the definition scope
+                definition_expression_ty(db, definition, base_expr)
+            }
+        })
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:880 on 2024-10-17 05:47</div>
+            <div class="timeline-body"><p>Nit: I suggest making this a method on <code>ClassType</code>. It doesn't seem worth storing (it's very cheap to recompute). Unless we think that it helps with reducing the blast radius of file changes (e.g. so that calling <code>(class A).bases</code> where <code>class A</code> is defined in <code>foo.py</code>  from <code>bar.py</code> doesn't get invalidated when <code>foo.py changes). However, I do think that we might want to start caching </code>bases` once we add MRO resolution (which seems expensive)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-10-17 05:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/rtpg">@rtpg</a> reviewed on 2024-10-17 07:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/rtpg">@rtpg</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1433 on 2024-10-17 07:23</div>
+            <div class="timeline-body"><p>Going down that path let me remove all the base scope song and dance, at (by my read) not much cost. The resulting <code>if</code> statement is probably very hard to look at though now, since there's no longer quite a clear reason for <em>why</em> I am calling <code>.ty</code> (even with the comment). But simpler is simpler, thanks for the suggestion</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/rtpg">@rtpg</a> reviewed on 2024-10-17 10:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/rtpg">@rtpg</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:880 on 2024-10-17 10:51</div>
+            <div class="timeline-body"><p>Thanks to your suggestion on using <code>ty</code> I don't even need this anymore, fortunately.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1419 on 2024-10-17 22:21</div>
+            <div class="timeline-body"><p>We could create the <code>SemanticModel</code> only within the branch below where we'll actually need it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-10-17 22:21</div>
+            <div class="timeline-body"><p>Looks great, thank you!</p>
+<p>Since I have only one comment and it's minor, I'll push that change and go ahead and land this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @carljm on 2024-10-17 22:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2024-10-17 22:29</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:00:08 UTC
+    </footer>
+</body>
+</html>

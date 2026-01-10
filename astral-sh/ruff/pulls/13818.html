@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lexer: Avoid `drop` branches when setting the new token value - astral-sh/ruff #13818</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Lexer: Avoid <code>drop</code> branches when setting the new token value</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/13818">#13818</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2024-10-19 11:06
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-19 11:06</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>The <code>Lexer</code> resets the <code>CurrentTokenValue</code> on every <code>next_token</code> call.
+However, Rust can't prove that <code>current_value</code> is always <code>None</code> when we repalce the current (<code>None</code>) value with the lexed value in the <code>lex_*</code> branches.
+That's why Rust still inserts the code for dropping the current value.</p>
+<p>This PR introduces a wrapper using <code>ManuallyDrop</code> to make use of the knowledge that the <code>TokenValue</code> is guaranteed to always be <code>None</code>
+when we set a new value.</p>
+<h2>Test Plan</h2>
+<p><code>cargo test</code></p>
+<p>These are my local numbers. I ran them multiple times. The baseline is this branch (that's why negative numbers are good)</p>
+<pre><code>lexer/numpy/globals.py  time:   [3.0014 µs 3.0036 µs 3.0058 µs]
+                        thrpt:  [981.66 MiB/s 982.38 MiB/s 983.11 MiB/s]
+                 change:
+                        time:   [+5.2272% +5.5998% +5.9694%] (p = 0.00 &lt; 0.05)
+                        thrpt:  [-5.6331% -5.3028% -4.9676%]
+                        Performance has regressed.
+Found 8 outliers among 100 measurements (8.00%)
+  1 (1.00%) low severe
+  5 (5.00%) low mild
+  2 (2.00%) high mild
+lexer/unicode/pypinyin.py
+                        time:   [11.065 µs 11.123 µs 11.184 µs]
+                        thrpt:  [375.71 MiB/s 377.75 MiB/s 379.73 MiB/s]
+                 change:
+                        time:   [+6.4901% +6.7363% +7.0050%] (p = 0.00 &lt; 0.05)
+                        thrpt:  [-6.5464% -6.3111% -6.0946%]
+                        Performance has regressed.
+Found 9 outliers among 100 measurements (9.00%)
+  1 (1.00%) low mild
+  8 (8.00%) high severe
+lexer/pydantic/types.py time:   [84.974 µs 85.076 µs 85.206 µs]
+                        thrpt:  [299.31 MiB/s 299.77 MiB/s 300.13 MiB/s]
+                 change:
+                        time:   [+3.4216% +3.9485% +4.5291%] (p = 0.00 &lt; 0.05)
+                        thrpt:  [-4.3329% -3.7985% -3.3084%]
+                        Performance has regressed.
+lexer/numpy/ctypeslib.py
+                        time:   [35.493 µs 35.572 µs 35.677 µs]
+                        thrpt:  [466.71 MiB/s 468.09 MiB/s 469.15 MiB/s]
+                 change:
+                        time:   [+3.7056% +4.1303% +4.5415%] (p = 0.00 &lt; 0.05)
+                        thrpt:  [-4.3442% -3.9665% -3.5732%]
+                        Performance has regressed.
+Found 2 outliers among 100 measurements (2.00%)
+  1 (1.00%) high mild
+  1 (1.00%) high severe
+lexer/large/dataset.py  time:   [196.29 µs 196.39 µs 196.50 µs]
+                        thrpt:  [207.04 MiB/s 207.15 MiB/s 207.26 MiB/s]
+                 change:
+                        time:   [+5.2512% +5.6298% +5.9938%] (p = 0.00 &lt; 0.05)
+                        thrpt:  [-5.6548% -5.3298% -4.9892%]
+                        Performance has regressed.
+Found 3 outliers among 100 measurements (3.00%)
+  2 (2.00%) low mild
+  1 (1.00%) high severe
+
+
+</code></pre>
+<p>but maybe that's just noise... Very hard to tell :(</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-19 11:19</div>
+            <div class="timeline-body"><p>Hmm, this gives me a 4-10% perf improvement locally</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @MichaReiser on 2024-10-19 11:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">parser</span> added by @MichaReiser on 2024-10-19 11:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2024-10-19 11:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @MichaReiser on 2024-10-19 11:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-10-19 11:39</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-19 12:05</div>
+            <div class="timeline-body"><p>Looking at a profile, drop only takes about 0.4% of time (except in the <code>next_token</code> function but we can't remove it from there.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-10-19 12:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-10-19 18:52</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:00:08 UTC
+    </footer>
+</body>
+</html>

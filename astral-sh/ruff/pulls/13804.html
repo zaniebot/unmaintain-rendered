@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Report line numbers in mdtest relative to the markdown file, not the test snippet - astral-sh/ruff #13804</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Report line numbers in mdtest relative to the markdown file, not the test snippet</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/13804">#13804</a>
+        opened by <a href="https://github.com/pilleye">@pilleye</a>
+        on 2024-10-18 05:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/pilleye">@pilleye</a> on 2024-10-18 05:02</div>
+            <div class="timeline-body"><p>Summary: Adds absolute line numbers to mdtest (fixes #13798)</p>
+<p>Test Plan:</p>
+<p>https://github.com/user-attachments/assets/63f84e34-da00-4146-a22b-e17322d5d687</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @pilleye on 2024-10-18 05:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @pilleye on 2024-10-18 05:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @pilleye on 2024-10-18 05:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-10-18 05:24</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @MichaReiser on 2024-10-18 05:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_test/src/parser.rs</code>:250 on 2024-10-18 05:57</div>
+            <div class="timeline-body"><p>Aren't the line numbers off after a code block (that could span multiple lines)?</p>
+<p>I think a better approach is to track the <code>offset</code> (<code>TextSize</code>) and increment it in <code>self.scan</code> and here. Then use <code>LineIndex</code> during rendering to get the line number.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_test/src/lib.rs</code>:11 on 2024-10-18 06:01</div>
+            <div class="timeline-body"><p>Nit: I'm inclined to use a regular <code>Vec</code> here and instead sort it before returning it in <code>run_test</code>. Vec's are just overall simpler data structure (e.g. for iterating). I then would add the <code>md_offset</code> to the <code>FailuresByLine</code> data structure (do we still need <code>line_number</code> or can we replace it with the <code>md_offset</code>?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-10-18 06:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-18 06:03</div>
+            <div class="timeline-body"><p>Thanks, this is great. I suspect that the line numbers may get out of sync during parsing if the error isn't in the file's first code block.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_test/src/lib.rs</code>:45 on 2024-10-18 12:55</div>
+            <div class="timeline-body"><p>nit: just because you <em>can</em> do arbitrary unpacking in Rust doesn't mean you <em>should</em> ;)</p>
+<p>Here, I'd find this more readable:</p>
+<pre><code class="language-suggestion">            for (path, by_line) in failures {
+                let AbsoluteLineNumberPath {
+                    path,
+                    line_number: absolute_line_number,
+                } = path;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_test/src/lib.rs</code>:55 on 2024-10-18 13:07</div>
+            <div class="timeline-body"><p>The indentation should come before <code>absolute_line_info</code> here, so that the per-line diagnostics are indented below the &quot;heading&quot;, which is the name of the embedded file</p>
+<pre><code class="language-suggestion">                        println!(&quot;    {absolute_line_info} {line_info} {failure}&quot;);
+</code></pre>
+<p>This means that the output in the terminal looks is beautifully organised like this if you have a test which has multiple Python snippets in the same Markdown test, and failures in more than one of those code blocks:</p>
+<p><img src="https://github.com/user-attachments/assets/a12dfbab-aed4-4a46-b861-78946ee9a790" alt="image" /></p>
+<p>I checked, and I'm still able to double-click on the <code>exception_control_flow.md:157</code> if I run the test in VSCode, and it takes me straight to the line, even if it's indented.</p>
+<hr />
+<p>Separately, I'm wondering if we need the relative line number to be reported at all, or if we could just make do with the relative line number? It feels like it just adds noise. Maybe we could just do this (diff relative to your PR branch):</p>
+<pre><code class="language-diff">diff --git a/crates/red_knot_test/src/lib.rs b/crates/red_knot_test/src/lib.rs
+index 691a71528..e31fad615 100644
+--- a/crates/red_knot_test/src/lib.rs
++++ b/crates/red_knot_test/src/lib.rs
+@@ -50,9 +50,9 @@ pub fn run(path: &amp;PathBuf, title: &amp;str) {
+                             &quot;{}:{}&quot;,
+                             title,
+                             absolute_line_number.saturating_add(line_number.get())
+-                        );
+-                        let line_info = format!(&quot;line {line_number}:&quot;).cyan();
+-                        println!(&quot;{absolute_line_info}    {line_info} {failure}&quot;);
++                        )
++                        .cyan();
++                        println!(&quot;    {absolute_line_info} {failure}&quot;);
+                     }
+                 }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-10-18 13:07</div>
+            <div class="timeline-body"><p>Thanks, this is fantastic! A couple more comments on top of Micha's :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-10-18 13:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_test/src/lib.rs</code>:55 on 2024-10-18 13:19</div>
+            <div class="timeline-body"><p>I find the many line numbers and file names slightly confusing... Especially because they're next to each other.</p>
+<p>But it's hard to come up with a sane grouping. The grouping by file seems reasonable but is also somewhat confusing with diagnostics that then have line numbers absolute to the entire file.</p>
+<p>And do we still need to show both line numbers? Aren't the md file line numbers sufficient?</p>
+<pre><code>/src/single_except.py
+	exception/control_flow.md:157 unmatched assertion: revealed: list[int]
+	exception/control_flow.md:159 unmatched assertion: revealed: list[int]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-10-18 13:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_test/src/lib.rs</code>:55 on 2024-10-18 13:20</div>
+            <div class="timeline-body"><blockquote>
+<p>And do we still need to show both line numbers? Aren't the md file line numbers sufficient?</p>
+</blockquote>
+<p>I already asked that; I agree with you. Take a look at the final suggested diff in my comment above :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-10-18 13:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_test/src/lib.rs</code>:55 on 2024-10-18 13:27</div>
+            <div class="timeline-body"><p>Oh shoot. Reading is hard.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-10-18 18:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_test/src/lib.rs</code>:55 on 2024-10-18 18:32</div>
+            <div class="timeline-body"><p>I also agree with removing the old embedded-relative line number entirely, in favor of just the new absolute line number.</p>
+<p>I would favor removing the grouping by embedded-file altogether in the output, and just having flat output of one failure per line, per test. It's weird to me to have it grouped by embedded file but then the line numbers be relative to the markdown file. If you find the given line in the markdown file, it'll be obvious what embedded file you are in. And so many of the embedded file names are just <code>/src/test.py</code> anyway, it feels like mostly noise.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-10-18 18:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_test/src/lib.rs</code>:55 on 2024-10-18 18:33</div>
+            <div class="timeline-body"><blockquote>
+<p>I would favor removing the grouping by embedded-file altogether in the output, and just having flat output of one failure per line, per test. It's weird to me to have it grouped by embedded file but then the line numbers be relative to the markdown file. If you find the given line in the markdown file, it'll be obvious what embedded file you are in. And so many of the embedded file names are just <code>/src/test.py</code> anyway, it feels like mostly noise.</p>
+</blockquote>
+<p>That rationale makes sense to me!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-10-18 18:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_test/src/lib.rs</code>:11 on 2024-10-18 18:34</div>
+            <div class="timeline-body"><p>If we remove the grouping by embedded-file path from the output altogether, as I suggested below, that also suggests simplifying this data structure.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/pilleye">@pilleye</a> reviewed on 2024-10-21 05:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/pilleye">@pilleye</a> on <code>crates/red_knot_test/src/parser.rs</code>:250 on 2024-10-21 05:25</div>
+            <div class="timeline-body"><p>Used a mix of the two, using offset within the entire Markdown file to find the line that the backticks of a code block start on. Then, we just add the line onto the line number reported from the linter itself.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pilleye">@pilleye</a> on 2024-10-21 05:39</div>
+            <div class="timeline-body"><p>Think I mostly cleaned up the comments, would appreciate another review. I'm now returning a <code>Vec&lt;FailuresByLine&gt;</code>, where the paths that are checked are sorted by their starting position, so errors should occur from top-to-bottom.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pilleye">@pilleye</a> on 2024-10-21 06:00</div>
+            <div class="timeline-body"><p>https://github.com/user-attachments/assets/9cd21d21-f4e2-4f0d-8212-5375a312b7fd</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_test/src/lib.rs</code>:35 on 2024-10-21 08:16</div>
+            <div class="timeline-body"><p>nit: I think the blank line in between the title and the line-by-line details really helps readability here; I'd keep it, personally 😄</p>
+<pre><code class="language-suggestion">            println!(&quot;\n{}\n&quot;, test.name().bold().underline());
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-10-21 08:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-10-21 08:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_test/src/matcher.rs</code>:57 on 2024-10-21 08:21</div>
+            <div class="timeline-body"><p>here you use <code>saturating_add</code>, but in the <code>increment_offset</code> method in <code>parser.rs</code> you use <code>checked_add</code> and return an error if the addition would overflow. I think either is honestly defensible for this kind of thing, but could you possibly say why you used one in one place and the other in the other place?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_test/src/parser.rs</code>:301 on 2024-10-21 08:30</div>
+            <div class="timeline-body"><p>We should move this into <code>scan</code> to avoid repeating the same code</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_test/src/parser.rs</code>:336 on 2024-10-21 08:31</div>
+            <div class="timeline-body"><p>I suggest just storing the embedded file and computing the line number when needed. It has the advantage that the test framework doesn't need to compute the <code>LineIndex</code> if there are no errors. Computing the <code>LineIndex</code> isn't expensive, but it can add up. Querying the line index is <code>O(log(n))</code>, so that's not entirely free as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_test/src/lib.rs</code>:108 on 2024-10-21 08:34</div>
+            <div class="timeline-body"><p>I don't think calling <code>shrink_to_fit</code> gives us much here. <code>shrink_to_fit</code> is mainly useful if you have a long-living <code>Vec</code> to avoid wasting memory. The failures are consumed right away (and if not, let the caller handle it) and then dropped.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-10-21 08:38</div>
+            <div class="timeline-body"><p>I would still suggest to store offsets to avoid computing the markdown <code>LineIndex</code> unnecessarily.</p>
+<p>We also discussed removing the grouping by test file and I see that you kept it. What's your motivation for keeping the grouping?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-21 10:20</div>
+            <div class="timeline-body"><blockquote>
+<p>We also discussed removing the grouping by test file and I see that you kept it. What's your motivation for keeping the grouping?</p>
+</blockquote>
+<p>@MichaReiser I think this feedback was mostly addressed. The errors are no longer grouped according to the <em>embedded Python file inside a single Markdown test</em>. Here's what it currently looks like on this PR branch if some tests fail:</p>
+<details>
+<summary>Screenshot</summary>
+
+<p><img src="https://github.com/user-attachments/assets/ca27b86f-3db7-4357-86e0-2e1eb660c7a7" alt="image" /></p>
+</details>
+
+<p>And here's what the same failures looked like on this PR branch prior to https://github.com/astral-sh/ruff/pull/13804/commits/5d20b5c3cca2e56a866301204884e3c71aae81f8</p>
+<details>
+<summary>Screenshot</summary>
+
+<p><img src="https://github.com/user-attachments/assets/9171275a-f2af-4583-8b2b-2cc6b45e6da1" alt="image" /></p>
+</details>
+
+<p>So the <code>/src/test.py</code>, <code>/src/branches_unify_to_non_union_type.py</code>, <code>/src/union_type_inferred.py</code> and <code>/src/test.py</code> headings are now gone. (These all told you the name of the <em>embedded Python file</em> inside a specific Markdown test.) However, there's still an unnecessary line break in between these two lines in the test output:</p>
+<ul>
+<li><code>/exception/control_flow.md:53 unexpected error: [revealed-type] &quot;Revealed type is `Literal[2]`&quot;</code></li>
+<li><code>/exception/control_flow.md:74 unmatched assertion: revealed: bytes</code></li>
+</ul>
+<p>The errors before the line break occur in one embedded Python code block, and the errors after the line break occur in a different Python code block. I think this line break is unnecessary; @pilleye could you possibly get rid of it?</p>
+<p>For the record, this is the diff I made to <code>crates/red_knot_python_semantic</code> in order to get these screenshots:</p>
+<details>
+<summary>Diff to trigger test failures</summary>
+
+<pre><code class="language-diff">diff --git a/crates/red_knot_python_semantic/resources/mdtest/exception/control_flow.md b/crates/red_knot_python_semantic/resources/mdtest/exception/control_flow.md
+index f7cf500d0..792d9ed69 100644
+--- a/crates/red_knot_python_semantic/resources/mdtest/exception/control_flow.md
++++ b/crates/red_knot_python_semantic/resources/mdtest/exception/control_flow.md
+@@ -46,11 +46,11 @@ x = 1
+ try:
+     reveal_type(x)  # revealed: Literal[1]
+     x = could_raise_returns_str()
+-    reveal_type(x)  # revealed: str
++    reveal_type(x)  # revealed: int
+ except:
+     reveal_type(x)  # revealed: Literal[1] | str
+     x = 2
+-    reveal_type(x)  # revealed: Literal[2]
++    reveal_type(x)
+ 
+ reveal_type(x)  # revealed: str | Literal[2]
+ ```
+@@ -71,7 +71,7 @@ try:
+ except:
+     x = could_raise_returns_str()
+ 
+-reveal_type(x)  # revealed: str
++reveal_type(x)  # revealed: bytes
+ ```
+ 
+ ## A non-bare `except`
+@@ -92,7 +92,7 @@ def could_raise_returns_str() -&gt; str:
+ x = 1
+ 
+ try:
+-    reveal_type(x)  # revealed: Literal[1]
++    reveal_type(x)  # revealed: str
+     x = could_raise_returns_str()
+     reveal_type(x)  # revealed: str
+ except TypeError:
+diff --git a/crates/red_knot_python_semantic/resources/mdtest/exception/except_star.md b/crates/red_knot_python_semantic/resources/mdtest/exception/except_star.md
+index 44d701d1f..b44572c43 100644
+--- a/crates/red_knot_python_semantic/resources/mdtest/exception/except_star.md
++++ b/crates/red_knot_python_semantic/resources/mdtest/exception/except_star.md
+@@ -6,7 +6,7 @@
+ try:
+     x
+ except* BaseException as e:
+-    reveal_type(e)  # revealed: BaseExceptionGroup
++    reveal_type(e)  # revealed: int
+ ```
+</code></pre>
+</details>
+
+<p>The failures are still grouped according to the name of the Markdown test inside the Markdown file, but I find that very helpful: it means you can have some idea of what kinds of tests are failing without even having to jump and look at the specific assertions that are failing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pilleye">@pilleye</a> on 2024-10-21 13:47</div>
+            <div class="timeline-body"><blockquote>
+<p>The errors before the line break occur in one embedded Python code block, and the errors after the line break occur in a different Python code block. I think this line break is unnecessary; @pilleye could you possibly get rid of it?</p>
+</blockquote>
+<img width="1470" alt="Screenshot 2024-10-21 at 9 46 50 AM" src="https://github.com/user-attachments/assets/7bdcc0ee-1a9a-4558-a17d-9ff01123de68">
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2024-10-21 14:22</div>
+            <div class="timeline-body"><p>This LGTM now. Thanks again! @MichaReiser, anything more from you?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-21 16:42</div>
+            <div class="timeline-body"><p>I'll re-review tomorrow morning</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @MichaReiser on 2024-10-21 16:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_test/src/lib.rs</code>:60 on 2024-10-21 18:27</div>
+            <div class="timeline-body"><p>nit: this doesn't store a line number anymore, maybe <code>PathWithOffset</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_test/src/lib.rs</code>:85 on 2024-10-21 18:31</div>
+            <div class="timeline-body"><p>This may be a holdover from a previous version of the PR, but I don't think this <code>with_capacity</code> really makes sense anymore. This vector isn't going to have a number of entries based on the number of embedded files, it'll have a number of entries based on the number of lines with failures on them. In the ideal scenario (where arguably we care the most about speed) it'll be an empty vec. So I think it would be better to optimistically not allocate:</p>
+<pre><code class="language-suggestion">    let mut failures = Vec::default();
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_test/src/lib.rs</code>:87 on 2024-10-21 18:32</div>
+            <div class="timeline-body"><p>naming nit: I don't think <code>contextual_path</code> is very clear, I'd name the struct <code>PathWithOffset</code> (as mentioned above) and name this <code>path_with_offset</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_test/src/matcher.rs</code>:60 on 2024-10-21 18:37</div>
+            <div class="timeline-body"><p>I think we could avoid eagerly copying the entire <code>lines</code> vec by instead just adding a <code>starting_line_number</code> or <code>line_offset</code> field to <code>FailuresByLine</code>, and adding the offset to each line number in <code>FailuresByLine::iter</code> instead.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_test/src/parser.rs</code>:146 on 2024-10-21 18:38</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    /// The offset of the backticks beginning the code block within the markdown file
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-10-21 18:40</div>
+            <div class="timeline-body"><p>The behavior here looks good to me; thanks @pilleye!!</p>
+<p>Some comments on the code; maybe wait to implement them until @MichaReiser has a look, in case he has a different idea on any of this, since he's done some recent work on mdtest perf.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-21 19:52</div>
+            <div class="timeline-body"><p>I can help tomorrow morning with merging my latest changes into this PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-10-22 07:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2024-10-22 07:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-10-22 07:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-10-22 13:24</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:00:08 UTC
+    </footer>
+</body>
+</html>

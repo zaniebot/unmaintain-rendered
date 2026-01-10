@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Applying Suppression Comments to Compound Statements - astral-sh/ruff #13487</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Applying Suppression Comments to Compound Statements</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/13487">#13487</a>
+        opened by <a href="https://github.com/bnkc">@bnkc</a>
+        on 2024-09-23 20:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/bnkc">@bnkc</a> on 2024-09-23 20:40</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>This PR addresses <a href="https://github.com/astral-sh/ruff/issues/11216">issue #11216</a>. It introduces a first attempt at implementing special handling for <code># fmt: skip</code> and <code># fmt: off</code>, so that they apply to entire compound statements. There are still some failing tests to resolve, but I’d appreciate feedback on whether the general approach is sound, as well as any suggestions for improvement.</p>
+<p>I’m also curious if this change might require reworking existing tests.</p>
+<h2>Test Plan</h2>
+<p>A new test has been added in <code>crates/ruff_python_formatter/src/comments/mod.rs</code>:</p>
+<pre><code class="language-rust">#[test]
+fn fmt_skip_applies_to_entire_compound_statement() {
+    let source = r#&quot;
+if True: x = 0  # fmt: skip
+def foo(self, lorem, ipsum, dolor, sit, amet, consectetur, adipiscing, elit, sed, do): ...  # fmt: skip
+&quot;#;
+
+    let test_case = CommentsTestCase::from_code(source);
+    let comments = test_case.to_comments();
+
+    assert_debug_snapshot!(comments.debug(test_case.source_code));
+}
+</code></pre>
+<p>The test essentially reproduces the reported issue. There are still edge cases to address, and I’m continuing to refine the solution. I’ve been diving into this codebase for a few days, so apologies for any oversights. Looking forward to your feedback!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @bnkc on 2024-09-23 20:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Resolving Bug https://github.com/astral-sh/ruff/issues/11216" to "Resolving Bug #11216" by @bnkc on 2024-09-23 20:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Resolving Bug #11216" to "Resolving Bug " by @bnkc on 2024-09-23 20:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Resolving Bug " to "Resolving Bug #11216" by @bnkc on 2024-09-23 20:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Resolving Bug #11216" to "Applying Suppression Commments to Compound Statements" by @bnkc on 2024-09-23 20:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @bnkc on 2024-09-23 20:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Applying Suppression Commments to Compound Statements" to "Applying Suppression Comments to Compound Statements" by @bnkc on 2024-09-23 20:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-09-24 10:04</div>
+            <div class="timeline-body"><p>Solving this inside the comment placement is clever. I like it.</p>
+<p>My only concern is that not all clause headers have their own node. For example, the <code>else</code> header of many statements is just a <code>Vec&lt;Node&gt;</code>:</p>
+<pre><code>while test:
+    pass
+else:  ... # fmt: skip
+</code></pre>
+<p>I recommend to look into how to support these clause headers as a next step.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @MichaReiser on 2024-09-24 10:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bnkc">@bnkc</a> on 2024-09-26 16:08</div>
+            <div class="timeline-body"><blockquote>
+<p>Solving this inside the comment placement is clever. I like it.</p>
+<p>My only concern is that not all clause headers have their own node. For example, the <code>else</code> header of many statements is just a <code>Vec&lt;Node&gt;</code>:</p>
+<pre><code>while test:
+    pass
+else:  ... # fmt: skip
+</code></pre>
+<p>I recommend to look into how to support these clause headers as a next step.</p>
+</blockquote>
+<p>Hey made a small change. Let me know if this is what we are looking for</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/comments/placement.rs</code>:477 on 2024-09-27 15:43</div>
+            <div class="timeline-body"><p>I think this is an over-simplification. E.g.</p>
+<pre><code class="language-python">def test(
+	a, 
+	b, 
+): ... # fmt: skip
+
+def test() -&gt; List[
+	str,
+	int,
+]: ... # fmt: skip
+
+if (
+	a and b and c and [
+		1, 
+		2,
+): ... # fmt: skip 
+</code></pre>
+<p>There's <code>ClauseHeader</code> that has some fairly complicated logic to find the exact range of the header</p>
+<p>https://github.com/astral-sh/ruff/blob/138e70bd5c01d61061247c43b1bbb33d0290a18f/crates/ruff_python_formatter/src/statement/clause.rs#L40-L70</p>
+<p>maybe we can reuse some of the logic here</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/comments/placement.rs</code>:480 on 2024-09-27 15:47</div>
+            <div class="timeline-body"><p>I'm not sure if making the comment a trailing comment is correct. Doesn't it suppress formatting for the entire node? I think the comment should be a dangling comment, see</p>
+<p>https://github.com/astral-sh/ruff/blob/6ac61d7b89b2ac3789c2d8ecde505f8c739c6f35/crates/ruff_python_formatter/src/comments/placement.rs#L373-L392</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-09-27 15:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-07 06:58</div>
+            <div class="timeline-body"><p>I looked at this a bit more closely and I don't think a <code>placement.rs</code> only solution is going to work. What makes me belive so is that I changed the source in <code>quick_test</code> to</p>
+<pre><code class="language-rust">let source = r#&quot;
+def foo(self, lorem, ipsum, dolor, sit, amet, consectetur, adipiscing, elit, sed, do): print( &quot; teest &quot;)  # fmt: skip
+&quot;#;
+</code></pre>
+<p>The test then fails with:</p>
+<pre><code>The node has dangling comments that need to be formatted manually. Add the special dangling comments handling to `fmt_fields`.
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+</code></pre>
+<p>Which makes sense when we take a look at the <code>FormatClauseHeader</code> implementation</p>
+<p>https://github.com/astral-sh/ruff/blob/a0afe7857eb26554da2694422d536b14479b115a/crates/ruff_python_formatter/src/statement/clause.rs#L368-L395</p>
+<p>Specifically at how it formats a suppressed clause header</p>
+<p>https://github.com/astral-sh/ruff/blob/a0afe7857eb26554da2694422d536b14479b115a/crates/ruff_python_formatter/src/verbatim.rs#L954-L980</p>
+<p>You can see how it only formats the clause header in verbatim mode but not the body. We need to extend the clause handling with a branch that skips both the clause header and body formatting when the sinlge-body statement is suppressed</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bnkc">@bnkc</a> on 2024-10-10 16:12</div>
+            <div class="timeline-body"><p>@MichaReiser Thanks for the feedback! I'll get to this over the weekend :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @bnkc on 2024-10-14 20:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @bnkc on 2024-10-14 20:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-10-14 20:23</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:00:07 UTC
+    </footer>
+</body>
+</html>

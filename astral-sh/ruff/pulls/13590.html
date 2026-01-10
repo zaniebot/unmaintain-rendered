@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Implement arithmetic inference for binary expressions with `float` and `int` instances - astral-sh/ruff #13590</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Implement arithmetic inference for binary expressions with <code>float</code> and <code>int</code> instances</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/13590">#13590</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2024-10-01 14:57
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-01 14:57</div>
+            <div class="timeline-body"><p>Following #13576 adds more inference for binary expressions including <code>float</code> and <code>int</code> instances rather than just <code>IntLiteral</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @zanieb on 2024-10-01 14:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-10-01 14:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2410 on 2024-10-01 14:59</div>
+            <div class="timeline-body"><p>I might futz with the organization of these and add some comments?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-10-01 15:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2410 on 2024-10-01 15:13</div>
+            <div class="timeline-body"><p>cc @carljm regarding the handling of <code>IntLiteral</code> without it being a special case</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-10-01 16:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2410 on 2024-10-01 16:17</div>
+            <div class="timeline-body"><p>I think we probably want a general-purpose function like this for binary operations between instance types:</p>
+<pre><code class="language-rs">fn perform_binary_operation&lt;'db&gt;(
+    db: &amp;'db dyn Db,
+    left: ClassType&lt;'db&gt;,
+    right: ClassType&lt;'db&gt;,
+    dunder_name: &amp;str,
+) -&gt; Option&lt;Type&lt;'db&gt;&gt; {
+    // TODO the reflected dunder actually has priority if the r.h.s. is a strict subclass of the l.h.s.
+    // TODO Some other complications too!
+
+    let dunder = left.class_member(db, dunder_name);
+    if !dunder.is_unbound() {
+        return dunder
+            .call(db, &amp;[Type::Instance(left), Type::Instance(right)])
+            .return_ty(db);
+    }
+
+    let reflected_dunder = right.class_member(db, &amp;format!(&quot;r{dunder_name}&quot;));
+    if !reflected_dunder.is_unbound() {
+        return dunder
+            .call(db, &amp;[Type::Instance(right), Type::Instance(left)])
+            .return_ty(db);
+    }
+
+    None
+}
+</code></pre>
+<p>And then for e.g. inferring <code>x * y</code>, where <code>x</code> is an instance type and <code>y</code> is an <code>IntLiteral</code> type we'd just do something like</p>
+<pre><code class="language-rs">let Type::Instance(x_class) = x;
+let int_class = builtins_symbol_ty(&amp;db, &quot;int&quot;);
+perform_binary_operation(db, x_class, int_class, &quot;__mul__&quot;)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-10-01 16:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2410 on 2024-10-01 16:20</div>
+            <div class="timeline-body"><p>What <code>perform_binary_operation</code> when passed <code>&quot;__mul__&quot;</code> does is:</p>
+<ul>
+<li>Lookup the <code>__mul__</code> function on the type of <code>x</code></li>
+<li>If it exists, call <code>__mul__(x, y)</code></li>
+<li>If <code>type(x).__mul__</code> did not exist, lookup <code>__rmul__</code> on the type of <code>y</code></li>
+<li>If <code>type(y).__rmul__</code> exists, call <code>__rmul__(y, x)</code></li>
+<li>Else, return <code>None</code></li>
+</ul>
+<p>This is a generalised routine that will work for inferring binary operations between any two instance types. And unless we have a literal on both sides of the binary operation, we may as well treat an <code>IntLiteral</code> variant as &quot;just an instance of <code>int</code>&quot;, and fallback to the generalised routine</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-10-01 16:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2410 on 2024-10-01 16:22</div>
+            <div class="timeline-body"><p>The algorithm for inferring binary operations is unfortunately really really complicated in its totality, though. See https://snarky.ca/unravelling-binary-arithmetic-operations-in-python/ for all the gory details!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-10-01 16:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2410 on 2024-10-01 16:29</div>
+            <div class="timeline-body"><p>Interesting! Thanks for the context.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-10-01 17:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2410 on 2024-10-01 17:44</div>
+            <div class="timeline-body"><p>Yep, @AlexWaygood perfectly summarized what I was talking about in standup, and with lots more useful details, too!!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-10-01 17:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2410 on 2024-10-01 17:48</div>
+            <div class="timeline-body"><p>Yeah, so either way we are going to have large match statements, but once we are in the realm of &quot;things typeshed can tell us&quot; (which is all of the cases added in this PR), we should avoid adding new special case match arms and just have a generic version that looks up and &quot;calls&quot; the appropriate dunder methods like Alex suggests. Pretty much we should only have special-case implementations for literal types if there is a possibility we can infer a literal type out of the operation (something typeshed clearly can't do), otherwise we should be falling back to the general case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-10-01 17:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2410 on 2024-10-01 17:49</div>
+            <div class="timeline-body"><p>Makes sense, I was thinking something was wrong here but wasn't aware typeshed does all of this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-10-01 18:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2410 on 2024-10-01 18:08</div>
+            <div class="timeline-body"><p>Oh yeah, we go to great lengths to accurately reflect all the dunders in typeshed: <a href="https://github.com/python/typeshed/blob/44aa63330b03bdacab731af2333ff9bf70855de3/stdlib/builtins.pyi#L227-L330">https://github.com/python/typeshed/blob/44aa63330b03bdacab731af2333ff9bf70855de3/stdlib/builtins.pyi#L227-L330</a></p>
+<p>And we have quite extensive testing to check that none are omitted from the stub or have inconsistent signatures with what actually exists at runtime.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2024-10-19 15:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-10-19 15:23</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:00:07 UTC
+    </footer>
+</body>
+</html>

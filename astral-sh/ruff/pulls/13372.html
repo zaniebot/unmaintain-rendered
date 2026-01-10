@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Don't raise `D208` when last line is non-empty - astral-sh/ruff #13372</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Don't raise <code>D208</code> when last line is non-empty</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/13372">#13372</a>
+        opened by <a href="https://github.com/ukyen8">@ukyen8</a>
+        on 2024-09-16 21:31
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ukyen8">@ukyen8</a> on 2024-09-16 21:31</div>
+            <div class="timeline-body"><p>…D208)</p>
+<!--
+Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>This PR is to fix an unexpected change of the D208 rule when trailing quotes are not on a separate line.</p>
+<p>Related issue: https://github.com/astral-sh/ruff/issues/13260</p>
+<h2>Test Plan</h2>
+<p>Add more test cases to D208.py and update the snapshot file.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-09-16 22:11</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+0 -1 violations, +0 -0 fixes in 1 projects; 53 projects unchanged)</p>
+<details><summary><a href="https://github.com/apache/superset">apache/superset</a> (+0 -1 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --no-preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/apache/superset/blob/0fdcd8b27e6d6ba70f8f38b4a033c61555af92bd/scripts/cancel_github_workflows.py#L69'>scripts/cancel_github_workflows.py:69:1:</a> D208 [*] Docstring is over-indented
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (1 rules affected)</summary>
+<p>
+
+<p>| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| D208 | 1 | 0 | 1 | 0 | 0 |</p>
+</p>
+</details>
+
+<h3>Linter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+0 -1 violations, +0 -0 fixes in 1 projects; 53 projects unchanged)</p>
+<details><summary><a href="https://github.com/apache/superset">apache/superset</a> (+0 -1 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/apache/superset/blob/0fdcd8b27e6d6ba70f8f38b4a033c61555af92bd/scripts/cancel_github_workflows.py#L69'>scripts/cancel_github_workflows.py:69:1:</a> D208 [*] Docstring is over-indented
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (1 rules affected)</summary>
+<p>
+
+<p>| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| D208 | 1 | 0 | 1 | 0 | 0 |</p>
+</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pydocstyle/rules/indent.rs</code>:298 on 2024-09-17 08:45</div>
+            <div class="timeline-body"><p>I think this might panic if there are fewer than 3 lines because it then results in an out of bound access.</p>
+<p>We should also consider the case where there's a number of blank lines between the last and previous line</p>
+<pre><code class="language-python">def right_indent_quotes_same_line(a: int) -&gt; None:
+    &quot;&quot;&quot;Foo.
+    Parameters
+    ----------
+    a : int
+
+
+
+
+
+        A parameter.&quot;&quot;&quot;
+    pass
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pydocstyle/rules/indent.rs</code>:297 on 2024-09-17 08:48</div>
+            <div class="timeline-body"><p>I think we can simplify this by testing if the <code>line_indent.text_len() == </code>last.text_len()`. If the condition is true, then the last line is either all whitespace or empty</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pydocstyle/rules/indent.rs</code>:303 on 2024-09-17 08:53</div>
+            <div class="timeline-body"><p>Not sure about this, but could we possibly use <code>over_indented_size</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> requested changes on 2024-09-17 08:53</div>
+            <div class="timeline-body"><p>Thanks. There are a few extra cases that we should consider but this is heading in a good direction</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2024-09-17 08:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2024-09-17 08:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pydocstyle/rules/indent.rs</code>:300 on 2024-09-20 08:46</div>
+            <div class="timeline-body"><p>Let's avoid overriding the outer variable and instead shadow it</p>
+<pre><code class="language-suggestion">                    let over_indented_size =
+                        std::cmp::min(line_indent_size - docstring_indent_size, over_indented_size);
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pydocstyle/rules/indent.rs</code>:311 on 2024-09-20 08:48</div>
+            <div class="timeline-body"><p>Nit: We can avoid mutating the variable by using let</p>
+<pre><code class="language-suggestion">                // The trailing quotes are not on a separate line.
+                let offset_len = if line_indent.text_len() != last.text_len() {
+                    over_indented_size =
+                        std::cmp::min(line_indent_size - docstring_indent_size, over_indented_size);
+                    match over_indented_size.cmp(&amp;docstring_indent_size) {
+                        Ordering::Equal =&gt; {
+                            return;
+                        }
+                        Ordering::Less =&gt; over_indented_size,
+                        Ordering::Greater =&gt; line_indent_size - over_indented_size - docstring_indent_size
+                    }
+                } else {
+                	line_indent_size
+              	};
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pydocstyle/rules/indent.rs</code>:312 on 2024-09-20 08:53</div>
+            <div class="timeline-body"><p>Could you add a comment here that explains when the indent sizes are equal and why we return in that case? I'm having a hard time understanding what's happening, and a comment might also be useful for future readers.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pydocstyle/rules/indent.rs</code>:316 on 2024-09-20 08:54</div>
+            <div class="timeline-body"><p>The use of <code>offset_len</code> here as a byte offset is incorrect because <code>line_indent_size</code> and <code>docstring_indent_size</code> are both character offsets.</p>
+<p>We'll need to do something similar to</p>
+<p>https://github.com/astral-sh/ruff/blob/14dcae1e9a68332daab459792bab2aaa84445f69/crates/ruff_linter/src/rules/pydocstyle/rules/indent.rs#L275-L281</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> requested changes on 2024-09-20 08:55</div>
+            <div class="timeline-body"><p>There's one more subtle bug that needs fixing. But we're almost there :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ukyen8">@ukyen8</a> reviewed on 2024-09-23 21:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ukyen8">@ukyen8</a> on <code>crates/ruff_linter/src/rules/pydocstyle/rules/indent.rs</code>:311 on 2024-09-23 21:43</div>
+            <div class="timeline-body"><p>This is helpful, thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ukyen8">@ukyen8</a> reviewed on 2024-09-23 21:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ukyen8">@ukyen8</a> on <code>crates/ruff_linter/src/rules/pydocstyle/rules/indent.rs</code>:316 on 2024-09-23 21:44</div>
+            <div class="timeline-body"><p>Thanks! I was struggling to find a way to convert it to character offsets.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @ukyen8 on 2024-09-24 07:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pydocstyle/rules/indent.rs</code>:312 on 2024-09-24 11:51</div>
+            <div class="timeline-body"><p>Nice thank you. The examples are very helpful!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pydocstyle/rules/indent.rs</code>:316 on 2024-09-24 11:55</div>
+            <div class="timeline-body"><p>The documentation here doesn't match the code's behavior. It isn't returning <code>docstring.indentation</code> and
+I'm uncertain if this case is also about over indent, considering that <code>Ordering::Greater</code> also handles an over indent.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-09-24 11:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ukyen8">@ukyen8</a> reviewed on 2024-09-24 21:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ukyen8">@ukyen8</a> on <code>crates/ruff_linter/src/rules/pydocstyle/rules/indent.rs</code>:316 on 2024-09-24 21:46</div>
+            <div class="timeline-body"><p>Thanks, I've rephrased the comments. I think it is still an over-indentation case, we return <code>over_indented_size </code> here, which is the result of <code>line_indent_size - docstring_indent_size</code> and <code>line_indent_size &gt; docstring_indent_size</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @ukyen8 on 2024-09-24 21:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-09-25 08:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pydocstyle/rules/indent.rs</code>:301 on 2024-09-25 08:48</div>
+            <div class="timeline-body"><p>I'm sorry but I'm still confused (about the comments and the code). It can very well be that it's just me not understanding the code.</p>
+<p>I'm confused about the comparison of <code>over_indent_size</code> with <code>docstring_indent_size</code> in the case when <code>over_indent_size = line_indent_size - docstring_indent_size</code>.</p>
+<pre><code class="language-python">def test():
+    &quot;&quot;&quot;
+    Abcd
+        line&quot;&quot;&quot;
+</code></pre>
+<p>In this case:</p>
+<ul>
+<li><code>line_indent_size</code>:  8</li>
+<li><code>docstring_indent_size</code>: 4</li>
+<li>outer <code>over_indented_size</code>: <code>usize::MAX</code>?</li>
+<li>local <code>over_indented_size: 4 (</code>8 - 4`)</li>
+</ul>
+<p>That means the code now takes the equal branch because <code>over_indent_size == docstring_indent_size</code> but this code should be flagged.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ukyen8">@ukyen8</a> reviewed on 2024-09-25 09:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ukyen8">@ukyen8</a> on <code>crates/ruff_linter/src/rules/pydocstyle/rules/indent.rs</code>:301 on 2024-09-25 09:40</div>
+            <div class="timeline-body"><p>You are correct that this case should be flagged, but my current approach will overlook it. I am not pretty sure how we can handle both cases if the trailing quotes are on the same line unless we have a way to know the pattern of the previous line. Do you have any idea?</p>
+<pre><code>def right_indent_quotes_same_line(a: int) -&gt; None:
+    &quot;&quot;&quot;Foo.
+
+    Parameters
+    ----------
+    a : int
+        A parameter.&quot;&quot;&quot;
+    pass
+</code></pre>
+<pre><code>def test():
+    &quot;&quot;&quot;
+    Abcd
+        line&quot;&quot;&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-09-26 08:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pydocstyle/rules/indent.rs</code>:246 on 2024-09-26 08:10</div>
+            <div class="timeline-body"><p>This is the main fix where we only exclude the last line if it is all empty</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-09-26 08:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pydocstyle/rules/indent.rs</code>:325 on 2024-09-26 08:11</div>
+            <div class="timeline-body"><p>This requires the same logic. Only apply the last line logic when it is the last line and it only contains the quotes</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Fix indentation error when trailing quotes are not on separate line (…" to "Don't raise `D208` when last line is non-empty" by @MichaReiser on 2024-09-26 08:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-09-26 08:12</div>
+            <div class="timeline-body"><p>I pushed a commit that now removes the <code>D208</code> if the last line is not all empty and at least one docstring line is correctly indented. This aligns the behavior with when the closing quotes are on their own line.</p>
+<p>I added a test that demonstrates the behavior.</p>
+<p>I also took this as a chance to remove the, IMO, unnecessary <code>lines.collect</code> call (resulting in 1% perf improvement)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @MichaReiser on 2024-09-26 08:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-09-26 12:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2024-09-26 12:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-09-26 12:53</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:00:07 UTC
+    </footer>
+</body>
+</html>

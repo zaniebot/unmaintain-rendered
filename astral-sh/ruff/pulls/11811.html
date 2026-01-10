@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`flake8-type-checking`] Support auto-quoting when annotations contain quotes - astral-sh/ruff #11811</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>flake8-type-checking</code>] Support auto-quoting when annotations contain quotes</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/11811">#11811</a>
+        opened by <a href="https://github.com/Glyphack">@Glyphack</a>
+        on 2024-06-09 22:17
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/Glyphack">@Glyphack</a> on 2024-06-09 22:17</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR updates the fix generation logic for auto-quoting an annotation to generate an edit even when there's a quote character present.</p>
+<p>The logic uses the visitor pattern, maintaining it's state on where it is and generating the string value one node at a time. This can be considered as a specialized form of <code>Generator</code>. The state required to maintain is whether we're currently inside a <code>typing.Literal</code> or <code>typing.Annotated</code> because the string value in those types should not be un-quoted i.e., <code>Generic[Literal[&quot;int&quot;]]</code> should become <code>&quot;Generic[Literal['int']]</code>, the quotes inside the <code>Literal</code> should be preserved.</p>
+<p>Fixes: https://github.com/astral-sh/ruff/issues/9137</p>
+<h2>Test Plan</h2>
+<p>Add various test cases to validate this change, validate the snapshots. There are no ecosystem changes to go through.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2024-06-10 19:40</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/Glyphack:auto-quote-annotation-quotes">CodSpeed Performance Report</a></h2>
+<h3>Merging #11811 will <strong>not alter performance</strong></h3>
+<p><sub>Comparing <code>Glyphack:auto-quote-annotation-quotes</code> (2c10896) with <code>main</code> (2f88f84)</sub></p>
+<h3>Summary</h3>
+<p><code>✅ 32</code> untouched benchmarks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @Glyphack on 2024-06-10 19:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/helpers.rs</code>:275 on 2024-06-11 06:28</div>
+            <div class="timeline-body"><p>We can re-use the <code>quote</code> variable from above.</p>
+<pre><code class="language-suggestion">    let annotation_new = if annotation.contains(quote.as_char()) {
+        annotation.replace(
+            quote.as_char(),
+            &amp;quote.opposite().as_char().to_string(),
+        )
+    } else {
+        annotation
+    };
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/resources/test/fixtures/flake8_type_checking/quote.py</code>:106 on 2024-06-11 06:29</div>
+            <div class="timeline-body"><p>Can you also add a test case for the opposite quote (<code>AbstractBaseUser['int']</code>) and one where both are being used (<code>AbstractBaseUser['int', &quot;str&quot;]</code>)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-06-11 06:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @dhruvmanila on 2024-06-11 06:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @Glyphack on 2024-06-11 17:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-06-12 09:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/helpers.rs</code>:224 on 2024-06-12 09:24</div>
+            <div class="timeline-body"><p>I'm sorry I didn't notice this earlier but looking at the documentation of <code>quote_annotation</code>, I don't know if this is the intended solution. I'm referring to the last two points in the examples which mentions the following conversion:</p>
+<ol>
+<li><code>Series[&quot;pd.Timestamp&quot;]</code> -&gt; <code>&quot;Series[pd.Timestamp]&quot;</code></li>
+<li><code>Series[Literal[&quot;pd.Timestamp&quot;]]</code> -&gt; <code>&quot;Series[Literal['pd.Timestamp']]&quot;</code></li>
+</ol>
+<p>In (1), the inner quote isn't required while in (2) it is required. So, all in all, it's a little bit more complicated than just replacing the quote chars 😅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-06-12 09:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/helpers.rs</code>:224 on 2024-06-12 09:28</div>
+            <div class="timeline-body"><p>I discussed this with @AlexWaygood and I think this requires a different solution. Basically, per https://typing.readthedocs.io/en/latest/spec/annotations.html#type-and-annotation-expressions and what Alex suggests in general is that:</p>
+<blockquote>
+<p>Broadly speaking, any sub-element in the typing grammar that is marked as <code>expression</code> cannot have the quotes removed, but all other sub-elements (whether they're annotation expressions or type expressions, etc.), you should be able to remove the quotes from if a broader type/annotation expression that the sub-element is part of is quoted</p>
+</blockquote>
+<p>So,</p>
+<ul>
+<li>We shouldn't removes quotes from all parameters in <code>Literal</code> and all except the first parameter in <code>Annotated</code></li>
+<li>While, we can remove quotes from other types which is why in (1) the quotes around <code>pd.Timestamp</code> is removed</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Glyphack">@Glyphack</a> reviewed on 2024-06-12 16:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Glyphack">@Glyphack</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/helpers.rs</code>:224 on 2024-06-12 16:04</div>
+            <div class="timeline-body"><p>No worries, I also expected my initial implementation to be wrong. Just wanted to open the PR and see the difference in test cases. Let me go over this again but it will be in a few days I'll notify when it's ready.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-06-12 16:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/helpers.rs</code>:224 on 2024-06-12 16:16</div>
+            <div class="timeline-body"><p>Thank you for understanding and take your time.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> requested changes on 2024-08-01 21:44</div>
+            <div class="timeline-body"><p>Putting back in your queue according to Dhruv's comment</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Glyphack">@Glyphack</a> on 2024-08-02 08:13</div>
+            <div class="timeline-body"><p>Thanks, I was away for a while I want to work on this tomorrow.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Glyphack">@Glyphack</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/helpers.rs</code>:224 on 2024-08-14 19:54</div>
+            <div class="timeline-body"><p>@dhruvmanila I tried to make some adjustment to make it work but I can use your help.</p>
+<p>So now we can remove the inner quotes if there's any all the type except for when the inner quote is around values inside a Literal and specific parameters of Annotated.</p>
+<p>To find out if the quotes are around those structures we need to take the expression and traverse down the AST and see if the quotes are at these specific places or not.
+I'm thinking to have a function that does something similar to https://github.com/Glyphack/ruff/blob/14f51e3d9e96829deab91dd6e24cda5d0ec2fe36/crates/ruff_linter/src/rules/flake8_type_checking/helpers.rs#L229 and checks all children of that annotation expression to make sure the quotes inside are not belonging to those two types and we can safely remove them.</p>
+<p>I'm thinking how can I limit the check here since traversing and checking all the node types and visiting the children might be a lot of code. For example do you think if we move this logic somewhere else it could help? Or maybe I'm missing something here.</p>
+<p>An alternative way could be only checking if the annotation contains the work Literal or Annotated and then check based on characters in the string to determine if the quotes are there or not. I'm not entirely sure if this would work or not. Sounds very hacky but less code than checking node types of children.</p>
+<p>What do you think?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Glyphack">@Glyphack</a> reviewed on 2024-08-14 19:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @MichaReiser on 2024-08-15 11:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-08-16 12:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/helpers.rs</code>:224 on 2024-08-16 12:52</div>
+            <div class="timeline-body"><blockquote>
+<p>So now we can remove the inner quotes if there's any all the type except for when the inner quote is around values inside a Literal and specific parameters of Annotated.</p>
+</blockquote>
+<p>Do you have any code that I can play around with? It's ok if you haven't implemented it yet. And, does this mean that this solves the problem as seen in the example (1) of the first comment in this thread?</p>
+<blockquote>
+<p>To find out if the quotes are around those structures we need to take the expression and traverse down the AST and see if the quotes are at these specific places or not.
+I'm thinking to have a function that does something similar to <a href="https://github.com/Glyphack/ruff/blob/14f51e3d9e96829deab91dd6e24cda5d0ec2fe36/crates/ruff_linter/src/rules/flake8_type_checking/helpers.rs#L229">Glyphack/ruff@<code>14f51e3</code>/crates/ruff_linter/src/rules/flake8_type_checking/helpers.rs#L229</a> and checks all children of that annotation expression to make sure the quotes inside are not belonging to those two types and we can safely remove them.</p>
+</blockquote>
+<p>Using a visitor should be able to provide you the traversal that you need. I think you'd need to define a custom struct which will contain all the necessary state variables from the <code>quote_annotation</code> function, then call the <code>visit_expr</code> method on the expression corresponding to the <code>node_id</code> as given in the <code>quote_annotation</code> function. This will start the traversal.</p>
+<p>You can also create the final quote annotation on the go as you traversed down the node. For instance, the struct would be initiated with an empty string or you can also pre-allocate the string using the expression range (number of characters in the quoted string should be same as the node range). Then, you could maintain state variables which will tell you whether you're in <code>Annotated</code> or <code>Literal</code> or any other type.</p>
+<p>One thing to note, and might very well be unlikely, is that we should make sure that we don't end up repeating the same quote where the outermost node has a double quote and then there's a single quote inside which then again contains a double quote.</p>
+<p>Does this make sense? Feel free to ask any questions, quotes are hard ;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-08-23 23:13</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Glyphack">@Glyphack</a> reviewed on 2024-08-25 15:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Glyphack">@Glyphack</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/helpers.rs</code>:224 on 2024-08-25 15:40</div>
+            <div class="timeline-body"><p>I tried your way and I could implement something that solves the initial problem and the Litral and Annotated cases. What do you think about this?
+Is there any edge cases that I'm not seeing in this scenario?</p>
+<p>I am not checking all ast node types right now but will complete that if this is not missing any critical parts.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-08-26 04:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/helpers.rs</code>:224 on 2024-08-26 04:21</div>
+            <div class="timeline-body"><p>Perfect, I'll look at this today. Thanks for working on this!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @dhruvmanila by @dhruvmanila on 2024-09-02 13:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @dhruvmanila on 2024-09-02 13:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-09-05 11:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/helpers.rs</code>:224 on 2024-09-05 11:09</div>
+            <div class="timeline-body"><blockquote>
+<p>I tried your way and I could implement something that solves the initial problem and the Litral and Annotated cases. What do you think about this?</p>
+</blockquote>
+<p>I think the visitor pattern seems to be working well.</p>
+<blockquote>
+<p>I am not checking all ast node types right now but will complete that if this is not missing any critical parts.</p>
+</blockquote>
+<p>Can you give me an example of what do you mean here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-09-05 11:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/helpers.rs</code>:335 on 2024-09-05 11:10</div>
+            <div class="timeline-body"><p>We should try to avoid doing any intermediate allocations</p>
+<pre><code class="language-suggestion">                    let value = generator.expr(value);
+                    self.annotation.push_str(&amp;value);
+                    self.annotation.push_str(&quot;[&quot;);
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-09-05 11:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/helpers.rs</code>:305 on 2024-09-05 11:13</div>
+            <div class="timeline-body"><p>I think I would switch this around and have <code>AnnotatedFirst</code> and <code>AnnotatedRest</code> or something similar to make it explicit about the state.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-09-05 11:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/helpers.rs</code>:363 on 2024-09-05 11:13</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                self.annotation.push_str(op.as_str());
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-09-05 11:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/test.rs</code>:93 on 2024-09-05 11:14</div>
+            <div class="timeline-body"><p>What's the reason for changing this? Can you specify which test case required this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-09-05 11:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/snapshots/ruff_linter__rules__flake8_type_checking__tests__quote_typing-only-third-party-import_quote.py.snap</code>:499 on 2024-09-05 11:15</div>
+            <div class="timeline-body"><p>This doesn't seem correct, changing <code>&quot;1&quot;</code> to <code>1</code> in the <code>Annotated</code> type</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-09-05 11:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/snapshots/ruff_linter__rules__flake8_type_checking__tests__quote_typing-only-third-party-import_quote.py.snap</code>:499 on 2024-09-05 11:20</div>
+            <div class="timeline-body"><p>I think this is because in the catch all case within the visitor, you're not checking for <code>AnnotatedNonFirstElm</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-09-05 11:21</div>
+            <div class="timeline-body"><p>Thanks for working on this. Overall, the approach looks good. I'll give it a detailed review once you think it's ready. I'd also recommend adding test cases with mixed quote style i.e., scenarios where we might not be able to provide a fix.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Glyphack">@Glyphack</a> reviewed on 2024-09-11 15:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Glyphack">@Glyphack</a> on <code>crates/ruff_linter/src/test.rs</code>:93 on 2024-09-11 15:59</div>
+            <div class="timeline-body"><p>This test case fails after the new changes:</p>
+<pre><code>rules::flake8_type_checking::tests::quote::rule_typingonlythirdpartyimport_path_new_quote_py_expects
+</code></pre>
+<p>I initially did this before trying the visitor approach. I'm not sure if now it can be removed or not. I will look into it to make sure we are not flipping the quotes multiple times. Please let me know if you have a suggestion for figuring out if this is indication of a bug or it's okay to increase the number.</p>
+<details>
+```
+Failed to converge after 10 iterations. This likely indicates a bug in the implementation of the fix. Last diagnostics:
+quote.py:24:24: TCH002 [*] Move third-party import `pandas.DataFrame` into a type-checking block
+   |
+23 | def f():
+24 |     from pandas import DataFrame
+   |                        ^^^^^^^^^ TCH002
+25 |
+26 |     def baz() -> DataFrame[int]:
+   |
+   = help: Move into type-checking block
+
+<h2>ℹ Unsafe fix
+2  2  |
+3  3  | if TYPE_CHECKING:
+4  4  |     from pandas import DataFrame
+5  |+    from pandas import DataFrame
+5  6  |     import pandas as pd
+6  7  |     import pandas as pd
+7  8  |     import pandas as pd</h2>
+<p>21 22 |
+22 23 |
+23 24 | def f():
+24    |-    from pandas import DataFrame
+25 25 |
+26    |-    def baz() -&gt; DataFrame[int]:
+26 |+    def baz() -&gt; &quot;DataFrame[int]&quot;:
+27 27 |         ...
+28 28 |
+29 29 |</p>
+<p>quote.py:17:24: TCH002 [*] Move third-party import <code>pandas.DataFrame</code> into a type-checking block
+|
+16 | def f():
+17 |     from pandas import DataFrame
+|                        ^^^^^^^^^ TCH002
+18 |
+19 |     def baz() -&gt; DataFrame:
+|
+= help: Move into type-checking block</p>
+<h2>ℹ Unsafe fix
+2  2  |
+3  3  | if TYPE_CHECKING:
+4  4  |     from pandas import DataFrame
+5  |+    from pandas import DataFrame
+5  6  |     import pandas as pd
+6  7  |     import pandas as pd
+7  8  |     import pandas as pd</h2>
+<p>14 15 |
+15 16 |
+16 17 | def f():
+17    |-    from pandas import DataFrame
+18 18 |
+19    |-    def baz() -&gt; DataFrame:
+19 |+    def baz() -&gt; &quot;DataFrame&quot;:
+20 20 |         ...
+21 21 |
+22 22 |</p>
+<pre><code>&lt;/details&gt;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Glyphack">@Glyphack</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/helpers.rs</code>:224 on 2024-09-11 16:18</div>
+            <div class="timeline-body"><blockquote>
+<p>Can you give me an example of what do you mean here?</p>
+</blockquote>
+<p>I thought there are more expression enum values that I should handle here(not send everything to catch all), after checking them now I did not see any of them that require special attention like the subscript and tuple so I think it's fine.</p>
+<p>I applied the comments but this is not ready for review yet please wait until I add more test cases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Glyphack">@Glyphack</a> reviewed on 2024-09-11 16:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Glyphack">@Glyphack</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/snapshots/ruff_linter__rules__flake8_type_checking__tests__quote_typing-only-third-party-import_quote.py.snap</code>:499 on 2024-09-11 16:18</div>
+            <div class="timeline-body"><p>Yes, I mistakenly kept the first argument quoted but now it's fixed. Thanks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Glyphack">@Glyphack</a> reviewed on 2024-09-11 16:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/helpers.rs</code>:224 on 2024-09-11 18:19</div>
+            <div class="timeline-body"><blockquote>
+<p>I applied the comments but this is not ready for review yet please wait until I add more test cases.</p>
+</blockquote>
+<p>No worries, feel free to ping me if you're stuck or when it's ready to review.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-09-11 18:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-09-12 13:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/test.rs</code>:93 on 2024-09-12 13:44</div>
+            <div class="timeline-body"><p>I just ran it on your branch with the original value and it works. I think it can be reverted back.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Glyphack">@Glyphack</a> reviewed on 2024-09-16 15:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Glyphack">@Glyphack</a> on <code>crates/ruff_linter/src/test.rs</code>:93 on 2024-09-16 15:16</div>
+            <div class="timeline-body"><p>I changed it back to original config in this commit but CI fails:
+https://github.com/astral-sh/ruff/pull/11811/commits/5079a8c85cce20c47ca6507c50babe74efd0d8b9</p>
+<p>https://github.com/astral-sh/ruff/actions/runs/10886671657/job/30207264819?pr=11811#step:8:3383</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @Glyphack on 2024-09-16 15:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/helpers.rs</code>:312 on 2024-10-03 13:13</div>
+            <div class="timeline-body"><p>nit: we can avoid storing the <code>final_quote_type</code> as that can be queried from <code>stylist.quote()</code> wherever required</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/helpers.rs</code>:331 on 2024-10-03 13:15</div>
+            <div class="timeline-body"><p>Should we only look for <code>Name</code> node here? What about attribute nodes like <code>pd.DataFrame</code> or <code>typing.Optional[int]</code> which is more relevant in this context as it's a subscript expression.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/helpers.rs</code>:377 on 2024-10-03 13:18</div>
+            <div class="timeline-body"><p>I think we're only interested in a binary or operation here, right? And, I think at this stage we'll only be getting them because others are filtered out in <code>quote_annotation</code> function above. But, it might make sense to still enforce it here by using a <code>debug_assert</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/resources/test/fixtures/flake8_type_checking/quote.py</code>:104 on 2024-10-03 13:30</div>
+            <div class="timeline-body"><p>I think I know why the test is failing within the current <code>MAX_ITERATIONS</code> value. All of the different test cases are within the same function here so when some of them tries to add the <code>if TYPE_CHECKING</code> block along with the <code>TYPE_CHECKING</code> import, the edits collide and thus it won't be applied which will then require another iteration. We should split the test cases, grouping them based on similarity, in similar way as done in the top half of the file.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-10-03 13:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-10-03 13:48</div>
+            <div class="timeline-body"><p>Thanks for writing an extensive test suite. I think the changes are looking pretty great and close to being merged. I would suggest to separate the test cases in groups where the first group raises the diagnostics and the second group doesn't. The first group would need to be split into individual isolated functions like existing test cases. The second group can be in a single function because that won't raise any diagnostics.</p>
+<p>Also, apologies for the late review, I was on vacation for the past 2 weeks which is why the review was delayed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Glyphack">@Glyphack</a> reviewed on 2024-10-14 19:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Glyphack">@Glyphack</a> on <code>crates/ruff_linter/resources/test/fixtures/flake8_type_checking/quote.py</code>:104 on 2024-10-14 19:33</div>
+            <div class="timeline-body"><p>You are right. I think I can fix that easily. There's just another problem I encountered. Aside from the new tests I've written the old ones also have this problem that each time the type annotation is changed a new import is added and the duplicate imports I think are removed in the end. So now the file fails again.
+<output></p>
+<pre><code>---- rules::flake8_type_checking::tests::quote::rule_typingonlythirdpartyimport_path_new_quote_py_expects stdout ----
+thread 'rules::flake8_type_checking::tests::quote::rule_typingonlythirdpartyimport_path_new_quote_py_expects' panicked at crates/ruff_linter/src/test.rs:167:17:
+Failed to converge after 10 iterations. This likely indicates a bug in the implementation of the fix. Last diagnostics:
+quote.py:17:24: TCH002 [*] Move third-party import `pandas.DataFrame` into a type-checking block
+   |
+16 | def f():
+17 |     from pandas import DataFrame
+   |                        ^^^^^^^^^ TCH002
+18 |
+19 |     def baz() -&gt; DataFrame:
+   |
+   = help: Move into type-checking block
+
+ℹ Unsafe fix
+3  3  | if TYPE_CHECKING:
+4  4  |     from pandas import DataFrame
+5  5  |     from pandas import DataFrame
+   6  |+    from pandas import DataFrame
+6  7  |     import pandas as pd
+7  8  |     import pandas as pd
+8  9  |     import pandas as pd
+--------------------------------------------------------------------------------
+14 15 |
+15 16 |
+16 17 | def f():
+17    |-    from pandas import DataFrame
+18 18 |
+19    |-    def baz() -&gt; DataFrame:
+   19 |+    def baz() -&gt; &quot;DataFrame&quot;:
+20 20 |         ...
+21 21 |
+22 22 |
+
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+</code></pre>
+<output>
+
+<p>It can be reproduced by just duplicating one of the functions multiple times in master:</p>
+<pre><code>def f():
+    from pandas import DataFrame
+
+    def baz() -&gt; DataFrame[int]:
+        ...
+
+def f():
+    from pandas import DataFrame
+
+    def baz() -&gt; DataFrame[int]:
+        ...
+
+def f():
+    from pandas import DataFrame
+
+    def baz() -&gt; DataFrame[int]:
+        ...
+</code></pre>
+<p>My guess is that two rules are conflicting here. One is moving the import to type checking block but since now that import is in type checking block <a href="https://github.com/astral-sh/ruff/blob/04b636cba2c2eff5539c846fe4e654583b7ee472/crates/ruff_linter/resources/test/fixtures/flake8_type_checking/quote.py#L89">another function later</a> in the quote.py is using that import and it is resolved when the symbol is looked up <a href="https://github.com/Glyphack/ruff/blob/5079a8c85cce20c47ca6507c50babe74efd0d8b9/crates/ruff_linter/src/rules/flake8_type_checking/rules/runtime_import_in_type_checking_block.rs#L131">here</a></p>
+<p>I'm not sure if I'm right because the import should be resolved to the import inside the function itself. It's my guess. I will investigate this later after resolving other issues.
+For now I'm going to create a new file that will avoid this issue. Moving my new test cases to a file works fine.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Glyphack">@Glyphack</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/helpers.rs</code>:377 on 2024-10-14 20:00</div>
+            <div class="timeline-body"><p>We should be right. Added it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Glyphack">@Glyphack</a> reviewed on 2024-10-14 20:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Glyphack">@Glyphack</a> reviewed on 2024-10-14 20:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Glyphack">@Glyphack</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/helpers.rs</code>:331 on 2024-10-14 20:37</div>
+            <div class="timeline-body"><p>Correct. Is it enough if we rely on an attribute with value of &quot;typing&quot; and attr of &quot;Optional&quot; or &quot;Literal&quot;, etc.?
+Or should we fully resolved and check the qualified name in this case that the symbol is resolved to that class or not?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Glyphack">@Glyphack</a> reviewed on 2024-10-14 20:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Glyphack">@Glyphack</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/helpers.rs</code>:331 on 2024-10-14 20:53</div>
+            <div class="timeline-body"><p>I added another case for attributes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "quote annotations that already contain quotes" to "[`flake8-type-checking`] Support auto-quoting when annotations contain quotes" by @dhruvmanila on 2024-10-23 06:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-10-23 06:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/helpers.rs</code>:353 on 2024-10-23 06:25</div>
+            <div class="timeline-body"><p>I've updated the code to use the semantic model to resolve the expression into its qualified name and we use that to match against the typing import. This way we make sure that any import aliases are correctly resolved.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-10-23 06:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/helpers.rs</code>:368 on 2024-10-23 06:26</div>
+            <div class="timeline-body"><p>Previously, the state would only append so it would be <code>[..., AnnotatedFirst, AnnotatedRest]</code> and later it would only pop the <code>AnnotatedRest</code> state. I've updated this to replace <code>AnnotatedFirst</code> with <code>AnnotatedRest</code> instead.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-10-23 06:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/helpers.rs</code>:383 on 2024-10-23 06:26</div>
+            <div class="timeline-body"><p>There was a branch for <code>Expr::BoolOp</code> although I don't think that's required. Can you confirm this? @Glyphack</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-10-23 06:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/mod.rs</code>:66 on 2024-10-23 06:28</div>
+            <div class="timeline-body"><p>I've split the files because otherwise we run into the iteration limit in tests which is set to 10. We'd need to increase it substantially (~20) to fit all the test cases in a single file. The reason the limit needs to be increased seems unrelated to what's being changed in this PR and my guess for why it's happening is because the import edits are colliding.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Glyphack">@Glyphack</a> reviewed on 2024-10-23 08:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Glyphack">@Glyphack</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/helpers.rs</code>:383 on 2024-10-23 08:39</div>
+            <div class="timeline-body"><p>You are correct. I was not very familiar with syntax in type annotation but I don't see anything with a boolean operation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Glyphack">@Glyphack</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/helpers.rs</code>:353 on 2024-10-23 08:40</div>
+            <div class="timeline-body"><p>I really appreciate your help and the reviews it thought me a lot.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Glyphack">@Glyphack</a> reviewed on 2024-10-23 08:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> approved on 2024-10-23 10:51</div>
+            <div class="timeline-body"><p>Thanks for contributing this change and for your patience throughout the review cycle! I think this is ready to land, I'll go through the snapshots once and move ahead.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/flake8_type_checking/snapshots/ruff_linter__rules__flake8_type_checking__tests__quote_typing-only-third-party-import_quote.py.snap</code>:1 on 2024-10-23 10:58</div>
+            <div class="timeline-body"><p>This is a large snapshot diff because one of the test case was removed which had <code>DataFrame[&quot;int&quot;]</code> as an annotation. Previously, we would highlight this but won't be auto-fixable but now we do. Once that happens, it hits the iteration limit in tests and so I moved it to a different file which means the line numbers for all subsequent test cases have been updated. I verified that this snapshot update is correct by keeping the test case and updating the limit which gives reduced diff in the snapshot.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-10-23 10:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2024-10-23 11:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2024-10-23 11:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-10-23 11:28</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:00:06 UTC
+    </footer>
+</body>
+</html>

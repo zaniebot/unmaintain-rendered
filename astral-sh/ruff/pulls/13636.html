@@ -1,0 +1,1751 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] type inference/checking test framework - astral-sh/ruff #13636</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] type inference/checking test framework</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/13636">#13636</a>
+        opened by <a href="https://github.com/carljm">@carljm</a>
+        on 2024-10-05 02:50
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/carljm">@carljm</a> on 2024-10-05 02:50</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Adds a markdown-based test framework for writing tests of type inference and type checking. Fixes #11664.</p>
+<p>Implements the basic required features. A markdown test file is a suite of tests, each test can contain one or more Python files, with optionally specified path/name. The test writes all files to an in-memory file system, runs red-knot, and matches the resulting diagnostics against <code>Type: </code> and <code>Error: </code> assertions embedded in the Python source as comments.</p>
+<p>We will want to add features like incremental tests, setting custom configuration for tests, writing non-Python files, testing syntax errors, capturing full diagnostic output, etc. There's also plenty of room for improved UX (colored output?).</p>
+<p>This is a large PR, but I split the commits carefully for easier review. I'm preferring this over stacked PRs, since the GH UX for stacked PRs is so bad. I encourage reviewers to use the GH feature to narrow review per-commit, for less daunting review.</p>
+<h2>Test Plan</h2>
+<p>Lots of tests!</p>
+<p>Sample of the current output when a test fails:</p>
+<pre><code>     Running tests/inference.rs (target/debug/deps/inference-7c96590aa84de2a4)
+
+running 1 test
+test inference::path_1_resources_inference_numbers_md ... FAILED
+
+failures:
+
+---- inference::path_1_resources_inference_numbers_md stdout ----
+inference/numbers.md - Numbers - Floats
+  /src/test.py
+    line 2: unexpected error: [invalid-assignment] &quot;Object of type `Literal[&quot;str&quot;]` is not assignable to `int`&quot;
+
+thread 'inference::path_1_resources_inference_numbers_md' panicked at crates/red_knot_test/src/lib.rs:60:5:
+Some tests failed.
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    inference::path_1_resources_inference_numbers_md
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.19s
+
+error: test failed, to rerun pass `-p red_knot_test --test inference`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @carljm on 2024-10-05 02:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @carljm on 2024-10-05 02:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @carljm on 2024-10-05 02:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-10-05 03:09</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_test/src/parser.rs</code>:165 on 2024-10-05 19:06</div>
+            <div class="timeline-body"><p>nit: this is quite a long method. Could we split it up into <code>parser_header()</code>, and <code>parse_code_block()</code> methods that are called from the first two branches respectively?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_test/src/parser.rs</code>:167 on 2024-10-05 19:07</div>
+            <div class="timeline-body"><p>nit: I'd prefer a more descriptive name like <code>regex_captures</code> (or at least <code>captures</code> if that's too verbose for you!) rather than <code>caps</code>. My first assumption when reading this was that this had something to do with capital letters (which, of course, makes no sense 😆)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[red-knot] test framework" to "[red-knot] type inference/checking test framework" by @carljm on 2024-10-05 19:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_test/src/parser.rs</code>:418 on 2024-10-05 19:27</div>
+            <div class="timeline-body"><p>I'd probably do this like this:</p>
+<pre><code class="language-suggestion">        let mf = super::parse(&quot;file.md&quot;, &amp;source).expect_err(&quot;Should fail to parse&quot;);
+        assert_eq!(
+            mf.to_string(),
+            &quot;Header 'Two' not valid inside a test case; parent 'One' has code files.&quot;,
+        );
+</code></pre>
+<p>But I also wonder if using <code>anyhow</code> is just causing some unnecessary complications here? Using <code>Result&lt;(), String&gt;</code> might be simpler than using <code>anyhow::Result</code> for our purposes here. Then we could just do</p>
+<pre><code class="language-suggestion">        assert_eq!(
+            mf,
+            Err(&quot;Header 'Two' not valid inside a test case; parent 'One' has code files.&quot;.to_string()),
+        );
+</code></pre>
+<p>How it's displayed in tracebacks seems fine to me: https://play.rust-lang.org/?version=stable&amp;mode=debug&amp;edition=2021&amp;gist=89dee3e38fce34ead7cb69f282d291b9</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_test/src/parser.rs</code>:113 on 2024-10-05 19:52</div>
+            <div class="timeline-body"><p>nit: some docs?</p>
+<pre><code class="language-suggestion">/// Matches an arbitrary amount of whitespace (including newlines),
+/// followed by a sequence of `#` characters, followed by a title heading,
+/// followed by a newlines
+static HEADER_RE: Lazy&lt;Regex&gt; =
+    Lazy::new(|| Regex::new(r&quot;^(\s*\n)*(?&lt;level&gt;#+)\s+(?&lt;title&gt;.+)\s*\n&quot;).unwrap());
+
+/// Matches a code block surrounded by triple backticks,
+/// possibly with language and configuration specifications following the
+/// opening backticks
+static CODE_RE: Lazy&lt;Regex&gt; = Lazy::new(|| {
+    Regex::new(r&quot;^```(?&lt;lang&gt;\w+)(?&lt;config&gt;( +\S+)*)\s*\n(?&lt;code&gt;(.|\n)*?)\n```\s*\n&quot;).unwrap()
+});
+
+/// Matches an arbitrary number of non-newline characters,
+/// plus possibly a trailing newline
+static IGNORE_RE: Lazy&lt;Regex&gt; = Lazy::new(|| Regex::new(r&quot;^.*\n?&quot;).unwrap());
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_test/src/parser.rs</code>:124 on 2024-10-05 19:53</div>
+            <div class="timeline-body"><p>Could this field maybe just be called <code>unparsed</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_test/src/parser.rs</code>:129 on 2024-10-05 19:54</div>
+            <div class="timeline-body"><p>Do you mean <code>Some()</code> rather than <code>True</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_test/src/parser.rs</code>:340 on 2024-10-05 19:55</div>
+            <div class="timeline-body"><p>I'd love some docs for this method that make clear that this progresses the &quot;cursor&quot; forward if the passed in pattern matches, but does not if the pattern does not match</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_test/src/parser.rs</code>:195 on 2024-10-05 20:03</div>
+            <div class="timeline-body"><p>the fact that you have to do this <code>.last().unwrap()</code> thing three times in this file, and have to have the same comment next to two of those times explaining why it's safe, makes me wonder if you should create a newtype wrapper for <code>self.stack</code>:</p>
+<pre><code class="language-rs">struct SectionStack(Vec&lt;SectionId&gt;);
+
+impl SectionStack {
+    fn parent(&amp;self) -&gt; &amp;SectionId {
+        self.0.last().expect(&quot;Should never pop the implicit root section&quot;)
+    }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_test/src/parser.rs</code>:213 on 2024-10-05 20:11</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                let path = config.get(&quot;path&quot;).copied().unwrap_or(&quot;test.py&quot;);
+</code></pre>
+<p>this means that <code>path</code> has type <code>&amp;str</code> rather than <code>&amp;&amp;str</code>, which then allows you to make these simplifications:</p>
+<pre><code class="language-diff">@@ -220,16 +222,16 @@ impl&lt;'s&gt; Parser&lt;'s&gt; {
+                 });
+ 
+                 if let Some(current_files) = &amp;mut self.current_section_files {
+-                    if current_files.contains(*path) {
++                    if current_files.contains(path) {
+                         let current = &amp;self.sections[*self.stack.last().unwrap()];
+                         return Err(anyhow::anyhow!(
+                             &quot;Test `{}` has duplicate files named `{path}`.&quot;,
+                             current.title
+                         ));
+                     }
+-                    current_files.insert(*path);
++                    current_files.insert(path);
+                 } else {
+-                    self.current_section_files = Some(FxHashSet::from_iter([*path]));
++                    self.current_section_files = Some(FxHashSet::from_iter([path]));
+                 }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_test/src/parser.rs</code>:99 on 2024-10-05 20:16</div>
+            <div class="timeline-body"><p>If I understand correctly, this struct represents an embedded Python file rather than a MarkDown file? Could you add some docs and/or improve the name to make that a bit clearer?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_test/src/parser.rs</code>:50 on 2024-10-05 20:19</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        while let Some(parent_id) = parent_id {
+            let parent = &amp;self.suite.sections[parent_id];
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-10-05 20:34</div>
+            <div class="timeline-body"><p>Some comments on <code>parser.rs</code> (the first commit). Mostly nitpicks. In general, the code looks really well written, but I'd love some more doc-comments for some of these methods :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_test/src/db.rs</code>:40 on 2024-10-05 20:39</div>
+            <div class="timeline-body"><p>nit: could we use a message that will read well using the standard panic hook, as per https://doc.rust-lang.org/std/error/index.html#common-message-styles?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_test/src/db.rs</code>:9 on 2024-10-05 20:52</div>
+            <div class="timeline-body"><p>In other crates, we use the name <code>TestDb</code> for &quot;fake&quot; <code>Db</code> implementations that we use in the test suites for those crates. But here I think this is the &quot;real&quot; <code>Db</code> for this crate, right? (I realise the whole crate is just for tests! But this <code>Db</code> is for the tests rather than for the tests for the tests. If you get my drift.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_test/src/assertion.rs</code>:118 on 2024-10-05 20:56</div>
+            <div class="timeline-body"><p>nit: could you move this struct and its <code>impl</code>s below the <code>impl</code>s for <code>AssertionWithRange</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_test/src/assertion.rs</code>:159 on 2024-10-05 20:58</div>
+            <div class="timeline-body"><p>nit: I'd expect a variable named <code>line</code> to hold the contents of that line rather than theh index of that line -- maybe <code>line_number</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_test/src/assertion.rs</code>:216 on 2024-10-05 21:00</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    pub(crate) line_number: OneIndexed,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_test/src/assertion.rs</code>:226 on 2024-10-05 21:11</div>
+            <div class="timeline-body"><p>I think some of your <code>From</code> implementations would be better as <code>Deref</code>s. It would allow you to simplify a bunch of other signatures and remove a bunch of <code>.into()</code> calls. All tests pass with this diff:</p>
+<details>
+
+<pre><code class="language-diff">diff --git a/crates/red_knot_test/src/assertion.rs b/crates/red_knot_test/src/assertion.rs
+index f55291326..a7b0801ee 100644
+--- a/crates/red_knot_test/src/assertion.rs
++++ b/crates/red_knot_test/src/assertion.rs
+@@ -219,9 +219,11 @@ pub(crate) struct LineAssertions&lt;'a&gt; {
+     pub(crate) assertions: AssertionVec&lt;'a&gt;,
+ }
+ 
+-impl&lt;'a, 'b&gt; From&lt;&amp;'a LineAssertions&lt;'b&gt;&gt; for &amp;'a [Assertion&lt;'b&gt;] {
+-    fn from(value: &amp;'a LineAssertions&lt;'b&gt;) -&gt; Self {
+-        &amp;value.assertions[..]
++impl&lt;'a&gt; Deref for LineAssertions&lt;'a&gt; {
++    type Target = [Assertion&lt;'a&gt;];
++
++    fn deref(&amp;self) -&gt; &amp;Self::Target {
++        &amp;self.assertions
+     }
+ }
+ 
+diff --git a/crates/red_knot_test/src/diagnostic.rs b/crates/red_knot_test/src/diagnostic.rs
+index 7c5f940e6..25a28fea9 100644
+--- a/crates/red_knot_test/src/diagnostic.rs
++++ b/crates/red_knot_test/src/diagnostic.rs
+@@ -1,6 +1,8 @@
+ //! Sort and group diagnostics by line number, so they can be correlated with assertions.
+ //!
+ //! We don't assume that we will get the diagnostics in source order.
++use std::ops::Deref;
++
+ use ruff_source_file::{LineIndex, OneIndexed};
+ use ruff_text_size::Ranged;
+ use smallvec::SmallVec;
+@@ -76,9 +78,11 @@ pub(crate) struct LineDiagnostics&lt;T&gt; {
+     pub(crate) diagnostics: DiagnosticVec&lt;T&gt;,
+ }
+ 
+-impl&lt;'a, T&gt; From&lt;&amp;'a LineDiagnostics&lt;T&gt;&gt; for &amp;'a [T] {
+-    fn from(value: &amp;'a LineDiagnostics&lt;T&gt;) -&gt; Self {
+-        &amp;value.diagnostics[..]
++impl&lt;T&gt; Deref for LineDiagnostics&lt;T&gt; {
++    type Target = [T];
++
++    fn deref(&amp;self) -&gt; &amp;Self::Target {
++        &amp;self.diagnostics
+     }
+ }
+ 
+diff --git a/crates/red_knot_test/src/matcher.rs b/crates/red_knot_test/src/matcher.rs
+index 899268bcc..2e3849012 100644
+--- a/crates/red_knot_test/src/matcher.rs
++++ b/crates/red_knot_test/src/matcher.rs
+@@ -131,8 +131,8 @@ impl Unmatched for Assertion&lt;'_&gt; {
+     }
+ }
+ 
+-fn unmatched&lt;'a, T: Unmatched + 'a&gt;(unmatched: impl Into&lt;&amp;'a [T]&gt;) -&gt; Vec&lt;String&gt; {
+-    unmatched.into().iter().map(Unmatched::unmatched).collect()
++fn unmatched&lt;'a, T: Unmatched + 'a&gt;(unmatched: &amp;'a [T]) -&gt; Vec&lt;String&gt; {
++    unmatched.iter().map(Unmatched::unmatched).collect()
+ }
+ 
+ struct Matcher {
+@@ -153,15 +153,15 @@ impl Matcher {
+     /// Return vector of [`Unmatched`] for any unmatched diagnostics or assertions.
+     fn match_line&lt;'a, 'b, T: Diagnostic + 'a&gt;(
+         &amp;self,
+-        diagnostics: impl Into&lt;&amp;'a [T]&gt;,
+-        assertions: impl Into&lt;&amp;'a [Assertion&lt;'b&gt;]&gt;,
++        diagnostics: &amp;'a [T],
++        assertions: &amp;'a [Assertion&lt;'b&gt;],
+     ) -&gt; Result&lt;(), Vec&lt;String&gt;&gt;
+     where
+         'b: 'a,
+     {
+         let mut failures = vec![];
+-        let mut unmatched = diagnostics.into().iter().collect::&lt;Vec&lt;_&gt;&gt;();
+-        for assertion in assertions.into() {
++        let mut unmatched: Vec&lt;&amp;T&gt; = diagnostics.iter().collect();
++        for assertion in assertions {
+             if !self.matches(assertion, &amp;mut unmatched) {
+                 failures.push(assertion.unmatched());
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_test/src/assertion.rs</code>:286 on 2024-10-05 21:17</div>
+            <div class="timeline-body"><p>huh, is it even worth this being its own type? Maybe the enum could just be</p>
+<pre><code class="language-rs">/// A single diagnostic assertion comment.
+#[derive(Debug)]
+pub(crate) enum Assertion&lt;'a&gt; {
+    /// A `Type: ` assertion.
+    Type { expected_type: &amp;'a str },
+
+    /// An `Error: ` assertion.
+    Error(ErrorAssertion&lt;'a&gt;),
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_test/src/assertion.rs</code>:303 on 2024-10-05 21:19</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        f.write_str(&quot;Error:&quot;)?;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-10-05 21:21</div>
+            <div class="timeline-body"><p>Some comments on your second commit. Again, nothing major!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>Cargo.lock</code>:2300 on 2024-10-07 09:23</div>
+            <div class="timeline-body"><p>We should disable the default features of <code>rstest</code>. The <code>futures</code> dependencies are all pulled in for <code>async-timeouts</code> which we don't need (we don't have async tests)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>Cargo.toml</code>:294 on 2024-10-07 09:24</div>
+            <div class="timeline-body"><p>Can we add a comment why <code>red_knot_test</code> is ignored or remove it from the ignore list?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_test/Cargo.toml</code>:27 on 2024-10-07 09:25</div>
+            <div class="timeline-body"><p>Our convention is to have the ruff/red_knot_crates first because that's how @charliermarsh likes it :P</p>
+<pre><code class="language-suggestion">red_knot_python_semantic = { workspace = true }
+red_knot_vendored = { workspace = true }
+ruff_db = { workspace = true }
+ruff_index = { workspace = true }
+ruff_python_trivia = { workspace = true }
+ruff_source_file = { workspace = true }
+ruff_text_size = { workspace = true }
+
+anyhow = { workspace = true }
+once_cell = { workspace = true }
+ordermap = { workspace = true }
+regex = { workspace = true }
+rstest = { workspace = true }
+rustc-hash = { workspace = true }
+salsa = { workspace = true }
+smallvec = { workspace = true }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_test/Cargo.toml</code>:1 on 2024-10-07 09:28</div>
+            <div class="timeline-body"><p>What's the motivation for making <code>red_knot_test</code> its own crate vs making it an integration test by creating a file in <code>red_knot_python_semantic/tests</code>?</p>
+<p>I could see us having the infrastructure in its own crate but I think the test definition itself should be inside <code>red_knot_python_semantics/tests</code> to have clear separation between testing framework and test definition</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_test/resources/mdtest/numbers.md</code>:9 on 2024-10-07 09:28</div>
+            <div class="timeline-body"><p>We'll end up with a nice mix of <code>py</code> and <code>python</code> languages :laughing:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_test/resources/mdtest/numbers.md</code>:10 on 2024-10-07 09:30</div>
+            <div class="timeline-body"><p>I'm leaning towards using lower case for pragma comments as this seems more common in the ecosystem. This raises the interesting question if <code>type:</code> isn't too close to <code>type: ignore</code> and whether we should rather use something else? E.g. <code># revealed-type: int</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_test/src/assertion.rs</code>:74 on 2024-10-07 10:06</div>
+            <div class="timeline-body"><p>Nit: I know that creating an ad-hoc <code>Locator</code> is very common in the formatter but I think it's actually an anti-pattern because it is based on the assumption that <code>Locator::index</code> (which is a <code>LineIndex</code>) is never used.</p>
+<p>IMO, the proper solution is to separate <code>LineIndex</code> and <code>Locator</code> because most <code>Locator</code> methods don't use the line index. However, that's way beyond the scope of your PR. For now, i suggest using <code>with_index</code>.</p>
+<pre><code class="language-suggestion">        CommentRanges::is_own_line(range.start(), &amp;Locator::with_index(&amp;self.source, self.lines.clone()))
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_test/src/assertion.rs</code>:73 on 2024-10-07 10:08</div>
+            <div class="timeline-body"><p>I'm leaning towards changing the signature to <code>is_own_line_comment(&amp;self, start: TextSize) -&gt; bool</code> to make it clear that it's a comment range and not any range (e.g. don't pass a node).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_test/src/assertion.rs</code>:50 on 2024-10-07 10:09</div>
+            <div class="timeline-body"><p>Nit: It wasn't clear to me what file assertions are. Maybe <code>InlineAssertions</code> or <code>AssertionPragmaComments</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_test/src/assertion.rs</code>:107 on 2024-10-07 10:10</div>
+            <div class="timeline-body"><p>Nit: Use <code>with_index</code> or expose a <code>locator</code> method on <code>file_assertions</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_test/src/assertion.rs</code>:101 on 2024-10-07 10:12</div>
+            <div class="timeline-body"><p>Can we add some documentation about  what range the  <code>TextRange</code> represents? Is it the range of the entire comment or is it the assertion's range?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_test/src/assertion.rs</code>:125 on 2024-10-07 10:13</div>
+            <div class="timeline-body"><p>Nit: We could implement this as a <code>iter</code> method that returns <code>impl Iterator&lt;Item=....&gt;</code> and uses <code>flat_map</code> if we don't need to name the type</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_test/src/assertion.rs</code>:126 on 2024-10-07 10:14</div>
+            <div class="timeline-body"><p>I don't think it's very common to implement <code>Deref</code> for a struct with more than one field. I think I would be surprised by this <code>Deref</code> implementation. Also see https://doc.rust-lang.org/std/ops/trait.Deref.html#when-to-implement-deref-or-derefmut</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_test/src/assertion.rs</code>:166 on 2024-10-07 10:17</div>
+            <div class="timeline-body"><p>We often use backticks for examples so that editors could provide proper highlighting (although most don't)</p>
+<pre><code class="language-suggestion">        // ```python
+        // # Error: [unbound-name]
+        // # Type: Unbound
+        // reveal_type(x)
+        // ```
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_test/src/assertion.rs</code>:270 on 2024-10-07 10:20</div>
+            <div class="timeline-body"><p>Nit: The two letter abbreviations are more confusing. What's an <code>ea</code> :laughing:</p>
+<pre><code class="language-suggestion">            Self::Type(assertion) =&gt; assertion.fmt(f),
+            Self::Error(assertion) =&gt; assertion.fmt(f),
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_test/src/assertion.rs</code>:229 on 2024-10-07 10:21</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    Lazy::new(|| Regex::new(r&quot;^#\s+Type:\s+(?&lt;ty_display&gt;.+?)\s*$&quot;).unwrap());
+</code></pre>
+<p>Let's be more opinionated about spacing</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_test/src/assertion.rs</code>:242 on 2024-10-07 10:23</div>
+            <div class="timeline-body"><p>Nit: I'm normally not very fond of using regex for simple parsing because it has significantly worse performance than manual lexing (eg. by using <code>Cursor</code>).  But I think it's fine here. You may want to consider using a <code>RegexSet</code> https://docs.rs/regex/latest/regex/struct.RegexSet.html</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_test/src/assertion.rs</code>:151 on 2024-10-07 10:32</div>
+            <div class="timeline-body"><p>Implementing this all as an iterator is impressive, although I'm not sure if performance matters this much for a testing framework :)</p>
+<p>I don't mind if we keep it the way it is and I'm possibly overlooking something but I would probably have built up the <code>FileAssertions</code> struct eagerly by using two <code>Vector</code>s and avoided the Iterator complexity.</p>
+<pre><code>struct FileAssertions&lt;'a&gt; {
+	assertions: Vec&lt;Assertion&lt;'a&gt;&gt;
+	lines: Vec&lt;Line&gt;,
+	...
+}
+
+struct Line {
+	number: OneIndexed,
+	assertions: Range&lt;usize&gt; // range into `FileAssertions.assertions` 
+}
+</code></pre>
+<p>This design makes use of the fact that assertions for a single line are in order. This way, we can avoid using <code>SmallVec</code> (fewer deps) and never have more than 2 allocations (ignoring resizes)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_test/src/db.rs</code>:9 on 2024-10-07 10:35</div>
+            <div class="timeline-body"><p>I think it's a bit of both. For the tests, it's the test db. For the framework, it's the real db...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_test/src/db.rs</code>:25 on 2024-10-07 10:36</div>
+            <div class="timeline-body"><p>Nit: <code>new</code> can be inlined</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_test/src/diagnostic.rs</code>:4 on 2024-10-07 10:37</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">//! We don't assume that we will get the diagnostics in source order.
+
+use ruff_source_file::{LineIndex, OneIndexed};
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_test/src/diagnostic.rs</code>:50 on 2024-10-07 10:39</div>
+            <div class="timeline-body"><p>Could we avoid cloning by returning a reference instead? Or is the lifetime too annoying (I just imagine that we'll have many diagnostics ;))</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_test/src/diagnostic.rs</code>:37 on 2024-10-07 10:40</div>
+            <div class="timeline-body"><p>Nit: What I like to do for slice iterators instead of using <code>Peekable</code> is to clone the slice to peek. Cloning a slice iterator is cheap, it's just two pointers. We also do this in the <code>Lexer</code> and I suspect it's cheaper than peeking because <code>peeking</code> adds a cost to every <code>next</code> call.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_test/src/diagnostic.rs</code>:68 on 2024-10-07 10:43</div>
+            <div class="timeline-body"><p>The same as for the assertions. I would probably collect all diagnostics by line and make use of the fact that the diagnostics are sorted. It removes the need for small vec and many of the complex iterator types</p>
+<pre><code class="language-rust">struct LineDiagnostics&lt;T&gt; {
+	lines: Vec&lt;{ number; OneIndexed, diagnostics: Range&lt;usize&gt; }&gt;,
+	diagnostics: Vec&lt;T&gt;
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_test/src/lib.rs</code>:12 on 2024-10-07 10:44</div>
+            <div class="timeline-body"><p>Nit: Could we use a <code>BTreeMap</code> or do we need to compare maps by equality/hash them?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_test/src/lib.rs</code>:38 on 2024-10-07 10:46</div>
+            <div class="timeline-body"><p>Nit: You could use <code>camino</code> to avoid the many <code>to_str().unwrap</code> calls.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_test/src/lib.rs</code>:38 on 2024-10-07 10:49</div>
+            <div class="timeline-body"><p>This code seems complicated considering that all it does is to strip the <code>mdtest</code> prefix. How about using <code>path.strip_prefix(Path::new(env!(&quot;CARGO_MANIFEST_DIR&quot;))</code>;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_test/src/lib.rs</code>:40 on 2024-10-07 10:50</div>
+            <div class="timeline-body"><p>Nit: To make it clear that it isn't the python parser?</p>
+<pre><code class="language-suggestion">    let suite = test_parser::parse(relpath.to_str().unwrap(), &amp;source).unwrap();
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_test/src/lib.rs</code>:40 on 2024-10-07 10:51</div>
+            <div class="timeline-body"><p>It would probably be helpful to have a better error message when parsing the test fails. What's the name of the test file? What's the syntax error?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_test/src/lib.rs</code>:86 on 2024-10-07 10:53</div>
+            <div class="timeline-body"><p>We should include the name of the file in the error message or it's unclear where the parser error points to.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_test/src/matcher.rs</code>:16 on 2024-10-07 11:37</div>
+            <div class="timeline-body"><p>Nit: Use a <code>BTreeMap</code> or a <code>struct FailuresByLine { lines: Vec&lt;{ number: OneIndexed, failures: Range&lt;usize&gt; }, failures: Vec&lt;String&gt; }</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_test/src/matcher.rs</code>:191 on 2024-10-07 11:41</div>
+            <div class="timeline-body"><p>I agree with @AlexWaygood that the <code>From</code> implementations here are surprising. I'm leaning towards <code>as_slice</code> methods to make this more explicit.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_test/src/matcher.rs</code>:217 on 2024-10-07 11:43</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    fn column&lt;T: Ranged&gt;(&amp;self, ranged: &amp;T) -&gt; OneIndexed {
+        self.line_index
+            .source_location(diagnostic.start(), &amp;self.source)
+            .column
+    }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_test/src/matcher.rs</code>:197 on 2024-10-07 11:48</div>
+            <div class="timeline-body"><p>Nit: Collecting to a <code>FxHashSet</code> instead of a <code>Vec</code> (or <code>IndexedSet</code>) simplifies <code>matches</code>  and avoids creating <code>O(assertions)</code> hash sets.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_test/src/parser.rs</code>:99 on 2024-10-07 11:49</div>
+            <div class="timeline-body"><p>I also suggest renaming the struct to avoid naming collisions with <code>ruff_db::File</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_test/src/parser.rs</code>:16 on 2024-10-07 11:50</div>
+            <div class="timeline-body"><p>Nit: Consider moving these types next to <code>Section</code> and <code>File</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_test/src/parser.rs</code>:48 on 2024-10-07 11:55</div>
+            <div class="timeline-body"><p>Nit: I suggest writing the test name last, after inserting the parent names at the beginning. This way you can avoid moving the title by O(parent) times.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_test/src/parser.rs</code>:94 on 2024-10-07 11:56</div>
+            <div class="timeline-body"><p>Nit: A u32 or u8 should do. Only use <code>usize</code> for types that represent an index or a length. Use fixed integer types otherwise, so that they aren't dependent on CPU architecture.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_test/src/parser.rs</code>:139 on 2024-10-07 11:58</div>
+            <div class="timeline-body"><p>I think the <code>\s\n</code> can be simplified to using <code>^</code> with the multiline modifier (in which case <code>^</code> matches the start of a line). The end <code>\*s\n</code> can then be simplified to <code>\s*$</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_test/src/parser.rs</code>:209 on 2024-10-07 12:04</div>
+            <div class="timeline-body"><p>Nit: Should we warn about duplicate configuration keys?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_test/src/parser.rs</code>:240 on 2024-10-07 12:05</div>
+            <div class="timeline-body"><p>You can directly use insert since an existing file aborts the parsing anyway</p>
+<pre><code class="language-suggestion">                    if let Some(existing) = current_files.insert(*path) {
+                        let current = &amp;self.sections[*self.stack.last().unwrap()];
+                        return Err(anyhow::anyhow!(
+                            &quot;Test `{}` has duplicate files named `{path}`.&quot;,
+                            current.title
+                        ));
+                    }
+                } else {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_test/src/parser.rs</code>:244 on 2024-10-07 12:07</div>
+            <div class="timeline-body"><p>Using a regex to find the end of a line seems overly complicated. It took me a while to figure out what's happening.</p>
+<p>I prefer calling <code>self.rest.lines()</code> and updating <code>self.rest</code> in place.</p>
+<p>What's even the case where we hit <code>IGNORE_RE</code> where it isn't the end? Shouldn't the other patterns match for as long as there are sections / code blocks and the <code>IGNORE_RE</code> only gets executed when there are no more sections/code blocks which means we're done and we can set <code>self.rest = &quot;&quot;</code>. Should we warn about any content coming after?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_test/tests/mdtest.rs</code>:1 on 2024-10-07 12:14</div>
+            <div class="timeline-body"><p>I'm inclined to move the actual tests out of the <code>red_knot_test</code> crate and define them in <code>red_knot_python_semantic</code> instead. <code>red_knot_test</code> then becomes a development dependency of <code>red_knot_python_semantic</code> which seems a clearer separation to me (where the <code>red_knot_test</code> crate mainly is a testing framework).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-10-07 12:18</div>
+            <div class="timeline-body"><p>This is great! We should reduce the pulled in dependencies and I suggest moving the tests itself to the <code>red_knot_python_semantic</code> crate. See my inline comment. We should also add a <code>README</code> explaining the test structure.</p>
+<p>The one design change that I propose is to make the pragma comments lower case because that's the most commonly used style used in the python community and to rename <code>Type</code> to <code>revealed-type</code> or similar to disambiguate it from <code>type: ignore</code>.</p>
+<p>I think it should work as expected but could you add a test for a parenthesized expression:</p>
+<pre><code class="language-python">a = b + (
+	# comment 
+	5 # revealed-type: Literal[5]
+)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-10-07 12:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_test/resources/mdtest/numbers.md</code>:10 on 2024-10-07 12:24</div>
+            <div class="timeline-body"><p>Hehe, the use of uppercase for these kept on bugging me as well 😆</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_test/src/db.rs</code>:9 on 2024-10-07 12:29</div>
+            <div class="timeline-body"><p>Still sounds like it could be renamed to make its purpose clearer ;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-10-07 12:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-10-07 13:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_test/src/assertion.rs</code>:226 on 2024-10-07 13:06</div>
+            <div class="timeline-body"><p>(If you don't like <code>Deref</code>s, then I'd use an <code>AsRef</code> implementation or an <code>as_slice</code> custom method like Micha suggested, rather than <code>From</code>.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_test/src/diagnostic.rs</code>:22 on 2024-10-07 13:40</div>
+            <div class="timeline-body"><ul>
+<li>Just call <code>.start()</code> directly rather than calling <code>.range().start()</code></li>
+<li>use a type annotation rather than the &quot;turbofish&quot; operator</li>
+</ul>
+<pre><code class="language-suggestion">        let mut diagnostics: Vec&lt;_&gt; = diagnostics
+            .into_iter()
+            .map(|diagnostic| DiagnosticWithLine {
+                line: line_index.line_index(diagnostic.start()),
+                diagnostic,
+            })
+            .collect();
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_test/src/diagnostic.rs</code>:53 on 2024-10-07 13:49</div>
+            <div class="timeline-body"><p>I think you can do this in a slightly more type-safe way that avoids the <code>.unwrap()</code> call:</p>
+<pre><code class="language-suggestion">        while let Some(DiagnosticWithLine {
+            line: diagnostic_line,
+            diagnostic,
+        }) = self.inner.peek()
+        {
+            if diagnostic_line == &amp;line {
+                self.inner.next();
+                diagnostics.push(diagnostic.clone());
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_test/src/diagnostic.rs</code>:73 on 2024-10-07 13:51</div>
+            <div class="timeline-body"><p>I would again call this <code>Line_number</code> or <code>line_no</code> rather than <code>line</code>, as I'd expect a <code>line</code> field to hold the contents of the line rather than the line's index</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_test/src/diagnostic.rs</code>:87 on 2024-10-07 13:51</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    line_number: OneIndexed,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-10-07 13:51</div>
+            <div class="timeline-body"><p>Comments on your third commit</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_test/src/lib.rs</code>:12 on 2024-10-07 14:00</div>
+            <div class="timeline-body"><p><code>cargo test -p red_knot_test</code> passes for me locally with this change to Carl's PR branch:</p>
+<details>
+
+<pre><code class="language-diff">diff --git a/Cargo.lock b/Cargo.lock
+index 3f7b29bcc..47ab3a232 100644
+--- a/Cargo.lock
++++ b/Cargo.lock
+@@ -2244,7 +2244,6 @@ version = &quot;0.0.0&quot;
+ dependencies = [
+  &quot;anyhow&quot;,
+  &quot;once_cell&quot;,
+- &quot;ordermap&quot;,
+  &quot;red_knot_python_semantic&quot;,
+  &quot;red_knot_vendored&quot;,
+  &quot;regex&quot;,
+diff --git a/crates/red_knot_test/Cargo.toml b/crates/red_knot_test/Cargo.toml
+index 8fdaaa4c9..e66000b6a 100644
+--- a/crates/red_knot_test/Cargo.toml
++++ b/crates/red_knot_test/Cargo.toml
+@@ -13,7 +13,6 @@ license.workspace = true
+ [dependencies]
+ anyhow = { workspace = true }
+ once_cell = { workspace = true }
+-ordermap = { workspace = true }
+ red_knot_python_semantic = { workspace = true }
+ red_knot_vendored = { workspace = true }
+ regex = { workspace = true }
+diff --git a/crates/red_knot_test/src/lib.rs b/crates/red_knot_test/src/lib.rs
+index 6e6e5d4ab..7bd32c522 100644
+--- a/crates/red_knot_test/src/lib.rs
++++ b/crates/red_knot_test/src/lib.rs
+@@ -1,15 +1,11 @@
+-use ordermap::map::OrderMap;
+ use red_knot_python_semantic::types::check_types;
+ use ruff_db::files::system_path_to_file;
+ use ruff_db::parsed::parsed_module;
+ use ruff_db::system::{DbWithTestSystem, SystemPathBuf};
+-use rustc_hash::FxHasher;
+-use std::hash::BuildHasherDefault;
++use std::collections::BTreeMap;
+ use std::path::PathBuf;
+ 
+-type FxOrderMap&lt;K, V&gt; = OrderMap&lt;K, V, BuildHasherDefault&lt;FxHasher&gt;&gt;;
+-
+-type Failures = FxOrderMap&lt;SystemPathBuf, matcher::FailuresByLine&gt;;
++type Failures = BTreeMap&lt;SystemPathBuf, matcher::FailuresByLine&gt;;
+ 
+ mod assertion;
+ mod db;
+@@ -76,7 +72,7 @@ fn run_test(test: &amp;parser::MarkdownTest) -&gt; Result&lt;(), Failures&gt; {
+         system_paths.push(full_path);
+     }
+ 
+-    let mut failures = FxOrderMap::default();
++    let mut failures = BTreeMap::default();
+ 
+     for path in system_paths {
+         let file = system_path_to_file(&amp;db, path.clone()).unwrap();
+diff --git a/crates/red_knot_test/src/matcher.rs b/crates/red_knot_test/src/matcher.rs
+index 899268bcc..170010fea 100644
+--- a/crates/red_knot_test/src/matcher.rs
++++ b/crates/red_knot_test/src/matcher.rs
+@@ -3,7 +3,6 @@
+ use crate::assertion::{Assertion, FileAssertions};
+ use crate::db::TestDb;
+ use crate::diagnostic::SortedDiagnostics;
+-use crate::FxOrderMap;
+ use red_knot_python_semantic::types::TypeCheckDiagnostic;
+ use ruff_db::files::File;
+ use ruff_db::source::{line_index, source_text, SourceText};
+@@ -11,9 +10,10 @@ use ruff_source_file::{LineIndex, OneIndexed};
+ use ruff_text_size::Ranged;
+ use rustc_hash::FxHashSet;
+ use std::cmp::Ordering;
++use std::collections::BTreeMap;
+ use std::sync::Arc;
+ 
+-pub(super) type FailuresByLine = FxOrderMap&lt;OneIndexed, Vec&lt;String&gt;&gt;;
++pub(super) type FailuresByLine = BTreeMap&lt;OneIndexed, Vec&lt;String&gt;&gt;;
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_test/src/lib.rs</code>:71 on 2024-10-07 14:02</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">            matches!(file.lang, &quot;py&quot; | &quot;pyi&quot;),
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_test/src/matcher.rs</code>:78 on 2024-10-07 14:09</div>
+            <div class="timeline-body"><p>this is really nice! love how you did this :D</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_test/src/matcher.rs</code>:247 on 2024-10-07 14:20</div>
+            <div class="timeline-body"><p>Similar to @MichaReiser's nit elsewhere, I'd prefer <code>type_assertion</code>, <code>t_assertion</code>, or <code>ty</code> here rather than <code>ta</code> :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-10-07 14:22</div>
+            <div class="timeline-body"><p>Comments on your last commit!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-10-07 15:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>Cargo.toml</code>:294 on 2024-10-07 15:40</div>
+            <div class="timeline-body"><p>It's ignored because nothing depends on it and it's not a binary, so <code>cargo shear</code> thinks that it is unused in the root workspace.</p>
+<p>I think the need for this ignore will be eliminated if we move the actual tests to a different red-knot crate, as you suggested elsewhere. Because then that crate will depend on <code>red_knot_test</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-10-07 15:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_test/Cargo.toml</code>:1 on 2024-10-07 15:44</div>
+            <div class="timeline-body"><p>I'm not sure about putting the tests in <code>red_knot_python_semantic</code>, because I think eventually (when we add features like incremental tests and configuration and full diagnostic capturing) the tests will depend on (and test!) features of red-knot that live outside <code>red_knot_python_semantic</code>, and that could lead to awkward circular dependencies. So I think if we put the tests anywhere other than <code>red_knot_test</code>, I would put them in <code>red_knot</code> crate probably? I don't have any objection to doing that, it's what I actually did originally, and then it felt simpler to just keep everything together. But I also see the value of separating test framework from tests using it, and if it makes the cargo-shear ignore go away, that's an extra bonus.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-10-07 15:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_test/resources/mdtest/numbers.md</code>:9 on 2024-10-07 15:45</div>
+            <div class="timeline-body"><p>Not at the moment we won't, because I have an assertion that we only allow <code>py</code> and <code>pyi</code> 😆</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_test/Cargo.toml</code>:1 on 2024-10-07 15:51</div>
+            <div class="timeline-body"><p>I understood that this framework is specific to type inference. For example, we probably want to use something different for lint rules (or at least configure it differently). We intentionally excluded LSP and other cases for now. That's why I would keep the tests local to <code>red_knot_python_semantic</code> for now. It gives you a faster iteration cycle because you don't have to recompile all <code>red_knot</code> crates.</p>
+<p>I'm not that worried about cyclic dependencies. The new diagnostic system should allow the printing of arbitrary diagnostics without depending on the concrete type (or inspecting them). I can't say whether other extensions to the testing framework will introduce cycles. Still, we can revisit the test placement when we make the extensions (or abstract the logic behind a trait).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-10-07 15:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-10-07 15:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_test/resources/mdtest/numbers.md</code>:10 on 2024-10-07 15:51</div>
+            <div class="timeline-body"><p>I don't mind going to lowercase. I agree we can't use <code>type: </code> as a prefix; these comments would then look exactly like Python 2 type comments.</p>
+<p>I do mind using something really long like <code>revealed-type</code> -- we will have a lot of these type assertion comments, and IMO that's too much repetitive typing (and no help from autocomplete, either), and too much visual noise. Originally I wanted this prefix to just be <code>T: </code>, more like the mypy framework!</p>
+<p>What about <code>ty: </code>?</p>
+<p>Or I guess we could go with <code>revealed: </code> -- it's longer than I prefer, but I think it's workable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-10-07 15:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_test/resources/mdtest/numbers.md</code>:9 on 2024-10-07 15:51</div>
+            <div class="timeline-body"><p>:cry:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-10-07 15:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_test/Cargo.toml</code>:1 on 2024-10-07 15:51</div>
+            <div class="timeline-body"><p>Do all the tests that use this framework <em>need</em> to be in the same crate? Couldn't we have some of the tests using this framework live in the <code>red_knot_python_semantic</code> crate and have some of the tests using this framework live in the <code>red_knot</code> crate, etc.?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-10-07 15:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_test/resources/mdtest/numbers.md</code>:10 on 2024-10-07 15:52</div>
+            <div class="timeline-body"><p>I'm fine with <code>ty</code> or <code>revealed</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-10-07 15:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_test/src/assertion.rs</code>:50 on 2024-10-07 15:54</div>
+            <div class="timeline-body"><p>It was meant to be parallel to <code>LineAssertions</code>, which are &quot;all assertions on a line&quot; -- this is &quot;all assertions in a (Python) file&quot;. Neither of the names you suggested would help make that distinction. I feel like the fact that they are inline pragma-comment assertions is already part of the context of this entire module and clarified in the docstring, so I don't think those facts need repeating in struct names.</p>
+<p>I'll at least add more clarity to the doc comment for this struct, and think about if there is any better name.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-10-07 15:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_test/resources/mdtest/numbers.md</code>:10 on 2024-10-07 15:58</div>
+            <div class="timeline-body"><p>I quite like <code># revealed:</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-10-07 15:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_test/src/assertion.rs</code>:73 on 2024-10-07 15:59</div>
+            <div class="timeline-body"><p>I like the clarity but I don't like having to call <code>.range().start()</code> at each call site; also, it's not clear to me semantically what it means for a text offset to be &quot;on it's own line&quot;. I would maybe rather have the signature just explicitly require an <code>AssertionWithRange</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-10-07 16:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_test/src/assertion.rs</code>:73 on 2024-10-07 16:01</div>
+            <div class="timeline-body"><p><code>Ranged</code> implements <code>.start()</code>. No need to write <code>.range().start()</code></p>
+<blockquote>
+<p>I would maybe rather have the signature just explicitly require an AssertionWithRange.</p>
+</blockquote>
+<p>I don't mind that</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-10-07 16:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_test/Cargo.toml</code>:1 on 2024-10-07 16:10</div>
+            <div class="timeline-body"><p>Yes, we can use the framework from multiple crates. That wouldn't necessarily help with cyclic deps if the framework itself needs to depend on <code>red_knot</code> or <code>red_knot_workspace</code> in the future. But I'm ok putting the tests in <code>red_knot_python_semantic</code> for now, and seeing how it develops later.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-10-07 16:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_test/resources/mdtest/numbers.md</code>:10 on 2024-10-07 16:27</div>
+            <div class="timeline-body"><p>I'll go with <code># revealed: </code> for now and see how we like it in practice. Not hard to change later with a search-and-replace, once we have some experience writing tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-10-07 16:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_test/src/assertion.rs</code>:101 on 2024-10-07 16:28</div>
+            <div class="timeline-body"><p>It's the range of the entire comment, will add doc.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-10-07 16:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_test/src/assertion.rs</code>:126 on 2024-10-07 16:30</div>
+            <div class="timeline-body"><p>Hmm, after reading over the linked doc, I still feel this is a reasonable <code>Deref</code> implementation. An <code>AssertionWithRange</code> really <em>is</em> just an <code>Assertion</code>, just with a bit of extra metadata that we need for a short time internally. It doesn't seem surprising to me that you can just transparently deref it to an Assertion.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-10-07 16:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_test/src/assertion.rs</code>:151 on 2024-10-07 16:34</div>
+            <div class="timeline-body"><p>That's a reasonable design, and maybe it would be simpler. At this point it feels like it would be a major rewrite of this module, and I'm not sure if that's the best use of my time; the current implementation works and I don't think it's so complex that it's a problem.</p>
+<p>It's definitely a useful review comment, though -- this pattern (flat vector and ranges into it) is one that still doesn't occur to me quickly as an option.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_test/src/assertion.rs</code>:226 on 2024-10-07 16:37</div>
+            <div class="timeline-body"><p>Yes, that's definitely an improvement, thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-10-07 16:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-10-07 16:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_test/src/assertion.rs</code>:242 on 2024-10-07 16:39</div>
+            <div class="timeline-body"><p>Yeah, in this case I chose to prioritize ease of implementation over performance :)</p>
+<p>I looked at RegexSet but discarded it as an option because it doesn't support capture groups.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_test/src/assertion.rs</code>:151 on 2024-10-07 16:40</div>
+            <div class="timeline-body"><p>With regards to dependencies -- I do actually agree that for a test framework specifically, local build times should possibly actually matter more than the time it actually takes to run the tests. And keeping dependencies down is one way to keep build times low. It's not (yet) nearly as big a problem in red-knot than it is in Ruff, but I find waiting for the tests to finish building far more frustrating when working on Ruff than waiting for the tests to complete once they've started.</p>
+<p>If there's an easy way to reduce the number of dependencies that doesn't take a lot of @carljm's time, that might be worth it. (But I agree a major rewrite of the module is probably not worth it.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-10-07 16:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-10-07 16:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_test/src/assertion.rs</code>:229 on 2024-10-07 16:43</div>
+            <div class="timeline-body"><p>Hmm. I definitely agree that we should prefer and use the spaced style. It just feels like a confusing/bad experience to silently not treat the comment as an assertion because you left out a space.</p>
+<p>If we want the test framework to enforce an opinionated style, I think I'd rather still lex leniently, and then issue an explicit error about the lack of spaces. But then I'm not sure that's a priority right now either :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-10-07 16:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_test/src/assertion.rs</code>:286 on 2024-10-07 16:44</div>
+            <div class="timeline-body"><p>Yeah, that's fine, I was just keeping things more parallel, but reducing the overall code is probably better.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-10-07 16:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_test/src/assertion.rs</code>:151 on 2024-10-07 16:54</div>
+            <div class="timeline-body"><p>Does removing an external dependency that generally won't change between builds reduce build times significantly? I would assume on almost every build we do, smallvec will already be built and won't need rebuilding.</p>
+<p>I do agree that build time matters here, though.</p>
+<p>It's trivial to remove the smallvec dependency and just use a regular vec instead, but I think that could be a significant cost in test runtime (which I think will also matter, once we accumulate thousands of tests), if I don't do the full refactor to a flat-vector-with-ranges.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_test/src/assertion.rs</code>:151 on 2024-10-07 16:58</div>
+            <div class="timeline-body"><blockquote>
+<p>Does removing an external dependency that generally won't change between builds reduce build times significantly? I would assume on almost every build we do, smallvec will already be built and won't need rebuilding.</p>
+</blockquote>
+<p>That's true. After the weekly renovate PRs on Mondays a local build generally takes a while longer, and that issue gets worse the more dependencies you have. But that's generally only a weekly issue, so I suppose that's not really too bad either.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-10-07 16:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-10-07 17:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_test/src/db.rs</code>:9 on 2024-10-07 17:00</div>
+            <div class="timeline-body"><p>I'm not sure whether it makes anything clearer or not, but I have no problem with renaming this to just <code>Db</code> -- it is the one and only <code>Db</code> for the test framework.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-10-07 17:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_test/src/diagnostic.rs</code>:50 on 2024-10-07 17:09</div>
+            <div class="timeline-body"><p>I tried this and found the lifetimes difficult to manage. In practice (at least with the current implementation of <code>TypeCheckDiagnostics</code>) the concrete type of <code>T</code> here is <code>Arc&lt;TypeCheckDiagnostic&gt;</code>, so we're just cloning an <code>Arc</code>, which isn't too expensive. If that changes in a future re-work of diagnostics and cloning gets more costly, then it might be worth revisiting this to try with references again.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-10-07 17:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_test/src/diagnostic.rs</code>:68 on 2024-10-07 17:11</div>
+            <div class="timeline-body"><p>Same comment as for assertions: I think the design you propose is a good one, just not sure if I want to spend the time to do that refactor right now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-10-07 17:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_test/src/lib.rs</code>:38 on 2024-10-07 17:15</div>
+            <div class="timeline-body"><p>That was my first version. It failed on Windows in CI, with no useful clues in the failure output. I would much rather maintain this code than debug why the <code>strip_prefix</code> version failed on Windows 😆 If you want to debug that and then replace this code, I have no problem with that. (Though I would rather strip the prefix all the way up to and including <code>mdtest</code>, as this code does, not just strip only the manifest dir.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-10-07 17:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_test/src/matcher.rs</code>:191 on 2024-10-07 17:20</div>
+            <div class="timeline-body"><p>I liked Alex's suggestion of using <code>Deref</code> here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-10-07 17:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_test/src/matcher.rs</code>:197 on 2024-10-07 17:23</div>
+            <div class="timeline-body"><p>It's not clear to me how this helps avoid the need for the <code>matched</code> hashset in <code>matches</code>. I would assume you still can't pop from an <code>FxHashSet</code> while iterating over it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-10-07 17:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_test/src/parser.rs</code>:94 on 2024-10-07 17:28</div>
+            <div class="timeline-body"><p>This comes from a <code>usize</code> (the number of <code>#</code> in the header line); if I use a <code>u8</code> or <code>u32</code> here it just means I'll have to convert from <code>usize</code> (and handle the practically-impossible scenario where it doesn't fit.) Does that still seem worth it to you to avoid <code>usize</code> here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-10-07 17:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_test/src/parser.rs</code>:167 on 2024-10-07 17:30</div>
+            <div class="timeline-body"><p>I can change it. The regex crate docs use the variable name <code>caps</code> for this, so I just kind thought it was a convention; maybe you should take it up with @BurntSushi ;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/red_knot_test/src/parser.rs</code>:167 on 2024-10-07 17:33</div>
+            <div class="timeline-body"><p>Hah, yeah I like <code>caps</code> for this, but it usually appears close to calling a method named <code>captures</code> or <code>captures_iter</code>, which provides a bit more context.</p>
+<p><code>captures</code> might be a good compromise here. I usually (but not always) try to give names a verbosity roughly proportional to the size of their scope.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-10-07 17:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-10-07 17:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_test/src/parser.rs</code>:244 on 2024-10-07 17:36</div>
+            <div class="timeline-body"><p>I want to support arbitrary Markdown prose/markup interspersed in tests, as comments/description (even the sample <code>numbers.md</code> included in this PR uses this.) So we need to ignore whatever lines we find in between code blocks and headers.</p>
+<p>Splitting by lines makes things a lot more complex because then I can't use a single multi-line regex to match an entire code block, I have to maintain my own state machine for code block parsing. That's possible of course, but I don't think &quot;IGNORE_RE is confusing&quot; is strong enough justification to spend the time on it.</p>
+<p>Or maybe you meant using <code>self.rest.lines()</code> only in the case the other two regexes didn't match, just to find the next line? I don't think I should split all of <code>self.rest</code> in that case, I should just find the next newline. But this seems reasonable; it just means I can't reuse the <code>scan</code> method to do the updating.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-10-07 17:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_test/src/parser.rs</code>:418 on 2024-10-07 17:40</div>
+            <div class="timeline-body"><p>Fine by me; I thought I might end up using anyhow's context feature, but I didn't. Curious if @MichaReiser has any thoughts on <code>Result&lt;(), String&gt;</code> vs anyhow.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-10-07 18:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_test/src/assertion.rs</code>:151 on 2024-10-07 18:56</div>
+            <div class="timeline-body"><p>I'm not too concerned about the smallvec dependency. My main concern is that iterators result in a lot of boilerplate and lifetimes that can be avoided by collecting to a vector. The current design also requires an optimization (small vec) that otherwise wouldn't be necessary. I suspect that it's slightly more code than necessary and refactoring would only require moving some logic around (but not rewriting).</p>
+<p>I do agree with that this might not be the best use of your time to refactor it now. We could consider this a starter task for David, leave it as is and add a TODO, or you try how far you get by spending a limited time on it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_test/src/lib.rs</code>:38 on 2024-10-07 18:59</div>
+            <div class="timeline-body"><p>Yeah, you would have to join the string with <code>mdtest</code> and strip the entire prefix.</p>
+<p>That it fails on windows could be if one of the two paths is absolute and the other is not.</p>
+<p>I suggest adding a TODO or comment explaining why we use this more complex (and not entirely safe) way of stripping a prefix</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-10-07 18:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-10-07 19:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_test/src/matcher.rs</code>:197 on 2024-10-07 19:00</div>
+            <div class="timeline-body"><p>I would have do take a closer look again. You can use <code>retain</code> which iterators for you</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-10-07 19:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_test/src/parser.rs</code>:94 on 2024-10-07 19:04</div>
+            <div class="timeline-body"><p>Overall yes, because <code>usize</code> is intended for sizes that depend on the CPU architecture and handling the error case seems easy enough when using anyhow (<code>try_from(...).context(...)</code>) or just use <code>expect</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-10-07 19:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_test/src/lib.rs</code>:38 on 2024-10-07 19:07</div>
+            <div class="timeline-body"><p>I can add a comment. By &quot;not entirely safe&quot;, do you mean in case there's an inner directory within <code>mdtest</code> also named <code>mdtest</code>? I could fix this, but it would make the code even more complex :)</p>
+<p>I can also try absolutizing both paths and see if that fixes Windows CI on the <code>CARGO_MANIFEST_DIR</code> approach. But I think that might cause problems if we move the tests to a different crate? In general it feels ugly to me to rely on <code>CARGO_MANIFEST_DIR</code> in an exported library function.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-10-07 19:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_test/src/parser.rs</code>:244 on 2024-10-07 19:07</div>
+            <div class="timeline-body"><p>I mean just using <code>self.rest.lines()</code> in the case the other two regexes don't match. Although it's unclear to me if that's even necessary or if we can just move to the end because what's an example where the header and code block regex don't match, but they do match after ignoring.</p>
+<p>... Or is it because you don't use the multiline flag and this indeed won't be necessary when you use the multiline flag?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-10-07 19:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_test/src/matcher.rs</code>:197 on 2024-10-07 19:12</div>
+            <div class="timeline-body"><p>I already use <code>retain</code> with the vec. The <code>O(assertions)</code> hashsets are to track the indices to remove, which I collect while iterating and then later need to use within my call to <code>retain</code>.</p>
+<p>I would love a better way to do this, but so far I'm not seeing how switching from a vec to a set here will help.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-10-07 19:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_test/src/parser.rs</code>:244 on 2024-10-07 19:15</div>
+            <div class="timeline-body"><p>I feel like maybe you didn't read the first sentence of my comment :)</p>
+<blockquote>
+<p>I want to support arbitrary Markdown prose/markup interspersed in tests, as comments/description (even the sample numbers.md included in this PR uses this.) So we need to ignore whatever lines we find in between code blocks and headers.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-10-07 19:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_test/src/lib.rs</code>:38 on 2024-10-07 19:21</div>
+            <div class="timeline-body"><blockquote>
+<p>I can add a comment. By &quot;not entirely safe&quot;, do you mean in case there's an inner directory within mdtest also named mdtest? I could fix this, but it would make the code even more complex :)</p>
+</blockquote>
+<p>Yeah. It's unlikely and not worth fixing. I would rather use strip prefix :P but that's what I had in mind</p>
+<blockquote>
+<p>In general it feels ugly to me to rely on CARGO_MANIFEST_DIR in an exported library function.</p>
+</blockquote>
+<p>Using <code>CARGO_MANIFEST_DIR</code> with a fallback when it isn't set is relatively common. The only challenge is that it needs to run in the crate <strong>calling</strong> the test.</p>
+<p>The counter argument to the current solution is that assuming a test location also feels somewhat ugly for a library function ;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_test/src/parser.rs</code>:244 on 2024-10-07 19:22</div>
+            <div class="timeline-body"><p>I did... it's still unclear in which cases the first and second regex start matching again after skipping over content with the IGNORE regex, at least when using the regex multiline option.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-10-07 19:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-10-07 19:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_test/src/lib.rs</code>:38 on 2024-10-07 19:25</div>
+            <div class="timeline-body"><p>Good point!</p>
+<p>I'll look at using strip prefix instead, on the caller side, and see if absolutizing helps Windows.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-10-07 19:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_test/src/parser.rs</code>:244 on 2024-10-07 19:30</div>
+            <div class="timeline-body"><p>Oh! Maybe you're right that the combination of multi-line regex option and not anchoring the header/code patterns at start-of-string will be enough to remove the need for explicit ignoring entirely. I will experiment. (And if that doesn't work, I can still avoid using a regex for what is effectively find-next-newline.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-10-07 19:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_test/src/lib.rs</code>:38 on 2024-10-07 19:31</div>
+            <div class="timeline-body"><p>Whoops, I forgot to link to the insta code https://github.com/mitsuhiko/insta/blob/ad7baa69bf5fcd54554c81aa97f90c53d1277a2a/insta/src/macros.rs#L27</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_test/src/lib.rs</code>:40 on 2024-10-07 23:26</div>
+            <div class="timeline-body"><p>The syntax error was already shown by <code>unwrap</code>, but the file name was not; good catch!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-10-07 23:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-10-07 23:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_test/src/lib.rs</code>:38 on 2024-10-07 23:55</div>
+            <div class="timeline-body"><p>Looks like the Windows problem is that rstest calls <code>canonicalize</code> on each path, so we have to do the same before trying to strip the prefix, so that both paths have the UNC-whatever thingies in them.</p>
+<p>Switched back to using <code>CARGO_MANIFEST_DIR</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_test/src/matcher.rs</code>:197 on 2024-10-08 00:19</div>
+            <div class="timeline-body"><p>I took another look at <code>Matcher::matches</code> and was able to rework it slightly to avoid the per-assertion hashset allocation there. I still have <code>unmatched</code> as a Vec, though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-10-08 00:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-10-08 01:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_test/src/parser.rs</code>:418 on 2024-10-08 01:00</div>
+            <div class="timeline-body"><p>There are some places where I'm using <code>?</code> that don't work if I switch to just <code>Result&lt;T, String&gt;</code> in place of <code>anyhow</code>; it doesn't seem worth it to remove the anyhow dep. I changed the error assertions to your recommendation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-10-08 01:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_test/src/parser.rs</code>:139 on 2024-10-08 01:10</div>
+            <div class="timeline-body"><p>I don't think &quot;greedy&quot; parsing using the regex multiline option works, at least not cleanly, because it means whichever regex I check first (header or code) will just happily bypass/ignore the other one. We don't ever know whether the next item we expect is a header or a code block.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_test/src/parser.rs</code>:244 on 2024-10-08 01:18</div>
+            <div class="timeline-body"><p>As I commented above, multi-line option doesn't work (or at least would require significant changes to the parsing algorithm to make it work) because it's too greedy and will happily bypass things that shouldn't be bypassed.</p>
+<p>I switched to using <code>.find('\n')</code> and <code>.split_at</code> instead of <code>IGNORE_RE</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-10-08 01:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_test/src/parser.rs</code>:240 on 2024-10-08 01:46</div>
+            <div class="timeline-body"><p><code>HashSet::contains</code> returns a <code>bool</code>, not <code>Option&lt;T&gt;</code>, but this approach still works.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-10-08 01:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-10-08 01:50</div>
+            <div class="timeline-body"><p>I haven't made it through quite all the comments yet, but you're welcome to review the additional commits I've made so far. I haven't modified the initial commits (other than to rebase on main, which was a clean rebase), just added new ones for various review comments. So you should be able to just review the new commits rather than re-reviewing everything.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-10-08 05:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_test/src/assertion.rs</code>:125 on 2024-10-08 05:07</div>
+            <div class="timeline-body"><p>In the current iterator-based design, we do need to name the type, because it is a member of <code>LineAssertionsIterator</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-10-08 05:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_test/src/assertion.rs</code>:229 on 2024-10-08 05:22</div>
+            <div class="timeline-body"><p>I don't object to adding a feature to error if there are missing spaces in an assertion comment, but I don't want to do it in this PR. If someone is motivated to do it, or we have trouble enforcing our preferred style without it, we can do it as its own PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-10-08 06:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_test/src/diagnostic.rs</code>:68 on 2024-10-08 06:28</div>
+            <div class="timeline-body"><p>I did this. I don't think it's really simpler; it ends up being significantly more lines of code, not less, and just as many lifetimes. (Maybe you can observe some ways to simplify it further?)</p>
+<p>I think it's worth it for diagnostics regardless because we will often have more than one per line (every un-imported <code>reveal_type</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-10-08 06:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_test/src/assertion.rs</code>:151 on 2024-10-08 06:30</div>
+            <div class="timeline-body"><p>I don't think I'm going to do this for assertions in this PR. If someone is motivated to do it in another PR, that's fine, but I'm not really convinced there are strong reasons to do it at all. Based on doing this transformation for diagnostics, I don't see evidence that it will make the code any shorter or simpler. I think it was worth it for diagnostics because we will often have two per line, reducing the effectiveness of the smallvec; I don't think that's true here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-10-08 06:30</div>
+            <div class="timeline-body"><p>Ok, now I think all comments are addressed!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/Cargo.toml</code>:29 on 2024-10-08 06:35</div>
+            <div class="timeline-body"><p>This should be a dev dependency</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_test/src/parser.rs</code>:31 on 2024-10-08 06:43</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    pub(crate) fn tests(&amp;self) -&gt; MarkdownTestIterator&lt;'_, 's&gt; {
+        MarkdownTestIterator {
+            suite: self,
+            current_file_index: 0,
+        }
+    }
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_test/src/parser.rs</code>:185 on 2024-10-08 06:48</div>
+            <div class="timeline-body"><p>Nit: The name start together with <code>finish</code> implies that there's something in between. I would rename <code>start</code> to <code>parse_impl</code> or <code>parse_tests</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_test/src/parser.rs</code>:265 on 2024-10-08 06:50</div>
+            <div class="timeline-body"><p>Nit</p>
+<pre><code class="language-suggestion">                if config.insert(key, val).is_some() {
+                    return Err(anyhow::anyhow!(&quot;Duplicate config item `{}`.&quot;, item));
+                }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_test/src/matcher.rs</code>:251 on 2024-10-08 06:58</div>
+            <div class="timeline-body"><p>Nit: I would use <code>iter().position()</code> here, considering that it removes at most one diagnostic:</p>
+<pre><code class="language-suggestion">                let position = unmatched.iter().position(|diagnostic| {
+                    !error.rule.is_some_and(|rule| rule != diagnostic.rule())
+                        &amp;&amp; !error
+                            .column
+                            .is_some_and(|col| col != self.column(*diagnostic))
+                        &amp;&amp; !error
+                            .message_contains
+                            .is_some_and(|needle| !diagnostic.message().contains(needle))
+                });
+                if let Some(position) = position {
+                    // Could we use `swap_remove` here or does the order matter?
+                    unmatched.remove(position);
+                    true
+                } else {
+                    false
+                }
+            }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_test/src/matcher.rs</code>:271 on 2024-10-08 07:03</div>
+            <div class="timeline-body"><p>Nit, nit:</p>
+<pre><code class="language-suggestion">                let mut matched_revealed_type = None;
+                let mut matched_undefined_reveal = None;
+                let expected_reveal_type_message = format!(&quot;Revealed type is `{expected_type}`&quot;);
+                for (index, diagnostic) in unmatched.iter().enumerate() {
+                    if diagnostic.rule() == &quot;revealed-type&quot;
+                        &amp;&amp; diagnostic.message() == &amp;expected_reveal_type_message
+                    {
+                        matched_revealed_type = matched_revealed_type.or(Some(index));
+                    } else if diagnostic.rule() == &quot;undefined-reveal&quot; {
+                        matched_undefined_reveal = matched_undefined_reveal.or(Some(index));
+                    }
+
+                    if matched_revealed_type.is_some() &amp;&amp; matched_undefined_reveal.is_some() {
+                        break;
+                    }
+                }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_test/src/db.rs</code>:11 on 2024-10-08 07:05</div>
+            <div class="timeline-body"><p>Hehe, clever. Can't argue with no prefix being the wrong prefix :D</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_test/src/assertion.rs</code>:36 on 2024-10-08 07:06</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">//! ```
+
+use crate::db::Db;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-10-08 07:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-10-08 07:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_test/src/parser.rs</code>:418 on 2024-10-08 07:39</div>
+            <div class="timeline-body"><p>SGTM</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_test/src/matcher.rs</code>:196 on 2024-10-08 08:06</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        let mut unmatched: Vec&lt;_&gt; = diagnostics.iter().collect();
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_test/src/matcher.rs</code>:214 on 2024-10-08 08:07</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">            .source_location(ranged.start(), &amp;self.source)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_test/src/diagnostic.rs</code>:64 on 2024-10-08 08:14</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        if let Some(line_number) = current_line_number {
+            diags.lines.push(LineDiagnosticRange {
+                line_number,
+                diagnostic_range: start..diags.diagnostics.len(),
+            });
+        }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_test/src/assertion.rs</code>:256 on 2024-10-08 08:15</div>
+            <div class="timeline-body"><p>I would probably use a struct variant here:</p>
+<pre><code class="language-suggestion">    Revealed{ expected_ty: &amp;'a str },
+</code></pre>
+<p>but no strong opinion</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_test/src/parser.rs</code>:38 on 2024-10-08 08:16</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">/// A single MarkDown test inside a MarkDown file
+#[derive(Debug)]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_test/src/parser.rs</code>:70 on 2024-10-08 08:17</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">/// Iterator that yields all [`MarkdownTest`]s found inside a [`MarkdownTestSuite`]
+#[derive(Debug)]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_test/src/parser.rs</code>:115 on 2024-10-08 08:20</div>
+            <div class="timeline-body"><p>I can't remember now I'm skimming over a second time whether this represents a section of a MarkDown file or of a MarkDown test -- some docs would make this clearer!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_test/src/parser.rs</code>:134 on 2024-10-08 08:20</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">/// A &quot;Python file&quot; embedded as a code block in a [`MarkdownTest`]
+#[derive(Debug)]
+pub(crate) struct EmbeddedFile&lt;'s&gt; {
+    section: SectionId,
+    pub(crate) path: &amp;'s str,
+    pub(crate) lang: &amp;'s str,
+    pub(crate) code: &amp;'s str,
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_test/src/parser.rs</code>:138 on 2024-10-08 08:22</div>
+            <div class="timeline-body"><p>Does this have the same invariant as <code>parent()</code> below? Is it worth asserting that invariant in debug builds?</p>
+<pre><code class="language-suggestion">    fn pop(&amp;mut self) {
+        let popped = self.0.pop();
+        debug_assert_ne!(popped, None, &quot;Should never pop the implicit root section&quot;);
+    }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_test/src/parser.rs</code>:179 on 2024-10-08 08:24</div>
+            <div class="timeline-body"><p>Does this parse an entire <code>MarkdownTestSuite</code> or just a single <code>MarkdownTest</code>? Again, I can't remember now I'm skimming over for a second time; would be great to add a short doc-comment!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2024-10-08 08:24</div>
+            <div class="timeline-body"><p>A couple more nits, but nothing blocking! This is great!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_test/src/assertion.rs</code>:1 on 2024-10-08 10:18</div>
+            <div class="timeline-body"><p>I'm wondering if some or all of this doc-comment should actually be a <code>README.md</code> for the crate as a whole. It would be really useful to point contributors to some comprehensive docs on how we write our tests. We could always port an expanded version of this doc-comment to a README as a followup PR, though; this comment of mine isn't blocking.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_test/src/assertion.rs</code>:124 on 2024-10-08 10:19</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">/// Iterator that yields all assertions within a single embedded Python file
+#[derive(Debug)]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_test/src/diagnostic.rs</code>:14 on 2024-10-08 10:33</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">/// A container of diagnostics.
+///
+/// The struct upholds the invariant that all contained diagnostics
+/// are sorted by line number.
+///
+/// The container also keeps track of contiguous ranges of indices
+/// within the container. Each index range represents a sub-slice
+/// of the contained diagnostics, where the slice of diagnostics is
+/// a complete collection of all diagnostics emitted on a single
+/// line of source code in an embedded Python file in a MarkDown test.
+#[derive(Debug)]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_test/src/diagnostic.rs</code>:12 on 2024-10-08 10:36</div>
+            <div class="timeline-body"><p>maybe this would be a slightly clearer field name?</p>
+<pre><code class="language-suggestion">    line_ranges: Vec&lt;LineDiagnosticRange&gt;,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_test/src/diagnostic.rs</code>:27 on 2024-10-08 10:38</div>
+            <div class="timeline-body"><p>Is a stable sort important here? No tests fail if I do this:</p>
+<pre><code class="language-suggestion">        diagnostics.sort_unstable_by_key(|diagnostic_with_line| diagnostic_with_line.line_number);
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_test/src/diagnostic.rs</code>:81 on 2024-10-08 10:39</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    diagnostic_index_range: Range&lt;usize&gt;,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_test/src/diagnostic.rs</code>:116 on 2024-10-08 10:40</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">/// All diagnostics that occur on a single line of source
+/// code in an embedded Python file in a MarkDown test
+#[derive(Debug)]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-10-08 10:44</div>
+            <div class="timeline-body"><p>Some more nits, mostly on docs and naming. Feel free to respond/tackle some/all of these as followups after landing the PR, nothing blocking</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-10-08 10:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_test/src/assertion.rs</code>:1 on 2024-10-08 10:48</div>
+            <div class="timeline-body"><p>Good point. I mentioned that in my previous review but forgot to check if it's there. I strongly agree that we should document the test format.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-10-08 16:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_test/src/parser.rs</code>:265 on 2024-10-08 16:56</div>
+            <div class="timeline-body"><p>This seems like it might make a good clippy rule :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_test/src/matcher.rs</code>:251 on 2024-10-08 17:00</div>
+            <div class="timeline-body"><p>Ah, that's much better! TIL about <code>Iterator::position</code>. And yeah, we can use <code>swap_remove</code> too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-10-08 17:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-10-08 17:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_test/src/matcher.rs</code>:271 on 2024-10-08 17:12</div>
+            <div class="timeline-body"><p>Ah, thanks for catching the <code>format!</code> in loop, that was dumb.</p>
+<p>The one bit I didn't take here is removing the <code>is_none()</code> checks; I see that <code>.or(...)</code> also works fine, and I suspect the perf doesn't matter either way, but I find it a bit clearer to read the logic if we are explicit that we don't need to look for the diagnostics that we already found. The <code>.or()</code> is a bit more subtle that we look again, but just don't replace the index if we already have one.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-10-08 17:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_test/src/assertion.rs</code>:256 on 2024-10-08 17:16</div>
+            <div class="timeline-body"><p>I dunno, I tried both and I felt like the struct variant was more verbose with no real gain in clarity. There's no ambiguity about what this string could be.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-10-08 17:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_test/src/assertion.rs</code>:256 on 2024-10-08 17:18</div>
+            <div class="timeline-body"><p>fair enough!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-10-08 17:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_test/src/assertion.rs</code>:1 on 2024-10-08 17:30</div>
+            <div class="timeline-body"><p>Yeah, I forgot to mention this; I actually already started on a <code>README.md</code> for the test framework but it's not done yet. At this point I think I will finish it tomorrow and submit it as a separate PR. Definitely agree this is important.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-10-08 17:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_test/src/diagnostic.rs</code>:27 on 2024-10-08 17:36</div>
+            <div class="timeline-body"><p>Nope, good call; stable sort is not important. We attach no meaning to the order we receive the diagnostics in.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-10-08 17:41</div>
+            <div class="timeline-body"><p>Thanks for all the great review comments! Planning to merge once signal is green.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @carljm on 2024-10-08 19:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2024-10-08 19:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-10-08 19:33</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:00:07 UTC
+    </footer>
+</body>
+</html>

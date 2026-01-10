@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Implement `Type::Tuple` Comparisons - astral-sh/ruff #13712</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Implement <code>Type::Tuple</code> Comparisons</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/13712">#13712</a>
+        opened by <a href="https://github.com/cake-monotone">@cake-monotone</a>
+        on 2024-10-11 06:48
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/cake-monotone">@cake-monotone</a> on 2024-10-11 06:48</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR implements comparisons for (tuple, tuple).</p>
+<p>It will close #13688 and complete an item in #13618 once merged.</p>
+<h2>Test Plan</h2>
+<p>Basic tests are included for (tuple, tuple) comparisons.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @cake-monotone on 2024-10-11 06:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @cake-monotone on 2024-10-11 06:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @cake-monotone on 2024-10-11 06:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/cake-monotone">@cake-monotone</a> reviewed on 2024-10-11 06:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/cake-monotone">@cake-monotone</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2777 on 2024-10-11 06:50</div>
+            <div class="timeline-body"><p>I’m unsure if implementing this part in such a complex way is the best approach. Couldn’t we simply use <code>Some(KnownClass::Bool.to_instance(self.db))</code> instead? While the current implementation can provide powerful inference in limited specific cases, the cost of maintenance might outweigh the benefits. Feedback on this part would be appreciated.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-10-11 07:02</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2820 on 2024-10-11 16:03</div>
+            <div class="timeline-body"><p>It looks like this is not &quot;unsupported op between specific types&quot; case but rather &quot;not supported by this method&quot; case, so I don't think we should return <code>None</code> here. It's a programming error if this method is ever called with an op not in this list, so this should just be a debug assert instead.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2753 on 2024-10-11 16:07</div>
+            <div class="timeline-body"><p>I think in this case there is an implicit invariant that <code>eq_result_ty</code> should never be <code>None</code>, because equality comparison is supported between all types (it never raises <code>TypeError</code> at runtime). We could assert that, to be sure. Because  if somehow a <code>None</code> return were possible, we would want to propagate it so we get an unsupported operation diagnostic message.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2777 on 2024-10-11 16:07</div>
+            <div class="timeline-body"><p>same comment as above about <code>None</code> return</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2777 on 2024-10-11 16:09</div>
+            <div class="timeline-body"><p>This is a great question. My feeling is that it is worth it. I think once we get the logic correct the maintenance cost will not be high. And there will be a few common cases where this will definitely make a difference. For instance, we will need to implement detailed comparison of <code>sys.version_info</code> tuples anyway; I think it's much nicer if this just uses general support for tuple comparison inference rather than being handled as a special case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2845 on 2024-10-11 16:29</div>
+            <div class="timeline-body"><p>It is possible for an equality comparison to be supported but return a non-bool type. See the runtime behavior:</p>
+<pre><code>&gt;&gt;&gt; class A:
+...     def __eq__(self, other):
+...         return other
+...
+&gt;&gt;&gt; (1, A()) == (1, 4)
+True
+</code></pre>
+<p>Note the tuple comparison swallows the non-bool type from <code>A.__eq__</code> (converts it to bool) and ends up always returning <code>True</code> or <code>False</code>.</p>
+<p>So I think our handling here can/should be a bit more general, we can just call <code>Type::bool</code> on any returned type and consider it equal / not equal / unknown according to that <code>Truthiness</code> result? The only special case I think we might want is the Type::Todo propagation.</p>
+<p>And similar to the comments above, I think <code>Eq</code> comparison should never return <code>None</code>, so there also shouldn't be any case here where we return <code>None</code> explicitly; though we might pass through a <code>None</code> from the call back to <code>infer_binary_type_comparison</code> with a non-Eq op.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2802 on 2024-10-11 16:33</div>
+            <div class="timeline-body"><p>In this case I think if we end up comparing tuples with non-comparable types in them, as in this example:</p>
+<pre><code>&gt;&gt;&gt; (1,) &lt; (&quot;foo&quot;,)
+Traceback (most recent call last):
+  File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
+TypeError: '&lt;' not supported between instances of 'int' and 'str'
+</code></pre>
+<p>We will give a less informative diagnostic than the runtime does, because we just propagate a <code>None</code>, we don't propagate details about which two types were ultimately not orderable. That is, our diagnostic would say something like operator <code>&lt;</code> not supported between <code>tuple[int]</code> and <code>tuple[str]</code>, rather than saying (like runtime does) that the real problem is <code>int</code> vs <code>str</code>. (It's obvious in a minimal example of course, maybe not in a bigger one.)</p>
+<p>The fix for this will to have <code>infer_binary_type_comparison</code> return a <code>Result</code> rather than <code>Option</code>, where the <code>Err</code> variant carries with it the two types we could not compare, and then we use this information in the diagnostic.</p>
+<p>I think it's out of scope to do that in this PR, but I would like a test for the pass-through-None case here, that checks the diagnostic, and has a TODO for the more informative diagnostic.</p>
+<p>(I think currently the only case where <code>infer_binary_type_comparison</code> returns <code>None</code> is an <code>In</code> compare, which can't be triggered here. But it would be easy to add other &quot;mixed literal ordering&quot; compare cases that should always return <code>None</code>, to make this path possible.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:4305 on 2024-10-11 16:37</div>
+            <div class="timeline-body"><p>So just this week we landed a brand-new test framework, see the tests (as Markdown files) in <code>crates/red_knot_python_semantic/resources/mdtest</code> and the documentation in <code>crates/red_knot_test/README.md</code>. Ultimately we would like all of these type inference tests to be written in that form instead of as Rust tests like this. It would be great if we could add this new test as a Markdown test instead of here. It would mean adding a new file (let's say <code>.../mdtest/comparison/tuples.md</code>) that includes the Python snippets from this test as embedded Python code blocks, and use <code>reveal_type(...)</code> and <code># revealed: </code> assertions for the types.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:4332 on 2024-10-11 16:41</div>
+            <div class="timeline-body"><p>This shouldn't be unknown, it should be <code>Literal[False]</code> -- we know (or we should know) that <code>Literal[&quot;s&quot;]</code> and <code>Literal[2]</code> cannot be equal.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:4378 on 2024-10-11 16:47</div>
+            <div class="timeline-body"><p>I think we can have a TODO there, this should be inferrable as <code>Literal[False]</code> if we correctly inferred <code>1 == &quot;a&quot;</code> as <code>Literal[False]</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:4376 on 2024-10-11 16:51</div>
+            <div class="timeline-body"><p>Thanks for adding thorough tests!</p>
+<p>A few tests I'd like to add:</p>
+<ul>
+<li>Some tests of the diagnostic we get for unsupported comparisons inside a tuple, with TODO comment to improve that diagnostic, as discussed above.</li>
+<li>A test for the case shown above where <code>__eq__</code> returns a non-bool. (This will just be a Todo for now, unless we implement Type::Instance rich comparison support for <code>__eq__</code>, but it will be useful to have the test in place for future anyway.)</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> requested changes on 2024-10-11 16:51</div>
+            <div class="timeline-body"><p>This is really excellent, thank you!! A few comments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @carljm on 2024-10-11 19:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/cake-monotone">@cake-monotone</a> reviewed on 2024-10-13 06:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/cake-monotone">@cake-monotone</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2820 on 2024-10-13 06:43</div>
+            <div class="timeline-body"><p>I agree with your point. This is indeed a programming error, and makes meaning of <code>None</code> ambiguous.</p>
+<p>However, as you know, lexicographic order cannot be defined outside the comparison operators <code>==</code>, <code>!=</code>, <code>&lt;</code>, <code>&lt;=</code>, <code>&gt;</code>, and <code>&gt;=</code>. Even if we use <code>debug_assert!</code>, avoiding <code>None</code> would be impossible without using <code>unreachable!</code>.</p>
+<p>So, what if we change the type of the <code>op</code> parameter to prevent errors at compile-time instead?</p>
+<p>In the Python docs, comparison operations are divided into three categories: <a href="https://docs.python.org/3/reference/expressions.html#value-comparisons">(Python docs)</a></p>
+<ol>
+<li>Value Comparison</li>
+<li>Membership Test Comparison</li>
+<li>Identity Comparison</li>
+</ol>
+<p>What do you think about defining new enums and using it like this?</p>
+<pre><code class="language-rust">enum ValueCmpOp {
+    Eq,
+    NotEq,
+    Lt,
+    LtE,
+    Gt,
+    GtE,
+}
+
+//...
+
+enum CmpOpSubset {
+    Value(ValueCmpOp),
+    MembershipTest(MembershipTestCmpOp),
+    Identity(IdentityCmpOp),
+}
+
+impl From&lt;ast::CmpOp&gt; for CmpOpSubset {
+    // ...
+}
+
+fn infer_lexicographic_type_comparison(
+    &amp;mut self,
+    left: &amp;[Type&lt;'db&gt;],
+    op: ValueCmpOp,
+    right: &amp;[Type&lt;'db&gt;],
+) -&gt; Option&lt;Type&lt;'db&gt;&gt; {
+    // implementation
+}
+</code></pre>
+<p>This would allow for an implementation like this, where only the necessary op can be passed, eliminating the need to return None in <code>infer_lexicographic_type_comparison</code>:</p>
+<pre><code class="language-rust">match op.into() {
+    CmpOpSubset::Value(op) =&gt; {
+        self.infer_lexicographic_type_comparison(lhs_elements, op, rhs_elements)
+    }
+    CmpOpSubset::MembershipTest(op) =&gt; {
+        // ...
+    }
+    CmpOpSubset::Identity(op) =&gt; {
+        // ...
+    }
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/cake-monotone">@cake-monotone</a> reviewed on 2024-10-13 07:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/cake-monotone">@cake-monotone</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2777 on 2024-10-13 07:00</div>
+            <div class="timeline-body"><p>Thanks for the insight! I hadn’t thought about <code>sys.version_info</code>.
+I’m excited to see how powerful the type inference will become 👍</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @cake-monotone on 2024-10-14 12:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/cake-monotone">@cake-monotone</a> reviewed on 2024-10-15 16:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/cake-monotone">@cake-monotone</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2802 on 2024-10-15 16:36</div>
+            <div class="timeline-body"><p>Yes! If I understood correctly, I’ve added some test cases here:</p>
+<p><a href="https://github.com/astral-sh/ruff/pull/13712/files#diff-eff9f162b9d83ddfe43d3f6b28ed022767bc58d12d7ccb0c95d985e827471362R83-R103">MD Test - Comparison Unsupported Part</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/cake-monotone">@cake-monotone</a> reviewed on 2024-10-15 16:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/cake-monotone">@cake-monotone</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:4376 on 2024-10-15 16:36</div>
+            <div class="timeline-body"><ul>
+<li>unsupported comparison
+https://github.com/astral-sh/ruff/pull/13712/files#diff-eff9f162b9d83ddfe43d3f6b28ed022767bc58d12d7ccb0c95d985e827471362R83-R103</li>
+<li>non-bool
+(https://github.com/astral-sh/ruff/pull/13712/files#diff-eff9f162b9d83ddfe43d3f6b28ed022767bc58d12d7ccb0c95d985e827471362R83-R103)</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cake-monotone">@cake-monotone</a> on 2024-10-15 16:41</div>
+            <div class="timeline-body"><p>In addition to the changes mentioned in your review, I have enhanced the inference for <code>in</code> and <code>not In</code> comparisons to make it more powerful.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @cake-monotone on 2024-10-15 16:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @cake-monotone on 2024-10-15 16:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/cake-monotone">@cake-monotone</a> reviewed on 2024-10-15 16:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/cake-monotone">@cake-monotone</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:4378 on 2024-10-15 16:46</div>
+            <div class="timeline-body"><p>also in here!: https://github.com/astral-sh/ruff/pull/13712/files#diff-eff9f162b9d83ddfe43d3f6b28ed022767bc58d12d7ccb0c95d985e827471362R92-R96</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/comparison/tuples.md</code>:98 on 2024-10-15 17:59</div>
+            <div class="timeline-body"><pre><code class="language-suggestion"># TODO: should be Unknown and add more informative diagnostics
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/comparison/tuples.md</code>:159 on 2024-10-15 18:03</div>
+            <div class="timeline-body"><p>nit: backticks should be used for quoting code, not prose</p>
+<pre><code class="language-suggestion">&quot;Membership Test Comparisons&quot; refers to the operators `in` and `not in`.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/comparison/tuples.md</code>:182 on 2024-10-15 18:03</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">&quot;Identity Comparisons&quot; refers to `is` and `is not`.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2723 on 2024-10-15 18:07</div>
+            <div class="timeline-body"><p>As a general principle, I prefer to use full words in variable names -- and in this specific case I would somewhat strongly prefer to use &quot;count&quot; for these names</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2744 on 2024-10-15 18:14</div>
+            <div class="timeline-body"><p>If we rely on the invariant you describe in this comment, maybe we should do something like this? (Same applies for the next <code>debug_assert!</code> in this PR)</p>
+<pre><code class="language-suggestion">                            let eq_result = self.infer_binary_type_comparison(
+                                Type::Tuple(lhs),
+                                ast::CmpOp::Eq,
+                                *ty,
+                            )
+                            .expect(&quot;infer_binary_type_comparison should never return None for `CmpOp::Eq`&quot;);
+                            match eq_result {
+                                Type::Todo =&gt; return Type::Todo,
+                                ty =&gt; match ty.bool(self.db) {
+                                    Truthiness::AlwaysTrue =&gt; eq_cnt += 1,
+                                    Truthiness::AlwaysFalse =&gt; not_eq_cnt += 1,
+                                    Truthiness::Ambiguous =&gt; (),
+                                },
+                            }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2823 on 2024-10-15 18:22</div>
+            <div class="timeline-body"><p>if you do this then you don't have to dereference the types very time you use them in the loop body below:</p>
+<pre><code class="language-suggestion">        for (l_ty, r_ty) in left.iter().copied().zip(right.iter().copied()) {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2820 on 2024-10-15 18:43</div>
+            <div class="timeline-body"><p>I'd much prefer it if we could make the signature of this more type-safe; this makes me think that we should define a custom enum that this function accepts. Something like this? (The diff is relative to your PR branch)</p>
+<pre><code class="language-diff">--- a/crates/red_knot_python_semantic/src/types/infer.rs
++++ b/crates/red_knot_python_semantic/src/types/infer.rs
+@@ -2709,15 +2709,16 @@ impl&lt;'db&gt; TypeInferenceBuilder&lt;'db&gt; {
+                 let lhs_elements = lhs.elements(self.db).as_ref();
+                 let rhs_elements = rhs.elements(self.db).as_ref();
+ 
++                let mut lexicographic_type_comparison =
++                    |op| self.infer_lexicographic_type_comparison(lhs_elements, op, rhs_elements);
++
+                 match op {
+-                    ast::CmpOp::Eq
+-                    | ast::CmpOp::NotEq
+-                    | ast::CmpOp::Lt
+-                    | ast::CmpOp::LtE
+-                    | ast::CmpOp::Gt
+-                    | ast::CmpOp::GtE =&gt; {
+-                        self.infer_lexicographic_type_comparison(lhs_elements, op, rhs_elements)
+-                    }
++                    ast::CmpOp::Eq =&gt; lexicographic_type_comparison(RichCompareOperator::Eq),
++                    ast::CmpOp::NotEq =&gt; lexicographic_type_comparison(RichCompareOperator::Ne),
++                    ast::CmpOp::Lt =&gt; lexicographic_type_comparison(RichCompareOperator::Lt),
++                    ast::CmpOp::LtE =&gt; lexicographic_type_comparison(RichCompareOperator::Le),
++                    ast::CmpOp::Gt =&gt; lexicographic_type_comparison(RichCompareOperator::Gt),
++                    ast::CmpOp::GtE =&gt; lexicographic_type_comparison(RichCompareOperator::Ge),
+                     ast::CmpOp::In | ast::CmpOp::NotIn =&gt; {
+                         let mut eq_cnt = 0usize;
+                         let mut not_eq_cnt = 0usize;
+@@ -2757,7 +2758,7 @@ impl&lt;'db&gt; TypeInferenceBuilder&lt;'db&gt; {
+                         // - `[ast::CmpOp::IsNot]`: returns `true` if the elements are definitely unequal, otherwise `bool`
+                         let eq_result = self.infer_lexicographic_type_comparison(
+                             lhs_elements,
+-                            ast::CmpOp::Eq,
++                            RichCompareOperator::Eq,
+                             rhs_elements,
+                         );
+                         // In Python, if `__eq__` is not defined, it implicitly uses object's `__eq__`. Adding `debug_assert!` as a precaution.
+@@ -2800,25 +2801,9 @@ impl&lt;'db&gt; TypeInferenceBuilder&lt;'db&gt; {
+     fn infer_lexicographic_type_comparison(
+         &amp;mut self,
+         left: &amp;[Type&lt;'db&gt;],
+-        op: ast::CmpOp,
++        op: RichCompareOperator,
+         right: &amp;[Type&lt;'db&gt;],
+     ) -&gt; Option&lt;Type&lt;'db&gt;&gt; {
+-        if !matches!(
+-            op,
+-            ast::CmpOp::Eq
+-                | ast::CmpOp::NotEq
+-                | ast::CmpOp::Lt
+-                | ast::CmpOp::LtE
+-                | ast::CmpOp::Gt
+-                | ast::CmpOp::GtE
+-        ) {
+-            debug_assert!(
+-                false,
+-                &quot;Unsupported comparison operator for lexicographic type comparison.&quot;
+-            );
+-            return None;
+-        }
+-
+         // Compare paired elements from left and right slices
+         for (l_ty, r_ty) in left.iter().zip(right.iter()) {
+             let eq_result = self.infer_binary_type_comparison(*l_ty, ast::CmpOp::Eq, *r_ty);
+@@ -2836,7 +2821,7 @@ impl&lt;'db&gt; TypeInferenceBuilder&lt;'db&gt; {
+                     Truthiness::AlwaysTrue =&gt; continue,
+                     // Types are not equal, perform the specified comparison and return the result
+                     Truthiness::AlwaysFalse =&gt; {
+-                        return self.infer_binary_type_comparison(*l_ty, op, *r_ty)
++                        return self.infer_binary_type_comparison(*l_ty, ast::CmpOp::Eq, *r_ty)
+                     }
+                     // If the intermediate result is abiguous, we cannot determine the final result as BoolLiteral.
+                     // In this case, we simply return a bool instance.
+@@ -2851,13 +2836,12 @@ impl&lt;'db&gt; TypeInferenceBuilder&lt;'db&gt; {
+         let (l_len, r_len) = (left.len(), right.len());
+ 
+         Some(Type::BooleanLiteral(match op {
+-            ast::CmpOp::Eq =&gt; l_len == r_len,
+-            ast::CmpOp::NotEq =&gt; l_len != r_len,
+-            ast::CmpOp::Lt =&gt; l_len &lt; r_len,
+-            ast::CmpOp::LtE =&gt; l_len &lt;= r_len,
+-            ast::CmpOp::Gt =&gt; l_len &gt; r_len,
+-            ast::CmpOp::GtE =&gt; l_len &gt;= r_len,
+-            _ =&gt; return None,
++            RichCompareOperator::Eq =&gt; l_len == r_len,
++            RichCompareOperator::Ne =&gt; l_len != r_len,
++            RichCompareOperator::Lt =&gt; l_len &lt; r_len,
++            RichCompareOperator::Le =&gt; l_len &lt;= r_len,
++            RichCompareOperator::Gt =&gt; l_len &gt; r_len,
++            RichCompareOperator::Ge =&gt; l_len &gt;= r_len,
+         }))
+     }
+ 
+@@ -3318,6 +3302,16 @@ impl&lt;'db&gt; TypeInferenceBuilder&lt;'db&gt; {
+     }
+ }
+ 
++#[derive(Debug, Clone, Copy, PartialEq, Eq)]
++enum RichCompareOperator {
++    Eq,
++    Ne,
++    Gt,
++    Ge,
++    Lt,
++    Le,
++}
++
+</code></pre>
+<p>I see this is similar to the idea you mentioned in https://github.com/astral-sh/ruff/pull/13712#discussion_r1798097932!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-10-15 18:44</div>
+            <div class="timeline-body"><p>Thanks! Some comments below:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-10-16 05:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2851 on 2024-10-16 05:40</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        let (left_len, right_len) = (left.len(), right.len());
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-10-16 05:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2820 on 2024-10-16 05:46</div>
+            <div class="timeline-body"><p>And, we could avoid the <code>Option</code> in the return type, I think? Or, we could make it a hard panic instead of a <code>debug_assert</code> and add it to the function docs. Regardless of the solution, I'd prefer to avoid the return type to be an <code>Option</code> as I think the <code>None</code> variant is returned only for unsupported comparison operator.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/cake-monotone">@cake-monotone</a> reviewed on 2024-10-16 08:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/cake-monotone">@cake-monotone</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2820 on 2024-10-16 08:30</div>
+            <div class="timeline-body"><blockquote>
+<p>I'd much prefer it if we could make the signature of this more type-safe; this makes me think that we should define a custom enum that this function accepts. Something like this? (The diff is relative to your PR branch)</p>
+<p>...</p>
+<p>I see this is similar to the idea you mentioned in <a href="https://github.com/astral-sh/ruff/pull/13712#discussion_r1798097932">#13712 (comment)</a>!</p>
+</blockquote>
+<p>Looks great! I think this enum could also be useful for implementing inference for rich-comparisons. I’ve applied it!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/cake-monotone">@cake-monotone</a> reviewed on 2024-10-16 08:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/cake-monotone">@cake-monotone</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2820 on 2024-10-16 08:38</div>
+            <div class="timeline-body"><blockquote>
+<p>And, we could avoid the <code>Option</code> in the return type, I think? Or, we could make it a hard panic instead of a <code>debug_assert</code> and add it to the function docs. Regardless of the solution, I'd prefer to avoid the return type to be an <code>Option</code> as I think the <code>None</code> variant is returned only for unsupported comparison operator.</p>
+</blockquote>
+<p>Hmm, I don’t think we can avoid returning an <code>Option</code> in <code>infer_lexicographic_type_comparison</code>. Like <code>(1, &quot;hello&quot;) &lt; (1, 2)</code>, we need to propagate <code>None</code> from <code>infer_binary_type_comparison</code>. <code>None</code> can be returned in this line: <a href="https://github.com/astral-sh/ruff/pull/13712/files#diff-65c2c229c88f4021638c996a7496384000d9e7b53b08426b34e92f120bd30b06R2807">here</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-10-16 08:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/comparison/tuples.md</code>:98 on 2024-10-16 08:51</div>
+            <div class="timeline-body"><pre><code class="language-suggestion"># TODO: should be Unknown and add more informative diagnostics
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/cake-monotone">@cake-monotone</a> reviewed on 2024-10-16 08:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/cake-monotone">@cake-monotone</a> on <code>crates/red_knot_python_semantic/resources/mdtest/comparison/tuples.md</code>:98 on 2024-10-16 08:52</div>
+            <div class="timeline-body"><p>Oh my gosh, thank you!! I'll fix it soon.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/cake-monotone">@cake-monotone</a> reviewed on 2024-10-16 08:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/cake-monotone">@cake-monotone</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2820 on 2024-10-16 08:53</div>
+            <div class="timeline-body"><p>I think we can merge this with the discussion in https://github.com/astral-sh/ruff/pull/13712#discussion_r1801739049</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-10-16 08:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/comparison/tuples.md</code>:98 on 2024-10-16 08:54</div>
+            <div class="timeline-body"><p>hehe, no worries</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2786 on 2024-10-16 10:53</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    /// it returns `bool`. Returns `None` if the comparison is not supported.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2816 on 2024-10-16 10:54</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        // At this point, the lengths of the two slices may be different, but the prefix of
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2809 on 2024-10-16 10:57</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                    // If the intermediate result is ambiguous, we cannot determine the final result as BooleanLiteral.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2820 on 2024-10-16 10:59</div>
+            <div class="timeline-body"><blockquote>
+<p>Hmm, I don’t think we can avoid returning an <code>Option</code> in <code>infer_lexicographic_type_comparison</code>. Like <code>(1, &quot;hello&quot;) &lt; (1, 2)</code>, we need to propagate <code>None</code> from <code>infer_binary_type_comparison</code>. <code>None</code> can be returned in this line: <a href="https://github.com/astral-sh/ruff/pull/13712/files#diff-65c2c229c88f4021638c996a7496384000d9e7b53b08426b34e92f120bd30b06R2807">here</a>.</p>
+</blockquote>
+<p>Yes, this seems more tricky/requiring a larger refactor... I'm okay with leaving it for now, but maybe @dhruvmanila sees an easy solution :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-10-16 10:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2024-10-16 11:00</div>
+            <div class="timeline-body"><p>Thanks! This LGTM now, but I'd love a second approval from either @carljm or @dhruvmanila</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2820 on 2024-10-16 11:31</div>
+            <div class="timeline-body"><p>Returning <code>Option</code> here is correct. <code>None</code> signifies &quot;unsupported comparison&quot; and should emit a diagnostic. We may want to refactor to have <code>infer_binary_type_comparison</code>, and this method, return a <code>Result</code> instead of an <code>Option</code>, for the sake of a more informative diagnostic (that tells us precisely which two inner types can't be compared, rather than just telling us the two tuple types can't be compared), as I mentioned in another comment. But this wouldn't be a correctness fix, just a more-informative-diagnostics fix.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-10-16 11:34</div>
+            <div class="timeline-body"><p>This looks good to me, modulo a few minor comment nits. Thanks for your work here!</p>
+<p>I would like better test coverage (fewer todos). For example, right now the &quot;unsupported comparison&quot; case isn't really covered by the tests, because we don't have any rich-comparison operators implemented to return <code>None</code> from <code>infer_binary_type_comparison</code> for unsupported comparisons yet.</p>
+<p>But the code here looks correct, so I'm happy to merge it as-is; the effective test coverage here will improve as we flesh out <code>infer_binary_type_comparison</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @carljm on 2024-10-16 11:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2024-10-16 11:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-10-16 13:57</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:00:08 UTC
+    </footer>
+</body>
+</html>

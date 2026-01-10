@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`ruff_benchmark`: open all `tomllib` files in the red-knot benchmark - astral-sh/ruff #13589</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1><code>ruff_benchmark</code>: open all <code>tomllib</code> files in the red-knot benchmark</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/13589">#13589</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2024-10-01 13:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-01 13:34</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>I noticed that the red-knot benchmark was reporting different diagnostics on <code>tomllib</code> than red-knot did if you just ran red-knot from the CLI on the <code>tomllib</code> copied-and-pasted into an empty directory locally. Specifically, the following diagnostic was not being reported by the red-knot benchmark, but <em>was</em> being reported if you just ran red-knot locally:</p>
+<pre><code>/src/tomllib/__init__.py:10:30: Name '__name__' used when not defined.
+</code></pre>
+<p>After some investigation, I realised that the culprit was this line here:</p>
+<p>https://github.com/astral-sh/ruff/blob/2a36b47f1395284d32ae2015e6c626f242922224/crates/ruff_benchmark/benches/red_knot.rs#L76</p>
+<p>&quot;Opening&quot; the <code>tomllib/_parser.py</code> file means that red-knot will only check <code>_parser.py</code> and files that <code>_parser.py</code> depends on. <code>_parser.py</code> doesn't depend on <code>__init__.py</code>, so <code>__init__.py</code> isn't being checked at all by the red-knot benchmark currently. This PR therefore changes the benchmark so that all <code>tomllib</code> files are &quot;opened&quot;, and thus all <code>tomllib</code> files are checked.</p>
+<p>The first commit in this PR should have no impact on behaviour: it's just some refactoring I did so that I could see more clearly which files were being downloaded by the benchmark and copied into the <code>tomllib</code> directory used by the benchmark.</p>
+<h2>Test Plan</h2>
+<p><code>cargo bench -p ruff_benchmark -- red_knot</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2024-10-01 13:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2024-10-01 13:40</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/redknot-bench-init">CodSpeed Performance Report</a></h2>
+<h3>Merging #13589 will <strong>degrade performances by 28.18%</strong></h3>
+<p><sub>Comparing <code>redknot-bench-init</code> (f5f8ae9) with <code>main</code> (2a36b47)</sub></p>
+<h3>Summary</h3>
+<p><code>❌ 2 (👁 2)</code> regressions
+<code>✅ 30</code> untouched benchmarks</p>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Benchmark | <code>main</code> | <code>redknot-bench-init</code> | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| 👁 | <code>red_knot_check_file[cold]</code> | 60.3 ms | 63.9 ms | -5.51% |
+| 👁 | <code>red_knot_check_file[incremental]</code> | 3.1 ms | 4.3 ms | -28.18% |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "`ruff_benchmark`: open `__init__.py` and `_parser.py` in the red-knot benchmark" to "`ruff_benchmark`: open all `tomllib` files in the red-knot benchmark" by @AlexWaygood on 2024-10-01 13:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @AlexWaygood on 2024-10-01 13:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-10-01 14:04</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-01 14:49</div>
+            <div class="timeline-body"><p>I'm okay with this change but What's the motivation for checking all files? Or why is it important for the benchmark to check all files?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-01 14:56</div>
+            <div class="timeline-body"><blockquote>
+<p>What's the motivation for checking all files? Or why is it important for the benchmark to check all files?</p>
+</blockquote>
+<p>Two reasons I guess, but neither of them are directly related to the benchmark's function &quot;as a benchmark&quot;:</p>
+<ol>
+<li>I was trying to repro the issues Charlie was seeing in https://github.com/astral-sh/ruff/pull/13579#issuecomment-2384751176, and it was just very confusing to me that I was seeing different diagnostics when running red-knot on <code>tomllib</code> directly than the ones that we were asserting in the benchmark. It's much easier to understand what's going on if the benchmark reports the same diagnostics that you get when executing red-knot on the directory from the CLI.</li>
+<li>Probably we should add a separate test for this that just runs red-knot on <code>tomllib</code> as part of our test suite -- but this benchmark, as well as measuring performance, also serves as a really useful integration test that shows the kinds of false positives we currently emit on well-written real-world code. I sort-of think about the diagnostic list in the benchmark file as something of a todo list.</li>
+</ol>
+<p>Also -- and I suppose this <em>is</em> more related to its function as a benchmark -- I assumed that the benchmark <em>was</em> indicative of &quot;the time it takes to check the <code>tomllib</code> directory&quot;. I suppose it doesn't really matter so much if that's <em>not</em> what it's indicative of -- but it does feel, again, slightly less confusing to me if it checks the whole directory.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-10-01 16:45</div>
+            <div class="timeline-body"><p>This seems fine to me; I don't think it matters a lot either way for the benchmark, and I agree this is less confusing when looking at the error output.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2024-10-01 16:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2024-10-01 16:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-10-01 16:47</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:00:07 UTC
+    </footer>
+</body>
+</html>

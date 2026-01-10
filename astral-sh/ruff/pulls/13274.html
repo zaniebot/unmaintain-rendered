@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ci(docker): incorporate docker release enhancements from uv - astral-sh/ruff #13274</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>ci(docker): incorporate docker release enhancements from uv</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/13274">#13274</a>
+        opened by <a href="https://github.com/samypr100">@samypr100</a>
+        on 2024-09-06 23:33
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/samypr100">@samypr100</a> on 2024-09-06 23:33</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR updates <code>ruff</code> to match <code>uv</code> updated <a href="https://github.com/astral-sh/uv/blob/main/.github/workflows/build-docker.yml">docker releases approach</a>. It's a combined PR with changes from these PR's</p>
+<ul>
+<li>https://github.com/astral-sh/uv/pull/6053</li>
+<li>https://github.com/astral-sh/uv/pull/6556</li>
+<li>https://github.com/astral-sh/uv/pull/6734</li>
+<li>https://github.com/astral-sh/uv/pull/7568</li>
+</ul>
+<p>Summary of changes / features</p>
+<ol>
+<li><p>This change would publish an additional tags that includes only <code>major.minor</code>.</p>
+<p>For a release with <code>x.y.z</code>, this would publish the tags:</p>
+<ul>
+<li>ghcr.io/astral-sh/ruff:latest</li>
+<li>ghcr.io/astral-sh/ruff:x.y.z</li>
+<li>ghcr.io/astral-sh/ruff:x.y</li>
+</ul>
+</li>
+<li><p>Parallelizes multi-platform builds using multiple workers (hence the new docker-build / docker-publish jobs), which cuts docker releases time in half.</p>
+</li>
+<li><p>This PR introduces additional images with the ruff binaries from scratch for both amd64/arm64 and makes the mapping easy to configure by generating the Dockerfile on the fly. This approach focuses on minimizing CI time by taking advantage of dedicating a worker per mapping (20-30s~ per job). For example, on release <code>x.y.z</code>, this will publish the following image tags with format <code>ghcr.io/astral-sh/ruff:{tag}</code> with manifests for both amd64/arm64. This also include <code>x.y</code> tags for each respective additional tag. Note, this version does not include the python based images, unlike <code>uv</code>.</p>
+<ul>
+<li>From <strong>scratch</strong>: <code>latest</code>, <code>x.y.z</code>, <code>x.y</code> (currently being published)</li>
+<li>From <strong>alpine:3.20</strong>: <code>alpine</code>, <code>alpine3.20</code>, <code>x.y.z-alpine</code>, <code>x.y.z-alpine3.20</code></li>
+<li>From <strong>debian:bookworm-slim</strong>: <code>debian-slim</code>, <code>bookworm-slim</code>, <code>x.y.z-debian-slim</code>, <code>x.y.z-bookworm-slim</code></li>
+<li>From <strong>buildpack-deps:bookworm</strong>: <code>debian</code>, <code>bookworm</code>, <code>x.y.z-debian</code>, <code>x.y.z-bookworm</code></li>
+</ul>
+</li>
+<li><p>This PR also fixes <code>org.opencontainers.image.version</code> for all tags (including the one from <code>scratch</code>) to contain the right release version instead of branch name <code>main</code> (current behavior).</p>
+<pre><code>&gt; docker inspect ghcr.io/astral-sh/ruff:0.6.4 | jq -r '.[0].Config.Labels'
+{
+  ...
+  &quot;org.opencontainers.image.version&quot;: &quot;main&quot;
+}
+</code></pre>
+</li>
+</ol>
+<p>Closes https://github.com/astral-sh/ruff/issues/13481</p>
+<h2>Test Plan</h2>
+<p>Approach mimics <code>uv</code> with almost no changes so risk is low but I still tested the full workflow.</p>
+<ul>
+<li>I have a working CI release pipeline on my fork run https://github.com/samypr100/ruff/actions/runs/10966657733</li>
+<li>The resulting images were published to https://github.com/samypr100/ruff/pkgs/container/ruff</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2024-09-06 23:33</div>
+            <div class="timeline-body"><p>CC @zanieb</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @samypr100 on 2024-09-06 23:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2024-09-07 18:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @MichaReiser on 2024-09-08 07:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jvacek">@jvacek</a> on 2024-10-22 12:04</div>
+            <div class="timeline-body"><p>@zanieb does this need docs for gitlab again?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-22 12:05</div>
+            <div class="timeline-body"><p>We haven't restructured the Ruff documentation to have integration guides like uv, so... eventually but not yet.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2024-10-22 12:06</div>
+            <div class="timeline-body"><p>Thanks for your patience Sam!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2024-10-22 12:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-10-22 12:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">release</span> added by @dhruvmanila on 2024-10-24 14:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ci</span> added by @dhruvmanila on 2024-10-24 14:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-10-27 13:49</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:00:06 UTC
+    </footer>
+</body>
+</html>

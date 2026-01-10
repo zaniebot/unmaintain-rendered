@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Slice expression types &amp; subscript expressions with slices - astral-sh/ruff #13917</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Slice expression types &amp; subscript expressions with slices</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/13917">#13917</a>
+        opened by <a href="https://github.com/sharkdp">@sharkdp</a>
+        on 2024-10-24 18:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/sharkdp">@sharkdp</a> on 2024-10-24 18:10</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<ul>
+<li>Add a new <code>Type::SliceLiteral</code> variant</li>
+<li>Infer <code>SliceLiteral</code> types for slice expressions, such as <code>&lt;int-literal&gt;:&lt;int-literal&gt;:&lt;int-literal&gt;</code>.</li>
+<li>Infer &quot;sliced&quot; literal types for subscript expressions using slices, such as <code>&lt;string-literal&gt;[&lt;slice-literal&gt;]</code>.</li>
+<li>Infer types for expressions involving slices of tuples: <code>&lt;tuple&gt;[&lt;slice-literal&gt;]</code>.</li>
+</ul>
+<p>closes #13853</p>
+<h2>Eye candy</h2>
+<pre><code class="language-py">t = (1, (), True, &quot;a&quot;, None, b&quot;b&quot;)
+
+reveal_type(t[-2::-2])  # revealed: tuple[None, Literal[True], Literal[1]]
+</code></pre>
+<h2>Test Plan</h2>
+<ul>
+<li>Unit tests for indexing/slicing utility functions</li>
+<li>Markdown-based tests for<ul>
+<li>Subscript expressions <code>tuple[slice]</code></li>
+<li>Subscript expressions <code>string_literal[slice]</code></li>
+<li>Subscript expressions <code>bytes_literal[slice]</code></li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @sharkdp on 2024-10-24 18:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-10-24 18:23</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-10-28 11:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:893 on 2024-10-28 11:45</div>
+            <div class="timeline-body"><p><code>slice</code> appears to have no custom <code>__bool__</code> logic; even empty slices and things like <code>slice(None, None)</code> are <code>True</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1830 on 2024-10-28 11:52</div>
+            <div class="timeline-body"><p>Another option I considered was to inline this within <code>Type</code>. This would increase the size of <code>Type</code>. Unless we think it's okay to restrict indices for literal slice types to <code>i32</code>. Which might be fine. It seems unlikely that someone has a &gt;2 GiB literal string inside their Python source code <em>and still</em> cares about inferring a static type for something like <code>str_literal[4_294_967_297:]</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-10-28 11:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-10-28 11:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1830 on 2024-10-28 11:59</div>
+            <div class="timeline-body"><p>I think using an <code>i32</code> is probably okay. Ruff/Red Knot also only supports files <code>len(source) = u32::MAX</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-10-28 13:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1505 on 2024-10-28 13:08</div>
+            <div class="timeline-body"><p>Do we have a policy for choosing these names?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-10-28 13:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3215 on 2024-10-28 13:14</div>
+            <div class="timeline-body"><p>This looks like a regression in terms of (1) code quality and (2) functionality, as we previously supported indices up to i64 size. However, this had some drawbacks on 32 bit platforms. If the (absolute value of the) <code>i64</code> index did not fit into <code>usize</code>, we would show an &quot;index out of bounds error&quot;, even though we hadn't even checked the size of the input. It's also highly unlikely that someone would construct a tuple/literal-string/literal-bytes object &gt; 2GiB in size and still care about subscript type inference on that expression. Restricting indices to 32bit makes the error handling much easier, as the index-&gt;usize conversion can not fail.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-10-28 13:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3236 on 2024-10-28 13:15</div>
+            <div class="timeline-body"><p>I would have preferred to explicitly match on <code>Err(StepSizeZero)</code> here, but clippy forces me to use <code>if let … else …</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-10-28 13:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3236 on 2024-10-28 13:22</div>
+            <div class="timeline-body"><p>hehe... that's one of the pedantic lint rules that I'm very keen on disabling if I can find the necessary support.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-10-28 14:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3273 on 2024-10-28 14:05</div>
+            <div class="timeline-body"><p>This additional allocation is unfortunate, but <code>.chars()</code> is not an <code>ExactSizeIterator</code> (Unicode…), and I currently don't see how we can implement the most general form of slicing (e.g. something like <code>string_literal[3:-5]</code>) on <code>DoubleEndedIterator</code> alone. I could avoid the allocation by computing the length upfront (<code>O(n)</code>), but I'm not sure if it's worth investing more time into this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-10-28 14:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/subscript/bytes.md</code>:39 on 2024-10-28 14:33</div>
+            <div class="timeline-body"><p>I didn't bother repeating all tests here, since that seems sufficiently covered by the tuple/string cases + the slicing unit tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-10-28 14:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/subscript/string.md</code>:29 on 2024-10-28 14:34</div>
+            <div class="timeline-body"><p>These tests are not exhaustive in terms of checking slicing functionality, as we do that in the unit tests already. Let me know if you think otherwise.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3249 on 2024-10-28 14:40</div>
+            <div class="timeline-body"><p>These <code>.try_from(…).unwrap()</code>s don't look great. <code>int as i32</code> causes clippy to raise a lint, as it can't detect that it's safe. Let me know if you have any ideas on how to improve this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-10-28 14:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/display.rs</code>:109 on 2024-10-28 14:46</div>
+            <div class="timeline-body"><p>This code isn't hot so unlikely that it's worth it but it's unfortunate that we have to allocate a <code>String</code> just to write the literal</p>
+<pre><code class="language-suggestion">							f.push_str(&quot;slice[&quot;)?;
+							if let Some(start) = slice.start(self.db) {
+								write!(f, &quot;Literal[{start}]&quot;)?;
+							} else {
+								f.push_str(&quot;None&quot;)?;
+							}
+							
+							f.push_str(&quot;, &quot;)?;
+							
+							if let Some(stop) = slice.stop(self.db) {
+								write!(f, &quot;Literal[{stop}]&quot;)?;
+							} else {
+								f.push_str(&quot;None&quot;)?;
+							}
+							
+							if let Some(step) = slice.step(self.db) {
+								write!(f, &quot;, Literal[{step}])?;
+							}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1505 on 2024-10-28 14:47</div>
+            <div class="timeline-body"><p>Not yet. But it's probably going to follow Ruff's naming schema (<a href="https://www.notion.so/astral-sh/Rule-Guidance-1324991853284188ae3bc15f08c07afa#482c66b35f6a4747a635d0066ff9dcad">internal document</a>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3249 on 2024-10-28 14:49</div>
+            <div class="timeline-body"><p>I wouldn't mind using <code>#[allow(lint, reason=&quot;Checked in branch arm&quot;)]</code> or changing it to use <code>expect</code> and mention the reason there.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3273 on 2024-10-28 14:49</div>
+            <div class="timeline-body"><p>I think this is fine, considering that slices into strings should be rare. We can optimize if this shows up in profiles.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/util/subscript.rs</code>:68 on 2024-10-28 14:51</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">            Nth::FromEnd(nth_rev) =&gt; self.nth_back(nth_rev).ok_or(OutOfBoundsError),
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/util/subscript.rs</code>:89 on 2024-10-28 14:52</div>
+            <div class="timeline-body"><p>I haven't looked into the usages of the <code>PySlice</code> type but would it make sense to implement it for <code>&amp;[T]</code> instead of implementing it on iterators? Or are there cases where we only have an iterator?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/util/subscript.rs</code>:126 on 2024-10-28 14:53</div>
+            <div class="timeline-body"><p>I think you could use <code>Itertools::iter::Either</code> to return one or the other iterator type without allocating</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-10-28 14:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-10-28 17:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1830 on 2024-10-28 17:54</div>
+            <div class="timeline-body"><p>Switched to <code>i32</code> now as this also solves some problems on 32 bit platforms (see other comment). It's still <code>salsa::interned</code> for now, as the current size (2 × <code>Option&lt;i32&gt;</code> + 1 × <code>Option&lt;NonZero&lt;i32&gt;&gt;</code> = 20 byte) is still larger than <code>Type</code> at the moment (16 byte). If we absolutely want to avoid having this <code>interned</code>, we could certainly also go lower with the index range or do some more questionable hacks like using <code>i32::MIN</code> as a sentinel value instead of using <code>Option</code>, …</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-10-28 18:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1505 on 2024-10-28 18:24</div>
+            <div class="timeline-body"><p>Ok, I tried something else for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-10-28 18:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/subscript/bytes.md</code>:44 on 2024-10-28 18:24</div>
+            <div class="timeline-body"><p>This is a weird edge case that pyright and mypy do not detect (mypy <a href="https://mypy-play.net/?mypy=master&amp;python=3.13&amp;gist=2e56de8c5fc30cf5e37fe15348c341bf">crashes</a>). I'm not sure if it's worth having a separate diagnostic for, but it was easily to implement. We could also ignore it and simplify infer a non-literal type (<code>slice</code>) for something like <code>::0</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-10-28 18:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/util/subscript.rs</code>:89 on 2024-10-28 18:52</div>
+            <div class="timeline-body"><p>Yes, thanks. We only use it on slices if we are okay with <code>collect</code>ing the chars in the <code>LiteralString</code> case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-10-28 18:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/util/subscript.rs</code>:126 on 2024-10-28 18:53</div>
+            <div class="timeline-body"><p>Oh, cool — I didn't know about <code>itertools::Either</code>! Needed to adapt the zero-case a bit to also fit into the <code>Either::Left</code> side, but that's okay.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @sharkdp on 2024-10-28 19:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @sharkdp on 2024-10-28 19:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @sharkdp on 2024-10-28 19:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-10-28 20:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3433 on 2024-10-28 20:35</div>
+            <div class="timeline-body"><p>In a previous version of this PR, I deferred reporting this error to the usage site where we try to slice a string/bytes-literal or a tuple. Raising the diagnostic here is too early. The slice might be used on a type with a custom <code>__getitem__</code> impl that makes use of <code>0</code> as a step size somehow.</p>
+<p>I'll fix this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/subscript/bytes.md</code>:44 on 2024-10-29 02:36</div>
+            <div class="timeline-body"><p>Seems useful to detect it when we can, but I agree with your comment below that we should mirror the runtime in when its an error, and when it isn't (you can define a custom type that takes a zero-step slice and doesn't crash). Which I think means (considering &quot;define a custom type&quot; also includes subclasses of commonly sliceable builtin types) we would only actually issue an error when slicing a literal type. Which is the case here, so these assertions look good.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/subscript/string.md</code>:29 on 2024-10-29 02:38</div>
+            <div class="timeline-body"><p>No, that seems fine!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-10-29 02:53</div>
+            <div class="timeline-body"><p>Looks good to me, modulo the already-commented step-zero error change!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @sharkdp on 2024-10-29 09:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2024-10-29 09:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-10-29 09:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3423 on 2024-10-29 16:10</div>
+            <div class="timeline-body"><p>I guess you could avoid the <code>.expect()</code> call here by doing something like:</p>
+<pre><code class="language-suggestion">            Some(Type::IntLiteral(n)) =&gt; match i32::try_from(n) {
+                Ok(i) =&gt; SliceArg::Arg(Some(i)),
+                Err(_) =&gt; SliceArg::Unsupported
+            }
+</code></pre>
+<p>And probably similar elsewhere. But it's probably not very important; the way you've done it is obviously safe</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/util/subscript.rs</code>:21 on 2024-10-29 16:26</div>
+            <div class="timeline-body"><p>nit: I probably would have written this as</p>
+<pre><code class="language-suggestion">    usize::try_from(index)
+        .expect(&quot;Should only ever pass a positive integer to `from_nonnegative_i32`&quot;)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3233 on 2024-10-29 16:31</div>
+            <div class="timeline-body"><p>nit: we could probably avoid the <code>.as_ref()</code> call here and elsewhere if we implemented <code>PySlice</code> for <code>&amp;Box&lt;[T]&gt;</code> as well as <code>&amp;[T]</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3271 on 2024-10-29 16:40</div>
+            <div class="timeline-body"><p>We seem to do this several times -- is it worth adding an <code>as_tuple</code> method to <code>SliceLiteralType</code>?</p>
+<pre><code class="language-rs">impl&lt;'db&gt; SliceLiteralType&lt;'db&gt; {
+    fn as_tuple(&amp;self, db: &amp;dyn Db) -&gt; (Option&lt;i32&gt;, Option&lt;i32&gt;, Option&lt;i32&gt;) {
+        (self.start(db), self.stop(db), self.step(db))
+    }
+}
+</code></pre>
+<p>And then this could be just</p>
+<pre><code class="language-suggestion">                let (start, stop, step) = slice_ty.as_tuple(self.db)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-10-29 17:16</div>
+            <div class="timeline-body"><p>Nice, this is great! Some post-merge review nitpicks below, but nothing major.</p>
+<p>One other more significant thing to note is that it looks like we don't catch this error currently, and ideally at some point we will:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; &quot;foo&quot;[&quot;bar&quot;:&quot;baz&quot;]
+Traceback (most recent call last):
+  File &quot;&lt;python-input-0&gt;&quot;, line 1, in &lt;module&gt;
+    &quot;foo&quot;[&quot;bar&quot;:&quot;baz&quot;]
+    ~~~~~^^^^^^^^^^^^^
+TypeError: slice indices must be integers or None or have an __index__ method
+</code></pre>
+<p>It seems we just infer <code>&quot;foo[&quot;bar&quot;:&quot;baz&quot;]</code> as being <code>@Todo</code>: this is because we infer <code>&quot;bar&quot;:&quot;baz&quot;</code> (accurately) as being a <code>builtins.slice</code> instance, which means we fallback to generic &quot;call <code>str.__getitem__</code> with <code>slice</code> passed in&quot; logic, and currently we get <code>@Todo</code> as the result whenever we try to call <code>str.__getitem__</code> because it's overloaded and we don't understand overloads yet. The problem here is that even when we <em>do</em> understand overloads we won't catch this error with the logic as we currently have it; we'll just start inferring <code>str</code> as the result.</p>
+<p>For comparison, <a href="https://mypy-play.net/?mypy=latest&amp;python=3.12&amp;gist=5c7f1f2b64ad30f656fd2e6382ade8e0">mypy <em>does</em> catch this error</a>, but it also incorrectly flags code like this, which should pass without error:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; class Spam:
+...     def __getitem__(self, item: slice | int) -&gt; int:
+...         return 42
+...         
+&gt;&gt;&gt; Spam()[&quot;foo&quot;:&quot;bar&quot;]
+42
+</code></pre>
+<p>I think this problem will naturally solve itself once we:</p>
+<ol>
+<li>Add better annotations to <code>str.__getitem__</code> in typeshed (it should probably accept slice[SupportsIndex | None, SupportsIndex | None, SupportsIndex | None]<code>now that</code>slice<code>is generic, rather than just</code>slice`)</li>
+<li>Support generic types in red-knot.</li>
+</ol>
+<p>But it might be worth adding a TODO comment somewhere mentioning that this is something we need to address</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-10-29 19:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3423 on 2024-10-29 19:30</div>
+            <div class="timeline-body"><blockquote>
+<p>I guess you could avoid the <code>.expect()</code> call here by doing something like:</p>
+</blockquote>
+<p>Yes. I added the other three uses of this before. And there I really need/want it as a pattern guard, because I want control flow to fall through if <code>i32::try_from</code> fails. Because I don't want to repeat the whole logic for the &quot;else&quot; clause.</p>
+<p>But right here, your solution is definitely better. Changed in #13982</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-10-29 19:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/util/subscript.rs</code>:21 on 2024-10-29 19:30</div>
+            <div class="timeline-body"><p>Changed in https://github.com/astral-sh/ruff/pull/13982</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-10-29 19:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3233 on 2024-10-29 19:32</div>
+            <div class="timeline-body"><p>Maybe you have a nice solution for this, but I quickly tried and everything I got required changes to the trait structure or other larger-scale code changes. I left those two <code>.as_ref()</code>s for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-10-29 19:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3271 on 2024-10-29 19:32</div>
+            <div class="timeline-body"><p>I like it, thanks — changed in https://github.com/astral-sh/ruff/pull/13982</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2024-10-29 19:33</div>
+            <div class="timeline-body"><blockquote>
+<p>It seems we just infer <code>&quot;foo[&quot;bar&quot;:&quot;baz&quot;]</code> as being <code>@Todo</code></p>
+</blockquote>
+<p>Yes</p>
+<blockquote>
+<p>this is because we infer <code>&quot;bar&quot;:&quot;baz&quot;</code> (accurately) as being a <code>builtins.slice</code> instance, which means we fallback to generic &quot;call <code>str.__getitem__</code> with <code>slice</code> passed in&quot; logic, and currently we get <code>@Todo</code> as the result whenever we try to call <code>str.__getitem__</code> because it's overloaded and we don't understand overloads yet.</p>
+</blockquote>
+<p>Exactly.</p>
+<blockquote>
+<p>The problem here is that even when we <em>do</em> understand overloads we won't catch this error with the logic as we currently have it; we'll just start inferring <code>str</code> as the result.</p>
+</blockquote>
+<p>:+1: Added a TODO comment in #13982.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-10-29 20:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3233 on 2024-10-29 20:33</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/ruff/pull/13983 :-)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:00:09 UTC
+    </footer>
+</body>
+</html>

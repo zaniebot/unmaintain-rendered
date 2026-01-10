@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Improve chained comparisons handling - astral-sh/ruff #13825</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Improve chained comparisons handling</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/13825">#13825</a>
+        opened by <a href="https://github.com/TomerBin">@TomerBin</a>
+        on 2024-10-19 19:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/TomerBin">@TomerBin</a> on 2024-10-19 19:19</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>A small fix for comparisons of multiple comparators.
+Instead of comparing each comparator to the leftmost item, we should compare it to the closest item on the left.</p>
+<p>While implementing this, I noticed that we don’t yet narrow Yoda comparisons (e.g., <code>True is x</code>), so I didn’t change that behavior in this PR.</p>
+<h2>Test Plan</h2>
+<p>Added some mdtests 🎉</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @TomerBin on 2024-10-19 19:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @TomerBin on 2024-10-19 19:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @TomerBin on 2024-10-19 19:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2024-10-19 19:24</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/TomerBin:tomer/narrow-chained-comparison">CodSpeed Performance Report</a></h2>
+<h3>Merging #13825 will <strong>not alter performance</strong></h3>
+<p><sub>Comparing <code>TomerBin:tomer/narrow-chained-comparison</code> (9462690) with <code>main</code> (d9ef83b)</sub></p>
+<h3>Summary</h3>
+<p><code>✅ 32</code> untouched benchmarks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @TomerBin on 2024-10-19 19:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-10-19 19:43</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/TomerBin">@TomerBin</a> on 2024-10-19 22:24</div>
+            <div class="timeline-body"><p>Rebased above #13826 to make the build pass on MSRV, so this PR will be ready to review once it is merged.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @TomerBin on 2024-10-20 10:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @MichaReiser on 2024-10-21 08:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/narrow/conditionals_is.md</code>:40 on 2024-10-21 19:28</div>
+            <div class="timeline-body"><p>Technically, given any single transitive relation (and <code>is</code> is transitive; <code>is not</code>, of course, is not 😆 ) used across all comparisons, any narrowing that applies in one comparison can be applied across all of them; it would be safe to infer <code>Literal[False]</code> for <code>y</code> here also.</p>
+<p>A more general framing would be to say that it's valid to use the type of a name as narrowed in one chained comparison when evaluating another chained comparison involving the same name, so in this case it would be valid to use the type <code>Literal[False]</code> for <code>x</code> when evaluating narrowing for <code>y is x</code>, giving us <code>Literal[False]</code> for <code>y</code> also. The tricky thing about actually implementing this would be deciding in which order to evaluate the narrowings.</p>
+<p>All that said: I don't think it's important that we <em>do</em> this. Perhaps not ever, and certainly not in this PR.</p>
+<p>I do think it's important that you also added the &quot;is not&quot; test below, since that one was more clearly wrong with the prior behavior.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-10-21 19:36</div>
+            <div class="timeline-body"><p>Thank you!! Great catch, and excellent PR to fix it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @carljm on 2024-10-21 19:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2024-10-21 19:38</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:00:08 UTC
+    </footer>
+</body>
+</html>

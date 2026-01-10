@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>fix issues in discovering ruff in pip build environments - astral-sh/ruff #13881</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>fix issues in discovering ruff in pip build environments</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/13881">#13881</a>
+        opened by <a href="https://github.com/jsurany">@jsurany</a>
+        on 2024-10-22 19:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/jsurany">@jsurany</a> on 2024-10-22 19:49</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+<p>Changes in this PR https://github.com/astral-sh/ruff/pull/13591 did not allow correct discovery in pip build environments.</p>
+<pre><code class="language-python"># both of these variables are tuple[str, str] (length is 2)
+first, second = os.path.split(paths[0]), os.path.split(paths[1])
+
+# so these length checks are guaranteed to fail even for build environment folders
+if (
+    len(first) &gt;= 3
+    and len(second) &gt;= 3 
+    ...
+)
+</code></pre>
+<p>~~Here we instead use <code>pathlib</code>, and we check all <code>pip-build-env-</code> paths for the folder that is expected to contain the <code>ruff</code> executable.~~</p>
+<p>Here we update the logic to more properly split out the path components that we use for <code>pip-build-env-</code> inspection.</p>
+<h2>Test Plan</h2>
+<p>I've checked this manually against a workflow that was failing, I'm not sure what to do for real tests. The same issues apply as with the previous PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-10-22 20:08</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/gaborbernat">@gaborbernat</a> on <code>python/ruff/__main__.py</code>:42 on 2024-10-22 20:19</div>
+            <div class="timeline-body"><p>We should only check the last two path, not all.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/gaborbernat">@gaborbernat</a> on <code>python/ruff/__main__.py</code>:48 on 2024-10-22 20:20</div>
+            <div class="timeline-body"><p>You removed also asserting the <code>normal</code> entry.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/gaborbernat">@gaborbernat</a> on <code>python/ruff/__main__.py</code>:4 on 2024-10-22 20:20</div>
+            <div class="timeline-body"><p><code>pathlib</code> is expensive to import during the startup, so we actively wanted to avoid using it; use os.path instead</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/gaborbernat">@gaborbernat</a> reviewed on 2024-10-22 20:20</div>
+            <div class="timeline-body"><p>Needs some work IMHO.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @gaborbernat by @jsurany on 2024-10-22 21:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/gaborbernat">@gaborbernat</a> reviewed on 2024-10-22 21:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/gaborbernat">@gaborbernat</a> on <code>python/ruff/__main__.py</code>:6 on 2024-10-22 21:15</div>
+            <div class="timeline-body"><p>we only do checks against the last 3 elements, so perhaps we should stop after 3? (could return a tuple of 3, where the elements can be empty if missing)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @gaborbernat by @jsurany on 2024-10-22 21:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jsurany">@jsurany</a> reviewed on 2024-10-22 21:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jsurany">@jsurany</a> on <code>python/ruff/__main__.py</code>:6 on 2024-10-22 21:47</div>
+            <div class="timeline-body"><p>I'm ok with stopping at 3, not a fan of returning a tuple.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/gaborbernat">@gaborbernat</a> reviewed on 2024-10-22 21:57</div>
+            <div class="timeline-body"><p>👍</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @gaborbernat removed by @zanieb on 2024-10-22 22:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @zanieb on 2024-10-22 22:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-10-28 14:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-10-28 14:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>python/ruff/__main__.py</code>:60 on 2024-10-28 14:58</div>
+            <div class="timeline-body"><p>Can't this lead to an index-out-of-bounds error?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-10-28 14:58</div>
+            <div class="timeline-body"><p>What was the actual problem here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gaborbernat">@gaborbernat</a> on 2024-10-28 15:07</div>
+            <div class="timeline-body"><blockquote>
+<p>What was the actual problem here?</p>
+</blockquote>
+<p>https://github.com/astral-sh/ruff/pull/13591 does not work 😆 this fixes that. @jsurany is a colleague of mine and when validating that release discovered this issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/gaborbernat">@gaborbernat</a> reviewed on 2024-10-28 15:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/gaborbernat">@gaborbernat</a> on <code>python/ruff/__main__.py</code>:60 on 2024-10-28 15:09</div>
+            <div class="timeline-body"><p>Yeah there is an if statement missing here, <code> if len(paths) &gt;= 2:</code> that got removed by mistake.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jsurany">@jsurany</a> reviewed on 2024-10-28 17:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jsurany">@jsurany</a> on <code>python/ruff/__main__.py</code>:60 on 2024-10-28 17:01</div>
+            <div class="timeline-body"><p>good catch, updated.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @jsurany on 2024-10-28 17:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @gaborbernat by @jsurany on 2024-10-28 17:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/gaborbernat">@gaborbernat</a> reviewed on 2024-10-28 17:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/gaborbernat">@gaborbernat</a> on <code>python/ruff/__main__.py</code>:6 on 2024-10-28 17:16</div>
+            <div class="timeline-body"><p>I personally would put it after the callsite not before (just as in a book you have foot references at bottom and not at top - this is not C where the declaration needs to be before the use), but I let @charliermarsh to make the executive decision.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-10-29 02:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>python/ruff/__main__.py</code>:64 on 2024-10-29 02:24</div>
+            <div class="timeline-body"><p>Isn't this wrong? The path is like <code>&lt;prefix&gt;/pip-build-env-&lt;rand&gt;/overlay/bin/ruff</code>. So then <code>maybe_normal</code> would be <code>['ruff', 'bin', 'overlay']</code>, right?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jsurany">@jsurany</a> reviewed on 2024-10-29 14:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jsurany">@jsurany</a> on <code>python/ruff/__main__.py</code>:64 on 2024-10-29 14:14</div>
+            <div class="timeline-body"><p>The paths from <code>$PATH</code> don't include the actual executable. For instance for <code>maybe_overlay</code> the path we parse would look like <code>&lt;prefix&gt;/pip-build-env-&lt;rand&gt;/overlay/bin</code>, so <code>maybe_overlay</code> is <code>[&quot;bin&quot;, &quot;overlay&quot;, &quot;pip-build-env-&lt;rand&gt;&quot;]</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @jsurany on 2024-10-29 14:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-10-29 15:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>python/ruff/__main__.py</code>:64 on 2024-10-29 15:45</div>
+            <div class="timeline-body"><p>Ah right -- thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>python/ruff/__main__.py</code>:49 on 2024-10-29 15:46</div>
+            <div class="timeline-body"><p>I changed this to just use <code>len(parts)</code> instead of a separate index, which I believe is equivalent.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-10-29 15:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-10-29 15:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-10-29 15:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-10-29 15:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @dhruvmanila on 2024-10-30 03:23</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:00:09 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allow users to provide custom diagnostic messages when unwrapping calls - astral-sh/ruff #13597</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Allow users to provide custom diagnostic messages when unwrapping calls</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/13597">#13597</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-10-01 18:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-01 18:56</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>You can now call <code>return_ty_result</code> to operate on a <code>Result</code> directly thereby using your own diagnostics, as in:</p>
+<pre><code class="language-rust">return dunder_getitem_method
+    .call(self.db, &amp;[slice_ty])
+    .return_ty_result(self.db, value.as_ref().into(), self)
+    .unwrap_or_else(|err| {
+        self.add_diagnostic(
+            (&amp;**value).into(),
+            &quot;call-non-callable&quot;,
+            format_args!(
+                &quot;Method `__getitem__` is not callable on object of type '{}'.&quot;,
+                value_ty.display(self.db),
+            ),
+        );
+        err.return_ty()
+    });
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @charliermarsh on 2024-10-01 18:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @charliermarsh on 2024-10-01 18:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @charliermarsh on 2024-10-01 18:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @charliermarsh on 2024-10-01 18:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-10-01 18:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2620 on 2024-10-01 18:57</div>
+            <div class="timeline-body"><p>This kind of chaining also lets us avoid monomorphizing <code>unwrap_with_diagnostic</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-10-01 18:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2624 on 2024-10-01 18:57</div>
+            <div class="timeline-body"><p>It's possible that we'll want to incorporate more information here from <code>err</code>. The nice thing is we <em>can</em> if we want.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1061 on 2024-10-01 19:06</div>
+            <div class="timeline-body"><p>I think we should just use the <code>Type</code> variant for this case. The default diagnostics are the same, and kind of the point is that a fully-not-callable union shouldn't really be treated differently from any other not-callable type.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2620 on 2024-10-01 19:09</div>
+            <div class="timeline-body"><p>The new pattern looks great to me, but I'm not sure I understand the comment. <code>unwrap_with_diagnostic</code> is not generic (except over a lifetime), so what does it mean to monomorphize it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-10-01 19:10</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2624 on 2024-10-01 19:11</div>
+            <div class="timeline-body"><p>In fact I would like to :) I think the diagnostic should include the type of <code>__getitem__</code> that we found to not be callable. This could really help someone in debugging why their <code>__getitem__</code> isn't callable. I think that type is already available in <code>err</code>. I would suggest the phrasing &quot;Method <code>__getitem__</code> of type {} is not callable on object of type {}.&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2645 on 2024-10-01 19:11</div>
+            <div class="timeline-body"><p>Same comment as above, let's include the type we inferred for <code>__class_getitem__</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-10-01 19:12</div>
+            <div class="timeline-body"><p>Lovely, thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-10-01 19:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2624 on 2024-10-01 19:23</div>
+            <div class="timeline-body"><p>I guess this will require some decisions about how to handle the <code>UnionElement</code> and <code>UnionElements</code> cases; I think we could just use the full union type and omit the detail of which element(s) were not callable, in this case? Don't have strong feelings though, open to options.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2620 on 2024-10-01 19:36</div>
+            <div class="timeline-body"><p>Ah sorry, that was a confusing comment out-of-context. I initially considered having <code>unwrap_with_diagnostic</code> accept a callback function to format the diagnostics, which would've <em>then</em> made it generic on that callback. By returning result, I avoided making it generic :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-10-01 19:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-10-01 19:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2624 on 2024-10-01 19:53</div>
+            <div class="timeline-body"><p>Sounds good, I'll play around with it. I want something flexible but not too verbose or onerous.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-10-01 21:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2624 on 2024-10-01 21:18</div>
+            <div class="timeline-body"><p>Alright, I went with printing the full union type for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-10-01 21:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-10-01 21:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-10-01 21:22</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:00:07 UTC
+    </footer>
+</body>
+</html>

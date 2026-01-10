@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Speedup mdtest parser - astral-sh/ruff #13835</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Speedup mdtest parser</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/13835">#13835</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2024-10-20 21:18
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-20 21:18</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>A few small changes to speed up the mdtest parser:</p>
+<ul>
+<li>Use <code>memchr</code> to find possible header and codeblock positions over matching both regexes (fewer LazyLock lookups, skip over more text than line by line)</li>
+<li>Avoid use of <code>captures</code> for the header (because captures are &quot;slow&quot; and header parsing is easy)</li>
+<li>Avoid using unicode words for the markdown language</li>
+</ul>
+<h2>Test Plan</h2>
+<p>I &quot;benchmarked&quot; the parser by commenting out the <code>run_test</code> invocation.</p>
+<p>Before: ±230ms
+Now: ±170ms</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @MichaReiser on 2024-10-20 21:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @MichaReiser on 2024-10-20 21:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @MichaReiser on 2024-10-20 21:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-10-20 21:37</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2024-10-20 21:39</div>
+            <div class="timeline-body"><p>This all looks fine to me but @carljm is obviously the expert on this code. I haven't benchmarked myself but I trust you when you say it's faster 😄</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-10-21 07:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_test/src/parser.rs</code>:139 on 2024-10-21 07:33</div>
+            <div class="timeline-body"><p>Minor: the doc-comment should be updated (&quot;Matches an arbitrary amount of whitespace&quot;…)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_test/src/parser.rs</code>:145 on 2024-10-21 07:36</div>
+            <div class="timeline-body"><p>The new regex does not match empty code blocks such as</p>
+<pre><code class="language-markdown">```py path=a.py
+```
+</code></pre>
+<p>in <code>mdtest/import/errors.md</code>, which is also why some tests are failing. The final newline was optional before: <code>\n?</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-10-21 07:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_test/src/parser.rs</code>:145 on 2024-10-21 10:30</div>
+            <div class="timeline-body"><p>It might be worth adding a specific unit test for this edge case in the <code>red_knot_test</code> crate, so that we still have tests that will fail even if the mdtest in <code>mdtest/import/errors.md</code> changes so it no longer has an empty code block</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-10-21 10:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-10-21 16:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_test/src/parser.rs</code>:145 on 2024-10-21 16:35</div>
+            <div class="timeline-body"><p>Agree, I'll follow up, once I have @carljm approval</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_test/src/parser.rs</code>:247 on 2024-10-21 17:45</div>
+            <div class="timeline-body"><p>I don't think it's worth having a separate <code>scan</code> method with only one call site; it's quite short, let's just inline it here. That makes the behavior more parallel to the <code>HEADER_RE</code> case (the updating of <code>self.unparsed</code> is visible in both branches), which I think makes it easier to understand the logic.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_test/src/parser.rs</code>:139 on 2024-10-21 17:45</div>
+            <div class="timeline-body"><p>Do we need the capture groups in this regex if they are not used?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_test/src/parser.rs</code>:489 on 2024-10-21 17:51</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">            panic!(&quot;expected two files&quot;);
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-10-21 17:51</div>
+            <div class="timeline-body"><p>Looks great, thank you!!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-10-21 19:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_test/src/parser.rs</code>:139 on 2024-10-21 19:22</div>
+            <div class="timeline-body"><p>Technically not but there should be no cost because we use <code>matches</code>. I do like them for documentation purposes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2024-10-21 19:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-10-21 19:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-10-21 19:49</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:00:08 UTC
+    </footer>
+</body>
+</html>

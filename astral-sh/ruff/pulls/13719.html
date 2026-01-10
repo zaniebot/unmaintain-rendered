@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Port type inference tests to new test framework - astral-sh/ruff #13719</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Port type inference tests to new test framework</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/13719">#13719</a>
+        opened by <a href="https://github.com/Lexxxzy">@Lexxxzy</a>
+        on 2024-10-11 18:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/Lexxxzy">@Lexxxzy</a> on 2024-10-11 18:32</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Porting infer tests to new markdown tests framework.</p>
+<p>Link to the corresponding issue: #13696</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @Lexxxzy on 2024-10-11 18:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @Lexxxzy on 2024-10-11 18:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @Lexxxzy on 2024-10-11 18:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/imports.md</code>:16 on 2024-10-11 18:35</div>
+            <div class="timeline-body"><p>Oh, the outer markdown fenced code block is just how the mdtest README handles showing an example markdown document within a markdown README, it's not needed in the tests and should be removed here and in all other cases:</p>
+<pre><code class="language-suggestion">```py path=a.py
+from b import C as D; E = D
+reveal_type(E) # revealed: Literal[C]
+```
+
+```py path=b.py
+class C: pass
+```
+</code></pre>
+<p>It's funny that it still works either way, because of our naive regex parsing :)</p>
+<p>I'll look at updating the README to address this potential confusion.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Lexxxzy">@Lexxxzy</a> on 2024-10-11 18:36</div>
+            <div class="timeline-body"><p>I've changed parser's CODE_RE regex, cause without that fix it was not correctly parsing code snippets with empty files, like:</p>
+<pre><code class="language-markdown">```py path=package/__init__.py
+```
+</code></pre>
+<p>Of course feel free to comment on this fix...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/imports.md</code>:8 on 2024-10-11 18:36</div>
+            <div class="timeline-body"><p>I would say it's probably better style in general if we don't specify the path on the &quot;main&quot; test file, if it isn't imported by another file and its location/name don't actually matter to the test. (This wasn't possible in the previous test format.) I don't care too much about this, though, not a blocking issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> requested changes on 2024-10-11 18:41</div>
+            <div class="timeline-body"><p>This is awesome, thank you for taking this on!</p>
+<p>I'm going to wait for removal of the extraneous quadruple-backtick markdown fences before reviewing the tests in detail, because removing those will make them a lot easier to read :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-10-11 18:42</div>
+            <div class="timeline-body"><blockquote>
+<p>I've changed parser's CODE_RE regex</p>
+</blockquote>
+<p>This fix looks good, thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-10-11 18:44</div>
+            <div class="timeline-body"><p>Also it looks like the mdformat pre-commit check is failing, you can check the ruff CONTRIBUTING doc for info on how to run pre-commit locally so you can catch those issues without having to push and wait for CI.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-10-11 18:45</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Lexxxzy">@Lexxxzy</a> on 2024-10-11 18:50</div>
+            <div class="timeline-body"><blockquote>
+<p>wait for removal of the extraneous quadruple-backtick</p>
+</blockquote>
+<p>Oh, ok, understood, I will redo that, thanks for clarifing</p>
+<blockquote>
+<p>Also it looks like the mdformat pre-commit check is failing, you can check the ruff CONTRIBUTING doc for info on how to run pre-commit locally so you can catch those issues without having to push and wait for CI.</p>
+</blockquote>
+<p>Got it, totally forgot about it</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @carljm on 2024-10-11 19:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Lexxxzy">@Lexxxzy</a> reviewed on 2024-10-12 10:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Lexxxzy">@Lexxxzy</a> on <code>crates/red_knot_python_semantic/resources/mdtest/imports.md</code>:8 on 2024-10-12 10:11</div>
+            <div class="timeline-body"><p>Fixed it</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Lexxxzy">@Lexxxzy</a> reviewed on 2024-10-12 10:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Lexxxzy">@Lexxxzy</a> on <code>crates/red_knot_python_semantic/resources/mdtest/imports.md</code>:16 on 2024-10-12 10:13</div>
+            <div class="timeline-body"><p>Fixed, my bad. Once again - thanks for clarifying</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Lexxxzy">@Lexxxzy</a> on 2024-10-12 10:27</div>
+            <div class="timeline-body"><p>Rebased on the current <code>main</code> branch. Changed format of tests after new clarifications from @carljm. Also added tests for booleans infer.</p>
+<p>I have problems with porting few tests so far:</p>
+<ol>
+<li><p><code>not_literal_string</code>, <code>multiplied_string</code>, <code>multiplied_literal_string</code>, <code>truncated_string_literals_become_literal_string</code>, <code>adding_string_literals_and_literal_string</code>, ...
+In Rust's test there are formatting for variable in tests file like <code>y = &quot;a&quot;.repeat(TypeInferenceBuilder::MAX_STRING_LITERAL_SIZE + 1)</code>. The question is: how do I correctly insert variable in tests in mdtest the same way?</p>
+</li>
+<li><p><code>from_import_with_no_module_name</code> and <code>exception_handler_with_invalid_syntax</code></p>
+</li>
+</ol>
+<pre><code>NOTE: Parsing diagnostic's error is not resolving, also already tried using full message
+```py
+from import bar   # error: &quot;Expected a module name&quot;
+reveal_type(bar)  # revealed: Unknown
+```
+</code></pre>
+<ol start="3">
+<li>All comprehension tests (and some functions), because variables should be infered inside it's scope. Don't know how to do it in mdtest.</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @Lexxxzy on 2024-10-12 10:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Lexxxzy">@Lexxxzy</a> on 2024-10-13 21:02</div>
+            <div class="timeline-body"><p>Most of the work is done. Now I’m just waiting for feedback on what’s finished and looking for some help with the issues I’m facing before I can keep going.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @Lexxxzy on 2024-10-13 21:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @Lexxxzy on 2024-10-13 21:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/boolean.md</code>:37 on 2024-10-14 18:47</div>
+            <div class="timeline-body"><p>Let's consolidate the stuff that's about the TODO to just the one line where it's relevant, that's not the main point of this test.</p>
+<pre><code class="language-suggestion">### Not function
+
+```py
+from typing import reveal_type
+
+def f():
+    return 1
+
+a = not f
+b = not reveal_type
+
+reveal_type(a)  # revealed: Literal[False]
+# TODO Unknown should not be part of the type of typing.reveal_type
+# reveal_type(b)  # revealed: Literal[False]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/boolean.md</code>:163 on 2024-10-14 21:35</div>
+            <div class="timeline-body"><p>I'd like to break up this large file a bit, lets move out this whole section into a set of files, e.g. <code>comparison/integers.md</code>, <code>comparison/non_boolean_returns.md</code>, <code>comparison/strings.md</code>, <code>comparison/unsupported.md</code>. There's probably more that we could break out as well, but that's probably good enough for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/classes.md</code>:20 on 2024-10-14 21:38</div>
+            <div class="timeline-body"><p>Let's generally hard-wrap lines at 80 columns in text, and also edit this text a bit for clarity/conciseness:</p>
+<pre><code class="language-suggestion">In type stubs, classes can reference themselves in their base class definitions. For example, in `typeshed`, we have `class str(Sequence[str]): ...`.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/boolean.md</code>:259 on 2024-10-14 21:42</div>
+            <div class="timeline-body"><p>nit: I'd rather put notes like this as Python comments right next to the relevant line</p>
+<pre><code class="language-suggestion">```py
+def str_instance() -&gt; str: ...
+a = &quot;abc&quot; == &quot;abc&quot;
+b = &quot;ab_cd&quot; &lt;= &quot;ab_ce&quot;
+c = &quot;abc&quot; in &quot;ab cd&quot;
+d = &quot;&quot; not in &quot;hello&quot;
+e = &quot;--&quot; is &quot;--&quot;
+f = &quot;A&quot; is &quot;B&quot;
+g = &quot;--&quot; is not &quot;--&quot;
+h = &quot;A&quot; is not &quot;B&quot;
+i = str_instance() &lt; &quot;...&quot;
+# ensure we're not comparing the interned salsa symbols, which compare by order of declaration.
+j = &quot;ab&quot; &lt; &quot;ab_cd&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/boolean.md</code>:286 on 2024-10-14 21:43</div>
+            <div class="timeline-body"><p>Same here:</p>
+<pre><code class="language-suggestion">```py
+a = 1 in 7      # error: &quot;Operator `in` is not supported for types `Literal[1]` and `Literal[7]`&quot;
+b = 0 not in 10 # error: &quot;Operator `not in` is not supported for types `Literal[0]` and `Literal[10]`&quot;
+c = object() &lt; 5 # error: &quot;Operator `&lt;` is not supported for types `object` and `Literal[5]`&quot;
+d = 5 &lt; object()
+
+reveal_type(a)  # revealed: bool
+reveal_type(b)  # revealed: bool
+reveal_type(c)  # revealed: Unknown
+# TODO should be `Unknown` but we don't yet check if `__lt__` signature is valid for right operand
+reveal_type(d)  # revealed: bool
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/classes.md</code>:41 on 2024-10-14 21:44</div>
+            <div class="timeline-body"><p>These two tests only incidentally use classes, they are really about testing declarations and shadowing. I'd put them in their own <code>shadowing.md</code> instead.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/classes.md</code>:59 on 2024-10-14 21:45</div>
+            <div class="timeline-body"><p>I would put these tests into two separate files, <code>subscript/instance.md</code> (for the tests about <code>__getitem__</code>) and <code>subscript/class.md</code> (for the tests about <code>__class_getitem__</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/classes.md</code>:195 on 2024-10-14 21:54</div>
+            <div class="timeline-body"><p>Similar to above, let's localize the TODO stuff</p>
+<pre><code class="language-suggestion">### Class getitem non-class union
+
+```py
+flag = True
+
+if flag:
+    class Identity:
+        def __class_getitem__(self, x: int) -&gt; str:
+            pass
+else:
+    Identity = 1
+
+a = Identity[42] # error: &quot;Cannot subscript object of type `Literal[Identity] | Literal[1]` with no `__getitem__` method&quot;
+# TODO should _probably_ emit `str | Unknown`
+reveal_type(a) # revealed: Unknown 
+```
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/classes.md</code>:197 on 2024-10-14 21:55</div>
+            <div class="timeline-body"><p>Let's put this in <code>call/callable_instance.md</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/classes.md</code>:52 on 2024-10-14 21:56</div>
+            <div class="timeline-body"><p>Let's avoid &quot;This test ensures...&quot; style boilerplate in favor of simple declarative statements of verified behavior.</p>
+<pre><code class="language-suggestion">No diagnostic is raised in the case of explicit shadowing:
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/conditionals.md</code>:14 on 2024-10-14 21:58</div>
+            <div class="timeline-body"><p>I don't think this really adds any clarity over just reading the test.</p>
+<pre><code class="language-suggestion"></code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/conditionals.md</code>:1 on 2024-10-14 21:59</div>
+            <div class="timeline-body"><p>Similar to above cases, I'd rather break up into more smaller files in a nested directory structure. Here we could do <code>conditional/if_expression.md</code> and <code>conditional/if_statement.md</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/conditionals.md</code>:183 on 2024-10-14 22:14</div>
+            <div class="timeline-body"><p>This test can go in <code>narrow/not_none.rs</code>.</p>
+<p>And I don't think we need the prose sentence here, it doesn't add anything.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/conditionals.md</code>:192 on 2024-10-14 22:16</div>
+            <div class="timeline-body"><p>The existence of <code>y</code> in this test was really a hacky workaround for the difficulty of asserting revealed types in locations other than end-of-scope in our previous test style. This is a simpler way to get the same intended test:</p>
+<pre><code class="language-suggestion">x = None if flag else 1
+if x is not None:
+    reveal_type(x)  # revealed: Literal[1]
+
+reveal_type(x)  # revealed: None | Literal[1]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/conditionals.md</code>:207 on 2024-10-14 22:18</div>
+            <div class="timeline-body"><p>Let's put this test in <code>narrow/match.rs</code>.</p>
+<p>And some edits:</p>
+<pre><code class="language-suggestion">### Singleton pattern
+
+```py
+x = None if flag else 1
+match x:
+    case None:
+        # TODO intersection simplification: should be just Literal[0] | None
+        reveal_type(x)  # revealed: Literal[0] | None | Literal[1] &amp; None
+```
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/exceptions.md</code>:53 on 2024-10-14 22:22</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">## Dynamic exception types
+
+```py
+def foo(x: type[AttributeError], y: tuple[type[OSError], type[RuntimeError]], z: tuple[type[BaseException], ...]):
+    try:
+        w
+    except x as e:
+        # TODO should be `AttributeError`
+        reveal_type(e)  # revealed: @Todo
+    except y as f:
+        # TODO should be `OSError | RuntimeError`
+        reveal_type(f)  # revealed: @Todo
+    except z as g:
+        # TODO should be `BaseException`
+        reveal_type(g)  # revealed: @Todo
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/exceptions.md</code>:58 on 2024-10-14 22:24</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">TODO(Alex): Once we support `sys.version_info` branches, we can set `--target-version=py311` in these tests and the inferred type will just be `BaseExceptionGroup`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/functions.md</code>:52 on 2024-10-14 22:25</div>
+            <div class="timeline-body"><p>This doesn't belong under Functions heading; let's put it in <code>call/constructor.md</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/functions.md</code>:3 on 2024-10-14 22:25</div>
+            <div class="timeline-body"><p>Let's put these tests in <code>call/function.rs</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/exceptions.md</code>:78 on 2024-10-14 22:26</div>
+            <div class="timeline-body"><p>I'll leave the rest of these uncommented to reduce comment volume, but let's follow this kind of pattern everywhere instead:</p>
+<pre><code class="language-suggestion">## Except\* with specific exception
+
+```py
+try:
+    x
+except* OSError as e:
+    # TODO(Alex): more precise would be `ExceptionGroup[OSError]`
+    reveal_type(e)  # revealed: Unknown | BaseExceptionGroup
+```
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/functions.md</code>:153 on 2024-10-14 22:28</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">Parameter `x` of type `str` is shadowed and reassigned with a new `int` value inside the function. No diagnostics should be generated.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/loops.md</code>:1 on 2024-10-14 22:29</div>
+            <div class="timeline-body"><p>Similar to some above cases, let's instead have a <code>loops/</code> directory with e.g. <code>for_loop.md</code>, <code>while_loop.md</code> files in it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/numbers.md</code>:15 on 2024-10-14 22:30</div>
+            <div class="timeline-body"><pre><code class="language-suggestion"></code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/numbers.md</code>:32 on 2024-10-14 22:30</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">We don't support big integer literals; we just infer `int` type instead:
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/numbers.md</code>:41 on 2024-10-14 22:31</div>
+            <div class="timeline-body"><pre><code class="language-suggestion"></code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/numbers.md</code>:68 on 2024-10-14 22:31</div>
+            <div class="timeline-body"><p>I'd rather put these in <code>unary/integers.md</code> and <code>binary/integers.md</code> files</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/strings.md</code>:34 on 2024-10-14 22:32</div>
+            <div class="timeline-body"><p>I'd rather put f-strings in their own file; it can either be a top-level <code>fstrings.md</code> or we can add a <code>literal/</code> subdir and put several of these files in there.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/strings.md</code>:79 on 2024-10-14 22:33</div>
+            <div class="timeline-body"><p>These belong in <code>subscript/string.md</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/strings.md</code>:115 on 2024-10-14 22:33</div>
+            <div class="timeline-body"><p>Bytes are a separate type from strings, this should go in <code>bytes.md</code> or <code>literal/bytes.md</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/variables.md</code>:55 on 2024-10-14 22:34</div>
+            <div class="timeline-body"><p>All the tests from here onward should go in <code>shadowing.md</code> along with some other tests I commented above.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/variables.md</code>:13 on 2024-10-14 22:35</div>
+            <div class="timeline-body"><p>These could go in <code>assignment.md</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/variables.md</code>:3 on 2024-10-14 22:35</div>
+            <div class="timeline-body"><p>This test can go with some others in <code>conditional/if_statement.md</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-10-14 22:40</div>
+            <div class="timeline-body"><p>Thank you so much, this is a lot of good work! Excellent translation of the tests to the new assertion style.</p>
+<p>A few general comments, which I commented partway through but not everywhere they occur:</p>
+<ul>
+<li>Avoid <code>TODO</code> in test titles, and keep TODO comments minimal in length and as close as possible to the specific line/assertion that isn't quite right yet.</li>
+<li>Avoid boilerplate phrases like &quot;This test ensures that&quot; or &quot;Check that&quot; or &quot;We can infer the type when ...&quot; or anything similar -- minimize the words that are not adding specific value to the test in question.</li>
+<li>Break up into more smaller files; I commented on this throughout to try to give a clear idea of an organization that I think would work well.</li>
+</ul>
+<p>I appreciate your quick work on this PR and would like to get it landed ASAP to minimize conflicts as new tests are added in other PRs! If you won't have time to update it in the next day-ish, please just let me know, I'm also happy to make the updates and get it landed!</p>
+<p>Thanks again.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Lexxxzy">@Lexxxzy</a> on 2024-10-14 23:50</div>
+            <div class="timeline-body"><blockquote>
+<p>would like to get it landed ASAP</p>
+</blockquote>
+<p>All clear. Will try to push fixes as soon as possible</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Lexxxzy">@Lexxxzy</a> on 2024-10-15 11:27</div>
+            <div class="timeline-body"><p>@carljm</p>
+<blockquote>
+<p>A few general comments, which I commented partway through but not everywhere they occur</p>
+</blockquote>
+<p>I tried to follow the style you described. Please take a look at the tests with the new structure. Sorry for all the issues!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @Lexxxzy on 2024-10-15 11:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2024-10-15 13:28</div>
+            <div class="timeline-body"><p>@Lexxxzy I already ported the two narrowing-related tests to Markdown while fixing a bug in the narrowing logic (https://github.com/astral-sh/ruff/pull/13758). Let me know if you need help resolving the conflicts here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Lexxxzy">@Lexxxzy</a> on 2024-10-15 14:54</div>
+            <div class="timeline-body"><p>@sharkdp Thanks for letting me know! I rebased on the current main, but somehow <code>subscript/string.md - Subscript on strings - Function return</code> test started to fail. Now it says that revealed type is <code>@Todo</code>, and not <code>str</code>. Can somebody check what went wrong? Maybe it is because of #5fa82f (Sync vendored typeshed stubs) commit?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Lexxxzy">@Lexxxzy</a> on 2024-10-15 14:58</div>
+            <div class="timeline-body"><blockquote>
+<p>Can somebody check what went wrong?</p>
+</blockquote>
+<p>Yep, I checked, actually on @sharkdp pr merge commit (74bf4b) test is running fine, but on 5fa82f it started to fail</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-15 15:01</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>Can somebody check what went wrong?</p>
+</blockquote>
+<p>Yep, I checked, actually on @sharkdp pr merge commit (74bf4b) test is running fine, but on 5fa82f it started to fail</p>
+</blockquote>
+<p>Yes -- unfortunately I had to change the assertion the test was making as part of that PR (https://github.com/astral-sh/ruff/pull/13753). This is because typeshed now declares <code>str.__getitem__</code> to be an overloaded function, and we don't understand overloaded functions yet.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-15 15:02</div>
+            <div class="timeline-body"><p>This is the specific commit in that PR where I tweaked the test @Lexxxzy: https://github.com/astral-sh/ruff/pull/13753/commits/8ec3b30ea480cd63c01c3ef54aed73517c343196. You'll need to change the assertion to <code>@Todo</code> in your <code>mdtest</code> port of the test as well.</p>
+<p>Sorry for the bother!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Lexxxzy">@Lexxxzy</a> on 2024-10-15 15:08</div>
+            <div class="timeline-body"><blockquote>
+<p>You'll need to change the assertion to @Todo in your mdtest port of the test as well.</p>
+</blockquote>
+<p>Ok, i see. Thanks for the info!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-10-15 16:30</div>
+            <div class="timeline-body"><p>This is great!! Thank you so much for the quick and thorough work. I'm going to make a few minor cosmetic tweaks, push those, wait for CI, and then merge.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @carljm on 2024-10-15 18:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2024-10-15 18:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-15 19:09</div>
+            <div class="timeline-body"><p>Thanks so much for taking this on @Lexxxzy! A big first contribution, and a really helpful one for us!!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Lexxxzy">@Lexxxzy</a> on 2024-10-15 19:41</div>
+            <div class="timeline-body"><p>Big thanks @carljm for reviewing my first PR to ruff! Learned a lot about that project while porting tests</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:00:08 UTC
+    </footer>
+</body>
+</html>

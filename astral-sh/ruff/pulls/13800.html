@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] binary arithmetic on instances - astral-sh/ruff #13800</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] binary arithmetic on instances</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/13800">#13800</a>
+        opened by <a href="https://github.com/carljm">@carljm</a>
+        on 2024-10-17 18:33
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/carljm">@carljm</a> on 2024-10-17 18:33</div>
+            <div class="timeline-body"><p>This implements the (subtle!) algorithm that Python uses for binary arithmetic operations between two instances. The full algorithm is described well in <a href="https://snarky.ca/unravelling-binary-arithmetic-operations-in-python/">this blog post</a> by Brett Cannon; the official Python docs for this are <a href="https://docs.python.org/3/reference/datamodel.html#emulating-numeric-types">here</a>.</p>
+<p>There are still many TODOs in the code and tests. The main remaining tasks in this area are:</p>
+<ul>
+<li>There are many type errors we do not currently catch, and some types that we do not yet infer correctly, because we would need to validate the types of arguments passed to functions.</li>
+<li>We do not yet have any capability to traverse a class's MRO to understand if one class is a subclass of the other</li>
+</ul>
+<p>Closes #13590</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @carljm on 2024-10-17 18:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-18 16:46</div>
+            <div class="timeline-body"><p>Okay, this should now be passing all tests!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @AlexWaygood on 2024-10-18 16:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @AlexWaygood on 2024-10-18 16:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @AlexWaygood on 2024-10-18 16:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-10-18 16:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2520 on 2024-10-18 16:54</div>
+            <div class="timeline-body"><p>@carljm -- currently I just returned an <code>Option</code>, as it's simpler and we don't have a branch dealing with <code>Union</code>s yet. When we implement <code>Union</code>s I figured we could refactor it to return a <code>Result</code> rather than an <code>Option</code>, but this seemed more minimal and easier to understand for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/binary/instances.md</code>:183 on 2024-10-18 16:54</div>
+            <div class="timeline-body"><p>Is the intention just that this is an implicit assertion that no error is raised? Should there be a <code>reveal_type</code> here?</p>
+<p>I assume this will be a TODO since we don't do argument checking yet?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:443 on 2024-10-18 16:58</div>
+            <div class="timeline-body"><p>There are unit tests for this method below; can we add a unit test for this case? (Will be easiest if we can find some stdlib types with an inheritance relationship.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-10-18 17:04</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2651 on 2024-10-18 17:17</div>
+            <div class="timeline-body"><p>May as well do this for <code>LiteralString</code> as well?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2666 on 2024-10-18 17:25</div>
+            <div class="timeline-body"><p>I don't think we should use <code>is_assignable_to</code> here, or even <code>is_subtype_of</code>; I think we should go straight to an <code>is_subclass_of</code> method implemented directly on <code>ClassType</code>.</p>
+<p>Functionally it shouldn't matter currently, though it will be more efficient to bypass unnecessary layers of abstraction. But in the future with generic classes, I <em>think</em> this decision should be based purely on the subclass relationship of the classes, without considering generic parameters at all. E.g. if class <code>Bar[T]</code> inherits class <code>Foo[T]</code> and overrides <code>__radd__</code>, then I think we should prioritize <code>Bar.__radd__</code> even if we have <code>Bar[X]</code> and <code>Foo[Y]</code>, where <code>Bar[X]</code> is not a subtype of <code>Foo[Y]</code> (for variance reasons or because X and Y have no subtype relationship), because the runtime won't be considering generic parameters (they don't even exist at runtime.)</p>
+<p>Of course our eventual determination of which method is <em>supported</em> will depend on the type annotations on the dunder methods, which may involve <code>T</code>, and that could influence our eventual determination of the result of the operation. But I don't think <code>T</code> should influence the decision of which dunder method to try first. Which means I think this should be based purely on the subclass relationship of two classes, without considering anything else handled in <code>is_assignable_to</code> or <code>is_subtype_of</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-10-18 17:36</div>
+            <div class="timeline-body"><p>Looks great! Just a few comments. I would approve-and-comment but I can't approve &quot;my&quot; pull request 😆</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-10-18 17:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2666 on 2024-10-18 17:38</div>
+            <div class="timeline-body"><p>what if a class has <code>Any</code>/<code>Unknown</code> in its MRO</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-10-18 17:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2666 on 2024-10-18 17:39</div>
+            <div class="timeline-body"><blockquote>
+<p>what if a class has <code>Any</code>/<code>Unknown</code> in its MRO</p>
+</blockquote>
+<p>(I should add a test for this. Meant to do so; forgot!)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-10-18 17:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2666 on 2024-10-18 17:46</div>
+            <div class="timeline-body"><blockquote>
+<p>But in the future with generic classes, I <em>think</em> this decision should be based purely on the subclass relationship of the classes, without considering generic parameters at all. E.g. if class <code>Bar[T]</code> inherits class <code>Foo[T]</code> and overrides <code>__radd__</code>, then I think we should prioritize <code>Bar.__radd__</code> even if we have <code>Bar[X]</code> and <code>Foo[Y]</code>, where <code>Bar[X]</code> is not a subtype of <code>Foo[Y]</code> (for variance reasons or because X and Y have no subtype relationship), because the runtime won't be considering generic parameters (they don't even exist at runtime.)</p>
+</blockquote>
+<p>Hmm, this is a really good point, though. My current approach is definitely wrong, whatever the case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-10-18 17:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2666 on 2024-10-18 17:47</div>
+            <div class="timeline-body"><p>I think that the hypothetical <code>ClassType::is_subclass_of</code> should handle the special case of <code>Any</code> or <code>Unknown</code> in the MRO. (And unions too, if we support them in bases, though this might be handled via checking in multiple MROs instead.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2666 on 2024-10-18 17:53</div>
+            <div class="timeline-body"><p>Mypy and pyright both reveal <code>int</code> here:</p>
+<pre><code class="language-py">from typing import Any
+
+class X:
+    def __add__(self, other: object) -&gt; int:
+        return 42
+
+class Y(Any):
+    pass
+
+reveal_type(X() + Y())
+</code></pre>
+<p>I don't actually know what the right answer is... do we need to consider <code>Y</code> as a class that &quot;could inherit from <code>X</code> and override <code>__radd__</code>&quot;? I think we <em>do</em>, because <code>Any</code> represents an unknown set of objects, and that unknown set of objects could include the <code>X</code> class. So a better answer than what mypy/pyright give might be <code>int | Any</code> (accounting for the fact that it <em>could</em> be a class that inherits from <code>X</code>, but it also <em>could not</em>)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-10-18 17:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-10-18 17:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/binary/instances.md</code>:183 on 2024-10-18 17:56</div>
+            <div class="timeline-body"><p>Oops, there should be a <code>reveal_type</code> here!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-10-18 18:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2666 on 2024-10-18 18:07</div>
+            <div class="timeline-body"><blockquote>
+<p>Any represents an unknown set of objects, and that unknown set of objects could include the X class</p>
+</blockquote>
+<p>I think it's even slightly more subtle than that; the relevant case here is that Any represents some unknown third class Z which inherits from X and overrides <code>__radd__</code> (since we can see that Y itself does not override <code>__radd__</code>).</p>
+<p>I agree that <code>int | Any</code> is the right answer here. It would be <code>int &amp; Any</code> if <code>X</code> also defined <code>__radd__</code> to return <code>int</code>.</p>
+<p>Getting to this right answer will depend on several features, one of which is <code>is_subclass_of</code> supporting finding <code>Any</code> in the MRO, and the other is <code>class_member</code> and <code>inherited_class_member</code> supporting <code>Any</code> in the MRO.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-18 18:50</div>
+            <div class="timeline-body"><p>Thanks @carljm! Pushed a commit addressing your review -- the only things you might want to glance at again are my implementation for <code>is_subclass_of()</code> and the test snippet I added for inheriting from <code>Unknown</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1444 on 2024-10-18 19:33</div>
+            <div class="timeline-body"><p>Sorry I wasn't more clear about this: I think this method should take <code>other: ClassType</code> instead of <code>other: Type</code>, and attempt to only answer the much narrower question, &quot;given two ClassType, does the one inherit the other&quot;. This would avoid a lot of the TODO questions below; I think more abstracted methods calling this should be responsible for handling e.g. unions and intersections. (For example, that is already the case in this PR, and would also be the case when e.g. <code>is_subtype_of</code> wants to make use of this method -- which it probably should already in this PR.)</p>
+<p>That just leaves the question of how to handle <code>Any</code> in the MRO. I think for now (until we have a proper MRO and a clarified data model for what types can occur in the MRO) this method can just return <code>true</code> if it finds <code>Any/Unknown/Todo</code> or a matching <code>ClassType</code> in bases, otherwise <code>false</code>.</p>
+<p>I think a doc comment clarifying the semantics of this method would be useful.</p>
+<pre><code class="language-suggestion">    /// Does this class inherit the given `other` class?
+    pub fn is_subclass_of(self, db: &amp;'db dyn Db, other: ClassType) -&gt; bool {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2520 on 2024-10-18 19:35</div>
+            <div class="timeline-body"><p>I would probably have just gone for <code>Result</code> from the start, if we know that's where we'll end up, but I don't feel strongly, or that you need to change it. We can definitely just do it in the PR that adds union or tuple support.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:445 on 2024-10-18 19:35</div>
+            <div class="timeline-body"><p>Why not use <code>is_subclass_of</code> here?</p>
+<p>(I guess maybe this seemed less like an obvious choice when <code>is_subclass_of</code> took an arbitrary <code>Type</code>.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-10-18 19:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-10-18 22:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1444 on 2024-10-18 22:23</div>
+            <div class="timeline-body"><p>Since this PR is a joint work anyway, I went ahead and pushed what I was thinking here, so the review ball is now in your court :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1596 on 2024-10-18 22:33</div>
+            <div class="timeline-body"><p>I know you don't like default cases in match statements, but since this is all subject to change soon anyway when we add proper MRO support, I didn't feel it was worth listing out every <code>Type</code> variant here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-10-18 22:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-10-18 22:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1595 on 2024-10-18 22:35</div>
+            <div class="timeline-body"><p>This means that if we want binary operations to actually consider the possibility that an <code>Any</code> inheriting type might be a subtype when found on the RHS, we'll have to do something a bit more complicated there than just <code>is_subclass_of</code>; there might need to be another <code>may_be_subclass_of</code> method that does respect <code>Any/Unknown</code>?</p>
+<p>To be honest, though, I feel like the behavior of binary operations when the RHS inherits <code>Any</code> is an edge case that may never practically matter to anyone, so I don't think we should spend more time on it now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @carljm on 2024-10-18 22:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/binary/instances.md</code>:179 on 2024-10-19 15:02</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">without raising an exception -- it will simply return `NotImplemented`,
+allowing the runtime to try the `__radd__` method of the right-hand operand
+as well.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/binary/instances.md</code>:85 on 2024-10-19 15:04</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">## Returning a different type
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/binary/instances.md</code>:121 on 2024-10-19 15:05</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">reveal_type(A() + B())  # revealed:  int
+
+# Edge case: C is a subtype of C, *but* if the two sides are of *equal* types,
+# the lhs *still* takes precedence
+class C:
+    def __add__(self, other: C) -&gt; int: return 42
+    def __radd__(self, other: C) -&gt; str: return &quot;foo&quot;
+
+reveal_type(C() + C())  # revealed: int
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/binary/instances.md</code>:173 on 2024-10-19 15:06</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">returns `NotImplemented` to signal failure.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/binary/instances.md</code>:225 on 2024-10-19 15:07</div>
+            <div class="timeline-body"><pre><code class="language-suggestion"># TODO should be complex, need to check arg type and fall back to `rhs.__radd__`
+reveal_type(3.14 + 3j)  # revealed: float
+
+# TODO should be float, need to check arg type and fall back to `rhs.__radd__`
+reveal_type(42 + 4.2)  # revealed: int
+
+# TODO should be complex, need to check arg type and fall back to `rhs.__radd__`
+reveal_type(3 + 3j)  # revealed: int
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/binary/instances.md</code>:239 on 2024-10-19 15:07</div>
+            <div class="timeline-body"><pre><code class="language-suggestion"># TODO should be float, need to check arg type and fall back to `rhs.__radd__`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/binary/instances.md</code>:310 on 2024-10-19 15:08</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">### Dunder as instance attribute
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/binary/instances.md</code>:312 on 2024-10-19 15:08</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">The magic method must exist on the class, not just on the instance:
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1595 on 2024-10-19 15:10</div>
+            <div class="timeline-body"><blockquote>
+<p>To be honest, though, I feel like the behavior of binary operations when the RHS inherits <code>Any</code> is an edge case that may never practically matter to anyone, so I don't think we should spend more time on it now.</p>
+</blockquote>
+<p>Agreed, I'm definitely fine with what we have for now, the TODO comments are pretty clear!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2024-10-19 15:13</div>
+            <div class="timeline-body"><p>Looks great! A few minor nits, mostly regarding wording in the docs around the test. I don't think any are controversial; I'll push my suggested edits to the branch and merge!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-10-19 15:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1444 on 2024-10-19 15:14</div>
+            <div class="timeline-body"><p>Ah yes, you did indeed lead me astray here from your comment in https://github.com/astral-sh/ruff/pull/13800#discussion_r1806833944, when you said this 😄</p>
+<blockquote>
+<p>I think that the hypothetical <code>ClassType::is_subclass_of</code> should handle the special case of <code>Any</code> or <code>Unknown</code> in the MRO. (And unions too, if we support them in bases, though this might be handled via checking in multiple MROs instead.)</p>
+</blockquote>
+<p>but no harm done!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2024-10-19 15:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2024-10-19 15:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-10-19 15:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-10-19 16:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1444 on 2024-10-19 16:12</div>
+            <div class="timeline-body"><p>I think there was a misunderstanding between &quot;handle Any/union in the MRO&quot;, which is what I said, and &quot;handle Any/Union&quot; in the <code>other</code> type&quot;, which is what you implemented. I didn't mean that comment to imply handling anything else in <code>other</code>. I don't think the version you implemented did handle Any or Union found in the MRO?</p>
+<p>But my comment was wrong regardless, because in the end I realized I don't think we should handle Any in the MRO here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1444 on 2024-10-19 16:14</div>
+            <div class="timeline-body"><p>ah, yeah, good points all round!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-10-19 16:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/brettcannon">@brettcannon</a> on 2024-10-26 02:59</div>
+            <div class="timeline-body"><p>I got messaged by @AlexWaygood on Discord about a potential error in my blog post's code, but since I never heard back from Alex after I answered the question I wanted to make sure you all knew that the canonical code for my syntactic sugar posts can be found at https://github.com/brettcannon/desugar/ . That repo has tests to verify the unravelling matches actual semantics and the code hasn't been modified for blog post readability, i.e. it shouldn't very bugs. 😅</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:00:08 UTC
+    </footer>
+</body>
+</html>

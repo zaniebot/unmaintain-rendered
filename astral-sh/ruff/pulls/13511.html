@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] support fstring expressions - astral-sh/ruff #13511</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] support fstring expressions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/13511">#13511</a>
+        opened by <a href="https://github.com/Slyces">@Slyces</a>
+        on 2024-09-25 11:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/Slyces">@Slyces</a> on 2024-09-25 11:46</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>Implement inference for <code>f-string</code>, contributes to astral-sh/ty#244.</p>
+<h3>First Implementation</h3>
+<p>When looking at the way <code>mypy</code> handles things, I noticed the following:</p>
+<ul>
+<li>No variables (e.g. <code>f&quot;hello&quot;</code>) ⇒ <code>LiteralString</code></li>
+<li>Any variable (e.g. <code>f&quot;number {1}&quot;</code>) ⇒ <code>str</code></li>
+</ul>
+<p>My first commit (1ba5d0f13fdf70ed8b2b1a41433b32fc9085add2) implements exactly this logic, except that we deal with string literals just like <code>infer_string_literal_expression</code> (if below <code>MAX_STRING_LITERAL_SIZE</code>, show <code>Literal[&quot;exact string&quot;]</code>)</p>
+<h3>Second Implementation</h3>
+<p>My second commit (90326ce9af5549af7b4efae89cd074ddf68ada14) pushes things a bit further to handle cases where the expression within the <code>f-string</code> are all literal values (string representation known at static time).</p>
+<p>Here's an example of when this could happen in code:</p>
+<pre><code class="language-python">BASE_URL = &quot;https://httpbin.org&quot;
+VERSION = &quot;v1&quot;
+endpoint = f&quot;{BASE_URL}/{VERSION}/post&quot;  # Literal[&quot;https://httpbin.org/v1/post&quot;]
+</code></pre>
+<p>As this can be sightly more costly (additional allocations), I don't know if we want this feature.</p>
+<h2>Test Plan</h2>
+<ul>
+<li>Added a test <code>fstring_expression</code> covering all cases I can think of</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @Slyces on 2024-09-25 11:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @Slyces on 2024-09-25 11:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @Slyces on 2024-09-25 11:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Feat/support fstring expressions" to "support fstring expressions" by @Slyces on 2024-09-25 11:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-09-25 11:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1673 on 2024-09-25 11:58</div>
+            <div class="timeline-body"><p>Using the display representation to get the value of the type is dangerous. We could accidentally change the inferred literal value by changing how those types are displayed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1660 on 2024-09-25 11:59</div>
+            <div class="timeline-body"><p>Could we, instead of using a <code>literals</code> <code>Vec</code> and an <code>expr_arena</code> instead use a <code>String</code> and concatenated the parts in-place? It also allows you to bail out early as soon as the string exceeds the max string literal size instead of iterating to the end.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2585 on 2024-09-25 12:00</div>
+            <div class="timeline-body"><p>Is this change intentional?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Slyces">@Slyces</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1673 on 2024-09-25 12:00</div>
+            <div class="timeline-body"><p>That's fair - would you re-code the representation here then or just not provide this feature for bool/int?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Slyces">@Slyces</a> reviewed on 2024-09-25 12:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-09-25 12:00</div>
+            <div class="timeline-body"><p>Oh wow nice and thanks for explaining how mypy handles this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @MichaReiser on 2024-09-25 12:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Slyces">@Slyces</a> reviewed on 2024-09-25 12:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Slyces">@Slyces</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2585 on 2024-09-25 12:03</div>
+            <div class="timeline-body"><p>I think - as far as I understand, <code>infer_fstring_expression</code> does not mutate anything in self, so calling it without using the returned value does nothing, doesn't it?
+As far as the return we have (<code>Type::Unknown</code>), it should still be this as <code> f-strings</code> are invalid in annotation context (to my knowledge)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Slyces">@Slyces</a> reviewed on 2024-09-25 12:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Slyces">@Slyces</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1660 on 2024-09-25 12:09</div>
+            <div class="timeline-body"><p>I think my intention was to concatenate last minute so very long <code>f-string</code> with a variable interpolation fairly late are not allocated (we keep everything as <code>Box&lt;str&gt;</code> as long as possible).</p>
+<p>Example:
+<code>f&quot;this is a very long sequence of characters [...] then I interpolate {x}&quot;</code></p>
+<p>There is the problem of allocating <code>Int</code> / <code>Bool</code> repr, but they realistically should never be too big (unless a pathological case is crafted on purpose).</p>
+<p>I'll try out the <code>String</code> version for sure though, as I didn't think about it when implementing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-09-25 12:14</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Slyces">@Slyces</a> reviewed on 2024-09-25 12:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Slyces">@Slyces</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1660 on 2024-09-25 12:28</div>
+            <div class="timeline-body"><p>Implemented in 3ee3fcbc3bacc40df0bf13dbdefdcc57c7655757 if you want to compare versions</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-09-25 12:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2585 on 2024-09-25 12:28</div>
+            <div class="timeline-body"><p>Not entirely sure. We might still need to call it to collect any diagnostics. @carljm ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-09-25 13:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1673 on 2024-09-25 13:05</div>
+            <div class="timeline-body"><p>I don't mind the feature, although it probably goes a bit out of scope for this PR :)</p>
+<p>I would re-code it or even add a dedicated method on <code>Type</code> because it is important that the value returned from this method exactly matches the runtime semantics.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "support fstring expressions" to "[red-knot] support fstring expressions" by @AlexWaygood on 2024-09-25 14:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Slyces">@Slyces</a> reviewed on 2024-09-25 16:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Slyces">@Slyces</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1673 on 2024-09-25 16:08</div>
+            <div class="timeline-body"><p>Just to be clear, what do you mean by &quot;the runtime semantics&quot;? Is there a source I can refer to to know what's the &quot;correct&quot; display for a given int/bool?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-09-25 16:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1673 on 2024-09-25 16:42</div>
+            <div class="timeline-body"><p>You can evaluate the expression in Python. The code here isn't about how we display type's. It's what the value of the f-string is at runtime, which requires evaluating the expressions the same as Python would at runtime.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-09-25 16:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1673 on 2024-09-25 16:52</div>
+            <div class="timeline-body"><p>Yes, we could have a <code>Type::repr()</code> method that returns <code>Option&lt;String&gt;</code>, that attempts to exactly emulate the result of callling <code>repr()</code> on an instance of the type at runtime in Python (or returns <code>None</code> if we can't statically determine what the repr would be). This might be different from the <code>representation</code> method in some cases, as the <code>representation</code> method is just an internal implementation detail of how we implement <code>Display</code> for various types. Using <code>representation</code> works fine for now, but could easily break in the future.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-09-25 16:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1673 on 2024-09-25 16:58</div>
+            <div class="timeline-body"><p>Although for unions, for example, we might have multiple possible <code>repr()</code>s of a value, so maybe <code>Option&lt;Vec&lt;String&gt;&gt;</code> would be a better return type for <code>repr</code>. E.g. calling repr on <code>Type::Union([StringLiteral(&quot;foo&quot;), StringLiteral(&quot;bar&quot;)])</code> might return <code>Some([String(&quot;foo&quot;), String(&quot;bar&quot;)])</code> -- we know the repr of an object of that type will be <em>one</em> of those two strings</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-09-25 17:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1673 on 2024-09-25 17:01</div>
+            <div class="timeline-body"><p>I'm not sure if I would go as far as returning a <code>Vec</code>. It's unclear how and where we would use that. But right, <code>repr</code> is the behavior we need :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-09-25 17:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1660 on 2024-09-25 17:02</div>
+            <div class="timeline-body"><blockquote>
+<p>Implemented in <a href="https://github.com/astral-sh/ruff/commit/3ee3fcbc3bacc40df0bf13dbdefdcc57c7655757">3ee3fcb</a> if you want to compare versions</p>
+</blockquote>
+<p>Thanks. I do like that better</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-09-25 17:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1673 on 2024-09-25 17:05</div>
+            <div class="timeline-body"><p>Consider this code:</p>
+<pre><code class="language-py">from typing import Literal
+
+def foo(x: Literal[&quot;foo&quot;, &quot;bar&quot;]):
+    y = f&quot;{x}{x}&quot;
+</code></pre>
+<p>The repr of <code>x</code> will be either <code>&quot;foo&quot;</code> or <code>&quot;bar&quot;</code>. If <code>Type::repr</code> returned a vec of possible reprs, we could reasonably infer that the value of <code>y</code> will be either <code>&quot;foofoo&quot;</code> or <code>&quot;barbar&quot;</code>, meaning the type of y will be <code>Literal[&quot;foofoo&quot;, &quot;barbar&quot;]</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1673 on 2024-09-25 17:07</div>
+            <div class="timeline-body"><p>(@JelleZijlstra who is sitting next to me at the core dev sprint informs me that his type checker, pyanalyze, already has this feature 😄)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-09-25 17:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-09-25 17:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1673 on 2024-09-25 17:08</div>
+            <div class="timeline-body"><p>We could but I think it's going a bit too far. You very quickly end up with quadratic complexity and I'm not sure how useful the precise type is when refining.</p>
+<p>Like what are actual code patterns that this enables. Why does it only work with f strings and not format strings?</p>
+<p>I do like the feature but I think we should keep it basic for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-09-25 17:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1673 on 2024-09-25 17:11</div>
+            <div class="timeline-body"><p>Does he find it to be a useful feature?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-09-25 17:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1673 on 2024-09-25 17:13</div>
+            <div class="timeline-body"><p>I'm fine returning <code>None</code> for unions for now. You're right that it is quadratic in behaviour, and Jelle doesn't think it's a crucial feature 😄</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> reviewed on 2024-09-25 17:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1673 on 2024-09-25 17:17</div>
+            <div class="timeline-body"><p>Yeah it's not that practically useful, I likely implemented it just because it was fairly simple to do and helps to infer more precise types. But I don't think inferring precise string literal types is likely to make the rest of type inference better.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1673 on 2024-09-25 17:26</div>
+            <div class="timeline-body"><p>I think we do want <code>Type::repr</code>, and we should use it here. I think it's fine to either entirely leave that as a TODO in this PR, or it's also fine to add a simple <code>Type::repr</code> in this PR that handles a few simple types and leaves the rest as TODO. (Main advantage of the latter is that you already have tests in this PR for f-strings including ints, and it will be simpler to keep them than have to take them out and re-add them later.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1690 on 2024-09-25 17:28</div>
+            <div class="timeline-body"><p>Can't we also break early as soon as we have <code>has_expression</code> true?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2585 on 2024-09-25 17:32</div>
+            <div class="timeline-body"><p>We maintain an invariant that all expressions in a scope are visited when inferring types in that scope. Since f-strings can have arbitrary sub-expressions, failing to call <code>infer_fstring_expression</code> here can mean that we fail to visit those sub-expressions or assign them a type (and potentially miss diagnostics in them.)</p>
+<p>There will be some decisions to make at some point around how we want to handle invalid expression kinds in annotations -- should we still emit internal diagnostics for them, or just emit the &quot;not valid in annotations&quot; diagnostic, assign type unknown, and move on? I don't have a clear answer on that right now, but for this PR, for now, I think this change should be reverted so that we maintain our &quot;visit all expressions&quot; invariant.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3650 on 2024-09-25 17:33</div>
+            <div class="timeline-body"><p>If you keep the bool repr support, add an interpolated boolean here as well</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3407 on 2024-09-25 17:35</div>
+            <div class="timeline-body"><p>This doesn't look necessary to me; it doesn't test anything that isn't already tested above. I don't think tests necessarily need to demonstrate a realistic-looking use case. If you want to make the above test look more realistic, that's fine, but IMO it's not worth writing and inferring types in another file.</p>
+<p>If we did have a reason to keep this, it should be a separate test method.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-09-25 17:36</div>
+            <div class="timeline-body"><p>This is great, thank you! I think there are still a couple things to address before landing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Slyces">@Slyces</a> reviewed on 2024-09-25 18:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Slyces">@Slyces</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2585 on 2024-09-25 18:55</div>
+            <div class="timeline-body"><blockquote>
+<p>We maintain an invariant that all expressions in a scope are visited when inferring types in that scope.</p>
+</blockquote>
+<p>That's very interesting to know. I think this applies to my PR as there is (in the latest version) a short-circuit logic to stop iterating over <code>f-string</code> parts (that could be arbitrarily long) once we know for sure the type to infer (either <code>str</code> instance, or <code>StringLiteral</code>).</p>
+<p>Should I go back and ensure that we do call <code>infer_expression</code> even when we already figured out the return type?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Slyces">@Slyces</a> reviewed on 2024-09-25 19:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Slyces">@Slyces</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1690 on 2024-09-25 19:08</div>
+            <div class="timeline-body"><p>We can - I think I had this in a version and took it out by mistake. But I also think that according to one of your comments somewhere else breaking early implies (as of now) that we don't infer the type of some expressions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Slyces">@Slyces</a> reviewed on 2024-09-25 19:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Slyces">@Slyces</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3407 on 2024-09-25 19:11</div>
+            <div class="timeline-body"><p>I think I mainly had it to make sure my comment in the PR's body was accurate, and committed it by mistake. Good catch :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-09-25 19:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1690 on 2024-09-25 19:13</div>
+            <div class="timeline-body"><p>Ah, good point! Yes, we should infer a type for all expressions, so we need to continue the loop. But we can set a <code>done</code> flag so we don't bother looking at the type for subsequent parts, or concatenating anything.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Slyces">@Slyces</a> on 2024-09-25 21:57</div>
+            <div class="timeline-body"><p>I implemented the methods <code>Type::repr</code> to use in <code>f-strings</code> inference.</p>
+<p>While doing so, I figured out a couple things:</p>
+<ul>
+<li>String replacement in <code>f-strings</code> is actually using <code>str</code> (see <a href="https://docs.python.org/3/reference/datamodel.html#object.__str__">here</a>)</li>
+<li>The <code>str</code> method uses <code>repr</code> as a fallback</li>
+<li>There is a rabbit-hole of the <code>format</code> builtin (see <a href="https://docs.python.org/3/reference/datamodel.html#object.__str__">here</a>) to deal with things like <code>f&quot;total ${number:01}&quot;</code> that are out of scope with this PR</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-09-25 22:00</div>
+            <div class="timeline-body"><blockquote>
+<p>String replacement in <code>f-strings</code> is actually using <code>str</code> (see <a href="https://docs.python.org/3/reference/datamodel.html#object.__str__">here</a>)</p>
+</blockquote>
+<p>Ah! Very good point. I forgot about this -- <code>str()</code> is used unless <code>!r</code> is given as the format specifier, in which case <code>repr</code> is used :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> on 2024-09-25 22:00</div>
+            <div class="timeline-body"><blockquote>
+<p>String replacement in f-strings is actually using str</p>
+</blockquote>
+<p>It actually uses <code>__format__</code> (unless you use the <code>!s</code> modifier). However, for most objects, this is the same.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:679 on 2024-09-25 22:37</div>
+            <div class="timeline-body"><p>Nit: calling <code>str</code> will involve <code>Type::call</code> on the <code>str</code> type, so it's clearer if here we only mention the <code>__str__</code> builtin, which is what this method really represents.</p>
+<pre><code class="language-suggestion">    /// Return the string representation of this type when converted to string as it would be
+    /// provided by the `__str__` method. If that can't be determined, return `None`.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:695 on 2024-09-25 22:38</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    /// Return the string representation of this type as it would be provided by the  `__repr__` method. If that can't be determined, return `None`.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:701 on 2024-09-25 22:39</div>
+            <div class="timeline-body"><p>The repr of a string actually includes enclosing single quotes:</p>
+<pre><code>&gt;&gt;&gt; s = &quot;foo&quot;
+&gt;&gt;&gt; repr(s)
+&quot;'foo'&quot;
+</code></pre>
+<p>So we should add the single quotes here, and copy this implementation (without the single quotes) up into <code>Type::str</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/display.rs</code>:17 on 2024-09-25 22:39</div>
+            <div class="timeline-body"><p>I think we can make this private again? It really shouldn't be used outside this module.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:696 on 2024-09-25 22:46</div>
+            <div class="timeline-body"><p>I think that both this method and <code>Type::str</code> should instead return a <code>Type&lt;'db&gt;</code>, which in practice will always be either <code>Type::LiteralString</code> or a <code>Type::StringLiteral</code>. In some other cases, returning a custom enum allows more flexibility in the caller and sometimes more efficiency, but that's not the case here. Returning a <code>String</code> means allocating, and we don't even get to take advantage of type interning; we'll only ever have a single <code>StringLiteralType(&quot;True&quot;)</code> (because of Salsa interning), but we could end up allocating many different &quot;True&quot; Strings from this method as currently written. Also, it means that <code>Type::str</code> on a <code>StringLiteral</code> can just return the same type, not allocate a new owned String.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:687 on 2024-09-25 22:47</div>
+            <div class="timeline-body"><p>This is not correct for <code>StringLiteral</code>, as mentioned below.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1669 on 2024-09-25 22:49</div>
+            <div class="timeline-body"><p>This might be quite complex to do fully, and may not be a priority for quite some time, if ever. But I don't want us to give <em>incorrect</em> results in the meantime. It seems like it should be quite easy to detect whether there is a format string at all, and if so, just fall back to <code>LiteralString</code> instead of a specific <code>StringLiteral</code> type. That seems worth doing now?</p>
+<p>We should still have a TODO for handling <code>__format__</code> and format specifiers (at least for some types); I'd like that TODO to specifically mention <code>__format__</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3660 on 2024-09-25 22:58</div>
+            <div class="timeline-body"><p>Let's also add a test with a known value with a format spec and test (for now) that we fallback to <code>LiteralString</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-09-25 22:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Slyces">@Slyces</a> reviewed on 2024-09-26 07:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Slyces">@Slyces</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:679 on 2024-09-26 07:01</div>
+            <div class="timeline-body"><p>I'll do the same for <code>__repr__</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Slyces">@Slyces</a> reviewed on 2024-09-26 09:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Slyces">@Slyces</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1669 on 2024-09-26 09:44</div>
+            <div class="timeline-body"><p>That's done - I realised however that there's more work than I expected there</p>
+<ul>
+<li>Conversion flags should be handled before calling format</li>
+<li>Format logic could be re-coded specifically for builtins</li>
+<li>From <a href="https://docs.python.org/3/library/functions.html#format">this</a>, we should keep track of non-empty format specifiers reaching the <code>object</code> implementation</li>
+</ul>
+<blockquote>
+<p>Changed in version 3.4: object().<strong>format</strong>(format_spec) raises <a href="https://docs.python.org/3/library/exceptions.html#TypeError">TypeError</a> if format_spec is not an empty string.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @Slyces on 2024-09-26 12:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @Slyces on 2024-09-26 12:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:730 on 2024-09-26 17:13</div>
+            <div class="timeline-body"><p>Sorry, I wasn't clear; I don't think there's any reason for this to return an <code>Option</code>. The runtime enforces that <code>__str__</code> methods must return a string (otherwise it fails with a <code>TypeError</code>), so we can trust this. That means the only possible return values here are <code>str</code>, <code>LiteralString</code>, or a <code>StringLiteral</code>. So in any &quot;can't be determined&quot; case, we can always correctly fall back to returning the <code>str</code> type; there is no truly &quot;unknown&quot; case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:727 on 2024-09-26 17:14</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    /// provided by the `__str__` method.
+    ///
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:743 on 2024-09-26 17:15</div>
+            <div class="timeline-body"><p>Same as above, I don't think we need to return an <code>Option</code> here; the &quot;we don't know&quot; fallback case can simply be <code>str</code>. That is, <code>builtins_symbol_ty(db, &quot;str&quot;).to_instance(db)</code></p>
+<pre><code class="language-suggestion">    /// method at runtime.
+    pub fn repr(&amp;self, db: &amp;'db dyn Db) -&gt; Type&lt;'db&gt; {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1683 on 2024-09-26 17:22</div>
+            <div class="timeline-body"><p>nit: why <code>!conversion.is_none()</code> instead of <code>conversion.is_some()</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-09-26 17:22</div>
+            <div class="timeline-body"><p>This is very close, thanks for sticking with it! Just a couple small comments yet.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Slyces">@Slyces</a> reviewed on 2024-09-26 18:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Slyces">@Slyces</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:730 on 2024-09-26 18:33</div>
+            <div class="timeline-body"><p>Oh I didn't get that indeed, sorry! I'll fix it soon 🙂</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Slyces">@Slyces</a> reviewed on 2024-09-26 20:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Slyces">@Slyces</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1683 on 2024-09-26 20:28</div>
+            <div class="timeline-body"><p>Because conversion is not an option but an enum with the <code>None</code> variant and the <code>Is</code> macro derived</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:743 on 2024-09-27 06:55</div>
+            <div class="timeline-body"><p>We don't have to do this in this PR but we could consider adding a <code>Type::builtin_str</code> factory function that returns <code>builtins_symbol_ty(db, &quot;str&quot;)</code> to avoid repeating it all over the place ;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:756 on 2024-09-27 06:58</div>
+            <div class="timeline-body"><p>This requires escaping:</p>
+<pre><code>&gt;&gt;&gt; repr(&quot;ab'cd&quot;)
+'&quot;ab\'cd&quot;'
+</code></pre>
+<p>I think you can use https://doc.rust-lang.org/std/primitive.str.html#method.escape_default</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1709 on 2024-09-27 07:08</div>
+            <div class="timeline-body"><p>Checking the string length only after appending to <code>concatenated</code> has the downside that the implementation copies over very long strings only to then decide that this was unnecessary</p>
+<p>I recommend to eagerly check the string length before appending</p>
+<pre><code class="language-rust">struct Collector {
+	concatenated: Option&lt;String&gt;,
+	expression: bool,
+}
+
+impl Collector {
+	fn new() -&gt; Self {
+		Self { concatenated: Some(String::new()), expression: false }
+	}
+
+	fn push_str(&amp;mut self, literal: &amp;str) {
+		self.concatenated = self.concatenated.as_mut().and_then(|concatenated| {
+			if concatenated.len().saturating_add(literal.len()) &lt;= MAX_STRING_LITERAL_SIZE {
+				concatenated.push_str(literal);
+				Some(concatenated)
+			} else {
+				None
+		})
+	}
+
+  fn add_expression(&amp;mut self) {
+		self.concatenated = None;
+		self.expression = true;
+	}
+
+  fn ty(self, db: &amp;dyn Db) -&gt; Type {
+		if self.expression {
+			builtins_symbol_ty(self.db, &quot;str&quot;).to_instance(db)
+		} else if let Some(concatenated) = self.concatenated { 
+			Type::StringLiteral(StringLiteralType::new(db, concatenated.into_boxed_str()))
+		} else {
+			Type::LiteralString
+		}
+	} 
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-09-27 07:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Slyces">@Slyces</a> reviewed on 2024-09-27 11:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Slyces">@Slyces</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1709 on 2024-09-27 11:25</div>
+            <div class="timeline-body"><p>Thank you for this suggestion!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @Slyces on 2024-09-27 12:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/display.rs</code>:57 on 2024-09-27 16:52</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">struct DisplayRepresentation&lt;'db&gt; {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:740 on 2024-09-27 16:55</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">            _ =&gt; Type::builtin_str(db).to_instance(db),
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:763 on 2024-09-27 16:55</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">            _ =&gt; Type::builtin_str(db).to_instance(db),
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-09-27 16:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @carljm on 2024-09-27 17:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2024-09-27 17:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-09-27 18:20</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:00:07 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rename the `ruff_vendored` crate to `red_knot_vendored` - astral-sh/ruff #13586</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Rename the <code>ruff_vendored</code> crate to <code>red_knot_vendored</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/13586">#13586</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2024-10-01 10:21
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-01 10:21</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Following #13436, @carljm and I are no longer getting automated review requests for typeshed-sync PRs: @dhruvmanila had to manually request my review on #13578. That's because our CODEOWNERs file only has us as &quot;owning&quot; paths that have <code>red_knot</code> in them:</p>
+<p>https://github.com/astral-sh/ruff/blob/2a36b47f1395284d32ae2015e6c626f242922224/.github/CODEOWNERS#L19-L21</p>
+<p>We could just add another line to CODEOWNERS, like we already have for <code>ruff_db</code>, but renaming the crate has other advantages too:</p>
+<ul>
+<li>This crate really is red-knot-specific. If the Ruff linter or formatter decides it needs to vendor some other files in the future, it won't use this crate to do it, since this crate packages all of typeshed into a zip at build time, which is entirely unnecessary for the linter and formatter</li>
+<li>It's pretty minor, but it's nice to have all the red-knot-related crates next to each other in the folder list when I'm scrolling through them in my editor.</li>
+</ul>
+<h2>Test Plan</h2>
+<ul>
+<li><code>cargo test</code></li>
+<li>Grepped the source code to check there weren't any remaining references to <code>ruff_vendored</code> anywhere.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2024-10-01 10:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @AlexWaygood on 2024-10-01 10:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @AlexWaygood on 2024-10-01 10:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-10-01 10:39</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> approved on 2024-10-01 13:09</div>
+            <div class="timeline-body"><p>Looks fine to me. Unrelated to this PR, do we need the <code>vendor</code> directory inside the <code>red_knot_vendored</code> crate or should we move the <code>typeshed</code> at the top-level? The double &quot;vendor&quot; was confusing at first but it's fine regardless.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-01 13:17</div>
+            <div class="timeline-body"><blockquote>
+<p>Unrelated to this PR, do we need the <code>vendor</code> directory inside the <code>red_knot_vendored</code> crate or should we move the <code>typeshed</code> at the top-level? The double &quot;vendor&quot; was confusing at first but it's fine regardless.</p>
+</blockquote>
+<p>Yeah, I suppose having the <code>vendor/</code> directory made more sense when these vendored files were part of a bigger crate like <code>red_knot_module_resolver</code> or <code>red_knot_python_semantic</code>; in those situations, it was useful to separate the &quot;vendored data&quot; from the actual Rust code. But now that they're in their own crate, there's very little actual Rust code 😆</p>
+<p>I feel like I still weakly prefer having them in a subdirectory for that reason, but definitely don't have a strong opinion</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-01 14:52</div>
+            <div class="timeline-body"><blockquote>
+<p>This crate really is red-knot-specific. If the Ruff linter or formatter decides it needs to vendor some other files in the future, it won't use this crate to do it, since this crate packages all of typeshed into a zip at build time, which is entirely unnecessary for the linter and formatter</p>
+</blockquote>
+<p>I don't think I agree with this. Ruff analyze might need the same vendored files if it wants to detect    standard library or third party dependencies.</p>
+<p>I used this name because ruff will use this crate long term. Although that can be said for an red knot module.</p>
+<p>TLDR: I don't mind this change.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-01 15:16</div>
+            <div class="timeline-body"><blockquote>
+<p>Ruff analyze might need the same vendored files if it wants to detect standard library or third party dependencies.</p>
+</blockquote>
+<p>Well, <code>ruff_graph</code> already depends on the <code>red_knot_python_semantic</code> crate, so having another <code>red_knot</code> crate in its dependencies feels like it doesn't hurt that much ;) And the API this crate exposes isn't really usable right now unless you also depend on <code>red_knot_python_semantic</code>.</p>
+<p>I feel like we can consider renaming them again when Ruff and red-knot truly merge, but for now it feels very much like part of the red-knot project to me. And renaming is fairly cheap!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2024-10-01 15:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2024-10-01 15:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-10-01 15:17</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:00:07 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Add control flow for try/except blocks (v3) - astral-sh/ruff #13729</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Add control flow for try/except blocks (v3)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/13729">#13729</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2024-10-13 15:52
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-13 15:52</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This is a third attempt to add some understanding of exception-handler control flow to red-knot. It follows the previous attempts https://github.com/astral-sh/ruff/pull/13338 (which was very naive about <code>finally</code> blocks) and #13633 (which was overly <em>ambitious</em> in how it attempted to handle <code>finally</code> blocks).</p>
+<p>The discussion in #13633 concluded that we aren't yet ready to add an accurate understanding of <code>finally</code> suites to red-knot, as it will require double-visiting of <code>finally</code> suites in order to accurately model the semantics, and this violates some core assumptions made by the use-def map. As such, this PR rips out a lot of the infrastructure that #13633 added for specifically dealing with <code>finally</code> suites, and instead adds some copious TODO comments in <code>builder.rs</code> and the tests.</p>
+<p>The rest of this summary section is copied from the summary section of #13633:</p>
+<hr />
+<p>The semantics of <code>try</code>/<code>except</code> blocks are very complicated! I've written up a long document outlining all the various jumps control flow could take, which can be found <a href="https://astral-sh.notion.site/Exception-handler-control-flow-11348797e1ca80bb8ce1e9aedbbe439d">here</a>. I won't try to summarise that document in this PR description. But I will give a brief description of some of the ways I've attempted to model these semantics in this PR:</p>
+<p>Abstractions for handling <code>try</code>/<code>except</code> blocks have been added to a new <code>builder</code> submodule, <code>builder/exception_handlers.rs</code>:</p>
+<ul>
+<li><code>TryNodeContext</code> keeps track of state for a single <code>try</code>/<code>except</code>/<code>else</code>/<code>finally</code> block. Exactly what state we need to keep track of varies according to whether the node has a <code>finally</code> branch, and according to which branch of the <code>StmtTry</code> node we're currently visiting.</li>
+<li><code>TryNodeContextStack</code> is a stack of <code>TryNodeContext</code> instances. For any given scope, <code>try</code> blocks can be arbitrarily nested; this means that we must keep a stack of <code>TryNodeContext</code>s for each scope we visit.</li>
+<li><code>TryNodeContextStackManager</code> is a stack of <code>TryNodeContextStack</code>s. Whenever we enter a nested scope, a new <code>TryNodeContextStack</code> is initialised by the <code>TryNodeContextStackManager</code> and appended to the stack of stacks. Whenever we exit that scope, the <code>TryNodeContextStack</code> is popped off the stack of stacks.</li>
+</ul>
+<p>The diff for this PR is quite large, but this is mostly tests. There aren't actually <em>that</em> many tests, but they unfortunately need to be quite verbose. This is because we may add a more sophisticated understanding of exception handlers in the future (where we would understand that e.g. <code>x = 1</code> can never raise an exception), and I wanted the tests to be robust to this so that they wouldn't have to be rewritten when that happens. (This also helps readability of the tests, since we obviously know that <code>x = 1</code> can never raise exceptions.) To address this, I made sure to use assignments to function calls for testing places where a raised exception could cause a jump in control flow. This will be robust to future improvements, since it will always be the case that we will consider a function call capable of raising arbitrary exceptions.</p>
+<h2>Test Plan</h2>
+<p>Tests have been added using <code>mdtest</code>, and can be found in <code>crates/red_knot_python_semantic/resources/mdtest/except_handler_control_flow.md</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2024-10-13 15:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @AlexWaygood on 2024-10-13 15:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @AlexWaygood on 2024-10-13 15:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-13 15:56</div>
+            <div class="timeline-body"><p>(https://github.com/astral-sh/ruff/commit/aacc4e7be912fefcb5f7d1d083dcf05db4ce4bb7 and onwards are the commits that differ from https://github.com/astral-sh/ruff/pull/13633; all commits prior to that are the same as in https://github.com/astral-sh/ruff/pull/13633.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-10-13 16:13</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-10-14 16:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder/except_handlers.rs</code>:41 on 2024-10-14 16:23</div>
+            <div class="timeline-body"><p>Removing the <code>RefCell</code> and instead rely on compile time borrow checking doesn't seem to be difficult. I quickly tried it out locally and the only issue you run into is with <code>record_definition</code>. My recommendation there is to instead expose an <code>iter_mut</code> method on <code>TryNodeStack</code> and inline the logic into <code>builder.rs</code>.</p>
+<p>Removing the <code>RefCell</code> should also remove the need for <code>TryNodeContextStackRefMut</code> because you can just return a <code>&amp;TryNodeContextStack</code> or <code>&amp;mut TryNodeContextStack</code> based on the mutability that is needed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder/except_handlers.rs</code>:33 on 2024-10-14 16:24</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">            &quot;exit_scope() should never be called on an empty stack \
+</code></pre>
+<p>Nit: I think it would also be fine to make this a debug assertion.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder/except_handlers.rs</code>:101 on 2024-10-14 16:27</div>
+            <div class="timeline-body"><p>Is it important to know if it is <code>Some</code> or <code>None</code> because i dont' see that the code below makes use of the fact other than in an assertion. If not, consider simplifying this to a <code>Vec</code> and using <code>std::mem::take</code> to consume the value (or change <code>exit_try_block</code> to take <code>self</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:806 on 2024-10-14 16:32</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                    self.flow_restore(pre_try_block_state);
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-10-14 16:33</div>
+            <div class="timeline-body"><p>Wow, the code makes this seem easy</p>
+<p>This looks good but I would prefer if we avoid using <code>RefCell</code> in the context. I even think that regular borrowing will simplify the implementation by removing the need for the <code>MutRef</code> type.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-10-15 19:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder/except_handlers.rs</code>:101 on 2024-10-15 19:27</div>
+            <div class="timeline-body"><p>Thanks, I think this was leftover complexity from the earlier version when I was trying (and failing) to handle <code>finally</code> blocks properly</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-15 20:26</div>
+            <div class="timeline-body"><p>Thanks @MichaReiser! Managed to get rid of the RefCell 🎉</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @AlexWaygood on 2024-10-15 20:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2024-10-15 20:31</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/except-handler-3">CodSpeed Performance Report</a></h2>
+<h3>Merging #13729 will <strong>not alter performance</strong></h3>
+<p><sub>Comparing <code>except-handler-3</code> (4233ceb) with <code>main</code> (d25673f)</sub></p>
+<h3>Summary</h3>
+<p><code>✅ 32</code> untouched benchmarks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-15 20:37</div>
+            <div class="timeline-body"><blockquote>
+<p>Merging #13729 will <strong>degrade performances by 22.53%</strong></p>
+</blockquote>
+<p>I don't understand how the last commit (https://github.com/astral-sh/ruff/pull/13729/commits/21ab48139118dd94079dda3fe8aad495fa90f5dd) I pushed could have caused this. Nothing I did in that commit should have had any negative impact on performance, I don't think. This doesn't make any sense to me. (Edit: I tried squashing commits and force-pushing to trigger a rerun of the benchmarks; no difference ☹️)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-10-15 22:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:242 on 2024-10-15 22:20</div>
+            <div class="timeline-body"><p>Oh, pretty sure this is the reason for the perf regression. I'm now taking a snapshot for every definition, even if it doesn't occur inside an exception handler 🤦</p>
+<p>Will fix tomorrow.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-10-16 09:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:242 on 2024-10-16 09:05</div>
+            <div class="timeline-body"><p>This diagnosis was correct. https://github.com/astral-sh/ruff/pull/13729/commits/24d139891efc6030ef0f3ec2eebd1999c2e6e831 fixed nearly all of the performance regression; it's down to 1-2% now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-10-16 09:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder/except_handlers.rs</code>:41 on 2024-10-16 09:06</div>
+            <div class="timeline-body"><p>I had to bring back the <code>RefCell</code> in https://github.com/astral-sh/ruff/pull/13729/commits/24d139891efc6030ef0f3ec2eebd1999c2e6e831. <code>record_definition()</code> is indeed the only place where normal borrowing rules are difficult to work with here, but I still don't see how to avoid using a <code>RefCell</code> internally :( I tried your suggestion of exposing an <code>iter_mut</code> method and inlining the logic into <code>builder.rs</code>, but I still couldn't make the borrow checker happy.</p>
+<p>I have at least managed to remove <code>TryNodeContextStackRefMut</code>, however!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-16 09:07</div>
+            <div class="timeline-body"><p>Ready for re-review again!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-10-16 10:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder/except_handlers.rs</code>:41 on 2024-10-16 10:06</div>
+            <div class="timeline-body"><p>Yeah, the <code>self.flow_snapshot</code> makes this a bit awkward. There are two possibilities:</p>
+<ol>
+<li>Pass the snapshot to <code>record_definition</code></li>
+</ol>
+<pre><code class="language-patch">Subject: [PATCH] Update snapshot
+
+The old snapshot was incorrect because the format range excluded the first (all empty) line. Now the first line gets formatted also.
+---
+Index: crates/red_knot_python_semantic/src/semantic_index/builder.rs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+&lt;+&gt;UTF-8
+===================================================================
+diff --git a/crates/red_knot_python_semantic/src/semantic_index/builder.rs b/crates/red_knot_python_semantic/src/semantic_index/builder.rs
+--- a/crates/red_knot_python_semantic/src/semantic_index/builder.rs	(revision 24d139891efc6030ef0f3ec2eebd1999c2e6e831)
++++ b/crates/red_knot_python_semantic/src/semantic_index/builder.rs	(date 1729073072841)
+@@ -103,9 +103,9 @@
+             .expect(&quot;Always to have a root scope&quot;)
+     }
+ 
+-    fn try_node_context_stack(&amp;self) -&gt; &amp;TryNodeContextStack {
++    fn try_node_context_stack(&amp;mut self) -&gt; &amp;mut TryNodeContextStack {
+         self.try_node_context_stack_manager
+-            .current_try_context_stack()
++            .current_try_context_stack_mut()
+     }
+ 
+     fn push_scope(&amp;mut self, node: NodeWithScopeRef) {
+@@ -239,7 +239,9 @@
+             DefinitionCategory::Declaration =&gt; use_def.record_declaration(symbol, definition),
+             DefinitionCategory::Binding =&gt; use_def.record_binding(symbol, definition),
+         }
+-        self.try_node_context_stack().record_definition(self);
++
++        let snapshot = self.flow_snapshot();
++        self.try_node_context_stack().record_definition(snapshot);
+ 
+         definition
+     }
+Index: crates/red_knot_python_semantic/src/semantic_index/builder/except_handlers.rs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+&lt;+&gt;UTF-8
+===================================================================
+diff --git a/crates/red_knot_python_semantic/src/semantic_index/builder/except_handlers.rs b/crates/red_knot_python_semantic/src/semantic_index/builder/except_handlers.rs
+--- a/crates/red_knot_python_semantic/src/semantic_index/builder/except_handlers.rs	(revision 24d139891efc6030ef0f3ec2eebd1999c2e6e831)
++++ b/crates/red_knot_python_semantic/src/semantic_index/builder/except_handlers.rs	(date 1729073033138)
+@@ -23,6 +23,12 @@
+             .expect(&quot;There should always be at least one `TryBlockContexts` on the stack&quot;)
+     }
+ 
++    pub(super) fn current_try_context_stack_mut(&amp;mut self) -&gt; &amp;mut TryNodeContextStack {
++        self.0
++            .last_mut()
++            .expect(&quot;There should always be at least one `TryBlockContexts` on the stack&quot;)
++    }
++
+     /// Pop a new [`TryNodeContextStack`] off the stack of stacks.
+     ///
+     /// Each [`TryNodeContextStack`] is only valid for a single scope
+@@ -38,33 +44,36 @@
+ 
+ /// The contexts of nested `try`/`except` blocks for a single scope
+ #[derive(Debug, Default)]
+-pub(super) struct TryNodeContextStack(RefCell&lt;Vec&lt;TryNodeContext&gt;&gt;);
++pub(super) struct TryNodeContextStack(Vec&lt;TryNodeContext&gt;);
+ 
+ impl TryNodeContextStack {
+     /// Push a new [`TryNodeContext`] for recording intermediate states
+     /// while visiting a [`ruff_python_ast::StmtTry`] node that has a `finally` branch.
+-    pub(super) fn push_context(&amp;self) {
+-        self.0.borrow_mut().push(TryNodeContext::default());
++    pub(super) fn push_context(&amp;mut self) {
++        self.0.push(TryNodeContext::default());
+     }
+ 
+     /// Pop a [`TryNodeContext`] off the stack.
+-    pub(super) fn pop_context(&amp;self) -&gt; Vec&lt;FlowSnapshot&gt; {
++    pub(super) fn pop_context(&amp;mut self) -&gt; Vec&lt;FlowSnapshot&gt; {
+         let TryNodeContext {
+             try_suite_snapshots,
+         } = self
+             .0
+-            .borrow_mut()
+             .pop()
+             .expect(&quot;Cannot pop a `try` block off an empty `TryBlockContexts` stack&quot;);
+         try_suite_snapshots
+     }
+ 
+     /// For each `try` block on the stack, push the snapshot onto the `try` block
+-    pub(super) fn record_definition(&amp;self, builder: &amp;SemanticIndexBuilder) {
+-        for context in self.0.borrow_mut().iter_mut() {
+-            context.record_definition(builder.flow_snapshot());
++    pub(super) fn record_definition(&amp;mut self, snapshot: FlowSnapshot) {
++        for context in self.0.iter_mut() {
++            context.record_definition(snapshot.clone());
+         }
+     }
++
++    pub(super) fn iter_mut(&amp;mut self) -&gt; impl Iterator&lt;Item = &amp;mut TryNodeContext&gt; {
++        self.0.iter_mut()
++    }
+ }
+ 
+ /// Context for tracking definitions over the course of a single
+</code></pre>
+<ol start="2">
+<li>do the &quot;move&quot; trick</li>
+</ol>
+<pre><code class="language-rust">let use_def = self.current_use_def_map_mut();
+        match category {
+            DefinitionCategory::DeclarationAndBinding =&gt; {
+                use_def.record_declaration_and_binding(symbol, definition);
+            }
+            DefinitionCategory::Declaration =&gt; use_def.record_declaration(symbol, definition),
+            DefinitionCategory::Binding =&gt; use_def.record_binding(symbol, definition),
+        }
+
+        let mut try_stack_manager = std::mem::take(&amp;mut self.try_node_context_stack_manager);
+        for context in try_stack_manager.current_try_context_stack_mut().iter_mut() {
+            context.record_definition(self.flow_snapshot());
+        }
+        self.try_node_context_stack_manager = try_stack_manager;
+
+        definition
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-10-16 10:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder/except_handlers.rs</code>:41 on 2024-10-16 10:10</div>
+            <div class="timeline-body"><p>Idea (1) is what I did last night and it caused a massive perf regression, because it means you end up taking a snapshot after <em>every</em> definition, even if you're not visiting a node inside an exception handler!</p>
+<p>I'll try out idea (2) and see if it works</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-10-16 10:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-16 10:51</div>
+            <div class="timeline-body"><p>I'll wait before merging in case @carljm wants to take another look first.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/exception/control_flow.md</code>:23 on 2024-10-16 11:45</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">the `try`/`except` block is therefore the union of the type at the end of the `try`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/exception/control_flow.md</code>:65 on 2024-10-16 11:49</div>
+            <div class="timeline-body"><p>It feels excessive to explicitly refer back to this document explicitly here? We already linked it once at the top. To be honest, I'm not even sure we need to link it at all, because this &quot;literate test suite&quot; covers the topic so clearly, with examples.</p>
+<pre><code class="language-suggestion">as `except:`. There might have been an unhandled exception, but
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/exception/control_flow.md</code>:50 on 2024-10-16 11:54</div>
+            <div class="timeline-body"><p>The current narrative text tends to always discuss the final type, but not intermediate types. I feel like the possibility that control flow enters <code>except</code> without having seen all of the <code>try</code> block (i.e. the fact that <code>Literal[1]</code> is part of the type here) is pretty relevant and worth explicitly calling out.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:873 on 2024-10-16 12:11</div>
+            <div class="timeline-body"><p>Nit: I don't think this requires rethinking any assumptions of the use-def map. In fact I think the use-def map is the one piece that likely <em>won't</em> have to change at all to accommodate this. Rather, it requires rethinking some assumptions of our general semantic-indexing and type-inference approach, which assume that we visit each node exactly once.</p>
+<pre><code class="language-suggestion">                // This requires rethinking some fundamental assumptions semantic indexing makes.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:875 on 2024-10-16 12:12</div>
+            <div class="timeline-body"><p>Again here, I'm not convinced we add value by linking this doc, again. I think the narrative in the test suite already provides an excellent overview of the <code>finally</code> topic, with examples, and will be easier to maintain and keep correct over time than an external Notion document.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-10-16 12:16</div>
+            <div class="timeline-body"><p>Very happy with where this ended up, for now! Awesome work.</p>
+<p>Just a few nits, all related to test/comment text, none of them blocking.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-10-16 12:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:875 on 2024-10-16 12:21</div>
+            <div class="timeline-body"><p>The Notion document is more expansive and includes some examples and discussion that were not included in the test suite, either for brevity or because it's silly to add tests for things where all the relevant assertions would be TODOs. I agree with your point that there are too many links to it, but this one I'm inclined to keep.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2024-10-16 13:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2024-10-16 13:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-10-16 13:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-10-16 13:15</div>
+            <div class="timeline-body"><p>Woohoo, congrats on getting this landed!!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:00:08 UTC
+    </footer>
+</body>
+</html>

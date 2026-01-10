@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Make `ARG002` compatible with `EM101` when raising `NotImplementedError` - astral-sh/ruff #13714</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Make <code>ARG002</code> compatible with <code>EM101</code> when raising <code>NotImplementedError</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/13714">#13714</a>
+        opened by <a href="https://github.com/Watercycle">@Watercycle</a>
+        on 2024-10-11 07:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/Watercycle">@Watercycle</a> on 2024-10-11 07:22</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This pull request resolves some rule thrashing identified in #12427 by allowing for unused arguments when using <code>NotImplementedError</code> with a variable per <a href="https://github.com/astral-sh/ruff/issues/12427#issuecomment-2384727468">this comment</a>.</p>
+<p><strong>Note</strong></p>
+<p>This feels a little heavy-handed / edge-case-prone. So, to be clear, I'm happy to scrap this code and just update the docs to communicate that <code>abstractmethod</code> and friends should be used in this scenario (or similar). Just let me know what you'd like done!</p>
+<p>fixes: #12427</p>
+<h2>Test Plan</h2>
+<p>I added a test-case to the existing <code>ARG.py</code> file and ran...</p>
+<pre><code class="language-sh">cargo run -p ruff -- check crates/ruff_linter/resources/test/fixtures/flake8_unused_arguments/ARG.py --no-cache --preview --select ARG002
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-10-11 07:36</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_unused_arguments/rules/unused_arguments.rs</code>:331 on 2024-10-14 09:17</div>
+            <div class="timeline-body"><p>Nit:</p>
+<pre><code class="language-suggestion">            if matches!(**value, ast::Expr::StringLiteral(_)) =&gt;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_unused_arguments/rules/unused_arguments.rs</code>:347 on 2024-10-14 09:17</div>
+            <div class="timeline-body"><p>Nit:</p>
+<pre><code class="language-suggestion">        **value,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_unused_arguments/rules/unused_arguments.rs</code>:359 on 2024-10-14 09:18</div>
+            <div class="timeline-body"><p>Nit:</p>
+<pre><code class="language-suggestion">    let [Stmt::Assign(ast::StmtAssign { value, .. }), Stmt::Raise(StmtRaise {
+        exc: Some(exception),
+        ..
+    })] = statements
+    else {
+        return false;
+    };
+    
+    if !matches!(
+        value.as_ref(),
+        ast::Expr::StringLiteral(_) | ast::Expr::FString(_)
+    ) {
+        return false;
+    }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_unused_arguments/rules/unused_arguments.rs</code>:363 on 2024-10-14 09:19</div>
+            <div class="timeline-body"><p>Nit:</p>
+<pre><code class="language-suggestion">    }) = &amp;**exception
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_unused_arguments/rules/unused_arguments.rs</code>:368 on 2024-10-14 09:20</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    if !matches!(**func, ast::Expr::Name(name) if name.id == &quot;NotImplementedError&quot;) {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-10-14 09:20</div>
+            <div class="timeline-body"><p>This looks good to me. Would you mind adding a test string with an f-string message?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2024-10-14 09:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Watercycle">@Watercycle</a> reviewed on 2024-10-16 02:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Watercycle">@Watercycle</a> on <code>crates/ruff_linter/src/rules/flake8_unused_arguments/rules/unused_arguments.rs</code>:363 on 2024-10-16 02:18</div>
+            <div class="timeline-body"><p>I see mixed usages of <code>&amp;**</code> and <code>as_ref</code> throughout the code base. Out of curiosity, when is one used over the other? The general heuristic I've seen is <code>*</code> and <code>&amp;</code> are recommended for simple stuff; and, once you start de-referencing and re-borrowing, that <code>as_ref</code> is recommended if just to avoid needing to think about whatever container the value* is in.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @Watercycle on 2024-10-16 02:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/flake8_unused_arguments/rules/unused_arguments.rs</code>:334 on 2024-10-16 04:16</div>
+            <div class="timeline-body"><p>nit: we could directly use the <code>is_string_literal_expr</code> method here</p>
+<pre><code class="language-suggestion">        [Stmt::Expr(StmtExpr { value, .. }), rest @ ..] if value.is_string_literal_expr() =&gt; rest,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/flake8_unused_arguments/rules/unused_arguments.rs</code>:366 on 2024-10-16 04:26</div>
+            <div class="timeline-body"><p>I think we'd also need to make sure that the variable that is being referenced in the call to <code>NotImplementedError</code> is the same as the one in the assignment. I think there must be some method in the <code>SemanticModel</code> to get the binding for the <code>ExprName</code> node (possibly <code>resolve_name</code>?).</p>
+<p>Or, actually we can get away with just comparing the string i.e., whether the name of the variable that is being assigned is the same as the one used in the <code>NotImplementedError</code> call because we make sure that there are only two statements in the function body above.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-10-16 04:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @dhruvmanila by @dhruvmanila on 2024-10-18 05:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> approved on 2024-10-18 06:03</div>
+            <div class="timeline-body"><p>Thanks for the PR!</p>
+<p>I made a few final changes:</p>
+<ul>
+<li>We should match the assignment target and argument node exactly. Previously, if either of them isn't a name node, the function would return true.</li>
+<li>Added some more test cases where <code>ARG002</code> should be raised</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-10-18 06:05</div>
+            <div class="timeline-body"><p>Going to wait for ecosystem checks and then merge.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Make ARG002 compatible with EM101 (no unused args vs no raw exception message)" to "Make `ARG002` compatible with `EM101` when raising `NotImplementedError`" by @dhruvmanila on 2024-10-18 06:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-10-18 06:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_unused_arguments/rules/unused_arguments.rs</code>:363 on 2024-10-18 06:31</div>
+            <div class="timeline-body"><p>We used to use <code>as_ref</code> but started to prefer dereferencing (except for <code>Option</code> where you still need <code>as_ref</code> and <code>as_deref</code>) because it's possible that <code>as_ref</code> becomes ambiguous if a new <code>AsRef</code> implementation is added to a type. For example, <code>String</code> has many <code>as_ref</code> methods:</p>
+<pre><code>  = note: multiple `impl`s satisfying `String: AsRef&lt;_&gt;` found in the following crates: `alloc`, `std`:
+          - impl AsRef&lt;OsStr&gt; for String;
+          - impl AsRef&lt;Path&gt; for String;
+          - impl AsRef&lt;[u8]&gt; for String;
+          - impl AsRef&lt;str&gt; for String;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> removed by @dhruvmanila on 2024-10-18 06:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @dhruvmanila on 2024-10-18 06:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_unused_arguments/rules/unused_arguments.rs</code>:355 on 2024-10-18 06:32</div>
+            <div class="timeline-body"><p>We should probably use the semantic model to verify that <code>NotImplementedError</code> is the built-in <code>NotImplementedError</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-10-18 06:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-10-18 06:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/flake8_unused_arguments/rules/unused_arguments.rs</code>:355 on 2024-10-18 06:32</div>
+            <div class="timeline-body"><p>Oh, good catch.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2024-10-18 06:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2024-10-18 06:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-10-20 06:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Watercycle">@Watercycle</a> reviewed on 2024-10-20 06:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Watercycle">@Watercycle</a> on <code>crates/ruff_linter/src/rules/flake8_unused_arguments/rules/unused_arguments.rs</code>:363 on 2024-10-20 06:19</div>
+            <div class="timeline-body"><p>Oh interesting, that makes sense! Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Watercycle">@Watercycle</a> on 2024-10-20 06:27</div>
+            <div class="timeline-body"><blockquote>
+<p>I made a few final changes:</p>
+</blockquote>
+<p>Thank you for fixing it up! I noticed the snapshot test didn't get updated after committing and thought &quot;this can be Sunday's problem&quot; 😅</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:00:08 UTC
+    </footer>
+</body>
+</html>

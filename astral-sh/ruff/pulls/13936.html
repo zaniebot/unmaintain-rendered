@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fix F811 false positive when a class field has the same name as an unused import - astral-sh/ruff #13936</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fix F811 false positive when a class field has the same name as an unused import</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/13936">#13936</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2024-10-26 09:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-26 09:03</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Fixes https://github.com/astral-sh/ruff/issues/13930</p>
+<p>Ruff incorrectly reports class fields as redefinitions when there's an unused import with the same name:</p>
+<pre><code class="language-python">from queue import Empty
+
+class Types:
+    INVALID = 0
+    UINT = 1
+    HEX = 2
+    Empty = 3  # &lt;-- reported as redefinition
+
+# q = Empty() &lt;- This disables the error if uncommented
+</code></pre>
+<p>This PR excludes fields from the redefinition checks.</p>
+<p>I'm not sure if this is the proper fix. Or maybe the diagnostic is even intentional?</p>
+<h2>Test Plan</h2>
+<p>Added test.</p>
+<p>I verified that Ruff doesn't detect redefined class fields today:</p>
+<pre><code class="language-python">class Types:
+    INVALID = 0
+    UINT = 1
+    HEX = 2
+    HEX = 4  # not raised
+</code></pre>
+<p>Ruff doesn't report a violation for the redeclared HEX field</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2024-10-26 09:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @MichaReiser on 2024-10-26 09:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @MichaReiser on 2024-10-26 09:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-10-26 09:19</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+1 -2 violations, +0 -0 fixes in 3 projects; 51 projects unchanged)</p>
+<details><summary><a href="https://github.com/apache/superset">apache/superset</a> (+1 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --no-preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/apache/superset/blob/299cea060128ade18a8b22f0f79acdc2c8d00af5/superset/commands/importers/v1/__init__.py#L82'>superset/commands/importers/v1/__init__.py:82:34:</a> RUF100 [*] Unused `noqa` directive (unused: `F811`)
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/binary-husky/gpt_academic">binary-husky/gpt_academic</a> (+0 -2 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
+- <a href='https://github.com/binary-husky/gpt_academic/blob/69f3755682e8fb5c07d12a78e40fc06e5ac9d233/crazy_functions/agent_fns/python_comment_agent.py#L205'>crazy_functions/agent_fns/python_comment_agent.py:205:9:</a> F811 Redefinition of unused `dedent` from line 5
+- <a href='https://github.com/binary-husky/gpt_academic/blob/69f3755682e8fb5c07d12a78e40fc06e5ac9d233/tests/test_python_auto_docstring.py#L194'>tests/test_python_auto_docstring.py:194:9:</a> F811 Redefinition of unused `dedent` from line 8
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/pandas-dev/pandas">pandas-dev/pandas</a> (+0 -0 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (2 rules affected)</summary>
+<p>
+
+<p>| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| F811 | 2 | 0 | 2 | 0 | 0 |
+| RUF100 | 1 | 1 | 0 | 0 | 0 |</p>
+</p>
+</details>
+
+<h3>Linter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+1 -10 violations, +0 -0 fixes in 3 projects; 51 projects unchanged)</p>
+<details><summary><a href="https://github.com/apache/superset">apache/superset</a> (+1 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/apache/superset/blob/299cea060128ade18a8b22f0f79acdc2c8d00af5/superset/commands/importers/v1/__init__.py#L82'>superset/commands/importers/v1/__init__.py:82:34:</a> RUF100 [*] Unused `noqa` directive (unused: `F811`)
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/binary-husky/gpt_academic">binary-husky/gpt_academic</a> (+0 -2 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/binary-husky/gpt_academic/blob/69f3755682e8fb5c07d12a78e40fc06e5ac9d233/crazy_functions/agent_fns/python_comment_agent.py#L205'>crazy_functions/agent_fns/python_comment_agent.py:205:9:</a> F811 Redefinition of unused `dedent` from line 5
+- <a href='https://github.com/binary-husky/gpt_academic/blob/69f3755682e8fb5c07d12a78e40fc06e5ac9d233/tests/test_python_auto_docstring.py#L194'>tests/test_python_auto_docstring.py:194:9:</a> F811 Redefinition of unused `dedent` from line 8
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/python/typeshed">python/typeshed</a> (+0 -8 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview --select E,F,FA,I,PYI,RUF,UP,W</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/python/typeshed/blob/efccd7455a942ab4e9fdeda2885fcab15c093b10/stubs/psutil/psutil/_pswindows.pyi#L41'>stubs/psutil/psutil/_pswindows.pyi:41:5:</a> F811 Redefinition of unused `ABOVE_NORMAL_PRIORITY_CLASS` from line 23
+- <a href='https://github.com/python/typeshed/blob/efccd7455a942ab4e9fdeda2885fcab15c093b10/stubs/psutil/psutil/_pswindows.pyi#L42'>stubs/psutil/psutil/_pswindows.pyi:42:5:</a> F811 Redefinition of unused `BELOW_NORMAL_PRIORITY_CLASS` from line 24
+- <a href='https://github.com/python/typeshed/blob/efccd7455a942ab4e9fdeda2885fcab15c093b10/stubs/psutil/psutil/_pswindows.pyi#L43'>stubs/psutil/psutil/_pswindows.pyi:43:5:</a> F811 Redefinition of unused `HIGH_PRIORITY_CLASS` from line 25
+- <a href='https://github.com/python/typeshed/blob/efccd7455a942ab4e9fdeda2885fcab15c093b10/stubs/psutil/psutil/_pswindows.pyi#L44'>stubs/psutil/psutil/_pswindows.pyi:44:5:</a> F811 Redefinition of unused `IDLE_PRIORITY_CLASS` from line 26
+- <a href='https://github.com/python/typeshed/blob/efccd7455a942ab4e9fdeda2885fcab15c093b10/stubs/psutil/psutil/_pswindows.pyi#L45'>stubs/psutil/psutil/_pswindows.pyi:45:5:</a> F811 Redefinition of unused `NORMAL_PRIORITY_CLASS` from line 27
+- <a href='https://github.com/python/typeshed/blob/efccd7455a942ab4e9fdeda2885fcab15c093b10/stubs/psutil/psutil/_pswindows.pyi#L46'>stubs/psutil/psutil/_pswindows.pyi:46:5:</a> F811 Redefinition of unused `REALTIME_PRIORITY_CLASS` from line 28
+- <a href='https://github.com/python/typeshed/blob/efccd7455a942ab4e9fdeda2885fcab15c093b10/stubs/pysftp/pysftp/__init__.pyi#L105'>stubs/pysftp/pysftp/__init__.pyi:105:9:</a> F811 Redefinition of unused `walktree` from line 24
+- <a href='https://github.com/python/typeshed/blob/efccd7455a942ab4e9fdeda2885fcab15c093b10/stubs/pysftp/pysftp/__init__.pyi#L79'>stubs/pysftp/pysftp/__init__.pyi:79:9:</a> F811 Redefinition of unused `cd` from line 18
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (2 rules affected)</summary>
+<p>
+
+<p>| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| F811 | 10 | 0 | 10 | 0 | 0 |
+| RUF100 | 1 | 1 | 0 | 0 | 0 |</p>
+</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-10-28 07:02</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:00:09 UTC
+    </footer>
+</body>
+</html>

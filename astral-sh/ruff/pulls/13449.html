@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Add `Type::bool` and boolean expression inference - astral-sh/ruff #13449</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Add <code>Type::bool</code> and boolean expression inference</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/13449">#13449</a>
+        opened by <a href="https://github.com/TomerBin">@TomerBin</a>
+        on 2024-09-22 23:41
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/TomerBin">@TomerBin</a> on 2024-09-22 23:41</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>Add boolean operator (<code>and</code> and <code>or</code>) support for several types. I'm pretty new to Rust so any feedback would be great.</p>
+<p>A new <code>Type::bool</code> function is created which may also help in https://github.com/astral-sh/ruff/pull/13432 as well.
+Contributes to <a href="https://github.com/astral-sh/ty/issues/244">#12701</a></p>
+<h2>Test Plan</h2>
+<p>Cargo tests</p>
+<!-- How was it tested? -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @TomerBin on 2024-09-22 23:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @TomerBin on 2024-09-22 23:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @TomerBin on 2024-09-22 23:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-09-22 23:55</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:535 on 2024-09-23 00:05</div>
+            <div class="timeline-body"><p>Not necessarily! Most classes are always truthy, but not if the class has a custom metaclass that defines <code>__bool__</code> or <code>__len__</code>:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; class Meta(type):
+...     def __bool__(cls): return False
+... 
+&gt;&gt;&gt; class Foo(metaclass=Meta): pass
+... 
+&gt;&gt;&gt; bool(Foo)
+False
+</code></pre>
+<p>The exact details around the method lookup will be somewhat fiddly (for both instances and classes -- you need to check both <code>__bool__</code> and <code>__len__</code>), so I think it's fine to just return <code>None</code> for both this variant and <code>Type::Instance</code> for now. But we should add a TODO so that we remember to add some logic doing the method lookup for these variants at some point. (If a type has a <code>__bool__</code> method that is annotated as returning <code>Literal[False]</code>, or a <code>__len__</code> method annotated as returning <code>Literal[0]</code>, we should treat it as always falsey -- and similarly for <code>__bool__</code> and <code>__len__</code> methods that are annotated as returning <code>Literal[True]</code> / <code>Literal[&lt;some nonzero number&gt;]</code>.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:551 on 2024-09-23 00:07</div>
+            <div class="timeline-body"><p>I think you should be able to iterate over the union elements directly here without collecting, which should be cheaper:</p>
+<pre><code class="language-suggestion">                let mut found_true = false;
+                let mut found_false = false;
+                for element in union.elements(db) {
+                    match element.bool(db) {
+                        Some(true) =&gt; found_true = true,
+                        Some(false) =&gt; found_false = true,
+                        None =&gt; return None,
+                    }
+                }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-09-23 00:11</div>
+            <div class="timeline-body"><p>Nice, thank you! Not a complete review (I'm on holiday at the moment), just a couple of things I spotted:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:531 on 2024-09-23 08:29</div>
+            <div class="timeline-body"><p>Nit</p>
+<pre><code class="language-suggestion">            Type::Any | Type::Never | Type::Unbound =&gt; None,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:526 on 2024-09-23 08:44</div>
+            <div class="timeline-body"><p>I don't know the answer to this. @AlexWaygood and @carljm will have a better intuition for this but I wonder if this method should return a <code>Type</code> instead and leave it to the caller to test if the type is equal to <code>true</code> or <code>false</code> (it may not be relevant for all callers).</p>
+<p>IMO, doing so would fit nicer into the <code>Type</code> API where most methods are about type transformations. We could then add helper methods for <code>type.is_true()</code> and <code>type.is_false()</code> to test if the value is true.</p>
+<p>Either way, don't change anything before either Alex or Carl reply ;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:560 on 2024-09-23 08:47</div>
+            <div class="timeline-body"><p>To avoid iterating till the end if both true and false are found.</p>
+<pre><code class="language-suggestion">							let mut result: Option&lt;bool&gt; = None;
+
+                for value in union.elements(db) {
+                    if let Some(value) = value.bool(db) {
+                        if result.is_some_and(|v| value != value) {
+                            return None;
+                        }
+                        result = Some(value);
+                    } else {
+                        return None;
+                    }
+                }
+
+                result
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-09-23 08:47</div>
+            <div class="timeline-body"><p>Nice!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @MichaReiser on 2024-09-23 08:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:6095 on 2024-09-23 18:28</div>
+            <div class="timeline-body"><p>Nit: it's not clear why these assertions all use <code>r#</code> strings (seemingly unnecessarily) when the first assertion above doesn't. Maybe make them all consistent? (In the below tests as well.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2335 on 2024-09-23 19:43</div>
+            <div class="timeline-body"><p>This line needs to be handled the same as the next line; push to <code>value_types</code> and <code>break</code>. There might have been some previous values with statically unknown bool type, and we still have to account for the possibility that evaluation short-circuited there.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:6086 on 2024-09-23 19:46</div>
+            <div class="timeline-body"><p>We should add a test <code>h = foo() or True</code> here, with resulting type for <code>h</code> as <code>str | Literal[True]</code>. Without this test, we can replace &quot;push to <code>value_types</code> and break&quot; above with <code>return *value_type;</code> (which is wrong) and tests will still pass.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:6122 on 2024-09-23 20:34</div>
+            <div class="timeline-body"><p>This assertion is wrong. <code>foo()</code> could return the empty string, in which case the type of the expression would be <code>str</code>, not <code>Literal[False]</code>. This is the bug mentioned above, where we need to push to <code>value_types</code> and break instead of just returning a single value.</p>
+<pre><code class="language-suggestion">        assert_public_ty(&amp;db, &quot;/src/a.py&quot;, &quot;c&quot;, r#&quot;str | Literal[False]&quot;#);
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-09-23 21:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:526 on 2024-09-23 21:18</div>
+            <div class="timeline-body"><p>I was wondering about whether this should return a custom <code>Truthiness</code> enum, e.g.</p>
+<pre><code class="language-rs">#[derive(Debug, Copy, Clone, PartialEq, Eq)]
+enum Truthiness {
+    AlwaysTrue,
+    AlwaysFalse,
+    Ambiguous,
+}
+
+impl Truthiness {
+    fn negate(self) -&gt; Self {
+        match self {
+            Self::AlwaysTrue =&gt; Self::AlwaysFalse,
+            Self::AlwaysFalse =&gt; Self::AlwaysTrue,
+            Self::Ambiguous =&gt; Self::Ambiguous
+        }
+    }
+
+    fn into_type(self, db: &amp;dyn Db) -&gt; Type {
+        match self {
+            Self::AlwaysTrue =&gt; Type::BooleanLiteral(true),
+            Self::AlwaysFalse =&gt; Type::BooleanLiteral(false),
+            Self::Ambiguous =&gt; builtins_symbol_ty(db, &quot;bool&quot;).to_instance(db),
+        }
+    }
+}
+
+impl From&lt;bool&gt; for Truthiness {
+    fn from(value: bool) -&gt; Self {
+        if value {
+            Truthiness::AlwaysTrue
+        } else {
+            Truthiness::AlwaysFalse
+        }
+    }
+}
+</code></pre>
+<p>This has a few advantages over returning <code>Option&lt;bool&gt;</code>:</p>
+<ul>
+<li>It's more expressive of the fact that there are really three distinct states being expressed by the return type (and expresses what these states are)</li>
+<li>The <code>negate</code> method will make it easier to implement support for the <code>not</code> operator in a generalised way in the future</li>
+<li>Returning a custom enum will make it more adaptable in the future for when we implement support in this method for arbitrary <code>__bool__</code> and <code>__len__</code> methods. Once we add that support, we may need to add some way of bubbling up errors from <code>Type::call()</code> in this method.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-09-23 21:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:526 on 2024-09-23 21:20</div>
+            <div class="timeline-body"><p>Bikesheddy comment, but my preferred name for the method would also be <code>boolean_eval</code>, since we're evaluating the booleanness of the type :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:526 on 2024-09-23 22:06</div>
+            <div class="timeline-body"><p>I think the custom enum makes sense here, because it expresses the semantics clearly and allows the caller to decide whether the actual BooleanLiteral or Instance(bool) type needs to be reified or not. It fits in well with our existing pattern with <code>IterationOutcome</code> and <code>CallOutcome</code>, where these methods can return an enum that lazily allows the caller to make decisions about how to handle the results.</p>
+<p>I'm not such a big fan of <code>boolean_eval</code> as the name, mostly because like 90% of what we do in the type checker could be described using the word &quot;eval&quot; if we chose to; it's a very generic term. I think either just <code>bool</code> or <code>boolean</code> is fine.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2328 on 2024-09-23 22:12</div>
+            <div class="timeline-body"><p>Given that <code>UnionType::from_elements</code> takes an iterator, I think we can avoid all allocations here. It's slightly tricky because we do need to <code>infer_expression</code> on every value, but we also would like to short-circuit truthiness eval on some of them. But I think it is worth doing. Here's what I came up, which passes all tests (including the ones I suggested adding below):</p>
+<details>
+
+<pre><code class="language-diff">diff --git a/crates/red_knot_python_semantic/src/types/infer.rs b/crates/red_knot_python_semantic/src/types/infer.rs
+index 4decd441c..9d84f40cf 100644
+--- a/crates/red_knot_python_semantic/src/types/infer.rs
++++ b/crates/red_knot_python_semantic/src/types/infer.rs
+@@ -2321,30 +2321,38 @@ impl&lt;'db&gt; TypeInferenceBuilder&lt;'db&gt; {
+             op,
+             values,
+         } = bool_op;
+-        let mut value_tys = Vec::new();
+-        let inferred_types: Vec&lt;Type&lt;'db&gt;&gt; = values
+-            .iter()
+-            .map(|value| self.infer_expression(value))
+-            .collect();
+-        for (i, value_type) in inferred_types.iter().enumerate() {
+-            let boolean_value = value_type.bool(self.db);
+-            if let Some(boolean_value) = boolean_value {
+-                let is_last = i == values.len() - 1;
+-                match (boolean_value, is_last, op) {
+-                    (true, false, ast::BoolOp::And) =&gt; continue,
+-                    (false, _, ast::BoolOp::And) =&gt; return *value_type,
+-                    (true, _, ast::BoolOp::Or) =&gt; {
+-                        value_tys.push(value_type);
+-                        break;
++        let mut done = false;
++        UnionType::from_elements(
++            self.db,
++            values.iter().enumerate().map(|(i, value)| {
++                // We need to infer the type of every expression (that's an invariant maintained by
++                // type inference), even if we can short-circuit boolean evaluation of some of
++                // those types.
++                let value_ty = self.infer_expression(value);
++                if done {
++                    Type::Never
++                } else {
++                    if let Some(boolean_value) = value_ty.bool(self.db) {
++                        let is_last = i == values.len() - 1;
++                        match (boolean_value, is_last, op) {
++                            (true, false, ast::BoolOp::And) =&gt; Type::Never,
++                            (false, _, ast::BoolOp::And) =&gt; {
++                                done = true;
++                                value_ty
++                            }
++                            (true, _, ast::BoolOp::Or) =&gt; {
++                                done = true;
++                                value_ty
++                            }
++                            (false, false, ast::BoolOp::Or) =&gt; Type::Never,
++                            (_, true, _) =&gt; value_ty,
++                        }
++                    } else {
++                        value_ty
+                     }
+-                    (false, false, ast::BoolOp::Or) =&gt; continue,
+-                    (_, true, _) =&gt; value_tys.push(value_type),
+                 }
+-            } else {
+-                value_tys.push(value_type);
+-            }
+-        }
+-        UnionType::from_elements(self.db, value_tys)
++            }),
++        )
+     }
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> requested changes on 2024-09-23 22:13</div>
+            <div class="timeline-body"><p>Thank you, this is awesome! I think there's one bug, a couple tests that would be good to add, and I think we can also avoid allocating vectors in <code>infer_boolean_expression</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:526 on 2024-09-23 22:15</div>
+            <div class="timeline-body"><p>I'm okay with leaving it as <code>bool</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-09-23 22:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/TomerBin">@TomerBin</a> on 2024-09-24 11:56</div>
+            <div class="timeline-body"><p>Thanks for these great comments, I'll address them soon.</p>
+<p>Something else I was thinking about is to use <code>Type::bool()</code> when inferring the return value of the <code>bool</code> function (ie. understanding x is True in <code>x = bool(1)</code>)
+It would also be beneficial for testing the bool utility.</p>
+<p>What do you think about this? Should we do that? Maybe in another PR?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-09-24 14:00</div>
+            <div class="timeline-body"><blockquote>
+<p>Something else I was thinking about is to use Type::bool() when inferring the return value of the bool function (ie. understanding x is True in x = bool(1))
+It would also be beneficial for testing the bool utility.</p>
+<p>What do you think about this? Should we do that? Maybe in another PR?</p>
+</blockquote>
+<p>Yes, that's something we will want. Definitely recommend separate PR for this, as there will be some decisions to make there about how to detect that we are calling the builtin bool type.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:551 on 2024-09-24 22:02</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                            result = Some(truthiness);
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:569 on 2024-09-24 22:02</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">            Type::IntLiteral(num) =&gt; Truthiness::from(*num != 0),
+            Type::BooleanLiteral(bool) =&gt; Truthiness::from(*bool),
+            Type::StringLiteral(str) =&gt; Truthiness::from(!str.value(db).is_empty()),
+            Type::LiteralString =&gt; Truthiness::Ambiguous,
+            Type::BytesLiteral(bytes) =&gt; Truthiness::from(!bytes.value(db).is_empty()),
+            Type::Tuple(items) =&gt; Truthiness::from(!items.elements(db).is_empty()),
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-09-24 22:04</div>
+            <div class="timeline-body"><p>nit: I prefer to use <code>::from</code> methods rather than <code>.into()</code> methods where possible, as it's much clearer when reading things outside of an IDE what exactly you're converting the type <em>into</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/TomerBin">@TomerBin</a> reviewed on 2024-09-24 22:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/TomerBin">@TomerBin</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:569 on 2024-09-24 22:21</div>
+            <div class="timeline-body"><p>Cool! fixed :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-09-24 22:39</div>
+            <div class="timeline-body"><p>This looks great to me! Thank you!!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/TomerBin">@TomerBin</a> on 2024-09-24 22:46</div>
+            <div class="timeline-body"><p>Thanks again for your well explained and welcoming comments ☺️</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2024-09-24 23:58</div>
+            <div class="timeline-body"><p>Thanks! :-D</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "red-knot: Add boolean operator" to "[red-knot] Add `Type::bool` and boolean expression inference" by @AlexWaygood on 2024-09-24 23:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2024-09-25 00:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2024-09-25 00:02</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:00:07 UTC
+    </footer>
+</body>
+</html>

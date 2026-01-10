@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add unary inference for integer and boolean literals - astral-sh/ruff #13559</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add unary inference for integer and boolean literals</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/13559">#13559</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-09-30 01:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-30 01:49</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Just trying to familiarize myself with the general patterns, testing, etc.</p>
+<p>Part of https://github.com/astral-sh/ty/issues/244.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @charliermarsh on 2024-09-30 01:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @charliermarsh on 2024-09-30 01:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @charliermarsh on 2024-09-30 01:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @charliermarsh on 2024-09-30 01:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-30 01:49</div>
+            <div class="timeline-body"><p>A few questions:</p>
+<ol>
+<li>Is there a way to express type errors right now? E.g., <code>~None</code> is a type error.</li>
+<li>Is there a float type?</li>
+<li>How do you all test these changes during debug? Do you run the playground, or the CLI, etc.?</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-09-30 02:16</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-09-30 10:03</div>
+            <div class="timeline-body"><blockquote>
+<h2>1. Is there a way to express type errors right now? E.g., <code>~None</code> is a type error.</h2>
+</blockquote>
+<p>Yup! Here's how we emit a diagnostic for when you try to iterate over something that's not iterable, for example:</p>
+<p>https://github.com/astral-sh/ruff/blob/5118166d21784e7c78e38ea42919ba50bb2a5142/crates/red_knot_python_semantic/src/types/infer.rs#L1241-L1251</p>
+<p>(I'll let you grep for places where that method is used ;)</p>
+<blockquote>
+<h2>2. Is there a float type?</h2>
+</blockquote>
+<p>There's no type in our semantic model representing <em>literal</em> floats, no. (At least, not yet.) To say &quot;this is an arbitrary instance of <code>float</code>&quot;, you can do something like this:</p>
+<p>https://github.com/astral-sh/ruff/blob/5118166d21784e7c78e38ea42919ba50bb2a5142/crates/red_knot_python_semantic/src/types/infer.rs#L1620</p>
+<p>The <a href="https://typing.readthedocs.io/en/latest/spec/literal.html#legal-parameters-for-literal-at-type-check-time">typing spec</a> (drawing its language from <a href="https://peps.python.org/pep-0586/#legal-parameters-for-literal-at-type-check-time">PEP 586</a>) states:</p>
+<blockquote>
+<p><code>Literal</code> may be parameterized with literal ints, byte and unicode strings, bools, Enum values and <code>None</code>.</p>
+</blockquote>
+<p><code>float</code> isn't included there, so <code>Literal[3.14]</code> isn't valid in a type annotation according to the spec.</p>
+<p>Should we go beyond the spec, and track the literal value of <code>float</code> variables anyway (where possible)? <em>Maybe</em>. Notably, mypy does a similar kind of tracking internally when it comes to float values -- but I think this is mostly so that it can constant-fold things like <code>X: Final = 3.14 ** 2</code> in mypyc. We don't have any equivalent of mypyc in red-knot, so I'm not sure what the use case is in red-knot for tracking the value of <code>float</code> variables <em>unless</em> we were to allow users to write things like <code>Literal[3.14]</code> in type annnotations -- but that really would just flat-out contradict the spec, so I'd be pretty uncomfortable with allowing users to do that.</p>
+<blockquote>
+<h2>3. How do you all test these changes during debug? Do you run the playground, or the CLI, etc.?</h2>
+</blockquote>
+<p>Not sure I have a great answer there; I'm still figuring this out myself!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2214 on 2024-09-30 10:20</div>
+            <div class="timeline-body"><p>Can't we use Rust's bitwise logical <code>not</code> operator here, to mirror Python's bitwise logical <code>not</code> operator?</p>
+<pre><code class="language-suggestion">            (UnaryOp::Invert, Type::IntLiteral(value)) =&gt; Type::IntLiteral(!value),
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2212 on 2024-09-30 10:26</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">		let operand_ty = self.infer_expression(operand);
+
+        match (op, operand_ty) {
+            (UnaryOp::UAdd, Type::IntLiteral(_)) =&gt; operand_ty,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2222 on 2024-09-30 10:27</div>
+            <div class="timeline-body"><p>nit: I'd probably just inline these</p>
+<pre><code class="language-suggestion">            (UnaryOp::UAdd, Type::BooleanLiteral(bool)) =&gt; Type::IntLiteral(i64::from(bool)),
+            (UnaryOp::USub, Type::BooleanLiteral(bool)) =&gt; Type::IntLiteral(-i64::from(bool))
+            (UnaryOp::Invert, Type::BooleanLiteral(bool)) =&gt; Type::IntLiteral(!i64::from(bool))
+            (UnaryOp::Not, ty) =&gt; ty.bool(self.db).negate().into_type(self.db),
+            _ =&gt; Type::Unknown, // TODO other unary op types
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2024-09-30 10:28</div>
+            <div class="timeline-body"><p>Nice!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-09-30 10:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2227 on 2024-09-30 10:39</div>
+            <div class="timeline-body"><p>I'm not sure this needs to be done now (and probably it actually <em>shouldn't</em> be done now), but at some point we'll want to emit some kind of diagnostic here. It's currently deprecated at runtime. Whether it will remain deprecated is an <a href="https://discuss.python.org/t/bool-deprecation/62232">open question</a>, but it's nonetheless true that typeshed <a href="https://github.com/AlexWaygood/typeshed/blob/9f033bf439e064917e4b235b8a09b7530f182516/stdlib/builtins.pyi#L927-L928">decorates <code>bool.__invert__</code> with <code>@deprecated</code></a> in its <code>builtins</code> stub, which means that (once we support <code>@deprecated</code>) we'll emit a diagnostic when users attempt to invert a non-literal boolean value. For consistency, we'll want to make sure we emit the same diagnostic for literal <code>bool</code>s as we do for non-literal <code>bool</code>s, but I'm not sure how we want to do that. (Should we check the typeshed <code>bool</code> stub for each method when we're doing type inference on literal <code>bool</code>s, in case the <code>bool</code> method is decorated with <code>@deprecated</code> or similar? Or should we copy out the same deprecation message here, and hope that we can manually keep them in sync? Curious for @carljm's thoughts!)</p>
+<p>TL;DR: let's add a TODO comment noting that eventually this should probably cause us to emit a diagnostic due to the deprecation!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-09-30 16:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-09-30 16:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-09-30 16:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-09-30 18:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2227 on 2024-09-30 18:09</div>
+            <div class="timeline-body"><p>I think we'll probably want to get the deprecation message from calling the typeshed method, once we support <code>@deprecated</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-09-30 18:11</div>
+            <div class="timeline-body"><blockquote>
+<p>3. How do you all test these changes during debug? Do you run the playground, or the CLI, etc.?</p>
+</blockquote>
+<p>I usually do most of my debugging via tests, not via CLI. There is no red-knot playground yet.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:00:07 UTC
+    </footer>
+</body>
+</html>

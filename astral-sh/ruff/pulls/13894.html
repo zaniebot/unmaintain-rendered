@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Type narrowing for `isinstance` checks - astral-sh/ruff #13894</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Type narrowing for <code>isinstance</code> checks</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/13894">#13894</a>
+        opened by <a href="https://github.com/sharkdp">@sharkdp</a>
+        on 2024-10-23 14:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/sharkdp">@sharkdp</a> on 2024-10-23 14:11</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Add type narrowing for <a href="https://docs.python.org/3/library/functions.html#isinstance"><code>isinstance(object, classinfo)</code></a> checks:</p>
+<pre><code class="language-py">x = 1 if flag else &quot;a&quot;
+
+if isinstance(x, int):
+    reveal_type(x)  # revealed: Literal[1]
+</code></pre>
+<p>To do:</p>
+<ul>
+<li><p>[x] Should we emit a diagnostic if we detect that arguments to the <code>isinstance</code> call are incorrect? Or would that happen anyway in type inference, because we would check <code>isinstance</code> calls against <a href="https://github.com/python/typeshed/blob/ca65e087f1f9dfc28e89192b60ce7cfc2e92c674/stdlib/builtins.pyi#L1468">this typeshed signature</a>:</p>
+<pre><code class="language-pyi">def isinstance(obj: object, class_or_tuple: _ClassInfo, /) -&gt; bool: ...
+</code></pre>
+<p>=&gt; would happen in type inference/checking.</p>
+</li>
+<li><p>[x] ~~Add support for <a href="https://peps.python.org/pep-0604/">PEP 604</a> union types on the right-hand side. Supporting <code>str | int</code> is different from supporting <code>(str, int)</code>: For the latter, we can simply use the inferred type (<code>tuple[type[str], type[int]]</code>) and generate a constraint from it. However, if we attempt to do the same for the former, we would get <code>builtin.UnionType</code> (or <code>@Todo</code>, currently). So we probably need to walk the AST and extract the necessary information from there, similar to how we would generate a type annotation from the AST of <code>str | int</code>.~~ =&gt; deferred for now</p>
+</li>
+</ul>
+<p>closes #13893</p>
+<h2>Test Plan</h2>
+<p>New Markdown-based tests in <code>narrow/isinstance.md</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @sharkdp on 2024-10-23 14:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-10-23 14:25</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/narrow/isinstance.md</code>:1 on 2024-10-23 14:30</div>
+            <div class="timeline-body"><p>Could you also add some tests for cases which should pass type-checking, but for which we can't infer a narrowing constrant? E.g.</p>
+<pre><code class="language-py">t = type(&quot;t&quot;, (), {})  # we should infer this as an instance of type, I think?
+x = 1 if flag else &quot;foo&quot;
+
+if isinstance(x, t):
+    reveal_type(x)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @sharkdp on 2024-10-23 14:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @sharkdp on 2024-10-23 14:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @sharkdp on 2024-10-23 14:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @sharkdp on 2024-10-23 14:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-10-23 14:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/narrow/isinstance.md</code>:26 on 2024-10-23 14:36</div>
+            <div class="timeline-body"><p>I can't add a test for <code>isinstance(…, tuple[(int, str)])</code> because we don't support generics yet.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/narrow.rs</code>:227 on 2024-10-23 14:37</div>
+            <div class="timeline-body"><p>This is a little naive ;) You need to make sure that it's <code>builtins.isinstance</code> from the standard library that's being called, not just any user-defined function that happens to be called <code>isinstance()</code>. (It would be great to add a test for this!)</p>
+<p>I think what you want to do is add an <code>IsInstance</code> variant to this enum:</p>
+<p>https://github.com/astral-sh/ruff/blob/72c18c8225166f1f08a826c622b9cbcb48331162/crates/red_knot_python_semantic/src/types.rs#L1600-L1606</p>
+<p>And then add code here so that we infer <code>KnownFunction::IsInstance</code> for <code>builtins.isinstance()</code>: https://github.com/astral-sh/ruff/blob/72c18c8225166f1f08a826c622b9cbcb48331162/crates/red_knot_python_semantic/src/types/infer.rs#L778-L783</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/narrow.rs</code>:245 on 2024-10-23 14:42</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">            if let [ast::Expr::Name(ast::ExprName { id, .. }), rhs] = &amp;*expr_call.arguments.args {
+                let symbol = self.symbols().symbol_id_by_name(id).unwrap();
+
+                let rhs_type = inference.expression_ty(rhs.scoped_ast_id(self.db, scope));
+
+                // TODO: add support for PEP 604 union types on the right hand side:
+                // isinstance(x, str | (int | float))
+                if let Some(constraint) = self.to_isinstance_constraint(&amp;rhs_type) {
+                    self.constraints.insert(symbol, constraint);
+                }
+            }
+        }
+    }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-10-23 14:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-10-23 14:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types/narrow.rs</code>:227 on 2024-10-23 14:49</div>
+            <div class="timeline-body"><p>Oops :smile:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/narrow/isinstance.md</code>:26 on 2024-10-23 15:05</div>
+            <div class="timeline-body"><p><code>isinstance(..., tuple[(int, str)])</code> doesn't work at runtime:</p>
+<pre><code>&gt;&gt;&gt; x = (1, &quot;a&quot;)
+&gt;&gt;&gt; isinstance(x, tuple)
+True
+&gt;&gt;&gt; isinstance(x, tuple[(int, str)])
+Traceback (most recent call last):
+  File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
+TypeError: isinstance() argument 2 cannot be a parameterized generic
+</code></pre>
+<p>So we should (eventually, not in this PR) emit a diagnostic for this in type inference, and we don't need to support it in narrowing.</p>
+<p>(Also, FWIW, although we don't support generalized generics yet, we do have a representation for heterogeneous tuple types specifically, since they are a special case, and it wouldn't be very hard to add support in type-expression inference for understanding <code>tuple[int, str]</code> as a type annotation, if that were blocking something else.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-10-23 15:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-10-23 15:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/narrow.rs</code>:228 on 2024-10-23 15:14</div>
+            <div class="timeline-body"><p>We might also want to check that there are no keyword arguments here (<code>expr_call.arguments.keywords</code>). Neither mypy nor pyright does any type narrowing for this (which will obviously fail at runtime; <code>isinstance()</code> has no <code>foo</code> argument):</p>
+<pre><code class="language-py">class A: ...
+class B: ...
+
+def f(x: object):
+    if isinstance(x, A, foo=&quot;bar&quot;):
+        reveal_type(x)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-10-23 15:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/narrow.rs</code>:227 on 2024-10-23 15:15</div>
+            <div class="timeline-body"><p>Another related case that should be handled automatically by Alex's suggested change, and IMO we should add a test for (though perhaps one could argue it's not necessary to support? not sure if mypy/pyright do) is the case where isinstance has been aliased to a different name:</p>
+<pre><code>&gt;&gt;&gt; myfunc = isinstance
+&gt;&gt;&gt; myfunc(1, int)
+True
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-10-23 15:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/narrow/isinstance.md</code>:26 on 2024-10-23 15:15</div>
+            <div class="timeline-body"><p>I <em>think</em> we should also already accurately infer the <em>runtime</em> value of <code>tuple[int, str]</code> as being a <code>types.GenericAlias</code> instance:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; tuple[int, str]
+tuple[int, str]
+&gt;&gt;&gt; type(_)
+&lt;class 'types.GenericAlias'&gt;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-10-23 15:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/narrow.rs</code>:227 on 2024-10-23 15:18</div>
+            <div class="timeline-body"><p>Mypy supports aliasing <code>isinstance</code> by import but not by assignment: https://mypy-play.net/?mypy=latest&amp;python=3.12&amp;gist=14114360a8603492b2f0b992fac6c0c7</p>
+<p>Pyright supports both: https://pyright-play.net/?enableExperimentalFeatures=true&amp;code=GYJw9gtgBARgrgSwDYBcEDsDOUEQA5ggo6YaYoCG6AxgKZQXbBhgCwAUBzBSFALwkylGrQ4cAJrWBRgACgAeALihgYAK1rUUASkUcoBnNOZgFAGhzode9obtQQtAG60KSAPooAnnloLt%2BvYGgQYI0twg5lDkILoh9o4ubp4%2BfvLaQA</p>
+<p>We should support both, and add tests for both, IMO</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-10-23 15:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/narrow/isinstance.md</code>:1 on 2024-10-23 15:32</div>
+            <div class="timeline-body"><p>Done.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types/narrow.rs</code>:227 on 2024-10-23 15:34</div>
+            <div class="timeline-body"><p>We now support both (and have tests for both). Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-10-23 15:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-10-23 15:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/narrow/isinstance.md</code>:26 on 2024-10-23 15:35</div>
+            <div class="timeline-body"><p>Yes, I saw <code>types.GenericAlias</code> being inferred for <code>tuple[int, str]</code> and then wrote my comment above, unfortunately without thinking one step futher. Thank you for the clarification.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-10-23 15:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types/narrow.rs</code>:228 on 2024-10-23 15:39</div>
+            <div class="timeline-body"><p>Done.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/narrow/isinstance.md</code>:153 on 2024-10-23 15:40</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">
+# TODO: this should cause us to emit a diagnostic
+# (`isinstance` has no `foo` parameter)
+if isinstance(x, int, foo=&quot;bar&quot;):
+</code></pre>
+<p>It would also be great to add a test for other invalid inputs like <code>isinstance(x, &quot;not a type&quot;)</code> IMO</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/narrow/isinstance.md</code>:88 on 2024-10-23 15:41</div>
+            <div class="timeline-body"><p>nit: let's make sure this test continues to test what we want it to test</p>
+<pre><code class="language-suggestion">t = type(&quot;t&quot;, (), {})
+
+# This isn't testing what we want it to test if we infer anything more precise here:
+reveal_type(t)  # revealed: type
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:879 on 2024-10-23 15:42</div>
+            <div class="timeline-body"><p>Given that <code>IsInstance</code> doesn't have special behavior when called in type inference, I think it would be better to defer to typeshed rather than hardcoding its return type. So I would use <code>function_type.return_type(db)</code> here, or even better collapse this with the <code>None</code> arm.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/narrow.rs</code>:231 on 2024-10-23 15:43</div>
+            <div class="timeline-body"><p>nit: let's add a <code>FunctionType::is_known</code> method, for symmetry with <code>ClassType::is_known</code>:</p>
+<p>https://github.com/astral-sh/ruff/blob/72c18c8225166f1f08a826c622b9cbcb48331162/crates/red_knot_python_semantic/src/types.rs#L1622-L1627</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-10-23 15:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-10-23 15:44</div>
+            <div class="timeline-body"><p>Looks great! Just one nit.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-10-23 15:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:879 on 2024-10-23 15:50</div>
+            <div class="timeline-body"><p>With Alex's suggestion above of a <code>FunctionType::is_known</code> method, this could probably just become an <code>if function_type.is_known(KnownFunction::RevealType) { ... } else { ... }</code> instead of a match, at least until we have another known function with special inference-time behavior.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-10-23 15:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/narrow.rs</code>:209 on 2024-10-23 15:51</div>
+            <div class="timeline-body"><p>nit: not sure about the name of this method. I think the usual convention is that <code>to_*</code> methods convert <code>self</code> into another type -- but here we're converting a passed-in argument to another type.</p>
+<p>This routine actually looks like it could either be a method on <code>Type</code> or a freestanding function that accepts <code>db</code> and <code>classinfo</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2024-10-23 17:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types/narrow.rs</code>:209 on 2024-10-23 17:50</div>
+            <div class="timeline-body"><blockquote>
+<p>This routine actually looks like it could either be a method on <code>Type</code></p>
+</blockquote>
+<p>I don't know. <code>Type</code> seems too prominent a place for this helper function.</p>
+<blockquote>
+<p>or a freestanding function that accepts <code>db</code> and <code>classinfo</code></p>
+</blockquote>
+<p>Yeah, okay.</p>
+<blockquote>
+<p>nit: not sure about the name of this method. I think the usual convention is that <code>to_*</code> methods convert <code>self</code> into another type -- but here we're converting a passed-in argument to another type.</p>
+</blockquote>
+<p>It's now a free function, but I renamed it to <code>generate_isinstance_constraint</code> anyway.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-10-23 17:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/narrow.rs</code>:209 on 2024-10-23 17:51</div>
+            <div class="timeline-body"><p>Yeah, I like what you've done best, I think. Having it in <code>narrow.rs</code> improves encapsulation -- we should only need this functionality for narrowing, not for anything else -- so it's better not to have it as a method on <code>Type</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2024-10-23 18:00</div>
+            <div class="timeline-body"><p>Looks great!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2024-10-23 18:30</div>
+            <div class="timeline-body"><p>🎉</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @sharkdp on 2024-10-23 18:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2024-10-23 18:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-10-23 18:51</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 21:00:09 UTC
+    </footer>
+</body>
+</html>
