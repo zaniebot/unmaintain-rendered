@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add basic universal benchmarks to CI - astral-sh/uv #5938</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add basic universal benchmarks to CI</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/5938">#5938</a>
+        opened by <a href="https://github.com/ibraheemdev">@ibraheemdev</a>
+        on 2024-08-08 21:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2024-08-08 21:32</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Resolves https://github.com/astral-sh/uv/issues/4921.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @ibraheemdev on 2024-08-08 21:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">benchmarks</span> added by @ibraheemdev on 2024-08-08 21:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @ibraheemdev on 2024-08-08 21:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/bench/benches/uv.rs</code>:145 on 2024-08-09 01:10</div>
+            <div class="timeline-body"><p>I think this means the benchmark will vary by interpreter rather than installing for a specific, consistent platform. Is that intentional?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-08-09 01:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-08-09 08:02</div>
+            <div class="timeline-body"><p>I'd love to have these!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2024-08-09 09:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/bench/benches/uv.rs</code>:145 on 2024-08-09 09:26</div>
+            <div class="timeline-body"><p>Right right, reverted that change.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2024-08-09 10:15</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/uv/branches/ibraheem/universal-benchmarks">CodSpeed Performance Report</a></h2>
+<h3>Merging #5938 will <strong>degrade performances by 50.06%</strong></h3>
+<p><sub>Comparing <code>ibraheem/universal-benchmarks</code> (5fe4d6f) with <code>main</code> (4330f97)</sub></p>
+<h3>Summary</h3>
+<p><code>❌ 1</code> regressions
+<code>✅ 12</code> untouched benchmarks</p>
+<p><code>🆕 1</code> new benchmarks</p>
+<blockquote>
+<p>:warning: <em>Please fix the performance issues or <a href="https://codspeed.io/astral-sh/uv/branches/ibraheem/universal-benchmarks">acknowledge them on CodSpeed</a>.</em></p>
+</blockquote>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Benchmark | <code>main</code> | <code>ibraheem/universal-benchmarks</code> | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| ❌ | <code>resolve_warm_airflow</code> | 1 s | 2.1 s | -50.06% |
+| 🆕 | <code>resolve_warm_jupyter_universal</code> | N/A | 272.4 ms | N/A |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2024-08-09 10:20</div>
+            <div class="timeline-body"><p>Hmmm the new benchmarks add 7 minutes to the CI job. Maybe we need to test a simpler universal resolution than airflow.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-09 13:47</div>
+            <div class="timeline-body"><p>It <em>might</em> be okay if the benches run longer, though not ideal, they don't block pull requests.</p>
+<p>Trying a simpler case makes sense too though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-08-09 14:00</div>
+            <div class="timeline-body"><p>7s is out of proportion (<code>taskset -c 0</code> is a single efficiency core):</p>
+<p>platform-specific:</p>
+<pre><code>$ hyperfine &quot;taskset -c 0 uv pip compile scripts/requirements/airflow.in --exclude-newer 2024-06-20 -p 3.11&quot; &quot;uv pip compile scripts/requirements/airflow.in --exclude-newer 2024-06-20 -p 3.11&quot;
+
+Benchmark 1: taskset -c 0 uv pip compile scripts/requirements/airflow.in --exclude-newer 2024-06-20 -p 3.11
+  Time (mean ± σ):     289.3 ms ±   4.6 ms    [User: 188.1 ms, System: 99.2 ms]
+  Range (min … max):   282.5 ms … 295.4 ms    10 runs
+ 
+Benchmark 2: uv pip compile scripts/requirements/airflow.in --exclude-newer 2024-06-20 -p 3.11
+  Time (mean ± σ):     175.3 ms ±   7.2 ms    [User: 213.8 ms, System: 147.5 ms]
+  Range (min … max):   167.0 ms … 186.8 ms    17 runs
+</code></pre>
+<p>universal:</p>
+<pre><code>$ hyperfine \
+    &quot;taskset -c 0 uv pip compile scripts/requirements/airflow.in --exclude-newer 2024-06-20 --universal&quot; \
+    &quot;uv pip compile scripts/requirements/airflow.in --exclude-newer 2024-06-20 --universal&quot; \
+    &quot;taskset -c 0 uv pip compile scripts/requirements/airflow.in --exclude-newer 2024-06-20 --universal -p 3.11&quot; \
+    &quot;uv pip compile scripts/requirements/airflow.in --exclude-newer 2024-06-20 --universal -p 3.11&quot;
+
+Benchmark 1: taskset -c 0 uv pip compile scripts/requirements/airflow.in --exclude-newer 2024-06-20 --universal
+  Time (mean ± σ):     227.6 ms ±   5.5 ms    [User: 135.1 ms, System: 90.4 ms]
+  Range (min … max):   220.4 ms … 239.7 ms    12 runs
+ 
+Benchmark 2: uv pip compile scripts/requirements/airflow.in --exclude-newer 2024-06-20 --universal
+  Time (mean ± σ):     143.6 ms ±   6.5 ms    [User: 165.9 ms, System: 131.4 ms]
+  Range (min … max):   130.5 ms … 157.6 ms    22 runs
+ 
+Benchmark 3: taskset -c 0 uv pip compile scripts/requirements/airflow.in --exclude-newer 2024-06-20 --universal -p 3.11
+  Time (mean ± σ):     557.2 ms ±   6.5 ms    [User: 412.6 ms, System: 141.9 ms]
+  Range (min … max):   547.5 ms … 566.0 ms    10 runs
+ 
+Benchmark 4: uv pip compile scripts/requirements/airflow.in --exclude-newer 2024-06-20 --universal -p 3.11
+  Time (mean ± σ):     386.5 ms ±   4.7 ms    [User: 446.4 ms, System: 189.2 ms]
+  Range (min … max):   379.0 ms … 392.5 ms    10 runs
+</code></pre>
+<p>3.11 also has very big markers, the other PR may change this a lot. I've also seen that we're doing expensive thing on the first run, such as building pyspark.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-09 14:43</div>
+            <div class="timeline-body"><p>Giving a larger runner a quick try https://github.com/astral-sh/uv/pull/5959</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ibraheemdev on 2024-08-09 16:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ibraheemdev on 2024-08-09 16:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-08-09 16:52</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:32:10 UTC
+    </footer>
+</body>
+</html>

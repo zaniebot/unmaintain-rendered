@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Implement marker trees using algebraic decision diagrams - astral-sh/uv #5898</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Implement marker trees using algebraic decision diagrams</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/5898">#5898</a>
+        opened by <a href="https://github.com/ibraheemdev">@ibraheemdev</a>
+        on 2024-08-07 23:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2024-08-07 23:55</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR rewrites the <code>MarkerTree</code> type to use algebraic decision diagrams (ADD). This has many benefits:</p>
+<ul>
+<li>The diagram is canonical for a given marker function. It is impossible to create two functionally equivalent marker trees that don't refer to the same underlying ADD. This also means that any trivially true or unsatisfiable markers are represented by the same constants.</li>
+<li>The diagram can handle complex operations (conjunction/disjunction) in polynomial time, as well as constant-time negation.</li>
+<li>The diagram can be converted to a simplified DNF form for user-facing output.</li>
+</ul>
+<p>The new representation gives us a lot more confidence in our marker operations and simplification, which is proving to be very important (see https://github.com/astral-sh/uv/pull/5733 and https://github.com/astral-sh/uv/pull/5163).</p>
+<p>Unfortunately, it is not easy to split this PR into multiple commits because it is a large rewrite of the <code>marker</code> module. I'd suggest reading through the <code>marker/algebra.rs</code>, <code>marker/simplify.rs</code>, and <code>marker/tree.rs</code> files for the new implementation, as well as the updated snapshots to verify how the new simplification rules work in practice. However, a few other things were changed:</p>
+<ul>
+<li><a href="https://github.com/astral-sh/uv/blob/ibraheem/canonical-markers/crates/pep508-rs/src/marker/algebra.rs#L522">We now use release-only comparisons for <code>python_full_version</code>, where we previously only did for <code>python_version</code></a>. I'm unsure how marker operations should work in the presence of pre-release versions if we decide that this is incorrect.</li>
+<li><a href="https://github.com/astral-sh/uv/blob/ibraheem/canonical-markers/crates/pep508-rs/src/marker/parse.rs#L502">Meaningless marker expressions are now ignored</a>. This means that a marker such as <code>'x' == 'x'</code> will always evaluate to <code>true</code> (as if the expression did not exist), whereas we previously treated this as always <code>false</code>. It's negation however, remains <code>false</code>.</li>
+<li><a href="https://github.com/astral-sh/uv/blob/ibraheem/canonical-markers/crates/pep508-rs/src/marker/tree.rs#L1329">Unsatisfiable markers are written as <code>python_version &lt; '0'</code></a>.</li>
+<li>The <code>PubGrubSpecifier</code> type has been moved to the new <code>uv-pubgrub</code> crate, shared by <code>pep508-rs</code> and <code>uv-resolver</code>. <code>pep508-rs</code> also depends on the <code>pubgrub</code> crate for the <code>Range</code> type, we probably want to move <code>pubgrub::Range</code> into a separate crate to break this, but I don't think that should block this PR (cc @konstin).</li>
+</ul>
+<p>There is still some remaining work here that I decided to leave for now  for the sake of unblocking some of the related work on the resolver.</p>
+<ul>
+<li>We still use <code>Option&lt;MarkerTree&gt;</code> throughout uv, which is unnecessary now that <code>MarkerTree::TRUE</code> is canonical.</li>
+<li>The <code>MarkerTree</code> type is now interned globally and can potentially implement <code>Copy</code>. However, it's unclear if we want to add more information to marker trees that would make it <code>!Copy</code>. For example, we may wish to attach extra and requires-python environment information to avoid simplifying after construction.</li>
+<li>We don't currently combine <code>python_full_version</code> and <code>python_version</code> markers.</li>
+<li>I also have not spent too much time investigating performance and there is probably some low-hanging fruit. Many of the test cases I did run actually saw large performance improvements due to the markers being simplified internally, reducing the stress on the old <code>normalize</code> routine, especially for the extremely large markers seen in <code>transformers</code> and other projects.</li>
+</ul>
+<p>Resolves https://github.com/astral-sh/uv/issues/5660, https://github.com/astral-sh/uv/issues/5179.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">lock</span> added by @ibraheemdev on 2024-08-07 23:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @ibraheemdev on 2024-08-07 23:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @ibraheemdev on 2024-08-07 23:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @ibraheemdev on 2024-08-07 23:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/pep508-rs/Cargo.toml</code>:43 on 2024-08-08 16:30</div>
+            <div class="timeline-body"><p>Should these go into the root <code>Cargo.toml</code> and then we can use <code>{ workspace = true }</code> here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/pep508-rs/Cargo.toml</code>:43 on 2024-08-08 16:34</div>
+            <div class="timeline-body"><p>I also think we try to sort our dependencies lexicographically.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/pep508-rs/src/marker/algebra.rs</code>:17 on 2024-08-08 16:50</div>
+            <div class="timeline-body"><p>How come this isn't <code>(!= 'Linux') -&gt; FALSE</code> and <code>(== 'Linux') -&gt; TRUE</code>? Why the inequalities?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/pep508-rs/src/marker/algebra.rs</code>:17 on 2024-08-08 16:51</div>
+            <div class="timeline-body"><p>If I had to guess, I'd say it's because the inequalities are more general and easier to merge with other expressions?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/pep508-rs/src/marker/algebra.rs</code>:67 on 2024-08-08 16:55</div>
+            <div class="timeline-body"><p>Should this be <code>pub(crate)</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/pep508-rs/src/marker/algebra.rs</code>:121 on 2024-08-08 17:11</div>
+            <div class="timeline-body"><p>I haven't read through the full API yet, but my initial reaction here would be to note that this panics if <code>children</code> has no nodes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/pep508-rs/src/marker/algebra.rs</code>:85 on 2024-08-08 17:18</div>
+            <div class="timeline-body"><p>What kind of operations? At first I was thinking the operation itself should be part of the key. But I think this is only used for <code>and</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/pep508-rs/src/marker/algebra.rs</code>:408 on 2024-08-08 17:24</div>
+            <div class="timeline-body"><p>Should this be a fixed width integer like <code>u64</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/pep508-rs/src/marker/algebra.rs</code>:493 on 2024-08-08 17:25</div>
+            <div class="timeline-body"><p>What is the significance of <code>high</code> and <code>low</code> here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/pep508-rs/src/marker/algebra.rs</code>:513 on 2024-08-08 17:25</div>
+            <div class="timeline-body"><p>I would note that this panics for <code>In</code> and <code>Contains</code> variants.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/pep508-rs/src/marker/algebra.rs</code>:586 on 2024-08-08 17:35</div>
+            <div class="timeline-body"><p>Nit: add a comment saying why this is unreachable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/pep508-rs/src/marker/algebra.rs</code>:559 on 2024-08-08 17:37</div>
+            <div class="timeline-body"><p>I had some trouble grok'ing this routine. The <code>map2</code> name I think also confused me a bit. Perhaps expand the comment here some?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/pep508-rs/src/marker/simplify.rs</code>:36 on 2024-08-08 17:46</div>
+            <div class="timeline-body"><p>What is <code>path</code> here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/pep508-rs/src/marker/tree.rs</code>:678 on 2024-08-08 18:00</div>
+            <div class="timeline-body"><p>I think this was a nice API decision. Prevents one from emitting an &quot;invalid&quot; marker, but still makes it easy to print a debug repr.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2024-08-08 18:06</div>
+            <div class="timeline-body"><p>This PR is next-level awesome. Solves a <em>huge</em> problem we've been having with marker expressions and solves it well.</p>
+<p>What do you think about making <code>MarkerTree::and</code> and <code>MarkerTree::or</code> smart constructors instead of routines that mutate trees in place? Or perhaps that's for another PR, in order to keep the amount of code changed outside of <code>pep508_rs</code> smaller.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2024-08-08 19:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/pep508-rs/src/marker/algebra.rs</code>:17 on 2024-08-08 19:23</div>
+            <div class="timeline-body"><p>Yes, exactly. Even if we did merge the two <code>FALSE</code> children, we would have to represent the <code>!= 'Linux'</code> as <code>(&lt; 'Linux') or (&gt; 'Linux')</code> with pubgrub ranges. We could merge them to reduce the size of the tree, but for now this is simpler.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2024-08-08 19:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/pep508-rs/src/marker/algebra.rs</code>:85 on 2024-08-08 19:24</div>
+            <div class="timeline-body"><p>Yes, only for <code>and</code> (<code>or</code> is implemented in terms of <code>and</code>). Added a note of this to the docs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2024-08-08 19:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/pep508-rs/src/marker/algebra.rs</code>:408 on 2024-08-08 19:24</div>
+            <div class="timeline-body"><p>The IDs are indexes into a vector, so I think <code>usize</code> makes sense here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2024-08-08 19:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/pep508-rs/src/marker/algebra.rs</code>:493 on 2024-08-08 19:25</div>
+            <div class="timeline-body"><p><code>high</code> and <code>low</code> is the terminology used by the original BDD paper for the <code>true</code> and <code>false</code> edges of a decision node. I clarified the meaning in the docs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2024-08-08 19:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/pep508-rs/src/marker/algebra.rs</code>:559 on 2024-08-08 19:26</div>
+            <div class="timeline-body"><p>I added some more general documentation. Is it clearer now?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2024-08-08 19:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/pep508-rs/src/marker/simplify.rs</code>:36 on 2024-08-08 19:26</div>
+            <div class="timeline-body"><p>It is the list of expressions encountered on the current path in the depth-first traversal. I added a note of this to the docs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2024-08-08 19:45</div>
+            <div class="timeline-body"><blockquote>
+<p>What do you think about making <code>MarkerTree::and</code> and <code>MarkerTree::or</code> smart constructors instead of routines that mutate trees in place? Or perhaps that's for another PR, in order to keep the amount of code changed outside of pep508_rs smaller.</p>
+</blockquote>
+<p>Yes, I also want to remove uses of <code>Option&lt;MarkerTree&gt;</code> now that <code>MarkerTree::TRUE</code> exists. Will do in a follow-up PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sid-kap">@sid-kap</a> on <code>crates/pep508-rs/src/marker/algebra.rs</code>:24 on 2024-08-09 02:29</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">//! - Isomorphic nodes are merged.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sid-kap">@sid-kap</a> reviewed on 2024-08-09 02:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/pep508-rs/src/marker/algebra.rs</code>:86 on 2024-08-09 10:25</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    /// Note that that `OR` is implemented in terms of `AND`.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/pep508-rs/src/marker/algebra.rs</code>:40 on 2024-08-09 10:30</div>
+            <div class="timeline-body"><p>Could you add something about the interning and basic structs here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/pep508-rs/src/marker/algebra.rs</code>:434 on 2024-08-09 10:35</div>
+            <div class="timeline-body"><p>Can you add comments to the bit operations?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/pep508-rs/src/marker/algebra.rs</code>:593 on 2024-08-09 11:07</div>
+            <div class="timeline-body"><p>Is this ever used with something other than AND?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/pep508-rs/src/marker/algebra.rs</code>:286 on 2024-08-09 11:14</div>
+            <div class="timeline-body"><p>What does the return value of <code>f</code> mean?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/pep508-rs/src/marker/algebra.rs</code>:281 on 2024-08-09 11:17</div>
+            <div class="timeline-body"><p>Took me a while to realize that we clip it to boolean values, so this is for cases with two children(?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/pep508-rs/src/marker/algebra.rs</code>:522 on 2024-08-09 11:21</div>
+            <div class="timeline-body"><p>For <code>python_version</code> doesn't get prerelease versions (we copied that from pip) <code>python_full_version</code> is a todo though</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/pep508-rs/src/marker/algebra.rs</code>:476 on 2024-08-09 11:22</div>
+            <div class="timeline-body"><p>Should we use <code>(Option&lt;Bound&gt;, Option&lt;Bound&gt;)</code> instead to encode this invariant?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/pep508-rs/src/marker/algebra.rs</code>:541 on 2024-08-09 11:27</div>
+            <div class="timeline-body"><p>nit: inline variable</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/pep508-rs/src/marker/simplify.rs</code>:36 on 2024-08-09 11:41</div>
+            <div class="timeline-body"><p>How does push+truncate behave vs. <code>path</code> being owned and eagerly cloned?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/pep508-rs/src/marker/tree.rs</code>:1025 on 2024-08-09 11:50</div>
+            <div class="timeline-body"><p>What about we make <code>extra</code> the highest level in the ADD (because we know it must be on the top level, otherwise our resolver assumptions fall apart) and read it from the top level node here without having to go through the DNF?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/pep508-rs/src/marker/simplify.rs</code>:20 on 2024-08-09 11:56</div>
+            <div class="timeline-body"><p>Can you talk about why DNF and not serializing the ADD?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/pep508-rs/src/marker/simplify.rs</code>:177 on 2024-08-09 11:57</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">/// Note: This function has quadratic time complexity. However, it is not applied on every marker
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/pep508-rs/src/marker/simplify.rs</code>:170 on 2024-08-09 11:59</div>
+            <div class="timeline-body"><p>Can you add an example of a redundancy to the doc comment?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/tests/lock.rs</code>:3589 on 2024-08-09 12:22</div>
+            <div class="timeline-body"><p>nice</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/tests/pip_compile.rs</code>:6474 on 2024-08-09 12:24</div>
+            <div class="timeline-body"><p>How is the ordering defined now, is it the ordering of the marker variable flowing down? It looks like in conjunctions and disjunctions the ordering is now different. Not high priority as long as the  ordering is deterministic and robust, but might be easy enough to justify changing</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-resolver/src/lock.rs</code>:87 on 2024-08-09 12:31</div>
+            <div class="timeline-body"><p>What is the difference between fresh and from lock? We always know the current requires-python in the resolver (we determine it on fork construction), so marker construction should already have this information.</p>
+<p>Also note that requires-python is the bound for the entire lockfile, but individual forks can have stricter bounds, e.g. say overall is <code>&gt;=3.7</code>, but there's one fork <code>&gt;=3.7,&lt;3.8</code> and one fork <code>&gt;=3.8</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-requirements/src/source_tree.rs</code>:110 on 2024-08-09 12:35</div>
+            <div class="timeline-body"><p>nit: <code>is_false</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2024-08-09 12:41</div>
+            <div class="timeline-body"><p>The ADDs are much better than my naive DNF idea. All the maths looks well-implemented.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-08-09 12:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/pep508-rs/src/marker/algebra.rs</code>:493 on 2024-08-09 12:43</div>
+            <div class="timeline-body"><p>I'd use more pragmatic terms than the literature, like <code>true_</code> and <code>false_</code>. Related, could you link the literature you used in a top level doc comment?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-08-09 12:44</div>
+            <div class="timeline-body"><p>Could you also a top level doc comment sentence that we implement all <code>or</code> as <code>and</code> by demorgan and cheap negation?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-08-09 12:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-requirements/src/source_tree.rs</code>:110 on 2024-08-09 12:53</div>
+            <div class="timeline-body"><p>I think <code>!marker.is_true()</code> does not imply <code>marker.is_false()</code>. I do like the succinctness of the method names, but they do suggest a mutual exclusivity that isn't there. Perhaps <code>is_always_true</code> and <code>is_always_false</code> are better names? Not sure.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-08-09 13:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-requirements/src/source_tree.rs</code>:110 on 2024-08-09 13:03</div>
+            <div class="timeline-body"><p>Good call, totally missed that</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2024-08-09 15:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/pep508-rs/src/marker/algebra.rs</code>:593 on 2024-08-09 15:12</div>
+            <div class="timeline-body"><p>No, but it's possible that we may want to reuse this for other operations in the future (such as <code>XOR</code> or <code>IFF</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2024-08-09 15:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/pep508-rs/src/marker/algebra.rs</code>:286 on 2024-08-09 15:12</div>
+            <div class="timeline-body"><p>Updated the documentation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2024-08-09 15:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/pep508-rs/src/marker/algebra.rs</code>:281 on 2024-08-09 15:14</div>
+            <div class="timeline-body"><p>This is used for extras which are always represented as boolean variables.  For example, <code>extra == 'foo'</code> and <code>extra == 'bar'</code> creates two separate variables in the tree, as they are unrelated.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2024-08-09 15:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/pep508-rs/src/marker/algebra.rs</code>:476 on 2024-08-09 15:15</div>
+            <div class="timeline-body"><p>I tried this but it means it was easier to keep them as <code>Range</code> to access <code>complement</code>/<code>union</code> operations without cloning.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2024-08-09 15:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/pep508-rs/src/marker/simplify.rs</code>:36 on 2024-08-09 15:16</div>
+            <div class="timeline-body"><p>I believe this is better as we can reuse the single <code>Vec</code> for the entire tree only cloning when we reach <code>true</code>, whereas eagerly cloning would be wasteful when we hit a <code>false</code> terminal (which is generally around half of the tree).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2024-08-09 15:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/pep508-rs/src/marker/tree.rs</code>:1025 on 2024-08-09 15:18</div>
+            <div class="timeline-body"><p>I kept extras at the lowest level because it makes <code>simplify_extras</code> cheaper. Having extras at the top would mean <code>simplify_extras</code> has to create a new node for every single node in the tree (because nodes are immutable).</p>
+<p>Also, extras are not represented as a single variable, each extra expression creates a distinct variable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2024-08-09 15:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/uv/tests/pip_compile.rs</code>:6474 on 2024-08-09 15:20</div>
+            <div class="timeline-body"><p>It is the ordering of the markers flowing down yeah. In this case the original expression would have been <code>(python_version &lt;= '3.11' and sys_platform == 'win32') or python_version &gt; '3.11</code> before simplifying, which is why the order appears reversed despite <code>python_version</code> being the highest order variable.</p>
+<p>I guess we could sort these the same way we used to?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2024-08-09 15:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/uv-resolver/src/lock.rs</code>:87 on 2024-08-09 15:23</div>
+            <div class="timeline-body"><p>This is emulating <a href="https://github.com/astral-sh/uv/blob/ibraheem/canonical-markers/crates/uv-resolver/src/resolution/graph.rs#L165">the call to <code>simplify_python_versions</code> when constructing the <code>ResolutionGraph</code></a>.</p>
+<p>I agree that marker construction should always have this information, I would like to avoid simplifying requires-python and extras in a separate step.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/notatallshaw">@notatallshaw</a> reviewed on 2024-08-09 15:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on <code>crates/uv/tests/pip_compile.rs</code>:6474 on 2024-08-09 15:53</div>
+            <div class="timeline-body"><p>FYI, doing a final sort on simplified markers is preferential for users not seeing a change in equivelent output if something about the resolution itself changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2024-08-09 16:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/uv/tests/pip_compile.rs</code>:6474 on 2024-08-09 16:16</div>
+            <div class="timeline-body"><p>The resolution is still deterministic, but sorting may result in a more syntactically consistent order.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/notatallshaw">@notatallshaw</a> reviewed on 2024-08-09 16:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on <code>crates/uv/tests/pip_compile.rs</code>:6474 on 2024-08-09 16:25</div>
+            <div class="timeline-body"><p>I meant in a scenario where the input changed, (e.g. the user changed the order, or added requirements that were previously transative dependencies, or new versions of packages changed the requirements in some similiar sense), but the output was equivelent (e.g. same packages, same versions, same markers), but perhaps the marker order could be affected.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2024-08-09 16:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/uv/tests/pip_compile.rs</code>:6474 on 2024-08-09 16:30</div>
+            <div class="timeline-body"><p>That should never happen. The decision diagram is canonical for any functionally equivalent marker and the simplification routine is deterministic. All sorting could do is give us a <em>different</em> canonical output for a given marker, but it shouldn't affect whether or not it is canonical.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ibraheemdev on 2024-08-09 17:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ibraheemdev on 2024-08-09 17:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-08-09 17:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-10 04:01</div>
+            <div class="timeline-body"><p>Amazing work.</p>
+<blockquote>
+<p>We don't currently combine python_full_version and python_version markers.</p>
+</blockquote>
+<p>Does this mean we no longer compute unions, etc., to combine <code>or</code> markers of versions? (Or we don't combine <code>python_version</code> with <code>python_full_version</code>?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2024-08-10 04:02</div>
+            <div class="timeline-body"><p>We compute unions of <code>python_version</code> and <code>python_full_version</code> independently, but we don't combine them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-10 04:02</div>
+            <div class="timeline-body"><p>Makes sense thank you.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:32:10 UTC
+    </footer>
+</body>
+</html>

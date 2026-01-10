@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enforce extension validity at parse time - astral-sh/uv #5888</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Enforce extension validity at parse time</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/5888">#5888</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-08-07 19:37
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-07 19:37</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR adds a <code>DistExtension</code> field to some of our distribution types, which requires that we validate that the file type is known and supported when parsing (rather than when attempting to unzip). It removes a bunch of extension parsing from the code too, in favor of doing it once upfront.</p>
+<p>Closes https://github.com/astral-sh/uv/issues/5858.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @charliermarsh on 2024-08-07 19:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-07 19:37</div>
+            <div class="timeline-body"><p>I think this is a good change but it's more aggressive. It means we might error if a registry serves distribution kinds that we don't support, even if we'd never read them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-07 19:39</div>
+            <div class="timeline-body"><p>Oh nevermind, we wouldn't fail in that case due to some other gating.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-08-07 20:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/pip_install.rs</code>:5714 on 2024-08-07 20:24</div>
+            <div class="timeline-body"><p>Can we say &quot;file extension&quot;? Why did this succeed previously?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2024-08-07 20:25</div>
+            <div class="timeline-body"><p>Basically down for this behavior.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @charliermarsh on 2024-08-07 21:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2024-08-07 21:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-08-07 21:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/distribution-filename/src/extension.rs</code>:26 on 2024-08-07 21:55</div>
+            <div class="timeline-body"><p>The existing definition was:</p>
+<pre><code class="language-rust">#[derive(
+    Clone,
+    Debug,
+    PartialEq,
+    Eq,
+    Serialize,
+    Deserialize,
+    rkyv::Archive,
+    rkyv::Deserialize,
+    rkyv::Serialize,
+)]
+#[archive(check_bytes)]
+#[archive_attr(derive(Debug))]
+pub enum SourceDistExtension {
+    Zip,
+    TarGz,
+    TarBz2,
+}
+</code></pre>
+<p>I think this is safe without a cache bump? @BurntSushi?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2024-08-07 22:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/distribution-filename/src/extension.rs</code>:88 on 2024-08-08 07:56</div>
+            <div class="timeline-body"><p>Below we serialize this as <code>zstd</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2024-08-08 08:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/distribution-filename/src/extension.rs</code>:19 on 2024-08-08 11:46</div>
+            <div class="timeline-body"><p>I tried to find where rkyv was used with <code>DistExtension</code>, but couldn't. Do we need rkyv support for <code>DistExtension</code>? If not, I'd drop the trait impls and <code>archive</code> annotations below.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/distribution-filename/src/extension.rs</code>:26 on 2024-08-08 11:50</div>
+            <div class="timeline-body"><p>Hmmmmmmmmmm. Likely fine, but I actually do not believe it is guaranteed. rkyv doesn't have great docs on what kinds of changes are compatible with existing serialized data. I would generally assume that <em>any</em> change requires a cache bump, even if in some cases, it isn't <em>in practice</em> required.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/distribution-filename/src/extension.rs</code>:83 on 2024-08-08 11:51</div>
+            <div class="timeline-body"><p>There might be an opportunity for a helper function here or an extra local variable. The same chunk of path extension code is repeated for each case here (and <code>zst</code> below).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2024-08-08 11:54</div>
+            <div class="timeline-body"><p>Yes, I like this!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-08 17:06</div>
+            <div class="timeline-body"><p>I bumped the rkyv cache, to be conservative.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/distribution-filename/src/extension.rs</code>:88 on 2024-08-08 17:06</div>
+            <div class="timeline-body"><p>Thanks, that's wrong!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-08-08 17:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-08-09 01:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-08-09 01:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-08-09 01:39</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:32:10 UTC
+    </footer>
+</body>
+</html>

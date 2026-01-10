@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add `uv tool upgrade` command - astral-sh/uv #5197</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add <code>uv tool upgrade</code> command</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/5197">#5197</a>
+        opened by <a href="https://github.com/blueraft">@blueraft</a>
+        on 2024-07-18 18:58
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/blueraft">@blueraft</a> on 2024-07-18 18:58</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Resolves #5188. Most of the changes involve creating a new function in <code>tool/common.rs</code> to contain the common functionality previously found in <code>tool/install.rs</code>.</p>
+<h2>Test Plan</h2>
+<p><code>cargo test</code></p>
+<pre><code class="language-console">❯ ./target/debug/uv tool upgrade black
+warning: `uv tool upgrade` is experimental and may change without warning.
+Resolved 6 packages in 25ms
+Uninstalled 1 package in 3ms
+Installed 1 package in 19ms
+ - black==23.1.0
+ + black==24.4.2
+Installed 2 executables: black, blackd
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-07-18 19:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-cli/src/lib.rs</code>:2729 on 2024-07-18 19:00</div>
+            <div class="timeline-body"><p>Does including this mean we support things like <code>--upgrade-package</code> here now? Is that what we want?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-07-18 19:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/settings.rs</code>:305 on 2024-07-18 19:01</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">/// The resolved settings to use for a `tool upgrade` invocation.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-07-18 19:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/tool_upgrade.rs</code>:59 on 2024-07-18 19:02</div>
+            <div class="timeline-body"><p>Should these say &quot;Updated&quot;?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-07-18 19:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/tool/upgrade.rs</code>:22 on 2024-07-18 19:04</div>
+            <div class="timeline-body"><p>I'll need to come back and read this more closely, sorry for a partial review.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/blueraft">@blueraft</a> reviewed on 2024-07-18 20:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/blueraft">@blueraft</a> on <code>crates/uv-cli/src/lib.rs</code>:2729 on 2024-07-18 20:15</div>
+            <div class="timeline-body"><p>Good point. The following approach works, and there are cases where people might want to upgrade tools to a specific version as well. Maybe we should support this, wdyt?</p>
+<p><code>cargo run -- tool upgrade poetry --upgrade-package poetry==1.5</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/T-256">@T-256</a> reviewed on 2024-07-18 21:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/T-256">@T-256</a> on <code>crates/uv/tests/tool_upgrade.rs</code>:59 on 2024-07-18 21:58</div>
+            <div class="timeline-body"><pre><code>Installed [N] packages in [TIME]
+ - black==23.1.0
+ + black==24.3.0
+Installed 3 executables:
+ ^ black
+ ^ blackd
+ + added-exe
+ - removed-exe
+</code></pre>
+<p>same message format as package (un)installations diffs.
+<code>^</code> mark stands for <em>Updated</em> executable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/T-256">@T-256</a> reviewed on 2024-07-18 22:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/T-256">@T-256</a> on <code>crates/uv/tests/tool_upgrade.rs</code>:59 on 2024-07-18 22:02</div>
+            <div class="timeline-body"><blockquote>
+<p><code>^</code> mark stands for <em>Updated</em> executable.</p>
+</blockquote>
+<p>As I'm thinking now, could we have this <em>Updated</em> versions in package installations? example:</p>
+<pre><code>Installed [N] packages in [TIME]
+ ^ black 23.1.0 -&gt; 24.3.0
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/blueraft">@blueraft</a> reviewed on 2024-07-19 09:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/blueraft">@blueraft</a> on <code>crates/uv/tests/tool_upgrade.rs</code>:59 on 2024-07-19 09:26</div>
+            <div class="timeline-body"><blockquote>
+<p>As I'm thinking now, could we have this Updated versions in package installations? example:</p>
+</blockquote>
+<p>That requires changes to the resolver code, could you make a new issue if you want this change?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/blueraft">@blueraft</a> reviewed on 2024-07-19 13:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/blueraft">@blueraft</a> on <code>crates/uv/tests/tool_upgrade.rs</code>:59 on 2024-07-19 13:05</div>
+            <div class="timeline-body"><p>I've gone with <code>Updated</code> for now. Once a symbol is settled in #5213 for <code>updated</code>, we can update this. Wdyt?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2024-07-23 18:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-24 16:15</div>
+            <div class="timeline-body"><p>Should <code>uv tool upgrade</code> work without arguments? That might mean that we need to store things like the index URLs in the install receipt. Otherwise, upgrades for tools installed from non-PyPI indexes won't work, unless you provide the index URL to <code>uv tool upgrade</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-24 19:44</div>
+            <div class="timeline-body"><p>Yeah we probably need to store index URLs in the receipt 🤔 does pipx?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/blueraft">@blueraft</a> on 2024-07-25 12:08</div>
+            <div class="timeline-body"><p>These are the metadata stored by pipx, arguments like <code>--index-url</code> end up in the pip_args array:</p>
+<pre><code class="language-json">{
+    &quot;injected_packages&quot;: {},
+    &quot;main_package&quot;: {
+        &quot;app_paths&quot;: [
+            {
+                &quot;__Path__&quot;: &quot;/Users/ahmedilyas/Library/Application Support/pipx/venvs/sympy/bin/isympy&quot;,
+                &quot;__type__&quot;: &quot;Path&quot;
+            }
+        ],
+        &quot;app_paths_of_dependencies&quot;: {},
+        &quot;apps&quot;: [
+            &quot;isympy&quot;
+        ],
+        &quot;apps_of_dependencies&quot;: [],
+        &quot;include_apps&quot;: true,
+        &quot;include_dependencies&quot;: false,
+        &quot;man_pages&quot;: [
+            &quot;man1/isympy.1&quot;
+        ],
+        &quot;man_pages_of_dependencies&quot;: [],
+        &quot;man_paths&quot;: [
+            {
+                &quot;__Path__&quot;: &quot;/Users/ahmedilyas/Library/Application Support/pipx/venvs/sympy/share/man/man1/isympy.1&quot;,
+                &quot;__type__&quot;: &quot;Path&quot;
+            }
+        ],
+        &quot;man_paths_of_dependencies&quot;: {},
+        &quot;package&quot;: &quot;sympy&quot;,
+        &quot;package_or_url&quot;: &quot;sympy&quot;,
+        &quot;package_version&quot;: &quot;1.13.1&quot;,
+        &quot;pip_args&quot;: [],
+        &quot;suffix&quot;: &quot;&quot;
+    },
+    &quot;pipx_metadata_version&quot;: &quot;0.3&quot;,
+    &quot;python_version&quot;: &quot;Python 3.12.2&quot;,
+    &quot;venv_args&quot;: []
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-07 22:03</div>
+            <div class="timeline-body"><p>Just noting this is blocked by https://github.com/astral-sh/uv/issues/5443</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-08 19:25</div>
+            <div class="timeline-body"><p>I'm gonna be playing around with this branch as I'm trying to solve the &quot;index URL&quot; problem. Just a heads up @blueraft.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/blueraft">@blueraft</a> on 2024-08-08 19:36</div>
+            <div class="timeline-body"><p>All good!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-08-08 20:25</div>
+            <div class="timeline-body"><p>Thank you! Gonna build on this in some subsequent PRs. Merging with the known limitation that it doesn't respect prior settings.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-08-08 20:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-08-08 20:48</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:32:10 UTC
+    </footer>
+</body>
+</html>

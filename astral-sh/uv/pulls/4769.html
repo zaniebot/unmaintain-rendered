@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Respect `XDG_DATA_HOME` on macOS if set - astral-sh/uv #4769</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Respect <code>XDG_DATA_HOME</code> on macOS if set</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/pull/4769">#4769</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2024-07-03 13:50
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-03 13:50</div>
+            <div class="timeline-body"><p>Rather than using <code>Application Support</code> for state storage, we use <code>XDG_DATA_HOME</code> <em>if</em> it is set. This feels like a reasonable compromise respecting the OS defaults while allowing users to opt-in to XDG.</p>
+<p>Closes #4411</p>
+<p>e.g.</p>
+<pre><code>❯ export XDG_DATA_HOME=&quot;$HOME/.local/share&quot;
+❯ cargo run -- python install
+Looking for installation Python 3.12.1 (any-3.12.1-any-any-any)
+Looking for installation Python 3.11.7 (any-3.11.7-any-any-any)
+Looking for installation Python 3.10.13 (any-3.10.13-any-any-any)
+Looking for installation Python 3.9.18 (any-3.9.18-any-any-any)
+Looking for installation Python 3.8.18 (any-3.8.18-any-any-any)
+Looking for installation Python 3.8.12 (any-3.8.12-any-any-any)
+Found 6/6 installations requiring installation
+Downloading cpython-3.12.1-macos-aarch64-none
+Downloading cpython-3.11.7-macos-aarch64-none
+Downloading cpython-3.10.13-macos-aarch64-none
+Downloading cpython-3.9.18-macos-aarch64-none
+Installed Python 3.12.1 to /Users/zb/.local/share/uv/python/cpython-3.12.1-macos-aarch64-none
+Installed Python 3.11.7 to /Users/zb/.local/share/uv/python/cpython-3.11.7-macos-aarch64-none
+Installed Python 3.10.13 to /Users/zb/.local/share/uv/python/cpython-3.10.13-macos-aarch64-none
+Installed Python 3.9.18 to /Users/zb/.local/share/uv/python/cpython-3.9.18-macos-aarch64-none
+Downloading cpython-3.8.18-macos-aarch64-none
+Downloading cpython-3.8.12-macos-aarch64-none
+Installed Python 3.8.18 to /Users/zb/.local/share/uv/python/cpython-3.8.18-macos-aarch64-none
+Installed Python 3.8.12 to /Users/zb/.local/share/uv/python/cpython-3.8.12-macos-aarch64-none
+Installed 6 installations in 8s
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @zanieb on 2024-07-03 13:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @zanieb on 2024-07-03 13:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-07-03 13:54</div>
+            <div class="timeline-body"><p>In ruff, we're using <code>etcetera</code> for xdg directories, is there a reason not to do this in uv, too?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-03 13:57</div>
+            <div class="timeline-body"><p>I'm just following the patterns we're using in our other crates here. I don't have context on why not <code>etcetera</code>, cc @charliermarsh. We could change separately from this if we want.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-03 14:00</div>
+            <div class="timeline-body"><p>Since we're not a GUI application I'm basically down to just move over to XDG entirely too btw.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-05 03:22</div>
+            <div class="timeline-body"><p>I'm planning to move us to XDG entirely for macOS (maybe not for the cache for now, though). How much do we care about backwards-compatibility here given that it's preview-only?</p>
+<p>If we make it backwards-compatible, we may need to &quot;never upgrade&quot; existing users (since we'd just detect if <code>/Users/crmarsh/Library/Application Support/uv</code> exists and use that). Or we could support both (read-only from <code>/Users/crmarsh/Library/Application Support/uv</code>, read/write to XDG), but it's more work of course.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-05 13:42</div>
+            <div class="timeline-body"><p>You could just move it if we find it in the old location? That's what I did when I renamed the Python directory. We could make a link?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-05 13:50</div>
+            <div class="timeline-body"><p>Hmm, will there be any absolute references to things in the existing folder? Like paths to interpreters? Not sure...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-05 13:55</div>
+            <div class="timeline-body"><p>Fair, that could be problematic. I guess we &quot;never upgrade&quot; and provide instructions for manual migration?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-05 13:57</div>
+            <div class="timeline-body"><p>Tragic!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-06 01:50</div>
+            <div class="timeline-body"><p>Continuing on in https://github.com/astral-sh/uv/pull/5806.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-08-06 01:50</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:32:10 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rename `distribution` to `packages` in lockfile - astral-sh/uv #5861</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Rename <code>distribution</code> to <code>packages</code> in lockfile</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/5861">#5861</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2024-08-07 13:57
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2024-08-07 13:57</div>
+            <div class="timeline-body"><p>Currently, the entry for a package+version+source table is called <code>distribution</code>. That is incorrect, the <code>sdist</code> and <code>wheel</code> fields inside of that table are distributions, the table itself is for a package. We also align ourselves closer with PEP 751.</p>
+<p>I went through <code>lock.rs</code> and renamed all occurrences of &quot;distribution&quot; that actually referred to a &quot;package&quot;.</p>
+<p>This change invalidates all existing lockfiles.</p>
+<p>Bikeshedding: Do we call it <code>package</code> or <code>packages</code>? See also https://github.com/python/peps/pull/3877</p>
+<p><code>package</code> is nice because it looks like a header:</p>
+<pre><code class="language-toml">[[package]]
+name = &quot;anyio&quot;
+version = &quot;4.3.0&quot;
+source = { registry = &quot;https://pypi.org/simple&quot; }
+dependencies = [
+    { name = &quot;idna&quot; },
+    { name = &quot;sniffio&quot; },
+]
+sdist = { url = &quot;https://files.pythonhosted.org/packages/db/4d/3970183622f0330d3c23d9b8a5f52e365e50381fd484d08e3285104333d3/anyio-4.3.0.tar.gz&quot;, hash = &quot;sha256:f75253795a87df48568485fd18cdd2a3fa5c4f7c5be8e5e36637733fce06fed6&quot;, size = 159642 }
+wheels = [
+    { url = &quot;https://files.pythonhosted.org/packages/14/fd/2f20c40b45e4fb4324834aea24bd4afdf1143390242c0b33774da0e2e34f/anyio-4.3.0-py3-none-any.whl&quot;, hash = &quot;sha256:048e05d0f6caeed70d731f3db756d35dcc1f35747c8c403364a8332c630441b8&quot;, size = 85584 },
+]
+</code></pre>
+<p><code>packages</code> is nice because the field is not a single entry, but a list.</p>
+<p>2/3 for https://github.com/astral-sh/uv/issues/4893</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @konstin on 2024-08-07 13:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">lock</span> added by @konstin on 2024-08-07 13:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-07 14:03</div>
+            <div class="timeline-body"><p>What's the migration story here? Are we just throwing an error or will we replace the lockfile?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-08-07 14:04</div>
+            <div class="timeline-body"><p>Yeah</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-07 14:07</div>
+            <div class="timeline-body"><p>What?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-08-07 14:17</div>
+            <div class="timeline-body"><p>Ah sorry i misread; we never error with invalid lockfiles, we ignore them and replace them. We could add an alias or something if we want to preserve previous preferences.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-07 14:18</div>
+            <div class="timeline-body"><p>I think that's okay with me, thank you.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-07 14:41</div>
+            <div class="timeline-body"><p>Can we add a basic test to verify that we don't error for an invalid lockfile?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-08-07 14:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-07 18:16</div>
+            <div class="timeline-body"><p>Will add and merge.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-08-08 08:25</div>
+            <div class="timeline-body"><p>I've added an alias and confirmed that we read the previous lock as preferences</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-08 12:20</div>
+            <div class="timeline-body"><p>Cool. I think this is fine to merge as-is.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-08-08 15:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-08-08 15:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-08-08 15:25</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:32:10 UTC
+    </footer>
+</body>
+</html>

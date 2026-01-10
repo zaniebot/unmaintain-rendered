@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allow downloading wheels for metadata with `--no-binary` - astral-sh/uv #5707</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Allow downloading wheels for metadata with <code>--no-binary</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/5707">#5707</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-08-01 19:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-01 19:28</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>We allow the use of (e.g.) <code>.whl.metadata</code> files when <code>--no-binary</code> is enabled, so it makes sense that we'd also also allow wheels to be downloaded for metadata extraction. So now, we validate <code>--no-binary</code> at install time, rather than metadata-fetch time.</p>
+<p>Closes https://github.com/astral-sh/uv/issues/5699.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-08-01 19:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-distribution/src/error.rs</code>:18 on 2024-08-01 19:29</div>
+            <div class="timeline-body"><p>We do, however, need to be aggressive about rejecting <em>builds</em> at metadata-fetch time.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-08-01 19:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2024-08-01 19:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @charliermarsh on 2024-08-01 19:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2024-08-01 19:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-08-01 19:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-installer/src/preparer.rs</code>:33 on 2024-08-01 19:32</div>
+            <div class="timeline-body"><p>(Clippy yelling at me about variant size.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-01 19:32</div>
+            <div class="timeline-body"><p>I'll figure out how to test this if we're aligned on the behavior.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-01 19:39</div>
+            <div class="timeline-body"><p>It appears that pip does <em>not</em> use wheel metadata when <code>--no-binary</code> is provided, they build everything (even if they need to try multiple versions).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-02 01:41</div>
+            <div class="timeline-body"><p>Maybe the ideal here is: we use wheel metadata if we can fetch the wheel without downloading it; otherwise, we download the source distribution?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-02 02:36</div>
+            <div class="timeline-body"><p>Seems murky, but I did think that was the existing behavior.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-02 02:44</div>
+            <div class="timeline-body"><p>Which behavior exactly? The behavior in the PR, or &quot;we use wheel metadata if we can fetch the wheel without downloading it; otherwise, we download the source distribution&quot;?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2024-08-02 08:14</div>
+            <div class="timeline-body"><p>No idea what the right behavior(s) for <code>--no-binary</code> are, but the code looks code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-02 12:38</div>
+            <div class="timeline-body"><blockquote>
+<p>Which behavior exactly?</p>
+</blockquote>
+<p>We only use locally available wheel metadata.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-02 16:59</div>
+            <div class="timeline-body"><p>I think it would be fine to merge this, and then revisit whether we should use wheels at all here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-06 14:10</div>
+            <div class="timeline-body"><p>I'm going to merge and document this. We can consider changing the behavior holistically.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-08-06 18:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-08-06 18:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-08-06 18:14</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:32:10 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>cargo: straighten out LTO configuration - astral-sh/uv #5955</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>cargo: straighten out LTO configuration</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/5955">#5955</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2024-08-09 13:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-08-09 13:28</div>
+            <div class="timeline-body"><p>This PR tweaks the change made in #5904 so that the <code>profiling</code> Cargo
+profile does <em>not</em> have LTO enabled. With LTO enabled, compile times
+even after just doing a <code>touch crates/uv/src/bin/uv.rs</code> are devastating:</p>
+<pre><code>$ cargo b --profile profiling -p uv
+   Compiling uv-cli v0.0.1 (/home/andrew/astral/uv/crates/uv-cli)
+   Compiling uv v0.2.34 (/home/andrew/astral/uv/crates/uv)
+    Finished `profiling` profile [optimized + debuginfo] target(s) in 3m 47s</code></pre>
+<p>Even with <code>lto = &quot;thin&quot;</code>, compile times are not great, but an
+improvement:</p>
+<pre><code>$ cargo b --profile profiling -p uv
+   Compiling uv v0.2.34 (/home/andrew/astral/uv/crates/uv)
+    Finished `profiling` profile [optimized + debuginfo] target(s) in 53.98s</code></pre>
+<p>But our original configuration for <code>profiling</code>, prior to #5904, was with
+LTO completely disabled:</p>
+<pre><code>$ cargo b --profile profiling -p uv
+   Compiling uv v0.2.34 (/home/andrew/astral/uv/crates/uv)
+    Finished `profiling` profile [optimized + debuginfo] target(s) in 30.09s</code></pre>
+<p>This gives reasonable-ish compile times, although I still want them to
+be better.</p>
+<p>This setup does risk that we are measuring something in benchmarks that
+we are shipping, but in order to make those two the same, we'd either
+need to make compile times way worse for development, or take a hit
+to binary size and a slight hit to runtime performance in our release
+builds. I would weakly prefer that we accept the hit to runtime
+performance and binary size in order to bring our measurements in line
+with what we ship, but I <em>strongly</em> feel that we should not have compile
+times exceeding minutes for development. When doing performance testing,
+long compile times, for me anyway, break &quot;flow&quot; state.</p>
+<p>A confounding factor here was that #5904 enabled LTO for the <code>release</code>
+profile, but the <code>dist</code> profile (used by <code>cargo dist</code>) was still setting
+it to <code>lto = &quot;thin&quot;</code>. However, because of shenanigans in our release
+pipeline, we we actually using the <code>release</code> profile for binaries we
+ship. This PR does not make any changes here other than to remove <code>lto = &quot;thin&quot;</code> from the <code>dist</code> profile to make the fact that they are the same
+a bit clearer.</p>
+<p>cc @davfsa</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2024-08-09 13:30</div>
+            <div class="timeline-body"><p>I mainly want lto for the 15% - 20% compressed size reduction, i'm fine accepting a minor divergence between profiling and release for that</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>Cargo.toml</code>:208 on 2024-08-09 13:30</div>
+            <div class="timeline-body"><p><a href="https://doc.rust-lang.org/cargo/reference/profiles.html#lto"><code>&quot;fat&quot;</code> and <code>true</code> are the same</a>, but <code>fat</code> is more descriptive. The boolean value is a holdover from the early days when <code>lto</code> was a strict binary option.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-08-09 13:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-09 13:31</div>
+            <div class="timeline-body"><p>Thanks Andrew!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>Cargo.toml</code>:249 on 2024-08-09 13:31</div>
+            <div class="timeline-body"><p><a href="https://doc.rust-lang.org/cargo/reference/profiles.html#debug"><code>&quot;full&quot;</code> is equivalent to <code>true</code></a>, but <code>full</code> is more descriptive.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-08-09 13:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">release</span> added by @charliermarsh on 2024-08-09 13:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @BurntSushi on 2024-08-09 13:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2024-08-09 13:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-08-09 13:34</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:32:10 UTC
+    </footer>
+</body>
+</html>
