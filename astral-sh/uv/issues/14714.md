@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-07-18T11:50:32Z
 updated_at: 2025-07-18T12:47:57Z
 url: https://github.com/astral-sh/uv/issues/14714
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Python version removal from the Windows registry can race
@@ -107,14 +107,6 @@ So we can handle this both by making this more resilient on removal, and we can 
 _Comment by @konstin on 2025-07-18 12:19_
 
 I have the change ready
-
----
-
-_Referenced in [astral-sh/uv#14716](../../astral-sh/uv/pulls/14716.md) on 2025-07-18 12:19_
-
----
-
-_Referenced in [astral-sh/uv#14717](../../astral-sh/uv/pulls/14717.md) on 2025-07-18 12:25_
 
 ---
 

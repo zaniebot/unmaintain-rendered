@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-06-15T07:34:17Z
 updated_at: 2025-08-08T18:06:57Z
 url: https://github.com/astral-sh/uv/issues/14042
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # The Chinese font display of Tkinter in the Python installed by uv is abnormal.
@@ -101,17 +101,5 @@ _Comment by @geofft on 2025-08-08 18:06_
 We might need to build Xft or fontconfig/freetype/something in python-build-standalone.
 
 (Honestly I expect we'll get comments about fonts in English now that matplotlib is working....)
-
----
-
-_Referenced in [astral-sh/python-build-standalone#740](../../astral-sh/python-build-standalone/issues/740.md) on 2025-08-08 18:18_
-
----
-
-_Referenced in [astral-sh/uv#15602](../../astral-sh/uv/issues/15602.md) on 2025-09-01 06:38_
-
----
-
-_Referenced in [astral-sh/uv#15668](../../astral-sh/uv/issues/15668.md) on 2025-09-04 07:07_
 
 ---

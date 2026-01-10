@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-08-06T18:50:26Z
 updated_at: 2025-08-07T13:57:00Z
 url: https://github.com/astral-sh/uv/issues/15115
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-10T03:32:46Z
 ```
 
 # Markdown docs remove essential warning about `UV_LINK_MODE=symlink` from extended description
@@ -46,10 +46,6 @@ _Label `documentation` added by @konstin on 2025-08-06 18:50_
 
 ---
 
-_Referenced in [astral-sh/uv#15104](../../astral-sh/uv/issues/15104.md) on 2025-08-06 18:53_
-
----
-
 _Comment by @zanieb on 2025-08-06 21:45_
 
 Elsewhere we have like `opt.get_long_help().or_else(|| opt.get_help())`
@@ -61,10 +57,6 @@ _Comment by @zanieb on 2025-08-06 21:45_
 We'll need to update the output to handle multiline formatting here, I presume?
 
 
-
----
-
-_Referenced in [astral-sh/uv#15126](../../astral-sh/uv/pulls/15126.md) on 2025-08-07 08:24_
 
 ---
 

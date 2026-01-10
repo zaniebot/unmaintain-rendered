@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-06-25T03:01:06Z
 updated_at: 2025-06-26T01:34:15Z
 url: https://github.com/astral-sh/uv/issues/14250
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # How to sync the root directory and a certain sub-project dependencies
@@ -80,9 +80,5 @@ Need to execute two commands, the first one is to run `uv sync` under the root p
 ---
 
 _Closed by @vvanglro on 2025-06-26 01:16_
-
----
-
-_Referenced in [astral-sh/uv#14266](../../astral-sh/uv/pulls/14266.md) on 2025-06-26 02:10_
 
 ---

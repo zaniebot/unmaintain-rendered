@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-07-22T16:29:29Z
 updated_at: 2025-07-22T19:10:09Z
 url: https://github.com/astral-sh/uv/issues/14820
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Uv build default
@@ -40,10 +40,6 @@ _Label `question` added by @HoseynAAmiri on 2025-07-22 16:29_
 _Comment by @zanieb on 2025-07-22 16:33_
 
 I'd recommend using `--build-backend hatchling`. There's not a persistent setting,
-
----
-
-_Referenced in [astral-sh/uv#14821](../../astral-sh/uv/pulls/14821.md) on 2025-07-22 16:38_
 
 ---
 

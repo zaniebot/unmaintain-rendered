@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-07-16T00:37:48Z
 updated_at: 2025-07-16T12:08:03Z
 url: https://github.com/astral-sh/uv/issues/14644
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Add git commit and `--tag` option to `uv version --bump`
@@ -98,10 +98,6 @@ _Renamed from "Add `--tag` option to `uv version --bump`" to "Add git commit and
 
 ---
 
-_Referenced in [astral-sh/uv#13657](../../astral-sh/uv/issues/13657.md) on 2025-07-16 00:49_
-
----
-
 _Label `wish` added by @zanieb on 2025-07-16 04:20_
 
 ---
@@ -115,13 +111,5 @@ I think this is out of scope in the short-term, but is an interesting idea.
 _Comment by @cthoyt on 2025-07-16 12:08_
 
 @zanieb thanks for the consideration! if you do come back to this, I am happy to elaborate and help with the design
-
----
-
-_Referenced in [rehborn/uv-version-bump-action#3](../../rehborn/uv-version-bump-action/issues/3.md) on 2025-08-05 10:16_
-
----
-
-_Referenced in [boxed/mutmut#453](../../boxed/mutmut/issues/453.md) on 2025-11-26 21:28_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-07-31T07:48:14Z
 updated_at: 2025-07-31T13:43:32Z
 url: https://github.com/astral-sh/uv/issues/14988
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-10T03:32:46Z
 ```
 
 # Will uv support more flexible mutli-env switch  like conda?
@@ -85,9 +85,5 @@ I realized that I was still using conda-mind. I know how uv handle with these pr
 ---
 
 _Closed by @FuRuF-11 on 2025-07-31 13:43_
-
----
-
-_Referenced in [astral-sh/uv#15885](../../astral-sh/uv/issues/15885.md) on 2025-11-19 04:32_
 
 ---

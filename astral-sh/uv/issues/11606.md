@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-18T22:40:16Z
 updated_at: 2025-06-13T22:04:14Z
 url: https://github.com/astral-sh/uv/issues/11606
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Allow dependency groups to define a separate `requires-python`
@@ -44,10 +44,6 @@ requires-python = ">=3.12"
 ---
 
 _Label `enhancement` added by @zanieb on 2025-02-18 22:40_
-
----
-
-_Referenced in [astral-sh/uv#11605](../../astral-sh/uv/issues/11605.md) on 2025-02-18 22:40_
 
 ---
 
@@ -85,22 +81,6 @@ _Assigned to @Gankra by @Gankra on 2025-03-19 12:46_
 _Comment by @Gankra on 2025-03-19 12:46_
 
 Sure I can give this a shot
-
----
-
-_Referenced in [astral-sh/uv#12629](../../astral-sh/uv/issues/12629.md) on 2025-04-02 16:11_
-
----
-
-_Referenced in [astral-sh/uv#12737](../../astral-sh/uv/issues/12737.md) on 2025-04-08 17:58_
-
----
-
-_Referenced in [astral-sh/uv#13660](../../astral-sh/uv/issues/13660.md) on 2025-05-26 12:53_
-
----
-
-_Referenced in [astral-sh/uv#13735](../../astral-sh/uv/pulls/13735.md) on 2025-05-30 17:15_
 
 ---
 

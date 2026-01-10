@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-07-16T21:25:40Z
 updated_at: 2025-07-18T07:00:21Z
 url: https://github.com/astral-sh/uv/issues/14672
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Question: why `uv` is not shown in Python documentation
@@ -71,13 +71,5 @@ You're right. But maybe it can serve as an example 😃
 _Comment by @cbrnr on 2025-07-18 07:00_
 
 I've modified the docs in that PR. Any other locations you would like to see uv?
-
----
-
-_Referenced in [astral-sh/uv#14794](../../astral-sh/uv/issues/14794.md) on 2025-07-21 16:12_
-
----
-
-_Referenced in [huggingface/transformers#40631](../../huggingface/transformers/pulls/40631.md) on 2025-09-08 10:34_
 
 ---

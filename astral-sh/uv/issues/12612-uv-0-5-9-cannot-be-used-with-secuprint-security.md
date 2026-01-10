@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-04-01T23:09:55Z
 updated_at: 2025-06-30T15:32:32Z
 url: https://github.com/astral-sh/uv/issues/12612
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # uv 0.5.9+ cannot be used with SecuPrint security software on Windows
@@ -34,10 +34,6 @@ _Label `external` added by @zanieb on 2025-04-01 23:09_
 
 ---
 
-_Referenced in [astral-sh/uv#12537](../../astral-sh/uv/issues/12537.md) on 2025-04-01 23:14_
-
----
-
 _Label `windows` added by @zanieb on 2025-04-01 23:14_
 
 ---
@@ -45,10 +41,6 @@ _Label `windows` added by @zanieb on 2025-04-01 23:14_
 _Comment by @songjinu on 2025-04-15 00:05_
 
 Seriously, I can't seem to get the version after 0.5.9 to work for me. I'll have to check for conflicts with my security program.
-
----
-
-_Referenced in [rust-lang/rust#143078](../../rust-lang/rust/issues/143078.md) on 2025-06-30 11:58_
 
 ---
 

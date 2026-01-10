@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-07-21T15:53:22Z
 updated_at: 2025-07-21T15:54:42Z
 url: https://github.com/astral-sh/uv/issues/14793
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Warn when `uv venv` is used and `VIRTUAL_ENV` is set
@@ -45,9 +45,5 @@ _Label `error messages` added by @zanieb on 2025-07-21 15:53_
 ---
 
 _Label `cli` added by @zanieb on 2025-07-21 15:53_
-
----
-
-_Referenced in [astral-sh/uv#15467](../../astral-sh/uv/pulls/15467.md) on 2025-08-23 09:38_
 
 ---

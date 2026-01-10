@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-13T08:06:02Z
 updated_at: 2025-06-24T20:53:57Z
 url: https://github.com/astral-sh/uv/issues/3538
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T03:32:44Z
 ```
 
 # Reconcile published and vendored pep508_rs crates
@@ -34,10 +34,6 @@ Would be great! Let me know if you need any help
 ---
 
 _Label `release` added by @charliermarsh on 2024-05-13 14:16_
-
----
-
-_Referenced in [prefix-dev/pixi#2002](../../prefix-dev/pixi/issues/2002.md) on 2024-09-07 14:18_
 
 ---
 

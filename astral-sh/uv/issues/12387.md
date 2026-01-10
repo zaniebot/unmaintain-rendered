@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-22T04:21:45Z
 updated_at: 2025-07-24T09:13:26Z
 url: https://github.com/astral-sh/uv/issues/12387
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Support `uv sync [--dry-run] --format=json`
@@ -66,18 +66,6 @@ _Comment by @x0rw on 2025-03-23 05:46_
 _Comment by @zanieb on 2025-03-23 21:29_
 
 I wouldn't worry about formatting the logger. That'll require a larger restructuring to use jsonlines output. Is the logger writing to stdout or stderr? If the latter, nothing needs to change there.
-
----
-
-_Referenced in [astral-sh/uv#12405](../../astral-sh/uv/pulls/12405.md) on 2025-03-23 23:20_
-
----
-
-_Referenced in [astral-sh/uv#12428](../../astral-sh/uv/issues/12428.md) on 2025-03-24 13:48_
-
----
-
-_Referenced in [astral-sh/uv#14194](../../astral-sh/uv/issues/14194.md) on 2025-06-21 22:47_
 
 ---
 

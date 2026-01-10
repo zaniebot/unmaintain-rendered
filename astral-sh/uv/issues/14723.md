@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-07-18T13:29:27Z
 updated_at: 2025-07-20T16:12:02Z
 url: https://github.com/astral-sh/uv/issues/14723
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Fix incorrect `requires-python` in tests with patch versions
@@ -29,10 +29,6 @@ _Label `good first issue` added by @zanieb on 2025-07-18 13:29_
 ---
 
 _Label `testing` added by @zanieb on 2025-07-18 13:29_
-
----
-
-_Referenced in [astral-sh/uv#14733](../../astral-sh/uv/pulls/14733.md) on 2025-07-18 16:52_
 
 ---
 

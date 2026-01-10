@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-07-11T06:37:23Z
 updated_at: 2025-07-20T22:45:26Z
 url: https://github.com/astral-sh/uv/issues/14558
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # `uv pip install -e . --all-extras` errors out even if pyproject.toml is present
@@ -116,9 +116,5 @@ Related https://github.com/astral-sh/uv/issues/11198
 ---
 
 _Closed by @charliermarsh on 2025-07-20 22:45_
-
----
-
-_Referenced in [django-daiquiri/dq-dev#19](../../django-daiquiri/dq-dev/pulls/19.md) on 2025-07-25 08:41_
 
 ---

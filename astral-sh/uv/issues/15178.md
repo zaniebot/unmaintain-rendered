@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-08-08T23:07:52Z
 updated_at: 2025-08-11T20:36:04Z
 url: https://github.com/astral-sh/uv/issues/15178
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-10T03:32:46Z
 ```
 
 # uv python upgrade adds python3.x symlinks to ~/.local/bin
@@ -60,15 +60,7 @@ _Label `bug` added by @geofft on 2025-08-08 23:07_
 
 ---
 
-_Referenced in [astral-sh/uv#15180](../../astral-sh/uv/issues/15180.md) on 2025-08-08 23:15_
-
----
-
 _Assigned to @jtfmumm by @zanieb on 2025-08-09 00:09_
-
----
-
-_Referenced in [astral-sh/uv#15192](../../astral-sh/uv/pulls/15192.md) on 2025-08-09 16:54_
 
 ---
 

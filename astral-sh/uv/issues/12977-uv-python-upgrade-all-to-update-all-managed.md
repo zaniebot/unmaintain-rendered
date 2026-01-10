@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-18T23:55:19Z
 updated_at: 2025-06-20T14:17:15Z
 url: https://github.com/astral-sh/uv/issues/12977
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # `uv python upgrade --all` to update all managed Python versions
@@ -95,10 +95,6 @@ I updated the title to `uv python upgrade --all`.
 
 ---
 
-_Referenced in [johnthagen/python-blueprint#95](../../johnthagen/python-blueprint/issues/95.md) on 2025-04-19 00:12_
-
----
-
 _Comment by @johnthagen on 2025-04-19 00:15_
 
 > I think `uv python install --reinstall any` might do this already, just as an fyi.
@@ -167,10 +163,6 @@ i'm finding this issue because i was searching for a way to upgrade the minor & 
 i recently switched from homebrew to uv to manage my installed python executables, and i am used to using `brew upgrade` to bump the minor & patch versions. i searched [the documentation](https://docs.astral.sh/uv/concepts/python-versions/#installing-python-executables) and the `uv python -h` output and don't see a way to update the installed version i have
 
 
-
----
-
-_Referenced in [astral-sh/uv#13954](../../astral-sh/uv/pulls/13954.md) on 2025-06-10 20:51_
 
 ---
 

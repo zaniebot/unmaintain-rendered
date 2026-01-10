@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-24T16:49:49Z
 updated_at: 2025-07-18T01:27:56Z
 url: https://github.com/astral-sh/uv/issues/10940
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Editable install incorrectly passes config settings to compiled dependencies
@@ -189,10 +189,6 @@ _Comment by @zanieb on 2025-01-28 17:52_
 
 ---
 
-_Referenced in [astral-sh/uv#3898](../../astral-sh/uv/issues/3898.md) on 2025-02-20 16:11_
-
----
-
 _Comment by @kyamagu on 2025-03-06 00:42_
 
 I met a similar situation with `uv build` when trying to build a local sub-package specified as a path dependency. My code layout was the following:
@@ -225,10 +221,6 @@ Would love to see this. This will be helpful when several dependencies have to b
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2025-07-11 16:16_
-
----
-
-_Referenced in [astral-sh/uv#14573](../../astral-sh/uv/pulls/14573.md) on 2025-07-11 23:51_
 
 ---
 

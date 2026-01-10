@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-06-07T04:04:57Z
 updated_at: 2025-07-03T12:10:22Z
 url: https://github.com/astral-sh/uv/issues/13896
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # uv rebuilds dependencies if they take too long to install
@@ -108,10 +108,6 @@ DEBUG Calling `setuptools.build_meta:__legacy__.build_editable("/home/ubuntu/.ca
 ```
 
 So, it does actually try to build it just once. Apparently PyTorch just calls cmake itself in the `prepare_metadata_for_build_editable` stage. Is this reasonable? I'm not sure if I should ask them why they're doing it because this is "weird" or if this is just totally normal for packages to do.
-
----
-
-_Referenced in [astral-sh/uv#14269](../../astral-sh/uv/issues/14269.md) on 2025-06-26 17:27_
 
 ---
 

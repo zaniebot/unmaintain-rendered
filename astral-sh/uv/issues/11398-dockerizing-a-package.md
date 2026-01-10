@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-10T19:38:43Z
 updated_at: 2025-07-16T13:51:37Z
 url: https://github.com/astral-sh/uv/issues/11398
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Dockerizing a package
@@ -93,10 +93,6 @@ The docker image for `package1` should only have the necessary packages installe
 I can see how I could run `uv sync --frozen --no-install-project --package package1` and that will install just the dependencies for package1, but the `uv.lock` file is outside of the build context, i.e. it's at `../../uv.lock` relative to the Dockerfile, so I can't get it into the docker image nicely. I would prefer to bind mount uv.lock, as the `uv` docs suggest.
 
 I would be really interested to know how you've solved this.
-
----
-
-_Referenced in [astral-sh/uv#9257](../../astral-sh/uv/issues/9257.md) on 2025-03-31 14:50_
 
 ---
 

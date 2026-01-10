@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-10-22T03:55:53Z
 updated_at: 2025-08-19T12:38:55Z
 url: https://github.com/astral-sh/uv/issues/8435
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-10T03:32:44Z
 ```
 
 # Feature Request: Support for global venv
@@ -101,10 +101,6 @@ Looking at the docs, `uv` probably needs an ENV for setting the install location
 _Comment by @zanieb on 2024-10-22 13:34_
 
 We don't support man pages yet. #4731 
-
----
-
-_Referenced in [astral-sh/uv#8431](../../astral-sh/uv/issues/8431.md) on 2024-10-23 12:08_
 
 ---
 

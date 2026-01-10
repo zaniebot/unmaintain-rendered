@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-07-22T16:09:03Z
 updated_at: 2025-07-22T20:18:59Z
 url: https://github.com/astral-sh/uv/issues/14815
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Usage in docker: `error: failed to remove directory `/app/.venv`: Resource busy (os error 16)`
@@ -64,14 +64,6 @@ I guess we previously did not delete the directory if it's empty, but now try to
 
 ---
 
-_Referenced in [astral-sh/uv#14822](../../astral-sh/uv/pulls/14822.md) on 2025-07-22 17:03_
-
----
-
-_Referenced in [astral-sh/uv#14828](../../astral-sh/uv/pulls/14828.md) on 2025-07-22 18:21_
-
----
-
 _Closed by @zanieb on 2025-07-22 18:50_
 
 ---
@@ -85,9 +77,5 @@ Thanks for the speedy fix!
 _Comment by @zanieb on 2025-07-22 20:18_
 
 You're welcome! It'll be released in a minute.
-
----
-
-_Referenced in [astral-sh/uv#16218](../../astral-sh/uv/issues/16218.md) on 2025-10-10 01:00_
 
 ---

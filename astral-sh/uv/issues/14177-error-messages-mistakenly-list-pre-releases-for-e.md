@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-06-21T02:40:20Z
 updated_at: 2025-06-27T18:06:20Z
 url: https://github.com/astral-sh/uv/issues/14177
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Error messages mistakenly list pre-releases for (e.g.) `==2.4.*` specifiers
@@ -35,10 +35,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2025-06-21 18:25_
 ---
 
 _Label `bug` added by @charliermarsh on 2025-06-21 20:23_
-
----
-
-_Referenced in [astral-sh/uv#14195](../../astral-sh/uv/pulls/14195.md) on 2025-06-21 23:04_
 
 ---
 

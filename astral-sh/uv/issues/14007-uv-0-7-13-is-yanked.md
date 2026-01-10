@@ -9,7 +9,7 @@ assignees: []
 created_at: 2025-06-12T22:03:22Z
 updated_at: 2025-06-12T23:11:31Z
 url: https://github.com/astral-sh/uv/issues/14007
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # uv 0.7.13 is yanked
@@ -38,10 +38,6 @@ _Closed by @zanieb on 2025-06-12 22:39_
 
 ---
 
-_Referenced in [astral-sh/uv#14010](../../astral-sh/uv/issues/14010.md) on 2025-06-12 22:41_
-
----
-
 _Comment by @zanieb on 2025-06-12 22:44_
 
 It'll take us a minute to "publish" the release to GitHub manually as well.
@@ -51,13 +47,5 @@ It'll take us a minute to "publish" the release to GitHub manually as well.
 _Comment by @Gankra on 2025-06-12 23:11_
 
 The github release is published and tagged and the shell installer seems to be working
-
----
-
-_Referenced in [pypi/warehouse#18243](../../pypi/warehouse/issues/18243.md) on 2025-06-13 12:12_
-
----
-
-_Referenced in [PyO3/maturin#2650](../../PyO3/maturin/pulls/2650.md) on 2025-06-13 17:51_
 
 ---

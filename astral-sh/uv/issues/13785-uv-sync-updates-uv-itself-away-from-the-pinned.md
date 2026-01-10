@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-06-02T16:27:08Z
 updated_at: 2025-06-28T13:25:10Z
 url: https://github.com/astral-sh/uv/issues/13785
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # `uv sync` updates `uv` itself away from the pinned version
@@ -469,17 +469,9 @@ The use-case is for people who want all of their environment to be on their `PAT
 
 ---
 
-_Referenced in [astral-sh/setup-uv#439](../../astral-sh/setup-uv/pulls/439.md) on 2025-06-02 23:28_
-
----
-
 _Comment by @zanieb on 2025-06-02 23:28_
 
 I'll add a note to the docs there.
-
----
-
-_Referenced in [gboeing/osmnx#1301](../../gboeing/osmnx/pulls/1301.md) on 2025-06-02 23:30_
 
 ---
 

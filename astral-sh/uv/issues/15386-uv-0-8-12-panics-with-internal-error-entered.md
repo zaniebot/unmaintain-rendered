@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-08-20T00:29:05Z
 updated_at: 2025-08-20T14:04:40Z
 url: https://github.com/astral-sh/uv/issues/15386
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-10T03:32:46Z
 ```
 
 # uv 0.8.12 panics with internal error: entered unreachable code: Installed distribution could not be found in site-packages
@@ -54,10 +54,6 @@ _Label `bug` added by @alex on 2025-08-20 00:29_
 
 ---
 
-_Referenced in [pyca/cryptography#13322](../../pyca/cryptography/pulls/13322.md) on 2025-08-20 00:29_
-
----
-
 _Comment by @woodruffw on 2025-08-20 00:38_
 
 Just doing some triage:
@@ -98,10 +94,6 @@ Thanks, I was able to reproduce this. I understand what's going on -- I think it
 
 ---
 
-_Referenced in [astral-sh/uv#15389](../../astral-sh/uv/pulls/15389.md) on 2025-08-20 10:31_
-
----
-
 _Comment by @charliermarsh on 2025-08-20 10:34_
 
 Ok, https://github.com/astral-sh/uv/pull/15389 should restore the existing behavior in these cases.
@@ -117,10 +109,6 @@ As an aside, in that noxfile, you might want to use `--config-settings-package c
 _Comment by @alex on 2025-08-20 11:30_
 
 Cool, thanks, will do!
-
----
-
-_Referenced in [pyca/cryptography#13328](../../pyca/cryptography/pulls/13328.md) on 2025-08-20 11:45_
 
 ---
 

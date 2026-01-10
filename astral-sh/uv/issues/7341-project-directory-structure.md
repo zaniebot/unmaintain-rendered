@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-12T20:17:29Z
 updated_at: 2025-06-22T14:14:00Z
 url: https://github.com/astral-sh/uv/issues/7341
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T03:32:44Z
 ```
 
 # Project directory structure
@@ -112,10 +112,6 @@ but for some reason my_project is not available for import.
 
 ---
 
-_Referenced in [astral-sh/uv#7342](../../astral-sh/uv/issues/7342.md) on 2024-09-12 20:20_
-
----
-
 _Comment by @zanieb on 2024-09-12 20:38_
 
 Have you tried `uv init --package`? I believe it creates the structure you're looking for. 
@@ -158,10 +154,6 @@ include = ["src/my_project1/**", "src/my_project2/**"]
 ---
 
 _Closed by @zanieb on 2024-09-14 03:13_
-
----
-
-_Referenced in [tbe-team/raybot#5](../../tbe-team/raybot/issues/5.md) on 2025-02-23 17:11_
 
 ---
 

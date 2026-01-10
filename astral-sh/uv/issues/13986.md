@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-06-12T10:19:35Z
 updated_at: 2025-07-22T13:13:39Z
 url: https://github.com/astral-sh/uv/issues/13986
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # uv leaves partial .venv around and then refuses to remove it
@@ -145,18 +145,6 @@ Of course, we then run the risk of leaving garbage on the system.
 
 ---
 
-_Referenced in [astral-sh/uv#14569](../../astral-sh/uv/pulls/14569.md) on 2025-07-11 18:27_
-
----
-
-_Referenced in [astral-sh/uv#14808](../../astral-sh/uv/pulls/14808.md) on 2025-07-22 11:24_
-
----
-
 _Closed by @zanieb on 2025-07-22 13:13_
-
----
-
-_Referenced in [astral-sh/uv#14811](../../astral-sh/uv/issues/14811.md) on 2025-07-22 13:15_
 
 ---

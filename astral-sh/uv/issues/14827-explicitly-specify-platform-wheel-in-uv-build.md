@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-07-22T17:57:02Z
 updated_at: 2025-07-22T17:57:02Z
 url: https://github.com/astral-sh/uv/issues/14827
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Explicitly specify platform wheel in `uv_build` backend
@@ -36,9 +36,5 @@ _No response_
 ---
 
 _Label `enhancement` added by @charlesnicholson on 2025-07-22 17:57_
-
----
-
-_Referenced in [KyleKing/textract-py3#16](../../KyleKing/textract-py3/pulls/16.md) on 2025-11-20 04:43_
 
 ---

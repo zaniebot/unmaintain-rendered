@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-09-04T12:06:16Z
 updated_at: 2025-06-21T09:53:38Z
 url: https://github.com/astral-sh/uv/issues/7008
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-10T03:32:44Z
 ```
 
 # Idiomatic Windows paths
@@ -179,10 +179,6 @@ This structure would align better with Windows guidelines while keeping things o
 
 
 
-
----
-
-_Referenced in [astral-sh/uv#13307](../../astral-sh/uv/issues/13307.md) on 2025-05-06 00:14_
 
 ---
 

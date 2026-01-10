@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-07-14T13:14:37Z
 updated_at: 2025-07-14T14:07:32Z
 url: https://github.com/astral-sh/uv/issues/14604
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # `uvx` does not error when `--from <package>` has a `requires-python` range incompatible with `-p`
@@ -47,10 +47,6 @@ n/a
 ---
 
 _Label `bug` added by @zanieb on 2025-07-14 13:14_
-
----
-
-_Referenced in [astral-sh/uv#14606](../../astral-sh/uv/pulls/14606.md) on 2025-07-14 13:46_
 
 ---
 

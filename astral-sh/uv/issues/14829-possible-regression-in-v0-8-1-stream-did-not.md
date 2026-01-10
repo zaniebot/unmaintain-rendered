@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-07-22T18:22:50Z
 updated_at: 2025-07-22T19:11:16Z
 url: https://github.com/astral-sh/uv/issues/14829
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Possible regression in v0.8.1 - stream did not contain valid UTF-8
@@ -767,10 +767,6 @@ tform_version: "#1 SMP Fri Mar 29 23:14:13 UTC 2024", python_full_version: Strin
 _Comment by @zanieb on 2025-07-22 18:30_
 
 Thanks! I can reproduce. #14790 is at fault here.
-
----
-
-_Referenced in [astral-sh/uv#14830](../../astral-sh/uv/pulls/14830.md) on 2025-07-22 18:41_
 
 ---
 

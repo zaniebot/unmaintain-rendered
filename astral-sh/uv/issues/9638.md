@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-04T13:32:17Z
 updated_at: 2025-08-14T11:53:56Z
 url: https://github.com/astral-sh/uv/issues/9638
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T03:32:44Z
 ```
 
 # is it possible to define a usercustomize hook as part of the uv project?
@@ -178,10 +178,6 @@ _Label `question` added by @charliermarsh on 2024-12-06 00:24_
 ---
 
 _Closed by @zanieb on 2025-01-07 19:34_
-
----
-
-_Referenced in [astral-sh/uv#11826](../../astral-sh/uv/issues/11826.md) on 2025-02-27 09:34_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-07-01T14:59:04Z
 updated_at: 2025-07-02T15:18:33Z
 url: https://github.com/astral-sh/uv/issues/14397
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Missing dependency with `uv pip compile` when constraints include `python_full_version`
@@ -77,10 +77,6 @@ Hmm, I'm not sure... I mean, we assume that we're compiling for the given Python
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2025-07-02 01:25_
-
----
-
-_Referenced in [astral-sh/uv#14405](../../astral-sh/uv/pulls/14405.md) on 2025-07-02 01:59_
 
 ---
 

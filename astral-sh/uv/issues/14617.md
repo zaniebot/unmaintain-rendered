@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-07-14T22:38:34Z
 updated_at: 2025-07-15T21:47:47Z
 url: https://github.com/astral-sh/uv/issues/14617
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Weird behavior with `uv pip install -r requirements.txt` when using relative directories
@@ -276,21 +276,5 @@ Once again, thanks for the help.
 _Comment by @Panacea729 on 2025-07-15 21:47_
 
 It would be helpful to have a `--no-sources-package` and a `--no-sources-build` or something like that to differentiate between allowing resolving for build dependencies vs package dependencies.
-
----
-
-_Referenced in [astral-sh/uv#5631](../../astral-sh/uv/issues/5631.md) on 2025-07-22 21:37_
-
----
-
-_Referenced in [astral-sh/uv#14963](../../astral-sh/uv/issues/14963.md) on 2025-07-29 23:24_
-
----
-
-_Referenced in [astral-sh/uv#15297](../../astral-sh/uv/issues/15297.md) on 2025-08-15 15:45_
-
----
-
-_Referenced in [aws/aws-cdk#35500](../../aws/aws-cdk/pulls/35500.md) on 2025-09-15 18:16_
 
 ---

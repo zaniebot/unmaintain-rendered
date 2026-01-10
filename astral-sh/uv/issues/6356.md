@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-21T16:48:32Z
 updated_at: 2025-07-08T06:02:30Z
 url: https://github.com/astral-sh/uv/issues/6356
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T03:32:44Z
 ```
 
 # Discussion: uv workspaces in a monorepo - thoughts on change-only testing
@@ -199,10 +199,6 @@ Docker images contain the source code of all libraries (things like wrappers for
 When dependencies of a service change (or a service is added), it is obvious from Git diff what files have changed (`svc/<service name>/requirements.in` and corresponding `requirements/<service name>.txt`) and what Docker images need to be rebuilt (GitHub Actions with matrix constructed by a custom, monorepo-aware script). When building a Docker image, the Dockerfile knows the service name (`ARG`), so it can copy its `requirements.txt` and its source code without guessing. Yes, the Python package installation cannot be cached (due to the `ARG`) but using `uv` with CI cache is so fast that it doesn't matter for most of the services.
 
 Perhaps some bits could be useful for inclusion also to the newer `uv`'s API?
-
----
-
-_Referenced in [lucasvieirasilva/nx-plugins#258](../../lucasvieirasilva/nx-plugins/issues/258.md) on 2024-12-17 23:26_
 
 ---
 
@@ -413,25 +409,5 @@ echo "$FILTERED_PACKAGES" | while read -r pkg; do
 done
 ```
 [EDIT]: Completely overhauled the script.
-
----
-
-_Referenced in [astral-sh/uv#7251](../../astral-sh/uv/issues/7251.md) on 2025-09-23 17:18_
-
----
-
-_Referenced in [astral-sh/uv#9626](../../astral-sh/uv/issues/9626.md) on 2025-10-25 09:28_
-
----
-
-_Referenced in [astral-sh/uv#10960](../../astral-sh/uv/issues/10960.md) on 2025-10-25 09:28_
-
----
-
-_Referenced in [astral-sh/uv#11955](../../astral-sh/uv/issues/11955.md) on 2025-10-25 09:29_
-
----
-
-_Referenced in [astral-sh/uv#16013](../../astral-sh/uv/issues/16013.md) on 2025-10-25 09:30_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-06-24T04:50:54Z
 updated_at: 2025-06-24T16:09:32Z
 url: https://github.com/astral-sh/uv/issues/14228
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Tests reintroduced dependency on EOL Python 3.8 without `python-eol` feature
@@ -76,10 +76,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2025-06-24 13:47_
 ---
 
 _Unassigned @Gankra by @charliermarsh on 2025-06-24 13:47_
-
----
-
-_Referenced in [astral-sh/uv#14241](../../astral-sh/uv/pulls/14241.md) on 2025-06-24 13:47_
 
 ---
 

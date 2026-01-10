@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-09-12T08:36:07Z
 updated_at: 2025-06-20T14:17:14Z
 url: https://github.com/astral-sh/uv/issues/7325
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T03:32:44Z
 ```
 
 # Upgrade Python version installed by uv
@@ -120,17 +120,9 @@ Thanks James, I will create a new issue later today - done. Previous comment hid
 
 ---
 
-_Referenced in [astral-sh/uv#8008](../../astral-sh/uv/issues/8008.md) on 2024-10-08 16:40_
-
----
-
 _Comment by @angelo-peronio on 2025-02-10 11:09_
 
 Possibly a duplicate of #7892
-
----
-
-_Referenced in [topgrade-rs/topgrade#1122](../../topgrade-rs/topgrade/pulls/1122.md) on 2025-04-13 08:00_
 
 ---
 
@@ -140,10 +132,6 @@ I found this issue -
 Can we update the python version with `uv` without removing and remaking the entire venv?
 
 - edit - on macOS / Linux.
-
----
-
-_Referenced in [astral-sh/uv#13954](../../astral-sh/uv/pulls/13954.md) on 2025-06-10 20:58_
 
 ---
 

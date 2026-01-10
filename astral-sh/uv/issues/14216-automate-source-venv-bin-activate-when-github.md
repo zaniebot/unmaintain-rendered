@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-06-23T14:48:26Z
 updated_at: 2025-06-27T15:45:49Z
 url: https://github.com/astral-sh/uv/issues/14216
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Automate `source .venv/bin/activate` when github codesspaces starts
@@ -90,10 +90,6 @@ _Label `question` added by @oliverangelil on 2025-06-23 14:48_
 _Comment by @konstin on 2025-06-23 14:57_
 
 I'm not familiar with the details of codespaces, but activating a venv is setting `VIRTUAL_ENV`, adding the bin dir to `PATH` and (optionally) changing the shell prompt, so maybe the way the scripts are run interact badly with your shell, you may be able to fix this by applying the environment variable changes through a different devcontainer option.
-
----
-
-_Referenced in [Ishangoai/AIMS_course#85](../../Ishangoai/AIMS_course/issues/85.md) on 2025-06-23 15:13_
 
 ---
 

@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-10-01T16:25:16Z
 updated_at: 2025-08-08T18:19:35Z
 url: https://github.com/astral-sh/uv/issues/7848
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T03:32:44Z
 ```
 
 # Provide tk installation with libXft support in Python installations
@@ -103,10 +103,6 @@ Still not working
 _Comment by @zanieb on 2024-12-29 16:16_
 
 @learncodingforweb again, please open a new issue including a reproduction and output as described in #9452. It's bad form to hijack another issue.
-
----
-
-_Referenced in [astral-sh/python-build-standalone#740](../../astral-sh/python-build-standalone/issues/740.md) on 2025-08-08 18:18_
 
 ---
 

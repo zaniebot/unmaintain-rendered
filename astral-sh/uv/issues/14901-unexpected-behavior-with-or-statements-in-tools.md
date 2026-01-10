@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-07-25T17:57:05Z
 updated_at: 2025-07-30T15:12:23Z
 url: https://github.com/astral-sh/uv/issues/14901
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Unexpected behavior with OR statements in [tools.uv] environments
@@ -162,10 +162,6 @@ We're trying to control the assets (wheels) that get uploaded to our private rep
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2025-07-30 14:48_
-
----
-
-_Referenced in [astral-sh/uv#14976](../../astral-sh/uv/pulls/14976.md) on 2025-07-30 14:48_
 
 ---
 

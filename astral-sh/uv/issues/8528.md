@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-10-24T14:36:03Z
 updated_at: 2025-06-16T09:15:42Z
 url: https://github.com/astral-sh/uv/issues/8528
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-10T03:32:44Z
 ```
 
 # ``uv tool upgrade`` is not considered a failed update when it doesn't replace executable files in windows.
@@ -47,10 +47,6 @@ _Label `help wanted` added by @zanieb on 2024-10-24 16:05_
 ---
 
 _Label `uv tool` added by @zanieb on 2024-10-24 16:05_
-
----
-
-_Referenced in [astral-sh/uv#11134](../../astral-sh/uv/issues/11134.md) on 2025-01-31 16:22_
 
 ---
 
@@ -128,9 +124,5 @@ This issue is a bit old, so I'll go ahead and close it.
 ---
 
 _Closed by @FishAlchemist on 2025-06-16 09:15_
-
----
-
-_Referenced in [astral-sh/uv#14520](../../astral-sh/uv/issues/14520.md) on 2025-07-09 14:48_
 
 ---

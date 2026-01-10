@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-07-20T19:07:25Z
 updated_at: 2025-07-21T16:25:51Z
 url: https://github.com/astral-sh/uv/issues/14760
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # missing symlink in venv
@@ -94,10 +94,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2025-07-20 21:32_
 _Comment by @charliermarsh on 2025-07-20 21:32_
 
 Will take a look, thanks.
-
----
-
-_Referenced in [astral-sh/uv#14764](../../astral-sh/uv/pulls/14764.md) on 2025-07-20 21:53_
 
 ---
 

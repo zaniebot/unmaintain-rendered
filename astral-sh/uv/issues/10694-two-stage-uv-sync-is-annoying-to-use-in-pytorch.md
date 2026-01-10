@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-01-16T20:33:28Z
 updated_at: 2025-08-18T21:15:36Z
 url: https://github.com/astral-sh/uv/issues/10694
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Two-stage `uv sync` is annoying to use in pytorch projects
@@ -133,10 +133,6 @@ _Label `needs-design` added by @charliermarsh on 2025-01-17 05:10_
 
 ---
 
-_Referenced in [astral-sh/uv#11012](../../astral-sh/uv/issues/11012.md) on 2025-01-28 01:57_
-
----
-
 _Comment by @OldaKo on 2025-03-17 18:35_
 
 @charliermarsh I'd like to add another vote for this as the two-step method is directly blocking one of my use cases. 
@@ -161,10 +157,6 @@ Another related problem that came up recently is the following: Cython released 
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2025-08-16 15:52_
-
----
-
-_Referenced in [astral-sh/uv#15326](../../astral-sh/uv/pulls/15326.md) on 2025-08-16 15:52_
 
 ---
 

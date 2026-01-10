@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-08-15T10:18:02Z
 updated_at: 2025-08-15T22:00:56Z
 url: https://github.com/astral-sh/uv/issues/15301
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-10T03:32:46Z
 ```
 
 # Install non-build-isolation packages in a second phase
@@ -28,10 +28,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2025-08-15 10:18_
 ---
 
 _Label `enhancement` added by @charliermarsh on 2025-08-15 10:18_
-
----
-
-_Referenced in [astral-sh/uv#15306](../../astral-sh/uv/pulls/15306.md) on 2025-08-15 13:11_
 
 ---
 

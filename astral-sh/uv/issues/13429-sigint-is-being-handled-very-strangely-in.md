@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-05-13T11:15:38Z
 updated_at: 2025-06-23T15:23:03Z
 url: https://github.com/astral-sh/uv/issues/13429
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # SIGINT is being handled very strangely in interactive shell
@@ -125,10 +125,6 @@ _Label `question` added by @zanieb on 2025-05-13 12:17_
 ---
 
 _Closed by @zanieb on 2025-06-01 04:57_
-
----
-
-_Referenced in [astral-sh/uv#13919](../../astral-sh/uv/issues/13919.md) on 2025-06-09 15:23_
 
 ---
 

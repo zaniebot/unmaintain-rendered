@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-06-10T22:05:03Z
 updated_at: 2025-07-23T12:18:20Z
 url: https://github.com/astral-sh/uv/issues/13958
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Is the astraluv/uv image on Docker official or an imposter?
@@ -50,10 +50,6 @@ _Comment by @zanieb on 2025-06-11 00:56_
 We'll look into contacting them and DockerHub.
 
 It doesn't look malicious, but I would not recommend using it.
-
----
-
-_Referenced in [astral-sh/uv#14088](../../astral-sh/uv/pulls/14088.md) on 2025-06-17 01:25_
 
 ---
 

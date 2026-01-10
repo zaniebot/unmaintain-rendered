@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-09T18:57:23Z
 updated_at: 2025-06-11T12:07:06Z
 url: https://github.com/astral-sh/uv/issues/9744
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T03:32:44Z
 ```
 
 # uv add chromadb fails, error Compiling with an SDK that doesn't seem to exist /Applications/Xcode
@@ -143,17 +143,9 @@ _Closed by @bodadotsh on 2024-12-09 21:49_
 
 ---
 
-_Referenced in [astral-sh/python-build-standalone#414](../../astral-sh/python-build-standalone/pulls/414.md) on 2024-12-10 13:27_
-
----
-
 _Comment by @hhamud on 2025-01-08 23:46_
 
 if anyone had the same problem with hnswlib failing to build, just updating uv and reinstalling the python version that used it fixed it. 
-
----
-
-_Referenced in [GoogleCloudPlatform/agent-starter-pack#23](../../GoogleCloudPlatform/agent-starter-pack/pulls/23.md) on 2025-03-12 11:07_
 
 ---
 
@@ -176,9 +168,5 @@ After I removed `python3.13.1`, `uv` switched to system python, and it just work
 _Comment by @konstin on 2025-06-11 12:07_
 
 @aliraza108 @juliancoffee Please open a new issue with a minimal reproduction and the logs attached.
-
----
-
-_Referenced in [langflow-ai/langflow#8224](../../langflow-ai/langflow/issues/8224.md) on 2025-06-12 12:16_
 
 ---

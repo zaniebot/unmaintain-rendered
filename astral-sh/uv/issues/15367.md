@@ -9,7 +9,7 @@ assignees: []
 created_at: 2025-08-19T00:02:35Z
 updated_at: 2025-08-19T16:45:43Z
 url: https://github.com/astral-sh/uv/issues/15367
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-10T03:32:46Z
 ```
 
 # Extended Docker images for 0.8.12 are not published to DockerHub
@@ -26,10 +26,6 @@ We will resolve this issue in a subsequent release, but we probably won't backfi
 
 ---
 
-_Referenced in [astral-sh/uv#15365](../../astral-sh/uv/pulls/15365.md) on 2025-08-19 00:02_
-
----
-
 _Comment by @zanieb on 2025-08-19 13:36_
 
 The root cause here is that the BuildKit cache has some very weird behavior where it will store `docker.io` repositories and a subsequent attempt to push to a specific `docker.io` repository can be poisoned by the that cache and include the additional repositories.
@@ -37,10 +33,6 @@ The root cause here is that the BuildKit cache has some very weird behavior wher
 In this case, @samypr100 was testing the Docker release process and published to his own `docker.io` repository from the same Depot "project" (i.e., shared cache). Then, our release process attempted to publish both to our official repository and Sam's repository — the latter of which we do not have write permissions for. (This is certainly a simplified representation of what happened, we're digging deeper into the details of the BuildKit behavior here).
 
 The solution is to clear the cache and create distinct Depot projects for production and testing. These items have been actioned, so the next release should go out fine.
-
----
-
-_Referenced in [astral-sh/uv#15381](../../astral-sh/uv/pulls/15381.md) on 2025-08-19 13:39_
 
 ---
 

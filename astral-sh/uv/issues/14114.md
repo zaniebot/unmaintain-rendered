@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-06-17T18:05:27Z
 updated_at: 2025-06-26T17:27:07Z
 url: https://github.com/astral-sh/uv/issues/14114
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # `test lock::lock_unique_named_index` times out on Windows (has been running for over 60 seconds)
@@ -28,10 +28,6 @@ _Label `ci-flake` added by @Gankra on 2025-06-17 18:05_
 ---
 
 _Renamed from "`test lock::lock_unique_named_index has been running for over 60 seconds`" to "`test lock::lock_unique_named_index` times out on Windows (has been running for over 60 seconds)" by @zanieb on 2025-06-17 18:10_
-
----
-
-_Referenced in [astral-sh/uv#14158](../../astral-sh/uv/issues/14158.md) on 2025-06-20 20:08_
 
 ---
 

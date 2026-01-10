@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-22T04:05:37Z
 updated_at: 2025-06-13T12:11:08Z
 url: https://github.com/astral-sh/uv/issues/5279
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T03:32:44Z
 ```
 
 # Allow using `uv venv` with `--format=json`
@@ -57,10 +57,6 @@ _Label `enhancement` added by @charliermarsh on 2024-07-22 19:17_
 ---
 
 _Label `cli` added by @charliermarsh on 2024-07-22 19:17_
-
----
-
-_Referenced in [moreati/ansible-uv#2](../../moreati/ansible-uv/issues/2.md) on 2024-11-29 22:09_
 
 ---
 

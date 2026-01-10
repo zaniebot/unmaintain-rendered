@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-06-27T09:56:04Z
 updated_at: 2025-07-20T22:55:02Z
 url: https://github.com/astral-sh/uv/issues/14308
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Using `tool.uv.dependency-groups` with a `uv.toml`
@@ -131,14 +131,6 @@ Indeed then the support might not be there. I am fine with putting it in the `py
 ---
 
 _Assigned to @Gankra by @Gankra on 2025-06-27 17:34_
-
----
-
-_Referenced in [astral-sh/uv#14322](../../astral-sh/uv/pulls/14322.md) on 2025-06-27 18:26_
-
----
-
-_Referenced in [astral-sh/uv#14325](../../astral-sh/uv/pulls/14325.md) on 2025-06-27 19:01_
 
 ---
 

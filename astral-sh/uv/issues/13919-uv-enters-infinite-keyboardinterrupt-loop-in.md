@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-06-09T15:23:05Z
 updated_at: 2025-06-16T13:44:28Z
 url: https://github.com/astral-sh/uv/issues/13919
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # uv enters infinite `KeyboardInterrupt` loop in interactive shell
@@ -68,10 +68,6 @@ I'd definitely appreciate help understanding why this differs across Python vers
 
 ---
 
-_Referenced in [astral-sh/uv#13925](../../astral-sh/uv/pulls/13925.md) on 2025-06-09 16:47_
-
----
-
 _Comment by @oconnor663 on 2025-06-10 20:27_
 
 One of the culprits here is libedit. CPython uses GNU readline by default, but [our standalone builds substitude libedit on Linux](https://gregoryszorc.com/docs/python-build-standalone/20211017/quirks.html#use-of-libedit-on-linux). (You can reproduce this by building CPython from source with `./configure --with-readline=edit`.) Separately, Python 3.13 is [replacing the default REPL implementation](https://docs.python.org/3/whatsnew/3.13.html#a-better-interactive-interpreter), so you only get this behavior under 3.13 if you link it to libedit _and_ set `PYTHON_BASIC_REPL=1`.
@@ -114,10 +110,6 @@ What _should_ we be doing here? I'm not sure I fully understand all the end user
 
 ---
 
-_Referenced in [astral-sh/python-build-standalone#652](../../astral-sh/python-build-standalone/pulls/652.md) on 2025-06-11 03:09_
-
----
-
 _Closed by @zanieb on 2025-06-11 13:28_
 
 ---
@@ -130,16 +122,8 @@ Thank you again!
 
 ---
 
-_Referenced in [astral-sh/uv#13983](../../astral-sh/uv/issues/13983.md) on 2025-06-12 13:42_
-
----
-
 _Comment by @piehld on 2025-06-16 13:44_
 
 Just confirmed—I upgraded to `uv 0.7.13 (Homebrew 2025-06-12)`, and the `Ctrl` + `c` keyboard interrupt works as expected now. Thank you again for the immediate fix!
-
----
-
-_Referenced in [astral-sh/uv#13429](../../astral-sh/uv/issues/13429.md) on 2025-06-23 15:22_
 
 ---

@@ -12,7 +12,7 @@ assignees: []
 created_at: 2025-06-29T12:52:09Z
 updated_at: 2025-08-21T12:46:29Z
 url: https://github.com/astral-sh/uv/issues/14345
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # uv fails to install package with filenames containing commas
@@ -63,10 +63,6 @@ Linux 6.11.9-100.fc39.x86_64 x86_64 GNU/Linux
 ---
 
 _Label `bug` added by @danielhollas on 2025-06-29 12:52_
-
----
-
-_Referenced in [aiidalab/aiidalab-qe-vibroscopy#147](../../aiidalab/aiidalab-qe-vibroscopy/issues/147.md) on 2025-06-29 12:56_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-30T07:05:48Z
 updated_at: 2025-07-01T01:26:17Z
 url: https://github.com/astral-sh/uv/issues/7805
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T03:32:44Z
 ```
 
 # no error on `uv sync --upgrade-package` when specifying a package that isn't included in the project's dependencies
@@ -71,10 +71,6 @@ _Comment by @qiuxiaomu on 2025-05-16 13:05_
 I would also like to raise that when we do `uv sync --upgrade` or `uv lock --upgrade`, the upgrade is silently done and no message is present to user to signal which packages are (not) upgraded. I thought that the command didn't work but when I check the `uv.lock` I read that the packages were upgraded (checking them one by one could also be troublesome). 
 
 
-
----
-
-_Referenced in [astral-sh/uv#14370](../../astral-sh/uv/issues/14370.md) on 2025-06-30 23:41_
 
 ---
 

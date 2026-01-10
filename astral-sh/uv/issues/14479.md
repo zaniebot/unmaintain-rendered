@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-07-07T07:50:26Z
 updated_at: 2025-07-16T16:02:30Z
 url: https://github.com/astral-sh/uv/issues/14479
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # How to reinstall a broken package? (`--reinstall` and similar have no effect)
@@ -170,10 +170,6 @@ An example would be if you're working in a virtual environment in which pip inst
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2025-07-16 13:56_
-
----
-
-_Referenced in [astral-sh/uv#14659](../../astral-sh/uv/pulls/14659.md) on 2025-07-16 14:40_
 
 ---
 

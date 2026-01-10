@@ -12,7 +12,7 @@ assignees: []
 created_at: 2025-06-09T16:58:55Z
 updated_at: 2025-06-12T19:42:11Z
 url: https://github.com/astral-sh/uv/issues/13927
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Filter Python executables on Windows by Python version metadata
@@ -47,16 +47,8 @@ I don't know if we want to add that as a dependency, but the `object` crate (whi
 
 ---
 
-_Referenced in [astral-sh/uv#13948](../../astral-sh/uv/pulls/13948.md) on 2025-06-10 13:24_
-
----
-
 _Comment by @zanieb on 2025-06-12 19:42_
 
 I took a shot at this in https://github.com/astral-sh/uv/pull/13948 but ran into problems and don't have a Windows setup to debug easily.
-
----
-
-_Referenced in [astral-sh/uv#15479](../../astral-sh/uv/pulls/15479.md) on 2025-08-24 11:59_
 
 ---

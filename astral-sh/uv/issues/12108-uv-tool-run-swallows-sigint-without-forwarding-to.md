@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-03-11T01:27:18Z
 updated_at: 2025-06-11T13:28:36Z
 url: https://github.com/astral-sh/uv/issues/12108
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # "uv tool run" swallows SIGINT without forwarding to the underlying process
@@ -288,26 +288,6 @@ It's hard to say what we could do to improve this here, since there is an expect
 
 ---
 
-_Referenced in [marimo-team/marimo#4224](../../marimo-team/marimo/issues/4224.md) on 2025-03-23 22:51_
-
----
-
-_Referenced in [astral-sh/uv#12658](../../astral-sh/uv/issues/12658.md) on 2025-04-03 19:10_
-
----
-
-_Referenced in [astral-sh/uv#12830](../../astral-sh/uv/issues/12830.md) on 2025-04-11 09:18_
-
----
-
-_Referenced in [astral-sh/uv#13018](../../astral-sh/uv/pulls/13018.md) on 2025-04-21 16:02_
-
----
-
-_Referenced in [astral-sh/uv#13429](../../astral-sh/uv/issues/13429.md) on 2025-05-13 12:17_
-
----
-
 _Comment by @djcopley on 2025-05-22 18:02_
 
 @zanieb I'm also running into issues with the current behavior. I'm building an interactive CLI that I'd like to run using uv run during development, but the way SIGINT is handled is causing problems.
@@ -420,10 +400,6 @@ See: https://en.wikipedia.org/wiki/Process_group
 
 ---
 
-_Referenced in [astral-sh/uv#13756](../../astral-sh/uv/issues/13756.md) on 2025-06-01 04:58_
-
----
-
 _Comment by @zanieb on 2025-06-02 18:24_
 
 Thanks for the commentary!
@@ -442,18 +418,6 @@ I agree programmatic kills should send a SIGINT to the whole group. However, thi
 
 We actually aren't getting complaints about the process group behavior, are you having real problems with that?
 
-
----
-
-_Referenced in [astral-sh/uv#13787](../../astral-sh/uv/pulls/13787.md) on 2025-06-02 18:40_
-
----
-
-_Referenced in [astral-sh/uv#13919](../../astral-sh/uv/issues/13919.md) on 2025-06-09 15:23_
-
----
-
-_Referenced in [astral-sh/uv#13925](../../astral-sh/uv/pulls/13925.md) on 2025-06-09 16:51_
 
 ---
 

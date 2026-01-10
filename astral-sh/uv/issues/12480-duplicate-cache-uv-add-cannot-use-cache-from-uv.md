@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-03-26T10:13:39Z
 updated_at: 2025-06-12T13:56:42Z
 url: https://github.com/astral-sh/uv/issues/12480
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # duplicate cache: uv add cannot use cache from uv pip install
@@ -163,10 +163,6 @@ Can I expect uv to use identical cache for same version? Because duplicated torc
 _Comment by @zanieb on 2025-06-12 13:40_
 
 Packages on different registries are separated in the cache, since they're different sources.
-
----
-
-_Referenced in [astral-sh/uv#13995](../../astral-sh/uv/issues/13995.md) on 2025-06-12 13:56_
 
 ---
 

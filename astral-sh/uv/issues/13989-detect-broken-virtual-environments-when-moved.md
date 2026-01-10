@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-06-12T13:21:36Z
 updated_at: 2025-06-12T13:38:38Z
 url: https://github.com/astral-sh/uv/issues/13989
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Detect broken virtual environments when moved
@@ -39,26 +39,6 @@ We should close that out when this is done too.
 
 ---
 
-_Referenced in [astral-sh/uv#13992](../../astral-sh/uv/issues/13992.md) on 2025-06-12 13:33_
-
----
-
-_Referenced in [astral-sh/uv#13994](../../astral-sh/uv/issues/13994.md) on 2025-06-12 13:38_
-
----
-
 _Label `enhancement` added by @zanieb on 2025-06-12 13:38_
-
----
-
-_Referenced in [astral-sh/uv#13196](../../astral-sh/uv/issues/13196.md) on 2025-06-12 15:13_
-
----
-
-_Referenced in [astral-sh/uv#12363](../../astral-sh/uv/issues/12363.md) on 2025-06-26 17:24_
-
----
-
-_Referenced in [astral-sh/uv#11454](../../astral-sh/uv/issues/11454.md) on 2025-08-19 11:53_
 
 ---

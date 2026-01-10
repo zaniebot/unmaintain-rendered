@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-04T12:21:48Z
 updated_at: 2025-06-26T16:29:31Z
 url: https://github.com/astral-sh/uv/issues/2152
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-10T03:32:43Z
 ```
 
 # Running `uv pip install 'cryptography @ .'` repeatedly doesn't rebuild, even when there are source changes
@@ -204,10 +204,6 @@ I agree.
 
 ---
 
-_Referenced in [astral-sh/uv#2481](../../astral-sh/uv/issues/2481.md) on 2024-03-17 21:28_
-
----
-
 _Label `bug` removed by @charliermarsh on 2024-06-04 20:36_
 
 ---
@@ -285,10 +281,6 @@ See: https://docs.astral.sh/uv/concepts/cache/#dynamic-metadata.
 
 I don't think this will solve the extension module use-case described here, but it is helpful for things like `setuptools_scm`.
 
-
----
-
-_Referenced in [astral-sh/uv#7246](../../astral-sh/uv/issues/7246.md) on 2024-09-10 08:16_
 
 ---
 

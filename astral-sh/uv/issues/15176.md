@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-08-08T21:16:35Z
 updated_at: 2025-08-08T23:45:15Z
 url: https://github.com/astral-sh/uv/issues/15176
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-10T03:32:46Z
 ```
 
 # new uv release has a keyword argument error  on python 3.9
@@ -68,28 +68,12 @@ likely blamerev https://github.com/astral-sh/uv/commit/8968d783de58b0c475f65433f
 
 ---
 
-_Referenced in [tox-dev/pre-commit-uv#70](../../tox-dev/pre-commit-uv/issues/70.md) on 2025-08-08 21:57_
-
----
-
-_Referenced in [meltano/meltano#9435](../../meltano/meltano/pulls/9435.md) on 2025-08-08 22:57_
-
----
-
 _Comment by @zanieb on 2025-08-08 23:36_
 
 Thanks!
 
 ---
 
-_Referenced in [astral-sh/uv#15181](../../astral-sh/uv/pulls/15181.md) on 2025-08-08 23:36_
-
----
-
 _Closed by @zanieb on 2025-08-08 23:45_
-
----
-
-_Referenced in [astral-sh/uv#15183](../../astral-sh/uv/pulls/15183.md) on 2025-08-08 23:50_
 
 ---

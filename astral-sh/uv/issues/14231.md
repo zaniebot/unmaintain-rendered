@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-06-24T08:31:17Z
 updated_at: 2025-07-01T15:48:49Z
 url: https://github.com/astral-sh/uv/issues/14231
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # error: No solution found when resolving dependencies for split
@@ -142,10 +142,6 @@ dependencies = [
 ```
 
 I'm not maintainer of these deps. So Im guessing there is no workaround then.
-
----
-
-_Referenced in [astral-sh/uv#14271](../../astral-sh/uv/pulls/14271.md) on 2025-06-30 09:09_
 
 ---
 

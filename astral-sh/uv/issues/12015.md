@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-06T18:20:55Z
 updated_at: 2025-07-17T22:20:27Z
 url: https://github.com/astral-sh/uv/issues/12015
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Treat path sources as `package = true` by default
@@ -32,10 +32,6 @@ _Label `breaking` added by @charliermarsh on 2025-03-06 18:21_
 ---
 
 _Added to milestone `v0.7.0` by @charliermarsh on 2025-03-06 18:21_
-
----
-
-_Referenced in [astral-sh/uv#11351](../../astral-sh/uv/issues/11351.md) on 2025-04-16 09:02_
 
 ---
 
@@ -70,14 +66,6 @@ _Assigned to @jtfmumm by @jtfmumm on 2025-06-12 19:46_
 ---
 
 _Label `needs-design` removed by @jtfmumm on 2025-07-02 09:25_
-
----
-
-_Referenced in [astral-sh/uv#14413](../../astral-sh/uv/pulls/14413.md) on 2025-07-02 09:28_
-
----
-
-_Referenced in [astral-sh/uv#14608](../../astral-sh/uv/issues/14608.md) on 2025-07-14 15:34_
 
 ---
 

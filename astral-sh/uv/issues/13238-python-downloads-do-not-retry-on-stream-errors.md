@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-30T17:16:31Z
 updated_at: 2025-07-11T02:16:26Z
 url: https://github.com/astral-sh/uv/issues/13238
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Python downloads do not retry on stream errors
@@ -49,10 +49,6 @@ _Label `bug` added by @zanieb on 2025-04-30 17:18_
 _Comment by @zanieb on 2025-04-30 17:18_
 
 cc @konstin and @Gankra can ya'll look into this?
-
----
-
-_Referenced in [astral-sh/uv#13260](../../astral-sh/uv/pulls/13260.md) on 2025-05-02 09:09_
 
 ---
 

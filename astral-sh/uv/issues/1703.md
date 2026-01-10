@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-19T16:20:06Z
 updated_at: 2025-07-23T14:26:50Z
 url: https://github.com/astral-sh/uv/issues/1703
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T03:32:43Z
 ```
 
 # Add support for managing Conda environments and packages
@@ -44,10 +44,6 @@ _Comment by @matterhorn103 on 2024-02-19 19:02_
 Ok, thanks. I understand, but still a pity. A single Python management tool for both camps would be nice one day.
 
 Hopefully the collaboration between you and the pixi team continues and they become complementary tools following the same standards :)
-
----
-
-_Referenced in [astral-sh/uv#1724](../../astral-sh/uv/issues/1724.md) on 2024-02-20 01:26_
 
 ---
 
@@ -120,18 +116,6 @@ _Comment by @matterhorn103 on 2024-09-10 13:38_
 > I think it's okay to support if it works, but I'm not sure how well it will translate since Conda has, for example, different names for some packages. We can't actually perform a resolution with Conda.
 
 It has felt to me for a while that the unknown correspondence between PyPI and Conda packages is the biggest thing keeping the ecosystems separate. When looking into the topic many months ago I came across Grayskull, [this thread discussing the exact problem](https://github.com/conda/grayskull/issues/168), and [this bot-generated mapping effort](https://github.com/regro/cf-graph-countyfair/blob/master/mappings/pypi/grayskull_pypi_mapping.yaml). By no means exhaustive, but I imagine some mapping like that would be a necessary starting point for Conda/PyPI interop, so figured I'd leave the links here.
-
----
-
-_Referenced in [DeiC-HPC/cotainr#55](../../DeiC-HPC/cotainr/pulls/55.md) on 2024-10-07 11:17_
-
----
-
-_Referenced in [UCL-ARC/python-tooling#415](../../UCL-ARC/python-tooling/issues/415.md) on 2024-11-01 12:46_
-
----
-
-_Referenced in [astral-sh/rye#712](../../astral-sh/rye/issues/712.md) on 2024-11-17 02:53_
 
 ---
 
@@ -281,26 +265,6 @@ _Comment by @zanieb on 2024-11-22 15:57_
 
 ---
 
-_Referenced in [nextgis/pygdal#91](../../nextgis/pygdal/issues/91.md) on 2024-11-22 15:57_
-
----
-
-_Referenced in [jupyter/docker-stacks#2175](../../jupyter/docker-stacks/issues/2175.md) on 2024-11-25 21:50_
-
----
-
-_Referenced in [astral-sh/uv#9433](../../astral-sh/uv/issues/9433.md) on 2024-11-26 03:30_
-
----
-
-_Referenced in [zanieb/uv#6](../../zanieb/uv/issues/6.md) on 2024-11-26 17:33_
-
----
-
-_Referenced in [astral-sh/uv#9452](../../astral-sh/uv/issues/9452.md) on 2024-11-26 21:15_
-
----
-
 _Renamed from "conda environment management" to "Add support for managing Conda environments and packages" by @zanieb on 2024-11-26 23:58_
 
 ---
@@ -356,14 +320,6 @@ _Comment by @fepegar on 2024-12-15 23:05_
 
 ---
 
-_Referenced in [astral-sh/uv#9930](../../astral-sh/uv/issues/9930.md) on 2024-12-16 10:14_
-
----
-
-_Referenced in [scipy/scipy.org#595](../../scipy/scipy.org/pulls/595.md) on 2024-12-16 18:30_
-
----
-
 _Comment by @tupui on 2024-12-16 18:35_
 
 Adding my upvote here. We are adding some recommendations to uv in SciPy's doc but we also need to still recommend things like pixi until we have a solution for Conda.
@@ -377,10 +333,6 @@ _Comment by @zanieb on 2024-12-16 18:52_
 @tupui Happy to review those SciPy changes, if you want to ping me.
 
 I don't think support for non-Python dependencies is around the corner though :)
-
----
-
-_Referenced in [sagemath/sage#39060](../../sagemath/sage/pulls/39060.md) on 2024-12-29 14:37_
 
 ---
 
@@ -474,10 +426,6 @@ _Comment by @charliermarsh on 2025-01-27 01:06_
 
 Let's try to keep the conversation on-topic -- this doesn't seem relevant to uv.
 
-
----
-
-_Referenced in [astral-sh/uv#11466](../../astral-sh/uv/issues/11466.md) on 2025-02-12 23:44_
 
 ---
 
@@ -588,14 +536,6 @@ Pixi has decided that for them, supporting two formats is worth it. I'm glad the
 
 ---
 
-_Referenced in [astral-sh/uv#12363](../../astral-sh/uv/issues/12363.md) on 2025-03-21 12:35_
-
----
-
-_Referenced in [astral-sh/uv#12740](../../astral-sh/uv/issues/12740.md) on 2025-04-08 09:13_
-
----
-
 _Comment by @DOSull on 2025-04-17 11:28_
 
 Definitely would like to see this - both support for the not-pure-python packages of conda (which sounds hard), but more straightforwardly (I would think) the option to put virtual environments in some central location, like `/opt/uv/lib/...` or `~/.uv/envs` or somesuch with an associated ability to run `uv activate <environment-name>` from anywhere.
@@ -638,29 +578,9 @@ _Comment by @zanieb on 2025-04-21 23:50_
 
 ---
 
-_Referenced in [PyPSA/pypsa-eur#1660](../../PyPSA/pypsa-eur/pulls/1660.md) on 2025-04-30 11:34_
-
----
-
-_Referenced in [conda/conda#10633](../../conda/conda/issues/10633.md) on 2025-05-06 12:55_
-
----
-
 _Comment by @ubaldot on 2025-05-06 17:47_
 
 FWIW: conda is an agnostic package manager (you can e.g. install gcc, pandoc, etc.) not only for python packages. And you can install them in separate environments. Plus it really checks dependencies conflicts. Plus it aggressively check SSL stuff. I like to think it as a "light docker". 
-
----
-
-_Referenced in [microsoft/LightGBM#6901](../../microsoft/LightGBM/pulls/6901.md) on 2025-05-06 20:33_
-
----
-
-_Referenced in [XRD-Group/End-To-End-ML-pipeline-for-profiling-insurance-customers#8](../../XRD-Group/End-To-End-ML-pipeline-for-profiling-insurance-customers/issues/8.md) on 2025-05-13 13:18_
-
----
-
-_Referenced in [dangtr0408/StyleTTS2-lite#8](../../dangtr0408/StyleTTS2-lite/pulls/8.md) on 2025-05-21 23:57_
 
 ---
 
@@ -675,17 +595,5 @@ _Comment by @matterhorn103 on 2025-07-23 14:26_
 [This thread](https://github.com/conda/grayskull/issues/564) on the grayskull repo is interesting with regards to this aspect of things.
 
 Somehow I missed at the time of that comment that the Pixi team have been maintaining their own PyPI => `conda-forge` mapping using their [`parselmouth`](https://github.com/prefix-dev/parselmouth) tool. At the moment it seems to be only in that direction, with [work on the inverse](https://github.com/prefix-dev/parselmouth/pull/33) in progress but apparently stalled. It seems that [they'd like `parselmouth` to have it](https://github.com/conda/grayskull/issues/564#issuecomment-2436849218), though, and for it to be a library/reference useable by the whole ecosystem.
-
----
-
-_Referenced in [astral-sh/uv#14889](../../astral-sh/uv/issues/14889.md) on 2025-07-25 10:49_
-
----
-
-_Referenced in [astral-sh/uv#15783](../../astral-sh/uv/issues/15783.md) on 2025-09-11 07:41_
-
----
-
-_Referenced in [astral-sh/uv#16373](../../astral-sh/uv/issues/16373.md) on 2025-10-20 11:56_
 
 ---

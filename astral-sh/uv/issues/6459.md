@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-22T19:13:28Z
 updated_at: 2025-08-17T00:32:13Z
 url: https://github.com/astral-sh/uv/issues/6459
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T03:32:44Z
 ```
 
 # Run `uv sync` without creating venv (similar to poetry config) (I believe `uv pip` has functionality like that)
@@ -55,10 +55,6 @@ _Renamed from "Run uv sync without creating venv (similar to poetry config) (I b
 _Comment by @charliermarsh on 2024-08-22 19:26_
 
 Not yet but we're likely to support it soon.
-
----
-
-_Referenced in [astral-sh/uv#5229](../../astral-sh/uv/issues/5229.md) on 2024-08-22 19:53_
 
 ---
 
@@ -157,10 +153,6 @@ _Comment by @dpnova on 2024-11-14 09:12_
 A use case here is we're deploying to AWS lambda using their container feature. Installing things outside the system folder is a pain... 
 
 I'm thinking `sync` is not for us and we should use export to get a requirements file to install.
-
----
-
-_Referenced in [keboola/component-generic#4](../../keboola/component-generic/pulls/4.md) on 2025-05-06 15:12_
 
 ---
 

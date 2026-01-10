@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-10T14:13:48Z
 updated_at: 2025-07-02T15:17:05Z
 url: https://github.com/astral-sh/uv/issues/11385
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Write `--no-cache`'s temporary cache into venv not /tmp to allow use of hardlinks in more cases
@@ -124,10 +124,6 @@ _Comment by @rahulnht on 2025-02-13 09:08_
 Another usecase, where having cache defaultdir in venv is useful, is while running uv inside docker (with non-root privileges). /var (or other temp) directories are not r/w by default with standard user, and to avoid privilege escalation just for creating a cache, we're currently setting  `UV_CACHE_DIR=./.cache` as a workaround.
 
 Would be nice to have this in the same space as venv to avoid such workarounds
-
----
-
-_Referenced in [astral-sh/uv#11477](../../astral-sh/uv/pulls/11477.md) on 2025-02-13 12:45_
 
 ---
 

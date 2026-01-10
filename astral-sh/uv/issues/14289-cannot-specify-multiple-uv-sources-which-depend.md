@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-06-26T18:05:52Z
 updated_at: 2025-06-26T19:14:51Z
 url: https://github.com/astral-sh/uv/issues/14289
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Cannot specify multiple uv.sources which depend on platform markers
@@ -90,9 +90,5 @@ Cool I hadn't seen that feature. So if I understand correctly, this treats my wh
 How would I structure my pyproject to inform uv to prefer the whl/ index first, the pytorch-stable-cu128 repository 2nd, and finally PyPi as the default fallback? I think I'm still stuck on needing multiple source targets by platform markers.
 
 I suppose I could just copy wheels from pytorch-stable-cu128 and just stick to whl/ + PyPi only.
-
----
-
-_Referenced in [astral-sh/uv#16156](../../astral-sh/uv/issues/16156.md) on 2025-10-07 16:30_
 
 ---

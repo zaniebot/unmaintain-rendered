@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-07-18T09:37:45Z
 updated_at: 2025-07-18T11:37:07Z
 url: https://github.com/astral-sh/uv/issues/14707
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # uv version --bump should support python version numbers convention
@@ -41,10 +41,6 @@ For more information, try '--help'.
 ---
 
 _Label `enhancement` added by @leandrodamascena on 2025-07-18 09:37_
-
----
-
-_Referenced in [aws-powertools/powertools-lambda-python#5624](../../aws-powertools/powertools-lambda-python/issues/5624.md) on 2025-07-18 09:54_
 
 ---
 

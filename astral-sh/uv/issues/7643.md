@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-23T16:07:01Z
 updated_at: 2025-07-14T17:18:50Z
 url: https://github.com/astral-sh/uv/issues/7643
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T03:32:44Z
 ```
 
 # `uv run --with` should not allow modifications to the `--with` environment
@@ -40,10 +40,6 @@ I have a PR that "fixes" this by using a third empty env, but it doesn't fix Jup
 ---
 
 _Unassigned @charliermarsh by @charliermarsh on 2024-09-26 17:06_
-
----
-
-_Referenced in [astral-sh/uv#14447](../../astral-sh/uv/pulls/14447.md) on 2025-07-03 19:36_
 
 ---
 

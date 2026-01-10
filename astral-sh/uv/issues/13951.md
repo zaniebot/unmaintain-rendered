@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-06-10T15:58:07Z
 updated_at: 2025-06-26T21:51:05Z
 url: https://github.com/astral-sh/uv/issues/13951
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # `uv lock` empties lockfile when upgrading python
@@ -179,10 +179,6 @@ Specifically, this would return `Versions`, which means we should try to respect
 The problem is that at validation time, `requires-python` corresponds to what I believe is in the lock file. However, when we go to re-generate the lock file, `requires-python` is the new value from `pyproject.toml`. So validation is in effect making a decision based on old information. I think.
 
 I'm not 100% on the fix here. I think perhaps validation should incorporate the _new_ `requires-python` value? If so, then it's just a matter of doing that and moving the check above the `--upgrade-package` checks. Indeed, if `Versions` is returned here, then this problem goes away.
-
----
-
-_Referenced in [astral-sh/uv#14076](../../astral-sh/uv/pulls/14076.md) on 2025-06-16 14:50_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-05-04T23:33:11Z
 updated_at: 2025-06-10T20:50:36Z
 url: https://github.com/astral-sh/uv/issues/13288
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # uv installing for incorrect architecture (raspberry pi)
@@ -510,10 +510,6 @@ _Reopened by @geofft on 2025-06-09 21:49_
 _Comment by @geofft on 2025-06-09 21:50_
 
 There's a [question on Discord](https://discord.com/channels/1039017663004942429/1381692679439519846) from someone who is _intentionally_ running a 32-bit userspace, and ideally it would be good to have this work.
-
----
-
-_Referenced in [astral-sh/uv#13935](../../astral-sh/uv/issues/13935.md) on 2025-06-09 21:53_
 
 ---
 

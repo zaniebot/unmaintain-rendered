@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-08-08T18:53:32Z
 updated_at: 2025-08-11T21:15:53Z
 url: https://github.com/astral-sh/uv/issues/15172
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-10T03:32:46Z
 ```
 
 # Filter dates in `python_install` snapshots
@@ -31,10 +31,6 @@ _Label `good first issue` added by @zanieb on 2025-08-08 18:53_
 ---
 
 _Label `testing` added by @zanieb on 2025-08-08 18:53_
-
----
-
-_Referenced in [astral-sh/uv#15204](../../astral-sh/uv/pulls/15204.md) on 2025-08-10 17:02_
 
 ---
 

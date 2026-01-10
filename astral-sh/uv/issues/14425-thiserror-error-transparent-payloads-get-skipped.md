@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-07-02T16:53:15Z
 updated_at: 2025-08-02T15:32:34Z
 url: https://github.com/astral-sh/uv/issues/14425
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # thiserror `#[error(transparent)]` payloads get skipped in the source chain
@@ -57,10 +57,6 @@ I have an example of what a `reqwest` error (wrapped in a tar error) looks like 
 
 ---
 
-_Referenced in [astral-sh/uv#14378](../../astral-sh/uv/pulls/14378.md) on 2025-07-03 22:12_
-
----
-
 _Comment by @oconnor663 on 2025-07-03 22:13_
 
 https://github.com/astral-sh/uv/actions/runs/16060816582/job/45326189810 includes the added logging from https://github.com/astral-sh/uv/pull/14378 but does not indicate that it retried. Does that make it the smoking gun for this issue?
@@ -70,10 +66,6 @@ https://github.com/astral-sh/uv/actions/runs/16060816582/job/45326189810 include
 _Comment by @charliermarsh on 2025-07-03 23:18_
 
 I'm going to get rid of the transparent variants in `uv-extract`, let's start there.
-
----
-
-_Referenced in [astral-sh/uv#14450](../../astral-sh/uv/pulls/14450.md) on 2025-07-03 23:23_
 
 ---
 
@@ -118,10 +110,6 @@ error: Failed to install cpython-3.14.0b3-linux-x86_64-gnu
   Caused by: request or response body error
   Caused by: operation timed out
 ```
-
----
-
-_Referenced in [astral-sh/uv#14458](../../astral-sh/uv/pulls/14458.md) on 2025-07-04 09:26_
 
 ---
 

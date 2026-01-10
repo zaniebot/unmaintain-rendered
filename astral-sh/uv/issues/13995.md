@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-06-12T13:56:26Z
 updated_at: 2025-06-12T14:34:40Z
 url: https://github.com/astral-sh/uv/issues/13995
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Store distributions in cache with content addressed keys
@@ -25,18 +25,6 @@ Since it's just a file, we can trivially hash them — we'll want to be careful 
 
 ---
 
-_Referenced in [astral-sh/uv#12480](../../astral-sh/uv/issues/12480.md) on 2025-06-12 13:56_
-
----
-
 _Label `enhancement` added by @konstin on 2025-06-12 14:34_
-
----
-
-_Referenced in [astral-sh/uv#14534](../../astral-sh/uv/issues/14534.md) on 2025-07-14 01:17_
-
----
-
-_Referenced in [astral-sh/uv#16816](../../astral-sh/uv/pulls/16816.md) on 2025-11-22 03:05_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-08-08T03:59:43Z
 updated_at: 2025-08-08T11:26:19Z
 url: https://github.com/astral-sh/uv/issues/15158
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-10T03:32:46Z
 ```
 
 # New extract::malo_* zip extraction tests require network access
@@ -214,10 +214,6 @@ We could add another feature for it. I didn't really want to check these into th
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2025-08-08 09:18_
-
----
-
-_Referenced in [astral-sh/uv#15160](../../astral-sh/uv/pulls/15160.md) on 2025-08-08 09:30_
 
 ---
 

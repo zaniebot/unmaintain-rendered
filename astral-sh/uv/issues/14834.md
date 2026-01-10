@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-07-22T23:13:40Z
 updated_at: 2025-07-23T00:44:02Z
 url: https://github.com/astral-sh/uv/issues/14834
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Regression in v0.8.1 - UV_CACHE_DIR causes build error with hatchling
@@ -269,13 +269,5 @@ So UV is actually doing us a favor! Excellent! Closing this issue. Thanks again.
 ---
 
 _Closed by @chipselden on 2025-07-23 00:44_
-
----
-
-_Referenced in [astral-sh/uv#14897](../../astral-sh/uv/issues/14897.md) on 2025-07-25 18:13_
-
----
-
-_Referenced in [astral-sh/uv#15096](../../astral-sh/uv/issues/15096.md) on 2025-08-06 00:17_
 
 ---

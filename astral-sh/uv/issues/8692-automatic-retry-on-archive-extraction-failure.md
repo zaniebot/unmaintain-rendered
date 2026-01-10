@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-30T08:23:44Z
 updated_at: 2025-07-03T18:30:15Z
 url: https://github.com/astral-sh/uv/issues/8692
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T03:32:44Z
 ```
 
 # Automatic Retry on Archive Extraction Failure ("unexpected BufError")
@@ -69,10 +69,6 @@ _Closed by @charliermarsh on 2025-03-03 03:19_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2025-03-03 03:19_
-
----
-
-_Referenced in [delta-io/delta-rs#3146](../../delta-io/delta-rs/pulls/3146.md) on 2025-03-11 07:12_
 
 ---
 
@@ -209,10 +205,6 @@ This looks like an actual bug in either the archive or more likely one of our de
 _Comment by @omkar-foss on 2025-03-11 13:16_
 
 Yeah I checked this, looks a source archive corruption, as PyPI is facing a file corruption incident in the last few hours today: https://status.python.org/incidents/2zf08fkp0nd1
-
----
-
-_Referenced in [astral-sh/uv#12114](../../astral-sh/uv/issues/12114.md) on 2025-03-11 13:40_
 
 ---
 

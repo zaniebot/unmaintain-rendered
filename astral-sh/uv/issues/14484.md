@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-07-07T11:52:15Z
 updated_at: 2025-07-17T09:27:16Z
 url: https://github.com/astral-sh/uv/issues/14484
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Python version is ignored if dependency bounds are not specified
@@ -163,10 +163,6 @@ I can open a new issue for that. Feels kind of similar to [this one](https://git
 _Comment by @charliermarsh on 2025-07-07 14:41_
 
 I'd suggest adding a constraint somewhere. This is likely just the resolver choosing a certain outcome that isn't incorrect, but also isn't what you want, so you can provide more information to guide it. (We don't respect upper-bounds on `requires-python`.)
-
----
-
-_Referenced in [SpikeInterface/spikeinterface#4046](../../SpikeInterface/spikeinterface/pulls/4046.md) on 2025-07-09 12:57_
 
 ---
 

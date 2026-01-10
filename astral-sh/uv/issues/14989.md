@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-07-31T09:42:42Z
 updated_at: 2025-07-31T21:00:03Z
 url: https://github.com/astral-sh/uv/issues/14989
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-10T03:32:46Z
 ```
 
 # Failed to fetch pypi package when using private indexes when the package isn't found on the private indexer (404)
@@ -629,10 +629,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2025-07-31 14:29_
 ---
 
 _Label `needs-mre` removed by @charliermarsh on 2025-07-31 14:29_
-
----
-
-_Referenced in [astral-sh/uv#14996](../../astral-sh/uv/pulls/14996.md) on 2025-07-31 14:54_
 
 ---
 

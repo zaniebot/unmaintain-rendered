@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-23T03:48:00Z
 updated_at: 2025-06-15T12:27:42Z
 url: https://github.com/astral-sh/uv/issues/6489
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T03:32:44Z
 ```
 
 # Scripts that use "from future" can result in syntax error when used with uvx
@@ -197,19 +197,7 @@ But yes, this train of thought is entirely predicated on decreasing the range of
 
 ---
 
-_Referenced in [astral-sh/uv#6713](../../astral-sh/uv/issues/6713.md) on 2024-08-27 19:06_
-
----
-
 _Label `help wanted` removed by @charliermarsh on 2024-09-04 20:15_
-
----
-
-_Referenced in [astral-sh/uv#6970](../../astral-sh/uv/issues/6970.md) on 2024-10-03 10:58_
-
----
-
-_Referenced in [bottlepy/bottle#1486](../../bottlepy/bottle/issues/1486.md) on 2025-06-15 10:11_
 
 ---
 

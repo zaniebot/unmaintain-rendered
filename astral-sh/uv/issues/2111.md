@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-01T14:03:01Z
 updated_at: 2025-07-09T21:36:26Z
 url: https://github.com/astral-sh/uv/issues/2111
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T03:32:43Z
 ```
 
 # Feature request: show available package versions (equivalent of `pip index versions`)
@@ -74,10 +74,6 @@ Compared to pip "uv pip" have changed the semantics of extra-index-url, so it is
 Btw, I just started using uv. The speed, the "extra-index-url"  and tools handling are utterly amazing. Thanks!
 
 
-
----
-
-_Referenced in [astral-sh/uv#9008](../../astral-sh/uv/issues/9008.md) on 2024-11-14 02:05_
 
 ---
 
@@ -197,9 +193,5 @@ With `--depth 1`, only the project dependencies specified in `pyproject.toml` fi
 _Comment by @kwaegel on 2025-07-09 21:36_
 
 For what it's worth, I've been using `pip index versions <private-package>` to check if authentication credentials for a private repo are valid. It's a slight abuse of the command, but useful.
-
----
-
-_Referenced in [devonfw/IDEasy#39](../../devonfw/IDEasy/issues/39.md) on 2025-12-01 12:21_
 
 ---

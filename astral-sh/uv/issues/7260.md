@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-10T17:00:33Z
 updated_at: 2025-08-18T13:52:35Z
 url: https://github.com/astral-sh/uv/issues/7260
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T03:32:44Z
 ```
 
 # `uv run pytest` does not work
@@ -300,10 +300,6 @@ _Comment by @hon-gyu on 2024-12-24 10:26_
 `uv add pytest --dev` fixed my problem. 
 
 I found that when running `uv run pytest` without `pytest` in dependencies, it somehow does not use the venv `uv` has set up.
-
----
-
-_Referenced in [astral-sh/uv#10895](../../astral-sh/uv/issues/10895.md) on 2025-01-23 13:08_
 
 ---
 

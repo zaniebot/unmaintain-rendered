@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-05-28T18:35:43Z
 updated_at: 2025-06-26T19:28:16Z
 url: https://github.com/astral-sh/uv/issues/13703
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # concurrent wheel builds fail oddly
@@ -161,10 +161,6 @@ I'm reluctant to add manual locks on my end because the obvious place to do that
 
 ---
 
-_Referenced in [astral-sh/uv#13883](../../astral-sh/uv/issues/13883.md) on 2025-06-06 11:58_
-
----
-
 _Assigned to @oconnor663 by @zanieb on 2025-06-20 14:57_
 
 ---
@@ -188,10 +184,6 @@ $   × Failed to build `/tmp/tmp.wGbtw5vwhy`
       hint: This usually indicates a problem with the package or the build environment.
 [...]
 ```
-
----
-
-_Referenced in [astral-sh/uv#14174](../../astral-sh/uv/pulls/14174.md) on 2025-06-20 23:30_
 
 ---
 

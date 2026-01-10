@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-10-28T18:44:02Z
 updated_at: 2025-07-03T17:39:52Z
 url: https://github.com/astral-sh/uv/issues/8641
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T03:32:44Z
 ```
 
 # Equivalent command to `twine check`
@@ -34,31 +34,15 @@ Reading external files disabled.
 
 ---
 
-_Referenced in [astral-sh/uv#8774](../../astral-sh/uv/issues/8774.md) on 2024-11-03 12:07_
-
----
-
 _Comment by @konstin on 2024-11-03 17:37_
 
 I'm not opposed to including these checks in uv, but ideally, these checks would already be performed by the build backed: We should error when building the wheel, ideally locally, instead of only failing during a publish run (on CI).
 
 ---
 
-_Referenced in [astral-sh/uv#7839](../../astral-sh/uv/issues/7839.md) on 2024-11-03 18:09_
-
----
-
-_Referenced in [astral-sh/uv#8779](../../astral-sh/uv/issues/8779.md) on 2024-11-03 18:30_
-
----
-
 _Comment by @kdeldycke on 2025-01-19 22:09_
 
 I'm now OK if there's no equivalent feature proposed by `uv`, as I trust `uv` to embed these kind of checks naturally during the upload process.
-
----
-
-_Referenced in [astral-sh/uv#11032](../../astral-sh/uv/pulls/11032.md) on 2025-01-28 18:41_
 
 ---
 
@@ -81,13 +65,5 @@ _Label `build-backend` removed by @konstin on 2025-07-03 17:37_
 _Comment by @konstin on 2025-07-03 17:39_
 
 Fwiw, `twine check` seems to only check that a RST readme gets correctly rendered on PyPI, which means it's not applicable to projects with a non-RST readme.
-
----
-
-_Referenced in [pylhc/.github#19](../../pylhc/.github/pulls/19.md) on 2025-07-09 16:42_
-
----
-
-_Referenced in [typeddjango/django-stubs#2846](../../typeddjango/django-stubs/pulls/2846.md) on 2025-09-30 10:02_
 
 ---

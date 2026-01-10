@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-06-14T14:09:31Z
 updated_at: 2025-06-14T14:09:31Z
 url: https://github.com/astral-sh/uv/issues/14038
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Add command to print the command used to activate the virtual environment depending on the current shell
@@ -43,9 +43,5 @@ overlay use .venv/bin/activate.nu
 ---
 
 _Label `enhancement` added by @Kajiih on 2025-06-14 14:09_
-
----
-
-_Referenced in [astral-sh/uv#16993](../../astral-sh/uv/issues/16993.md) on 2025-12-05 14:01_
 
 ---

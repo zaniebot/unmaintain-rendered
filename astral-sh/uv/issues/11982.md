@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-03-05T16:19:22Z
 updated_at: 2025-07-07T06:37:57Z
 url: https://github.com/astral-sh/uv/issues/11982
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # uvx run on windows: build backend returned an error
@@ -148,10 +148,6 @@ If the "run" package or any other package that may conflict with the parameters 
 Not sure if this is a very good or very bad idea. Or if it is possible. 
 But I wouldn't sacrifice a better user experience just for a few packages. Those should be "implicitly" named.  
 
-
----
-
-_Referenced in [astral-sh/uv#11992](../../astral-sh/uv/pulls/11992.md) on 2025-03-05 22:04_
 
 ---
 

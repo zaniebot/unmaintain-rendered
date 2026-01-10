@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-15T14:13:33Z
 updated_at: 2025-07-29T15:37:48Z
 url: https://github.com/astral-sh/uv/issues/5073
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T03:32:44Z
 ```
 
 # uv downloads are slow on fallback to streamed wheel downloads
@@ -417,10 +417,6 @@ Empirically it proved to be significantly worse in practice to “always downloa
 
 ---
 
-_Referenced in [astral-sh/uv#7025](../../astral-sh/uv/issues/7025.md) on 2024-09-04 14:47_
-
----
-
 _Comment by @jpedrick-numeus on 2024-09-06 14:45_
 
 I'm running into an issue with this as well. A package, which is around 160Mb, is hosted in a private CodeArtifact repository. 
@@ -439,10 +435,6 @@ DEBUG No cache entry for: https://some-server.d.codeartifact.eu-west-1.amazonaws
 _Comment by @zanieb on 2024-09-06 14:51_
 
 @jpedrick-numeus unfortunately this is a problem with CodeArtifact — they should support the modern metadata API so we don't need to download wheels to inspect their requirements and if they don't support that they should at least support range requests so we can effectively extract the requirements.
-
----
-
-_Referenced in [astral-sh/uv#7127](../../astral-sh/uv/pulls/7127.md) on 2024-09-06 15:50_
 
 ---
 
@@ -598,14 +590,6 @@ _Comment by @jpedrick-numeus on 2024-09-10 14:47_
 ---
 
 _Closed by @zanieb on 2024-10-21 21:22_
-
----
-
-_Referenced in [astral-sh/uv#8580](../../astral-sh/uv/issues/8580.md) on 2024-10-25 22:44_
-
----
-
-_Referenced in [astral-sh/uv#12797](../../astral-sh/uv/issues/12797.md) on 2025-04-10 01:57_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-07-01T03:03:16Z
 updated_at: 2025-07-01T13:58:52Z
 url: https://github.com/astral-sh/uv/issues/14382
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # uv build using temp env fail with Python_SITEARCH in CMake
@@ -58,9 +58,5 @@ _Label `needs-mre` added by @konstin on 2025-07-01 13:58_
 _Comment by @konstin on 2025-07-01 13:58_
 
 Can you provide a minimal reproducible example for your problem (https://github.com/astral-sh/uv/issues/9452)?
-
----
-
-_Referenced in [astral-sh/uv#15415](../../astral-sh/uv/issues/15415.md) on 2025-08-21 13:54_
 
 ---

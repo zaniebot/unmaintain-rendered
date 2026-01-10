@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-06-03T13:29:13Z
 updated_at: 2025-06-12T15:16:25Z
 url: https://github.com/astral-sh/uv/issues/13807
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # realpath not available on macOS 12 (breaks venv activate and uv tool run)
@@ -135,14 +135,6 @@ Thanks! We could add a note to the documentation.
 
 ---
 
-_Referenced in [astral-sh/uv#13993](../../astral-sh/uv/pulls/13993.md) on 2025-06-12 13:36_
-
----
-
 _Closed by @zanieb on 2025-06-12 15:16_
-
----
-
-_Referenced in [astral-sh/uv#14471](../../astral-sh/uv/issues/14471.md) on 2025-07-06 22:34_
 
 ---

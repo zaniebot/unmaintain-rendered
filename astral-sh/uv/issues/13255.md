@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-05-01T18:26:46Z
 updated_at: 2025-06-18T08:28:37Z
 url: https://github.com/astral-sh/uv/issues/13255
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Authenticate during HTTP redirects
@@ -54,18 +54,6 @@ This issue tracks resolving the outstanding issues before releasing this again. 
 ---
 
 _Label `tracking` added by @zanieb on 2025-05-01 18:26_
-
----
-
-_Referenced in [astral-sh/uv#5595](../../astral-sh/uv/issues/5595.md) on 2025-05-01 18:27_
-
----
-
-_Referenced in [astral-sh/uv#11097](../../astral-sh/uv/issues/11097.md) on 2025-05-01 18:28_
-
----
-
-_Referenced in [astral-sh/uv#13208](../../astral-sh/uv/issues/13208.md) on 2025-05-01 18:28_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-06-16T19:17:37Z
 updated_at: 2025-06-19T21:47:23Z
 url: https://github.com/astral-sh/uv/issues/14085
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # `uv init --script` doesn't respect an existing shebang
@@ -74,10 +74,6 @@ The use case that led me to try this is that I had a script that expected its de
 _Comment by @zanieb on 2025-06-17 01:29_
 
 I worry about confusion. We could warn? but we might have false positives? Anyway, seems more correct to respect it than not. We can open something else to track warning when shebangs are present.
-
----
-
-_Referenced in [astral-sh/uv#14141](../../astral-sh/uv/pulls/14141.md) on 2025-06-18 22:24_
 
 ---
 

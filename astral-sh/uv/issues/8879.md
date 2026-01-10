@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-07T06:30:45Z
 updated_at: 2025-06-10T20:55:41Z
 url: https://github.com/astral-sh/uv/issues/8879
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T03:32:44Z
 ```
 
 # Creating venvs from uv python installtions creates broken venvs
@@ -72,14 +72,6 @@ Note there's not a clear path to solving this upstream unless we want to patch C
 _Comment by @charliermarsh on 2024-11-07 13:52_
 
 Yeah I have no idea how this would work for `--copies` since we lose all connection to the originating distribution.
-
----
-
-_Referenced in [astral-sh/uv#8953](../../astral-sh/uv/issues/8953.md) on 2024-11-09 19:24_
-
----
-
-_Referenced in [astral-sh/uv#12173](../../astral-sh/uv/issues/12173.md) on 2025-03-14 19:05_
 
 ---
 

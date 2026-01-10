@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-25T17:04:22Z
 updated_at: 2025-07-23T09:53:42Z
 url: https://github.com/astral-sh/uv/issues/9423
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-10T03:32:44Z
 ```
 
 # Usage in docker: `error: Project virtual environment directory /app/.venv cannot be used because it is not a compatible environment but cannot be recreated because it is not a virtual environment
@@ -195,15 +195,7 @@ Does that solve all your problems here?
 
 ---
 
-_Referenced in [astral-sh/uv#9427](../../astral-sh/uv/pulls/9427.md) on 2024-11-25 20:48_
-
----
-
 _Label `great writeup` added by @zanieb on 2024-11-26 17:51_
-
----
-
-_Referenced in [lmchaves/OrganizarTaller#46](../../lmchaves/OrganizarTaller/issues/46.md) on 2025-02-04 10:08_
 
 ---
 
@@ -222,10 +214,6 @@ Not sure why I didn't see this, but yes that solves my problem. Thank you!
 ---
 
 _Closed by @ben-xD on 2025-05-22 14:38_
-
----
-
-_Referenced in [astral-sh/uv#14815](../../astral-sh/uv/issues/14815.md) on 2025-07-22 16:09_
 
 ---
 

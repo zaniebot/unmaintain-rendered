@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-14T03:03:07Z
 updated_at: 2025-07-22T13:20:11Z
 url: https://github.com/astral-sh/uv/issues/12163
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # uv pip install does not conform to PEP-721
@@ -70,18 +70,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2025-03-14 15:03_
 
 ---
 
-_Referenced in [astral-sh/tokio-tar#46](../../astral-sh/tokio-tar/pulls/46.md) on 2025-03-14 17:04_
-
----
-
-_Referenced in [astral-sh/uv#12259](../../astral-sh/uv/pulls/12259.md) on 2025-03-18 02:27_
-
----
-
 _Closed by @charliermarsh on 2025-07-22 13:20_
-
----
-
-_Referenced in [astral-sh/uv#14897](../../astral-sh/uv/issues/14897.md) on 2025-07-25 18:37_
 
 ---

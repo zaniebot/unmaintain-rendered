@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-27T20:00:35Z
 updated_at: 2025-06-13T22:16:50Z
 url: https://github.com/astral-sh/uv/issues/13138
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # `uv pip install --group` fails where `pip install --group` succeeds
@@ -93,10 +93,6 @@ _Comment by @alexprengere on 2025-05-13 09:36_
 
 I just want to mention that this will occur also if the `pyproject.toml` has a `[build-system]`, but the rest of the packaging is specified in `setup.cfg` and/or `setup.py`, which I think is pretty common (as not every setuptools-based packages have fully migrated to `pyproject.toml`).
 As @leodevian mentions, the trigger is when `[project]` table is missing.
-
----
-
-_Referenced in [astral-sh/uv#13742](../../astral-sh/uv/pulls/13742.md) on 2025-05-30 20:02_
 
 ---
 

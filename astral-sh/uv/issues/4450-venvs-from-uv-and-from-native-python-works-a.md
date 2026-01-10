@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-06-22T19:41:15Z
 updated_at: 2025-07-22T01:08:04Z
 url: https://github.com/astral-sh/uv/issues/4450
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T03:32:44Z
 ```
 
 # Venvs from uv and from native python works a little different on nix
@@ -626,10 +626,6 @@ Using Python 3.10.14 interpreter at: /nix/store/j6j5mv16lbx32m4qjhj5zsygqy0p5zcf
 
 ---
 
-_Referenced in [astral-sh/uv#5808](../../astral-sh/uv/issues/5808.md) on 2024-08-06 07:33_
-
----
-
 _Comment by @akaihola on 2024-09-14 14:56_
 
 I have this problem with all virtualenvs on NixOS, whether created with `uv venv` or `python -m venv`:
@@ -649,10 +645,6 @@ export UV_PYTHON=$VIRTUAL_ENV/bin/python
 ```
 
 See #7395 for more details.
-
----
-
-_Referenced in [astral-sh/uv#7395](../../astral-sh/uv/issues/7395.md) on 2024-09-14 15:37_
 
 ---
 
@@ -749,10 +741,6 @@ Numpy requires dynamic libraries to be installed, which wheels don't automatical
 
 ---
 
-_Referenced in [cachix/devenv#1598](../../cachix/devenv/issues/1598.md) on 2024-11-23 11:35_
-
----
-
 _Comment by @Alsiri0n on 2025-02-18 15:22_
 
 uv platform: MacOS Sequoia 15.3.1
@@ -791,10 +779,6 @@ _Comment by @zanieb on 2025-02-18 15:31_
 _Comment by @Alsiri0n on 2025-02-18 22:41_
 
 Thank you very much! I thought that standard behaviour at the moment of creation virtual environment is to add pip
-
----
-
-_Referenced in [astral-sh/uv#11529](../../astral-sh/uv/issues/11529.md) on 2025-02-18 22:54_
 
 ---
 
@@ -847,14 +831,6 @@ For reference, if anyone bumps into this issue, here's a devshell that allows yo
 You can even do `uv add pandas` just to add it to the lockfile, which is great for working in projects with non-nix users :)
 
  _Originally posted in [#11529](https://github.com/astral-sh/uv/issues/11529#issuecomment-2667294194)_
-
----
-
-_Referenced in [astral-sh/uv#10711](../../astral-sh/uv/issues/10711.md) on 2025-03-13 14:36_
-
----
-
-_Referenced in [astral-sh/uv#1495](../../astral-sh/uv/issues/1495.md) on 2025-03-16 02:29_
 
 ---
 

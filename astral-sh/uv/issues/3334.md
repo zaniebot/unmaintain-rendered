@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-01T23:33:17Z
 updated_at: 2025-08-01T03:17:20Z
 url: https://github.com/astral-sh/uv/issues/3334
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-10T03:32:44Z
 ```
 
 # Feature request: single hash pinning for containerized python environments
@@ -107,10 +107,6 @@ _Label `enhancement` added by @konstin on 2024-05-02 13:55_
 _Comment by @gary-wall-hpe on 2024-05-06 18:28_
 
 @zanieb with pip to get the hash pin for just the specific environment, one can use `pip install --dry-run --report -r requirements.txt` or a mix of `pip download` and `pip hash` for each requirement -- does uv provide a way to get the pip compliant sha hash of a python module dependency that is resolved for the specific environment? Greatly appreciate any insights.
-
----
-
-_Referenced in [astral-sh/uv#3516](../../astral-sh/uv/issues/3516.md) on 2024-05-10 21:04_
 
 ---
 

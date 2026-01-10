@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-10-03T09:15:43Z
 updated_at: 2025-06-20T14:17:14Z
 url: https://github.com/astral-sh/uv/issues/7892
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T03:32:44Z
 ```
 
 # [feat] `uv python upgrade` or `uv python install --upgrade`
@@ -125,33 +125,9 @@ I tried `uv tool upgrade --all --reinstall` but it did not work. I wonder if it 
 
 ---
 
-_Referenced in [astral-sh/uv#8028](../../astral-sh/uv/issues/8028.md) on 2024-10-09 08:44_
-
----
-
 _Comment by @ssbarnea on 2024-12-27 12:22_
 
 Clearly we would want one single command that could upgrade all pythons that will be idempotent (not do anything if newer versions are not found).
-
----
-
-_Referenced in [astral-sh/uv#11317](../../astral-sh/uv/issues/11317.md) on 2025-02-07 15:24_
-
----
-
-_Referenced in [astral-sh/uv#9031](../../astral-sh/uv/issues/9031.md) on 2025-02-10 12:06_
-
----
-
-_Referenced in [astral-sh/uv#7325](../../astral-sh/uv/issues/7325.md) on 2025-02-10 12:06_
-
----
-
-_Referenced in [topgrade-rs/topgrade#1122](../../topgrade-rs/topgrade/pulls/1122.md) on 2025-04-13 08:00_
-
----
-
-_Referenced in [astral-sh/uv#13954](../../astral-sh/uv/pulls/13954.md) on 2025-06-10 20:51_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-07-21T16:33:52Z
 updated_at: 2025-07-22T19:08:34Z
 url: https://github.com/astral-sh/uv/issues/14795
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Error message on direct references isn't super helpful
@@ -84,10 +84,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2025-07-21 21:00_
 _Comment by @charliermarsh on 2025-07-21 21:10_
 
 I think we should try to show the derivation chain here.
-
----
-
-_Referenced in [astral-sh/uv#14824](../../astral-sh/uv/pulls/14824.md) on 2025-07-22 17:33_
 
 ---
 

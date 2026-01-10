@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-14T14:09:06Z
 updated_at: 2025-07-16T13:41:10Z
 url: https://github.com/astral-sh/uv/issues/11509
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # uv add package upgrade doesn't work
@@ -176,10 +176,6 @@ Yes, thank you @kshpytsya. I didn't know poetry had the same deficiency / lack.
 _Comment by @kshpytsya on 2025-03-10 16:37_
 
 Related #6794
-
----
-
-_Referenced in [astral-sh/uv#11973](../../astral-sh/uv/issues/11973.md) on 2025-03-10 16:41_
 
 ---
 

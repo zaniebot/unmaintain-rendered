@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-21T12:19:29Z
 updated_at: 2025-07-11T12:45:32Z
 url: https://github.com/astral-sh/uv/issues/6321
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-10T03:32:44Z
 ```
 
 # Support for Python projects that don't use a build system
@@ -94,14 +94,6 @@ packages = ["."]
 ---
 
 _Label `needs-design` added by @charliermarsh on 2024-08-21 13:38_
-
----
-
-_Comment by @arv-anshul on 2024-08-21 15:33_
-
-I have also **this issue with my data science projects**. Previously, using `rye` which has virtual package feature, `uv` has also `--virtual` flag with `uv init` command but it doesn't works as `rye`.
-
-**Please fix this issue, it will be very helpful for Data Science guys.**
 
 ---
 

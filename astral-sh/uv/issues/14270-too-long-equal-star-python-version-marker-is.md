@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-06-26T09:51:24Z
 updated_at: 2025-07-01T15:48:50Z
 url: https://github.com/astral-sh/uv/issues/14270
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Too long equal-star Python version marker is considered false
@@ -36,14 +36,6 @@ The marker is nonsensical as it's equivalent to the simpler and correctly workin
 ---
 
 _Label `bug` added by @konstin on 2025-06-26 09:51_
-
----
-
-_Referenced in [astral-sh/uv#14259](../../astral-sh/uv/pulls/14259.md) on 2025-06-26 10:43_
-
----
-
-_Referenced in [astral-sh/uv#14271](../../astral-sh/uv/pulls/14271.md) on 2025-06-30 09:09_
 
 ---
 

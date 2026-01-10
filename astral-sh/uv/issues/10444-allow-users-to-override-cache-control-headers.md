@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-01-09T21:02:49Z
 updated_at: 2025-07-15T18:31:41Z
 url: https://github.com/astral-sh/uv/issues/10444
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Allow users to override cache control headers
@@ -172,15 +172,7 @@ In case it is useful... I believe we are experiencing the same issue with a priv
 
 ---
 
-_Referenced in [astral-sh/uv#14121](../../astral-sh/uv/issues/14121.md) on 2025-06-18 00:01_
-
----
-
 _Assigned to @charliermarsh by @charliermarsh on 2025-07-14 21:55_
-
----
-
-_Referenced in [astral-sh/uv#14620](../../astral-sh/uv/pulls/14620.md) on 2025-07-14 23:54_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-08-20T23:01:06Z
 updated_at: 2025-08-21T08:54:22Z
 url: https://github.com/astral-sh/uv/issues/15398
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-10T03:32:46Z
 ```
 
 # `uv-build` v0.8.12 does not properly encode `RECORD` hashes
@@ -93,18 +93,6 @@ _Label `build-backend` added by @zanieb on 2025-08-20 23:07_
 
 ---
 
-_Referenced in [astral-sh/uv#15400](../../astral-sh/uv/pulls/15400.md) on 2025-08-21 05:34_
-
----
-
 _Closed by @konstin on 2025-08-21 08:54_
-
----
-
-_Referenced in [PyVRP/VRPLIB#131](../../PyVRP/VRPLIB/issues/131.md) on 2025-09-01 12:38_
-
----
-
-_Referenced in [astral-sh/uv#14548](../../astral-sh/uv/issues/14548.md) on 2025-09-26 20:53_
 
 ---

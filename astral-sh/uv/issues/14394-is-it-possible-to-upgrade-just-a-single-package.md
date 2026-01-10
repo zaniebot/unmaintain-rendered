@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-07-01T14:27:34Z
 updated_at: 2025-08-20T13:08:45Z
 url: https://github.com/astral-sh/uv/issues/14394
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Is it possible to upgrade just a single package if you change exclude-newer?
@@ -73,10 +73,6 @@ Thanks for answering! We're certainly interested for there to be some way of doi
 _Comment by @zanieb on 2025-07-02 15:50_
 
 I guess the easiest fix within the existing design would be to support `exclude-newer-package`
-
----
-
-_Referenced in [astral-sh/uv#14489](../../astral-sh/uv/pulls/14489.md) on 2025-07-18 01:47_
 
 ---
 

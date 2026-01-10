@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-07-21T21:25:46Z
 updated_at: 2025-07-21T22:15:04Z
 url: https://github.com/astral-sh/uv/issues/14800
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # `uv pip compile` ignores dependencies specified in `uv.toml`
@@ -118,10 +118,6 @@ error: Failed to parse: `my-uv.toml`
   |                                              ^^^^^^^^^^^^^
 unknown field `requires_dist`, expected one of `name`, `version`, `requires-dist`, `requires-python`, `provides-extras`
 ```
-
----
-
-_Referenced in [astral-sh/uv#14801](../../astral-sh/uv/pulls/14801.md) on 2025-07-21 21:57_
 
 ---
 

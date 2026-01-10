@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-07-18T15:57:27Z
 updated_at: 2025-07-22T13:32:46Z
 url: https://github.com/astral-sh/uv/issues/14730
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Add a hint to use `uv self version` if `uv version` cannot find a project
@@ -47,14 +47,6 @@ _Label `error messages` added by @zanieb on 2025-07-18 15:57_
 ---
 
 _Assigned to @Copilot by @zanieb on 2025-07-18 18:17_
-
----
-
-_Referenced in [astral-sh/uv#14738](../../astral-sh/uv/pulls/14738.md) on 2025-07-18 18:17_
-
----
-
-_Referenced in [astral-sh/uv#14739](../../astral-sh/uv/pulls/14739.md) on 2025-07-18 18:22_
 
 ---
 

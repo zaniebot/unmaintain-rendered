@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-06-12T20:25:59Z
 updated_at: 2025-06-13T13:10:14Z
 url: https://github.com/astral-sh/uv/issues/14005
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # default-groups are not scoped to their package
@@ -91,9 +91,5 @@ I think maybe the abstraction is fine we just need to lookup default-groups as l
 _Comment by @Gankra on 2025-06-13 13:10_
 
 Although this will require passing down whether defaults are enabled by the interface we're using, so maybe the abstraction needs to change a bit in that regard.
-
----
-
-_Referenced in [astral-sh/uv#14377](../../astral-sh/uv/issues/14377.md) on 2025-06-30 21:34_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-05-21T13:46:27Z
 updated_at: 2025-06-17T05:58:57Z
 url: https://github.com/astral-sh/uv/issues/13577
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # System global .python-version `uv python pin --system`
@@ -40,9 +40,5 @@ _Renamed from "System global .python-version" to "System global .python-version 
 _Comment by @iwinux on 2025-06-17 05:58_
 
 This would be great if implemented. Currently it's very difficult for Nix users to pin Python versions. I can only rely on `UV_PYTHON` to set global default Python version.
-
----
-
-_Referenced in [astral-sh/uv#10711](../../astral-sh/uv/issues/10711.md) on 2025-06-17 06:17_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-12T17:08:29Z
 updated_at: 2025-07-03T23:11:08Z
 url: https://github.com/astral-sh/uv/issues/11455
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # uv sync --no-editable does not sync if the `pyproject.toml` did not chage
@@ -31,10 +31,6 @@ If so, at leaast would be nice to be able to force reinstall without needing to 
 ---
 
 _Label `enhancement` added by @gaborbernat on 2025-02-12 17:08_
-
----
-
-_Referenced in [tox-dev/tox-uv#176](../../tox-dev/tox-uv/pulls/176.md) on 2025-02-13 00:06_
 
 ---
 
@@ -63,9 +59,5 @@ If changing the default caching behavior for editables in combination with `--no
 _Comment by @zhuoqun-chen on 2025-07-03 23:09_
 
 @konstin I think the proposed `--reinstall-editables` flag by @clssn is also reasonable especially in a `monorepo` with many workspace members, and where the `.venv` is located at the monorepo root folder. In my use case `uv sync --all-packages` will create `__editable__**.py` for local library dependencies (using `setuptools` backend). And this makes `vscode intellisense` can't have correct package import hints as described in https://github.com/astral-sh/uv/issues/3898. Using `uv sync --all-packages --no-editable` will make vscode happy, but even if the source code of the workspace member changes, doing it again will not change anything inside `.venv` at all.
-
----
-
-_Referenced in [astral-sh/uv#15380](../../astral-sh/uv/issues/15380.md) on 2025-08-21 09:43_
 
 ---

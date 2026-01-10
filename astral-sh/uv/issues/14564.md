@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-07-11T12:08:24Z
 updated_at: 2025-07-18T01:27:55Z
 url: https://github.com/astral-sh/uv/issues/14564
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Allow `config-settings` on a per-package basis
@@ -56,10 +56,6 @@ _Label `enhancement` added by @MrNaif2018 on 2025-07-11 12:08_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2025-07-11 16:16_
-
----
-
-_Referenced in [astral-sh/uv#14573](../../astral-sh/uv/pulls/14573.md) on 2025-07-11 23:51_
 
 ---
 

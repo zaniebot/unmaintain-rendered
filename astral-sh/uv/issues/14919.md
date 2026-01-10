@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-07-27T07:46:21Z
 updated_at: 2025-07-30T13:26:21Z
 url: https://github.com/astral-sh/uv/issues/14919
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Upgrading UV version 0.8.2 to 0.8.3 causes build failures in Sphinx plugin
@@ -2580,9 +2580,5 @@ _Comment by @danieleades on 2025-07-30 13:26_
 amazing! so this change surfaced a bug i had all along. That's the good kind of breakage ;)
 
 Thanks so much for your help, really appreciate it
-
----
-
-_Referenced in [astral-sh/uv#14970](../../astral-sh/uv/pulls/14970.md) on 2025-07-30 13:26_
 
 ---

@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-03-14T02:09:28Z
 updated_at: 2025-07-07T08:51:09Z
 url: https://github.com/astral-sh/uv/issues/2442
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-10T03:32:43Z
 ```
 
 # Unable to install on FreeBSD
@@ -156,10 +156,6 @@ Gotcha, that does make sense. I'll see if I can update.
 
 ---
 
-_Referenced in [rustls/hyper-rustls#258](../../rustls/hyper-rustls/issues/258.md) on 2024-03-14 02:25_
-
----
-
 _Comment by @hhartzer on 2024-03-14 02:53_
 
 I may end up waiting till April to get on 1.76. Happy to close this out till then if it does take me that long. I'll have to build from source if not, which will probably take some hours.
@@ -191,10 +187,6 @@ I meant building Rust from source, although it could also be my machine.
 
 ---
 
-_Referenced in [pubgrub-rs/pubgrub#197](../../pubgrub-rs/pubgrub/issues/197.md) on 2024-03-22 16:24_
-
----
-
 _Comment by @Eh2406 on 2024-03-22 17:02_
 
 > I meant building Rust from source, although it could also be my machine.
@@ -204,10 +196,6 @@ I believe you can get the official prebuilt Rust binaries for FreeBSD using Rust
 > I do think having PubGrub state the version would be nice, although for most users it may not be an issue.
 
 If pubgrub set its MSRV, you would have gotten a better error message. The error message would have made it clear that the project would not work in less you upgraded your Rust. So the core of the problem would still be the same.
-
----
-
-_Referenced in [astral-sh/uv#2618](../../astral-sh/uv/pulls/2618.md) on 2024-03-22 18:35_
 
 ---
 
@@ -245,10 +233,6 @@ Checking integrity... done (0 conflicting)
 [user] [1/1] Installing uv-0.1.15_1...
 [user] [1/1] Extracting uv-0.1.15_1: 100%
 ```
-
----
-
-_Referenced in [astral-sh/uv#3370](../../astral-sh/uv/issues/3370.md) on 2024-05-04 06:08_
 
 ---
 

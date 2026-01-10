@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-05-26T12:21:41Z
 updated_at: 2025-07-16T04:22:33Z
 url: https://github.com/astral-sh/uv/issues/13657
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Add version bump github action
@@ -40,10 +40,6 @@ _Label `enhancement` added by @zkurtz on 2025-05-26 12:21_
 
 ---
 
-_Referenced in [astral-sh/uv#14644](../../astral-sh/uv/issues/14644.md) on 2025-07-16 00:37_
-
----
-
 _Comment by @cthoyt on 2025-07-16 00:49_
 
 @zkurtz I made a similar issue that's just about the commit/pushing changes and optional git tagging in #14644 
@@ -53,9 +49,5 @@ _Comment by @cthoyt on 2025-07-16 00:49_
 _Comment by @zanieb on 2025-07-16 04:22_
 
 I don't think we'll be able to guide something like this officially in the short-term.
-
----
-
-_Referenced in [rehborn/uv-version-bump-action#3](../../rehborn/uv-version-bump-action/issues/3.md) on 2025-08-05 10:16_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-08-02T02:55:40Z
 updated_at: 2025-08-05T13:25:04Z
 url: https://github.com/astral-sh/uv/issues/15024
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-10T03:32:46Z
 ```
 
 # About using uv to download some dependencies stuck
@@ -48,10 +48,6 @@ None of those are downloads. Your machine is attempting to build those dependenc
 _Comment by @YuanJie2001 on 2025-08-02 03:18_
 
 oh, thank you . I think it's graalpy and immature.
-
----
-
-_Referenced in [oracle/graalpython#529](../../oracle/graalpython/issues/529.md) on 2025-08-02 03:21_
 
 ---
 

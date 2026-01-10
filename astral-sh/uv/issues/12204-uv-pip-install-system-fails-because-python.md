@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-16T17:13:23Z
 updated_at: 2025-07-29T19:44:48Z
 url: https://github.com/astral-sh/uv/issues/12204
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # `uv pip install --system` fails because python installation is managed by uv?
@@ -131,10 +131,6 @@ _Label `question` added by @zanieb on 2025-03-16 17:59_
 
 ---
 
-_Referenced in [vllm-project/vllm#15070](../../vllm-project/vllm/pulls/15070.md) on 2025-03-19 01:02_
-
----
-
 _Comment by @keramblock on 2025-04-09 12:33_
 
 Hi @zanieb we want to use uv in github ci, and there is python as a shell approach:
@@ -172,10 +168,6 @@ But this is really ugly solution IMO
 
 ---
 
-_Referenced in [InseeFrLab/images-datascience#245](../../InseeFrLab/images-datascience/pulls/245.md) on 2025-04-19 14:21_
-
----
-
 _Comment by @davidghiurco on 2025-07-09 16:08_
 
 > It's intentional that the global Python environment is not mutable. The `--system` flag is for targeting system environments not managed by uv, and largely exists for backwards compatibility — we wouldn't recommend using it generally.
@@ -205,9 +197,5 @@ Can you quantify this claim? Virtual environments are really lightweight.
 _Comment by @jm-positron on 2025-07-29 19:44_
 
 I think the weight of a venv is orthogonal to whether or not it is necessary. I believe the point is that because isolation is already achieved by the containerized environment, creating a virtual environment in additional to the system environment is unnecessary duplication, and thus a waste.
-
----
-
-_Referenced in [astral-sh/uv#15635](../../astral-sh/uv/issues/15635.md) on 2025-09-02 18:42_
 
 ---

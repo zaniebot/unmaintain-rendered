@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-07-07T13:53:57Z
 updated_at: 2025-07-08T01:10:36Z
 url: https://github.com/astral-sh/uv/issues/14485
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Unwanted lock file updates
@@ -74,10 +74,6 @@ I believe the problem is that we're filtering out the existing preference for th
 _Comment by @melMass on 2025-07-07 22:00_
 
 I added it! Let's see if it happens soon, it's a project I work on daily (comfyui) and torch nightlies are very frequent. I'll post updates here.
-
----
-
-_Referenced in [astral-sh/uv#14498](../../astral-sh/uv/pulls/14498.md) on 2025-07-07 22:02_
 
 ---
 

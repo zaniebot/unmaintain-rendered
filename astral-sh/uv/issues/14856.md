@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-07-23T20:17:37Z
 updated_at: 2025-07-24T11:09:50Z
 url: https://github.com/astral-sh/uv/issues/14856
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Add a command for `uv activate` for cross platform environment activation
@@ -155,9 +155,5 @@ uv() {
 Then if a user added `eval $(uv shell-hook zsh)` to their `.zshrc`, they'd have a zsh function called `uv` that took precedence over the `uv` binary in their PATH. And the user would be able to run `uv activate` using the zsh function and it would do the equivalent of `source .venv/bin/activate`, all without spawning a sub-shell. This is effectively how `conda activate env-name` works.
 
 I could certainly add this function in my own zshrc manually, but it would be nice if this came out of the box with `uv` in a way that worked for `bash`, `zsh`, `fish` and `powershell`. 
-
----
-
-_Referenced in [astral-sh/uv#15885](../../astral-sh/uv/issues/15885.md) on 2025-11-19 04:32_
 
 ---

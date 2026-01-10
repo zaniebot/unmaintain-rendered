@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-08-06T20:54:18Z
 updated_at: 2025-08-20T09:56:43Z
 url: https://github.com/astral-sh/uv/issues/15118
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-10T03:32:46Z
 ```
 
 # Add a hint to use `extra-build-dependencies` when a build fails with a missing package
@@ -71,14 +71,6 @@ Yes
 _Comment by @zanieb on 2025-08-11 16:21_
 
 We could pick it out of https://github.com/astral-sh/uv/pull/14579
-
----
-
-_Referenced in [astral-sh/uv#15251](../../astral-sh/uv/pulls/15251.md) on 2025-08-13 15:55_
-
----
-
-_Referenced in [astral-sh/uv#15252](../../astral-sh/uv/pulls/15252.md) on 2025-08-13 16:00_
 
 ---
 

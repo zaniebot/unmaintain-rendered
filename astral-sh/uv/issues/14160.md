@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-06-20T15:36:03Z
 updated_at: 2025-06-30T15:39:48Z
 url: https://github.com/astral-sh/uv/issues/14160
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # `run_groups_requires_python` flakes with `Removed virtual environment at ...`
@@ -82,28 +82,12 @@ It's a brand-new test from #13735 (merged last week) so it's certainly possible 
 
 ---
 
-_Referenced in [astral-sh/uv#14153](../../astral-sh/uv/pulls/14153.md) on 2025-06-20 18:24_
-
----
-
 _Comment by @jtfmumm on 2025-06-21 09:32_
 
 The first time it shows up is a couple commits after #13735 on #14047 so it may have been an existing issue.
 
 ---
 
-_Referenced in [astral-sh/uv#14275](../../astral-sh/uv/pulls/14275.md) on 2025-06-26 14:23_
-
----
-
-_Referenced in [astral-sh/uv#14331](../../astral-sh/uv/pulls/14331.md) on 2025-06-27 20:35_
-
----
-
 _Closed by @zanieb on 2025-06-30 15:39_
-
----
-
-_Referenced in [astral-sh/uv#16165](../../astral-sh/uv/issues/16165.md) on 2025-10-07 22:16_
 
 ---

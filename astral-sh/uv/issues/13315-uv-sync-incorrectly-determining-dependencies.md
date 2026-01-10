@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-05-06T11:44:33Z
 updated_at: 2025-07-08T05:04:49Z
 url: https://github.com/astral-sh/uv/issues/13315
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # uv sync incorrectly determining dependencies
@@ -96,10 +96,6 @@ Ubuntu 25.04
 ---
 
 _Label `bug` added by @NeilGirdhar on 2025-05-06 11:44_
-
----
-
-_Referenced in [ray-project/ray#49738](../../ray-project/ray/issues/49738.md) on 2025-05-06 11:47_
 
 ---
 
@@ -224,17 +220,9 @@ _Closed by @NeilGirdhar on 2025-05-06 13:14_
 
 ---
 
-_Referenced in [ray-project/ray#52819](../../ray-project/ray/issues/52819.md) on 2025-05-06 13:15_
-
----
-
 _Comment by @charliermarsh on 2025-05-06 13:16_
 
 Np!
-
----
-
-_Referenced in [ray-project/ray#52820](../../ray-project/ray/pulls/52820.md) on 2025-05-06 13:26_
 
 ---
 
@@ -243,9 +231,5 @@ _Comment by @NeilGirdhar on 2025-07-08 05:04_
 > We typically try to minimize the number of selected versions for a given package. So we'd attempt to use `pyarrow` 17 here in the resolver. You can add a constraint to force uv to select the higher version on non-macOS.
 
 Can this heuristic be changed to choose newer versions if possible?  Ray is refusing to bump their minimum versions, and the situations is basically broken.
-
----
-
-_Referenced in [ray-project/ray#54405](../../ray-project/ray/pulls/54405.md) on 2025-07-08 06:30_
 
 ---

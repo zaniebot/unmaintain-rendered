@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-08-11T02:12:46Z
 updated_at: 2025-08-12T05:59:35Z
 url: https://github.com/astral-sh/uv/issues/15215
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-10T03:32:46Z
 ```
 
 # In Docker, installing app code with CLI entrypoint and `--only-group` fails with `uv sync`, works with `uv pip install`
@@ -191,10 +191,6 @@ Installed 5 packages in 7ms
  + urllib3==2.5.0
 (issue-15215-docker-sync-entry-points) ➜  issue-15215-docker-sync-entry-points   ls -la .venv/bin/ | grep test-cli
 ```
-
----
-
-_Referenced in [astral-sh/uv#15231](../../astral-sh/uv/pulls/15231.md) on 2025-08-12 03:48_
 
 ---
 

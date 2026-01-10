@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-07-18T07:40:05Z
 updated_at: 2025-07-18T13:07:37Z
 url: https://github.com/astral-sh/uv/issues/14704
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # KeyboardInterrupt includes `uv run` traceback
@@ -83,10 +83,6 @@ If you use `python -m uv`, yes we'll show the trace for interrupting the uv subp
 _Comment by @zanieb on 2025-07-18 12:09_
 
 Ah you're on Windows. This isn't a thing on Linux, because we can exec.
-
----
-
-_Referenced in [astral-sh/uv#14715](../../astral-sh/uv/pulls/14715.md) on 2025-07-18 12:13_
 
 ---
 

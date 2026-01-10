@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-18T21:40:09Z
 updated_at: 2025-06-16T23:00:29Z
 url: https://github.com/astral-sh/uv/issues/12976
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Allow `uvx <name>` without `--from` when the normalized executable name matches
@@ -25,10 +25,6 @@ See https://github.com/astral-sh/uv/pull/11603#discussion_r1960520808
 ---
 
 _Label `cli` added by @zanieb on 2025-04-18 21:40_
-
----
-
-_Referenced in [astral-sh/uv#11603](../../astral-sh/uv/pulls/11603.md) on 2025-04-18 21:50_
 
 ---
 

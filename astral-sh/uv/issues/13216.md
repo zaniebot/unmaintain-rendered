@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-04-30T08:32:15Z
 updated_at: 2025-06-16T00:39:27Z
 url: https://github.com/astral-sh/uv/issues/13216
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Using UV_EXTRA_INDEX_URL fails in 0.7, regression from 0.6.17
@@ -166,10 +166,6 @@ DEBUG No compatible version found for: setuptools```
 _Comment by @brynmathias on 2025-04-30 09:24_
 
 That's what I've got at the moment, getting one of our devs to grab me full logs @jtfmumm 
-
----
-
-_Referenced in [astral-sh/uv#12805](../../astral-sh/uv/pulls/12805.md) on 2025-04-30 09:25_
 
 ---
 

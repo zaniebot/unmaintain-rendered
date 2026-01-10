@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-29T17:13:05Z
 updated_at: 2025-07-31T11:56:51Z
 url: https://github.com/astral-sh/uv/issues/8671
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T03:32:44Z
 ```
 
 # Using `uv` w/ Databricks
@@ -85,9 +85,5 @@ I am really struggling to using UV as package manager for my project on databric
 _Comment by @zanieb on 2025-07-31 11:56_
 
 @frbelotto open an issue with details please.
-
----
-
-_Referenced in [astral-sh/uv#16583](../../astral-sh/uv/issues/16583.md) on 2025-11-03 20:49_
 
 ---

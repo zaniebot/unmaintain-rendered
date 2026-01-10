@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-08-03T09:04:14Z
 updated_at: 2025-08-04T10:57:20Z
 url: https://github.com/astral-sh/uv/issues/15040
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-10T03:32:46Z
 ```
 
 # uv-build: default glob for `license-files`
@@ -78,10 +78,6 @@ _Comment by @DimitriPapadopoulos on 2025-08-03 12:36_
 This is not about forbidding the explicit approach, but allowing the implicit approach.
 
 This is also not about personal preferences, but consistency across the ecosystem.
-
----
-
-_Referenced in [cbrnr/sleepecg#285](../../cbrnr/sleepecg/pulls/285.md) on 2025-08-03 12:54_
 
 ---
 

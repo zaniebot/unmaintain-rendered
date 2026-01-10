@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-24T11:59:14Z
 updated_at: 2025-06-26T19:32:00Z
 url: https://github.com/astral-sh/uv/issues/6578
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T03:32:44Z
 ```
 
 # Add `--no-install-*` to `add`/`remove`/`run` and add env vars
@@ -108,10 +108,6 @@ Ah! I think I'm just making some assumptions based on my unfamiliarity with the 
 _Comment by @charliermarsh on 2024-08-27 02:20_
 
 No prob, I mostly just think we can do a better job of solving your problem that way :)
-
----
-
-_Referenced in [astral-sh/uv#6585](../../astral-sh/uv/pulls/6585.md) on 2024-08-27 16:16_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-08-01T01:07:23Z
 updated_at: 2025-08-08T14:33:45Z
 url: https://github.com/astral-sh/uv/issues/15009
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-10T03:32:46Z
 ```
 
 # Support `UV_NO_DEV` env var
@@ -41,14 +41,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2025-08-01 02:10_
 
 ---
 
-_Referenced in [astral-sh/uv#15010](../../astral-sh/uv/pulls/15010.md) on 2025-08-01 02:10_
-
----
-
 _Closed by @zanieb on 2025-08-08 14:33_
-
----
-
-_Referenced in [astral-sh/uv#16735](../../astral-sh/uv/issues/16735.md) on 2025-11-14 09:29_
 
 ---

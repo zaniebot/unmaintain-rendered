@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-19T00:40:41Z
 updated_at: 2025-08-13T08:46:12Z
 url: https://github.com/astral-sh/uv/issues/5200
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T03:32:44Z
 ```
 
 # Write migration guides
@@ -43,18 +43,6 @@ I don't think we'll include a guide for every package manager out there, e.g., `
 
 ---
 
-_Referenced in [astral-sh/uv#6445](../../astral-sh/uv/issues/6445.md) on 2024-08-22 16:17_
-
----
-
-_Referenced in [astral-sh/uv#6520](../../astral-sh/uv/issues/6520.md) on 2024-08-23 15:05_
-
----
-
-_Referenced in [astral-sh/uv#1804](../../astral-sh/uv/issues/1804.md) on 2024-08-23 15:27_
-
----
-
 _Comment by @michaelmior on 2024-08-23 15:31_
 
 Would be nice to have pipenv included here if possible. It's got around the same number of monthly downloads as pip-tools.
@@ -79,14 +67,6 @@ I'm a fan of `pdm`, which determines whether to create or migrate by recognizing
 
 Please don't try to reject `pdm`, `fastapi`, `pydantic` all use it!
 
-
----
-
-_Referenced in [astral-sh/uv#6926](../../astral-sh/uv/issues/6926.md) on 2024-09-03 17:34_
-
----
-
-_Referenced in [astral-sh/uv#5605](../../astral-sh/uv/issues/5605.md) on 2024-10-13 19:27_
 
 ---
 
@@ -179,14 +159,6 @@ Any insight is appreciated!
 
 ---
 
-_Referenced in [astral-sh/uv#9737](../../astral-sh/uv/issues/9737.md) on 2024-12-09 18:49_
-
----
-
-_Referenced in [OpenCOMPES/sed#531](../../OpenCOMPES/sed/issues/531.md) on 2024-12-13 13:56_
-
----
-
 _Comment by @mkniewallner on 2024-12-26 21:03_
 
 For those interested, I've just open-sourced https://github.com/mkniewallner/migrate-to-uv. It can migrate projects using either Poetry or Pipenv to uv, migrating project metadata, dependencies (keeping same version ranges), dependency groups, sources, markers, ...
@@ -203,10 +175,6 @@ More package managers could be supported in the future (`pip-tools`, `pip`, `set
 _Comment by @charliermarsh on 2024-12-26 21:57_
 
 Awesome, thanks for sharing @mkniewallner 
-
----
-
-_Referenced in [astral-sh/uv#10543](../../astral-sh/uv/issues/10543.md) on 2025-01-13 18:31_
 
 ---
 
@@ -243,34 +211,14 @@ Not sure if this requires a migration guide 🤷🏻‍♂️
 
 ---
 
-_Referenced in [astral-sh/uv#12555](../../astral-sh/uv/issues/12555.md) on 2025-03-30 08:41_
-
----
-
-_Referenced in [astral-sh/uv#12479](../../astral-sh/uv/issues/12479.md) on 2025-04-01 18:59_
-
----
-
-_Referenced in [felipeangelimvieira/prophetverse#209](../../felipeangelimvieira/prophetverse/issues/209.md) on 2025-05-08 10:08_
-
----
-
 _Comment by @zanieb on 2025-06-04 16:41_
 
 A pip migration guide is ready for review https://github.com/astral-sh/uv/pull/12382
 
 ---
 
-_Referenced in [geem-lab/overreact#759](../../geem-lab/overreact/issues/759.md) on 2025-07-16 17:11_
-
----
-
 _Comment by @gabkdlly on 2025-08-13 08:46_
 
 Maybe also: pyenv to uv migration guide.
-
----
-
-_Referenced in [pyladies/global-conference-2025#44](../../pyladies/global-conference-2025/issues/44.md) on 2025-10-06 20:11_
 
 ---

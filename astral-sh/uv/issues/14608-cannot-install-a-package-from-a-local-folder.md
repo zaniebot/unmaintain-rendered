@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-07-14T14:56:00Z
 updated_at: 2025-07-14T15:34:14Z
 url: https://github.com/astral-sh/uv/issues/14608
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Cannot install a package from a local folder
@@ -112,9 +112,5 @@ No worries! We have a PR open to make this the default: https://github.com/astra
 ---
 
 _Closed by @charliermarsh on 2025-07-14 15:34_
-
----
-
-_Referenced in [astral-sh/uv#14618](../../astral-sh/uv/issues/14618.md) on 2025-07-14 22:50_
 
 ---

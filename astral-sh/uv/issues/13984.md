@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-06-12T08:13:41Z
 updated_at: 2025-07-04T02:14:50Z
 url: https://github.com/astral-sh/uv/issues/13984
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # uv is poisoning its own cache when building on Rosetta systems
@@ -101,10 +101,6 @@ That is the build backend using the tag, uv is not involved in deciding the tag,
 ---
 
 _Label `external` added by @zanieb on 2025-06-12 13:43_
-
----
-
-_Referenced in [python-ldap/python-ldap#586](../../python-ldap/python-ldap/issues/586.md) on 2025-06-13 08:57_
 
 ---
 

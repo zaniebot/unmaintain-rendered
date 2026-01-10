@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-31T16:52:45Z
 updated_at: 2025-07-02T10:45:27Z
 url: https://github.com/astral-sh/uv/issues/8729
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T03:32:44Z
 ```
 
 # Build a wheel using pinned/resolved dependencies from `uv.lock`?
@@ -156,10 +156,6 @@ As I understand Poetry plugins do it by building the wheel, then modifying it af
 
 ---
 
-_Referenced in [astral-sh/uv#9252](../../astral-sh/uv/issues/9252.md) on 2024-11-20 00:11_
-
----
-
 _Comment by @idan-rahamim-lendbuzz on 2024-11-20 10:04_
 
 Let me share an experience to illustrate why using pinned dependencies during the build process is crucial.
@@ -202,10 +198,6 @@ But the idea behind it is that we force our package to be installed with the set
 Example of a bad scenario was illustrated by @rahuliyer95, and it is exactly what I'm talking about. Sometimes things just break with newer versions and it is hard to track those sometimes.
 
 Though I believe that this not a best practice in general, but in corporate setting with some flows this is gold.
-
----
-
-_Referenced in [astral-sh/uv#9811](../../astral-sh/uv/issues/9811.md) on 2024-12-12 03:46_
 
 ---
 
@@ -284,19 +276,11 @@ dynamic = ["version", "x-run-hook"]
 
 ---
 
-_Referenced in [astral-sh/uv#10602](../../astral-sh/uv/issues/10602.md) on 2025-01-14 16:52_
-
----
-
 _Comment by @edgarrmondragon on 2025-01-18 01:43_
 
 Perhaps something like this Poetry PoC PR could work:
 
 - https://github.com/python-poetry/poetry/pull/9428
-
----
-
-_Referenced in [navapbc/platform-cli#14](../../navapbc/platform-cli/issues/14.md) on 2025-01-24 17:50_
 
 ---
 
@@ -370,14 +354,6 @@ artifacts:
 
 ---
 
-_Referenced in [astral-sh/uv#11563](../../astral-sh/uv/issues/11563.md) on 2025-02-17 09:20_
-
----
-
-_Referenced in [astral-sh/uv#11587](../../astral-sh/uv/issues/11587.md) on 2025-02-18 14:28_
-
----
-
 _Comment by @EternityForest on 2025-02-27 02:06_
 
 @timvink I think I'd prefer it be a setting in pyproject.toml, I can't imagine any time I would ever want to build a non-frozen wheel for a completed application, and by adding it to the metadata, unmodified build and publish commands could do the right thing.
@@ -396,21 +372,9 @@ pip install -c requirements-frozen.txt dist/foo-0.1.0-py3-none-any.whl
 
 ---
 
-_Referenced in [astral-sh/uv#11250](../../astral-sh/uv/issues/11250.md) on 2025-03-04 08:32_
-
----
-
-_Referenced in [edgarrmondragon/hatch-pinned-extra#10](../../edgarrmondragon/hatch-pinned-extra/issues/10.md) on 2025-03-13 12:39_
-
----
-
 _Comment by @Dobatymo on 2025-04-09 03:45_
 
 I would also like to replace a `poetry-plugin-freeze` based workflow with `uv`. I would like to export a wheel file which uses exactly the same versions for the dependencies as the tests.
-
----
-
-_Referenced in [astral-sh/uv#13308](../../astral-sh/uv/issues/13308.md) on 2025-05-06 02:26_
 
 ---
 
@@ -433,9 +397,5 @@ the API version of the cli, without any frozen dependencies, used with `uv add`
 ```
 
 Basically the reverse of hatch-pinned-extra
-
----
-
-_Referenced in [equinor/dataorc#28](../../equinor/dataorc/issues/28.md) on 2025-11-07 10:17_
 
 ---

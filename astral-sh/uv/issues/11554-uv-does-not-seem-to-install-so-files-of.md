@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-16T14:33:59Z
 updated_at: 2025-06-22T02:26:16Z
 url: https://github.com/astral-sh/uv/issues/11554
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # uv does not seem to install so files of coremltools
@@ -461,14 +461,6 @@ Installed 1 package in 9ms
 __init__.py		converters		libmilstoragepython.so	models			proto			version.py
 _deps			libcoremlpython.so	libmodelpackage.so	optimize		test
 ```
-
----
-
-_Referenced in [astral-sh/uv#11579](../../astral-sh/uv/pulls/11579.md) on 2025-02-17 17:32_
-
----
-
-_Referenced in [astral-sh/uv#12869](../../astral-sh/uv/issues/12869.md) on 2025-04-14 03:34_
 
 ---
 

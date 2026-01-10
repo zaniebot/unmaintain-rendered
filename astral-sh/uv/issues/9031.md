@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-11T21:10:57Z
 updated_at: 2025-06-20T14:17:14Z
 url: https://github.com/astral-sh/uv/issues/9031
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T03:32:44Z
 ```
 
 # Add `uv python install --upgrade`
@@ -162,21 +162,9 @@ I think we're waiting to add `--upgrade` until we have better behavior around up
 
 ---
 
-_Referenced in [astral-sh/uv#9216](../../astral-sh/uv/issues/9216.md) on 2024-11-19 10:16_
-
----
-
-_Referenced in [astral-sh/uv#7325](../../astral-sh/uv/issues/7325.md) on 2025-02-10 11:09_
-
----
-
 _Comment by @angelo-peronio on 2025-02-10 12:06_
 
 Possibly a duplicate of #7892
-
----
-
-_Referenced in [astral-sh/uv#13954](../../astral-sh/uv/pulls/13954.md) on 2025-06-10 20:57_
 
 ---
 

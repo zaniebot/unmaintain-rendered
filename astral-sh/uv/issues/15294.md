@@ -9,7 +9,7 @@ assignees: []
 created_at: 2025-08-15T01:45:37Z
 updated_at: 2025-08-15T01:45:51Z
 url: https://github.com/astral-sh/uv/issues/15294
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-10T03:32:46Z
 ```
 
 # add integration tests for venv activation scripts
@@ -43,9 +43,5 @@ An aggregated discussion between zanieb and myself across the aforementioned thr
 ---
 
 _Renamed from "add integration tests for venv activation" to "add integration tests for venv activation scripts" by @2bndy5 on 2025-08-15 01:45_
-
----
-
-_Referenced in [astral-sh/uv#15272](../../astral-sh/uv/pulls/15272.md) on 2025-08-15 01:47_
 
 ---

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-07-02T10:20:39Z
 updated_at: 2025-07-02T15:24:12Z
 url: https://github.com/astral-sh/uv/issues/14415
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # How does `uv tool install azure-cli` expected to work?
@@ -166,13 +166,5 @@ _Closed by @stdedos on 2025-07-02 15:23_
 ---
 
 _Label `external` added by @zanieb on 2025-07-02 15:24_
-
----
-
-_Referenced in [astral-sh/uv#14424](../../astral-sh/uv/issues/14424.md) on 2025-07-02 15:44_
-
----
-
-_Referenced in [Azure/azure-cli#32406](../../Azure/azure-cli/issues/32406.md) on 2025-11-10 10:05_
 
 ---

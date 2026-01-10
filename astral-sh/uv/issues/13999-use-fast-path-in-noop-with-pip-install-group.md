@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-06-12T14:43:57Z
 updated_at: 2025-06-12T14:59:47Z
 url: https://github.com/astral-sh/uv/issues/13999
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Use fast path in noop with `pip install --group`
@@ -29,10 +29,6 @@ _Label `enhancement` added by @konstin on 2025-06-12 14:43_
 ---
 
 _Label `performance` added by @konstin on 2025-06-12 14:43_
-
----
-
-_Referenced in [astral-sh/uv#13742](../../astral-sh/uv/pulls/13742.md) on 2025-06-12 14:44_
 
 ---
 

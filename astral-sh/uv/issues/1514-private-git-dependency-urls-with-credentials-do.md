@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-16T16:59:38Z
 updated_at: 2025-07-25T16:03:45Z
 url: https://github.com/astral-sh/uv/issues/1514
-synced_at: 2026-01-10T01:57:02Z
+synced_at: 2026-01-10T03:32:43Z
 ```
 
 # Private git dependency URLs with credentials do not resolve
@@ -203,10 +203,6 @@ I think this issue is related to #1452
 
 ---
 
-_Referenced in [astral-sh/uv#1717](../../astral-sh/uv/pulls/1717.md) on 2024-02-19 20:28_
-
----
-
 _Comment by @albertotb on 2024-02-20 16:23_
 
 I'm encountering the same issue. I can 
@@ -225,10 +221,6 @@ error: Failed to download and build: doraemon @ git+ssh://git@github.com/Komoreb
 * attempted ssh-agent authentication, but no usernames succeeded: `git`
   Caused by: no authentication methods succeeded
 ```
-
----
-
-_Referenced in [astral-sh/uv#1781](../../astral-sh/uv/pulls/1781.md) on 2024-02-21 00:09_
 
 ---
 

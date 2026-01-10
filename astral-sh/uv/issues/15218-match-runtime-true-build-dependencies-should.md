@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-08-11T11:37:44Z
 updated_at: 2025-08-15T15:15:56Z
 url: https://github.com/astral-sh/uv/issues/15218
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-10T03:32:46Z
 ```
 
 # `match-runtime = true` build dependencies should invalidate installed distributions
@@ -43,18 +43,6 @@ I think we _probably_ should, and hopefully it's the ~same problem.
 
 ---
 
-_Referenced in [astral-sh/uv#6437](../../astral-sh/uv/issues/6437.md) on 2025-08-13 03:43_
-
----
-
-_Referenced in [astral-sh/uv#15289](../../astral-sh/uv/pulls/15289.md) on 2025-08-14 22:47_
-
----
-
 _Closed by @charliermarsh on 2025-08-15 15:15_
-
----
-
-_Referenced in [astral-sh/uv#16850](../../astral-sh/uv/issues/16850.md) on 2025-11-25 20:06_
 
 ---

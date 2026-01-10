@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-06-16T23:58:20Z
 updated_at: 2025-06-18T22:31:24Z
 url: https://github.com/astral-sh/uv/issues/14093
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # project sources shadow workspace sources, even when disabled by markers
@@ -105,10 +105,6 @@ Source markers must be disjoint, but the following markers overlap: `sys_platfor
 ```
 
 Requiring project level sources to be disjoint from workspace level sources seems silly, so I agree that we should probably just document the current behavior.
-
----
-
-_Referenced in [astral-sh/uv#14136](../../astral-sh/uv/pulls/14136.md) on 2025-06-18 19:13_
 
 ---
 

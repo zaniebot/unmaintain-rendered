@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-08-13T21:09:06Z
 updated_at: 2025-08-13T21:36:03Z
 url: https://github.com/astral-sh/uv/issues/15262
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-10T03:32:46Z
 ```
 
 # Docker tag for 0.8.10 missing from extra image bases
@@ -101,10 +101,6 @@ vs https://github.com/astral-sh/uv/actions/runs/16948083120/job/48035818473
 _Comment by @zanieb on 2025-08-13 21:12_
 
 Suspicious of https://github.com/astral-sh/uv/pull/15245
-
----
-
-_Referenced in [astral-sh/uv#15263](../../astral-sh/uv/pulls/15263.md) on 2025-08-13 21:16_
 
 ---
 

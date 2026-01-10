@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-08-14T04:22:13Z
 updated_at: 2025-08-14T04:22:18Z
 url: https://github.com/astral-sh/uv/issues/15268
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-10T03:32:46Z
 ```
 
 # Incompatible architecture logs are too verbose
@@ -527,9 +527,5 @@ TRACE Architecture `x86_64` is not compatible with `s390x`
 ---
 
 _Label `tracing` added by @zanieb on 2025-08-14 04:22_
-
----
-
-_Referenced in [astral-sh/uv#15710](../../astral-sh/uv/pulls/15710.md) on 2025-09-07 16:57_
 
 ---

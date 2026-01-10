@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-07-28T13:34:05Z
 updated_at: 2025-07-31T21:00:02Z
 url: https://github.com/astral-sh/uv/issues/14941
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # 0.7.14 makes `pip compile` fail when non-default index doesn't contain package.
@@ -229,14 +229,6 @@ Yeah, I think there's a real bug here in which we fail hard if we hit a 404 afte
 _Comment by @zanieb on 2025-07-31 13:43_
 
 Ah I see, thanks for the details! 
-
----
-
-_Referenced in [astral-sh/uv#14989](../../astral-sh/uv/issues/14989.md) on 2025-07-31 14:24_
-
----
-
-_Referenced in [astral-sh/uv#14996](../../astral-sh/uv/pulls/14996.md) on 2025-07-31 14:54_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-09-07T21:44:33Z
 updated_at: 2025-07-08T06:07:51Z
 url: https://github.com/astral-sh/uv/issues/7182
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T03:32:44Z
 ```
 
 # Feature request: `uv init --namespace`
@@ -80,14 +80,6 @@ _Comment by @tpanum on 2024-12-23 13:16_
 @Afoucaul: Until a more suitable solution is available, how do you handle this currently?
 
 I ideally wish to do the same as you, but wouldn't want to enforce the use of `setuptools` as a build system to discover the namespace correctly.
-
----
-
-_Referenced in [astral-sh/uv#11787](../../astral-sh/uv/issues/11787.md) on 2025-03-12 23:54_
-
----
-
-_Referenced in [astral-sh/uv#10960](../../astral-sh/uv/issues/10960.md) on 2025-07-08 06:04_
 
 ---
 

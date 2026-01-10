@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-31T16:46:53Z
 updated_at: 2025-08-08T21:09:57Z
 url: https://github.com/astral-sh/uv/issues/6893
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-10T03:32:44Z
 ```
 
 # tkagg is not compatible with uv-managed Python installs
@@ -137,14 +137,6 @@ _Comment by @bluthej on 2024-09-02 16:56_
 
 ---
 
-_Referenced in [astral-sh/rye#1366](../../astral-sh/rye/issues/1366.md) on 2024-09-02 21:43_
-
----
-
-_Referenced in [astral-sh/rye#1401](../../astral-sh/rye/issues/1401.md) on 2024-10-09 15:27_
-
----
-
 _Comment by @MalekWahidi on 2024-10-25 11:44_
 
 > Running into this too. `savefig` works fine with the standalone builds; the problem is when trying to bring up an interactive window.
@@ -169,10 +161,6 @@ _Comment by @MalekWahidi on 2024-10-25 11:44_
 > **edit**: my current workaround is to have `PyQt6` installed in whichever environment I'm working, as matplotlib will then pick that up as the default interactive backend without any further intervention (I haven't set additional environment variables or call `matplotlib.use` explicitly).
 
 After lots of trouble, `uv pip install PyQt6` is the only thing that got matplotlib interactive backend to work inside my venv!
-
----
-
-_Referenced in [astral-sh/uv#7036](../../astral-sh/uv/issues/7036.md) on 2024-11-09 16:17_
 
 ---
 
@@ -310,22 +298,6 @@ For users that need a fix _now_ rather than when we have solved Python packaging
 
 ---
 
-_Referenced in [astral-sh/uv#10270](../../astral-sh/uv/issues/10270.md) on 2025-01-02 10:07_
-
----
-
-_Referenced in [astral-sh/uv#10342](../../astral-sh/uv/issues/10342.md) on 2025-01-07 10:12_
-
----
-
-_Referenced in [astral-sh/uv#10340](../../astral-sh/uv/issues/10340.md) on 2025-01-07 10:14_
-
----
-
-_Referenced in [spyoungtech/FreeSimpleGUI#49](../../spyoungtech/FreeSimpleGUI/issues/49.md) on 2025-02-08 21:43_
-
----
-
 _Comment by @ShaiAvr on 2025-02-18 18:09_
 
 I just encountered this issue too, and I find this a deal breaker for me. I use matplotlib all the time and I don't want to switch to another backend. Until this is fixed, I'll configure `uv` to [only use system Python installations](https://docs.astral.sh/uv/reference/settings/#python-preference) and use `pyenv` to manage my Python installations instead of `uv`.
@@ -436,18 +408,6 @@ At the end I use qt instead and it works perfectly well with pyenv and uv.
 
 ---
 
-_Referenced in [AlgoSismos/Refrapy#17](../../AlgoSismos/Refrapy/issues/17.md) on 2025-02-23 01:28_
-
----
-
-_Referenced in [matplotlib/matplotlib#29746](../../matplotlib/matplotlib/issues/29746.md) on 2025-03-12 21:00_
-
----
-
-_Referenced in [matplotlib/matplotlib#29752](../../matplotlib/matplotlib/pulls/29752.md) on 2025-03-13 22:51_
-
----
-
 _Comment by @villares on 2025-03-16 15:46_
 
 > Please let's keep discussion here focused on the interaction between tkagg, matplotlib, and python-build-standalone.
@@ -502,26 +462,6 @@ Traceback (most recent call last):
     from . import _tkagg
 ImportError: initialization failed
 ```
-
----
-
-_Referenced in [GIScience/sketch-map-tool#550](../../GIScience/sketch-map-tool/issues/550.md) on 2025-03-31 13:49_
-
----
-
-_Referenced in [defyingdemonprogram/Reinforcement-Learning-in-Python-Game#1](../../defyingdemonprogram/Reinforcement-Learning-in-Python-Game/issues/1.md) on 2025-04-11 17:42_
-
----
-
-_Referenced in [mrjoe3012/pyfisheye#1](../../mrjoe3012/pyfisheye/issues/1.md) on 2025-05-11 18:40_
-
----
-
-_Referenced in [PHOTOX/ABIN#206](../../PHOTOX/ABIN/pulls/206.md) on 2025-05-13 12:21_
-
----
-
-_Referenced in [matplotlib/matplotlib#30038](../../matplotlib/matplotlib/issues/30038.md) on 2025-05-15 17:52_
 
 ---
 
@@ -617,10 +557,6 @@ Unfortunately after you do that the specified python interpreter will be used by
 
 ---
 
-_Referenced in [bryonymoody/PolyChron#104](../../bryonymoody/PolyChron/issues/104.md) on 2025-06-20 12:21_
-
----
-
 _Comment by @jkseppan on 2025-06-28 04:54_
 
 I tried to investigate a possible workaround on the matplotlib side, but I think I'm running into astral-sh/python-build-standalone#533. More at
@@ -669,23 +605,7 @@ I'm off to read the backends doc, and probably to obtain a Python from elsewhere
 
 ---
 
-_Referenced in [matplotlib/matplotlib#30390](../../matplotlib/matplotlib/issues/30390.md) on 2025-08-05 01:20_
-
----
-
-_Referenced in [ASPP/pelita#909](../../ASPP/pelita/issues/909.md) on 2025-08-06 16:07_
-
----
-
-_Referenced in [astral-sh/uv#15171](../../astral-sh/uv/pulls/15171.md) on 2025-08-08 18:10_
-
----
-
 _Closed by @geofft on 2025-08-08 19:03_
-
----
-
-_Referenced in [astral-sh/uv#15173](../../astral-sh/uv/pulls/15173.md) on 2025-08-08 19:28_
 
 ---
 
@@ -704,13 +624,5 @@ Please try it out and let me know if there are remaining issues.
 
 (By the way, if anyone sees _new_ bugs from this, please first open a new issue and at-mention me, and then use `uvx uv@0.8.6 python install --reinstall --no-bin 3.13.6` etc. to roll back to yesterday's builds of Python. I don't expect this to break anything, but it is a pretty significant change in what's in the Python distributions and how things are linked, so it might have some unexpected side effects.)
 
-
----
-
-_Referenced in [Bumshakalaka/krAIna#11](../../Bumshakalaka/krAIna/issues/11.md) on 2025-08-27 19:28_
-
----
-
-_Referenced in [PHOTOX/ABIN#214](../../PHOTOX/ABIN/pulls/214.md) on 2025-10-08 17:59_
 
 ---

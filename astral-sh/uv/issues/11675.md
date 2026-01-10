@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-20T19:13:49Z
 updated_at: 2025-08-08T22:24:22Z
 url: https://github.com/astral-sh/uv/issues/11675
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # uv sync --only-group and --no-extra still evaluates other package sources not specified, source = path
@@ -182,10 +182,6 @@ It's the chicken-and-egg problem. If I have a lockfile, then I can `uv sync --fr
 
 It's not impossible... but I didn't realize this was the only real way to set this up from scratch, as of 0.6.1. 
 I guess, the bug is that the documentation (and the recommendations from other gh issues) _seems_ like the behavior of --only-group/--no-extra would even exclude resolving of such packages, especially if they're known to be broken when resolved out of order. There's no mechanism right now to prevent the resolving of packages without commenting out / sed-ing the pyproject.toml file.
-
----
-
-_Referenced in [astral-sh/uv#12309](../../astral-sh/uv/issues/12309.md) on 2025-03-19 08:07_
 
 ---
 

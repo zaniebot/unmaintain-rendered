@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-05-07T10:46:36Z
 updated_at: 2025-07-22T12:11:06Z
 url: https://github.com/astral-sh/uv/issues/13327
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Ephemeral environments lacking scripts entry points
@@ -78,10 +78,6 @@ The fact that `uv run --with pdbpp python -c 'import pdbpp'` works and `uv run -
 
 ---
 
-_Referenced in [astral-sh/uv#8883](../../astral-sh/uv/issues/8883.md) on 2025-06-08 10:17_
-
----
-
 _Comment by @zanieb on 2025-06-09 14:36_
 
 @hynek just to be clear, the latter claims that `pytest` isn't installed, yes?
@@ -127,22 +123,6 @@ _Comment by @hynek on 2025-07-07 15:02_
 ah yes, that!
 
 especially if it's the main one. that was really super confusing to debug. 😅
-
----
-
-_Referenced in [astral-sh/uv#14729](../../astral-sh/uv/issues/14729.md) on 2025-07-21 12:31_
-
----
-
-_Referenced in [astral-sh/uv#14749](../../astral-sh/uv/issues/14749.md) on 2025-07-21 12:32_
-
----
-
-_Referenced in [astral-sh/uv#14790](../../astral-sh/uv/pulls/14790.md) on 2025-07-21 14:41_
-
----
-
-_Referenced in [jupyterlab/jupyterlab#17716](../../jupyterlab/jupyterlab/issues/17716.md) on 2025-07-21 16:17_
 
 ---
 

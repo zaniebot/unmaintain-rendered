@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-23T14:04:30Z
 updated_at: 2025-07-01T00:25:43Z
 url: https://github.com/astral-sh/uv/issues/6518
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T03:32:44Z
 ```
 
 # Constraint flag for `uv add`
@@ -30,10 +30,6 @@ uv add 'apache-airflow==2.10.0' \
 ```
 
 Thanks.
-
----
-
-_Referenced in [astral-sh/uv#6275](../../astral-sh/uv/issues/6275.md) on 2024-08-23 14:04_
 
 ---
 
@@ -153,18 +149,6 @@ I think they'd be combined as we would normally combine constraint files when th
 
 ---
 
-_Referenced in [astral-sh/uv#6596](../../astral-sh/uv/pulls/6596.md) on 2024-08-25 08:19_
-
----
-
-_Referenced in [astral-sh/uv#6644](../../astral-sh/uv/issues/6644.md) on 2024-08-26 17:44_
-
----
-
-_Referenced in [astral-sh/uv#7336](../../astral-sh/uv/issues/7336.md) on 2024-09-12 16:57_
-
----
-
 _Comment by @torran-g on 2024-10-10 09:56_
 
 FWIW I have exactly the same use case as @yehoshuadimarsky and I'd be very pleased to see his suggestion implemented.
@@ -187,18 +171,6 @@ Currently, I am specifing a minimal list of dependencies in `pyproject.toml` wit
 </details> 
 
 A separate, but related, feature request, would be an option to write the constraint file used to the top of the requirements.txt file. As described in point 3 of [these MWAA docs](https://docs.aws.amazon.com/mwaa/latest/userguide/best-practices-dependencies.html).
-
----
-
-_Referenced in [astral-sh/uv#8090](../../astral-sh/uv/issues/8090.md) on 2024-10-12 19:55_
-
----
-
-_Referenced in [astral-sh/uv#9508](../../astral-sh/uv/issues/9508.md) on 2024-11-28 18:52_
-
----
-
-_Referenced in [astral-sh/uv#10486](../../astral-sh/uv/issues/10486.md) on 2025-01-11 10:59_
 
 ---
 
@@ -270,10 +242,6 @@ _Closed by @zanieb on 2025-04-02 15:39_
 
 ---
 
-_Referenced in [plone/cookieplone-templates#192](../../plone/cookieplone-templates/issues/192.md) on 2025-04-02 15:56_
-
----
-
 _Comment by @potiuk on 2025-04-05 07:44_
 
 > We now support constraints on `uv add`, but they're not persisted to the `pyproject.toml` (just the `uv.lock`) and I don't think it _quite_ resolves the Airflow use-case.
@@ -312,9 +280,5 @@ Hello - #7336 was closed as a duplicate of this ticket, and this ticket has sinc
 _Comment by @zach-overflow on 2025-07-01 00:25_
 
 ^ I'm also curious how to configure the constraints to point to a file (either via a local file URL, or a remote URL). Likewise I've been unable to find any clear answer or docs regarding if that is possible / how to configure it.
-
----
-
-_Referenced in [astral-sh/uv#16508](../../astral-sh/uv/issues/16508.md) on 2025-10-30 07:30_
 
 ---

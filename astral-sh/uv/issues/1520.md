@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-16T18:05:17Z
 updated_at: 2025-06-14T17:54:08Z
 url: https://github.com/astral-sh/uv/issues/1520
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-10T03:32:43Z
 ```
 
 # No keyring support for authentication
@@ -87,22 +87,6 @@ I'd also discourage this approach. There are many Python plugins to `keyring` fo
 
 https://github.com/Microsoft/artifacts-keyring
 https://github.com/GoogleCloudPlatform/artifact-registry-python-tools
-
----
-
-_Referenced in [astral-sh/uv#2055](../../astral-sh/uv/issues/2055.md) on 2024-02-28 21:06_
-
----
-
-_Referenced in [astral-sh/uv#1700](../../astral-sh/uv/issues/1700.md) on 2024-03-05 15:05_
-
----
-
-_Referenced in [astral-sh/uv#2254](../../astral-sh/uv/pulls/2254.md) on 2024-03-06 23:30_
-
----
-
-_Referenced in [prefix-dev/pixi#588](../../prefix-dev/pixi/issues/588.md) on 2024-03-08 10:53_
 
 ---
 
@@ -416,9 +400,5 @@ docker build . --secret id=gcp_credentials,src=gcp-key.json
 ```
 
 I hope this is able to help someone!
-
----
-
-_Referenced in [bazel-contrib/rules_python#3405](../../bazel-contrib/rules_python/issues/3405.md) on 2025-11-10 15:11_
 
 ---

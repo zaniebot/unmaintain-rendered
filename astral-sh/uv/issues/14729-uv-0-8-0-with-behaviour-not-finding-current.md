@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-07-18T15:53:19Z
 updated_at: 2025-07-22T12:13:15Z
 url: https://github.com/astral-sh/uv/issues/14729
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # uv 0.8.0 --with behaviour not finding current project
@@ -167,10 +167,6 @@ Ill add a note for now to m project, that it doesnt work under uv>=0.8.0.
 
 ---
 
-_Referenced in [Zaloog/ayu#1](../../Zaloog/ayu/issues/1.md) on 2025-07-18 21:33_
-
----
-
 _Comment by @zanieb on 2025-07-19 00:58_
 
 If you can get some sort of verbose logs or traceback from Python prior to
@@ -205,14 +201,6 @@ _Comment by @zanieb on 2025-07-21 12:31_
 I think we've identified that this is causing more breakage https://github.com/astral-sh/uv/issues/14749
 
 I think it's the same root problem as https://github.com/astral-sh/uv/issues/13327
-
----
-
-_Referenced in [astral-sh/uv#14788](../../astral-sh/uv/pulls/14788.md) on 2025-07-21 13:01_
-
----
-
-_Referenced in [astral-sh/uv#14790](../../astral-sh/uv/pulls/14790.md) on 2025-07-21 14:41_
 
 ---
 

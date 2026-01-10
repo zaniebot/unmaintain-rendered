@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-07-15T19:49:58Z
 updated_at: 2025-07-15T21:47:36Z
 url: https://github.com/astral-sh/uv/issues/14637
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # `uv python list` fails with no package identity (os error 15700)
@@ -215,10 +215,6 @@ _Label `bug` added by @MeGaGiGaGon on 2025-07-15 19:49_
 
 ---
 
-_Referenced in [astral-sh/uv#14636](../../astral-sh/uv/pulls/14636.md) on 2025-07-15 19:51_
-
----
-
 _Comment by @zanieb on 2025-07-15 19:55_
 
 Thank you!
@@ -226,13 +222,5 @@ Thank you!
 ---
 
 _Closed by @zanieb on 2025-07-15 21:47_
-
----
-
-_Referenced in [astral-sh/uv#14642](../../astral-sh/uv/issues/14642.md) on 2025-07-15 23:04_
-
----
-
-_Referenced in [astral-sh/uv#15651](../../astral-sh/uv/issues/15651.md) on 2025-09-03 06:04_
 
 ---

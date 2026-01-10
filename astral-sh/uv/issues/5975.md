@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-09T19:56:50Z
 updated_at: 2025-08-16T21:55:51Z
 url: https://github.com/astral-sh/uv/issues/5975
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-10T03:32:44Z
 ```
 
 # `uv show` / `uv info`
@@ -54,14 +54,6 @@ _Label `cli` added by @zanieb on 2024-08-09 22:15_
 _Comment by @nikhilweee on 2024-09-04 20:27_
 
 I think if there's a way to know the current venv being used that itself would be a great addition.
-
----
-
-_Referenced in [astral-sh/uv#8755](../../astral-sh/uv/issues/8755.md) on 2024-11-01 16:30_
-
----
-
-_Referenced in [astral-sh/uv#10666](../../astral-sh/uv/issues/10666.md) on 2025-01-31 14:34_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-27T00:24:05Z
 updated_at: 2025-08-19T20:00:15Z
 url: https://github.com/astral-sh/uv/issues/12500
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Add MCP tools
@@ -62,10 +62,6 @@ _No response_
 ---
 
 _Label `enhancement` added by @alok on 2025-03-27 00:24_
-
----
-
-_Referenced in [prefix-dev/pixi#3830](../../prefix-dev/pixi/issues/3830.md) on 2025-05-26 13:53_
 
 ---
 

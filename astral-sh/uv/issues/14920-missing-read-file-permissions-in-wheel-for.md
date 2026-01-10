@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-07-27T17:27:16Z
 updated_at: 2025-07-28T13:56:09Z
 url: https://github.com/astral-sh/uv/issues/14920
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Missing read file permissions in wheel for license files and record with `uv_build` backend
@@ -67,10 +67,6 @@ _Label `bug` added by @kieran-ryan on 2025-07-27 17:27_
 
 ---
 
-_Referenced in [astral-sh/uv#14930](../../astral-sh/uv/pulls/14930.md) on 2025-07-28 04:22_
-
----
-
 _Assigned to @konstin by @zanieb on 2025-07-28 13:33_
 
 ---
@@ -82,29 +78,5 @@ Thanks for the well written report!
 ---
 
 _Closed by @konstin on 2025-07-28 13:56_
-
----
-
-_Referenced in [janosh/pymatviz#318](../../janosh/pymatviz/issues/318.md) on 2025-08-09 06:15_
-
----
-
-_Referenced in [janosh/pymatviz#320](../../janosh/pymatviz/pulls/320.md) on 2025-08-14 09:49_
-
----
-
-_Referenced in [jorenham/numpy-typing-compat#40](../../jorenham/numpy-typing-compat/issues/40.md) on 2025-08-14 20:09_
-
----
-
-_Referenced in [ag2ai/faststream#2448](../../ag2ai/faststream/issues/2448.md) on 2025-08-14 20:17_
-
----
-
-_Referenced in [jorenham/optype#411](../../jorenham/optype/issues/411.md) on 2025-08-15 15:24_
-
----
-
-_Referenced in [pydantic/genai-prices#131](../../pydantic/genai-prices/pulls/131.md) on 2025-08-26 14:39_
 
 ---

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-07-29T21:21:41Z
 updated_at: 2025-07-31T11:50:06Z
 url: https://github.com/astral-sh/uv/issues/14961
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-10T03:32:46Z
 ```
 
 # `uv add` uses inconsistent indentation in toml after conversion to multiline list
@@ -67,10 +67,6 @@ I sort of wonder if this is related to the `toml-edit` upgrade? But I assume we 
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2025-07-31 02:47_
-
----
-
-_Referenced in [astral-sh/uv#14991](../../astral-sh/uv/pulls/14991.md) on 2025-07-31 11:24_
 
 ---
 

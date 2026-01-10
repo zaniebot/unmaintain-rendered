@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-06T09:28:18Z
 updated_at: 2025-07-31T12:06:47Z
 url: https://github.com/astral-sh/uv/issues/4844
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-10T03:32:44Z
 ```
 
 # Not working in Collab and Kaggle
@@ -90,10 +90,6 @@ _Comment by @charliermarsh on 2024-07-06 19:03_
 ---
 
 _Closed by @charliermarsh on 2024-07-06 19:03_
-
----
-
-_Referenced in [WMD-group/SMACT#404](../../WMD-group/SMACT/pulls/404.md) on 2025-04-02 22:59_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-08-17T09:27:46Z
 updated_at: 2025-08-19T20:49:36Z
 url: https://github.com/astral-sh/uv/issues/15330
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-10T03:32:46Z
 ```
 
 # how to install yt-dlp plugins and requests on the uv tools yt-dlp
@@ -34,10 +34,6 @@ uv 0.8.11 (f892276ac 2025-08-14)
 ---
 
 _Label `question` added by @candrapersada on 2025-08-17 09:27_
-
----
-
-_Referenced in [pratikpatel8982/yt-dlp-hianime#16](../../pratikpatel8982/yt-dlp-hianime/issues/16.md) on 2025-08-18 02:11_
 
 ---
 

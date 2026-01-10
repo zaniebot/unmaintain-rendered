@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-06-04T12:19:48Z
 updated_at: 2025-06-13T09:51:00Z
 url: https://github.com/astral-sh/uv/issues/13831
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # uv 0.7.10: "Connection reset by peer" on macOS Apple Silicon
@@ -129,10 +129,6 @@ Are you using any specific settings, such as a proxy? Do you know if your connec
 
 ---
 
-_Referenced in [astral-sh/uv#13835](../../astral-sh/uv/pulls/13835.md) on 2025-06-04 13:40_
-
----
-
 _Comment by @konstin on 2025-06-04 13:40_
 
 Could you try the branch at https://github.com/astral-sh/uv/pull/13835 to see if it resolves the problem?
@@ -241,10 +237,6 @@ Thanks for testing! Downgrading hyper-util to 0.1.12 worked, so it really looks 
 
 ---
 
-_Referenced in [hyperium/hyper#3900](../../hyperium/hyper/issues/3900.md) on 2025-06-04 16:33_
-
----
-
 _Comment by @konstin on 2025-06-05 12:10_
 
 The latest hyper-util release fixes the regression, so we can try to upgrade again and test if it works (https://github.com/hyperium/hyper-util/pull/200)
@@ -278,13 +270,5 @@ Closing this as it seems fixed upstream, thanks @seanmonstar.
 ---
 
 _Closed by @konstin on 2025-06-13 09:50_
-
----
-
-_Referenced in [seanmonstar/reqwest#2743](../../seanmonstar/reqwest/pulls/2743.md) on 2025-06-24 13:13_
-
----
-
-_Referenced in [astral-sh/uv#14243](../../astral-sh/uv/pulls/14243.md) on 2025-06-24 15:47_
 
 ---

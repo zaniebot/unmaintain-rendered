@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-20T23:19:18Z
 updated_at: 2025-07-25T13:14:23Z
 url: https://github.com/astral-sh/uv/issues/6283
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-10T03:32:44Z
 ```
 
 # Autodetect dependencies mode for `uv run`
@@ -39,10 +39,6 @@ _Label `wish` added by @zanieb on 2024-08-20 23:37_
 ---
 
 _Label `enhancement` added by @zanieb on 2024-08-20 23:37_
-
----
-
-_Referenced in [astral-sh/uv#6375](../../astral-sh/uv/pulls/6375.md) on 2024-08-23 18:53_
 
 ---
 
@@ -257,10 +253,6 @@ def main():
 if __name__ == "__main__":
     main()
 ```
-
----
-
-_Referenced in [mgaitan/autopep723#5](../../mgaitan/autopep723/pulls/5.md) on 2025-07-20 01:03_
 
 ---
 

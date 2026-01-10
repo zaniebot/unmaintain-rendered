@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-08-06T10:31:11Z
 updated_at: 2025-08-06T13:06:50Z
 url: https://github.com/astral-sh/uv/issues/15103
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-10T03:32:46Z
 ```
 
 # uv export doesn't heed UV_NO_EDITABLE
@@ -75,10 +75,6 @@ MacOS 15.6
 ---
 
 _Label `bug` added by @jnns on 2025-08-06 10:31_
-
----
-
-_Referenced in [astral-sh/uv#15107](../../astral-sh/uv/pulls/15107.md) on 2025-08-06 12:27_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-18T15:55:38Z
 updated_at: 2025-08-08T02:40:07Z
 url: https://github.com/astral-sh/uv/issues/5190
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T03:32:44Z
 ```
 
 # Locking of build dependencies
@@ -67,29 +67,9 @@ Definitely agree that we should do this.
 
 ---
 
-_Referenced in [astral-sh/uv#5551](../../astral-sh/uv/issues/5551.md) on 2024-07-29 09:15_
-
----
-
-_Referenced in [astral-sh/uv#5639](../../astral-sh/uv/pulls/5639.md) on 2024-08-01 19:43_
-
----
-
 _Comment by @charliermarsh on 2024-09-10 00:06_
 
 I really want to do this (lock the build requirements).
-
----
-
-_Referenced in [astral-sh/python-build-standalone#300](../../astral-sh/python-build-standalone/issues/300.md) on 2024-09-10 08:20_
-
----
-
-_Referenced in [pyproject-nix/pyproject.nix#169](../../pyproject-nix/pyproject.nix/issues/169.md) on 2024-11-01 00:33_
-
----
-
-_Referenced in [pyproject-nix/uv2nix#44](../../pyproject-nix/uv2nix/pulls/44.md) on 2024-11-01 11:52_
 
 ---
 
@@ -157,10 +137,6 @@ I mostly think that people who care about reproducible builds would be better se
 
 ---
 
-_Referenced in [astral-sh/uv#10233](../../astral-sh/uv/issues/10233.md) on 2025-01-03 12:14_
-
----
-
 _Comment by @giftig on 2025-03-24 16:40_
 
 +1 for this; I've just had an existing, locked dependency fail to install because a new version of `setuptools` refuses to install dependencies using deprecated `description-file` syntax in `setup.cfg`, which is confusing and slightly frustrating (though not the fault of `uv`)
@@ -188,31 +164,7 @@ We're hoping to start working on this soon.
 
 ---
 
-_Referenced in [astral-sh/uv#7052](../../astral-sh/uv/issues/7052.md) on 2025-04-01 12:35_
-
----
-
-_Referenced in [pyca/cryptography#11548](../../pyca/cryptography/issues/11548.md) on 2025-04-29 00:56_
-
----
-
-_Referenced in [astral-sh/uv#13416](../../astral-sh/uv/issues/13416.md) on 2025-05-13 02:56_
-
----
-
 _Assigned to @Gankra by @zanieb on 2025-05-18 12:57_
-
----
-
-_Referenced in [astral-sh/uv#13798](../../astral-sh/uv/issues/13798.md) on 2025-06-03 08:43_
-
----
-
-_Referenced in [hermetoproject/pybuild-deps#307](../../hermetoproject/pybuild-deps/issues/307.md) on 2025-07-03 18:43_
-
----
-
-_Referenced in [NixOS/nixpkgs#425219](../../NixOS/nixpkgs/pulls/425219.md) on 2025-08-02 16:19_
 
 ---
 
@@ -252,17 +204,9 @@ _Unassigned @Gankra by @konstin on 2025-08-06 18:02_
 
 ---
 
-_Referenced in [astral-sh/uv#15146](../../astral-sh/uv/issues/15146.md) on 2025-08-07 19:31_
-
----
-
 _Comment by @bruno-fs on 2025-08-08 02:40_
 
 I find it a bit sad that new "universal lockfile format" from PEP 751 [won't support locking build requirements for sdists](https://peps.python.org/pep-0751/#locking-build-requirements-for-sdists), but I'm glad to hear uv is interested in solving this problem.
 
-
----
-
-_Referenced in [opendatahub-io/notebooks#1882](../../opendatahub-io/notebooks/issues/1882.md) on 2025-08-11 19:38_
 
 ---

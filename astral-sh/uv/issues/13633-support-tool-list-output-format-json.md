@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-05-24T00:28:13Z
 updated_at: 2025-07-09T05:29:26Z
 url: https://github.com/astral-sh/uv/issues/13633
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Support `tool list --output-format=json`
@@ -49,10 +49,6 @@ The only information that is required for me is name, version and executable nam
 _Comment by @samypr100 on 2025-05-29 02:42_
 
 It might be worthwhile to include the python details (e.g. home, version). I find myself moving some tools between python versions at times. Right now I just do something like `cat $(uv tool dir)/**/pyvenv.cfg` to find this info 😆 
-
----
-
-_Referenced in [astral-sh/uv#13962](../../astral-sh/uv/pulls/13962.md) on 2025-06-11 11:28_
 
 ---
 

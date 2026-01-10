@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-05-28T20:25:26Z
 updated_at: 2025-06-27T15:11:22Z
 url: https://github.com/astral-sh/uv/issues/13707
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # uv lock keeps trailing `/` on Linux, but omits on macOS
@@ -147,10 +147,6 @@ Thanks for sharing more detail @ivanychev. I don't think this is related to macO
 
 ---
 
-_Referenced in [astral-sh/uv#14245](../../astral-sh/uv/pulls/14245.md) on 2025-06-24 16:17_
-
----
-
 _Comment by @ivanychev on 2025-06-24 17:58_
 
 Thanks a lot @jtfmumm !
@@ -158,13 +154,5 @@ Thanks a lot @jtfmumm !
 ---
 
 _Closed by @jtfmumm on 2025-06-27 15:11_
-
----
-
-_Referenced in [astral-sh/uv#14503](../../astral-sh/uv/pulls/14503.md) on 2025-07-08 09:46_
-
----
-
-_Referenced in [astral-sh/uv#14511](../../astral-sh/uv/pulls/14511.md) on 2025-07-08 22:13_
 
 ---

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-08-08T13:36:14Z
 updated_at: 2025-08-15T21:45:00Z
 url: https://github.com/astral-sh/uv/issues/15165
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-10T03:32:46Z
 ```
 
 # uvx can't find executables on Windows when the package name contains a "."
@@ -63,10 +63,6 @@ I see there's an experimental [with_added_extension](https://doc.rust-lang.org/s
 
 ---
 
-_Referenced in [awslabs/mcp#1046](../../awslabs/mcp/issues/1046.md) on 2025-08-08 15:56_
-
----
-
 _Comment by @crh23 on 2025-08-08 16:20_
 
 When I run against https://github.com/astral-sh/uv/commit/82212bb439243acf4178c517b3797ad9b1dcf485 (the commit before https://github.com/astral-sh/uv/pull/12079/commits/0c8dd60018625410a5f0cbdb513713a4c3b5f279, which added `runnable.rs`) a more useful error is produced, so there is at least a mild regression here.
@@ -100,22 +96,6 @@ Side note: if `script_path` is a Path or [PathBuf, there's an `extension()` meth
 
 ---
 
-_Referenced in [astral-sh/uv#15300](../../astral-sh/uv/pulls/15300.md) on 2025-08-15 10:07_
-
----
-
 _Closed by @zanieb on 2025-08-15 21:45_
-
----
-
-_Referenced in [awslabs/mcp#273](../../awslabs/mcp/issues/273.md) on 2025-08-20 09:12_
-
----
-
-_Referenced in [awslabs/mcp#1114](../../awslabs/mcp/pulls/1114.md) on 2025-08-21 09:13_
-
----
-
-_Referenced in [awslabs/mcp#1164](../../awslabs/mcp/issues/1164.md) on 2025-08-22 11:38_
 
 ---

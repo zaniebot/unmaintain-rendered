@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-21T15:04:45Z
 updated_at: 2025-07-16T13:50:56Z
 url: https://github.com/astral-sh/uv/issues/11698
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # "UI compliant" output?
@@ -50,10 +50,6 @@ It's an interesting idea... but I'm a bit inclined to have this kind negotiated 
 * #411 
 * https://github.com/astral-sh/uv/issues/10431
 * https://github.com/astral-sh/uv/issues/1569
-
----
-
-_Referenced in [janhq/cortex.cpp#2052](../../janhq/cortex.cpp/issues/2052.md) on 2025-02-28 06:29_
 
 ---
 

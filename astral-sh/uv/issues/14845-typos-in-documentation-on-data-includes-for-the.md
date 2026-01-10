@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-07-23T13:23:30Z
 updated_at: 2025-07-24T09:55:16Z
 url: https://github.com/astral-sh/uv/issues/14845
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Typos in documentation on data includes for the uv-build backend
@@ -69,10 +69,6 @@ _Label `documentation` added by @zanieb on 2025-07-23 13:26_
 ---
 
 _Label `good first issue` added by @zanieb on 2025-07-23 13:26_
-
----
-
-_Referenced in [astral-sh/uv#14853](../../astral-sh/uv/pulls/14853.md) on 2025-07-23 19:34_
 
 ---
 

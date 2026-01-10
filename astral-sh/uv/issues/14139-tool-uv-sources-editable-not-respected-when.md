@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-06-18T21:29:12Z
 updated_at: 2025-07-11T02:20:13Z
 url: https://github.com/astral-sh/uv/issues/14139
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # `tool.uv.sources.editable` not respected when conditional on `group`
@@ -200,10 +200,6 @@ _Renamed from "tool.uv.sources "editable" not respected" to "`tool.uv.sources.ed
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2025-06-22 01:42_
-
----
-
-_Referenced in [astral-sh/uv#14197](../../astral-sh/uv/pulls/14197.md) on 2025-06-22 02:15_
 
 ---
 

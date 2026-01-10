@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-11T09:54:33Z
 updated_at: 2025-06-17T15:40:09Z
 url: https://github.com/astral-sh/uv/issues/9011
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T03:32:44Z
 ```
 
 # Question: What’s the difference between `optional-dependencies` and `dependency-groups` in `pyproject.toml`?
@@ -216,14 +216,6 @@ I'm not sure if other tools will accept that.
 
 ---
 
-_Referenced in [matplotlib/matplotlib#29752](../../matplotlib/matplotlib/pulls/29752.md) on 2025-03-16 21:00_
-
----
-
-_Referenced in [DeiC-HPC/cotainr#126](../../DeiC-HPC/cotainr/pulls/126.md) on 2025-03-17 10:59_
-
----
-
 _Comment by @lucharo on 2025-03-31 09:52_
 
 can i use dependency groups with `uv pip`? if so what's the pip compatible syntax? 
@@ -307,10 +299,6 @@ Options:
       --script <SCRIPT>                          Sync the environment for a Python script, rather than the current project
       --check                                    Check if the Python environment is synchronized with the project
 ```
-
----
-
-_Referenced in [kedro-org/kedro#4648](../../kedro-org/kedro/issues/4648.md) on 2025-04-08 16:30_
 
 ---
 
@@ -402,49 +390,5 @@ default-groups = "all"
 So I don't have to type `uv sync --all-extras` during development.
 
 Maybe adding a small note to https://docs.astral.sh/uv/concepts/projects/dependencies/#dependency-groups or https://docs.astral.sh/uv/concepts/projects/dependencies/#optional-dependencies would help?
-
----
-
-_Referenced in [pamelafox/mcp-python-demo#1](../../pamelafox/mcp-python-demo/pulls/1.md) on 2025-06-23 23:05_
-
----
-
-_Referenced in [UCL-ARC/python-tooling#563](../../UCL-ARC/python-tooling/pulls/563.md) on 2025-07-16 14:50_
-
----
-
-_Referenced in [glass-dev/glass#633](../../glass-dev/glass/issues/633.md) on 2025-07-16 15:09_
-
----
-
-_Referenced in [astro-informatics/sleplet#462](../../astro-informatics/sleplet/pulls/462.md) on 2025-07-16 15:10_
-
----
-
-_Referenced in [crytic/slither#2786](../../crytic/slither/pulls/2786.md) on 2025-08-30 18:53_
-
----
-
-_Referenced in [NetHack-LE/nle#63](../../NetHack-LE/nle/pulls/63.md) on 2025-09-02 22:05_
-
----
-
-_Referenced in [collective/icalendar#906](../../collective/icalendar/issues/906.md) on 2025-10-05 07:40_
-
----
-
-_Referenced in [astral-sh/uv#15141](../../astral-sh/uv/issues/15141.md) on 2025-10-30 09:13_
-
----
-
-_Referenced in [ImperialCollegeLondon/rojak#76](../../ImperialCollegeLondon/rojak/pulls/76.md) on 2025-10-31 14:01_
-
----
-
-_Referenced in [kornia/kornia#3356](../../kornia/kornia/pulls/3356.md) on 2025-11-23 23:18_
-
----
-
-_Referenced in [opendatateam/udata#3560](../../opendatateam/udata/pulls/3560.md) on 2025-12-05 12:04_
 
 ---

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-06-10T16:54:55Z
 updated_at: 2025-06-24T15:54:14Z
 url: https://github.com/astral-sh/uv/issues/13952
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # `wheelname_parsing_failure[flyte-long-extension]` benchmark flakes
@@ -71,10 +71,6 @@ Go for it.
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2025-06-24 13:44_
-
----
-
-_Referenced in [astral-sh/uv#14240](../../astral-sh/uv/pulls/14240.md) on 2025-06-24 13:44_
 
 ---
 

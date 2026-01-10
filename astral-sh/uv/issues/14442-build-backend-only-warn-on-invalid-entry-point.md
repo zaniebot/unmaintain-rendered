@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-07-03T15:39:34Z
 updated_at: 2025-07-24T12:12:37Z
 url: https://github.com/astral-sh/uv/issues/14442
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Build backend: only warn on invalid entry point names
@@ -74,10 +74,6 @@ https://github.com/squidfunk/mkdocs-material/blob/master/pyproject.toml#L77-L86
 
 I'm not sure why they chose this approach to use slashes but it's pretty established there now.
 Edit: more context here https://github.com/squidfunk/mkdocs-material/issues/4581
-
----
-
-_Referenced in [astral-sh/uv#14867](../../astral-sh/uv/pulls/14867.md) on 2025-07-24 09:26_
 
 ---
 

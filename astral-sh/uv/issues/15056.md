@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-08-04T12:54:24Z
 updated_at: 2025-08-07T13:53:13Z
 url: https://github.com/astral-sh/uv/issues/15056
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-10T03:32:46Z
 ```
 
 # HTTP/2 Connection Issues with uv 0.8.4
@@ -92,10 +92,6 @@ _Comment by @ajunior on 2025-08-05 02:28_
 
 ---
 
-_Referenced in [hyperium/h2#856](../../hyperium/h2/issues/856.md) on 2025-08-05 02:44_
-
----
-
 _Comment by @zanieb on 2025-08-05 02:44_
 
 I filed https://github.com/hyperium/h2/issues/856
@@ -105,10 +101,6 @@ I filed https://github.com/hyperium/h2/issues/856
 _Comment by @zanieb on 2025-08-05 02:47_
 
 We should just revert the h2 update for now. 
-
----
-
-_Referenced in [astral-sh/uv#15079](../../astral-sh/uv/pulls/15079.md) on 2025-08-05 10:26_
 
 ---
 
@@ -175,10 +167,6 @@ This was a reasonable thing to do, but I can’t really make the downgrade happe
 ---
 
 _Reopened by @zanieb on 2025-08-06 13:19_
-
----
-
-_Referenced in [astral-sh/uv#15111](../../astral-sh/uv/pulls/15111.md) on 2025-08-06 21:01_
 
 ---
 

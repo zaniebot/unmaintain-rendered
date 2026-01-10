@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-05-21T07:05:28Z
 updated_at: 2025-06-22T23:52:21Z
 url: https://github.com/astral-sh/uv/issues/13565
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Install PyPy to PATH as `pypy`/`pypy3`
@@ -32,10 +32,6 @@ _Label `enhancement` added by @injust on 2025-05-21 07:05_
 ---
 
 _Assigned to @zanieb by @konstin on 2025-05-21 07:11_
-
----
-
-_Referenced in [astral-sh/uv#14201](../../astral-sh/uv/pulls/14201.md) on 2025-06-22 23:47_
 
 ---
 

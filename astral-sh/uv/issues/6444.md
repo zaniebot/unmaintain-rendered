@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-08-22T15:27:42Z
 updated_at: 2025-08-03T03:11:07Z
 url: https://github.com/astral-sh/uv/issues/6444
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T03:32:44Z
 ```
 
 # Prefer `python` in a later PATH entry over `pythonX.Y` in an earlier entry 
@@ -44,14 +44,6 @@ _Label `breaking` added by @zanieb on 2024-08-22 15:27_
 _Comment by @zanieb on 2024-08-22 15:28_
 
 Arguably a breaking change.
-
----
-
-_Referenced in [astral-sh/uv#6348](../../astral-sh/uv/issues/6348.md) on 2024-08-22 15:28_
-
----
-
-_Referenced in [astral-sh/uv#9715](../../astral-sh/uv/issues/9715.md) on 2024-12-09 15:10_
 
 ---
 

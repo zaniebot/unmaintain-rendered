@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-11T17:47:09Z
 updated_at: 2025-06-26T21:26:43Z
 url: https://github.com/astral-sh/uv/issues/7299
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T03:32:44Z
 ```
 
 # UV tries to build from source during package resolution
@@ -113,10 +113,6 @@ Would appreciate any guidance on the matter. Thanks!
 - **Platform**: Windows
 - **UV version**: 0.4.9
 
-
----
-
-_Referenced in [prefix-dev/pixi#2033](../../prefix-dev/pixi/issues/2033.md) on 2024-09-11 17:48_
 
 ---
 
@@ -332,10 +328,6 @@ The workaround is to add `detectron2` after installing all other dependencies, h
 
 ---
 
-_Referenced in [astral-sh/uv#7846](../../astral-sh/uv/pulls/7846.md) on 2024-10-01 15:35_
-
----
-
 _Comment by @charliermarsh on 2024-10-10 14:28_
 
 I'm going to close this for now because I _think_ the `CUDA_HOME` piece isn't specific to uv.
@@ -478,9 +470,5 @@ actually, your comment helped - no issue on my side anymore. the package resolut
 uname -a
 Linux htc-g040 4.18.0-147.8.1.el8_2.arc.x86_64 #1 SMP Fri Aug 6 10:16:14 BST 2021 x86_64 x86_64 x86_64 GNU/Linux
 ```
-
----
-
-_Referenced in [PrimeIntellect-ai/prime-rl#1309](../../PrimeIntellect-ai/prime-rl/pulls/1309.md) on 2025-11-18 05:56_
 
 ---

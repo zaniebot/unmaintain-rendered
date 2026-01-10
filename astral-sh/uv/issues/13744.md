@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-05-30T21:11:21Z
 updated_at: 2025-06-30T15:39:49Z
 url: https://github.com/astral-sh/uv/issues/13744
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # `uv::it sync::sync_dry_run` flakes with "Would replace existing virtual environment"
@@ -386,10 +386,6 @@ snapshot assertion for 'sync_script-5' failed in line 8128
 
 ---
 
-_Referenced in [astral-sh/uv#13745](../../astral-sh/uv/issues/13745.md) on 2025-05-30 21:15_
-
----
-
 _Label `ci-flake` added by @zanieb on 2025-05-30 21:16_
 
 ---
@@ -532,18 +528,6 @@ Another occurance
 ```
 
 Notably, this one failed by itself.
-
----
-
-_Referenced in [astral-sh/uv#13817](../../astral-sh/uv/pulls/13817.md) on 2025-06-11 13:51_
-
----
-
-_Referenced in [astral-sh/uv#14160](../../astral-sh/uv/issues/14160.md) on 2025-06-20 15:36_
-
----
-
-_Referenced in [astral-sh/uv#14331](../../astral-sh/uv/pulls/14331.md) on 2025-06-27 20:35_
 
 ---
 

@@ -9,7 +9,7 @@ assignees: []
 created_at: 2025-07-31T16:40:12Z
 updated_at: 2025-08-15T20:29:22Z
 url: https://github.com/astral-sh/uv/issues/15000
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-10T03:32:46Z
 ```
 
 # Better handling of multiple uv-build versions for repackagers / distros
@@ -43,10 +43,6 @@ A couple of thoughts for brainstorming:
 There are probably other approaches I'm not thinking of yet. 
 
 cc @konstin, @zanieb, and a few folks from the discussion in https://github.com/pypa/packaging.python.org/pull/1880#discussion_r2217670477 - @hroncok @mgorny @musicinmybrain 
-
----
-
-_Referenced in [pypa/packaging.python.org#1880](../../pypa/packaging.python.org/pulls/1880.md) on 2025-07-31 16:41_
 
 ---
 

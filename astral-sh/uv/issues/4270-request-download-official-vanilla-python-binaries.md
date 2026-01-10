@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-06-12T13:36:58Z
 updated_at: 2025-08-06T15:56:07Z
 url: https://github.com/astral-sh/uv/issues/4270
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T03:32:44Z
 ```
 
 # Request: Download "official" (vanilla) Python binaries in toolchains
@@ -112,10 +112,6 @@ _Comment by @hoechenberger on 2024-06-19 09:26_
 Absolutely! Just wanted to ensure you're aware of this (potential) issue.
 
 Let's see if it will disappear magically by getting resolved upstream in https://github.com/indygreg/python-build-standalone/issues/274 😄 
-
----
-
-_Referenced in [astral-sh/uv#9496](../../astral-sh/uv/issues/9496.md) on 2024-11-28 14:02_
 
 ---
 

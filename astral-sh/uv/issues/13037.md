@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-22T02:51:46Z
 updated_at: 2025-06-16T12:46:19Z
 url: https://github.com/astral-sh/uv/issues/13037
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # `uv sync` failing to fetch package from private index with 302 error on 0.6.15
@@ -70,23 +70,11 @@ _Label `bug` added by @mfriedy on 2025-04-22 02:51_
 
 ---
 
-_Referenced in [astral-sh/uv#13038](../../astral-sh/uv/pulls/13038.md) on 2025-04-22 03:03_
-
----
-
 _Comment by @zanieb on 2025-04-22 03:04_
 
 Thanks for the report!
 
 Would you be able to test a development build to get some more information? If you go to https://github.com/astral-sh/uv/actions/runs/14585787652?pr=13038 — at the bottom there are built binaries. I've added some more information to this error.
-
----
-
-_Referenced in [astral-sh/uv#13040](../../astral-sh/uv/pulls/13040.md) on 2025-04-22 03:27_
-
----
-
-_Referenced in [astral-sh/uv#13041](../../astral-sh/uv/pulls/13041.md) on 2025-04-22 03:32_
 
 ---
 
@@ -122,19 +110,11 @@ _Comment by @zanieb on 2025-04-22 04:20_
 
 ---
 
-_Referenced in [astral-sh/uv#13050](../../astral-sh/uv/pulls/13050.md) on 2025-04-22 13:45_
-
----
-
 _Closed by @jtfmumm on 2025-04-28 07:07_
 
 ---
 
 _Closed by @jtfmumm on 2025-04-28 07:07_
-
----
-
-_Referenced in [astral-sh/uv#13255](../../astral-sh/uv/issues/13255.md) on 2025-05-01 18:26_
 
 ---
 

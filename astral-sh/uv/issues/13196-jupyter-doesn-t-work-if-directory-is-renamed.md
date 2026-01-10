@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-29T13:33:59Z
 updated_at: 2025-06-12T15:13:55Z
 url: https://github.com/astral-sh/uv/issues/13196
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # `jupyter` doesn't work if directory is renamed
@@ -100,19 +100,11 @@ Hey - I'm hitting this again now, so any progress on this would be appreciated!
 
 ---
 
-_Referenced in [astral-sh/uv#13989](../../astral-sh/uv/issues/13989.md) on 2025-06-12 13:21_
-
----
-
 _Label `bug` removed by @zanieb on 2025-06-12 13:29_
 
 ---
 
 _Label `question` added by @zanieb on 2025-06-12 13:29_
-
----
-
-_Referenced in [astral-sh/uv#13992](../../astral-sh/uv/issues/13992.md) on 2025-06-12 13:33_
 
 ---
 

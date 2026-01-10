@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-22T08:28:30Z
 updated_at: 2025-07-23T09:43:51Z
 url: https://github.com/astral-sh/uv/issues/10845
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # `uv run` changes uv.lock files
@@ -110,10 +110,6 @@ It's a big value proposition of `uv run` to ensure things are up to date. Once w
 
 ---
 
-_Referenced in [GridTools/gt4py#1841](../../GridTools/gt4py/pulls/1841.md) on 2025-01-31 08:26_
-
----
-
 _Comment by @silverwind on 2025-07-16 11:08_
 
 > Once we add support for configuring options per-command
@@ -129,22 +125,10 @@ But imho, `run` should never touch the lockfile, its not an action that's suppos
 
 ---
 
-_Referenced in [go-gitea/gitea#35097](../../go-gitea/gitea/pulls/35097.md) on 2025-07-16 12:20_
-
----
-
 _Comment by @UmaisZahid on 2025-07-23 09:43_
 
 I agree with the comments above, this is a counter-intuitive aspect of the API. I think most people would assume `uv run` to be a stateless op for the underlying venv.
 
 Something like the behaviour of `--locked` should probably be the default, so that an error is raised if your `uv.lock` is out of sync with your `pyproject.toml`, with the error message informing the user that they should update explicitly with `uv sync` or `uv run` with `--frozen` if they want to proceed anyway.  
-
----
-
-_Referenced in [perrygeo/python-rasterstats#309](../../perrygeo/python-rasterstats/pulls/309.md) on 2025-09-02 18:31_
-
----
-
-_Referenced in [ecolabdata/ecospheres-universe#18](../../ecolabdata/ecospheres-universe/pulls/18.md) on 2025-10-20 12:56_
 
 ---

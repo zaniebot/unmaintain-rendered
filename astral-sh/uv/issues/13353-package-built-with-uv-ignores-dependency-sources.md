@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-05-08T18:20:11Z
 updated_at: 2025-07-07T08:42:23Z
 url: https://github.com/astral-sh/uv/issues/13353
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Package built with uv, ignores dependency sources specified in tool.uv.sources
@@ -264,9 +264,5 @@ _Comment by @nathanpainchaud on 2025-07-07 08:42_
 > Unfortunately, PEP 621 requires us to keep `project.dependencies` exactly as they were, so we're bound to that with `uv_build`.
 
 I was afraid that was the case, but thank you for the clear and direct answer 👍 
-
----
-
-_Referenced in [aptible/unpage#18](../../aptible/unpage/pulls/18.md) on 2025-07-28 17:13_
 
 ---

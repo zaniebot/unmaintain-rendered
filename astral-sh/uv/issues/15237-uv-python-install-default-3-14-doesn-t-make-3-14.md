@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-08-12T12:43:36Z
 updated_at: 2025-08-12T15:10:11Z
 url: https://github.com/astral-sh/uv/issues/15237
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-10T03:32:46Z
 ```
 
 # `uv python install --default 3.14` doesn't make 3.14 my global python
@@ -65,10 +65,6 @@ _Assigned to @zanieb by @zanieb on 2025-08-12 12:57_
 _Comment by @zanieb on 2025-08-12 12:57_
 
 Thanks!
-
----
-
-_Referenced in [astral-sh/uv#15240](../../astral-sh/uv/pulls/15240.md) on 2025-08-12 15:09_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-08-10T15:37:17Z
 updated_at: 2025-08-11T15:44:09Z
 url: https://github.com/astral-sh/uv/issues/15203
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-10T03:32:46Z
 ```
 
 # `uv>=0.7.10` failed to use system proxy on Windows
@@ -399,10 +399,6 @@ The system proxies used to be weirder, with macOS having a feature flag, but Win
 _Comment by @zanieb on 2025-08-11 15:22_
 
 Ah okay that makes sense! Appreciate the clarification.
-
----
-
-_Referenced in [astral-sh/uv#15221](../../astral-sh/uv/pulls/15221.md) on 2025-08-11 15:22_
 
 ---
 

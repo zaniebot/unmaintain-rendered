@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-06-16T19:20:44Z
 updated_at: 2025-06-21T15:21:07Z
 url: https://github.com/astral-sh/uv/issues/14086
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Add ROCm detection to `--torch-backend`
@@ -112,10 +112,6 @@ _Comment by @charliermarsh on 2025-06-21 01:20_
  'gfx1200',
  'gfx1201']
 ```
-
----
-
-_Referenced in [astral-sh/uv#14176](../../astral-sh/uv/pulls/14176.md) on 2025-06-21 01:59_
 
 ---
 

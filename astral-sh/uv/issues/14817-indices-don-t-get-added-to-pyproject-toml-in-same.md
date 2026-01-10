@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-07-22T16:22:59Z
 updated_at: 2025-07-22T19:10:00Z
 url: https://github.com/astral-sh/uv/issues/14817
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Indices don't get added to pyproject.toml in same order as command
@@ -131,10 +131,6 @@ url = "PIP_ARTIFACTORY_INDEX"
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2025-07-22 17:33_
-
----
-
-_Referenced in [astral-sh/uv#14831](../../astral-sh/uv/pulls/14831.md) on 2025-07-22 18:45_
 
 ---
 

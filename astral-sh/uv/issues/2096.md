@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-29T20:58:42Z
 updated_at: 2025-06-16T15:24:41Z
 url: https://github.com/astral-sh/uv/issues/2096
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T03:32:43Z
 ```
 
 # Support PyPy
@@ -50,26 +50,6 @@ Not prioritizing this immediately, but it should happen, and I'd welcome contrib
 ---
 
 _Label `good first issue` added by @konstin on 2024-03-01 10:54_
-
----
-
-_Referenced in [python/typing_extensions#348](../../python/typing_extensions/pulls/348.md) on 2024-03-04 06:31_
-
----
-
-_Referenced in [astral-sh/uv#1636](../../astral-sh/uv/issues/1636.md) on 2024-03-05 07:33_
-
----
-
-_Referenced in [pypa/build#751](../../pypa/build/pulls/751.md) on 2024-03-06 15:49_
-
----
-
-_Referenced in [astral-sh/uv#1802](../../astral-sh/uv/issues/1802.md) on 2024-03-07 21:54_
-
----
-
-_Referenced in [astral-sh/uv#2490](../../astral-sh/uv/issues/2490.md) on 2024-03-16 17:48_
 
 ---
 
@@ -229,10 +209,6 @@ _Comment by @charliermarsh on 2024-08-16 12:33_
 
 ---
 
-_Referenced in [ua-parser/uap-python#102](../../ua-parser/uap-python/issues/102.md) on 2025-01-01 10:36_
-
----
-
 _Comment by @michealroberts on 2025-05-23 06:50_
 
 This is great.
@@ -328,13 +304,5 @@ Yes since https://github.com/astral-sh/python-build-standalone/pull/538 `PYTHON_
 _Comment by @michealroberts on 2025-06-16 15:24_
 
 Agree, thanks @zanieb.
-
----
-
-_Referenced in [ua-parser/uap-python#272](../../ua-parser/uap-python/issues/272.md) on 2025-08-02 10:33_
-
----
-
-_Referenced in [python/pyperformance#425](../../python/pyperformance/pulls/425.md) on 2025-10-26 09:49_
 
 ---

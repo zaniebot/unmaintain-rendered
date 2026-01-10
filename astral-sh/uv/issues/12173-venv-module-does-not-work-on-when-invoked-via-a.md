@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-14T19:05:46Z
 updated_at: 2025-07-28T23:10:35Z
 url: https://github.com/astral-sh/uv/issues/12173
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # `venv` module does not work on when invoked via a symlink to a `uv`-installed Python
@@ -240,18 +240,6 @@ https://github.com/pypa/cibuildwheel/issues/2327
 
 ---
 
-_Referenced in [datatractor/beam#17](../../datatractor/beam/issues/17.md) on 2025-04-08 09:30_
-
----
-
-_Referenced in [VOICEVOX/voicevox_engine#1616](../../VOICEVOX/voicevox_engine/pulls/1616.md) on 2025-04-15 09:17_
-
----
-
 _Assigned to @geofft by @geofft on 2025-07-28 23:10_
-
----
-
-_Referenced in [astral-sh/uv#16411](../../astral-sh/uv/issues/16411.md) on 2025-10-22 17:53_
 
 ---

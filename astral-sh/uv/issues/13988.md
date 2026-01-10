@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-06-12T13:07:14Z
 updated_at: 2025-06-12T14:45:13Z
 url: https://github.com/astral-sh/uv/issues/13988
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Do not allow `uv add --group ... --script`
@@ -52,10 +52,6 @@ This isn't allowed by the specification.
 
 ---
 
-_Referenced in [astral-sh/uv#13735](../../astral-sh/uv/pulls/13735.md) on 2025-06-12 13:07_
-
----
-
 _Label `bug` added by @Gankra on 2025-06-12 13:12_
 
 ---
@@ -69,10 +65,6 @@ _Comment by @Gankra on 2025-06-12 13:15_
 For anyone who wants to fix this, you should probably just add an error here if dependency_type is DependencyType::Group
 
 https://github.com/astral-sh/uv/blob/87ab57e902c9009b47f22d951acf631b515e3bed/crates/uv/src/commands/project/add.rs#L125-L131
-
----
-
-_Referenced in [astral-sh/uv#13997](../../astral-sh/uv/pulls/13997.md) on 2025-06-12 13:57_
 
 ---
 

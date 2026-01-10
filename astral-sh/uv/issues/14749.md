@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-07-19T22:09:11Z
 updated_at: 2025-07-22T12:11:07Z
 url: https://github.com/astral-sh/uv/issues/14749
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Project dependencies no longer available in JupyterLab launched with `uv run --with jupyter jupyter lab`
@@ -119,25 +119,9 @@ That one I assume would be fixed by rewriting the shebangs in the final environm
 
 ---
 
-_Referenced in [astral-sh/uv#14729](../../astral-sh/uv/issues/14729.md) on 2025-07-21 12:31_
-
----
-
 _Comment by @zanieb on 2025-07-21 12:32_
 
 Charlie's referring to https://github.com/astral-sh/uv/issues/13327 which was a bug in the previous implementation as well. Unfortunately that breaks Jupyter.
-
----
-
-_Referenced in [astral-sh/uv#14788](../../astral-sh/uv/pulls/14788.md) on 2025-07-21 13:01_
-
----
-
-_Referenced in [astral-sh/uv#14790](../../astral-sh/uv/pulls/14790.md) on 2025-07-21 14:41_
-
----
-
-_Referenced in [jupyterlab/jupyterlab#17716](../../jupyterlab/jupyterlab/issues/17716.md) on 2025-07-21 16:20_
 
 ---
 

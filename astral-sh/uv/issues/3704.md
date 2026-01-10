@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-05-21T17:00:07Z
 updated_at: 2025-07-24T21:01:46Z
 url: https://github.com/astral-sh/uv/issues/3704
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T03:32:44Z
 ```
 
 # `--python` should be allowed before command
@@ -72,10 +72,6 @@ _Label `cli` added by @zanieb on 2024-05-21 17:07_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-05-28 18:56_
-
----
-
-_Referenced in [astral-sh/uv#3889](../../astral-sh/uv/pulls/3889.md) on 2024-05-28 20:44_
 
 ---
 

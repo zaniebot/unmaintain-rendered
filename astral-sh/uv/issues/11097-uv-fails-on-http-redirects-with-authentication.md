@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-01-30T14:30:59Z
 updated_at: 2025-06-30T10:05:33Z
 url: https://github.com/astral-sh/uv/issues/11097
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # uv fails on HTTP redirects with authentication
@@ -168,19 +168,11 @@ _Assigned to @jtfmumm by @jtfmumm on 2025-04-15 07:58_
 
 ---
 
-_Referenced in [astral-sh/uv#12920](../../astral-sh/uv/pulls/12920.md) on 2025-04-16 15:23_
-
----
-
 _Closed by @jtfmumm on 2025-04-18 12:56_
 
 ---
 
 _Closed by @jtfmumm on 2025-04-18 12:56_
-
----
-
-_Referenced in [astral-sh/uv#13255](../../astral-sh/uv/issues/13255.md) on 2025-05-01 18:26_
 
 ---
 
@@ -197,10 +189,6 @@ _Comment by @jtfmumm on 2025-06-18 08:24_
 ---
 
 _Reopened by @jtfmumm on 2025-06-18 08:24_
-
----
-
-_Referenced in [astral-sh/uv#14126](../../astral-sh/uv/pulls/14126.md) on 2025-06-18 12:15_
 
 ---
 
@@ -257,10 +245,6 @@ _Label `needs-design` removed by @jtfmumm on 2025-06-27 13:56_
 
 ---
 
-_Referenced in [astral-sh/uv#14315](../../astral-sh/uv/pulls/14315.md) on 2025-06-27 13:56_
-
----
-
 _Comment by @jtfmumm on 2025-06-27 14:01_
 
 We decided it makes sense to support it. I've opened a PR
@@ -276,9 +260,5 @@ _Comment by @bra-fsn on 2025-06-30 10:05_
 > We decided it makes sense to support it. I've opened a PR
 
 I've just verified: 0.7.17 works! Thank you very much!
-
----
-
-_Referenced in [astral-sh/uv#14549](../../astral-sh/uv/issues/14549.md) on 2025-07-10 20:33_
 
 ---

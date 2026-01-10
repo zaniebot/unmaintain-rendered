@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-22T20:35:19Z
 updated_at: 2025-06-20T15:41:48Z
 url: https://github.com/astral-sh/uv/issues/5309
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T03:32:44Z
 ```
 
 # pronunciation of uv
@@ -48,14 +48,6 @@ i will see if I can make such a PR; maybe this evening.
 _Comment by @zanieb on 2024-07-22 21:25_
 
 Also not an expert but `/juː viː/` seems correct
-
----
-
-_Referenced in [petergaultney/uv#1](../../petergaultney/uv/pulls/1.md) on 2024-07-23 15:02_
-
----
-
-_Referenced in [astral-sh/uv#5336](../../astral-sh/uv/pulls/5336.md) on 2024-07-23 15:03_
 
 ---
 

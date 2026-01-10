@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-07-08T23:54:09Z
 updated_at: 2025-07-09T15:06:18Z
 url: https://github.com/astral-sh/uv/issues/14513
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Docker image ghcr.io/astral-sh/... returns 403 Forbidden when pulling
@@ -56,10 +56,6 @@ N/A
 ---
 
 _Label `bug` added by @kbukum1 on 2025-07-08 23:54_
-
----
-
-_Referenced in [dependabot/dependabot-core#12588](../../dependabot/dependabot-core/pulls/12588.md) on 2025-07-08 23:54_
 
 ---
 

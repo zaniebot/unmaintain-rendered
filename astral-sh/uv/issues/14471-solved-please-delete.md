@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-07-06T20:14:48Z
 updated_at: 2025-07-07T07:50:03Z
 url: https://github.com/astral-sh/uv/issues/14471
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Solved. Please delete
@@ -48,9 +48,5 @@ _Renamed from "[Bug] uvx fails on macOS 12.x due to missing realpath command in 
 ---
 
 _Closed by @konstin on 2025-07-07 07:50_
-
----
-
-_Referenced in [Hocnonsense/genome#16](../../Hocnonsense/genome/pulls/16.md) on 2025-07-09 12:13_
 
 ---

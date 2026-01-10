@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-09-19T05:59:19Z
 updated_at: 2025-06-23T09:49:00Z
 url: https://github.com/astral-sh/uv/issues/7533
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T03:32:44Z
 ```
 
 # Lock files don't mesh with dynamic package version info
@@ -104,10 +104,6 @@ If there would be an option to omit the project version from the uv.lock it woul
 
 ---
 
-_Referenced in [astral-sh/uv#7994](../../astral-sh/uv/issues/7994.md) on 2024-10-08 09:29_
-
----
-
 _Comment by @david-waterworth on 2024-10-08 22:22_
 
 As I mentioned in  ttps://github.com/astral-sh/uv/issues/7994 I use`python-semantic-release` which behaves the same. The way I work around the infinite build loop is to configure my Jenkins script to skip commits that contains the `python-semantic-release` message - these commits include the changed `pyproject.toml` and `__version__.py` file, along with a generated CHANGELOG.md 
@@ -117,27 +113,11 @@ As a workaround, I also added `uv lock` at the start of the build script and `gi
 
 ---
 
-_Referenced in [edgarrmondragon/meltano-hub-api#143](../../edgarrmondragon/meltano-hub-api/issues/143.md) on 2024-10-17 01:58_
-
----
-
-_Referenced in [astral-sh/uv#8590](../../astral-sh/uv/issues/8590.md) on 2024-10-26 11:58_
-
----
-
 _Comment by @alejandrodnm on 2024-10-31 10:59_
 
 I've just encountered this. We are also using release-please and uv in an internal project, after a release then the surprise is that the uv.lock was outdated.
 
 Ours plans were to add uv to https://github.com/timescale/pgai but since we are already using release-please, we are hesitant due to this issue.
-
----
-
-_Referenced in [astral-sh/uv#6860](../../astral-sh/uv/issues/6860.md) on 2024-11-04 10:50_
-
----
-
-_Referenced in [localstack/localstack-sdk-python#5](../../localstack/localstack-sdk-python/pulls/5.md) on 2024-11-05 09:11_
 
 ---
 
@@ -229,10 +209,6 @@ uv 0.4.30 (61ed2a236 2024-11-04)
 _Comment by @charliermarsh on 2024-11-06 13:59_
 
 We can fix this, but I still strongly recommend against setting the version dynamically like that.
-
----
-
-_Referenced in [astral-sh/uv#8866](../../astral-sh/uv/issues/8866.md) on 2024-11-06 16:30_
 
 ---
 
@@ -417,10 +393,6 @@ Yeah, it seems like fundamentally the only way to make this work with `setuptool
 
 ---
 
-_Referenced in [Future-House/ldp#152](../../Future-House/ldp/pulls/152.md) on 2024-11-13 18:38_
-
----
-
 _Label `needs-design` added by @zanieb on 2024-11-14 15:32_
 
 ---
@@ -476,10 +448,6 @@ I'm going to ask that if @dsully or anyone else wants to express concern over st
 
 ---
 
-_Referenced in [astral-sh/uv#9126](../../astral-sh/uv/issues/9126.md) on 2024-11-14 18:25_
-
----
-
 _Comment by @hynek on 2024-11-14 18:34_
 
 For posterity: https://discuss.python.org/t/pep-751-now-with-graphs/69721/86
@@ -489,10 +457,6 @@ For posterity: https://discuss.python.org/t/pep-751-now-with-graphs/69721/86
 _Comment by @dsully on 2024-11-15 17:52_
 
 Will do @brettcannon, thanks! Though looks like Hynek got there first 😎 
-
----
-
-_Referenced in [reservoir-data/tap-fedidb#25](../../reservoir-data/tap-fedidb/issues/25.md) on 2024-11-15 18:13_
 
 ---
 
@@ -540,10 +504,6 @@ My plan is to get my organization to stop using dynamic versioning in packages..
 
 ---
 
-_Referenced in [astral-sh/uv#9233](../../astral-sh/uv/issues/9233.md) on 2024-11-19 16:28_
-
----
-
 _Comment by @mjpieters on 2024-11-19 16:48_
 
 We use a [`Taskfile.yml` task definition](https://taskfile.dev/), so I have a _little_ more flexibility, and I use it to apply an ugly work-around: When we update the lock I force the version to be `0.0.0` by setting `SETUPTOOLS_SCM_PRETEND_VERSION` (which works for either `hatch-vcs` or `setuptools-scm`):
@@ -587,14 +547,6 @@ and then, when linting:
 ```
 
 This lets us at least avoid recording the current dynamic version in the lock file.
-
----
-
-_Referenced in [zanieb/uv#6](../../zanieb/uv/issues/6.md) on 2024-11-26 17:33_
-
----
-
-_Referenced in [astral-sh/uv#9452](../../astral-sh/uv/issues/9452.md) on 2024-11-26 21:15_
 
 ---
 
@@ -673,14 +625,6 @@ For the moment, this serves me well. If there are any unintentional side-effects
 
 ---
 
-_Referenced in [astral-sh/uv#5633](../../astral-sh/uv/issues/5633.md) on 2024-12-12 14:34_
-
----
-
-_Referenced in [astral-sh/uv#9874](../../astral-sh/uv/issues/9874.md) on 2024-12-13 17:51_
-
----
-
 _Comment by @superlopuh on 2024-12-13 19:28_
 
 Would it be possible to allow for this behaviour?
@@ -734,14 +678,6 @@ edit: ah, I see `SETUPTOOLS_SCM_PRETEND_VERSION` was [noted above too](https://g
 
 ---
 
-_Referenced in [xdslproject/xdsl#3639](../../xdslproject/xdsl/pulls/3639.md) on 2024-12-16 08:26_
-
----
-
-_Referenced in [urllib3/urllib3#3530](../../urllib3/urllib3/pulls/3530.md) on 2024-12-16 18:09_
-
----
-
 _Comment by @sciyoshi on 2024-12-19 16:41_
 
 Note that neither setting [package = false in [tool.uv]](https://docs.astral.sh/uv/reference/settings/#package) nor using --no-install-project addresses the issue, because it seems like the project is still included in uv.lock regardless.
@@ -792,41 +728,9 @@ Of course, feel free to set the default version to something that fits your proj
 
 ---
 
-_Referenced in [astral-sh/uv#10054](../../astral-sh/uv/issues/10054.md) on 2024-12-20 13:47_
-
----
-
-_Referenced in [rst2pdf/rst2pdf#1256](../../rst2pdf/rst2pdf/pulls/1256.md) on 2024-12-24 16:14_
-
----
-
-_Referenced in [astral-sh/uv#10167](../../astral-sh/uv/issues/10167.md) on 2024-12-26 14:36_
-
----
-
-_Referenced in [googleapis/release-please#2455](../../googleapis/release-please/issues/2455.md) on 2024-12-31 00:05_
-
----
-
 _Comment by @ofek on 2025-01-08 16:40_
 
 The solution [here](https://github.com/astral-sh/uv/issues/7533#issuecomment-2486235749) is what should be preferred for `hatch-vcs`, `setuptools-scm`, etc. Basically, only temporarily set the `SETUPTOOLS_SCM_PRETEND_VERSION` environment variable when running `uv lock`.
-
----
-
-_Referenced in [astral-sh/uv#10559](../../astral-sh/uv/issues/10559.md) on 2025-01-13 09:32_
-
----
-
-_Referenced in [astropy/astropy#17596](../../astropy/astropy/issues/17596.md) on 2025-01-13 09:59_
-
----
-
-_Referenced in [PlasmaPy/PlasmaPy#2940](../../PlasmaPy/PlasmaPy/issues/2940.md) on 2025-01-14 23:24_
-
----
-
-_Referenced in [astral-sh/uv#10622](../../astral-sh/uv/pulls/10622.md) on 2025-01-15 02:23_
 
 ---
 
@@ -844,23 +748,11 @@ _Closed by @charliermarsh on 2025-01-15 16:54_
 
 ---
 
-_Referenced in [devminds-ch/project-python#15](../../devminds-ch/project-python/pulls/15.md) on 2025-01-15 18:04_
-
----
-
 _Comment by @namurphy on 2025-01-15 22:01_
 
 Many thanks for making this change and including it in `v0.15.9`!  🎉🎂💖🎆🪩🌌🥦
 
 I just recreated `uv.lock` for a project with a dynamic version, and can confirm that the resulting `uv.lock` no longer contains the dynamic version for the project.  I deleted the prior `uv.lock` before running `uv lock` with `v0.15.9`, just to be safe.  
-
----
-
-_Referenced in [urllib3/urllib3#3550](../../urllib3/urllib3/pulls/3550.md) on 2025-01-15 23:56_
-
----
-
-_Referenced in [django-commons/drf-excel#110](../../django-commons/drf-excel/pulls/110.md) on 2025-01-19 13:36_
 
 ---
 
@@ -1034,10 +926,6 @@ Thanks!
 
 ---
 
-_Referenced in [astral-sh/uv#11047](../../astral-sh/uv/issues/11047.md) on 2025-01-29 01:12_
-
----
-
 _Comment by @charliermarsh on 2025-01-29 01:14_
 
 Thank you, this was a real bug. Fix here: https://github.com/astral-sh/uv/pull/11046.
@@ -1050,32 +938,12 @@ Awesome, thank you for the quick repro @apollo13  and @charliermarsh for the qui
 
 ---
 
-_Referenced in [bihealth/cubi-tk#255](../../bihealth/cubi-tk/pulls/255.md) on 2025-02-03 13:06_
-
----
-
-_Referenced in [prefix-dev/pixi#2512](../../prefix-dev/pixi/issues/2512.md) on 2025-04-24 09:15_
-
----
-
-_Referenced in [nathanjmcdougall/postmodern-python-ci#1](../../nathanjmcdougall/postmodern-python-ci/issues/1.md) on 2025-05-08 09:47_
-
----
-
-_Referenced in [prefix-dev/pixi#1274](../../prefix-dev/pixi/issues/1274.md) on 2025-05-28 19:02_
-
----
-
 _Comment by @aqib-bhat on 2025-06-15 11:15_
 
 I was experiencing the `uv.lock` going out of sync when `python-semantic-release` would bump the version in `pyproject.toml`. I fixed this by:
 - Adding a step after the semantic release that updates the version of my project in the `uv.lock` file by running: `uv lock --upgrade-package <project_name>` followed by committing and pushing the change.
   - Link to my GitHub workflow file: https://github.com/aqib-oss/sonar-qube-gh-action/blob/main/.github/workflows/main-workflow.yaml#L74
   - Thankfully, this does not trigger another run of the `main` branch workflow, however, if it did, it can easily be handled by adding a pre-check job that determines if the last commit was for syncing the project version in the `uv.lock` file, and the main job will run only if the output from the pre-check job is `true`.
-
----
-
-_Referenced in [astral-sh/uv#14137](../../astral-sh/uv/issues/14137.md) on 2025-06-20 17:30_
 
 ---
 
@@ -1097,9 +965,5 @@ _Label `needs-decision` removed by @konstin on 2025-06-23 09:47_
 _Comment by @konstin on 2025-06-23 09:49_
 
 A plain `uv lock` should get the `uv.lock` synced with the bumped version. Note that there's also `uv version --bump`, which does also update `uv.lock`.
-
----
-
-_Referenced in [LEB-EPFL/just-focus#8](../../LEB-EPFL/just-focus/pulls/8.md) on 2025-08-05 08:16_
 
 ---

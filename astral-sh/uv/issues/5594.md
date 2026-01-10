@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-30T11:16:48Z
 updated_at: 2025-07-01T19:52:58Z
 url: https://github.com/astral-sh/uv/issues/5594
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T03:32:44Z
 ```
 
 # RFC: Handling diverging requires-python in workspaces with forking on the python version
@@ -37,14 +37,6 @@ _Label `needs-design` added by @konstin on 2024-07-30 11:16_
 ---
 
 _Label `preview` added by @konstin on 2024-07-30 11:16_
-
----
-
-_Referenced in [astral-sh/uv#5644](../../astral-sh/uv/pulls/5644.md) on 2024-07-31 00:10_
-
----
-
-_Referenced in [astral-sh/uv#5398](../../astral-sh/uv/issues/5398.md) on 2024-08-09 08:04_
 
 ---
 

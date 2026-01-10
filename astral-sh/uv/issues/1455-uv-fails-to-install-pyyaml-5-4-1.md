@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-16T08:54:30Z
 updated_at: 2025-06-27T11:11:59Z
 url: https://github.com/astral-sh/uv/issues/1455
-synced_at: 2026-01-10T01:57:02Z
+synced_at: 2026-01-10T03:32:43Z
 ```
 
 # `uv` fails to install `pyyaml==5.4.1`
@@ -203,14 +203,6 @@ Installed 1 package in 6ms
 ---
 
 _Closed by @BurntSushi on 2024-02-21 14:39_
-
----
-
-_Referenced in [a2cps/python-vbr#24](../../a2cps/python-vbr/pulls/24.md) on 2024-10-10 17:55_
-
----
-
-_Referenced in [RedHatQE/openshift-python-wrapper#2202](../../RedHatQE/openshift-python-wrapper/issues/2202.md) on 2024-11-27 16:38_
 
 ---
 

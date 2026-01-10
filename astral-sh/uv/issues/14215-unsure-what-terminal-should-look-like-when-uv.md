@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-06-23T12:42:10Z
 updated_at: 2025-08-21T12:56:38Z
 url: https://github.com/astral-sh/uv/issues/14215
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Unsure what terminal should look like when uv venv is activated
@@ -43,10 +43,6 @@ uv 0.7.13
 ---
 
 _Label `question` added by @oliverangelil on 2025-06-23 12:42_
-
----
-
-_Referenced in [astral-sh/uv#14216](../../astral-sh/uv/issues/14216.md) on 2025-06-23 14:48_
 
 ---
 

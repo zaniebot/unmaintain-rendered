@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-22T21:00:56Z
 updated_at: 2025-07-17T21:00:29Z
 url: https://github.com/astral-sh/uv/issues/13060
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # `uv pip compile --format pylock.toml` option to preserve extras & dependency groups
@@ -46,9 +46,5 @@ https://peps.python.org/pep-0751/#file-name
 _Comment by @gaborbernat on 2025-07-17 17:23_
 
 I'll try to tackle this 😊 
-
----
-
-_Referenced in [astral-sh/uv#14728](../../astral-sh/uv/pulls/14728.md) on 2025-07-18 15:21_
 
 ---

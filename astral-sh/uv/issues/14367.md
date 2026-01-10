@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-06-30T05:24:09Z
 updated_at: 2025-07-10T02:43:28Z
 url: https://github.com/astral-sh/uv/issues/14367
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # `--find-links` URL Handling Regression in uv 0.7.17
@@ -192,10 +192,6 @@ In 0.7.16, the requirements.txt method works while the command line method fails
 
 ---
 
-_Referenced in [astral-sh/uv#14387](../../astral-sh/uv/pulls/14387.md) on 2025-07-01 09:25_
-
----
-
 _Comment by @jtfmumm on 2025-07-01 09:52_
 
 Thanks for sharing these details! I have a [draft PR](https://github.com/astral-sh/uv/pull/14387) that I think should fix your issue. I'm not sure if it's the best approach yet, but would it be possible for you to build and test it on your use case?
@@ -205,10 +201,6 @@ Thanks for sharing these details! I have a [draft PR](https://github.com/astral-
 _Comment by @c892836a on 2025-07-01 09:59_
 
 Thank you for working on this issue so quickly! I'd be happy to help test your draft PR.
-
----
-
-_Referenced in [astral-sh/uv#14375](../../astral-sh/uv/issues/14375.md) on 2025-07-01 15:59_
 
 ---
 
@@ -246,14 +238,6 @@ error: Failed to read `--find-links` URL: https://somedomain.com/shared
 _Comment by @jtfmumm on 2025-07-07 10:49_
 
 Thanks for the update. [That PR](https://github.com/astral-sh/uv/pull/14387) has not been merged yet. If it's possible for you to build and test with it, that would be very helpful. But otherwise, I'll notify you when it's released.
-
----
-
-_Referenced in [astral-sh/uv#14503](../../astral-sh/uv/pulls/14503.md) on 2025-07-08 09:46_
-
----
-
-_Referenced in [astral-sh/uv#14511](../../astral-sh/uv/pulls/14511.md) on 2025-07-08 22:13_
 
 ---
 

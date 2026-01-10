@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-06-12T13:38:22Z
 updated_at: 2025-06-22T10:47:15Z
 url: https://github.com/astral-sh/uv/issues/13994
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Use relocatable virtual environments by default
@@ -40,9 +40,5 @@ _Label `enhancement` added by @zanieb on 2025-06-12 13:38_
 ---
 
 _Renamed from "Use relocatable virtual environments by defualt" to "Use relocatable virtual environments by default" by @konstin on 2025-06-22 10:47_
-
----
-
-_Referenced in [ankitects/anki#4305](../../ankitects/anki/issues/4305.md) on 2025-09-01 16:43_
 
 ---

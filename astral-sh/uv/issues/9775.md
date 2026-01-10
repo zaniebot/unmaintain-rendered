@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-10T14:55:18Z
 updated_at: 2025-08-14T15:41:42Z
 url: https://github.com/astral-sh/uv/issues/9775
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T03:32:44Z
 ```
 
 # `uv tool` does not respect `UV_INDEX_*` for registry authentication when pulling dependencies
@@ -167,10 +167,6 @@ _Comment by @zanieb on 2025-01-07 19:23_
 ---
 
 _Label `needs-decision` added by @zanieb on 2025-01-07 19:23_
-
----
-
-_Referenced in [astral-sh/uv#10386](../../astral-sh/uv/issues/10386.md) on 2025-01-08 09:55_
 
 ---
 

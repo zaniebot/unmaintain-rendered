@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-06-11T17:22:52Z
 updated_at: 2025-06-11T20:38:12Z
 url: https://github.com/astral-sh/uv/issues/13973
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Support for alternate index in `uv tool` seems incomplete
@@ -87,10 +87,6 @@ We don't support requesting indexes by name via the `--index` flag yet, though w
 _Comment by @zanieb on 2025-06-11 19:13_
 
 I've opened https://github.com/astral-sh/uv/issues/13974 to track that.
-
----
-
-_Referenced in [astral-sh/uv#13974](../../astral-sh/uv/issues/13974.md) on 2025-06-11 19:13_
 
 ---
 

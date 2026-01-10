@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-08-05T17:45:26Z
 updated_at: 2025-08-05T17:48:17Z
 url: https://github.com/astral-sh/uv/issues/15086
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-10T03:32:46Z
 ```
 
 # Running `uv build` in Docker container: `symlink destination for /usr/bin/python3 is outside of the target directory`
@@ -80,9 +80,5 @@ _Label `bug` added by @alechouse97 on 2025-08-05 17:45_
 ---
 
 _Closed by @alechouse97 on 2025-08-05 17:48_
-
----
-
-_Referenced in [astral-sh/uv#15096](../../astral-sh/uv/issues/15096.md) on 2025-08-06 00:16_
 
 ---

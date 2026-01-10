@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-06-21T06:30:01Z
 updated_at: 2025-06-22T04:06:41Z
 url: https://github.com/astral-sh/uv/issues/14178
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Seeking for suggestions to install axolotl
@@ -208,14 +208,6 @@ so I can install by `unsloth[cu128-torch270]` for certain torch version.
 I posted the question at https://github.com/axolotl-ai-cloud/axolotl/issues/2812#issuecomment-2993483933
 
 But if anyone has better suggestions, please let me know, thank you! ☺️
-
----
-
-_Referenced in [axolotl-ai-cloud/axolotl#2812](../../axolotl-ai-cloud/axolotl/issues/2812.md) on 2025-06-21 09:42_
-
----
-
-_Referenced in [hongbo-miao/hongbomiao.com#28632](../../hongbo-miao/hongbomiao.com/issues/28632.md) on 2025-06-21 09:43_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-03-13T22:24:48Z
 updated_at: 2025-08-18T15:42:49Z
 url: https://github.com/astral-sh/uv/issues/12155
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # `uv python list` breaks when used from within WSL when Python installed via `pyenv-win`
@@ -200,10 +200,6 @@ _Label `windows` added by @charliermarsh on 2025-03-13 22:25_
 _Comment by @vdeolali on 2025-08-15 19:36_
 
 Is this fixed yet? I still have this issue from within WSL - when I have pyenv-win installed on PSH
-
----
-
-_Referenced in [astral-sh/uv#15315](../../astral-sh/uv/pulls/15315.md) on 2025-08-15 20:32_
 
 ---
 

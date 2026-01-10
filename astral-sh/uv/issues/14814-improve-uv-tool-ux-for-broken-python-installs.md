@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-07-22T15:59:44Z
 updated_at: 2025-08-02T19:20:23Z
 url: https://github.com/astral-sh/uv/issues/14814
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Improve uv tool UX for broken Python installs
@@ -53,10 +53,6 @@ _No response_
 ---
 
 _Label `enhancement` added by @amalachow on 2025-07-22 15:59_
-
----
-
-_Referenced in [astral-sh/uv#15032](../../astral-sh/uv/issues/15032.md) on 2025-08-02 19:08_
 
 ---
 

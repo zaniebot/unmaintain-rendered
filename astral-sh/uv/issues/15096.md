@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-08-06T00:16:45Z
 updated_at: 2025-08-18T22:07:58Z
 url: https://github.com/astral-sh/uv/issues/15096
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-10T03:32:46Z
 ```
 
 # Add a hint for virtual environments included in wheels
@@ -34,10 +34,6 @@ _Label `error messages` added by @zanieb on 2025-08-06 00:17_
 ---
 
 _Assigned to @konstin by @konstin on 2025-08-06 13:53_
-
----
-
-_Referenced in [astral-sh/uv#15202](../../astral-sh/uv/pulls/15202.md) on 2025-08-10 13:42_
 
 ---
 

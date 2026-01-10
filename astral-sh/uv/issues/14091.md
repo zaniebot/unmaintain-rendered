@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-06-16T21:07:48Z
 updated_at: 2025-06-19T15:53:20Z
 url: https://github.com/astral-sh/uv/issues/14091
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Stabilize `--torch-backend`
@@ -36,10 +36,6 @@ _Label `preview` added by @charliermarsh on 2025-06-16 21:07_
 
 ---
 
-_Referenced in [astral-sh/uv#14119](../../astral-sh/uv/pulls/14119.md) on 2025-06-17 19:31_
-
----
-
 _Closed by @charliermarsh on 2025-06-17 20:49_
 
 ---
@@ -53,9 +49,5 @@ export UV_INDEX="https://download.pytorch.org/whl/nightly/cu128"
 export UV_TORCH_BACKEND="cu128"
 uv pip install "pytorch-triton==3.3.1+gitc8757738"
 ```
-
----
-
-_Referenced in [pytorch/pytorch#156408](../../pytorch/pytorch/pulls/156408.md) on 2025-06-19 15:49_
 
 ---

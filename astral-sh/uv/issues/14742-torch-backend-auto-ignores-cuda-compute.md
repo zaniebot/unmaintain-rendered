@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-07-18T22:54:26Z
 updated_at: 2025-07-23T01:29:50Z
 url: https://github.com/astral-sh/uv/issues/14742
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # `--torch-backend=auto` ignores CUDA compute capability when installing `torch` for GTX 1080 Ti
@@ -82,10 +82,6 @@ Python 3.11.13
 ---
 
 _Label `bug` added by @hamzaq2000 on 2025-07-18 22:54_
-
----
-
-_Referenced in [astral-sh/uv#12070](../../astral-sh/uv/pulls/12070.md) on 2025-07-18 23:08_
 
 ---
 
@@ -187,9 +183,5 @@ I'll give you an example. Torch has never been built AFAIK for SM 6.1 (GTX 1080)
 _Comment by @hamzaq2000 on 2025-07-19 00:23_
 
 Wow, the rabbit hole goes deep. TIL 😅
-
----
-
-_Referenced in [narcotic-sh/senko#4](../../narcotic-sh/senko/issues/4.md) on 2025-09-24 21:31_
 
 ---

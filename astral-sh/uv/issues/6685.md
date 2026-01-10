@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-27T12:54:25Z
 updated_at: 2025-07-22T16:46:55Z
 url: https://github.com/astral-sh/uv/issues/6685
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T03:32:44Z
 ```
 
 # `--no-install-workspace` needs the pyproject.toml of each workspace member to be present
@@ -88,15 +88,7 @@ _Label `bug` added by @charliermarsh on 2024-08-27 20:03_
 
 ---
 
-_Referenced in [astral-sh/uv#6722](../../astral-sh/uv/issues/6722.md) on 2024-08-27 21:13_
-
----
-
 _Assigned to @charliermarsh by @charliermarsh on 2024-08-28 02:20_
-
----
-
-_Referenced in [astral-sh/uv#6737](../../astral-sh/uv/pulls/6737.md) on 2024-08-28 02:22_
 
 ---
 

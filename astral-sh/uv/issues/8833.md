@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-05T17:54:00Z
 updated_at: 2025-08-16T18:05:28Z
 url: https://github.com/astral-sh/uv/issues/8833
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T03:32:44Z
 ```
 
 # `uv build`, `hatchling` and `ignore-vcs`
@@ -102,10 +102,6 @@ _Closed by @cofin on 2024-11-09 19:39_
 _Comment by @charliermarsh on 2024-11-09 19:39_
 
 Thanks for following up @cofin, appreciate it!
-
----
-
-_Referenced in [astral-sh/uv#10066](../../astral-sh/uv/issues/10066.md) on 2024-12-20 22:49_
 
 ---
 

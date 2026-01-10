@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-06-26T16:29:57Z
 updated_at: 2025-06-26T16:30:23Z
 url: https://github.com/astral-sh/uv/issues/14283
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Rust cache restore times out after 10m
@@ -33,9 +33,5 @@ Error: The operation was canceled.
 ---
 
 _Label `ci-flake` added by @zanieb on 2025-06-26 16:29_
-
----
-
-_Referenced in [Swatinem/rust-cache#248](../../Swatinem/rust-cache/issues/248.md) on 2025-06-26 18:27_
 
 ---

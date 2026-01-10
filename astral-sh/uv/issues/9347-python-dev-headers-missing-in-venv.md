@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-22T05:41:20Z
 updated_at: 2025-07-11T03:10:42Z
 url: https://github.com/astral-sh/uv/issues/9347
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-10T03:32:44Z
 ```
 
 # Python dev headers missing in venv
@@ -44,10 +44,6 @@ error: command '/usr/bin/x86_64-linux-gnu-gcc' failed with exit code 1
 ```
 
 Annoyingly, **it used to work** - I was able to install this package, but a couple of weeks ago binaries shipped with uv were swapped for some other builds, this affected even previous versions of uv.
-
----
-
-_Referenced in [chaidiscovery/chai-lab#169](../../chaidiscovery/chai-lab/pulls/169.md) on 2024-11-22 05:59_
 
 ---
 
@@ -266,10 +262,6 @@ Installed 3 packages in 29ms
 ```
 
 Also worth noting that UV's manager isn't the only one that leads to these kinds of issues; back then I experienced a similar (but not the same exact) issue with pyenv+poetry, linked here https://gitlab.com/ita1024/waf/-/issues/2420
-
----
-
-_Referenced in [astral-sh/uv#8429](../../astral-sh/uv/issues/8429.md) on 2024-12-11 19:03_
 
 ---
 

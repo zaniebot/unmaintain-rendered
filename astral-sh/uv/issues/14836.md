@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-07-23T06:40:24Z
 updated_at: 2025-08-12T02:30:47Z
 url: https://github.com/astral-sh/uv/issues/14836
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Failed to resolve dependencies correctly
@@ -150,10 +150,6 @@ _Assigned to @zanieb by @zanieb on 2025-07-26 02:57_
 
 ---
 
-_Referenced in [astral-sh/uv#14913](../../astral-sh/uv/pulls/14913.md) on 2025-07-26 04:10_
-
----
-
 _Comment by @jalenzz on 2025-07-26 18:40_
 
 Thanks!
@@ -168,13 +164,5 @@ _Closed by @jalenzz on 2025-08-12 01:33_
 _Comment by @zanieb on 2025-08-12 02:30_
 
 I do intend to make that the default behavior at some point too, so you don't need to set required environments.
-
----
-
-_Referenced in [astral-sh/uv#15547](../../astral-sh/uv/issues/15547.md) on 2025-08-27 15:55_
-
----
-
-_Referenced in [astral-sh/uv#15932](../../astral-sh/uv/pulls/15932.md) on 2025-09-18 14:04_
 
 ---

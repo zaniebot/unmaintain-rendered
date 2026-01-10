@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-06-09T16:21:23Z
 updated_at: 2025-06-18T08:48:22Z
 url: https://github.com/astral-sh/uv/issues/13922
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Warn if a directory specified in `--index` exists but is empty
@@ -28,10 +28,6 @@ _Label `error messages` added by @jtfmumm on 2025-06-09 16:21_
 
 ---
 
-_Referenced in [astral-sh/uv#13917](../../astral-sh/uv/pulls/13917.md) on 2025-06-09 16:22_
-
----
-
 _Label `good first issue` added by @zanieb on 2025-06-09 16:28_
 
 ---
@@ -39,10 +35,6 @@ _Label `good first issue` added by @zanieb on 2025-06-09 16:28_
 _Comment by @aaron-ang on 2025-06-10 04:16_
 
 Hi, I'd like to take a stab at this.
-
----
-
-_Referenced in [astral-sh/uv#13940](../../astral-sh/uv/pulls/13940.md) on 2025-06-10 05:23_
 
 ---
 

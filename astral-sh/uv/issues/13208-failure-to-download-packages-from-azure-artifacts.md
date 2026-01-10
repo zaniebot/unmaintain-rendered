@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-30T02:03:03Z
 updated_at: 2025-06-16T12:45:52Z
 url: https://github.com/astral-sh/uv/issues/13208
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Failure to download packages from Azure Artifacts starting version 0.7.0
@@ -194,10 +194,6 @@ I am seeing the same issue. I have my feed configured via `UV_INDEX_URL` env var
 
 ---
 
-_Referenced in [astral-sh/uv#13214](../../astral-sh/uv/issues/13214.md) on 2025-04-30 07:36_
-
----
-
 _Assigned to @jtfmumm by @jtfmumm on 2025-04-30 07:40_
 
 ---
@@ -260,10 +256,6 @@ I'm pretty certain this is because of changes to redirect handling. I'm going to
 _Comment by @jenshnielsen on 2025-04-30 08:14_
 
 Thanks @jtfmumm If you would benefit from some additional testing, I am happy to try your pr(s) against my feed. Please feel free to ping me for that
-
----
-
-_Referenced in [astral-sh/uv#13215](../../astral-sh/uv/pulls/13215.md) on 2025-04-30 08:14_
 
 ---
 
@@ -335,10 +327,6 @@ Version `0.6.17` worked fine. Version `0.7.0` failed before lunch, and `0.7.1` w
 
 ---
 
-_Referenced in [astral-sh/uv#13255](../../astral-sh/uv/issues/13255.md) on 2025-05-01 18:26_
-
----
-
 _Comment by @zanieb on 2025-05-01 18:28_
 
 We'll track rolling this change back out (with a fix for this case) in https://github.com/astral-sh/uv/issues/13255
@@ -346,10 +334,6 @@ We'll track rolling this change back out (with a fix for this case) in https://g
 ---
 
 _Closed by @zanieb on 2025-05-01 18:28_
-
----
-
-_Referenced in [astral-sh/uv#13595](../../astral-sh/uv/pulls/13595.md) on 2025-05-22 15:18_
 
 ---
 

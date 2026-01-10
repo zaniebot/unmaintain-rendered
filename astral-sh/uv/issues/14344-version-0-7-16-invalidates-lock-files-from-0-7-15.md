@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-06-29T06:11:05Z
 updated_at: 2025-06-29T19:28:39Z
 url: https://github.com/astral-sh/uv/issues/14344
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Version 0.7.16 invalidates lock files from <=0.7.15 due to an added trailing slash
@@ -287,10 +287,6 @@ The behavior for my issue didn't change with 0.7.17. `uv lock --check` still com
 _Comment by @zanieb on 2025-06-29 15:05_
 
 I've reproduced, looking into that next
-
----
-
-_Referenced in [astral-sh/uv#14348](../../astral-sh/uv/pulls/14348.md) on 2025-06-29 15:24_
 
 ---
 

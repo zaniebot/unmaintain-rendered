@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-08-12T12:54:27Z
 updated_at: 2025-08-12T16:55:10Z
 url: https://github.com/astral-sh/uv/issues/15238
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-10T03:32:46Z
 ```
 
 # `uv sync` removes necessary dependencies when two packages include the same module
@@ -289,17 +289,5 @@ I agree. Let's leave this open. (I may tweak the title.)
 ---
 
 _Renamed from "`uv sync --frozen --no-dev` incorrectly removes runtime dependencies" to "`uv sync` removes necessary dependencies when two packages include the same module" by @charliermarsh on 2025-08-12 16:55_
-
----
-
-_Referenced in [astral-sh/uv#15239](../../astral-sh/uv/issues/15239.md) on 2025-08-13 14:27_
-
----
-
-_Referenced in [astral-sh/uv#13437](../../astral-sh/uv/pulls/13437.md) on 2025-08-18 07:53_
-
----
-
-_Referenced in [astral-sh/uv#15357](../../astral-sh/uv/issues/15357.md) on 2025-08-18 16:36_
 
 ---

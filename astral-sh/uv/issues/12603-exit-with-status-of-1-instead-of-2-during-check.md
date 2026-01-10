@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-04-01T17:17:52Z
 updated_at: 2025-07-14T20:46:05Z
 url: https://github.com/astral-sh/uv/issues/12603
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Exit with status of 1 (instead of 2) during `--check` 
@@ -52,10 +52,6 @@ This feels low priority, pushing consideration to 0.8.0
 ---
 
 _Assigned to @Gankra by @zanieb on 2025-06-20 15:05_
-
----
-
-_Referenced in [astral-sh/uv#14167](../../astral-sh/uv/pulls/14167.md) on 2025-06-20 18:45_
 
 ---
 

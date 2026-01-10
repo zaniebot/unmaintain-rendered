@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-06-26T20:44:26Z
 updated_at: 2025-07-16T20:01:20Z
 url: https://github.com/astral-sh/uv/issues/14298
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Make the uv build backend the default under `--package` / `--lib` in `uv init`
@@ -31,10 +31,6 @@ _Added to milestone `v0.8.0` by @zanieb on 2025-06-26 20:44_
 
 ---
 
-_Referenced in [astral-sh/uv#14297](../../astral-sh/uv/issues/14297.md) on 2025-06-26 20:44_
-
----
-
 _Assigned to @konstin by @konstin on 2025-06-26 20:48_
 
 ---
@@ -42,10 +38,6 @@ _Assigned to @konstin by @konstin on 2025-06-26 20:48_
 _Comment by @zanieb on 2025-07-14 20:46_
 
 @konstin I assume you'll post a pull request for this
-
----
-
-_Referenced in [astral-sh/uv#14661](../../astral-sh/uv/pulls/14661.md) on 2025-07-16 16:16_
 
 ---
 

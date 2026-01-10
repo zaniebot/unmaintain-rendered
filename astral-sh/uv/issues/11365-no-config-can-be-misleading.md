@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-10T00:40:07Z
 updated_at: 2025-08-08T14:12:37Z
 url: https://github.com/astral-sh/uv/issues/11365
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # --no-config  can be misleading
@@ -136,9 +136,5 @@ _Comment by @zanieb on 2025-08-08 14:12_
 @ahundt please open a new issue for your permission errors.
 
 Separately, `--no-config` and `UV_NO_CONFIG=1` should be exactly equivalent. They're parsed by clap and propagated throughout uv as though they were identical https://github.com/astral-sh/uv/blob/84d57f2ee9bb6f452e3be74c658b2e0096b1dc30/crates/uv-cli/src/lib.rs#L130-L135. Please open a new issue with a clear reproduction of that behavior.
-
----
-
-_Referenced in [skypilot-org/skypilot#7259](../../skypilot-org/skypilot/pulls/7259.md) on 2025-09-18 22:15_
 
 ---

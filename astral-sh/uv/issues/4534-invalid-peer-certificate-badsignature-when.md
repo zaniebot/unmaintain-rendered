@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-06-25T23:22:05Z
 updated_at: 2025-08-21T11:12:35Z
 url: https://github.com/astral-sh/uv/issues/4534
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-10T03:32:44Z
 ```
 
 # `invalid peer certificate: BadSignature` when installing package from private index using ECDSA SHA-512 SSL cert
@@ -111,10 +111,6 @@ Thank you! Sure I'll work on a pull request to try to make the change. 🙏
 
 ---
 
-_Referenced in [astral-sh/uv#4734](../../astral-sh/uv/pulls/4734.md) on 2024-07-02 18:39_
-
----
-
 _Comment by @kcon-stackav on 2024-07-02 22:45_
 
 I created this PR to try out using `aws-lc-rs` instead of `ring` for TLS: https://github.com/astral-sh/uv/pull/4734
@@ -166,14 +162,6 @@ _Closed by @kcon-stackav on 2024-08-27 22:18_
 
 ---
 
-_Referenced in [zed-industries/zed#24656](../../zed-industries/zed/pulls/24656.md) on 2025-02-12 01:26_
-
----
-
-_Referenced in [zed-industries/zed#19620](../../zed-industries/zed/issues/19620.md) on 2025-02-12 01:27_
-
----
-
 _Comment by @zoobab on 2025-07-07 14:55_
 
 This issue is still there, ignoring security with "--allow-insecure-host" is not a solution.
@@ -207,10 +195,6 @@ I've also stumbled upon the same issue.
  Caused by: invalid peer certificate: BadSignature
 
 pypi-local is an internal Artifactory server with a Self-signed certificate. **Signature Algorithm: ecdsa-with-SHA512**
-
----
-
-_Referenced in [istio/ztunnel#1613](../../istio/ztunnel/issues/1613.md) on 2025-08-14 13:53_
 
 ---
 

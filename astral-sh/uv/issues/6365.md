@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-08-21T18:34:44Z
 updated_at: 2025-08-06T14:37:31Z
 url: https://github.com/astral-sh/uv/issues/6365
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-10T03:32:44Z
 ```
 
 # Add a `--suffix` option to `uv tool install`
@@ -75,14 +75,6 @@ We do not yet support system-level installs, so there's always one scope. We als
 
 ---
 
-_Referenced in [astral-sh/uv#7095](../../astral-sh/uv/pulls/7095.md) on 2024-09-05 18:57_
-
----
-
-_Referenced in [astral-sh/uv#12451](../../astral-sh/uv/issues/12451.md) on 2025-04-01 20:35_
-
----
-
 _Comment by @sigma67 on 2025-04-12 07:53_
 
 So it seems this was planned last year but the linked PR was closed/cancelled?
@@ -109,10 +101,6 @@ from here, i have the command "poetry-1" for 1.x, and poetry-2 for poetry 2. it 
 
 ---
 
-_Referenced in [open-feature/python-sdk#512](../../open-feature/python-sdk/pulls/512.md) on 2025-06-23 09:31_
-
----
-
 _Comment by @pycaw on 2025-08-06 14:19_
 
 Is there way to achieve this currently with some hacks? Had to part ways with pipx with a tool of mine due to it missing fixing on commit hash but --suffix is sorely missed now.
@@ -128,9 +116,5 @@ Likely answer is: use `uv venv` and some helper shell functions
 ---
 
 _Label `help wanted` added by @zanieb on 2025-08-06 14:37_
-
----
-
-_Referenced in [astral-sh/uv#15384](../../astral-sh/uv/issues/15384.md) on 2025-08-19 21:44_
 
 ---

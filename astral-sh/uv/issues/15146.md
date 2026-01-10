@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-08-07T19:17:43Z
 updated_at: 2025-08-07T21:43:25Z
 url: https://github.com/astral-sh/uv/issues/15146
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-10T03:32:46Z
 ```
 
 # uv 0.8.5 requires hashes for all build dependencies, while uv 0.8.4 does not
@@ -93,10 +93,6 @@ Also reported at https://github.com/astral-sh/uv/issues/5190#issuecomment-316102
 
 ---
 
-_Referenced in [astral-sh/uv#15147](../../astral-sh/uv/pulls/15147.md) on 2025-08-07 19:50_
-
----
-
 _Comment by @zanieb on 2025-08-07 20:01_
 
 Separately from the fact that this is a regression, do you... prefer this behavior? It seems more correct if we support locking the build dependencies in the `requirements.txt` file.
@@ -134,10 +130,6 @@ A bisect points to bda9ea957a1c2c2907d05850cbae39b28de71040 / https://github.com
 _Comment by @zanieb on 2025-08-07 21:31_
 
 Holy cow I spent way too long staring at #15036 instead of #15087 like a dummy
-
----
-
-_Referenced in [astral-sh/uv#15153](../../astral-sh/uv/pulls/15153.md) on 2025-08-07 21:31_
 
 ---
 

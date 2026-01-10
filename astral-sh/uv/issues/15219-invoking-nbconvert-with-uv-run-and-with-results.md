@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-08-11T12:24:19Z
 updated_at: 2025-08-12T17:05:49Z
 url: https://github.com/astral-sh/uv/issues/15219
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-10T03:32:46Z
 ```
 
 # Invoking nbconvert with uv run and `--with` results in missing templates
@@ -1265,9 +1265,5 @@ uv run --with ipykernel --with nbconvert python -c "import nbconvert;  nbconvert
 _Comment by @zanieb on 2025-08-12 17:05_
 
 I think https://github.com/astral-sh/uv/pull/15244 would resolve this, though I'm sort of hesitant to play whack-a-mole with these Jupyter behaviors.
-
----
-
-_Referenced in [astral-sh/uv#15244](../../astral-sh/uv/pulls/15244.md) on 2025-08-12 17:06_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-07-16T16:16:33Z
 updated_at: 2025-07-26T01:15:36Z
 url: https://github.com/astral-sh/uv/issues/14664
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Use `nvml` to detect CUDA driver version
@@ -20,10 +20,6 @@ synced_at: 2026-01-10T01:57:33Z
 _Issue opened by @charliermarsh on 2025-07-16 16:16_
 
 See: https://github.com/astral-sh/uv/pull/12070#issuecomment-3079302031
-
----
-
-_Referenced in [astral-sh/uv#12070](../../astral-sh/uv/pulls/12070.md) on 2025-07-16 16:16_
 
 ---
 
@@ -310,9 +306,5 @@ Yes. I don't think this is a 100% hard requirement, to be clear, since we can al
 "Weird setups" includes individual end users who are trying to fix their setup in haphazard ways, repackagers like Linux distros (I think NVML and nvidia-smi might not be hard dependencies in some distos' own packaging), and people with complicated HPC setups.
 
 Also, to be precise, I want to work in a situation where you don't even have libcuda.so, just nvidia.ko (or something else like WSL2 or gVisor that provides compatible `/dev/nvidia*` proxy devices), i.e, all we require is the kernel driver. libcuda.so can come from some sort of cuda-compat wheel, which would mean all your userspace dependencies are inside your virtual environment. This intuitively seems desirable on containers, WSL2, etc., and even on normal systems, I think it would be good for user experience for uv to be able to ensure everything on the userspace side is set up correctly as opposed to needing you to globally install the right thing. It's in line with what we do for non-CUDA things.
-
----
-
-_Referenced in [astral-sh/uv#14743](../../astral-sh/uv/pulls/14743.md) on 2025-08-02 17:34_
 
 ---

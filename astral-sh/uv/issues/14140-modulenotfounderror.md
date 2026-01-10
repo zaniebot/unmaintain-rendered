@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-06-18T22:19:10Z
 updated_at: 2025-06-18T22:41:15Z
 url: https://github.com/astral-sh/uv/issues/14140
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # ModuleNotFoundError
@@ -128,14 +128,6 @@ Thank you again for your patience in explaining this - it really clarifies the b
 
 ---
 
-_Referenced in [pypa/hatch#2004](../../pypa/hatch/issues/2004.md) on 2025-06-18 22:40_
-
----
-
 _Closed by @zanieb on 2025-06-18 22:41_
-
----
-
-_Referenced in [pypa/hatch#2005](../../pypa/hatch/issues/2005.md) on 2025-06-18 22:44_
 
 ---

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-07-29T21:52:09Z
 updated_at: 2025-07-31T14:00:40Z
 url: https://github.com/astral-sh/uv/issues/14963
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-10T03:32:46Z
 ```
 
 # Recommended way to use a workspace containing dependent subpackages with AWS Lambda
@@ -127,13 +127,5 @@ _Label `great writeup` added by @zanieb on 2025-07-29 23:25_
 _Comment by @bradenkinard-sh on 2025-07-31 14:00_
 
 That fixes the problem, thank you!
-
----
-
-_Referenced in [astral-sh/uv#15297](../../astral-sh/uv/issues/15297.md) on 2025-08-15 15:45_
-
----
-
-_Referenced in [AllenInstitute/aibs-informatics-cdk-lib#45](../../AllenInstitute/aibs-informatics-cdk-lib/pulls/45.md) on 2025-11-06 20:25_
 
 ---

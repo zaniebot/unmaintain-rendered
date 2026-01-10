@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-04-22T21:09:18Z
 updated_at: 2025-06-13T12:05:16Z
 url: https://github.com/astral-sh/uv/issues/3199
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-10T03:32:44Z
 ```
 
 # Include a method to create machine readable output
@@ -33,10 +33,6 @@ To make automation easier, it's probably worth having some additional command li
 * An isolated mode, to prevent user config affecting results (`uv` doesn't have as many possibilities for problems here as pip does, but that may change, I guess...)
 * A "guaranteed quiet" mode that ensures that *just* the JSON data will be printed to stdout, with any user messages either going to stderr or being suppressed. (Writing the data to a file is another possibility, but IMO it tends to be clumsy to manage).
 * I assume `uv` always writes its output as UTF-8, but if it doesn't (for example it follows the system defined encoding) then a "guaranteed UTF-8 output" mode would be important to avoid encoding problems.
-
----
-
-_Referenced in [astral-sh/uv#3190](../../astral-sh/uv/issues/3190.md) on 2024-04-22 21:09_
 
 ---
 
@@ -92,42 +88,6 @@ Related:
 
 ---
 
-_Referenced in [astral-sh/uv#2150](../../astral-sh/uv/issues/2150.md) on 2024-05-13 19:46_
-
----
-
-_Referenced in [astral-sh/uv#411](../../astral-sh/uv/issues/411.md) on 2024-07-01 21:30_
-
----
-
-_Referenced in [astral-sh/uv#5279](../../astral-sh/uv/issues/5279.md) on 2024-07-22 04:05_
-
----
-
-_Referenced in [conda-incubator/conda-pypi#14](../../conda-incubator/conda-pypi/issues/14.md) on 2024-07-23 13:21_
-
----
-
-_Referenced in [moreati/ansible-uv#2](../../moreati/ansible-uv/issues/2.md) on 2024-11-29 22:09_
-
----
-
-_Referenced in [astral-sh/uv#10219](../../astral-sh/uv/issues/10219.md) on 2024-12-29 16:35_
-
----
-
-_Referenced in [astral-sh/uv#11891](../../astral-sh/uv/pulls/11891.md) on 2025-03-06 12:52_
-
----
-
-_Referenced in [astral-sh/uv#12387](../../astral-sh/uv/issues/12387.md) on 2025-03-22 04:26_
-
----
-
-_Referenced in [astral-sh/uv#13633](../../astral-sh/uv/issues/13633.md) on 2025-05-24 00:28_
-
----
-
 _Comment by @zanieb on 2025-06-13 12:05_
 
 Let's track this in https://github.com/astral-sh/uv/issues/411 — it's confusing to have two issues.
@@ -135,9 +95,5 @@ Let's track this in https://github.com/astral-sh/uv/issues/411 — it's confusin
 ---
 
 _Closed by @zanieb on 2025-06-13 12:05_
-
----
-
-_Referenced in [astral-sh/uv#14455](../../astral-sh/uv/issues/14455.md) on 2025-07-04 07:37_
 
 ---

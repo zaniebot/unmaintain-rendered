@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-10-23T12:44:06Z
 updated_at: 2025-08-13T21:59:50Z
 url: https://github.com/astral-sh/uv/issues/8499
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-10T03:32:44Z
 ```
 
 # Use SSE builds for Python Build Standalone on linux
@@ -35,10 +35,6 @@ I could have sworn there was a request for this already, but don't know where. R
 ---
 
 _Label `uv python` added by @zanieb on 2024-10-23 13:21_
-
----
-
-_Referenced in [astral-sh/uv#8517](../../astral-sh/uv/pulls/8517.md) on 2024-10-24 06:50_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-07-24T01:26:56Z
 updated_at: 2025-07-24T01:39:44Z
 url: https://github.com/astral-sh/uv/issues/14861
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Inconsistent behavior with workspaces and folder names
@@ -59,10 +59,6 @@ Python 3.12.6
 ---
 
 _Label `bug` added by @anuraaga on 2025-07-24 01:26_
-
----
-
-_Referenced in [i2y/connecpy#61](../../i2y/connecpy/pulls/61.md) on 2025-07-24 01:29_
 
 ---
 

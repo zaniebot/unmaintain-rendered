@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-08-19T02:58:36Z
 updated_at: 2025-08-19T14:32:57Z
 url: https://github.com/astral-sh/uv/issues/15369
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-10T03:32:46Z
 ```
 
 # Support `--no-install-project` when adding a dependency to a project with `uv add`
@@ -42,10 +42,6 @@ I think that's reasonable.
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2025-08-19 09:31_
-
----
-
-_Referenced in [astral-sh/uv#15375](../../astral-sh/uv/pulls/15375.md) on 2025-08-19 09:39_
 
 ---
 

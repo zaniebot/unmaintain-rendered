@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-21T19:10:44Z
 updated_at: 2025-07-23T19:09:15Z
 url: https://github.com/astral-sh/uv/issues/11701
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Failed to parse uv.lock file
@@ -66,10 +66,6 @@ uv 0.6.0
 ---
 
 _Label `question` added by @AnanyaRaval on 2025-02-21 19:10_
-
----
-
-_Referenced in [VectorInstitute/interpretability#12](../../VectorInstitute/interpretability/pulls/12.md) on 2025-02-26 15:44_
 
 ---
 

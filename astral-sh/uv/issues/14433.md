@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-07-03T01:12:41Z
 updated_at: 2025-07-03T12:30:01Z
 url: https://github.com/astral-sh/uv/issues/14433
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # `uv version --bump major` half-fails with incompatible conflicts
@@ -137,10 +137,6 @@ The fix should be trivial https://github.com/astral-sh/uv/pull/14434 — but I'l
 
 If you want to test it, there will be artifacts attached to the CI job.
 
-
----
-
-_Referenced in [astral-sh/uv#14434](../../astral-sh/uv/pulls/14434.md) on 2025-07-03 02:27_
 
 ---
 

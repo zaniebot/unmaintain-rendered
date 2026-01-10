@@ -12,7 +12,7 @@ assignees: []
 created_at: 2025-07-05T03:38:34Z
 updated_at: 2025-07-09T15:46:55Z
 url: https://github.com/astral-sh/uv/issues/14464
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # No way to add existing projects to a workspace
@@ -103,10 +103,6 @@ _Label `help wanted` added by @charliermarsh on 2025-07-07 14:42_
 ---
 
 _Label `good first issue` added by @zanieb on 2025-07-07 16:41_
-
----
-
-_Referenced in [astral-sh/uv#14496](../../astral-sh/uv/pulls/14496.md) on 2025-07-07 20:56_
 
 ---
 

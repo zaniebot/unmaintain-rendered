@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-05-20T05:08:08Z
 updated_at: 2025-06-26T12:37:27Z
 url: https://github.com/astral-sh/uv/issues/3669
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T03:32:44Z
 ```
 
 # Add installation option for portable entry points
@@ -70,10 +70,6 @@ I have a similar use-case. It would be great to be able to skip patching wrapper
 
 ---
 
-_Referenced in [astral-sh/uv#3717](../../astral-sh/uv/pulls/3717.md) on 2024-05-21 19:11_
-
----
-
 _Comment by @ofek on 2024-05-23 21:50_
 
 FYI since https://github.com/astral-sh/uv/pull/3717 this is now completely possible to implement and I do so here:
@@ -98,18 +94,6 @@ Yeah. We didn’t change any behavior in uv itself, except we changed our Window
 _Comment by @ofek on 2024-05-24 01:18_
 
 Yes that is exactly correct and I can remove that entire logic once such a flag exists in UV! I posted those links mostly to assist in someone doing the implementation.
-
----
-
-_Referenced in [astral-sh/uv#3863](../../astral-sh/uv/issues/3863.md) on 2024-05-27 16:36_
-
----
-
-_Referenced in [winpython/winpython#1369](../../winpython/winpython/issues/1369.md) on 2024-07-27 14:23_
-
----
-
-_Referenced in [astral-sh/uv#5509](../../astral-sh/uv/pulls/5509.md) on 2024-07-27 17:05_
 
 ---
 

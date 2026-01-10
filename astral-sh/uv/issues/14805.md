@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-07-22T08:34:25Z
 updated_at: 2025-08-06T09:26:28Z
 url: https://github.com/astral-sh/uv/issues/14805
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Overly restrictive platform markers for jax/jaxlib when torch is included from torch index with CPU vs GPU "--extra"
@@ -154,10 +154,6 @@ Replacing `jax[cuda12]` with `jax` also fixes it, so something to do with the ex
 ---
 
 _Unassigned @charliermarsh by @konstin on 2025-08-03 11:24_
-
----
-
-_Referenced in [astral-sh/uv#15041](../../astral-sh/uv/pulls/15041.md) on 2025-08-03 11:26_
 
 ---
 

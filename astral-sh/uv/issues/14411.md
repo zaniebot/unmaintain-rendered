@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-07-02T09:06:49Z
 updated_at: 2025-07-03T13:49:24Z
 url: https://github.com/astral-sh/uv/issues/14411
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Since 0.7.14, uv tries to write to .venv, even when frozen
@@ -117,10 +117,6 @@ _Label `great writeup` added by @zanieb on 2025-07-02 14:18_
 
 ---
 
-_Referenced in [astral-sh/uv#14404](../../astral-sh/uv/pulls/14404.md) on 2025-07-02 17:49_
-
----
-
 _Assigned to @charliermarsh by @charliermarsh on 2025-07-02 17:50_
 
 ---
@@ -132,9 +128,5 @@ _Closed by @charliermarsh on 2025-07-02 18:03_
 _Comment by @dannystaple on 2025-07-03 13:49_
 
 Awesome to see the turn around here. I've put the docker example into a gist at https://gist.github.com/dannystaple/3958c0f66731e1093e669b7aaf06699f, including the extra option from @zanieb . 
-
----
-
-_Referenced in [docling-project/docling-serve#265](../../docling-project/docling-serve/issues/265.md) on 2025-07-09 13:54_
 
 ---

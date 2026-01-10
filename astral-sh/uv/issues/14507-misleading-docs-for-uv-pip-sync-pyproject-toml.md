@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-07-08T14:12:09Z
 updated_at: 2025-07-08T20:13:04Z
 url: https://github.com/astral-sh/uv/issues/14507
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # misleading docs for uv pip sync pyproject.toml
@@ -78,10 +78,6 @@ At first I've thought that pip sync pyproject.toml does the same thing.
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2025-07-08 20:01_
-
----
-
-_Referenced in [astral-sh/uv#14510](../../astral-sh/uv/pulls/14510.md) on 2025-07-08 20:02_
 
 ---
 

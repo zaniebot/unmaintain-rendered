@@ -9,7 +9,7 @@ assignees: []
 created_at: 2025-06-25T15:46:28Z
 updated_at: 2025-07-16T13:52:18Z
 url: https://github.com/astral-sh/uv/issues/14262
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Ability to select libc in a multi-libc environment
@@ -155,10 +155,6 @@ _Comment by @nathanscain on 2025-07-01 13:06_
 Sure - we operate and maintain a number of legacy systems for various critical purposes (sorry to be vague). Work is ongoing to upgrade these, but they are delicate systems that some are wary about touching at all. The process has been slower than I'd prefer, but that is generally out of my control and musl provides a path to install modern software alongside the existing configuration without driving a significant, immediate cost of migration - allowing a phased approach to the transition. As unfortunate as this reality is, I don't believe we are alone in this regard.
 
 Yes - I am able to install musl builds on these machines if I am explicit (ref: last reproduction step above); however, it would be a different interface for users we will need to train as the majority of systems will just need `uv python install 3.13`. Installing (and more importantly, selecting throughout the day) musl requires the much longer and more error-prone `uv python install cpython-3.13.5-linux-x86_64-musl` as I don't believe I can just indicate the platform without also providing the flavor, patch revision, os, and arch. Ideally, the same command we train users to use on other systems works transparently for users.
-
----
-
-_Referenced in [astral-sh/uv#14646](../../astral-sh/uv/pulls/14646.md) on 2025-07-16 06:23_
 
 ---
 

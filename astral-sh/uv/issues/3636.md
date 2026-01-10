@@ -13,7 +13,7 @@ assignees: []
 created_at: 2024-05-17T11:41:15Z
 updated_at: 2025-06-17T04:47:11Z
 url: https://github.com/astral-sh/uv/issues/3636
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T03:32:44Z
 ```
 
 # Add support for config_settings in requirements.txt / requirements.in
@@ -165,17 +165,9 @@ camera = [
 
 ---
 
-_Referenced in [HandsOnLLM/Hands-On-Large-Language-Models#62](../../HandsOnLLM/Hands-On-Large-Language-Models/issues/62.md) on 2025-05-01 11:33_
-
----
-
 _Comment by @raffaem on 2025-05-01 11:33_
 
 Also hit that: https://github.com/HandsOnLLM/Hands-On-Large-Language-Models/issues/62
-
----
-
-_Referenced in [astral-sh/uv#13375](../../astral-sh/uv/issues/13375.md) on 2025-05-10 14:29_
 
 ---
 

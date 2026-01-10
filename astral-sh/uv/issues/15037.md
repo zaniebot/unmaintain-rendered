@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-08-03T00:49:06Z
 updated_at: 2025-08-04T21:42:12Z
 url: https://github.com/astral-sh/uv/issues/15037
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-10T03:32:46Z
 ```
 
 # `extra-build-dependencies` don't respect index pinning
@@ -35,10 +35,6 @@ I think that also means we need separate types for lowered vs. not-yet-lowered w
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2025-08-03 01:43_
-
----
-
-_Referenced in [astral-sh/uv#15038](../../astral-sh/uv/pulls/15038.md) on 2025-08-03 02:07_
 
 ---
 

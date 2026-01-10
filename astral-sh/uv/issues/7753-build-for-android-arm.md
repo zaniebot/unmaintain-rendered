@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-09-28T05:06:36Z
 updated_at: 2025-07-12T15:15:33Z
 url: https://github.com/astral-sh/uv/issues/7753
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-10T03:32:44Z
 ```
 
 # build for Android/ARM
@@ -49,9 +49,5 @@ _Label `enhancement` added by @zanieb on 2024-09-30 14:01_
 ---
 
 _Label `releases` added by @zanieb on 2024-09-30 14:01_
-
----
-
-_Referenced in [astral-sh/uv#7957](../../astral-sh/uv/issues/7957.md) on 2024-10-07 03:56_
 
 ---

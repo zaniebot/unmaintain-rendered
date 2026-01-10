@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-07-14T16:42:56Z
 updated_at: 2025-07-15T13:25:22Z
 url: https://github.com/astral-sh/uv/issues/14610
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Unexpected upgrade with uv run
@@ -349,9 +349,5 @@ You can also use `uv run --no-sync` to just leave the environment as-is.
 ---
 
 _Closed by @zanieb on 2025-07-15 13:25_
-
----
-
-_Referenced in [stfc/janus-core#574](../../stfc/janus-core/pulls/574.md) on 2025-07-24 15:01_
 
 ---

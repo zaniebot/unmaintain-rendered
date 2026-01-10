@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-15T04:47:28Z
 updated_at: 2025-07-02T19:40:19Z
 url: https://github.com/astral-sh/uv/issues/12889
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # uv run --with environment caching question
@@ -94,22 +94,10 @@ cc @charliermarsh (you may find it interesting)
 
 ---
 
-_Referenced in [astral-sh/uv#13598](../../astral-sh/uv/pulls/13598.md) on 2025-05-22 18:20_
-
----
-
 _Assigned to @oconnor663 by @oconnor663 on 2025-06-25 19:24_
 
 ---
 
-_Referenced in [astral-sh/uv#14403](../../astral-sh/uv/pulls/14403.md) on 2025-07-01 19:59_
-
----
-
 _Closed by @zanieb on 2025-07-02 19:40_
-
----
-
-_Referenced in [astral-sh/uv#14447](../../astral-sh/uv/pulls/14447.md) on 2025-07-03 20:17_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-22T13:18:42Z
 updated_at: 2025-07-25T13:03:32Z
 url: https://github.com/astral-sh/uv/issues/13054
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Problems with git installs when run via CI
@@ -102,9 +102,5 @@ _Comment by @zanieb on 2025-07-25 13:03_
 ---
 
 _Closed by @zanieb on 2025-07-25 13:03_
-
----
-
-_Referenced in [astral-sh/uv#16102](../../astral-sh/uv/issues/16102.md) on 2025-10-02 11:23_
 
 ---

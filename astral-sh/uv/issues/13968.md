@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-06-11T15:17:14Z
 updated_at: 2025-06-11T15:34:37Z
 url: https://github.com/astral-sh/uv/issues/13968
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Warn when `--upgrade-package <name>` does not result in an upgrade
@@ -35,10 +35,6 @@ warning: cannot upgrade `httpx` because `foo` requires `httpx==0.1.0`
 ---
 
 _Label `enhancement` added by @zanieb on 2025-06-11 15:17_
-
----
-
-_Referenced in [astral-sh/uv#1419](../../astral-sh/uv/issues/1419.md) on 2025-06-11 15:28_
 
 ---
 

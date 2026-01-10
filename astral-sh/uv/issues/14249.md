@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-06-25T02:50:05Z
 updated_at: 2025-06-25T08:12:33Z
 url: https://github.com/astral-sh/uv/issues/14249
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # `uv venv --allow-existing` no longer works in `0.7.14`
@@ -91,10 +91,6 @@ _Assigned to @jtfmumm by @jtfmumm on 2025-06-25 06:46_
 _Comment by @jtfmumm on 2025-06-25 07:24_
 
 I've found the cause of this. Will post a PR soon.
-
----
-
-_Referenced in [astral-sh/uv#14252](../../astral-sh/uv/pulls/14252.md) on 2025-06-25 07:45_
 
 ---
 

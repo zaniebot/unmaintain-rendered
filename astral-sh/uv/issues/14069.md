@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-06-16T08:33:07Z
 updated_at: 2025-07-01T16:55:04Z
 url: https://github.com/astral-sh/uv/issues/14069
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Retry streaming distribution and Python downloads if failing mid-stream
@@ -38,10 +38,6 @@ _Label `enhancement` added by @konstin on 2025-06-16 08:33_
 ---
 
 _Label `network` added by @konstin on 2025-06-16 08:33_
-
----
-
-_Referenced in [astral-sh/uv#14171](../../astral-sh/uv/issues/14171.md) on 2025-06-20 20:29_
 
 ---
 
@@ -73,16 +69,8 @@ _Comment by @oconnor663 on 2025-06-30 20:44_
 
 ---
 
-_Referenced in [astral-sh/uv#14378](../../astral-sh/uv/pulls/14378.md) on 2025-06-30 21:54_
-
----
-
 _Comment by @konstin on 2025-07-01 10:57_
 
 Having a consistent number of retries is preferable, though excessive retries are not really a problem. I'm more worried that the logic is overly complex and thereby faulty through retrying on slightly different conditions in different layers.
-
----
-
-_Referenced in [astral-sh/uv#6331](../../astral-sh/uv/issues/6331.md) on 2025-08-06 16:01_
 
 ---

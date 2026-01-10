@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-06-20T15:23:38Z
 updated_at: 2025-07-18T13:16:41Z
 url: https://github.com/astral-sh/uv/issues/14158
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # `test pip_uninstall::uninstall*` times out on Windows (has been running for over 60 seconds)
@@ -27,10 +27,6 @@ _Issue opened by @Gankra on 2025-06-20 15:23_
 ---
 
 _Label `ci-flake` added by @Gankra on 2025-06-20 15:23_
-
----
-
-_Referenced in [astral-sh/uv#14156](../../astral-sh/uv/pulls/14156.md) on 2025-06-20 15:24_
 
 ---
 
@@ -53,10 +49,6 @@ _Comment by @zanieb on 2025-06-20 20:09_
 Also, the timeout is set to 90s
 
 https://github.com/astral-sh/uv/blob/647f70505ef4c0e6a2207f6f27a8f42d918b8297/.config/nextest.toml#L2-L4
-
----
-
-_Referenced in [astral-sh/uv#14170](../../astral-sh/uv/pulls/14170.md) on 2025-06-20 20:10_
 
 ---
 
@@ -91,10 +83,6 @@ EDIT: It looks like the interaction is between #14122 (Depot change) and #14126 
 * Reverting just 14122 (Depot): Pass. 7-12s.
 * Reverting just 14126 (redirect changes): Pass. 35-50s.
 
-
----
-
-_Referenced in [astral-sh/uv#14180](../../astral-sh/uv/pulls/14180.md) on 2025-06-21 09:29_
 
 ---
 
@@ -147,14 +135,6 @@ in which we spend 80s building the nearly empty package with Poetry
 
 ---
 
-_Referenced in [astral-sh/uv#14188](../../astral-sh/uv/pulls/14188.md) on 2025-06-21 13:41_
-
----
-
-_Referenced in [astral-sh/uv#14185](../../astral-sh/uv/pulls/14185.md) on 2025-06-21 13:41_
-
----
-
 _Comment by @jtfmumm on 2025-06-21 13:51_
 
 > Separately, I'm confused that [#13954](https://github.com/astral-sh/uv/pull/13954) could significantly regress `uv pip` performance. We're going to need to look into that. Can we tell where all that time is going?
@@ -174,14 +154,6 @@ _Comment by @zanieb on 2025-06-21 14:25_
 For comparison, here's a log when it's quick https://gist.github.com/zanieb/444d6f02de61df5acee1900410d24e88
 
 Still on the Depot runner.
-
----
-
-_Referenced in [astral-sh/uv#14284](../../astral-sh/uv/pulls/14284.md) on 2025-06-26 16:54_
-
----
-
-_Referenced in [astral-sh/uv#14285](../../astral-sh/uv/pulls/14285.md) on 2025-06-26 16:54_
 
 ---
 

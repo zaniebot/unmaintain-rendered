@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-06-26T14:12:04Z
 updated_at: 2025-07-11T01:38:30Z
 url: https://github.com/astral-sh/uv/issues/14273
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Ability to specify platform when running `uv sync`
@@ -65,18 +65,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2025-06-27 17:21_
 
 ---
 
-_Referenced in [astral-sh/uv#14320](../../astral-sh/uv/pulls/14320.md) on 2025-06-27 17:48_
-
----
-
 _Closed by @charliermarsh on 2025-07-11 01:38_
-
----
-
-_Referenced in [NixOS/nixpkgs#422471](../../NixOS/nixpkgs/issues/422471.md) on 2025-07-11 15:41_
-
----
-
-_Referenced in [astral-sh/uv#15035](../../astral-sh/uv/issues/15035.md) on 2025-08-02 23:57_
 
 ---

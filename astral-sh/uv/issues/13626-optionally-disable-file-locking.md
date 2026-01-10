@@ -12,7 +12,7 @@ assignees: []
 created_at: 2025-05-23T20:42:06Z
 updated_at: 2025-07-16T14:56:26Z
 url: https://github.com/astral-sh/uv/issues/13626
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Optionally disable file locking
@@ -101,10 +101,6 @@ Also, if you're not specifically trying to use uv across the cluster (on multipl
 ---
 
 Let me do some research on locks and add some comments on #9050 in a bit, it's a little complicated and I want to make sure I say something accurate :)
-
----
-
-_Referenced in [astral-sh/uv#13760](../../astral-sh/uv/pulls/13760.md) on 2025-06-01 12:30_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-06-11T13:50:55Z
 updated_at: 2025-06-11T13:54:44Z
 url: https://github.com/astral-sh/uv/issues/13966
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # `uv remove` mixes dependencies' end-of-line comments
@@ -90,9 +90,5 @@ _Label `help wanted` added by @zanieb on 2025-06-11 13:54_
 _Comment by @zanieb on 2025-06-11 13:54_
 
 Thanks for the report!
-
----
-
-_Referenced in [astral-sh/uv#14200](../../astral-sh/uv/pulls/14200.md) on 2025-06-22 19:52_
 
 ---

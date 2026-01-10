@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-07-24T01:18:31Z
 updated_at: 2025-07-24T12:08:18Z
 url: https://github.com/astral-sh/uv/issues/14860
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Unable to override dependency with `uv run --with` after 0.8.0
@@ -279,10 +279,6 @@ I'll need to take a closer look, but we should definitely prefer the `--with` la
 ---
 
 _Assigned to @zanieb by @zanieb on 2025-07-24 01:24_
-
----
-
-_Referenced in [astral-sh/uv#14863](../../astral-sh/uv/pulls/14863.md) on 2025-07-24 01:43_
 
 ---
 

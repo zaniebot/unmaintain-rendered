@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-02T01:33:27Z
 updated_at: 2025-08-15T10:53:03Z
 url: https://github.com/astral-sh/uv/issues/10267
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Best Practices / Official support to work with CMake FindPython module
@@ -72,10 +72,6 @@ Have you taken a look at  `uv init --build-backend scikit`? It has an example wi
 
 ---
 
-_Referenced in [astral-sh/uv#10382](../../astral-sh/uv/issues/10382.md) on 2025-01-08 03:06_
-
----
-
 _Closed by @charliermarsh on 2025-03-03 03:25_
 
 ---
@@ -83,10 +79,6 @@ _Closed by @charliermarsh on 2025-03-03 03:25_
 _Comment by @kyle-basis on 2025-07-06 23:34_
 
 @YouJiacheng I just released this today that might fit what you need https://github.com/basis-robotics/uvtarget
-
----
-
-_Referenced in [astral-sh/uv#9347](../../astral-sh/uv/issues/9347.md) on 2025-07-11 02:55_
 
 ---
 

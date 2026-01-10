@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-22T17:28:13Z
 updated_at: 2025-06-23T22:03:11Z
 url: https://github.com/astral-sh/uv/issues/13057
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Add tool bin dir to PATH in uv's docker images
@@ -116,10 +116,6 @@ _Comment by @samypr100 on 2025-04-26 21:59_
 > I'm using UV_TOOL_BIN_DIR, since I can set it globally
 
 Indeed, that's a good approach and something that seems quite reasonable to do on uv images by default over modifying PATH.
-
----
-
-_Referenced in [astral-sh/uv#13391](../../astral-sh/uv/pulls/13391.md) on 2025-05-12 01:47_
 
 ---
 

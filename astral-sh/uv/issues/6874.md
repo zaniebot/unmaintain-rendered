@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-30T14:37:55Z
 updated_at: 2025-08-05T07:53:58Z
 url: https://github.com/astral-sh/uv/issues/6874
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-10T03:32:44Z
 ```
 
 # uv sync should install dependency of all workspace members? 
@@ -40,10 +40,6 @@ Are you looking for something like `--no-install-workspace`, to do a sync prior 
 ---
 
 _Label `question` added by @charliermarsh on 2024-09-01 15:54_
-
----
-
-_Referenced in [astral-sh/uv#6935](../../astral-sh/uv/issues/6935.md) on 2024-09-02 12:09_
 
 ---
 

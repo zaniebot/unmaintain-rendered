@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-29T22:05:19Z
 updated_at: 2025-07-30T11:48:03Z
 url: https://github.com/astral-sh/uv/issues/3917
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T03:32:44Z
 ```
 
 # Different understanding of environment markers vs pip
@@ -140,14 +140,6 @@ _Closed by @charliermarsh on 2024-06-04 01:54_
 ---
 
 _Label `compatibility` added by @charliermarsh on 2024-06-04 01:55_
-
----
-
-_Referenced in [pypa/packaging#774](../../pypa/packaging/issues/774.md) on 2024-07-08 16:51_
-
----
-
-_Referenced in [pyproject-nix/pyproject.nix#150](../../pyproject-nix/pyproject.nix/pulls/150.md) on 2024-09-10 01:16_
 
 ---
 

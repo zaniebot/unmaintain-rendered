@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-07-23T17:39:56Z
 updated_at: 2025-08-05T08:19:31Z
 url: https://github.com/astral-sh/uv/issues/14851
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # unsafe-best-match appears incompatible with github-dependencies and to ignore if-necessary-or-explicit
@@ -81,9 +81,5 @@ _Comment by @SoundDesignerToBe on 2025-07-24 08:22_
 
 Update:
 Even after using `uv cache clean my_package` in the install instruction of the sandbox and removing the index strategy flag, it continued to fail to install and I had to go back to using pip there to make it work.  It tried to install it in a cached environment (cached flatpak build). I expected it to try to pull a newer version if it cannot install the old one, but it kept running into the URL dependency error. Replacing `uv pip` with `pip` again, it now works and it pulls the new package.
-
----
-
-_Referenced in [opendatahub-io/notebooks#1998](../../opendatahub-io/notebooks/pulls/1998.md) on 2025-08-19 11:35_
 
 ---

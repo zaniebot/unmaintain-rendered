@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-10-14T06:33:58Z
 updated_at: 2025-08-09T16:55:36Z
 url: https://github.com/astral-sh/uv/issues/8166
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T03:32:44Z
 ```
 
 # Make UV_PYTHON_INSTALL_MIRROR configurable in pyproject.toml
@@ -72,10 +72,6 @@ But when within a restricted network of a company, the mirror is always the same
 
 ---
 
-_Referenced in [astral-sh/uv#8186](../../astral-sh/uv/issues/8186.md) on 2024-10-14 19:41_
-
----
-
 _Comment by @aureliojargas on 2025-03-20 14:29_
 
 Maybe this one can be closed as done?
@@ -92,10 +88,6 @@ python-install-mirror = "https://example.com/external-github-com/astral-sh/pytho
 url = "https://example.com/pypi/foo-pypi/simple/"
 default = true
 ```
-
----
-
-_Referenced in [ustclug/mirrorrequest#410](../../ustclug/mirrorrequest/issues/410.md) on 2025-04-29 15:29_
 
 ---
 

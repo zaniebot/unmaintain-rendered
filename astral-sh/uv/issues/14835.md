@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-07-23T05:37:51Z
 updated_at: 2025-07-23T12:11:18Z
 url: https://github.com/astral-sh/uv/issues/14835
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # uv installation via cargo fails
@@ -156,14 +156,6 @@ Moving the Cargo install section lower on the install page sounds like a good id
 
 ---
 
-_Referenced in [astral-sh/uv#14842](../../astral-sh/uv/pulls/14842.md) on 2025-07-23 12:08_
-
----
-
 _Closed by @zanieb on 2025-07-23 12:11_
-
----
-
-_Referenced in [astral-sh/uv#14709](../../astral-sh/uv/issues/14709.md) on 2025-07-23 13:26_
 
 ---

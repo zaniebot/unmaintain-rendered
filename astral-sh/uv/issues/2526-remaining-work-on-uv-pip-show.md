@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-18T21:50:39Z
 updated_at: 2025-08-16T22:08:45Z
 url: https://github.com/astral-sh/uv/issues/2526
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-10T03:32:43Z
 ```
 
 # Remaining work on `uv pip show`
@@ -140,10 +140,6 @@ Current implementation doesn't show `Required-by` info. And this is the only rea
 
 ---
 
-_Referenced in [astral-sh/uv#2589](../../astral-sh/uv/pulls/2589.md) on 2024-03-21 14:03_
-
----
-
 _Comment by @mbway on 2024-04-05 19:21_
 
 uv is also missing support for `show --files` which shows the path of each file belonging to the package under a `Files` heading
@@ -171,10 +167,6 @@ required by
 ```
 
 It will be good to display similar information.
-
----
-
-_Referenced in [astral-sh/uv#10962](../../astral-sh/uv/issues/10962.md) on 2025-01-25 17:53_
 
 ---
 
@@ -287,9 +279,5 @@ Those names are [equivalent](https://packaging.python.org/en/latest/specificatio
 
 Contributions always welcome to expand the output here, it just hasn't been prioritized since it doesn't come up much.
 
-
----
-
-_Referenced in [astral-sh/uv#15516](../../astral-sh/uv/issues/15516.md) on 2025-08-25 16:43_
 
 ---

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-08-21T07:11:56Z
 updated_at: 2025-08-21T16:45:12Z
 url: https://github.com/astral-sh/uv/issues/15401
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-10T03:32:46Z
 ```
 
 # UV binary not working on Raspberry Pi 5 when installed from Snap or Homebrew Linux
@@ -65,10 +65,6 @@ _Label `external` added by @zanieb on 2025-08-21 10:57_
 
 ---
 
-_Referenced in [lengau/uv-snap#10](../../lengau/uv-snap/issues/10.md) on 2025-08-21 11:01_
-
----
-
 _Comment by @konstin on 2025-08-21 11:51_
 
 Note that we don't control the uv snap, that's why we only recommend the installation methods at https://docs.astral.sh/uv/getting-started/installation/.
@@ -86,10 +82,6 @@ The relevant check is here:
 https://github.com/Homebrew/brew/blob/e910f91124dc0bb84368e183288629a2b83a817d/Library/Homebrew/extend/os/linux/diagnostic.rb#L82-L93
 
 That being said, you're right about this being a bad build 🙂 -- @zanieb's pointer makes sense to me as a fix, so I'll look at getting that upstreamed into Homebrew's bottle build.
-
----
-
-_Referenced in [Homebrew/homebrew-core#234353](../../Homebrew/homebrew-core/pulls/234353.md) on 2025-08-21 14:02_
 
 ---
 
@@ -134,9 +126,5 @@ Neither of those is an Astral project, JFYI. But I'll be able to look at those l
 ---
 
 _Closed by @woodruffw on 2025-08-21 16:45_
-
----
-
-_Referenced in [pkgxdev/pantry#10413](../../pkgxdev/pantry/issues/10413.md) on 2025-09-05 14:07_
 
 ---

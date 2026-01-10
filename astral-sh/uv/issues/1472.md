@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-16T10:14:04Z
 updated_at: 2025-07-17T22:20:26Z
 url: https://github.com/astral-sh/uv/issues/1472
-synced_at: 2026-01-10T01:57:02Z
+synced_at: 2026-01-10T03:32:43Z
 ```
 
 # `uv venv` overwrites existing virtual environment on subsequent run
@@ -56,10 +56,6 @@ For reference, the upstream `virtualenv` has a `--clear` flag, and when that's n
 
 ---
 
-_Referenced in [astral-sh/uv#1777](../../astral-sh/uv/issues/1777.md) on 2024-02-20 20:49_
-
----
-
 _Comment by @flyaroundme on 2024-02-21 18:06_
 
 So, what do you think on the UX of this command? For me it also seems unintuitive when I am using `uv venv` and the existing env is overwritten with an empty one.
@@ -73,10 +69,6 @@ _Comment by @Slyfest on 2024-02-21 18:10_
 
 ---
 
-_Referenced in [astral-sh/uv#1824](../../astral-sh/uv/pulls/1824.md) on 2024-02-21 18:47_
-
----
-
 _Comment by @gaborbernat on 2024-02-21 19:12_
 
 > if there is an existing venv and the flag is not set, then we simply do nothing.
@@ -86,10 +78,6 @@ I'd imagine a better UX would be to fail hard and loud.
 ---
 
 _Label `bug` removed by @charliermarsh on 2024-03-18 20:54_
-
----
-
-_Referenced in [astral-sh/uv#2548](../../astral-sh/uv/pulls/2548.md) on 2024-03-19 19:04_
 
 ---
 
@@ -110,10 +98,6 @@ python -m pip install -e .[dev]
 _Comment by @zanieb on 2024-04-30 13:39_
 
 Lots of ux discussion in https://github.com/astral-sh/uv/pull/2548
-
----
-
-_Referenced in [astral-sh/uv#4276](../../astral-sh/uv/issues/4276.md) on 2024-06-12 15:35_
 
 ---
 
@@ -202,10 +186,6 @@ Adding this to the 0.6.0 milestone so we consider it in the next breaking releas
 
 ---
 
-_Referenced in [astral-sh/uv#10325](../../astral-sh/uv/issues/10325.md) on 2025-01-06 11:14_
-
----
-
 _Comment by @knirch on 2025-02-12 22:45_
 
 > I don't love the existing behavior, but, for what it's worth, this issue has about three upvotes and we see an order of magnitude more than that on issues that many people encounter.
@@ -234,10 +214,6 @@ just nuked a virtual environment I created, interesting choice of behavior for u
 
 ---
 
-_Referenced in [astral-sh/uv#11893](../../astral-sh/uv/issues/11893.md) on 2025-03-02 15:08_
-
----
-
 _Comment by @dakota-hawkins on 2025-03-04 15:25_
 
 Just commenting to voice my support for "hard and loud" failing, and definitely **not** overwrite be default. Thanks for the great tool! It's really been a breeze to work with other than this small hiccup :)
@@ -260,19 +236,11 @@ _Label `breaking` added by @zanieb on 2025-04-01 21:32_
 
 ---
 
-_Referenced in [astral-sh/uv#12910](../../astral-sh/uv/pulls/12910.md) on 2025-04-15 21:54_
-
----
-
 _Removed from milestone `v0.7.0` by @zanieb on 2025-04-21 19:15_
 
 ---
 
 _Added to milestone `v0.8.0` by @zanieb on 2025-04-21 19:15_
-
----
-
-_Referenced in [astral-sh/uv#13624](../../astral-sh/uv/pulls/13624.md) on 2025-05-23 18:53_
 
 ---
 
@@ -284,10 +252,6 @@ https://github.com/astral-sh/uv/pull/13624
 
 ---
 
-_Referenced in [astral-sh/uv#13684](../../astral-sh/uv/pulls/13684.md) on 2025-05-27 15:16_
-
----
-
 _Comment by @gsimard on 2025-06-18 21:40_
 
 Still not resolved ? People here are being extremely polite about this issue. I just nuked my environment as well.
@@ -295,10 +259,6 @@ Still not resolved ? People here are being extremely polite about this issue. I 
 ---
 
 _Assigned to @jtfmumm by @jtfmumm on 2025-06-24 08:22_
-
----
-
-_Referenced in [astral-sh/uv#14309](../../astral-sh/uv/pulls/14309.md) on 2025-06-27 10:02_
 
 ---
 
@@ -459,10 +419,6 @@ drwxr-xr-x  3 user group   96 2025-07-14 20:56:17 lib
 _Comment by @zanieb on 2025-07-16 17:39_
 
 @YodaEmbedding please open a new issue so we can discuss it independently.
-
----
-
-_Referenced in [astral-sh/uv#14670](../../astral-sh/uv/issues/14670.md) on 2025-07-16 19:20_
 
 ---
 

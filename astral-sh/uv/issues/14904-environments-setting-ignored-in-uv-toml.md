@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-07-25T19:34:08Z
 updated_at: 2025-07-25T21:07:49Z
 url: https://github.com/astral-sh/uv/issues/14904
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # `environments` setting ignored in uv.toml?
@@ -146,10 +146,6 @@ I don't see environments in https://github.com/astral-sh/uv/pull/14322.
 
 ---
 
-_Referenced in [astral-sh/uv#14905](../../astral-sh/uv/pulls/14905.md) on 2025-07-25 19:50_
-
----
-
 _Comment by @dpprdan on 2025-07-25 19:52_
 
 Uhm, then let me vote for allowing environments in uv.toml, if I may.
@@ -239,9 +235,5 @@ I understand the requirement to not allow definite project level settings on the
 _Comment by @zanieb on 2025-07-25 21:07_
 
 Here's a dedicated issue to discuss this https://github.com/astral-sh/uv/issues/14908
-
----
-
-_Referenced in [astral-sh/uv#14908](../../astral-sh/uv/issues/14908.md) on 2025-07-25 21:08_
 
 ---

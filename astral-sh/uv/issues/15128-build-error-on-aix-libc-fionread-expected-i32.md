@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-08-07T11:50:21Z
 updated_at: 2025-08-19T10:27:44Z
 url: https://github.com/astral-sh/uv/issues/15128
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-10T03:32:46Z
 ```
 
 # Build error on AIX: libc::FIONREAD: expected i32, found i64
@@ -81,10 +81,6 @@ _Label `external` added by @zanieb on 2025-08-07 13:05_
 _Comment by @zanieb on 2025-08-07 13:05_
 
 Thanks!
-
----
-
-_Referenced in [astral-sh/uv#15376](../../astral-sh/uv/pulls/15376.md) on 2025-08-19 10:15_
 
 ---
 

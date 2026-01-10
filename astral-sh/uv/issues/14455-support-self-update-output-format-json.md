@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-07-04T07:36:59Z
 updated_at: 2025-07-04T07:37:31Z
 url: https://github.com/astral-sh/uv/issues/14455
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Support `self update --output-format=json`
@@ -32,9 +32,5 @@ Example outputs:
 ---
 
 _Label `enhancement` added by @InSyncWithFoo on 2025-07-04 07:37_
-
----
-
-_Referenced in [astral-sh/uv#14459](../../astral-sh/uv/pulls/14459.md) on 2025-07-04 10:06_
 
 ---

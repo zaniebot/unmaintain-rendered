@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-31T01:32:41Z
 updated_at: 2025-07-25T21:33:58Z
 url: https://github.com/astral-sh/uv/issues/8714
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T03:32:44Z
 ```
 
 # FR: `uv build` accepts a dynamic "package version" argument
@@ -113,10 +113,6 @@ _Comment by @zanieb on 2024-11-03 15:20_
 _Comment by @wu-clan on 2024-11-03 16:28_
 
 @zanieb Yes, if you look closely, you'll find https://backend.pdm-project.org/metadata/#dynamic-project-version, which is a very useful feature, especially for libraries
-
----
-
-_Referenced in [canonical/testflinger#537](../../canonical/testflinger/pulls/537.md) on 2025-04-02 20:05_
 
 ---
 
@@ -286,32 +282,8 @@ There is
 
 ---
 
-_Referenced in [gt-sse-center/copier-UvScaffolding#26](../../gt-sse-center/copier-UvScaffolding/issues/26.md) on 2025-07-18 14:23_
-
----
-
 _Comment by @charlesnicholson on 2025-07-25 21:26_
 
 It's a little subtle, but if this is planned to be built I'd greatly prefer a way to customize the version string instead of having uv simply grab the tag straight from git. Sometimes we want to edit or decorate the tag, like removing suffix metadata etc. Being able to pass an arbitrary (legal) version as a command-line arg or environment variable to `uv build` would be much more flexible. 
-
----
-
-_Referenced in [astral-sh/uv#14946](../../astral-sh/uv/issues/14946.md) on 2025-07-28 20:54_
-
----
-
-_Referenced in [jeandemeusy/api-lib#21](../../jeandemeusy/api-lib/issues/21.md) on 2025-08-22 21:10_
-
----
-
-_Referenced in [TorchSim/torch-sim#311](../../TorchSim/torch-sim/pulls/311.md) on 2025-10-27 14:51_
-
----
-
-_Referenced in [bmwcarit/zubbi#110](../../bmwcarit/zubbi/pulls/110.md) on 2025-11-03 10:34_
-
----
-
-_Referenced in [sky-uk/kfp-operator#922](../../sky-uk/kfp-operator/pulls/922.md) on 2025-11-10 14:25_
 
 ---

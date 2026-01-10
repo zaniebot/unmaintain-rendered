@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-17T12:57:47Z
 updated_at: 2025-07-17T22:20:26Z
 url: https://github.com/astral-sh/uv/issues/5144
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T03:32:44Z
 ```
 
 # `--python-preference only-system` uses managed interpreter if present in virtual environment
@@ -89,26 +89,6 @@ _Renamed from "`--python-preference only-system` uses managed interpreter if exi
 ---
 
 _Label `preview` removed by @zanieb on 2024-08-20 18:22_
-
----
-
-_Referenced in [astral-sh/uv#7934](../../astral-sh/uv/pulls/7934.md) on 2024-10-04 21:11_
-
----
-
-_Referenced in [astral-sh/uv#10282](../../astral-sh/uv/issues/10282.md) on 2025-01-03 00:15_
-
----
-
-_Referenced in [astral-sh/uv#10766](../../astral-sh/uv/issues/10766.md) on 2025-01-20 03:28_
-
----
-
-_Referenced in [astral-sh/uv#11497](../../astral-sh/uv/issues/11497.md) on 2025-02-13 23:22_
-
----
-
-_Referenced in [astral-sh/uv#12246](../../astral-sh/uv/pulls/12246.md) on 2025-03-17 19:53_
 
 ---
 

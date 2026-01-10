@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-21T18:52:38Z
 updated_at: 2025-06-26T19:48:13Z
 url: https://github.com/astral-sh/uv/issues/13020
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Incorrect pip compile for git subdirectory dependency
@@ -77,10 +77,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2025-06-26 15:37_
 _Comment by @charliermarsh on 2025-06-26 15:37_
 
 I can take a look from here @konstin.
-
----
-
-_Referenced in [astral-sh/uv#14288](../../astral-sh/uv/pulls/14288.md) on 2025-06-26 17:54_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-06-26T09:13:40Z
 updated_at: 2025-07-01T16:50:20Z
 url: https://github.com/astral-sh/uv/issues/14269
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # In-tree build `uv pip install .` will create PEP-517 venv twice which breaks build-requires (e.g., `cmake` / `ninja` with absolute path in first venv)
@@ -363,10 +363,6 @@ _Label `bug` added by @XuehaiPan on 2025-06-26 09:13_
 
 ---
 
-_Referenced in [pytorch/pytorch#152276](../../pytorch/pytorch/issues/152276.md) on 2025-06-26 09:34_
-
----
-
 _Comment by @charliermarsh on 2025-06-26 15:35_
 
 Does `pip install --use-pep517` also succeed?
@@ -528,10 +524,6 @@ Hmm... I'm not _totally_ convinced that it's acceptable for `build_wheel` to fai
 
 ---
 
-_Referenced in [astral-sh/uv#14304](../../astral-sh/uv/pulls/14304.md) on 2025-06-27 02:42_
-
----
-
 _Comment by @rgommers on 2025-06-27 08:14_
 
 I understand that you're not totally convinced @charliermarsh; there's an unfortunate amount of ambiguity in the `prepare_metadata_for_build_wheel` spec, so there's only intent and no very clear rules. I don't like it for multiple reasons, and since it's optional I've chosen to not implement it yet in `meson-python` - it avoids potential pitfalls like this. The intent of the hook when it was added to PEP 517 was only to get an option for the front-end to bail out early if dynamic metadata would otherwise cause it to discard the wheel anyway (static metadata should be read from `pyproject.toml` whenever possible, which also took a long Discourse thread to get a verdict on). The spec should have clarified all that better and say that it should only be called (a) by a build frontend, and (b) right before calling the `build_wheel` hook.
@@ -643,14 +635,6 @@ _Comment by @charliermarsh on 2025-06-27 18:45_
 
 (Yeah it's possible that I've completely misstated the problem by using the wrong terminology. This is absolutely something that can break with other tools that aren't uv.)
 
-
----
-
-_Referenced in [astral-sh/uv#14338](../../astral-sh/uv/pulls/14338.md) on 2025-06-27 23:41_
-
----
-
-_Referenced in [pytorch/pytorch#156958](../../pytorch/pytorch/pulls/156958.md) on 2025-06-28 10:13_
 
 ---
 

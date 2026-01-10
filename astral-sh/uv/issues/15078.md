@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-08-05T08:22:57Z
 updated_at: 2025-08-05T15:10:04Z
 url: https://github.com/astral-sh/uv/issues/15078
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-10T03:32:46Z
 ```
 
 # uv sync and uv pip install do not share the same behaviour when working with extras
@@ -99,10 +99,6 @@ Python 3.11
 ---
 
 _Label `bug` added by @lilian-delouvy on 2025-08-05 08:22_
-
----
-
-_Referenced in [astral-sh/uv#15057](../../astral-sh/uv/issues/15057.md) on 2025-08-05 08:25_
 
 ---
 

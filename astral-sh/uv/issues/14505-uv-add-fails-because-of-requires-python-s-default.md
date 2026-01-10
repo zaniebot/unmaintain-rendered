@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-07-08T12:27:38Z
 updated_at: 2025-07-08T14:35:52Z
 url: https://github.com/astral-sh/uv/issues/14505
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # `uv add` fails because of `requires-python`'s "default behavior"
@@ -138,10 +138,6 @@ Thanks @charliermarsh for helping me with this. I'll stick with the requirements
 ---
 
 _Closed by @trya2l on 2025-07-08 13:14_
-
----
-
-_Referenced in [pytorch/test-infra#6900](../../pytorch/test-infra/issues/6900.md) on 2025-07-08 14:34_
 
 ---
 

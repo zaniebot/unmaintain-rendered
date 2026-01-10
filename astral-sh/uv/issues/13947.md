@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-06-10T13:16:39Z
 updated_at: 2025-06-23T13:12:44Z
 url: https://github.com/astral-sh/uv/issues/13947
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Consolidate logic for determining if a path is a virtual environment
@@ -37,10 +37,6 @@ _Label `internal` added by @zanieb on 2025-06-10 13:16_
 ---
 
 _Assigned to @jtfmumm by @jtfmumm on 2025-06-10 16:05_
-
----
-
-_Referenced in [astral-sh/uv#14214](../../astral-sh/uv/pulls/14214.md) on 2025-06-23 11:51_
 
 ---
 

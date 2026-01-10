@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-06-26T20:42:39Z
 updated_at: 2025-07-17T22:20:27Z
 url: https://github.com/astral-sh/uv/issues/14296
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Stabilize `uv python install` executable links
@@ -37,18 +37,6 @@ _Label `breaking` added by @zanieb on 2025-06-26 20:45_
 ---
 
 _Assigned to @zanieb by @zanieb on 2025-06-26 21:01_
-
----
-
-_Referenced in [astral-sh/uv#14612](../../astral-sh/uv/pulls/14612.md) on 2025-07-14 20:48_
-
----
-
-_Referenced in [astral-sh/uv#14627](../../astral-sh/uv/pulls/14627.md) on 2025-07-15 14:48_
-
----
-
-_Referenced in [astral-sh/uv#14626](../../astral-sh/uv/pulls/14626.md) on 2025-07-16 16:16_
 
 ---
 

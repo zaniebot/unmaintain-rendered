@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-09-03T21:41:02Z
 updated_at: 2025-08-07T11:15:14Z
 url: https://github.com/astral-sh/uv/issues/6981
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-10T03:32:44Z
 ```
 
 # Allow conflicting optional dependencies and dependency groups
@@ -32,22 +32,6 @@ _Label `needs-design` added by @zanieb on 2024-09-03 21:41_
 
 ---
 
-_Referenced in [astral-sh/uv#6729](../../astral-sh/uv/issues/6729.md) on 2024-09-03 21:42_
-
----
-
-_Referenced in [astral-sh/uv#6830](../../astral-sh/uv/issues/6830.md) on 2024-09-11 19:50_
-
----
-
-_Referenced in [dagster-io/dagster#23814](../../dagster-io/dagster/pulls/23814.md) on 2024-09-23 21:58_
-
----
-
-_Referenced in [astral-sh/uv#6935](../../astral-sh/uv/issues/6935.md) on 2024-09-25 21:01_
-
----
-
 _Comment by @WelanderJacob on 2024-09-30 14:33_
 
 We're currently adopting uv in our company and recently encountered this issue. I was wondering if there are any updates or timeline on when this feature might be addressed? It would be really valuable for us.
@@ -62,35 +46,11 @@ We're working on this now, but we consider it a difficult / high risk problem so
 
 ---
 
-_Referenced in [astral-sh/uv#8024](../../astral-sh/uv/issues/8024.md) on 2024-10-08 23:34_
-
----
-
-_Referenced in [astral-sh/uv#8110](../../astral-sh/uv/pulls/8110.md) on 2024-10-10 21:12_
-
----
-
-_Referenced in [DetachHead/basedpyright#813](../../DetachHead/basedpyright/pulls/813.md) on 2024-10-26 12:06_
-
----
-
-_Referenced in [astral-sh/uv#8814](../../astral-sh/uv/issues/8814.md) on 2024-11-04 19:32_
-
----
-
 _Renamed from "Allow conflicting optional dependencies" to "Allow conflicting optional dependencies and dependency groups" by @zanieb on 2024-11-04 19:45_
 
 ---
 
 _Assigned to @BurntSushi by @zanieb on 2024-11-04 19:45_
-
----
-
-_Referenced in [kkrt-labs/kakarot#1588](../../kkrt-labs/kakarot/issues/1588.md) on 2024-11-07 17:07_
-
----
-
-_Referenced in [astral-sh/uv#8976](../../astral-sh/uv/pulls/8976.md) on 2024-11-09 18:11_
 
 ---
 
@@ -105,14 +65,6 @@ _Reopened by @zanieb on 2024-11-13 15:08_
 _Comment by @zanieb on 2024-11-13 15:08_
 
 @BurntSushi since this tracks dependency groups as well, I've reopened it.
-
----
-
-_Referenced in [astral-sh/uv#9086](../../astral-sh/uv/issues/9086.md) on 2024-11-13 15:47_
-
----
-
-_Referenced in [astral-sh/uv#9096](../../astral-sh/uv/pulls/9096.md) on 2024-11-13 19:43_
 
 ---
 

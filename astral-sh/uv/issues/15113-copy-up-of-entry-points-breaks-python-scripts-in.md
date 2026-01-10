@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-08-06T18:20:31Z
 updated_at: 2025-08-06T18:20:31Z
 url: https://github.com/astral-sh/uv/issues/15113
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-10T03:32:46Z
 ```
 
 # Copy-up of entry points breaks Python scripts in /usr/local/bin on Debian and Fedora
@@ -63,9 +63,5 @@ _No response_
 ---
 
 _Label `bug` added by @geofft on 2025-08-06 18:20_
-
----
-
-_Referenced in [astral-sh/uv#15121](../../astral-sh/uv/pulls/15121.md) on 2025-08-07 01:15_
 
 ---

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-09-16T14:26:24Z
 updated_at: 2025-07-25T18:04:49Z
 url: https://github.com/astral-sh/uv/issues/7429
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T03:32:44Z
 ```
 
 # Best practices for `requires-python` 
@@ -28,10 +28,6 @@ I had some thoughts about version handling and documentation in #7352, but that 
 * Maybe pointing the interested user in a notice field to the [`Version specifier`](https://packaging.python.org/en/latest/specifications/version-specifiers/) documentation?
 
 
-
----
-
-_Referenced in [astral-sh/uv#7352](../../astral-sh/uv/issues/7352.md) on 2024-09-16 14:27_
 
 ---
 
@@ -77,10 +73,6 @@ Lastly, imagine the scenario where:
 In that scenario, it seems using a wide-version-range value for `requires-python` (such as the default of `>=3.X`) is a net-negative for UX for the "app" project type, even if a `.python-version` file is present. As such, perhaps nudging "app" project types towards a `requires-python` of e.g. `==3.12.*` would still be preferred? (Though an alternative might be for uv to output a warning if the `requires-python` range includes EOL Python versions perhaps?)
 
 (See also https://github.com/heroku/buildpacks-python/issues/260 and https://github.com/python-poetry/poetry/issues/9668)
-
----
-
-_Referenced in [heroku/buildpacks-python#260](../../heroku/buildpacks-python/issues/260.md) on 2024-09-16 21:14_
 
 ---
 
@@ -137,10 +129,6 @@ So I'm wondering if there are some best practices on how to work with separate s
 
 ---
 
-_Referenced in [python-poetry/poetry#9668](../../python-poetry/poetry/issues/9668.md) on 2024-09-17 13:36_
-
----
-
 _Comment by @Seazs on 2024-09-23 12:39_
 
 I have a similar issue with the usage of the following type of command:
@@ -162,10 +150,6 @@ Also, I am new to creating issues or requests, so let me know if I am doing some
 _Comment by @zanieb on 2024-09-23 13:25_
 
 @Seazs thanks for the report, that's different than this issue — that's a bug. We'll track it in https://github.com/astral-sh/uv/issues/7637
-
----
-
-_Referenced in [astral-sh/uv#7637](../../astral-sh/uv/issues/7637.md) on 2024-09-23 13:26_
 
 ---
 
@@ -243,22 +227,10 @@ https://github.com/astral-sh/uv/issues/8247#issuecomment-2416680597
 
 ---
 
-_Referenced in [heroku/heroku-buildpack-python#1802](../../heroku/heroku-buildpack-python/issues/1802.md) on 2025-06-04 12:24_
-
----
-
-_Referenced in [canonical/pvcviewer-operator#94](../../canonical/pvcviewer-operator/pulls/94.md) on 2025-06-13 16:18_
-
----
-
 _Comment by @ssbarnea on 2025-07-25 18:04_
 
 I need to tell uv to do something like use, python 3.9 `>=3.9.17` or 3.10 `>= 3.10.13` or just `>=3.11` but I am afraid that there is no way to tell it this right now.
 
 Note that this might not be the version needed by the package, is the version of python I want uv to install as I want to be sure that some of the known problematic outdated versions are to be avoided during testing. Any ideas?
-
----
-
-_Referenced in [astral-sh/setup-uv#557](../../astral-sh/setup-uv/issues/557.md) on 2025-09-08 21:20_
 
 ---

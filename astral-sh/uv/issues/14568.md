@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-07-11T17:36:59Z
 updated_at: 2025-07-12T03:47:02Z
 url: https://github.com/astral-sh/uv/issues/14568
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Is it possible to install dependencies from only `uv.lock`?
@@ -53,9 +53,5 @@ Thanks. For now I'll keep doing `uv export --frozen -o requirements.txt`.
 ---
 
 _Closed by @vtiriac on 2025-07-12 03:47_
-
----
-
-_Referenced in [aiidateam/plumpy#325](../../aiidateam/plumpy/pulls/325.md) on 2025-10-21 15:44_
 
 ---

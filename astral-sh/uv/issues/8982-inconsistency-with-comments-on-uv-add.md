@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-10T02:40:52Z
 updated_at: 2025-06-22T14:58:40Z
 url: https://github.com/astral-sh/uv/issues/8982
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T03:32:44Z
 ```
 
 # Inconsistency with comments on uv add
@@ -94,14 +94,6 @@ In case it helps, I added "zeep" to the example above because if numpy were the 
 _Comment by @flyaroundme on 2024-11-10 16:28_
 
 Yeah it is like that because when parsing with `toml_edit` this kind of comment is not treated as "the suffix of the second entry", but as "the prefix to the last line", and the invariant that is sustained here after adding is that this is "the prefix to the last line" 🤯
-
----
-
-_Referenced in [astral-sh/uv#9758](../../astral-sh/uv/issues/9758.md) on 2024-12-10 00:43_
-
----
-
-_Referenced in [astral-sh/uv#13966](../../astral-sh/uv/issues/13966.md) on 2025-06-11 13:51_
 
 ---
 

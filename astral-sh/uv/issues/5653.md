@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-07-31T14:08:06Z
 updated_at: 2025-07-12T02:19:22Z
 url: https://github.com/astral-sh/uv/issues/5653
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-10T03:32:44Z
 ```
 
 # uv should respect uv.lock in the workspace root when invoking pip install -target in a subproject
@@ -167,10 +167,6 @@ _Comment by @paveldikov on 2024-08-06 14:31_
 I would love that -- I own an equivalent tool in my org and I would love to eventually replace it with off-the-shelf uv commands.
 
 (side note: I strenuously avoided the `build` term so as to avoid stepping on pypa/build's toes.. maybe unnecessary? I called it `install` out of deference to `make install` but `package` might be a good one as well)
-
----
-
-_Referenced in [astral-sh/uv#5802](../../astral-sh/uv/issues/5802.md) on 2024-08-06 14:47_
 
 ---
 

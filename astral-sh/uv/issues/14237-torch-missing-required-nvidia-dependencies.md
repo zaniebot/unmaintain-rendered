@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-06-24T12:22:28Z
 updated_at: 2025-07-02T19:19:50Z
 url: https://github.com/astral-sh/uv/issues/14237
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # torch missing required nvidia dependencies
@@ -281,9 +281,5 @@ cc @konstin to check my understanding here.
 _Comment by @konstin on 2025-07-02 19:19_
 
 That matches my understanding.
-
----
-
-_Referenced in [NovaSky-AI/SkyRL#341](../../NovaSky-AI/SkyRL/pulls/341.md) on 2025-09-29 02:22_
 
 ---

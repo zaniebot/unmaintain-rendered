@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-06-13T15:37:52Z
 updated_at: 2025-06-13T16:55:25Z
 url: https://github.com/astral-sh/uv/issues/14030
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Handling of different packages with same name (Pillow and Pillow-SIMD) is confusing.
@@ -173,10 +173,6 @@ I think that's another case of https://github.com/astral-sh/uv/pull/13437: The t
 
 ---
 
-_Referenced in [astral-sh/uv#13437](../../astral-sh/uv/pulls/13437.md) on 2025-06-13 15:49_
-
----
-
 _Comment by @MalteEbner on 2025-06-13 16:02_
 
 Suggested solution: I think it should be possible for the user to define different packages under the same module name similar to the sources logic. Something similar to this:
@@ -200,9 +196,5 @@ This works, but the problem is that matplotlib depends on pillow, not on pillow-
 _Comment by @zanieb on 2025-06-13 16:55_
 
 This is tracked in https://github.com/astral-sh/uv/issues/4422
-
----
-
-_Referenced in [astral-sh/uv#15357](../../astral-sh/uv/issues/15357.md) on 2025-08-18 16:36_
 
 ---

@@ -13,7 +13,7 @@ assignees: []
 created_at: 2024-11-03T18:30:04Z
 updated_at: 2025-07-03T17:36:34Z
 url: https://github.com/astral-sh/uv/issues/8779
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-10T03:32:44Z
 ```
 
 # Build backend tracking issue
@@ -397,10 +397,6 @@ Check MANIFEST.in could also be nice! https://github.com/mgedmin/check-manifest
 
 ---
 
-_Referenced in [astral-sh/uv#9501](../../astral-sh/uv/issues/9501.md) on 2024-11-28 13:08_
-
----
-
 _Comment by @cthoyt on 2024-12-04 13:44_
 
 @konstin I was able to get my first builds working using this on the 0.5.5 release (also w/ tox and tox-uv)! There were a few tricks and rough edges I had to get around to make it work.
@@ -437,14 +433,6 @@ Currently not part of the design is generating files or any part of build step, 
 
 ---
 
-_Referenced in [astral-sh/uv#3957](../../astral-sh/uv/issues/3957.md) on 2024-12-04 16:33_
-
----
-
-_Referenced in [astral-sh/uv#9686](../../astral-sh/uv/issues/9686.md) on 2024-12-06 15:22_
-
----
-
 _Comment by @uwu-420 on 2024-12-13 12:04_
 
 Really excited to see progress on uv's own build backend <3
@@ -457,43 +445,7 @@ Edit: Okay I could call `uv build` multiple times with the `--python=...` argume
 
 ---
 
-_Referenced in [mkniewallner/migrate-to-uv#8](../../mkniewallner/migrate-to-uv/issues/8.md) on 2024-12-26 19:36_
-
----
-
-_Referenced in [mkniewallner/migrate-to-uv#27](../../mkniewallner/migrate-to-uv/issues/27.md) on 2025-01-05 00:46_
-
----
-
 _Label `build-backend` added by @konstin on 2025-01-14 08:44_
-
----
-
-_Referenced in [astral-sh/uv#10808](../../astral-sh/uv/issues/10808.md) on 2025-01-21 08:54_
-
----
-
-_Referenced in [reef-technologies/cookiecutter-rt-django#213](../../reef-technologies/cookiecutter-rt-django/pulls/213.md) on 2025-02-04 13:41_
-
----
-
-_Referenced in [astral-sh/uv#11175](../../astral-sh/uv/issues/11175.md) on 2025-02-06 03:34_
-
----
-
-_Referenced in [astral-sh/uv#11428](../../astral-sh/uv/issues/11428.md) on 2025-02-11 21:54_
-
----
-
-_Referenced in [DetachHead/basedpyright#1087](../../DetachHead/basedpyright/issues/1087.md) on 2025-02-17 13:43_
-
----
-
-_Referenced in [astral-sh/uv#11819](../../astral-sh/uv/issues/11819.md) on 2025-02-27 03:07_
-
----
-
-_Referenced in [astral-sh/uv#11884](../../astral-sh/uv/pulls/11884.md) on 2025-03-01 14:05_
 
 ---
 
@@ -604,7 +556,7 @@ To avoid splitting the conversation between two threads, I'll lock this issue in
 
 ---
 
-_Locked by @konstin on 2025-03-10 11:40_
+_Locked by @astral-sh on 2025-03-10 11:40_
 
 ---
 

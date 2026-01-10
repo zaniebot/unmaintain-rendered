@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-17T11:23:28Z
 updated_at: 2025-08-12T08:08:42Z
 url: https://github.com/astral-sh/uv/issues/9967
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-10T03:32:44Z
 ```
 
 # Adding option to generate uv.lock file without the Development dependencies
@@ -78,10 +78,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-12-27 13:53_
 
 ---
 
-_Referenced in [astral-sh/uv#11645](../../astral-sh/uv/issues/11645.md) on 2025-02-21 02:19_
-
----
-
 _Comment by @snoweuph on 2025-08-11 14:39_
 
 How was this implemented, can't find the doc, and It's closed as completed.
@@ -132,9 +128,5 @@ Checkout @charliermarsh's https://github.com/astral-sh/uv/issues/9967#issuecomme
 
 Checkout the docs. [I think it's what you are looking for](https://docs.astral.sh/uv/concepts/projects/sync/#exporting-the-lockfile).
 
-
----
-
-_Referenced in [Maxioum/Peeler#102](../../Maxioum/Peeler/issues/102.md) on 2025-10-08 10:03_
 
 ---

@@ -12,7 +12,7 @@ assignees: []
 created_at: 2025-04-08T15:27:05Z
 updated_at: 2025-06-15T10:46:34Z
 url: https://github.com/astral-sh/uv/issues/12746
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Avoid showing `Updating...` for no-op Git operations like checkout of immutable references
@@ -186,14 +186,6 @@ I feel like @charliermarsh recently touched this in #10803 — not sure if it's 
 
 ---
 
-_Referenced in [astral-sh/uv#12760](../../astral-sh/uv/issues/12760.md) on 2025-04-08 20:08_
-
----
-
-_Referenced in [astral-sh/uv#12761](../../astral-sh/uv/issues/12761.md) on 2025-04-08 20:09_
-
----
-
 _Comment by @zanieb on 2025-04-08 20:10_
 
 Let's track that bug in
@@ -205,14 +197,6 @@ and the general problem of 429s in
 - #12761 
 
 
-
----
-
-_Referenced in [astral-sh/uv#13033](../../astral-sh/uv/pulls/13033.md) on 2025-04-22 14:10_
-
----
-
-_Referenced in [astral-sh/uv#13748](../../astral-sh/uv/pulls/13748.md) on 2025-06-09 23:37_
 
 ---
 

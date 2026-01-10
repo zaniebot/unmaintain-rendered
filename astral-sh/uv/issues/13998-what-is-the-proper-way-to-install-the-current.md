@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-06-12T14:21:54Z
 updated_at: 2025-06-13T10:19:57Z
 url: https://github.com/astral-sh/uv/issues/13998
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # What is the proper way to install the current project in editable mode without build isolation?
@@ -178,9 +178,5 @@ _Comment by @konstin on 2025-06-13 10:19_
 Yes, that's unfortunately true.
 
 
-
----
-
-_Referenced in [beartype/beartype#556](../../beartype/beartype/issues/556.md) on 2025-09-30 23:01_
 
 ---

@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-10-03T19:13:45Z
 updated_at: 2025-06-30T16:07:03Z
 url: https://github.com/astral-sh/uv/issues/7906
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T03:32:44Z
 ```
 
 # OS error 396 when using OneDrive
@@ -94,10 +94,6 @@ Thanks
 
 ---
 
-_Referenced in [astral-sh/ruff#13612](../../astral-sh/ruff/issues/13612.md) on 2024-10-04 04:28_
-
----
-
 _Comment by @charliermarsh on 2024-10-11 09:49_
 
 I sort of doubt we can react to this error specifically, unless it maps to a clear error kind on `io::Error`.
@@ -138,10 +134,6 @@ It doesn’t always happen when I use OneDrive, but I have the suspicion that cr
 ---
 
 _Renamed from "Failed to install: certifi-2024.8.30-py3-none-any.whl " to "OS error 396 when using OneDrive" by @zanieb on 2024-12-03 14:29_
-
----
-
-_Referenced in [cedanl/1cijferho#12](../../cedanl/1cijferho/issues/12.md) on 2025-04-01 07:08_
 
 ---
 

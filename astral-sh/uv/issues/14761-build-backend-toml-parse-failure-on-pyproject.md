@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-07-20T20:56:39Z
 updated_at: 2025-07-20T21:39:47Z
 url: https://github.com/astral-sh/uv/issues/14761
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # build backend toml parse failure on pyproject readme
@@ -85,10 +85,6 @@ Thanks, will take a look.
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2025-07-20 21:22_
-
----
-
-_Referenced in [astral-sh/uv#14762](../../astral-sh/uv/pulls/14762.md) on 2025-07-20 21:38_
 
 ---
 

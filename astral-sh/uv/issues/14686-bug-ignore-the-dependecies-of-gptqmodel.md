@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-07-17T18:08:39Z
 updated_at: 2025-08-01T10:10:04Z
 url: https://github.com/astral-sh/uv/issues/14686
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # [Bug] Ignore the dependecies of gptqmodel
@@ -217,9 +217,5 @@ DEBUG Released lock at `/Users/lucascolley/sandbox/pixi4158/repro/.venv/.lock`
 ```
 
 </details>
-
----
-
-_Referenced in [prefix-dev/pixi#4158](../../prefix-dev/pixi/issues/4158.md) on 2025-08-01 10:10_
 
 ---

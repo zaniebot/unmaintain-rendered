@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-07-25T06:58:41Z
 updated_at: 2025-07-27T14:30:01Z
 url: https://github.com/astral-sh/uv/issues/14884
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # `uv run` unexpectedly re-creating venv because of `.python-version` created by `uv init`
@@ -122,9 +122,5 @@ _Closed by @silverwind on 2025-07-27 09:11_
 _Comment by @zanieb on 2025-07-27 14:30_
 
 You can just use `uv init --no-pin-python`
-
----
-
-_Referenced in [astral-sh/uv#16362](../../astral-sh/uv/issues/16362.md) on 2025-10-19 21:42_
 
 ---

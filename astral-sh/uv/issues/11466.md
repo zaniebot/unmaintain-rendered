@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-02-12T23:44:02Z
 updated_at: 2025-07-13T23:18:59Z
 url: https://github.com/astral-sh/uv/issues/11466
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # `uv pip install gdal` fails to build, with workaround (Windows)
@@ -370,10 +370,6 @@ And then run `uv add gdal`.
 
 ---
 
-_Referenced in [usethis-python/usethis-python#354](../../usethis-python/usethis-python/issues/354.md) on 2025-02-28 01:04_
-
----
-
 _Comment by @hectorpatino on 2025-03-14 15:35_
 
 This worked for me with python 3.10.11 
@@ -457,9 +453,5 @@ name = "gdal-wheels"
 url = "https://gitlab.com/api/v4/projects/61637378/packages/pypi/simple"
 explicit = true
 ```
-
----
-
-_Referenced in [nathanjmcdougall/geospatial-wheels-index#1](../../nathanjmcdougall/geospatial-wheels-index/issues/1.md) on 2025-07-13 23:21_
 
 ---

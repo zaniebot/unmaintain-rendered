@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-03-31T16:49:23Z
 updated_at: 2025-07-15T23:23:49Z
 url: https://github.com/astral-sh/uv/issues/12589
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # uv fails to resolve prereleases with `if-necessary` flag when generating a new lock file
@@ -195,16 +195,8 @@ _Label `question` added by @zanieb on 2025-04-01 19:55_
 
 ---
 
-_Referenced in [astral-sh/uv#13819](../../astral-sh/uv/issues/13819.md) on 2025-06-03 14:37_
-
----
-
 _Comment by @zanieb on 2025-07-15 22:11_
 
 @Butanium want to open a new issue with details as described in https://github.com/astral-sh/uv/issues/9452 so we can help you?
-
----
-
-_Referenced in [astral-sh/uv#14639](../../astral-sh/uv/issues/14639.md) on 2025-07-15 23:24_
 
 ---

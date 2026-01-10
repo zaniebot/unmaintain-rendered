@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-27T21:59:56Z
 updated_at: 2025-06-17T00:05:08Z
 url: https://github.com/astral-sh/uv/issues/10208
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Shadow projects
@@ -88,15 +88,7 @@ Installed 19 packages in 144ms
 
 ---
 
-_Referenced in [astral-sh/uv#10204](../../astral-sh/uv/issues/10204.md) on 2024-12-27 22:04_
-
----
-
 _Label `needs-design` added by @charliermarsh on 2024-12-28 14:38_
-
----
-
-_Referenced in [astral-sh/uv#8666](../../astral-sh/uv/issues/8666.md) on 2025-01-23 00:36_
 
 ---
 

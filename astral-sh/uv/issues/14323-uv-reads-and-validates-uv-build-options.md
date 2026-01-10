@@ -12,7 +12,7 @@ assignees: []
 created_at: 2025-06-27T18:43:39Z
 updated_at: 2025-06-30T14:32:30Z
 url: https://github.com/astral-sh/uv/issues/14323
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # uv reads and validates uv_build options
@@ -68,10 +68,6 @@ _Label `build-backend` added by @konstin on 2025-06-27 18:43_
 _Comment by @zanieb on 2025-06-27 18:46_
 
 Does this block stabilization? 
-
----
-
-_Referenced in [astral-sh/uv#14372](../../astral-sh/uv/pulls/14372.md) on 2025-06-30 14:01_
 
 ---
 

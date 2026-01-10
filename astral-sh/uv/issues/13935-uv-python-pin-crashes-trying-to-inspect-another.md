@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-06-09T21:53:07Z
 updated_at: 2025-06-13T13:50:45Z
 url: https://github.com/astral-sh/uv/issues/13935
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # `uv python pin` crashes trying to inspect another Python
@@ -48,10 +48,6 @@ Regardless, we should be able to eagerly avoid querying this interpreter here be
 ---
 
 _Label `bug` added by @zanieb on 2025-06-09 21:59_
-
----
-
-_Referenced in [astral-sh/uv#13936](../../astral-sh/uv/pulls/13936.md) on 2025-06-09 22:44_
 
 ---
 
@@ -100,10 +96,6 @@ error: Failed to inspect Python interpreter from search path at `/usr/bin/python
 ```
 
 </details>
-
----
-
-_Referenced in [astral-sh/uv#13944](../../astral-sh/uv/pulls/13944.md) on 2025-06-10 12:36_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-08-14T04:33:55Z
 updated_at: 2025-08-21T11:20:31Z
 url: https://github.com/astral-sh/uv/issues/15270
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-10T03:32:46Z
 ```
 
 # Drop publish of Debian bookworm Docker images
@@ -22,10 +22,6 @@ _Issue opened by @zanieb on 2025-08-14 04:33_
 Following #15269 
 
 Maybe in the next breaking release?
-
----
-
-_Referenced in [astral-sh/uv#15230](../../astral-sh/uv/issues/15230.md) on 2025-08-14 04:34_
 
 ---
 
@@ -48,10 +44,6 @@ Trixie is still relatively new though, I'd say maybe wait a tad longer unless re
 _Comment by @samypr100 on 2025-08-17 00:34_
 
 We should drop Alpine 3.21 for Alpine 3.22 in 0.9.0 though as python's images are already Alpine 3.22 by default
-
----
-
-_Referenced in [astral-sh/uv#15352](../../astral-sh/uv/pulls/15352.md) on 2025-08-18 15:00_
 
 ---
 

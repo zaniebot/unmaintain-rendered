@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-06-16T15:36:54Z
 updated_at: 2025-06-20T07:34:04Z
 url: https://github.com/astral-sh/uv/issues/14078
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Running with JIT compilation enabled?
@@ -152,9 +152,5 @@ Happy to close.
 ---
 
 _Closed by @konstin on 2025-06-20 07:34_
-
----
-
-_Referenced in [astral-sh/uv#14779](../../astral-sh/uv/pulls/14779.md) on 2025-07-21 06:11_
 
 ---

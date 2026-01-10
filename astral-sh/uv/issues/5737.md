@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-02T21:06:48Z
 updated_at: 2025-06-13T12:44:01Z
 url: https://github.com/astral-sh/uv/issues/5737
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-10T03:32:44Z
 ```
 
 # Allow setting virtual environment options in `pyproject.toml`
@@ -80,14 +80,6 @@ venv = ["--relocatable", "--system-site-packages"]
 
 ---
 
-_Referenced in [astral-sh/uv#5811](../../astral-sh/uv/issues/5811.md) on 2024-08-06 10:48_
-
----
-
-_Referenced in [astral-sh/uv#7931](../../astral-sh/uv/issues/7931.md) on 2024-10-05 01:45_
-
----
-
 _Comment by @zanieb on 2024-10-05 14:51_
 
 I'm kind of hesitant, though I see the benefit. I think it adds a lot of complexity to the configuration and implementation to allow settings to be defined per-command too.
@@ -112,14 +104,6 @@ I have a problem with this as well. Basically if the venv gets created by `uv`, 
 
 ---
 
-_Referenced in [astral-sh/uv#9996](../../astral-sh/uv/issues/9996.md) on 2025-01-10 17:42_
-
----
-
-_Referenced in [astral-sh/uv#12429](../../astral-sh/uv/issues/12429.md) on 2025-04-01 07:53_
-
----
-
 _Comment by @woutervh on 2025-05-07 22:08_
 
 uv 0.7.3
@@ -141,21 +125,5 @@ relocatable = true
 ```
 
 
-
----
-
-_Referenced in [astral-sh/uv#11852](../../astral-sh/uv/issues/11852.md) on 2025-05-14 18:08_
-
----
-
-_Referenced in [astral-sh/uv#13994](../../astral-sh/uv/issues/13994.md) on 2025-06-12 13:38_
-
----
-
-_Referenced in [astral-sh/uv#9755](../../astral-sh/uv/issues/9755.md) on 2025-06-29 13:48_
-
----
-
-_Referenced in [astral-sh/uv#15934](../../astral-sh/uv/issues/15934.md) on 2025-12-11 18:29_
 
 ---

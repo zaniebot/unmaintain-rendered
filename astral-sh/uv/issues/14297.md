@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-06-26T20:43:26Z
 updated_at: 2025-07-03T17:28:07Z
 url: https://github.com/astral-sh/uv/issues/14297
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Stabilize the uv build backend
@@ -36,10 +36,6 @@ _Assigned to @konstin by @zanieb on 2025-06-26 20:43_
 _Comment by @zanieb on 2025-06-26 20:44_
 
 We must do this before 0.8, but it's not breaking.
-
----
-
-_Referenced in [astral-sh/uv#14298](../../astral-sh/uv/issues/14298.md) on 2025-06-26 20:44_
 
 ---
 

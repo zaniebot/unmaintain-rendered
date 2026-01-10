@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-07-16T13:29:38Z
 updated_at: 2025-07-16T13:48:18Z
 url: https://github.com/astral-sh/uv/issues/14650
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Warn on ignored `[sources]` in `uv.toml`
@@ -34,15 +34,7 @@ _Label `error messages` added by @charliermarsh on 2025-07-16 13:29_
 
 ---
 
-_Referenced in [astral-sh/uv#14600](../../astral-sh/uv/issues/14600.md) on 2025-07-16 13:29_
-
----
-
 _Assigned to @charliermarsh by @charliermarsh on 2025-07-16 13:34_
-
----
-
-_Referenced in [astral-sh/uv#14653](../../astral-sh/uv/pulls/14653.md) on 2025-07-16 13:34_
 
 ---
 

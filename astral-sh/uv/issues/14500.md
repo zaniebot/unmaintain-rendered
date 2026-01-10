@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-07-07T22:27:53Z
 updated_at: 2025-07-07T22:28:01Z
 url: https://github.com/astral-sh/uv/issues/14500
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Implement a concept of "trusted" projects
@@ -45,17 +45,5 @@ If you trust this project, you can allow these options to be loaded. Choose an o
 ---
 
 _Label `enhancement` added by @zanieb on 2025-07-07 22:27_
-
----
-
-_Referenced in [astral-sh/uv#15714](../../astral-sh/uv/issues/15714.md) on 2025-09-08 13:45_
-
----
-
-_Referenced in [astral-sh/uv#16926](../../astral-sh/uv/issues/16926.md) on 2025-12-02 10:42_
-
----
-
-_Referenced in [astral-sh/uv#16918](../../astral-sh/uv/pulls/16918.md) on 2025-12-09 21:39_
 
 ---

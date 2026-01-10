@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-07-30T19:18:24Z
 updated_at: 2025-07-30T19:23:08Z
 url: https://github.com/astral-sh/uv/issues/5631
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-10T03:32:44Z
 ```
 
 # uv pip install --target and workspace
@@ -249,10 +249,6 @@ Ah great, glad that works. This is roughly the problem discussed in https://gith
 
 ---
 
-_Referenced in [astral-sh/uv#14963](../../astral-sh/uv/issues/14963.md) on 2025-07-29 23:24_
-
----
-
 _Comment by @jtdb-pariveda on 2025-07-30 19:07_
 
 bumping this, what is the solution in the context of exporting some package to bundle into a lambda?
@@ -276,9 +272,5 @@ Like, the output, whether running from workspace root or from within a workspace
 ```
 
 But I'd like to be able to run this from within my workspace project for the lambda, and be able to resolve the exported requirements.txt with `../shared-lib` (correct vs project) instead of `./shared-lib` which is incorrect vs. project and correct vs, workspace root.
-
----
-
-_Referenced in [astral-sh/uv#15297](../../astral-sh/uv/issues/15297.md) on 2025-08-15 15:45_
 
 ---

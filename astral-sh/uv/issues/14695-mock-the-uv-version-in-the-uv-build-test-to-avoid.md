@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-07-17T22:07:16Z
 updated_at: 2025-07-18T10:50:05Z
 url: https://github.com/astral-sh/uv/issues/14695
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Mock the uv version in the `uv_build` test to avoid hash changes
@@ -31,10 +31,6 @@ _Assigned to @konstin by @konstin on 2025-07-17 22:08_
 ---
 
 _Label `internal` added by @konstin on 2025-07-17 22:08_
-
----
-
-_Referenced in [astral-sh/uv#14706](../../astral-sh/uv/pulls/14706.md) on 2025-07-18 09:18_
 
 ---
 

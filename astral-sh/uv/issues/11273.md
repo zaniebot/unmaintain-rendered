@@ -12,7 +12,7 @@ assignees: []
 created_at: 2025-02-06T04:51:21Z
 updated_at: 2025-08-11T21:48:59Z
 url: https://github.com/astral-sh/uv/issues/11273
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Add environment variable to always use `--active` flag
@@ -53,14 +53,6 @@ I think any of the options in that comment would work. My personal preference wo
 
 ---
 
-_Referenced in [astral-sh/uv#11458](../../astral-sh/uv/issues/11458.md) on 2025-02-12 18:42_
-
----
-
-_Referenced in [astral-sh/uv#8878](../../astral-sh/uv/issues/8878.md) on 2025-02-16 04:14_
-
----
-
 _Comment by @albireox on 2025-04-07 23:36_
 
 Any updates on this?
@@ -78,10 +70,6 @@ May I give it a try (ore there's another volunteer already :-) )?
 ---
 
 _Assigned to @oconnor663 by @oconnor663 on 2025-05-28 15:22_
-
----
-
-_Referenced in [astral-sh/uv#13714](../../astral-sh/uv/pulls/13714.md) on 2025-05-29 00:31_
 
 ---
 
@@ -251,13 +239,5 @@ BTW: As a developer in China, our situation highlights why a global configuratio
 _Comment by @RafalSkolasinski on 2025-08-11 21:48_
 
 Though `UV_PROJECT_ENVIRONMENT=$CONDA_PREFIX` does the trick it's not ideal as this needs to be set after activating every conda environment. It would be nice to just set some boolean config option that whenever `$CONDA_PREFIX` is set it is used for UV's project environment.
-
----
-
-_Referenced in [astral-sh/uv#11315](../../astral-sh/uv/issues/11315.md) on 2025-08-11 22:19_
-
----
-
-_Referenced in [astral-sh/uv#15603](../../astral-sh/uv/issues/15603.md) on 2025-08-31 08:56_
 
 ---

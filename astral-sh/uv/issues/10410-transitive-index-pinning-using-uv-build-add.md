@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-08T21:37:52Z
 updated_at: 2025-07-10T23:30:22Z
 url: https://github.com/astral-sh/uv/issues/10410
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Transitive index pinning using uv build / add
@@ -48,10 +48,6 @@ uv add package_a
 `package_b` must manually specify the index for some_private_package and its transitive dependencies. Automating this process would streamline dependency management. wheel metadata discards all the pinned index information. 
 
 Is this functionality supported in `uv build`, or are there plans to add it? 
-
----
-
-_Referenced in [astral-sh/uv#13035](../../astral-sh/uv/issues/13035.md) on 2025-04-21 23:56_
 
 ---
 

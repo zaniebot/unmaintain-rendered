@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-07-26T15:15:19Z
 updated_at: 2025-07-26T15:15:19Z
 url: https://github.com/astral-sh/uv/issues/14916
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Global Python pin should be ignored when incompatible with project
@@ -36,9 +36,5 @@ We should probably ignore this Python pin instead of erroring?
 ---
 
 _Label `bug` added by @zanieb on 2025-07-26 15:15_
-
----
-
-_Referenced in [astral-sh/uv#15473](../../astral-sh/uv/pulls/15473.md) on 2025-08-23 17:36_
 
 ---

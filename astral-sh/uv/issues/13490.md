@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-05-16T13:55:43Z
 updated_at: 2025-06-20T09:10:03Z
 url: https://github.com/astral-sh/uv/issues/13490
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Presence of `UV_CONFIG_FILE` implicitly adds default index
@@ -438,10 +438,6 @@ I have not yet checked the effect of user and system-level configuration. But ye
 ---
 
 _Assigned to @jtfmumm by @jtfmumm on 2025-05-19 09:25_
-
----
-
-_Referenced in [astral-sh/uv#13752](../../astral-sh/uv/issues/13752.md) on 2025-05-31 09:07_
 
 ---
 

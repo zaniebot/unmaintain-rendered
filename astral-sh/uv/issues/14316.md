@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-06-27T14:04:19Z
 updated_at: 2025-06-27T18:48:42Z
 url: https://github.com/astral-sh/uv/issues/14316
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Workspace cache isn't shared between lock and install steps in `uv sync`
@@ -28,10 +28,6 @@ _Label `performance` added by @charliermarsh on 2025-06-27 14:04_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2025-06-27 17:55_
-
----
-
-_Referenced in [astral-sh/uv#14321](../../astral-sh/uv/pulls/14321.md) on 2025-06-27 18:03_
 
 ---
 

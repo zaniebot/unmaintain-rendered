@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-07-03T08:51:54Z
 updated_at: 2025-07-09T17:45:46Z
 url: https://github.com/astral-sh/uv/issues/14435
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Unexpected error when using uv_build with namespace=true and no-editable install
@@ -99,10 +99,6 @@ _Label `build-backend` added by @konstin on 2025-07-03 09:38_
 ---
 
 _Assigned to @konstin by @konstin on 2025-07-03 17:40_
-
----
-
-_Referenced in [astral-sh/uv#14460](../../astral-sh/uv/pulls/14460.md) on 2025-07-04 14:33_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-06-20T13:10:08Z
 updated_at: 2025-06-22T14:56:19Z
 url: https://github.com/astral-sh/uv/issues/14151
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Installing uv with recommended method not working
@@ -98,10 +98,6 @@ Thanks!
 ---
 
 _Closed by @gdurif on 2025-06-20 14:12_
-
----
-
-_Referenced in [rstudio/reticulate#1808](../../rstudio/reticulate/issues/1808.md) on 2025-06-20 19:23_
 
 ---
 

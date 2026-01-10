@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-07-07T08:48:33Z
 updated_at: 2025-07-09T19:28:57Z
 url: https://github.com/astral-sh/uv/issues/14481
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # The `==3.10` warning does not show the source and might be misleading in case of invalid spec
@@ -101,9 +101,5 @@ _Comment by @potiuk on 2025-07-09 19:28_
 Yeah. It will be gret to get the warning more informative and actionable in the right way - following the wider community understanding of the problem.
 
 I've personally learned a lot from the whole discussion. and happy to provide a feedback on  propoosed improvements :)
-
----
-
-_Referenced in [astral-sh/uv#14711](../../astral-sh/uv/issues/14711.md) on 2025-07-18 14:45_
 
 ---

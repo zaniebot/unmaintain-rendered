@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-14T16:30:50Z
 updated_at: 2025-07-29T22:29:07Z
 url: https://github.com/astral-sh/uv/issues/9122
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-10T03:32:44Z
 ```
 
 # Incorporate PEP 740
@@ -36,10 +36,6 @@ _Comment by @Ravencentric on 2024-11-15 12:45_
 ---
 
 _Label `enhancement` added by @charliermarsh on 2024-11-16 03:11_
-
----
-
-_Referenced in [canonical/operator#1480](../../canonical/operator/pulls/1480.md) on 2024-12-05 07:05_
 
 ---
 
@@ -96,13 +92,5 @@ _Comment by @matmair on 2025-07-29 22:29_
 Running attestation/provenance checks to link with the PEP740 data before install would be very interesting security wise. Typo / Slop-squatting is probably only getting a bigger problem with all those agents writing code now. Being able to limit to a list of approved publishers in uv for example would make the mandatory use of private mirrors in enterprises unnecessary and the tool stack much lighter.
 
 It seems like the proposal to include a similar mechanism in pip is somewhat dormant, sadly.
-
----
-
-_Referenced in [astral-sh/uv#15618](../../astral-sh/uv/issues/15618.md) on 2025-09-01 14:34_
-
----
-
-_Referenced in [pydantic/pydantic-core#1842](../../pydantic/pydantic-core/issues/1842.md) on 2025-10-14 08:15_
 
 ---

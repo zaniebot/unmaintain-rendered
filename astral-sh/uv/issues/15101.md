@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-08-06T09:07:33Z
 updated_at: 2025-08-06T10:27:18Z
 url: https://github.com/astral-sh/uv/issues/15101
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-10T03:32:46Z
 ```
 
 # Simplify marker edges by tracking conflict reachability on nodes
@@ -72,9 +72,5 @@ The `six` marker is exactly the reachability of python-dateutil 2.8.0, we should
 ---
 
 _Label `enhancement` added by @konstin on 2025-08-06 09:07_
-
----
-
-_Referenced in [astral-sh/uv#15041](../../astral-sh/uv/pulls/15041.md) on 2025-08-06 09:07_
 
 ---

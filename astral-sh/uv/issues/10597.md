@@ -12,7 +12,7 @@ assignees: []
 created_at: 2025-01-14T14:15:50Z
 updated_at: 2025-06-13T15:15:26Z
 url: https://github.com/astral-sh/uv/issues/10597
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # uv sync ignores non-existent extras given to `--extra` option
@@ -52,14 +52,6 @@ I'm in favor.
 ---
 
 _Added to milestone `v0.6.0` by @zanieb on 2025-01-16 19:06_
-
----
-
-_Referenced in [astral-sh/uv#10869](../../astral-sh/uv/pulls/10869.md) on 2025-01-22 18:14_
-
----
-
-_Referenced in [astral-sh/uv#11426](../../astral-sh/uv/pulls/11426.md) on 2025-02-11 20:51_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-11T13:43:05Z
 updated_at: 2025-07-16T14:33:03Z
 url: https://github.com/astral-sh/uv/issues/12837
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # `uv add` with `uv-dynamic-version`?
@@ -120,10 +120,6 @@ _No response_
 ---
 
 _Label `question` added by @Ox54 on 2025-04-11 13:43_
-
----
-
-_Referenced in [ninoseki/uv-dynamic-versioning#34](../../ninoseki/uv-dynamic-versioning/issues/34.md) on 2025-04-11 23:15_
 
 ---
 

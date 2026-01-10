@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-07-10T15:05:53Z
 updated_at: 2025-07-16T14:20:27Z
 url: https://github.com/astral-sh/uv/issues/14542
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Test `lock_unique_named_index` fails with 404 Not Found
@@ -50,10 +50,6 @@ e.g. https://github.com/astral-sh/uv/actions/runs/16197053482/job/45726173752
 ---
 
 _Label `ci-flake` added by @zanieb on 2025-07-10 15:05_
-
----
-
-_Referenced in [astral-sh/uv#14657](../../astral-sh/uv/pulls/14657.md) on 2025-07-16 14:10_
 
 ---
 

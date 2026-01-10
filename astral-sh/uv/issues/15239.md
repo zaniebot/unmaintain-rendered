@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-08-12T14:12:33Z
 updated_at: 2025-08-18T16:35:37Z
 url: https://github.com/astral-sh/uv/issues/15239
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-10T03:32:46Z
 ```
 
 # Warning that PySide6 is provided by more than one package since uv 0.8.7
@@ -166,17 +166,9 @@ In #15253 I've moved this behind a feature gate while we iterate on detection.
 
 ---
 
-_Referenced in [astral-sh/uv#15253](../../astral-sh/uv/pulls/15253.md) on 2025-08-13 20:02_
-
----
-
 _Comment by @konstin on 2025-08-18 14:42_
 
 I've created an upstream bug: https://bugreports.qt.io/browse/PYSIDE-3161
-
----
-
-_Referenced in [mlflow/mlflow#17267](../../mlflow/mlflow/issues/17267.md) on 2025-08-18 16:35_
 
 ---
 
@@ -185,13 +177,5 @@ _Comment by @konstin on 2025-08-18 16:35_
 I've looked in the `uv pip install torch` case, the nvidia packages are fixed in a newer version, but torch still uses the older version, so we need to wait until torch updates.
 
 I've also create an upstream bug for mlflow: https://github.com/mlflow/mlflow/issues/17267
-
----
-
-_Referenced in [astral-sh/uv#15357](../../astral-sh/uv/issues/15357.md) on 2025-08-18 16:36_
-
----
-
-_Referenced in [astral-sh/uv#15813](../../astral-sh/uv/issues/15813.md) on 2025-09-12 14:35_
 
 ---

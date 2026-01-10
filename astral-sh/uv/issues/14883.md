@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-07-25T04:27:15Z
 updated_at: 2025-07-31T14:20:50Z
 url: https://github.com/astral-sh/uv/issues/14883
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Hash mismatch for packages in local index
@@ -90,10 +90,6 @@ _Label `bug` added by @iwinux on 2025-07-25 04:27_
 
 ---
 
-_Referenced in [astral-sh/uv#13112](../../astral-sh/uv/issues/13112.md) on 2025-07-25 04:30_
-
----
-
 _Assigned to @charliermarsh by @charliermarsh on 2025-07-25 14:21_
 
 ---
@@ -101,10 +97,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2025-07-25 14:21_
 _Comment by @charliermarsh on 2025-07-25 14:39_
 
 Thanks, I'll take a look.
-
----
-
-_Referenced in [astral-sh/uv#14993](../../astral-sh/uv/pulls/14993.md) on 2025-07-31 13:40_
 
 ---
 

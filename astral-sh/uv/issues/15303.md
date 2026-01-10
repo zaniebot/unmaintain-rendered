@@ -9,7 +9,7 @@ assignees: []
 created_at: 2025-08-15T11:36:52Z
 updated_at: 2025-08-15T13:41:33Z
 url: https://github.com/astral-sh/uv/issues/15303
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-10T03:32:46Z
 ```
 
 # torch wheel from CPU index is not cached
@@ -85,9 +85,5 @@ _Closed by @tpgillam on 2025-08-15 13:41_
 _Comment by @charliermarsh on 2025-08-15 13:41_
 
 I'm also chatting with the PyTorch team to see if we can get those headers changed :)
-
----
-
-_Referenced in [astral-sh/uv#15425](../../astral-sh/uv/issues/15425.md) on 2025-08-21 18:30_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-06-24T09:25:16Z
 updated_at: 2025-06-24T09:39:08Z
 url: https://github.com/astral-sh/uv/issues/14234
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Best practice to install Python packages when developing on container with watch mode
@@ -199,9 +199,5 @@ services:
 ```
 
 
-
----
-
-_Referenced in [bgreenawald/bananagrams#75](../../bgreenawald/bananagrams/pulls/75.md) on 2025-08-03 18:31_
 
 ---

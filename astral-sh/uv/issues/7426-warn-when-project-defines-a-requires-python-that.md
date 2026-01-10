@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-09-16T13:38:58Z
 updated_at: 2025-06-27T20:48:43Z
 url: https://github.com/astral-sh/uv/issues/7426
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T03:32:44Z
 ```
 
 # Warn when project defines a `requires-python` that pins to a `.0` patch version
@@ -27,14 +27,6 @@ If the user defines a Python requirement of `==3.12` this means `==3.12.0` which
 ---
 
 _Label `projects` added by @zanieb on 2024-09-16 13:39_
-
----
-
-_Referenced in [astral-sh/uv#7352](../../astral-sh/uv/issues/7352.md) on 2024-09-16 13:41_
-
----
-
-_Referenced in [astral-sh/uv#7429](../../astral-sh/uv/issues/7429.md) on 2024-09-16 14:26_
 
 ---
 
@@ -60,26 +52,6 @@ Feel free!
 
 ---
 
-_Referenced in [ianpaul10/uv#1](../../ianpaul10/uv/pulls/1.md) on 2024-10-07 06:26_
-
----
-
-_Referenced in [astral-sh/uv#7959](../../astral-sh/uv/pulls/7959.md) on 2024-10-07 06:35_
-
----
-
-_Referenced in [astral-sh/uv#8169](../../astral-sh/uv/issues/8169.md) on 2024-10-14 13:24_
-
----
-
-_Referenced in [astral-sh/uv#8197](../../astral-sh/uv/issues/8197.md) on 2024-10-15 04:50_
-
----
-
-_Referenced in [astral-sh/uv#8284](../../astral-sh/uv/pulls/8284.md) on 2024-10-17 10:29_
-
----
-
 _Comment by @ryan-ph on 2025-01-25 06:45_
 
 It seems the linked PR hasn't been updated in a while. Is this something that we would like to warn on? If so, happy to take this.
@@ -92,17 +64,9 @@ I've closed https://github.com/astral-sh/uv/pull/8284 — feel free to pick that
 
 ---
 
-_Referenced in [heroku/heroku-buildpack-python#1802](../../heroku/heroku-buildpack-python/issues/1802.md) on 2025-06-04 12:24_
-
----
-
 _Comment by @aaron-ang on 2025-06-12 17:16_
 
 Hi @ryan-ph, are you working on this issue?
-
----
-
-_Referenced in [astral-sh/uv#14008](../../astral-sh/uv/pulls/14008.md) on 2025-06-12 22:07_
 
 ---
 
@@ -119,9 +83,5 @@ hi @zanieb could you take a look at #14008 when you have time? Hopefully we can 
 ---
 
 _Closed by @zanieb on 2025-06-27 20:48_
-
----
-
-_Referenced in [astral-sh/uv#14335](../../astral-sh/uv/pulls/14335.md) on 2025-07-01 21:24_
 
 ---

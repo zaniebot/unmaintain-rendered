@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-06-26T12:31:39Z
 updated_at: 2025-07-03T21:36:34Z
 url: https://github.com/astral-sh/uv/issues/14272
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Staging mode for uv lock preserving (binary) wheels
@@ -55,9 +55,5 @@ I found out that for step 4, the generation of wheels, pip is not needed, it cou
 This is a nice feature of uv which is not too obvious from the docs.
 
 It doesn't make the whole process _much_ easier, though. But probably faster.
-
----
-
-_Referenced in [LabAutomationAndScreening/copier-cloud-courier-infrastructure#10](../../LabAutomationAndScreening/copier-cloud-courier-infrastructure/pulls/10.md) on 2025-08-02 20:06_
 
 ---

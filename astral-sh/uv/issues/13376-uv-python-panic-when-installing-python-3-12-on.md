@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-05-10T09:36:39Z
 updated_at: 2025-07-17T20:38:42Z
 url: https://github.com/astral-sh/uv/issues/13376
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # uv-python: panic when installing Python 3.12 on Windows (called \Option::unwrap()` on a `None` value in downloads.rs)`
@@ -124,10 +124,6 @@ Have you set `UV_PYTHON_INSTALL_MIRROR` or `UV_PYTHON_DOWNLOADS_JSON_URL`?
 _Comment by @zanieb on 2025-05-10 14:37_
 
 (It's possible something has regressed here, as there have been changes in #10939, #12967, etc.)
-
----
-
-_Referenced in [astral-sh/uv#13406](../../astral-sh/uv/pulls/13406.md) on 2025-05-12 11:23_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-10T00:09:48Z
 updated_at: 2025-06-29T13:48:16Z
 url: https://github.com/astral-sh/uv/issues/9755
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-10T03:32:44Z
 ```
 
 # Make `--all-packages` the default?
@@ -145,10 +145,6 @@ _Closed by @zanieb on 2025-01-07 19:23_
 ---
 
 _Closed by @zanieb on 2025-01-07 19:23_
-
----
-
-_Referenced in [renovatebot/renovate#33874](../../renovatebot/renovate/issues/33874.md) on 2025-05-07 17:07_
 
 ---
 

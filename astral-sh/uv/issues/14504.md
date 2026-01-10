@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-07-08T10:25:46Z
 updated_at: 2025-07-09T10:50:17Z
 url: https://github.com/astral-sh/uv/issues/14504
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Support Mercurial like pip
@@ -113,9 +113,5 @@ Aside note: in the long term, having just one solution for versioning (only Git)
 ---
 
 _Closed by @paugier on 2025-07-09 10:50_
-
----
-
-_Referenced in [astral-sh/uv#15346](../../astral-sh/uv/issues/15346.md) on 2025-08-18 14:14_
 
 ---

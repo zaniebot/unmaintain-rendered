@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-06-11T15:27:07Z
 updated_at: 2025-06-11T15:27:07Z
 url: https://github.com/astral-sh/uv/issues/13970
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # `uv add` should indicate when the lockfile changes
@@ -75,9 +75,5 @@ I think it'd be weird to use the `uv lock` style output mixed with the environme
 ---
 
 _Label `enhancement` added by @zanieb on 2025-06-11 15:27_
-
----
-
-_Referenced in [astral-sh/uv#1419](../../astral-sh/uv/issues/1419.md) on 2025-06-11 15:28_
 
 ---

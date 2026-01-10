@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-27T14:58:00Z
 updated_at: 2025-08-07T18:40:58Z
 url: https://github.com/astral-sh/uv/issues/10194
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # find_uv_bin fails to find uv when already inside a virtualenv
@@ -49,10 +49,6 @@ That is breaking tox-uv plugin which needs this functionality. I think that fixi
 I should mention that in this case the venv was created with use system packages option, and probably this is why `uv` module is present but fails to find its own script (executable in our case), because that script is not inside the venv own script directory but it is inside system python script directory.
 
 In fact if find_uv_bin implementation would have used `shutil.which` to find the executable it would have worked.
-
----
-
-_Referenced in [astral-sh/uv#10195](../../astral-sh/uv/pulls/10195.md) on 2024-12-27 15:13_
 
 ---
 
@@ -101,10 +97,6 @@ FileNotFoundError: /Users/ssbarnea/.local/bin/uv
 
 ---
 
-_Referenced in [easybuilders/easybuild-easyconfigs#22652](../../easybuilders/easybuild-easyconfigs/pulls/22652.md) on 2025-06-05 07:34_
-
----
-
 _Comment by @Flamefire on 2025-06-05 08:09_
 
 I think both the code and the error is not complete. It tries several paths and then reports FileNotFound for the first. Shouldn't it report all paths?
@@ -112,10 +104,6 @@ I think both the code and the error is not complete. It tries several paths and 
 Also: `target_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "bin", uv_exe)` can't be correct, can it?
 
 `__file__` is `<prefix>/lib/python3.13/site-packages/uv/_find_uv.py`. So there are about 3 levels of `dirname` missing, aren't there?
-
----
-
-_Referenced in [tox-dev/tox-uv#214](../../tox-dev/tox-uv/pulls/214.md) on 2025-06-20 10:16_
 
 ---
 
@@ -255,10 +243,6 @@ I believe https://github.com/astral-sh/uv/pull/14181 will resolve this
 
 ---
 
-_Referenced in [astral-sh/uv#14181](../../astral-sh/uv/pulls/14181.md) on 2025-06-21 11:49_
-
----
-
 _Comment by @Flamefire on 2025-06-21 12:00_
 
 I see thanks. We are using `pip install --prefix` for all installations. Not sure how the resulting layout of `--target` looks like.
@@ -295,10 +279,6 @@ if ebpythonprefixes:
         if os.path.isdir(sitedir):
             site.addsitedir(sitedir)
 ```
-
----
-
-_Referenced in [astral-sh/uv#14184](../../astral-sh/uv/pulls/14184.md) on 2025-06-21 12:34_
 
 ---
 

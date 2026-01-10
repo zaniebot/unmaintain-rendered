@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-06-29T15:54:32Z
 updated_at: 2025-07-01T18:39:19Z
 url: https://github.com/astral-sh/uv/issues/14350
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Tests for `without_trailing_slash` do not assert if borrowed
@@ -28,10 +28,6 @@ _Label `testing` added by @zanieb on 2025-06-29 15:54_
 ---
 
 _Assigned to @jtfmumm by @jtfmumm on 2025-07-01 12:40_
-
----
-
-_Referenced in [astral-sh/uv#14390](../../astral-sh/uv/pulls/14390.md) on 2025-07-01 12:41_
 
 ---
 

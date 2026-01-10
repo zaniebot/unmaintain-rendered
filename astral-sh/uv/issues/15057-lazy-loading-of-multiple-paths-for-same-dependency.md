@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-08-04T13:21:05Z
 updated_at: 2025-08-05T08:25:27Z
 url: https://github.com/astral-sh/uv/issues/15057
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-10T03:32:46Z
 ```
 
 # Lazy loading of multiple paths for same dependency
@@ -95,10 +95,6 @@ Windows (locally) and ubuntu (pipeline)
 ---
 
 _Label `question` added by @lilian-delouvy on 2025-08-04 13:21_
-
----
-
-_Referenced in [astral-sh/uv#15078](../../astral-sh/uv/issues/15078.md) on 2025-08-05 08:22_
 
 ---
 

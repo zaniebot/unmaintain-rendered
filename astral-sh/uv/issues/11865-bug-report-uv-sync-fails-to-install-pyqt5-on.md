@@ -9,7 +9,7 @@ assignees: []
 created_at: 2025-02-28T21:02:59Z
 updated_at: 2025-08-21T17:29:16Z
 url: https://github.com/astral-sh/uv/issues/11865
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Bug Report: uv sync Fails to Install PyQt5 on Windows
@@ -177,17 +177,5 @@ pip is only performing a resolution for your single platform, while the uv lockf
 ---
 
 _Label `needs-mre` removed by @konstin on 2025-08-21 17:29_
-
----
-
-_Referenced in [astral-sh/uv#15421](../../astral-sh/uv/issues/15421.md) on 2025-08-21 17:29_
-
----
-
-_Referenced in [xiaofeiyu0723/ExVR#40](../../xiaofeiyu0723/ExVR/pulls/40.md) on 2025-10-15 05:53_
-
----
-
-_Referenced in [neuroinformatics-unit/movement#683](../../neuroinformatics-unit/movement/pulls/683.md) on 2025-10-29 20:15_
 
 ---

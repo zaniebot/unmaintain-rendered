@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-15T19:54:48Z
 updated_at: 2025-07-08T16:45:27Z
 url: https://github.com/astral-sh/uv/issues/12193
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Letting `#!/usr/bin/env -S uv run` script find its project even if run from outside the project
@@ -74,14 +74,6 @@ _Comment by @andersk on 2025-03-16 01:47_
 I’m not at all excited about having to teach new contributors how to correctly write shell/Python polyglots, or about editors misdetecting the language, linters warning about the “unused” code, formatters breaking it with reformatting, etc.
 
 A new flag would allow solving the problem. But I couldn’t come up with use case where one might prefer the old behavior; if you wanted a script’s environment to depend on the process working directory, why would it be using an `uv` shebang?
-
----
-
-_Referenced in [astral-sh/uv#12303](../../astral-sh/uv/issues/12303.md) on 2025-03-19 01:08_
-
----
-
-_Referenced in [astral-sh/uv#11302](../../astral-sh/uv/issues/11302.md) on 2025-03-23 01:16_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-06-15T00:45:54Z
 updated_at: 2025-07-07T11:23:45Z
 url: https://github.com/astral-sh/uv/issues/14040
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # uv cannot find resolution for required-environment `sys_platform == 'win32' and platform_machine == 'AMD64'`
@@ -128,10 +128,6 @@ uv 0.7.13 (62ed17b23 2025-06-12)
 ---
 
 _Label `bug` added by @RazerM on 2025-06-15 00:45_
-
----
-
-_Referenced in [astral-sh/uv#14041](../../astral-sh/uv/pulls/14041.md) on 2025-06-15 00:46_
 
 ---
 

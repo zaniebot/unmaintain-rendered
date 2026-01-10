@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-04T01:42:18Z
 updated_at: 2025-08-19T11:06:09Z
 url: https://github.com/astral-sh/uv/issues/7911
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T03:32:44Z
 ```
 
 # Support of using locked version when building.
@@ -169,10 +169,6 @@ _Comment by @leodevian on 2024-10-07 08:06_
 > Does it mean I can't use `uv add` to manage my dependencies?
 
 Unfortunately, yes :/
-
----
-
-_Referenced in [astral-sh/uv#7960](../../astral-sh/uv/issues/7960.md) on 2024-10-07 08:30_
 
 ---
 

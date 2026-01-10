@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-06-21T13:00:02Z
 updated_at: 2025-07-04T02:08:48Z
 url: https://github.com/astral-sh/uv/issues/14187
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Which environment variable should be adjusted if venv cannot be created on the Chinese network
@@ -71,9 +71,5 @@ uv venv --no-python-downloads
 ---
 
 _Closed by @charliermarsh on 2025-07-04 02:08_
-
----
-
-_Referenced in [astral-sh/uv#14553](../../astral-sh/uv/issues/14553.md) on 2025-07-11 14:01_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-07-03T10:57:05Z
 updated_at: 2025-07-09T17:45:47Z
 url: https://github.com/astral-sh/uv/issues/14438
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # `uv build` failed to build
@@ -168,10 +168,6 @@ _Assigned to @konstin by @zanieb on 2025-07-03 11:53_
 _Comment by @zanieb on 2025-07-03 11:53_
 
 Thanks for the report!
-
----
-
-_Referenced in [astral-sh/uv#14460](../../astral-sh/uv/pulls/14460.md) on 2025-07-05 16:34_
 
 ---
 

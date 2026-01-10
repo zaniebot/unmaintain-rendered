@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-07-25T12:53:40Z
 updated_at: 2025-07-28T17:30:29Z
 url: https://github.com/astral-sh/uv/issues/14894
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Problems with git installs in CI via Github Actions
@@ -72,10 +72,6 @@ _Label `bug` added by @emdneto on 2025-07-25 12:53_
 
 ---
 
-_Referenced in [astral-sh/uv#13054](../../astral-sh/uv/issues/13054.md) on 2025-07-25 12:54_
-
----
-
 _Comment by @zanieb on 2025-07-25 13:02_
 
 Is the issue spurious or consistently reproduced?
@@ -85,10 +81,6 @@ Is the issue spurious or consistently reproduced?
 _Comment by @zanieb on 2025-07-25 13:03_
 
 Do you think you could isolate this into a minimal reproduction in a separate repository?
-
----
-
-_Referenced in [open-telemetry/opentelemetry-python-contrib#3352](../../open-telemetry/opentelemetry-python-contrib/issues/3352.md) on 2025-07-25 13:03_
 
 ---
 

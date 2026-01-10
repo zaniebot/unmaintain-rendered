@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-26T02:37:31Z
 updated_at: 2025-07-08T06:40:34Z
 url: https://github.com/astral-sh/uv/issues/11787
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # `uv init` support for PEP 420 namespace packages
@@ -34,10 +34,6 @@ _No response_
 ---
 
 _Label `enhancement` added by @haarisr on 2025-02-26 02:37_
-
----
-
-_Referenced in [astral-sh/uv#11684](../../astral-sh/uv/issues/11684.md) on 2025-02-26 02:38_
 
 ---
 
@@ -140,10 +136,6 @@ import snake.viper as sv
 _Comment by @grantperry on 2025-03-12 23:54_
 
 I believe this might be related to #7182.
-
----
-
-_Referenced in [astral-sh/uv#10960](../../astral-sh/uv/issues/10960.md) on 2025-07-08 06:04_
 
 ---
 

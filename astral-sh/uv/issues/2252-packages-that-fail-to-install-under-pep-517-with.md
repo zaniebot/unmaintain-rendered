@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-06T22:34:28Z
 updated_at: 2025-07-31T13:58:30Z
 url: https://github.com/astral-sh/uv/issues/2252
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-10T03:32:43Z
 ```
 
 # Packages that fail to install under PEP 517 with build isolation
@@ -187,10 +187,6 @@ _Label `bug` added by @charliermarsh on 2024-03-06 22:40_
 
 ---
 
-_Referenced in [pypa/pip#9175](../../pypa/pip/issues/9175.md) on 2024-03-07 02:30_
-
----
-
 _Label `bug` removed by @charliermarsh on 2024-03-07 21:34_
 
 ---
@@ -246,10 +242,6 @@ Yeah we should add a nice message for “missing wheel”. We have that for a fe
 
 ---
 
-_Referenced in [astral-sh/uv#2342](../../astral-sh/uv/issues/2342.md) on 2024-03-10 16:39_
-
----
-
 _Comment by @charliermarsh on 2024-04-10 13:51_
 
 [`youtokentome`](https://github.com/VKCOM/YouTokenToMe) at least as of f4162d846057a3118222ca04a01b84297eb8a8db.
@@ -297,10 +289,6 @@ error: subprocess-exited-with-error
 
 note: This error originates from a subprocess, and is likely not a problem with pip.
 ```
-
----
-
-_Referenced in [astral-sh/uv#2955](../../astral-sh/uv/issues/2955.md) on 2024-04-10 13:51_
 
 ---
 
@@ -357,10 +345,6 @@ error: subprocess-exited-with-error
 
 note: This error originates from a subprocess, and is likely not a problem with pip.
 ```
-
----
-
-_Referenced in [astral-sh/uv#2991](../../astral-sh/uv/issues/2991.md) on 2024-04-11 14:08_
 
 ---
 
@@ -454,22 +438,6 @@ EDIT: Yeah this fails: `.venv/bin/pip install cchardet==2.1.7 --use-pep517 --no-
 
 ---
 
-_Referenced in [astral-sh/uv#3871](../../astral-sh/uv/issues/3871.md) on 2024-05-28 00:15_
-
----
-
-_Referenced in [astral-sh/rye#1131](../../astral-sh/rye/issues/1131.md) on 2024-05-31 16:33_
-
----
-
-_Referenced in [astral-sh/uv#4069](../../astral-sh/uv/issues/4069.md) on 2024-06-05 20:22_
-
----
-
-_Referenced in [astral-sh/uv#4354](../../astral-sh/uv/issues/4354.md) on 2024-06-17 10:42_
-
----
-
 _Comment by @covracer on 2024-06-24 14:48_
 
 https://pypi.org/project/biopython/
@@ -477,18 +445,6 @@ https://pypi.org/project/biopython/
 https://github.com/astral-sh/uv/issues/4069#issuecomment-2186762048
 
 Edit: fixed in https://github.com/biopython/biopython/pull/4749
-
----
-
-_Referenced in [astral-sh/uv#4600](../../astral-sh/uv/issues/4600.md) on 2024-06-27 19:59_
-
----
-
-_Referenced in [astral-sh/uv#4685](../../astral-sh/uv/issues/4685.md) on 2024-07-01 09:59_
-
----
-
-_Referenced in [astral-sh/uv#4886](../../astral-sh/uv/issues/4886.md) on 2024-07-08 10:53_
 
 ---
 
@@ -544,18 +500,6 @@ note: This error originates from a subprocess, and is likely not a problem with 
 
 ---
 
-_Referenced in [astral-sh/uv#5040](../../astral-sh/uv/issues/5040.md) on 2024-07-13 19:25_
-
----
-
-_Referenced in [astral-sh/uv#5176](../../astral-sh/uv/issues/5176.md) on 2024-07-18 03:55_
-
----
-
-_Referenced in [astral-sh/uv#5399](../../astral-sh/uv/issues/5399.md) on 2024-07-24 09:18_
-
----
-
 _Comment by @amanmibra on 2024-07-29 07:01_
 
 Is the solution to just pip install?
@@ -591,17 +535,9 @@ https://github.com/astral-sh/uv/blob/194904b34023a71b749b14f311e2151b3c53750d/cr
 
 ---
 
-_Referenced in [astral-sh/uv#5816](../../astral-sh/uv/issues/5816.md) on 2024-08-06 16:07_
-
----
-
 _Comment by @charliermarsh on 2024-08-06 20:11_
 
 Adding `BoltzTraP2`: https://github.com/astral-sh/uv/issues/5816
-
----
-
-_Referenced in [heroku/buildpacks-python#243](../../heroku/buildpacks-python/pulls/243.md) on 2024-08-07 14:35_
 
 ---
 
@@ -635,10 +571,6 @@ $ uv pip install torch-cluster
 
 ---
 
-_Referenced in [astral-sh/uv#6250](../../astral-sh/uv/issues/6250.md) on 2024-08-20 13:38_
-
----
-
 _Comment by @mak448a on 2024-09-04 01:16_
 
 > @amanmibra -- The solution is generally to do something like:
@@ -655,33 +587,9 @@ Is there a workaround for playsound? I had to use real pip instead of uv, which 
 
 ---
 
-_Referenced in [astral-sh/uv#7015](../../astral-sh/uv/issues/7015.md) on 2024-09-04 13:27_
-
----
-
-_Referenced in [astral-sh/uv#7291](../../astral-sh/uv/issues/7291.md) on 2024-09-11 15:39_
-
----
-
 _Comment by @mak448a on 2024-09-26 03:20_
 
 Ok, there's a workaround for playsound. Use uv venv --seed when creating the venv and use pip install for playsound instead of uv pip install.
-
----
-
-_Referenced in [astral-sh/uv#7879](../../astral-sh/uv/issues/7879.md) on 2024-10-02 19:39_
-
----
-
-_Referenced in [astral-sh/uv#7936](../../astral-sh/uv/issues/7936.md) on 2024-10-04 21:45_
-
----
-
-_Referenced in [python/typeshed#12847](../../python/typeshed/pulls/12847.md) on 2024-10-18 17:01_
-
----
-
-_Referenced in [Imageomics/kabr-tools#60](../../Imageomics/kabr-tools/issues/60.md) on 2024-10-22 18:33_
 
 ---
 
@@ -702,14 +610,6 @@ This is unfortunately failing. The only option I have would be to use a python v
 _Comment by @zanieb on 2024-10-27 16:04_
 
 @bboydflo can you open a new issue with details including the error message?
-
----
-
-_Referenced in [zanieb/uv#6](../../zanieb/uv/issues/6.md) on 2024-11-26 17:33_
-
----
-
-_Referenced in [astral-sh/uv#9452](../../astral-sh/uv/issues/9452.md) on 2024-11-26 21:15_
 
 ---
 
@@ -792,14 +692,6 @@ Hope this helps someone
 
 ---
 
-_Referenced in [astral-sh/uv#11161](../../astral-sh/uv/issues/11161.md) on 2025-02-02 12:07_
-
----
-
-_Referenced in [astral-sh/uv#11887](../../astral-sh/uv/issues/11887.md) on 2025-03-02 22:38_
-
----
-
 _Comment by @JakkuSakura on 2025-03-10 10:10_
 
 This is still relevant today. I use pipxu which uses uv
@@ -830,33 +722,9 @@ and I'm using python 3.13.2
 
 ---
 
-_Referenced in [bulletmark/pipxu#19](../../bulletmark/pipxu/issues/19.md) on 2025-03-10 10:13_
-
----
-
-_Referenced in [astral-sh/uv#12150](../../astral-sh/uv/issues/12150.md) on 2025-03-13 12:55_
-
----
-
-_Referenced in [stfc/janus-core#421](../../stfc/janus-core/pulls/421.md) on 2025-03-14 19:47_
-
----
-
-_Referenced in [pypa/pip#13319](../../pypa/pip/pulls/13319.md) on 2025-04-05 14:14_
-
----
-
-_Referenced in [pypa/pip#13314](../../pypa/pip/issues/13314.md) on 2025-04-05 14:18_
-
----
-
 _Comment by @saagarjha on 2025-06-06 14:35_
 
 @fortminors I don't think your solution with dependency groups actually works as you describe. If you try either command on a fresh install you'll get an error that setuptools is not available.
-
----
-
-_Referenced in [astral-sh/uv#14092](../../astral-sh/uv/pulls/14092.md) on 2025-06-16 21:31_
 
 ---
 

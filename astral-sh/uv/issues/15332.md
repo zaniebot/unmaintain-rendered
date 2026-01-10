@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-08-17T20:01:06Z
 updated_at: 2025-08-18T12:35:05Z
 url: https://github.com/astral-sh/uv/issues/15332
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-10T03:32:46Z
 ```
 
 # Support for comma-separated lists passed to `--group` and `--extra` flags
@@ -90,9 +90,5 @@ FROM python:3.13-alpine
 ---
 
 _Label `enhancement` added by @paduszyk on 2025-08-17 20:01_
-
----
-
-_Referenced in [astral-sh/uv#15343](../../astral-sh/uv/pulls/15343.md) on 2025-08-18 08:01_
 
 ---

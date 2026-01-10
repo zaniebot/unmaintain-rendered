@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-06-03T14:02:22Z
 updated_at: 2025-06-16T16:46:31Z
 url: https://github.com/astral-sh/uv/issues/13812
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Test cases on Windows flake with exit code `-1073741819`
@@ -83,10 +83,6 @@ e.g., https://github.com/astral-sh/uv/actions/runs/15419136863/job/43389293103?p
 
 ---
 
-_Referenced in [astral-sh/uv#13023](../../astral-sh/uv/issues/13023.md) on 2025-06-03 14:37_
-
----
-
 _Comment by @konstin on 2025-06-03 14:38_
 
 The crash analysis didn't trigger :/
@@ -105,19 +101,11 @@ See also #13023 — this doesn't seem focused on a specific test.
 
 ---
 
-_Referenced in [astral-sh/uv#13928](../../astral-sh/uv/issues/13928.md) on 2025-06-09 17:13_
-
----
-
 _Comment by @jtfmumm on 2025-06-09 17:25_
 
 This error code looks like a Windows Access Violation error (hex: `0xC0000005`).
 
 Another case: https://github.com/astral-sh/uv/actions/runs/15539150456/job/43745497711?pr=13917 on `lock_invalid_hash`. 
-
----
-
-_Referenced in [astral-sh/uv#13941](../../astral-sh/uv/pulls/13941.md) on 2025-06-10 10:24_
 
 ---
 
@@ -215,13 +203,5 @@ We finally have a backtrace (https://github.com/astral-sh/uv/actions/runs/156865
 error: test run failed
 Error: Process completed with exit code 100.
 ```
-
----
-
-_Referenced in [astral-sh/uv#14563](../../astral-sh/uv/issues/14563.md) on 2025-07-11 15:03_
-
----
-
-_Referenced in [astral-sh/uv#14582](../../astral-sh/uv/pulls/14582.md) on 2025-07-13 02:49_
 
 ---

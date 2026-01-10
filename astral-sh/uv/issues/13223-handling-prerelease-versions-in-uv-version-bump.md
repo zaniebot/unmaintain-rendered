@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-04-30T11:08:59Z
 updated_at: 2025-07-10T13:45:19Z
 url: https://github.com/astral-sh/uv/issues/13223
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Handling prerelease versions in `uv version --bump`
@@ -135,10 +135,6 @@ _Comment by @Gankra on 2025-05-01 12:39_
 
 ---
 
-_Referenced in [cthoyt/cookiecutter-snekpack#43](../../cthoyt/cookiecutter-snekpack/issues/43.md) on 2025-05-02 11:23_
-
----
-
 _Comment by @oefe on 2025-05-04 13:41_
 
 > Note here that it is "wrong" that `1.2.3 --bump alpha` => `1.2.3a1` in that it's actually creating a version less than the original, but I don't think that's actually confusing/problematic, and it Does What You Want. Alternatively you could make `1.2.3 --bump alpha` an error, requiring it to be paired with `--bump major|minor|patch` for it to "make sense". I don't feel like that's necessary though.
@@ -171,14 +167,6 @@ New option `--suffix-bump` with values [<list of pre-release values, local, post
 - 1.2.3 -> (`--bump minor --suffix-bump dev`) -> 1.3.0dev1
 - 1.2.3dev1 -> (`--suffix-bump rc`) -> 1.3.0rc1
 
-
----
-
-_Referenced in [astral-sh/uv#13578](../../astral-sh/uv/pulls/13578.md) on 2025-05-21 14:51_
-
----
-
-_Referenced in [astral-sh/uv#14353](../../astral-sh/uv/issues/14353.md) on 2025-06-29 21:54_
 
 ---
 

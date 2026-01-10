@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-06-11T21:39:59Z
 updated_at: 2025-06-12T10:02:52Z
 url: https://github.com/astral-sh/uv/issues/13977
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Changing the symlink location of `uv python install --default`
@@ -62,14 +62,6 @@ _Comment by @glin on 2025-06-11 22:06_
 @zanieb That's great, thanks for the quick response and additional docs! I could also suggest adding a mention to `uv python install --help`, as that was the first place I looked for docs.
 
 You can close this issue now if you want.
-
----
-
-_Referenced in [astral-sh/uv#13978](../../astral-sh/uv/pulls/13978.md) on 2025-06-11 22:29_
-
----
-
-_Referenced in [astral-sh/uv#13979](../../astral-sh/uv/issues/13979.md) on 2025-06-11 22:31_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-07-02T14:34:55Z
 updated_at: 2025-07-07T16:34:22Z
 url: https://github.com/astral-sh/uv/issues/14422
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Revert warnings for tilde version specifiers without a patch component (e.g., `~=X.y`)
@@ -24,10 +24,6 @@ See comment at https://github.com/astral-sh/uv/pull/14008#issuecomment-302809726
 ---
 
 _Label `needs-decision` added by @zanieb on 2025-07-02 14:35_
-
----
-
-_Referenced in [astral-sh/uv#14008](../../astral-sh/uv/pulls/14008.md) on 2025-07-02 14:35_
 
 ---
 
@@ -183,14 +179,6 @@ Thanks for considering it!
 
 ---
 
-_Referenced in [apache/airflow#52967](../../apache/airflow/pulls/52967.md) on 2025-07-07 08:32_
-
----
-
-_Referenced in [astral-sh/uv#14481](../../astral-sh/uv/issues/14481.md) on 2025-07-07 08:48_
-
----
-
 _Comment by @potiuk on 2025-07-07 09:20_
 
 Also FYI. I started the discussion on Airflow's public devlist https://lists.apache.org/thread/ofq38t0pzxs6n0jk38r6twl99glpdvbv -> explaining (I hope pretty objectively) the situation we are in and asked the community for their preference of `python-requires` form. While it **MAY** end with us adopting the `>=,<` pattern (depending on what the discussion will be and possibly consensus we will reach - my strong opinion is that it should not be the Astral team to "de-facto" force people to change the way how they are defining their requirements, because it's not Astral's job to influence PyPA standards in that regard.
@@ -254,13 +242,5 @@ We already pretty much decided to use `>=3.X` in Airflow as the result of this d
 
 Update: 6 approvals and merged.
 
-
----
-
-_Referenced in [astral-sh/uv#14711](../../astral-sh/uv/issues/14711.md) on 2025-07-18 14:45_
-
----
-
-_Referenced in [pelican-plugins/jinja2content#10](../../pelican-plugins/jinja2content/pulls/10.md) on 2025-07-24 10:55_
 
 ---

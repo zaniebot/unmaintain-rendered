@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-06-01T15:58:19Z
 updated_at: 2025-07-03T17:36:18Z
 url: https://github.com/astral-sh/uv/issues/3957
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-10T03:32:44Z
 ```
 
 # Add a uv build backend
@@ -189,57 +189,9 @@ For example, the old resolver, which can easily install a broken environment, is
 
 ---
 
-_Referenced in [FAIRmat-NFDI/pynxtools-xps#59](../../FAIRmat-NFDI/pynxtools-xps/pulls/59.md) on 2024-06-08 12:15_
-
----
-
-_Referenced in [FAIRmat-NFDI/pynxtools#347](../../FAIRmat-NFDI/pynxtools/pulls/347.md) on 2024-06-08 20:06_
-
----
-
-_Referenced in [astral-sh/uv#5507](../../astral-sh/uv/issues/5507.md) on 2024-08-05 15:32_
-
----
-
-_Referenced in [astral-sh/uv#6423](../../astral-sh/uv/issues/6423.md) on 2024-08-22 12:03_
-
----
-
-_Referenced in [astral-sh/uv#7069](../../astral-sh/uv/issues/7069.md) on 2024-09-06 00:43_
-
----
-
 _Comment by @daviewales on 2024-09-06 03:51_
 
 A uv-aware build backend would enable private git packages to depend on other private git packages, and still be installed with `pip`, `pipx`, `poetry`, etc, without needing the package end user to change their tools. See https://github.com/astral-sh/uv/issues/7069#issuecomment-2332944182 for a detailed example. (Poetry packages work this way, as they use the poetry-core build backend.)
-
----
-
-_Referenced in [astral-sh/uv#7132](../../astral-sh/uv/issues/7132.md) on 2024-09-06 17:44_
-
----
-
-_Referenced in [cookiecutter/cookiecutter#1883](../../cookiecutter/cookiecutter/pulls/1883.md) on 2024-09-09 14:34_
-
----
-
-_Referenced in [astral-sh/uv#7222](../../astral-sh/uv/issues/7222.md) on 2024-09-09 20:56_
-
----
-
-_Referenced in [astral-sh/uv#7079](../../astral-sh/uv/issues/7079.md) on 2024-09-09 20:56_
-
----
-
-_Referenced in [astral-sh/uv#7341](../../astral-sh/uv/issues/7341.md) on 2024-09-13 02:13_
-
----
-
-_Referenced in [astral-sh/uv#7675](../../astral-sh/uv/pulls/7675.md) on 2024-09-25 13:24_
-
----
-
-_Referenced in [winpython/winpython#1420](../../winpython/winpython/issues/1420.md) on 2024-10-02 10:23_
 
 ---
 
@@ -332,27 +284,11 @@ Hatch does 2. with Hatchling.
 
 ---
 
-_Referenced in [DetachHead/basedpyright#731](../../DetachHead/basedpyright/issues/731.md) on 2024-10-12 02:58_
-
----
-
 _Assigned to @konstin by @konstin on 2024-10-12 14:58_
 
 ---
 
-_Referenced in [astral-sh/uv#8212](../../astral-sh/uv/issues/8212.md) on 2024-10-16 13:35_
-
----
-
 _Label `enhancement` added by @charliermarsh on 2024-10-16 13:35_
-
----
-
-_Referenced in [PyVRP/PyVRP#659](../../PyVRP/PyVRP/issues/659.md) on 2024-10-23 16:47_
-
----
-
-_Referenced in [johnthagen/python-blueprint#238](../../johnthagen/python-blueprint/issues/238.md) on 2024-10-28 13:36_
 
 ---
 
@@ -389,43 +325,11 @@ Actually there are probably a lot of places in the Packaging User Guide where `u
 
 ---
 
-_Referenced in [cthoyt/cookiecutter-snekpack#30](../../cthoyt/cookiecutter-snekpack/issues/30.md) on 2024-10-31 10:05_
-
----
-
-_Referenced in [astral-sh/uv#8714](../../astral-sh/uv/issues/8714.md) on 2024-10-31 19:23_
-
----
-
-_Referenced in [backend-developers-ltd/ComputeHorde#301](../../backend-developers-ltd/ComputeHorde/pulls/301.md) on 2024-11-06 11:56_
-
----
-
-_Referenced in [astral-sh/uv#9382](../../astral-sh/uv/issues/9382.md) on 2024-11-23 10:34_
-
----
-
-_Referenced in [tfeldmann/organize#423](../../tfeldmann/organize/pulls/423.md) on 2024-11-25 22:12_
-
----
-
-_Referenced in [zanieb/uv#6](../../zanieb/uv/issues/6.md) on 2024-11-26 17:33_
-
----
-
-_Referenced in [astral-sh/uv#9452](../../astral-sh/uv/issues/9452.md) on 2024-11-26 21:15_
-
----
-
 _Renamed from "`uv` should provide a build backend" to "Add a build backend / uv-native build system" by @zanieb on 2024-11-26 23:51_
 
 ---
 
 _Renamed from "Add a build backend / uv-native build system" to "Add a uv build backend" by @konstin on 2024-12-04 16:22_
-
----
-
-_Referenced in [astral-sh/uv#8779](../../astral-sh/uv/issues/8779.md) on 2024-12-04 16:23_
 
 ---
 
@@ -479,10 +383,6 @@ Yep that's the plan, it'll give us a lot more control over error messages / user
 
 ---
 
-_Referenced in [astral-sh/uv#9661](../../astral-sh/uv/pulls/9661.md) on 2024-12-05 13:46_
-
----
-
 _Comment by @konstin on 2024-12-05 14:31_
 
 > Can we have an addition to the --build-backend argument of uv init to accept uv in preview mode?
@@ -494,10 +394,6 @@ Good call, added in https://github.com/astral-sh/uv/pull/9661
 _Comment by @thewh1teagle on 2024-12-07 20:30_
 
 Can we specify to build the wheel platform dependent? (different wheel for each platform)
-
----
-
-_Referenced in [astral-sh/uv#9800](../../astral-sh/uv/issues/9800.md) on 2024-12-11 14:21_
 
 ---
 
@@ -1608,23 +1504,7 @@ As Charlie said, everyone seems to have said their piece and has been heard. Hav
 
 ---
 
-_Referenced in [astral-sh/uv#10294](../../astral-sh/uv/issues/10294.md) on 2025-01-03 21:51_
-
----
-
-_Referenced in [astral-sh/uv#10390](../../astral-sh/uv/issues/10390.md) on 2025-01-08 21:31_
-
----
-
-_Referenced in [kedro-org/kedro#2757](../../kedro-org/kedro/issues/2757.md) on 2025-01-10 16:55_
-
----
-
 _Label `build-backend` added by @konstin on 2025-01-14 08:44_
-
----
-
-_Referenced in [DeiC-HPC/cotainr#93](../../DeiC-HPC/cotainr/issues/93.md) on 2025-01-29 12:07_
 
 ---
 
@@ -1637,18 +1517,6 @@ _Comment by @fortminors on 2025-01-30 08:55_
 _Comment by @zanieb on 2025-01-31 20:33_
 
 We're discussing this internally. We'll chime in here eventually.
-
----
-
-_Referenced in [DeiC-HPC/cotainr#57](../../DeiC-HPC/cotainr/pulls/57.md) on 2025-02-07 12:11_
-
----
-
-_Referenced in [MicaelJarniac/crustypy#190](../../MicaelJarniac/crustypy/issues/190.md) on 2025-02-11 23:36_
-
----
-
-_Referenced in [astral-sh/uv#11469](../../astral-sh/uv/issues/11469.md) on 2025-02-13 03:01_
 
 ---
 
@@ -1841,10 +1709,6 @@ But that's my interpretation, so I might be wrong.
 
 ---
 
-_Referenced in [astral-sh/uv#3538](../../astral-sh/uv/issues/3538.md) on 2025-02-14 13:20_
-
----
-
 _Comment by @charliermarsh on 2025-02-14 13:32_
 
 👍  We'll distribute the build backend as a dedicated package on PyPI. And it will be usable as a standalone build backend entirely independently of uv, e.g.:
@@ -1858,22 +1722,6 @@ build-backend = "uv_build"
 
 But when you're using uv, and we see a package that's using the uv build backend, we can (e.g.) execute the build hooks directly or have other integrations.
 
-
----
-
-_Referenced in [astral-sh/uv#11557](../../astral-sh/uv/issues/11557.md) on 2025-02-16 18:12_
-
----
-
-_Referenced in [astropy/astropy#17760](../../astropy/astropy/issues/17760.md) on 2025-02-19 16:14_
-
----
-
-_Referenced in [astral-sh/uv#4204](../../astral-sh/uv/issues/4204.md) on 2025-02-19 23:41_
-
----
-
-_Referenced in [ForumViriumHelsinki/python-coding-conventions#1](../../ForumViriumHelsinki/python-coding-conventions/pulls/1.md) on 2025-02-20 11:14_
 
 ---
 
@@ -1925,17 +1773,9 @@ You can configure the source code directory through `tool.uv.build-backend.modul
 
 ---
 
-_Referenced in [apify/fingerprint-suite#353](../../apify/fingerprint-suite/pulls/353.md) on 2025-03-07 09:58_
-
----
-
 _Comment by @konstin on 2025-03-07 13:59_
 
 In the latest release, we've split the build backend out into a separate `uv_build` package. The `uv` package itself doesn't contain the build backend anymore, I've updated the documentation in #8779 accordingly.
-
----
-
-_Referenced in [astral-sh/uv#8178](../../astral-sh/uv/issues/8178.md) on 2025-03-07 17:47_
 
 ---
 
@@ -1979,14 +1819,6 @@ https://github.com/astral-sh/uv/blob/f427164d9945ad65cfc5760f69ee1dc1e888ac57/cr
 _Comment by @konstin on 2025-03-07 22:15_
 
 Sorry, the package had the old Python shim still! Fixed in #12058.
-
----
-
-_Referenced in [astral-sh/uv#12078](../../astral-sh/uv/issues/12078.md) on 2025-03-09 21:46_
-
----
-
-_Referenced in [kubeflow/community#823](../../kubeflow/community/pulls/823.md) on 2025-03-19 14:44_
 
 ---
 
@@ -2151,10 +1983,6 @@ Thanks. I misunderstood “flat layout.” Turns out uv describes what I wanted 
 _Comment by @nathanscain on 2025-03-21 17:14_
 
 Happy to help. Yes `uv init --app --build-backend uv` should do that if I remember correctly. (Requires `UV_PREVIEW=1`)
-
----
-
-_Referenced in [johnthagen/python-blueprint#95](../../johnthagen/python-blueprint/issues/95.md) on 2025-03-21 18:23_
 
 ---
 
@@ -2457,10 +2285,6 @@ But it would be good to either have this explicitly listed as not (yet) supporte
 
 ---
 
-_Referenced in [numpy/numtype#470](../../numpy/numtype/issues/470.md) on 2025-04-07 02:18_
-
----
-
 _Comment by @merwok on 2025-04-07 14:25_
 
 You’re trying to package pkg.shared.testing, so try this as module name, not pkg
@@ -2474,10 +2298,6 @@ _Comment by @adamcik on 2025-04-07 14:43_
 I already tried that, just forgot to mention it. That didn't pass the validation for the option, so it didn't work. But thanks for the suggestion. 
 
 And just to be clear, I'm not expecting help debugging my concrete issue here, that should probably be in a discussion, or wherever the maintainers want to redirect such things. I was just hoping to get a clarification of if namespaces is within scope now or perhaps later.
-
----
-
-_Referenced in [mystor/git-revise#141](../../mystor/git-revise/pulls/141.md) on 2025-04-15 20:39_
 
 ---
 
@@ -2683,35 +2503,15 @@ Essentially, I’m trying to use `uv_build` instead of `setuptools` to build dep
 
 ---
 
-_Referenced in [qutebrowser/qutebrowser#3526](../../qutebrowser/qutebrowser/issues/3526.md) on 2025-04-29 09:58_
-
----
-
-_Referenced in [gdamjan/uv-getting-started#2](../../gdamjan/uv-getting-started/pulls/2.md) on 2025-05-02 15:58_
-
----
-
 _Comment by @konstin on 2025-05-08 07:36_
 
 Update from v0.7.3: The uv build backend now has both configuration and references documentation and is the default in preview (https://github.com/astral-sh/uv/pull/12804). Builds should now be reproducible between machines of the same platform and in most cases also independent of the  build platform (https://github.com/astral-sh/uv/pull/13171). We also added a way to escape characters in globs, extending over the PEP 639 syntax we previously used (https://github.com/astral-sh/uv/pull/13313).
 
 ---
 
-_Referenced in [teemtee/tmt#3726](../../teemtee/tmt/pulls/3726.md) on 2025-05-10 10:59_
-
----
-
 _Comment by @Emasoft on 2025-05-10 12:39_
 
 To truly make the builds reproducible between machines of the same platform (or even different platforms) you need to include in the build configuration the list of all uv tools used (I mean those installed with `uv tools install <tool name>`, like `nox-uv` or `tox-uv`, `bump-my-version`, etc.)  and all the specific versions of them. 
-
----
-
-_Referenced in [astral-sh/uv#9501](../../astral-sh/uv/issues/9501.md) on 2025-05-15 17:50_
-
----
-
-_Referenced in [monarch-initiative/monarch-app#1103](../../monarch-initiative/monarch-app/pulls/1103.md) on 2025-06-13 02:06_
 
 ---
 
@@ -2774,10 +2574,6 @@ I couldn't work this out easily by reading https://docs.astral.sh/uv/concepts/bu
 
 ---
 
-_Referenced in [astral-sh/uv#12832](../../astral-sh/uv/issues/12832.md) on 2025-06-13 14:57_
-
----
-
 _Comment by @thejcannon on 2025-06-22 19:04_
 
 👋 (Wasn't sure whether to tack this on here, or open a new issue. Happy to take this to a new issue)
@@ -2832,10 +2628,6 @@ which I suppose is consistent with the "hey, man I don't really know what you wa
 
 ---
 
-_Referenced in [astral-sh/uv#14212](../../astral-sh/uv/pulls/14212.md) on 2025-06-23 09:41_
-
----
-
 _Comment by @konstin on 2025-06-23 09:55_
 
 @johnthagen While I recommend using a one package per top level module and modelling this with workspaces instead (it's very easy to get clashes between packages or otherwise confusing outcomes otherwise), it is possible to include multiple top level modules:
@@ -2870,21 +2662,5 @@ One change that's in the pipeline that I can already announce is that we'll make
 ---
 
 _Closed by @konstin on 2025-07-03 17:36_
-
----
-
-_Referenced in [astral-sh/uv#14943](../../astral-sh/uv/issues/14943.md) on 2025-07-28 16:30_
-
----
-
-_Referenced in [pypa/packaging.python.org#1880](../../pypa/packaging.python.org/pulls/1880.md) on 2025-07-30 15:21_
-
----
-
-_Referenced in [trailofbits/cookiecutter-python#103](../../trailofbits/cookiecutter-python/pulls/103.md) on 2025-09-02 13:49_
-
----
-
-_Referenced in [zulip/python-zulip-api#875](../../zulip/python-zulip-api/pulls/875.md) on 2025-10-01 19:28_
 
 ---

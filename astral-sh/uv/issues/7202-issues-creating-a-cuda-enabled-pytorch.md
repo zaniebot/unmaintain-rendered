@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-09-08T23:14:24Z
 updated_at: 2025-07-10T10:13:22Z
 url: https://github.com/astral-sh/uv/issues/7202
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-10T03:32:44Z
 ```
 
 # Issues creating a cuda-enabled pytorch environment with UV
@@ -353,10 +353,6 @@ explicit = true
 
 ---
 
-_Referenced in [astral-sh/uv#6523](../../astral-sh/uv/pulls/6523.md) on 2024-10-30 20:38_
-
----
-
 _Comment by @YouJiacheng on 2024-11-02 15:51_
 
 ~~I have no idea why this can work.~~
@@ -512,10 +508,6 @@ warning: Indexes specified via `--index-url` will not be persisted to the `pypro
   ╰─▶ Because matplotlib was not found in the package registry and your project depends on matplotlib>=3.2.2, we can conclude that your project's requirements are unsatisfiable.
   help: If you want to add the package regardless of the failed resolution, provide the `--frozen` flag to skip locking and syncing.
 ``·
-
----
-
-_Referenced in [tgm-team/tgm#81](../../tgm-team/tgm/pulls/81.md) on 2025-07-03 01:34_
 
 ---
 

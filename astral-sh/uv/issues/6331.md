@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-08-21T14:29:23Z
 updated_at: 2025-08-06T16:01:17Z
 url: https://github.com/astral-sh/uv/issues/6331
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-10T03:32:44Z
 ```
 
 # uv install python on Windows fails during archive extraction
@@ -59,10 +59,6 @@ _Label `uv python` added by @zanieb on 2024-08-21 15:01_
 
 ---
 
-_Referenced in [astral-sh/uv#6338](../../astral-sh/uv/pulls/6338.md) on 2024-08-21 15:07_
-
----
-
 _Renamed from "uv install python on Windows is stable" to "uv install python on Windows fails during archive extraction" by @zanieb on 2024-08-21 15:17_
 
 ---
@@ -101,14 +97,6 @@ We now retry these -- which may help? I'll close, but we can re-open if we get m
 ---
 
 _Closed by @charliermarsh on 2024-11-23 03:23_
-
----
-
-_Referenced in [Comfy-Org/desktop#380](../../Comfy-Org/desktop/issues/380.md) on 2024-11-27 19:48_
-
----
-
-_Referenced in [Comfy-Org/desktop#384](../../Comfy-Org/desktop/pulls/384.md) on 2024-11-27 19:50_
 
 ---
 

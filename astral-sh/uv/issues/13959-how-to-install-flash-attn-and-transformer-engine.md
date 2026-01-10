@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-06-11T02:50:33Z
 updated_at: 2025-08-19T08:39:30Z
 url: https://github.com/astral-sh/uv/issues/13959
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # How to install `flash-attn` and `transformer-engine[pytorch]` using `uv sync` in a clean environment (e.g., Docker)
@@ -180,10 +180,6 @@ With this I can just do a single `uv sync`!
 
 ---
 
-_Referenced in [astral-sh/uv#6437](../../astral-sh/uv/issues/6437.md) on 2025-08-03 19:30_
-
----
-
 _Comment by @charliermarsh on 2025-08-03 21:20_
 
 Oh yeah, that should also work in the meantime as long as you constrain the torch versions like you’ve done there :)
@@ -213,10 +209,6 @@ no-build-isolation-package = ["transformer-engine-torch", "flash-attn"]
 ```
 
 This should work with a single `uv sync`.
-
----
-
-_Referenced in [astral-sh/uv#15326](../../astral-sh/uv/pulls/15326.md) on 2025-08-16 16:04_
 
 ---
 

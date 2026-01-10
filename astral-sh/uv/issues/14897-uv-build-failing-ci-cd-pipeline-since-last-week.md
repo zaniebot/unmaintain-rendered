@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-07-25T15:38:57Z
 updated_at: 2025-07-28T17:37:14Z
 url: https://github.com/astral-sh/uv/issues/14897
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # uv build failing CI/CD pipeline since last week
@@ -119,9 +119,5 @@ Thank you!!
 ---
 
 _Closed by @zanieb on 2025-07-28 17:37_
-
----
-
-_Referenced in [astral-sh/uv#15096](../../astral-sh/uv/issues/15096.md) on 2025-08-06 00:17_
 
 ---

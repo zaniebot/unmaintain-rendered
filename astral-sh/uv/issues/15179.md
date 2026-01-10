@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-08-08T23:13:05Z
 updated_at: 2025-08-11T20:20:05Z
 url: https://github.com/astral-sh/uv/issues/15179
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-10T03:32:46Z
 ```
 
 # Add a way to upgrade or reinstall Python versions as needed
@@ -38,19 +38,7 @@ _Label `enhancement` added by @geofft on 2025-08-08 23:13_
 
 ---
 
-_Referenced in [astral-sh/uv#15180](../../astral-sh/uv/issues/15180.md) on 2025-08-08 23:15_
-
----
-
 _Assigned to @jtfmumm by @jtfmumm on 2025-08-09 17:02_
-
----
-
-_Referenced in [astral-sh/uv#15194](../../astral-sh/uv/pulls/15194.md) on 2025-08-09 17:16_
-
----
-
-_Referenced in [astral-sh/uv#15195](../../astral-sh/uv/issues/15195.md) on 2025-08-09 19:34_
 
 ---
 

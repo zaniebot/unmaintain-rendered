@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-07-25T21:07:34Z
 updated_at: 2025-07-25T21:08:03Z
 url: https://github.com/astral-sh/uv/issues/14908
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Allow fields that are classified as "project metadata" in `uv.toml` files in projects
@@ -29,10 +29,6 @@ While we do not want to read project metadata settings from _outside_ the projec
 ---
 
 _Label `needs-decision` added by @zanieb on 2025-07-25 21:07_
-
----
-
-_Referenced in [astral-sh/uv#14904](../../astral-sh/uv/issues/14904.md) on 2025-07-25 21:07_
 
 ---
 

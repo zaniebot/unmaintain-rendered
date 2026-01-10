@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-07-18T12:50:55Z
 updated_at: 2025-07-19T07:04:26Z
 url: https://github.com/astral-sh/uv/issues/14719
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # cache-control override not working as expected
@@ -86,10 +86,6 @@ Thanks for the report!
 _Comment by @charliermarsh on 2025-07-18 14:45_
 
 Sorry, I think I wired this up in the wrong place (the request, not the response).
-
----
-
-_Referenced in [astral-sh/uv#14736](../../astral-sh/uv/pulls/14736.md) on 2025-07-18 17:43_
 
 ---
 

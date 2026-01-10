@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-06-23T15:49:22Z
 updated_at: 2025-06-23T18:52:09Z
 url: https://github.com/astral-sh/uv/issues/14217
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Support presigned URLs in pyproject.toml
@@ -38,10 +38,6 @@ _Label `enhancement` added by @esafak on 2025-06-23 15:49_
 
 ---
 
-_Referenced in [astral-sh/uv#14221](../../astral-sh/uv/pulls/14221.md) on 2025-06-23 16:57_
-
----
-
 _Comment by @charliermarsh on 2025-06-23 17:56_
 
 Hmm, why am I not able to reproduce this?
@@ -61,10 +57,6 @@ This locks and installs without error for me. Are you on the latest version of u
 ---
 
 _Label `needs-mre` added by @charliermarsh on 2025-06-23 17:56_
-
----
-
-_Referenced in [astral-sh/uv#14224](../../astral-sh/uv/pulls/14224.md) on 2025-06-23 18:37_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-06-20T23:10:18Z
 updated_at: 2025-06-21T12:06:12Z
 url: https://github.com/astral-sh/uv/issues/14173
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # `uvx` doesn't seem to support `git-lfs`
@@ -133,9 +133,5 @@ $ export UV_GIT_LFS=1 && uvx --from git+ssh://git@github.com/asmith26/debug-uvx-
 ---
 
 _Closed by @asmith26 on 2025-06-21 12:06_
-
----
-
-_Referenced in [astral-sh/uv#15127](../../astral-sh/uv/issues/15127.md) on 2025-08-07 09:38_
 
 ---

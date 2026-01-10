@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-07-17T19:30:19Z
 updated_at: 2025-07-17T20:52:56Z
 url: https://github.com/astral-sh/uv/issues/14688
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Comfirm with hint in `uv venv` glitches
@@ -92,10 +92,6 @@ Okay, I can reproduce in `bash`.
 
 ---
 
-_Referenced in [astral-sh/uv#14691](../../astral-sh/uv/pulls/14691.md) on 2025-07-17 20:44_
-
----
-
 _Comment by @MeGaGiGaGon on 2025-07-17 20:50_
 
 I can also reproduce on git bash/powershell/cmd, but only if I set the prompt to something without a newline (`export PS1="$"` in git bash, `function prompt() {}` in powershell, `prompt -` in cmd). Using the binary from #14691 fixes it for me on all three.
@@ -109,9 +105,5 @@ _Comment by @zanieb on 2025-07-17 20:52_
 ---
 
 _Closed by @konstin on 2025-07-17 20:52_
-
----
-
-_Referenced in [astral-sh/uv#14950](../../astral-sh/uv/issues/14950.md) on 2025-07-29 09:33_
 
 ---

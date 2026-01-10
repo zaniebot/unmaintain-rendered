@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-01-29T14:30:56Z
 updated_at: 2025-07-28T17:29:59Z
 url: https://github.com/astral-sh/uv/issues/11064
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Allow embedding of script lock files
@@ -29,10 +29,6 @@ We added support for script lock files, but they're separate from the script. Th
 ---
 
 _Label `enhancement` added by @zanieb on 2025-01-29 14:30_
-
----
-
-_Referenced in [astral-sh/uv#6318](../../astral-sh/uv/issues/6318.md) on 2025-01-29 14:50_
 
 ---
 
@@ -86,17 +82,9 @@ It seems fine to support this as an opt-in thing.
 
 ---
 
-_Referenced in [astral-sh/uv#11104](../../astral-sh/uv/issues/11104.md) on 2025-01-30 21:44_
-
----
-
 _Comment by @zmackie-datadog on 2025-02-07 20:49_
 
 FWIW a nice workflow to support would be "I work on a script at first, and then at some point I want to go from a script to a repoducible script to a project".
-
----
-
-_Referenced in [astral-sh/uv#12303](../../astral-sh/uv/issues/12303.md) on 2025-03-20 16:46_
 
 ---
 

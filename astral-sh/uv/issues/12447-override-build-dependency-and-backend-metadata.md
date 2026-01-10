@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-24T19:38:54Z
 updated_at: 2025-08-21T14:48:15Z
 url: https://github.com/astral-sh/uv/issues/12447
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # Override build dependency and backend metadata, similiar to dependency-metadata
@@ -97,10 +97,6 @@ Also, [the spec](https://peps.python.org/pep-0517/#recommendations-for-build-fro
 > build frontends SHOULD provide some mechanism for users to override the above defaults. For example, a build frontend could have a --build-with-system-site-packages option that causes the --system-site-packages option to be passed to virtualenv-or-equivalent when creating build environments, or a --build-requirements-override=my-requirements.txt option that overrides the project’s normal build-requirements.
 >
 > The general principle here is that we want to enforce hygiene on package authors, while still allowing end-users to open up the hood and apply duct tape when necessary.
-
----
-
-_Referenced in [astral-sh/uv#14092](../../astral-sh/uv/pulls/14092.md) on 2025-06-17 01:03_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-17T14:28:01Z
 updated_at: 2025-06-17T14:10:22Z
 url: https://github.com/astral-sh/uv/issues/10711
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-10T03:32:45Z
 ```
 
 # `No interpreter found in search path` on nixOS
@@ -183,10 +183,6 @@ We don't allow creating a virtual environment from an interpreter discovered in 
 
 ---
 
-_Referenced in [astral-sh/uv#1495](../../astral-sh/uv/issues/1495.md) on 2025-03-16 02:29_
-
----
-
 _Comment by @jneem on 2025-03-16 08:47_
 
 Personally, I don't think there needs to be a Nix-specific note: I'm fine with looking in Nix-specific spaces for Nix-specific documentation. I think the part that tripped me up was that the documentation isn't clear on what a "system" python is. In particular, the help text for `--python-preference` flag suggests that python installations can either be "uv-managed" or "system". Since `/nix/store/wz0j2zi02rvnjiz37nn28h3gfdq61svz-python3-3.12.9` definitely isn't uv-managed, I was expecting it to count as a "system" python.
@@ -237,10 +233,6 @@ In my opinion, the solution is to add a note similar to my proposal below to the
 
 ```Note: uv only considers Python interpreters found in a complete installation environment as system interpreters. Links to complete environments, such as those found in virtual environments are ignored.  This can be bypassed by setting `UV_PYTHON` directly.``
 
-
----
-
-_Referenced in [astral-sh/uv#7395](../../astral-sh/uv/issues/7395.md) on 2025-03-25 16:03_
 
 ---
 
