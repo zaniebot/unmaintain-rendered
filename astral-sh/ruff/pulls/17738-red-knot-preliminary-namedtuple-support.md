@@ -1,0 +1,781 @@
+```yaml
+number: 17738
+title: "[red-knot] Preliminary `NamedTuple` support"
+type: pull_request
+state: merged
+author: sharkdp
+labels:
+  - ty
+assignees: []
+merged: true
+base: main
+head: david/namedtuple
+created_at: 2025-04-30T15:12:31Z
+updated_at: 2025-04-30T20:52:06Z
+url: https://github.com/astral-sh/ruff/pull/17738
+synced_at: 2026-01-10T19:03:00Z
+```
+
+# [red-knot] Preliminary `NamedTuple` support
+
+---
+
+_Pull request opened by @sharkdp on 2025-04-30 15:12_
+
+## Summary
+
+Adds preliminary support for `NamedTuple`s, including:
+* No false positives when constructing a `NamedTuple` object
+* Correct signature for the synthesized `__new__` method, i.e. proper checking of constructor calls
+* A patched MRO (`NamedTuple` => `tuple`), mainly to make type inference of named attributes possible, but also to better reflect the runtime MRO.
+
+All of this works:
+```py
+from typing import NamedTuple
+
+class Person(NamedTuple):
+    id: int
+    name: str
+    age: int | None = None
+
+alice = Person(1, "Alice", 42)
+alice = Person(id=1, name="Alice", age=42)
+
+reveal_type(alice.id)  # revealed: int
+reveal_type(alice.name)  # revealed: str
+reveal_type(alice.age)  # revealed: int | None
+
+# error: [missing-argument]
+Person(3)
+
+# error: [too-many-positional-arguments]
+Person(3, "Eve", 99, "extra")
+
+# error: [invalid-argument-type]
+Person(id="3", name="Eve")
+```
+
+Not included:
+* type inference for index-based access.
+* support for the functional `MyTuple = NamedTuple("MyTuple", […])` syntax
+
+## Test Plan
+
+New Markdown tests
+
+## Ecosystem analysis
+
+```
+                          Diagnostic Analysis Report                           
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━┳━━━━━━━┳━━━━━━━━━━━━┓
+┃ Diagnostic ID                     ┃ Severity ┃ Removed ┃ Added ┃ Net Change ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━━╇━━━━━━━╇━━━━━━━━━━━━┩
+│ lint:call-non-callable            │ error    │       0 │     3 │         +3 │
+│ lint:call-possibly-unbound-method │ warning  │       0 │     4 │         +4 │
+│ lint:invalid-argument-type        │ error    │       0 │    72 │        +72 │
+│ lint:invalid-context-manager      │ error    │       0 │     2 │         +2 │
+│ lint:invalid-return-type          │ error    │       0 │     2 │         +2 │
+│ lint:missing-argument             │ error    │       0 │    46 │        +46 │
+│ lint:no-matching-overload         │ error    │   19121 │     0 │     -19121 │
+│ lint:not-iterable                 │ error    │       0 │     6 │         +6 │
+│ lint:possibly-unbound-attribute   │ warning  │      13 │    32 │        +19 │
+│ lint:redundant-cast               │ warning  │       0 │     1 │         +1 │
+│ lint:unresolved-attribute         │ error    │       0 │    10 │        +10 │
+│ lint:unsupported-operator         │ error    │       3 │     9 │         +6 │
+│ lint:unused-ignore-comment        │ warning  │      15 │     4 │        -11 │
+├───────────────────────────────────┼──────────┼─────────┼───────┼────────────┤
+│ TOTAL                             │          │   19152 │   191 │     -18961 │
+└───────────────────────────────────┴──────────┴─────────┴───────┴────────────┘
+
+Analysis complete. Found 13 unique diagnostic IDs.
+Total diagnostics removed: 19152
+Total diagnostics added: 191
+Net change: -18961
+```
+
+I uploaded the ecosystem full diff (ignoring the 19k `no-matching-overload` diagnostics) [here](https://shark.fish/diff-namedtuple.html).
+
+* There are some new `missing-argument` false positives which come from the fact that named tuples are often created using unpacking as in `MyNamedTuple(*fields)`, which we do not understand yet.
+* There are some new `unresolved-attribute` false positives, because methods like `_replace` are not available.
+* Lots of the `invalid-argument-type` diagnostics look like true positives
+
+Co-authored-by: @dcreager 
+
+---
+
+_Label `red-knot` added by @sharkdp on 2025-04-30 15:12_
+
+---
+
+_Comment by @github-actions[bot] on 2025-04-30 15:15_
+
+<!-- generated-comment mypy_primer -->
+## `mypy_primer` results
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+```diff
+bidict (https://github.com/jab/bidict)
+- error[lint:no-matching-overload] bidict/_dup.py:57:34: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] bidict/_dup.py:59:32: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] bidict/_dup.py:61:35: No overload of bound method `__init__` matches arguments
+- Found 7 diagnostics
++ Found 4 diagnostics
+
+parso (https://github.com/davidhalter/parso)
+- error[lint:no-matching-overload] parso/python/diff.py:495:27: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] parso/python/diff.py:508:31: No overload of bound method `__init__` matches arguments
++ error[lint:invalid-argument-type] parso/python/tokenize.py:230:42: Argument to this function is incorrect: Expected `tuple[str]`, found `set`
+- error[lint:no-matching-overload] parso/python/tokenize.py:228:12: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] parso/python/tokenize.py:289:21: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] parso/python/tokenize.py:381:23: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] parso/python/tokenize.py:385:19: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] parso/python/tokenize.py:429:23: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] parso/python/tokenize.py:445:31: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] parso/python/tokenize.py:508:31: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] parso/python/tokenize.py:518:23: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] parso/python/tokenize.py:528:23: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] parso/python/tokenize.py:538:27: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] parso/python/tokenize.py:546:27: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] parso/python/tokenize.py:554:27: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] parso/python/tokenize.py:564:27: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] parso/python/tokenize.py:594:27: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] parso/python/tokenize.py:597:23: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] parso/python/tokenize.py:621:23: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] parso/python/tokenize.py:624:15: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] parso/python/tokenize.py:631:19: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] parso/python/tokenize.py:644:15: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] parso/python/tokenize.py:645:11: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] parso/python/tokenize.py:650:16: No overload of bound method `__init__` matches arguments
++ error[lint:missing-argument] parso/utils.py:132:12: No arguments provided for required parameters `major`, `minor`, `micro`
+- error[lint:no-matching-overload] parso/utils.py:132:12: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] parso/utils.py:180:12: No overload of bound method `__init__` matches arguments
+- Found 104 diagnostics
++ Found 81 diagnostics
+
+packaging (https://github.com/pypa/packaging)
++ error[lint:missing-argument] src/packaging/_manylinux.py:235:21: No arguments provided for required parameters `major`, `minor`
+- error[lint:no-matching-overload] src/packaging/_manylinux.py:195:19: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/packaging/_manylinux.py:198:19: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/packaging/_manylinux.py:201:19: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/packaging/_manylinux.py:231:22: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/packaging/_manylinux.py:234:26: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/packaging/_manylinux.py:235:21: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/packaging/_musllinux.py:30:12: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/packaging/_parser.py:83:12: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/packaging/version.py:205:25: No overload of bound method `__init__` matches arguments
+- Found 27 diagnostics
++ Found 19 diagnostics
+
+paroxython (https://github.com/laowantong/paroxython)
+- error[lint:no-matching-overload] paroxython/derived_labels_db.py:189:38: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] paroxython/label_programs.py:49:37: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] paroxython/list_programs.py:89:12: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] paroxython/parse_program.py:76:12: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] paroxython/parse_program.py:284:22: No overload of bound method `__init__` matches arguments
++ error[lint:missing-argument] paroxython/parse_program.py:316:19: No arguments provided for required parameters `name`, `spans`
++ error[lint:missing-argument] paroxython/parse_program.py:333:31: No arguments provided for required parameters `name`, `spans`
+- error[lint:no-matching-overload] paroxython/parse_program.py:289:77: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] paroxython/parse_program.py:316:19: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] paroxython/parse_program.py:333:31: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] paroxython/parse_program.py:366:15: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] paroxython/preprocess_source.py:455:40: No overload of bound method `__init__` matches arguments
+- Found 30 diagnostics
++ Found 22 diagnostics
+
+anyio (https://github.com/agronholm/anyio)
+- error[lint:no-matching-overload] src/anyio/streams/memory.py:62:16: No overload of bound method `__init__` matches arguments
+- Found 130 diagnostics
++ Found 129 diagnostics
+
+attrs (https://github.com/python-attrs/attrs)
+- error[lint:no-matching-overload] src/attr/_make.py:480:12: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/test_funcs.py:251:22: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/test_funcs.py:253:27: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/test_funcs.py:455:22: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/test_funcs.py:457:17: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/test_make.py:204:16: No overload of bound method `__init__` matches arguments
++ error[lint:invalid-argument-type] tests/test_make.py:204:28: Argument to this function is incorrect: Expected `type`, found `tuple[()]`
+- Found 645 diagnostics
++ Found 640 diagnostics
+
+kornia (https://github.com/kornia/kornia)
+- error[lint:no-matching-overload] kornia/augmentation/container/ops.py:138:21: No overload of bound method `__init__` matches arguments
++ error[lint:not-iterable] kornia/augmentation/container/image.py:380:18: Object of type `dict | list | None` may not be iterable
++ error[lint:unsupported-operator] kornia/augmentation/container/image.py:382:10: Operator `in` is not supported for types `str` and `None`, in comparing `Literal["output_size"]` with `dict | list | None`
++ error[lint:call-non-callable] kornia/augmentation/container/image.py:383:17: Method `__getitem__` of type `(bound method dict.__getitem__(key: _KT, /) -> _VT) | (Overload[(i: SupportsIndex, /) -> _T, (s: slice, /) -> @Todo(specialized non-generic class)])` is not callable on object of type `dict | list | None`
++ error[lint:call-non-callable] kornia/augmentation/container/image.py:388:32: Method `__getitem__` of type `(bound method dict.__getitem__(key: _KT, /) -> _VT) | (Overload[(i: SupportsIndex, /) -> _T, (s: slice, /) -> @Todo(specialized non-generic class)])` is not callable on object of type `dict | list | None`
++ error[lint:invalid-return-type] kornia/augmentation/container/ops.py:50:16: Return type does not match returned value: Expected `dict`, found `dict | list | None`
++ error[lint:invalid-return-type] kornia/augmentation/container/ops.py:58:16: Return type does not match returned value: Expected `list`, found `dict | list | None`
+- error[lint:no-matching-overload] kornia/augmentation/container/patch.py:268:26: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] kornia/contrib/models/rt_detr/architecture/hgnetv2.py:131:21: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] kornia/contrib/models/rt_detr/architecture/hgnetv2.py:132:21: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] kornia/contrib/models/rt_detr/architecture/hgnetv2.py:133:21: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] kornia/contrib/models/rt_detr/architecture/hgnetv2.py:134:21: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] kornia/contrib/models/rt_detr/architecture/hgnetv2.py:141:21: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] kornia/contrib/models/rt_detr/architecture/hgnetv2.py:142:21: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] kornia/contrib/models/rt_detr/architecture/hgnetv2.py:143:21: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] kornia/contrib/models/rt_detr/architecture/hgnetv2.py:144:21: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] kornia/feature/sold2/backbones.py:59:23: No overload of bound method `__init__` matches arguments
+- Found 1010 diagnostics
++ Found 1005 diagnostics
+
+starlette (https://github.com/encode/starlette)
+- error[lint:no-matching-overload] starlette/requests.py:154:20: No overload of bound method `__init__` matches arguments
++ error[lint:missing-argument] starlette/requests.py:154:20: No arguments provided for required parameters `host`, `port`
+- error[lint:no-matching-overload] starlette/schemas.py:60:21: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] starlette/schemas.py:77:43: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] starlette/schemas.py:84:43: No overload of bound method `__init__` matches arguments
+- Found 184 diagnostics
++ Found 181 diagnostics
+
+pylox (https://github.com/sco1/pylox)
+- error[lint:no-matching-overload] pylox/preprocessor.py:90:32: No overload of bound method `__init__` matches arguments
+- Found 27 diagnostics
++ Found 26 diagnostics
+
+kopf (https://github.com/nolar/kopf)
+- error[lint:no-matching-overload] kopf/_cogs/aiokits/aiotasks.py:344:43: No overload of bound method `__init__` matches arguments
++ error[lint:missing-argument] kopf/_cogs/structs/diffs.py:74:29: No arguments provided for required parameters `operation`, `field`, `old`, `new`
+- error[lint:no-matching-overload] kopf/_cogs/structs/diffs.py:74:29: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] kopf/_cogs/structs/diffs.py:119:19: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] kopf/_cogs/structs/diffs.py:124:19: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] kopf/_cogs/structs/diffs.py:170:15: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] kopf/_cogs/structs/diffs.py:172:15: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] kopf/_cogs/structs/diffs.py:183:15: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] kopf/_core/actions/application.py:142:13: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] kopf/_core/actions/progression.py:279:22: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] kopf/_core/actions/progression.py:298:16: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] kopf/_core/engines/posting.py:67:13: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] kopf/_core/reactor/orchestration.py:198:16: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] kopf/_core/reactor/orchestration.py:245:16: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] kopf/_core/reactor/queueing.py:204:32: No overload of bound method `__init__` matches arguments
+- Found 132 diagnostics
++ Found 119 diagnostics
+
+strawberry (https://github.com/strawberry-graphql/strawberry)
+- error[lint:no-matching-overload] strawberry/directive.py:75:19: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] strawberry/experimental/pydantic/object_type.py:105:12: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] strawberry/experimental/pydantic/object_type.py:202:13: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] strawberry/extensions/context.py:89:24: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] strawberry/extensions/context.py:97:24: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] strawberry/extensions/context.py:129:20: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] strawberry/extensions/context.py:141:16: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] strawberry/extensions/context.py:155:20: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] strawberry/extensions/context.py:162:16: No overload of bound method `__init__` matches arguments
+- warning[lint:unused-ignore-comment] strawberry/extensions/directives.py:68:54: Unused blanket `type: ignore` directive
+- error[lint:no-matching-overload] strawberry/types/fields/resolver.py:137:25: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] strawberry/types/fields/resolver.py:166:20: No overload of bound method `__init__` matches arguments
+- Found 561 diagnostics
++ Found 549 diagnostics
+
+SinbadCogs (https://github.com/mikeshardmind/SinbadCogs)
+- error[lint:no-matching-overload] guildjoinrestrict/core.py:322:17: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] modnotes/modnotes.py:168:23: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] modnotes/modnotes.py:183:23: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] modnotes/modnotes.py:196:23: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] modnotes/modnotes.py:209:23: No overload of bound method `__init__` matches arguments
++ error[lint:missing-argument] modnotes/modnotes.py:168:23: No arguments provided for required parameters `uid`, `author_id`, `subject_id`, `guild_id`, `note`, `created_at`
++ error[lint:missing-argument] modnotes/modnotes.py:183:23: No arguments provided for required parameters `uid`, `author_id`, `subject_id`, `guild_id`, `note`, `created_at`
++ error[lint:missing-argument] modnotes/modnotes.py:196:23: No arguments provided for required parameters `uid`, `author_id`, `subject_id`, `guild_id`, `note`, `created_at`
++ error[lint:missing-argument] modnotes/modnotes.py:209:23: No arguments provided for required parameters `uid`, `author_id`, `subject_id`, `guild_id`, `note`, `created_at`
+- Found 179 diagnostics
++ Found 178 diagnostics
+
+flake8 (https://github.com/pycqa/flake8)
++ warning[lint:call-possibly-unbound-method] src/flake8/formatting/base.py:167:22: Method `__getitem__` of type `str | None` is possibly unbound
+- error[lint:no-matching-overload] src/flake8/plugins/finder.py:139:12: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/flake8/plugins/finder.py:163:19: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/flake8/plugins/finder.py:169:19: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/flake8/plugins/finder.py:173:19: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/flake8/plugins/finder.py:210:23: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/flake8/plugins/finder.py:224:18: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/flake8/plugins/finder.py:225:19: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/flake8/plugins/finder.py:299:12: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/flake8/plugins/finder.py:344:12: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/flake8/plugins/finder.py:345:18: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/flake8/style_guide.py:409:17: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/integration/test_checker.py:85:9: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/integration/test_checker.py:88:13: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/integration/test_checker.py:273:44: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/integration/test_checker.py:338:17: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:17:12: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:23:12: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:31:12: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:48:15: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:49:18: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:67:15: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:68:18: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:172:9: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:175:13: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:181:9: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:184:13: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:190:9: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:193:13: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:199:9: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:202:13: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:206:9: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:209:13: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:269:9: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:272:13: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:276:9: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:279:13: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:285:9: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:288:13: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:294:9: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:297:13: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:303:9: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:306:13: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:310:9: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:313:13: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:317:9: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:320:13: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:369:9: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:372:13: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:378:9: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:381:13: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:387:9: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:390:13: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:407:16: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:484:9: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:487:13: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:491:9: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:494:13: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:498:9: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:501:13: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:505:9: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:508:13: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:512:9: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:515:13: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:517:9: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:520:13: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:524:9: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:527:13: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:529:9: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:532:13: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:538:9: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:541:13: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:547:9: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:550:13: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:561:35: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:566:28: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:584:35: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:589:28: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:618:12: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:685:22: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:706:12: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:716:9: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:742:26: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:743:18: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:758:19: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:764:20: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:771:33: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:772:18: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:776:34: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:777:18: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:791:26: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:792:18: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:816:12: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:825:19: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:826:18: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:828:17: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/plugins/reporter_test.py:23:16: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/plugins/reporter_test.py:24:13: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/plugins/reporter_test.py:27:17: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/test_base_formatter.py:53:13: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/test_base_formatter.py:62:13: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/test_base_formatter.py:73:13: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/test_base_formatter.py:102:13: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/test_base_formatter.py:211:13: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/test_checker_manager.py:23:44: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/test_checker_manager.py:60:48: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/test_checker_manager.py:68:44: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/test_checker_manager.py:78:44: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/test_debug.py:12:16: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/test_debug.py:13:13: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/test_debug.py:16:17: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/test_debug.py:24:15: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/test_debug.py:25:18: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/test_file_checker.py:20:17: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/test_file_checker.py:30:17: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/test_file_checker.py:45:14: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/test_file_checker.py:46:9: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/test_file_checker.py:49:13: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/test_file_checker.py:56:17: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/test_file_processor.py:271:13: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/test_filenameonly_formatter.py:23:22: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/test_filenameonly_formatter.py:30:13: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/test_filenameonly_formatter.py:39:13: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/test_nothing_formatter.py:21:13: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/test_nothing_formatter.py:29:13: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/test_statistics.py:21:12: No overload of bound method `__init__` matches arguments
++ error[lint:missing-argument] tests/unit/test_statistics.py:21:12: No arguments provided for required parameters `code`, `filename`, `line_number`, `column_number`, `text`
+- error[lint:no-matching-overload] tests/unit/test_violation.py:38:13: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/unit/test_violation.py:48:13: No overload of bound method `__init__` matches arguments
+- Found 204 diagnostics
++ Found 79 diagnostics
+
+porcupine (https://github.com/Akuli/porcupine)
+- error[lint:no-matching-overload] porcupine/plugins/filemanager.py:242:19: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] porcupine/plugins/filemanager.py:247:19: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] porcupine/tabs.py:999:16: No overload of bound method `__init__` matches arguments
+- Found 118 diagnostics
++ Found 115 diagnostics
+
+black (https://github.com/psf/black)
+- error[lint:no-matching-overload] src/black/cache.py:81:33: No overload of bound method `__init__` matches arguments
++ error[lint:missing-argument] src/black/cache.py:81:33: No arguments provided for required parameters `st_mtime`, `st_size`, `hash`
+- error[lint:no-matching-overload] src/black/cache.py:100:16: No overload of bound method `__init__` matches arguments
+- Found 133 diagnostics
++ Found 132 diagnostics
+
+flake8-pyi (https://github.com/PyCQA/flake8-pyi)
+- error[lint:no-matching-overload] pyi.py:422:16: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] pyi.py:424:16: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] pyi.py:425:12: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] pyi.py:620:12: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] pyi.py:655:12: No overload of bound method `__init__` matches arguments
++ error[lint:invalid-argument-type] pyi.py:1079:43: Argument to this function is incorrect: Expected `str`, found `str | None`
+- error[lint:no-matching-overload] pyi.py:732:20: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] pyi.py:1079:31: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] pyi.py:2231:28: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] pyi.py:2287:19: No overload of bound method `__init__` matches arguments
+- Found 24 diagnostics
++ Found 16 diagnostics
+
+pip (https://github.com/pypa/pip)
+- error[lint:no-matching-overload] src/pip/_internal/commands/show.py:153:15: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_internal/index/collector.py:491:16: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_internal/metadata/base.py:534:19: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_internal/metadata/pkg_resources.py:217:23: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_internal/models/link.py:598:12: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_internal/network/auth.py:514:45: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_internal/operations/check.py:159:29: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_internal/operations/freeze.py:178:16: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_internal/operations/freeze.py:189:16: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_internal/operations/freeze.py:195:16: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_internal/operations/freeze.py:210:16: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_internal/operations/freeze.py:214:16: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_internal/operations/freeze.py:218:12: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_internal/resolution/resolvelib/factory.py:529:21: No overload of bound method `__init__` matches arguments
++ error[lint:missing-argument] src/pip/_vendor/packaging/_manylinux.py:235:21: No arguments provided for required parameters `major`, `minor`
+- error[lint:no-matching-overload] src/pip/_vendor/packaging/_manylinux.py:195:19: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_vendor/packaging/_manylinux.py:198:19: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_vendor/packaging/_manylinux.py:201:19: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_vendor/packaging/_manylinux.py:231:22: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_vendor/packaging/_manylinux.py:234:26: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_vendor/packaging/_manylinux.py:235:21: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_vendor/packaging/_musllinux.py:30:12: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_vendor/packaging/_parser.py:83:12: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_vendor/packaging/version.py:205:25: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_vendor/resolvelib/resolvers/resolution.py:57:12: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_vendor/resolvelib/resolvers/resolution.py:94:17: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_vendor/resolvelib/resolvers/resolution.py:132:32: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_vendor/resolvelib/resolvers/resolution.py:134:28: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_vendor/resolvelib/resolvers/resolution.py:380:13: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_vendor/rich/__main__.py:36:16: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_vendor/rich/ansi.py:51:23: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_vendor/rich/ansi.py:53:19: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_vendor/rich/bar.py:92:18: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_vendor/rich/color.py:420:33: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_vendor/rich/color.py:455:23: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_vendor/rich/color.py:477:23: No overload of bound method `__init__` matches arguments
++ error[lint:missing-argument] src/pip/_vendor/rich/color.py:550:27: No arguments provided for required parameters `red`, `green`, `blue`
++ error[lint:missing-argument] src/pip/_vendor/rich/color.py:563:27: No arguments provided for required parameters `red`, `green`, `blue`
+- error[lint:no-matching-overload] src/pip/_vendor/rich/color.py:550:27: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_vendor/rich/color.py:563:27: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_vendor/rich/color.py:574:13: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_vendor/rich/color.py:586:17: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_vendor/rich/console.py:487:20: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_vendor/rich/console.py:1017:20: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_vendor/rich/containers.py:54:20: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_vendor/rich/control.py:72:24: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_vendor/rich/highlighter.py:137:28: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_vendor/rich/layout.py:117:26: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_vendor/rich/layout.py:137:26: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_vendor/rich/layout.py:347:54: No overload of bound method `__init__` matches arguments
++ warning[lint:possibly-unbound-attribute] src/pip/_vendor/rich/markup.py:181:38: Attribute `strip` on type `str | None | Unknown` is possibly unbound
+- error[lint:no-matching-overload] src/pip/_vendor/rich/markup.py:212:25: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_vendor/rich/markup.py:217:33: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_vendor/rich/markup.py:228:25: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_vendor/rich/measure.py:32:16: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_vendor/rich/measure.py:44:16: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_vendor/rich/measure.py:57:16: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_vendor/rich/measure.py:97:20: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_vendor/rich/measure.py:114:28: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_vendor/rich/measure.py:117:24: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_vendor/rich/measure.py:142:16: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_vendor/rich/padding.py:131:20: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_vendor/rich/palette.py:18:16: No overload of bound method `__init__` matches arguments
++ error[lint:missing-argument] src/pip/_vendor/rich/palette.py:18:16: No arguments provided for required parameters `red`, `green`, `blue`
+- error[lint:no-matching-overload] src/pip/_vendor/rich/pretty.py:354:16: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_vendor/rich/pretty.py:997:23: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_vendor/rich/progress_bar.py:96:18: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_vendor/rich/progress_bar.py:101:18: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_vendor/rich/progress_bar.py:206:18: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_vendor/rich/rule.py:114:16: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_vendor/rich/segment.py:128:29: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_vendor/rich/segment.py:140:21: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_vendor/rich/segment.py:141:21: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_vendor/rich/segment.py:145:21: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_vendor/rich/segment.py:146:21: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_vendor/rich/segment.py:150:21: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_vendor/rich/segment.py:151:21: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_vendor/rich/segment.py:176:30: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_vendor/rich/segment.py:178:17: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_vendor/rich/segment.py:179:17: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_vendor/rich/syntax.py:555:13: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_vendor/rich/table.py:328:20: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_vendor/rich/table.py:686:23: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_vendor/rich/table.py:693:23: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_vendor/rich/table.py:717:20: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_vendor/rich/table.py:737:23: No overload of bound method `__init__` matches arguments
++ error[lint:missing-argument] src/pip/_vendor/rich/terminal_theme.py:27:33: No arguments provided for required parameters `red`, `green`, `blue`
++ error[lint:missing-argument] src/pip/_vendor/rich/terminal_theme.py:28:33: No arguments provided for required parameters `red`, `green`, `blue`
+- error[lint:no-matching-overload] src/pip/_vendor/rich/terminal_theme.py:27:33: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_vendor/rich/terminal_theme.py:28:33: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_vendor/rich/text.py:72:17: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_vendor/rich/text.py:73:17: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_vendor/rich/text.py:86:16: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_vendor/rich/text.py:100:16: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_vendor/rich/text.py:113:20: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_vendor/rich/text.py:204:21: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_vendor/rich/text.py:481:32: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_vendor/rich/text.py:507:35: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_vendor/rich/text.py:624:33: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_vendor/rich/text.py:630:33: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_vendor/rich/text.py:658:22: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_vendor/rich/text.py:718:16: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_vendor/rich/text.py:809:29: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_vendor/rich/text.py:811:17: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_vendor/rich/text.py:895:22: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_vendor/rich/text.py:914:17: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_vendor/rich/text.py:930:17: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_vendor/rich/text.py:988:40: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_vendor/rich/text.py:999:25: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_vendor/rich/text.py:1003:21: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_vendor/rich/text.py:1022:32: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_vendor/rich/text.py:1025:13: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_vendor/rich/text.py:1050:29: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_vendor/rich/text.py:1182:44: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_vendor/rich/text.py:1194:22: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_vendor/rich/tree.py:201:16: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_vendor/tomli/_parser.py:154:11: No overload of bound method `__init__` matches arguments
+- Found 1160 diagnostics
++ Found 1057 diagnostics
+
+isort (https://github.com/pycqa/isort)
+- error[lint:no-matching-overload] isort/_vendored/tomli/_parser.py:76:11: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] isort/parse.py:588:12: No overload of bound method `__init__` matches arguments
++ error[lint:invalid-argument-type] isort/parse.py:595:9: Argument to this function is incorrect: Expected `dict`, found `OrderedDict`
+- Found 50 diagnostics
++ Found 49 diagnostics
+
+rich (https://github.com/Textualize/rich)
+- error[lint:no-matching-overload] rich/__main__.py:36:16: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] rich/ansi.py:51:23: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] rich/ansi.py:53:19: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] rich/bar.py:92:18: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] rich/color.py:420:33: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] rich/color.py:455:23: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] rich/color.py:477:23: No overload of bound method `__init__` matches arguments
++ error[lint:missing-argument] rich/color.py:550:27: No arguments provided for required parameters `red`, `green`, `blue`
++ error[lint:missing-argument] rich/color.py:563:27: No arguments provided for required parameters `red`, `green`, `blue`
+- error[lint:no-matching-overload] rich/color.py:550:27: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] rich/color.py:563:27: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] rich/color.py:574:13: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] rich/color.py:586:17: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] rich/console.py:487:20: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] rich/console.py:1017:20: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] rich/containers.py:54:20: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] rich/control.py:72:24: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] rich/highlighter.py:137:28: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] rich/layout.py:117:26: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] rich/layout.py:137:26: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] rich/layout.py:347:54: No overload of bound method `__init__` matches arguments
++ warning[lint:possibly-unbound-attribute] rich/markup.py:181:38: Attribute `strip` on type `str | None | Unknown` is possibly unbound
+- error[lint:no-matching-overload] rich/markup.py:212:25: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] rich/markup.py:217:33: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] rich/markup.py:228:25: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] rich/measure.py:32:16: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] rich/measure.py:44:16: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] rich/measure.py:57:16: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] rich/measure.py:97:20: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] rich/measure.py:114:28: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] rich/measure.py:117:24: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] rich/measure.py:142:16: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] rich/padding.py:131:20: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] rich/palette.py:18:16: No overload of bound method `__init__` matches arguments
++ error[lint:missing-argument] rich/palette.py:18:16: No arguments provided for required parameters `red`, `green`, `blue`
+- error[lint:no-matching-overload] rich/pretty.py:354:16: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] rich/pretty.py:997:23: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] rich/progress_bar.py:96:18: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] rich/progress_bar.py:101:18: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] rich/progress_bar.py:206:18: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] rich/rule.py:114:16: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] rich/segment.py:128:29: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] rich/segment.py:140:21: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] rich/segment.py:141:21: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] rich/segment.py:145:21: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] rich/segment.py:146:21: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] rich/segment.py:150:21: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] rich/segment.py:151:21: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] rich/segment.py:176:30: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] rich/segment.py:178:17: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] rich/segment.py:179:17: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] rich/syntax.py:555:13: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] rich/table.py:328:20: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] rich/table.py:686:23: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] rich/table.py:693:23: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] rich/table.py:717:20: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] rich/table.py:737:23: No overload of bound method `__init__` matches arguments
++ error[lint:missing-argument] rich/terminal_theme.py:27:33: No arguments provided for required parameters `red`, `green`, `blue`
++ error[lint:missing-argument] rich/terminal_theme.py:28:33: No arguments provided for required parameters `red`, `green`, `blue`
+- error[lint:no-matching-overload] rich/terminal_theme.py:27:33: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] rich/terminal_theme.py:28:33: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] rich/text.py:72:17: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] rich/text.py:73:17: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] rich/text.py:86:16: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] rich/text.py:100:16: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] rich/text.py:113:20: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] rich/text.py:204:21: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] rich/text.py:481:32: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] rich/text.py:507:35: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] rich/text.py:624:33: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] rich/text.py:630:33: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] rich/text.py:658:22: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] rich/text.py:718:16: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] rich/text.py:809:29: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] rich/text.py:811:17: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] rich/text.py:895:22: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] rich/text.py:914:17: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] rich/text.py:930:17: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] rich/text.py:988:40: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] rich/text.py:999:25: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] rich/text.py:1003:21: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] rich/text.py:1022:32: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] rich/text.py:1025:13: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] rich/text.py:1050:29: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] rich/text.py:1182:44: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] rich/text.py:1194:22: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] rich/tree.py:201:16: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/test_align.py:149:74: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/test_ansi.py:26:28: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/test_ansi.py:27:28: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/test_ansi.py:28:28: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/test_ansi.py:29:28: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/test_box.py:53:9: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/test_box.py:72:9: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/test_box.py:91:9: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/test_color.py:34:46: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/test_color.py:49:54: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/test_color.py:50:50: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/test_color.py:51:55: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/test_color.py:52:56: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/test_color.py:53:54: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/test_color.py:54:70: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/test_color.py:57:73: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/test_color.py:63:38: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/test_color.py:64:34: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/test_color.py:65:41: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/test_color.py:66:38: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/test_color.py:67:41...*[Comment body truncated]*
+
+---
+
+_Closed by @sharkdp on 2025-04-30 15:55_
+
+---
+
+_Reopened by @sharkdp on 2025-04-30 15:55_
+
+---
+
+_Comment by @github-actions[bot] on 2025-04-30 16:02_
+
+<!-- generated-comment ecosystem -->
+## `ruff-ecosystem` results
+### Linter (stable)
+✅ ecosystem check detected no linter changes.
+
+### Linter (preview)
+✅ ecosystem check detected no linter changes.
+
+
+
+
+---
+
+_Comment by @dcreager on 2025-04-30 16:16_
+
+:heart: love seeing all of the red in the ecosystem report!
+
+---
+
+_Marked ready for review by @sharkdp on 2025-04-30 19:26_
+
+---
+
+_Review requested from @carljm by @sharkdp on 2025-04-30 19:26_
+
+---
+
+_Review requested from @AlexWaygood by @sharkdp on 2025-04-30 19:26_
+
+---
+
+_Review requested from @dcreager by @sharkdp on 2025-04-30 19:26_
+
+---
+
+_Comment by @sharkdp on 2025-04-30 19:51_
+
+The new fuzzer panics are all `try_metaclass_` cycle panics related to samples that look similar to this:
+```py
+class C[T](C()):
+    pass
+C.attr
+```
+On this PR, if we access `C.attr`, we need to check if `C` is a `NamedTuple`. I do so by calling `explicit_bases` on the class. That seems to immediately trigger a cycle for that illegal self-referential `C` class. We also have 9 ecosystem projects that *already* panic with `try_metaclass_` cycles. Is it worth exploring this further, or is this just one new way to trigger that cycle?
+
+---
+
+_Comment by @carljm on 2025-04-30 19:58_
+
+I've seen similar cases before, this is just a new way to trigger it. Consider that my responsibility to deal with, I think you can go ahead with this PR.
+
+---
+
+_Review comment by @carljm on `crates/red_knot_python_semantic/src/types/class.rs`:104 on 2025-04-30 20:30_
+
+```suggestion
+/// A category of classes with code generation capabilities (with synthesized methods).
+```
+
+---
+
+_Review comment by @carljm on `crates/red_knot_python_semantic/src/types/class.rs`:109 on 2025-04-30 20:32_
+
+```suggestion
+    /// Classes inheriting from `typing.NamedTuple`
+```
+
+---
+
+_@carljm approved on 2025-04-30 20:34_
+
+Looks great!
+
+---
+
+_Merged by @sharkdp on 2025-04-30 20:52_
+
+---
+
+_Closed by @sharkdp on 2025-04-30 20:52_
+
+---
+
+_Branch deleted on 2025-04-30 20:52_
+
+---

@@ -1,0 +1,787 @@
+```yaml
+number: 17682
+title: "[red-knot] Add a new `Type::ProtocolInstance` variant (take 2!)"
+type: pull_request
+state: merged
+author: AlexWaygood
+labels:
+  - ty
+assignees: []
+merged: true
+base: main
+head: alex/protocol-variant-2
+created_at: 2025-04-28T15:00:34Z
+updated_at: 2025-04-30T14:40:51Z
+url: https://github.com/astral-sh/ruff/pull/17682
+synced_at: 2026-01-10T19:03:00Z
+```
+
+# [red-knot] Add a new `Type::ProtocolInstance` variant (take 2!)
+
+---
+
+_Pull request opened by @AlexWaygood on 2025-04-28 15:00_
+
+## Summary
+
+This PR adds initial support for protocol types to red-knot.
+
+Specifically, it does the following things:
+- Adds a new `Type::ProtocolInstance` variant. A `ProtocolInstanceType` represents "the set of all possible runtime objects that would satisfy a given protocol".
+- Renames `Type::Instance`/`InstanceType` to `Type::NominalInstance`/`NominalInstanceType`, to differentiate them from `Type::ProtocolInstance`/`ProtocolInstanceType`.
+- Reworks the `Type::instance()` constructor: it now checks whether the class passed into the constructor is a protocol class. If it is, it returns a `Type::ProtocolInstance()`; if not, it returns a `Type::NominalInstance`
+- Implements naive versions of subtyping, assignability and equivalence for protocol types, both relative to other protocol types and relative to other `Type` variants altogether.
+- Removes hardcoded special-casing for `typing.SupportsIndex` and `typing.Sized`. This special-casing is now redundant.
+- Removes the `KnownClass::Sized` variant altogether: its only purpose was to achieve the special-cased support for this protocol in red-knot.
+
+There is still much to be done, and many TODOs remain. The most obvious piece of outstanding work is that we still do not consider the _types_ of the members declared on a protocol class when we consider whether another type is assignable to a protocol type. I.e., this assertion currently fails on this branch, when it should pass due to the fact that `Bar.x` has type `str` but `Foo` demands that inhabitants of the type must have an `x` attribute of type `int`:
+
+```py
+from typing import Protocol
+from knot_extensions import static_assert, is_assignable_to
+
+class Foo(Protocol):
+    x: int
+
+class Bar:
+    x = "foo"
+
+static_assert(not is_assignable_to(Bar, Foo))
+```
+
+As such, this PR gets rid of many false-positive diagnostics associated with protocols. But it comes at the cost of introducing many potential false negatives. These will be tackled in followup PRs.
+
+## Test Plan
+
+- Existing mdtests updated
+- New mdtests added for issues that were surfaced via mypy_primer on early versions of this branch
+- Unit test added for the `Display` implementation of synthesized protocols
+- Ran `uvx --from=./python/py-fuzzer fuzz 0-2000 --only-new-bugs  --baseline-executable=./target/main/debug/red_knot --bin=red_knot` to verify that this branch doesn't introduce any new panics detectable by the `py-fuzzer` script
+- Ran `QUICKCHECK_TESTS=100000 cargo test --release -p red_knot_python_semantic -- --ignored types::property_tests::stable` to check that the property tests still pass
+  - (This PR doesn't yet add the machinery to the property tests so that they would ever actually test any protocol types, so this is unsurprising. But I double-checked anyway.)
+- The mypy_primer report looks excellent: all hits appear to either be false positives going away, or pre-existing error messages changing slightly
+
+
+---
+
+_Label `red-knot` added by @AlexWaygood on 2025-04-28 15:00_
+
+---
+
+_Comment by @github-actions[bot] on 2025-04-28 15:03_
+
+<!-- generated-comment mypy_primer -->
+## `mypy_primer` results
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+```diff
+packaging (https://github.com/pypa/packaging)
+- error[lint:invalid-argument-type] src/packaging/metadata.py:528:43: Argument to this function is incorrect: Expected `_FormatMapMapping`, found `dict`
+- error[lint:invalid-assignment] src/packaging/version.py:478:13: Object of type `Literal[0]` is not assignable to `str | bytes | SupportsInt | None`
+- Found 29 diagnostics
++ Found 27 diagnostics
+
+mypy_primer (https://github.com/hauntsaninja/mypy_primer)
+- error[lint:invalid-argument-type] mypy_primer/model.py:166:40: Argument to this function is incorrect: Expected `_FormatMapMapping`, found `_FormatMap`
+- error[lint:invalid-argument-type] mypy_primer/model.py:254:13: Argument to this function is incorrect: Expected `_FormatMapMapping`, found `_FormatMap`
+- error[lint:invalid-argument-type] mypy_primer/model.py:303:40: Argument to this function is incorrect: Expected `_FormatMapMapping`, found `_FormatMap`
+- error[lint:invalid-argument-type] mypy_primer/model.py:362:46: Argument to this function is incorrect: Expected `_FormatMapMapping`, found `_FormatMap`
+- Found 20 diagnostics
++ Found 16 diagnostics
+
+nionutils (https://github.com/nion-software/nionutils)
+- error[lint:invalid-return-type] nion/utils/StructuredModel.py:84:16: Return type does not match returned value: Expected `ModelLike`, found `FieldPropertyModel`
+- error[lint:invalid-return-type] nion/utils/StructuredModel.py:87:16: Return type does not match returned value: Expected `ModelLike`, found `FieldPropertyModel`
+- error[lint:invalid-return-type] nion/utils/StructuredModel.py:91:16: Return type does not match returned value: Expected `ModelLike`, found `RecordModel`
+- error[lint:invalid-return-type] nion/utils/StructuredModel.py:93:16: Return type does not match returned value: Expected `ModelLike`, found `ArrayModel`
+- error[lint:invalid-argument-type] nion/utils/test/Binding_test.py:43:43: Argument to this function is incorrect: Expected `ObservableLike`, found `PropertyModel`
+- error[lint:invalid-argument-type] nion/utils/test/ListModel_test.py:116:46: Argument to this function is incorrect: Expected `ListModelLike`, found `ListModel`
+- error[lint:invalid-argument-type] nion/utils/test/ListModel_test.py:510:33: Argument to this function is incorrect: Argument type `FlattenedListModel` does not satisfy upper bound of type variable `_SupportsCloseT`
+- Found 34 diagnostics
++ Found 27 diagnostics
+
+zipp (https://github.com/jaraco/zipp)
+- error[lint:invalid-argument-type] zipp/__init__.py:175:31: Argument to this function is incorrect: Expected `SizedBuffer | str`, found `Literal[b""]`
+- error[lint:unsupported-operator] zipp/glob.py:4:26: Operator `*` is unsupported between objects of type `str` and `bool`
+- Found 4 diagnostics
++ Found 2 diagnostics
+
+pyp (https://github.com/hauntsaninja/pyp)
+- error[lint:invalid-argument-type] pyp.py:707:9: Argument to this function is incorrect: Expected `_FormatterClass`, found `Literal[RawDescriptionHelpFormatter]`
+- Found 20 diagnostics
++ Found 19 diagnostics
+
+attrs (https://github.com/python-attrs/attrs)
+- error[lint:invalid-argument-type] tests/test_funcs.py:217:13: Argument to this function is incorrect: Expected `AttrsInstance`, found `A`
+- error[lint:invalid-argument-type] tests/test_funcs.py:234:48: Argument to this function is incorrect: Expected `AttrsInstance`, found `A`
+- error[lint:invalid-argument-type] tests/test_funcs.py:254:13: Argument to this function is incorrect: Expected `AttrsInstance`, found `A`
+- error[lint:invalid-argument-type] tests/test_funcs.py:280:25: Argument to this function is incorrect: Expected `AttrsInstance`, found `A`
+- error[lint:invalid-argument-type] tests/test_funcs.py:458:13: Argument to this function is incorrect: Expected `AttrsInstance`, found `A`
+- error[lint:invalid-argument-type] tests/test_funcs.py:484:26: Argument to this function is incorrect: Expected `AttrsInstance`, found `A`
+- error[lint:invalid-argument-type] tests/test_hooks.py:88:42: Argument to this function is incorrect: Expected `AttrsInstance`, found `C`
+- error[lint:invalid-argument-type] tests/test_hooks.py:104:50: Argument to this function is incorrect: Expected `AttrsInstance`, found `C`
+- error[lint:invalid-argument-type] tests/test_hooks.py:137:48: Argument to this function is incorrect: Expected `AttrsInstance`, found `C`
+- error[lint:invalid-argument-type] tests/test_hooks.py:154:48: Argument to this function is incorrect: Expected `AttrsInstance`, found `C`
+- error[lint:invalid-argument-type] tests/test_hooks.py:202:40: Argument to this function is incorrect: Expected `AttrsInstance`, found `Sub`
+- error[lint:invalid-argument-type] tests/test_hooks.py:268:30: Argument to this function is incorrect: Expected `AttrsInstance`, found `Parent`
+- error[lint:invalid-argument-type] tests/test_hooks.py:298:21: Argument to this function is incorrect: Expected `AttrsInstance`, found `Parent`
+- error[lint:invalid-argument-type] tests/test_next_gen.py:436:30: Argument to this function is incorrect: Expected `AttrsInstance`, found `C`
+- error[lint:invalid-argument-type] tests/test_next_gen.py:436:53: Argument to this function is incorrect: Expected `AttrsInstance`, found `C`
+- error[lint:invalid-argument-type] tests/test_next_gen.py:446:29: Argument to this function is incorrect: Expected `AttrsInstance`, found `C`
+- error[lint:invalid-argument-type] tests/test_next_gen.py:447:13: Argument to this function is incorrect: Expected `AttrsInstance`, found `C`
+- error[lint:invalid-argument-type] tests/test_slots.py:104:24: Argument to this function is incorrect: Expected `AttrsInstance`, found `C1Slots`
+- error[lint:invalid-argument-type] tests/test_slots.py:104:54: Argument to this function is incorrect: Expected `AttrsInstance`, found `C1`
+- error[lint:invalid-argument-type] tests/test_slots.py:126:44: Argument to this function is incorrect: Expected `AttrsInstance`, found `C1Slots`
+- error[lint:invalid-argument-type] tests/test_slots.py:169:57: Argument to this function is incorrect: Expected `AttrsInstance`, found `C2Slots`
+- error[lint:invalid-argument-type] tests/test_slots.py:268:57: Argument to this function is incorrect: Expected `AttrsInstance`, found `C2Slots`
+- error[lint:invalid-argument-type] tests/test_slots.py:412:57: Argument to this function is incorrect: Expected `AttrsInstance`, found `C2Slots`
+- error[lint:invalid-argument-type] tests/test_validators.py:448:21: Argument to this function is incorrect: Expected `AttrsInstance`, found `C`
+- error[lint:invalid-argument-type] tests/test_validators.py:449:21: Argument to this function is incorrect: Expected `AttrsInstance`, found `C`
+- error[lint:invalid-argument-type] tests/typing_example.py:425:14: Argument to this function is incorrect: Expected `AttrsInstance`, found `FactoryTest2`
+- error[lint:invalid-argument-type] tests/typing_example.py:426:13: Argument to this function is incorrect: Expected `AttrsInstance`, found `FactoryTest`
+- error[lint:invalid-argument-type] tests/typing_example.py:436:13: Argument to this function is incorrect: Expected `AttrsInstance`, found `FactoryTest`
+- error[lint:invalid-argument-type] tests/typing_example.py:437:13: Argument to this function is incorrect: Expected `AttrsInstance`, found `FactoryTest`
+- error[lint:invalid-argument-type] tests/typing_example.py:448:14: Argument to this function is incorrect: Expected `AttrsInstance`, found `MatchArgs2`
+- error[lint:invalid-argument-type] tests/typing_example.py:449:15: Argument to this function is incorrect: Expected `AttrsInstance`, found `MatchArgs2`
+- Found 694 diagnostics
++ Found 663 diagnostics
+
+anyio (https://github.com/agronholm/anyio)
+- error[lint:invalid-argument-type] src/anyio/_core/_tempfile.py:299:21: Argument to this function is incorrect: Argument type `BytesIO` does not satisfy upper bound of type variable `_BufferT_co`
+- error[lint:invalid-argument-type] src/anyio/_core/_tempfile.py:299:21: Argument to this function is incorrect: Expected `_WrappedBuffer`, found `BytesIO`
+- error[lint:invalid-argument-type] src/anyio/to_process.py:210:42: Argument to this function is incorrect: Expected `_ReadableFileobj`, found `BinaryIO | @Todo(Support for `typing.TypeAlias`)`
+- error[lint:invalid-argument-type] src/anyio/to_process.py:210:42: Argument to this function is incorrect: Expected `_ReadableFileobj`, found `BinaryIO | @Todo(Support for `typing.TypeAlias`)`
+- Found 140 diagnostics
++ Found 136 diagnostics
+
+async-utils (https://github.com/mikeshardmind/async-utils)
+- error[lint:invalid-return-type] src/async_utils/_paramkey.py:62:12: Return type does not match returned value: Expected `Hashable`, found `_HK`
+- error[lint:invalid-argument-type] src/async_utils/bg_loop.py:113:31: Argument to this function is incorrect: Expected `_TaskFactory | None`, found `def eager_task_factory(loop: AbstractEventLoop | None, coro: @Todo(specialized non-generic class), *, name: str | None = None, context: Context | None = None) -> @Todo(specialized non-generic class)`
+- error[lint:invalid-return-type] src/async_utils/corofunc_cache.py:121:12: Return type does not match returned value: Expected `CoroCacheDeco`, found `def wrapper(coro: @Todo(Generic PEP-695 type alias), /) -> @Todo(Generic PEP-695 type alias)`
+- error[lint:invalid-return-type] src/async_utils/corofunc_cache.py:200:12: Return type does not match returned value: Expected `CoroCacheDeco`, found `def wrapper(coro: @Todo(Generic PEP-695 type alias), /) -> @Todo(Generic PEP-695 type alias)`
+- error[lint:invalid-return-type] src/async_utils/task_cache.py:181:12: Return type does not match returned value: Expected `TaskCacheDeco`, found `def wrapper(coro: @Todo(Generic PEP-695 type alias), /) -> @Todo(Generic PEP-695 type alias)`
+- error[lint:invalid-return-type] src/async_utils/task_cache.py:267:12: Return type does not match returned value: Expected `TaskCacheDeco`, found `def wrapper(coro: @Todo(Generic PEP-695 type alias), /) -> @Todo(Generic PEP-695 type alias)`
+- Found 29 diagnostics
++ Found 23 diagnostics
+
+starlette (https://github.com/encode/starlette)
+- error[lint:invalid-return-type] tests/conftest.py:19:12: Return type does not match returned value: Expected `TestClientFactory`, found `partial`
+- Found 193 diagnostics
++ Found 192 diagnostics
+
+nox (https://github.com/wntrblm/nox)
+- error[lint:invalid-argument-type] nox/manifest.py:271:80: Argument to this function is incorrect: Argument type `SessionRunner` does not satisfy upper bound of type variable `Node`
+- Found 56 diagnostics
++ Found 55 diagnostics
+
+pylox (https://github.com/sco1/pylox)
+- error[lint:invalid-argument-type] tests/expressions/test_evaluate.py:18:31: Argument to this function is incorrect: Expected `LoxInterpreterProtocol`, found `Lox`
+- error[lint:invalid-argument-type] tests/expressions/test_evaluate.py:21:29: Argument to this function is incorrect: Expected `LoxInterpreterProtocol`, found `Lox`
+- error[lint:invalid-argument-type] tests/expressions/test_parse.py:19:31: Argument to this function is incorrect: Expected `LoxInterpreterProtocol`, found `Lox`
+- error[lint:invalid-argument-type] tests/expressions/test_parse.py:22:29: Argument to this function is incorrect: Expected `LoxInterpreterProtocol`, found `Lox`
+- error[lint:invalid-argument-type] tests/scanning/test_identifiers.py:53:33: Argument to this function is incorrect: Expected `LoxInterpreterProtocol`, found `Lox`
+- error[lint:invalid-argument-type] tests/scanning/test_keywords.py:54:33: Argument to this function is incorrect: Expected `LoxInterpreterProtocol`, found `Lox`
+- error[lint:invalid-argument-type] tests/scanning/test_numbers.py:31:33: Argument to this function is incorrect: Expected `LoxInterpreterProtocol`, found `Lox`
+- error[lint:invalid-argument-type] tests/scanning/test_punctuators.py:53:33: Argument to this function is incorrect: Expected `LoxInterpreterProtocol`, found `Lox`
+- error[lint:invalid-argument-type] tests/scanning/test_strings.py:71:33: Argument to this function is incorrect: Expected `LoxInterpreterProtocol`, found `Lox`
+- error[lint:invalid-argument-type] tests/scanning/test_whitespace.py:66:33: Argument to this function is incorrect: Expected `LoxInterpreterProtocol`, found `Lox`
+- Found 40 diagnostics
++ Found 30 diagnostics
+
+ppb-vector (https://github.com/ppb/ppb-vector)
+- error[lint:invalid-assignment] ppb_vector/__init__.py:291:9: Object of type `float` is not assignable to `SupportsFloat`
+- error[lint:invalid-assignment] ppb_vector/__init__.py:351:9: Object of type `float` is not assignable to `SupportsFloat`
+- error[lint:invalid-parameter-default] ppb_vector/__init__.py:436:17: Default value of type `float` is not assignable to annotated parameter type `SupportsFloat`
+- error[lint:invalid-parameter-default] ppb_vector/__init__.py:436:49: Default value of type `float` is not assignable to annotated parameter type `SupportsFloat`
+- error[lint:invalid-assignment] ppb_vector/__init__.py:459:9: Object of type `float` is not assignable to `SupportsFloat`
+- error[lint:invalid-assignment] ppb_vector/__init__.py:459:18: Object of type `float` is not assignable to `SupportsFloat`
+- error[lint:unsupported-operator] ppb_vector/__init__.py:460:12: Operator `<` is not supported for types `SupportsFloat` and `int`, in comparing `SupportsFloat` with `Literal[0]`
+- error[lint:unsupported-operator] ppb_vector/__init__.py:460:27: Operator `<` is not supported for types `SupportsFloat` and `int`, in comparing `SupportsFloat` with `Literal[0]`
+- error[lint:unsupported-operator] ppb_vector/__init__.py:472:25: Operator `*` is unsupported between objects of type `SupportsFloat` and `Unknown | int | float`
+- error[lint:invalid-assignment] ppb_vector/__init__.py:548:9: Object of type `float` is not assignable to `SupportsFloat`
+- error[lint:invalid-assignment] ppb_vector/__init__.py:560:9: Object of type `float` is not assignable to `SupportsFloat`
+- error[lint:unsupported-operator] ppb_vector/__init__.py:561:12: Operator `<` is not supported for types `SupportsFloat` and `int`, in comparing `SupportsFloat` with `Literal[0]`
+- error[lint:no-matching-overload] ppb_vector/__init__.py:622:17: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] ppb_vector/__init__.py:623:17: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] ppb_vector/__init__.py:624:15: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] tests/benchmark.py:9:9: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] tests/benchmark.py:10:9: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] tests/test_decompose.py:12:8: No overload of function `__new__` matches arguments
+- error[lint:invalid-argument-type] tests/test_dot.py:41:36: Argument to this function is incorrect: Expected `SupportsFloat`, found `int | float`
+- error[lint:invalid-argument-type] tests/test_dot.py:41:54: Argument to this function is incorrect: Expected `SupportsFloat`, found `int | float`
+- error[lint:invalid-argument-type] tests/test_isclose.py:90:22: Argument to this function is incorrect: Expected `SupportsFloat`, found `Literal[-1]`
+- error[lint:invalid-argument-type] tests/test_isclose.py:93:22: Argument to this function is incorrect: Expected `SupportsFloat`, found `Literal[-1]`
+- error[lint:no-matching-overload] tests/test_member_access.py:9:9: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] tests/test_pattern_matching.py:5:11: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] tests/test_pattern_matching.py:13:11: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] tests/test_pattern_matching.py:21:11: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] tests/test_pattern_matching.py:29:11: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] tests/test_project.py:10:8: No overload of function `__new__` matches arguments
+- error[lint:invalid-argument-type] tests/test_project.py:24:66: Argument to this function is incorrect: Expected `SupportsFloat`, found `Literal[90]`
+- error[lint:no-matching-overload] tests/test_rotate.py:13:6: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] tests/test_rotate.py:13:25: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] tests/test_rotate.py:14:6: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] tests/test_rotate.py:14:23: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] tests/test_rotate.py:15:6: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] tests/test_rotate.py:15:24: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] tests/test_rotate.py:16:6: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] tests/test_rotate.py:16:25: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] tests/test_rotate.py:78:6: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] tests/test_rotate.py:81:6: No overload of function `__new__` matches arguments
+- error[lint:invalid-argument-type] tests/test_rotate.py:129:25: Argument to this function is incorrect: Expected `SupportsFloat`, found `int | float`
+- error[lint:invalid-argument-type] tests/test_rotate.py:130:25: Argument to this function is incorrect: Expected `SupportsFloat`, found `int | float`
+- error[lint:invalid-argument-type] tests/test_rotate.py:132:39: Argument to this function is incorrect: Expected `SupportsFloat`, found `int | float`
+- error[lint:no-matching-overload] tests/test_rotate.py:145:15: No overload of function `__new__` matches arguments
+- error[lint:invalid-argument-type] tests/test_rotate.py:155:40: Argument to this function is incorrect: Expected `SupportsFloat`, found `float`
+- error[lint:no-matching-overload] tests/test_rotate.py:182:12: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] tests/test_rotate.py:182:34: No overload of function `__new__` matches arguments
+- error[lint:unsupported-operator] tests/test_scalar_multiplication.py:39:13: Operator `/` is unsupported between objects of type `Vector` and `int | float`
+- error[lint:invalid-argument-type] tests/test_scalar_multiplication.py:51:37: Argument to this function is incorrect: Expected `SupportsFloat`, found `int | float`
+- error[lint:unsupported-operator] tests/test_scalar_multiplication.py:62:12: Operator `/` is unsupported between objects of type `Vector` and `int`
+- error[lint:unsupported-operator] tests/test_scalar_multiplication.py:62:26: Operator `/` is unsupported between objects of type `Vector` and `float`
+- error[lint:unsupported-operator] tests/test_scalar_multiplication.py:68:9: Operator `/` is unsupported between objects of type `Vector` and `Literal[0]`
+- error[lint:unsupported-operator] tests/test_scalar_multiplication.py:71:9: Operator `/` is unsupported between objects of type `Vector` and `float`
+- error[lint:invalid-argument-type] tests/test_scale.py:13:20: Argument to this function is incorrect: Expected `SupportsFloat`, found `int | float`
+- error[lint:invalid-argument-type] tests/test_scale.py:20:31: Argument to this function is incorrect: Expected `SupportsFloat`, found `int | float`
+- error[lint:invalid-argument-type] tests/test_scale.py:27:37: Argument to this function is incorrect: Expected `SupportsFloat`, found `int | float`
+- error[lint:invalid-argument-type] tests/test_truncate.py:11:23: Argument to this function is incorrect: Expected `SupportsFloat`, found `int | float`
+- error[lint:invalid-argument-type] tests/test_truncate.py:17:23: Argument to this function is incorrect: Expected `SupportsFloat`, found `int | float`
+- error[lint:no-matching-overload] tests/test_truncate.py:22:7: No overload of function `__new__` matches arguments
+- error[lint:invalid-argument-type] tests/test_truncate.py:35:31: Argument to this function is incorrect: Expected `SupportsFloat`, found `int | float`
+- error[lint:invalid-argument-type] tests/test_truncate.py:40:28: Argument to this function is incorrect: Expected `SupportsFloat`, found `int | float`
+- error[lint:invalid-argument-type] tests/test_truncate.py:48:40: Argument to this function is incorrect: Expected `SupportsFloat`, found `Literal[0]`
+- error[lint:invalid-argument-type] tests/test_truncate.py:48:51: Argument to this function is incorrect: Expected `SupportsFloat`, found `float`
+- error[lint:invalid-argument-type] tests/test_update.py:9:21: Argument to this function is incorrect: Expected `SupportsFloat | None`, found `int | float`
+- error[lint:invalid-argument-type] tests/test_update.py:14:21: Argument to this function is incorrect: Expected `SupportsFloat | None`, found `int | float`
+- error[lint:invalid-argument-type] tests/test_update.py:19:21: Argument to this function is incorrect: Expected `SupportsFloat | None`, found `int | float`
+- error[lint:invalid-argument-type] tests/test_update.py:19:26: Argument to this function is incorrect: Expected `SupportsFloat | None`, found `int | float`
+- Found 151 diagnostics
++ Found 85 diagnostics
+
+flake8 (https://github.com/pycqa/flake8)
+- error[lint:invalid-argument-type] src/flake8/utils.py:193:33: Argument to this function is incorrect: Argument type `BytesIO` does not satisfy upper bound of type variable `_BufferT_co`
+- error[lint:invalid-argument-type] src/flake8/utils.py:193:33: Argument to this function is incorrect: Expected `_WrappedBuffer`, found `BytesIO`
+- error[lint:invalid-argument-type] tests/unit/plugins/pycodestyle_test.py:25:57: Argument to this function is incorrect: Expected `LoaderProtocol | None`, found `SourceFileLoader`
+- error[lint:invalid-argument-type] tests/unit/test_utils.py:188:30: Argument to this function is incorrect: Argument type `BytesIO` does not satisfy upper bound of type variable `_BufferT_co`
+- error[lint:invalid-argument-type] tests/unit/test_utils.py:188:30: Argument to this function is incorrect: Expected `_WrappedBuffer`, found `BytesIO`
+- error[lint:invalid-argument-type] tests/unit/test_utils.py:195:30: Argument to this function is incorrect: Argument type `BytesIO` does not satisfy upper bound of type variable `_BufferT_co`
+- error[lint:invalid-argument-type] tests/unit/test_utils.py:195:30: Argument to this function is incorrect: Expected `_WrappedBuffer`, found `BytesIO`
+- Found 210 diagnostics
++ Found 203 diagnostics
+
+black (https://github.com/psf/black)
+- error[lint:invalid-argument-type] src/black/__init__.py:982:17: Argument to this function is incorrect: Argument type `BinaryIO | @Todo(Support for `typing.TypeAlias`)` does not satisfy upper bound of type variable `_BufferT_co`
+- error[lint:invalid-argument-type] src/black/__init__.py:982:17: Argument to this function is incorrect: Expected `_WrappedBuffer`, found `BinaryIO | @Todo(Support for `typing.TypeAlias`)`
+- error[lint:invalid-argument-type] src/black/__init__.py:1027:13: Argument to this function is incorrect: Argument type `BinaryIO | @Todo(Support for `typing.TypeAlias`)` does not satisfy upper bound of type variable `_BufferT_co`
+- error[lint:invalid-argument-type] src/black/__init__.py:1027:13: Argument to this function is incorrect: Expected `_WrappedBuffer`, found `BinaryIO | @Todo(Support for `typing.TypeAlias`)`
+- error[lint:invalid-argument-type] src/black/__init__.py:1286:27: Argument to this function is incorrect: Argument type `BytesIO` does not satisfy upper bound of type variable `_BufferT_co`
+- error[lint:invalid-argument-type] src/black/__init__.py:1286:27: Argument to this function is incorrect: Expected `_WrappedBuffer`, found `BytesIO`
+- error[lint:invalid-return-type] src/blackd/middlewares.py:35:12: Return type does not match returned value: Expected `Middleware`, found `def impl(request: Request, handler: Unknown) -> @Todo(generic types.CoroutineType)`
+- Found 141 diagnostics
++ Found 134 diagnostics
+
+strawberry (https://github.com/strawberry-graphql/strawberry)
+- error[lint:invalid-argument-type] strawberry/experimental/pydantic/conversion.py:106:37: Argument to this function is incorrect: Expected `DataclassInstance | type[DataclassInstance]`, found `type`
++ error[lint:invalid-argument-type] strawberry/experimental/pydantic/conversion.py:106:37: Argument to this function is incorrect: Expected `DataclassInstance`, found `type`
+- error[lint:invalid-argument-type] strawberry/experimental/pydantic/utils.py:54:51: Argument to this function is incorrect: Expected `DataclassInstance | type[DataclassInstance]`, found `type`
++ error[lint:invalid-argument-type] strawberry/experimental/pydantic/utils.py:54:51: Argument to this function is incorrect: Expected `DataclassInstance`, found `type`
+- error[lint:invalid-argument-type] strawberry/schema_codegen/__init__.py:199:34: Argument to this function is incorrect: Expected `HasDirectives`, found `FieldDefinitionNode | InputValueDefinitionNode`
+- error[lint:invalid-argument-type] strawberry/schema_codegen/__init__.py:387:34: Argument to this function is incorrect: Expected `HasDirectives`, found `ObjectTypeDefinitionNode | ObjectTypeExtensionNode | InterfaceTypeDefinitionNode | InputObjectTypeDefinitionNode`
+- Found 570 diagnostics
++ Found 568 diagnostics
+
+mkosi (https://github.com/systemd/mkosi)
+- error[lint:invalid-argument-type] mkosi/__init__.py:183:38: Argument to this function is incorrect: Expected `SandboxProtocol`, found `bound method Context.sandbox(*, network: bool = Literal[False], devices: bool = Literal[False], scripts: Path | None = None, options: @Todo(specialized non-generic class) = tuple[()]) -> @Todo(specialized non-generic class)`
+- error[lint:invalid-argument-type] mkosi/__init__.py:234:29: Argument to this function is incorrect: Expected `SandboxProtocol`, found `bound method Context.sandbox(*, network: bool = Literal[False], devices: bool = Literal[False], scripts: Path | None = None, options: @Todo(specialized non-generic class) = tuple[()]) -> @Todo(specialized non-generic class)`
+- error[lint:invalid-argument-type] mkosi/__init__.py:1105:13: Argument to this function is incorrect: Expected `SandboxProtocol`, found `bound method Config.sandbox(*, network: bool = Literal[False], devices: bool = Literal[False], relaxed: bool = Literal[False], tools: bool = Literal[True], scripts: Path | None = None, overlay: Path | None = None, options: @Todo(specialized non-generic class) = tuple[()], setup: @Todo(specialized non-generic class) = tuple[()]) -> @Todo(specialized non-generic class)`
+- error[lint:invalid-argument-type] mkosi/__init__.py:1111:29: Argument to this function is incorrect: Expected `SandboxProtocol`, found `bound method Config.sandbox(*, network: bool = Literal[False], devices: bool = Literal[False], relaxed: bool = Literal[False], tools: bool = Literal[True], scripts: Path | None = None, overlay: Path | None = None, options: @Todo(specialized non-generic class) = tuple[()], setup: @Todo(specialized non-generic class) = tuple[()]) -> @Todo(specialized non-generic class)`
+- error[lint:invalid-argument-type] mkosi/__init__.py:1154:61: Argument to this function is incorrect: Expected `SandboxProtocol`, found `bound method Config.sandbox(*, network: bool = Literal[False], devices: bool = Literal[False], relaxed: bool = Literal[False], tools: bool = Literal[True], scripts: Path | None = None, overlay: Path | None = None, options: @Todo(specialized non-generic class) = tuple[()], setup: @Todo(specialized non-generic class) = tuple[()]) -> @Todo(specialized non-generic class)`
+- error[lint:invalid-argument-type] mkosi/__init__.py:1253:13: Argument to this function is incorrect: Expected `SandboxProtocol`, found `bound method Context.sandbox(*, network: bool = Literal[False], devices: bool = Literal[False], scripts: Path | None = None, options: @Todo(specialized non-generic class) = tuple[()]) -> @Todo(specialized non-generic class)`
+- error[lint:invalid-argument-type] mkosi/__init__.py:1512:32: Argument to this function is incorrect: Expected `SandboxProtocol`, found `bound method Context.sandbox(*, network: bool = Literal[False], devices: bool = Literal[False], scripts: Path | None = None, options: @Todo(specialized non-generic class) = tuple[()]) -> @Todo(specialized non-generic class)`
+- error[lint:invalid-argument-type] mkosi/__init__.py:1548:9: Argument to this function is incorrect: Expected `SandboxProtocol`, found `bound method Context.sandbox(*, network: bool = Literal[False], devices: bool = Literal[False], scripts: Path | None = None, options: @Todo(specialized non-generic class) = tuple[()]) -> @Todo(specialized non-generic class)`
+- error[lint:invalid-argument-type] mkosi/__init__.py:1771:17: Argument to this function is incorrect: Expected `SandboxProtocol`, found `bound method Context.sandbox(*, network: bool = Literal[False], devices: bool = Literal[False], scripts: Path | None = None, options: @Todo(specialized non-generic class) = tuple[()]) -> @Todo(specialized non-generic class)`
+- error[lint:invalid-argument-type] mkosi/__init__.py:1831:17: Argument to this function is incorrect: Expected `SandboxProtocol`, found `bound method Context.sandbox(*, network: bool = Literal[False], devices: bool = Literal[False], scripts: Path | None = None, options: @Todo(specialized non-generic class) = tuple[()]) -> @Todo(specialized non-generic class)`
+- error[lint:invalid-argument-type] mkosi/__init__.py:1913:51: Argument to this function is incorrect: Expected `SandboxProtocol`, found `bound method Context.sandbox(*, network: bool = Literal[False], devices: bool = Literal[False], scripts: Path | None = None, options: @Todo(specialized non-generic class) = tuple[()]) -> @Todo(specialized non-generic class)`
+- error[lint:invalid-argument-type] mkosi/__init__.py:2293:59: Argument to this function is incorrect: Expected `SandboxProtocol`, found `bound method Context.sandbox(*, network: bool = Literal[False], devices: bool = Literal[False], scripts: Path | None = None, options: @Todo(specialized non-generic class) = tuple[()]) -> @Todo(specialized non-generic class)`
+- error[lint:invalid-argument-type] mkosi/__init__.py:2329:63: Argument to this function is incorrect: Expected `SandboxProtocol`, found `bound method Context.sandbox(*, network: bool = Literal[False], devices: bool = Literal[False], scripts: Path | None = None, options: @Todo(specialized non-generic class) = tuple[()]) -> @Todo(specialized non-generic class)`
+- error[lint:invalid-argument-type] mkosi/__init__.py:2377:17: Argument to this function is incorrect: Expected `SandboxProtocol`, found `bound method Context.sandbox(*, network: bool = Literal[False], devices: bool = Literal[False], scripts: Path | None = None, options: @Todo(specialized non-generic class) = tuple[()]) -> @Todo(specialized non-generic class)`
+- error[lint:invalid-argument-type] mkosi/__init__.py:2765:36: Argument to this function is incorrect: Expected `SandboxProtocol`, found `bound method Config.sandbox(*, network: bool = Literal[False], devices: bool = Literal[False], relaxed: bool = Literal[False], tools: bool = Literal[True], scripts: Path | None = None, overlay: Path | None = None, options: @Todo(specialized non-generic class) = tuple[()], setup: @Todo(specialized non-generic class) = tuple[()]) -> @Todo(specialized non-generic class)`
+- error[lint:invalid-argument-type] mkosi/__init__.py:2781:60: Argument to this function is incorrect: Expected `SandboxProtocol`, found `bound method Config.sandbox(*, network: bool = Literal[False], devices: bool = Literal[False], relaxed: bool = Literal[False], tools: bool = Literal[True], scripts: Path | None = None, overlay: Path | None = None, options: @Todo(specialized non-generic class) = tuple[()], setup: @Todo(specialized non-generic class) = tuple[()]) -> @Todo(specialized non-generic class)`
+- error[lint:invalid-argument-type] mkosi/__init__.py:2856:52: Argument to this function is incorrect: Expected `SandboxProtocol`, found `bound method Config.sandbox(*, network: bool = Literal[False], devices: bool = Literal[False], relaxed: bool = Literal[False], tools: bool = Literal[True], scripts: Path | None = None, overlay: Path | None = None, options: @Todo(specialized non-generic class) = tuple[()], setup: @Todo(specialized non-generic class) = tuple[()]) -> @Todo(specialized non-generic class)`
+- error[lint:invalid-argument-type] mkosi/__init__.py:3229:13: Argument to this function is incorrect: Expected `SandboxProtocol`, found `bound method Context.sandbox(*, network: bool = Literal[False], devices: bool = Literal[False], scripts: Path | None = None, options: @Todo(specialized non-generic class) = tuple[()]) -> @Todo(specialized non-generic class)`
+- error[lint:invalid-argument-type] mkosi/__init__.py:3238:17: Argument to this function is incorrect: Expected `SandboxProtocol`, found `bound method Context.sandbox(*, network: bool = Literal[False], devices: bool = Literal[False], scripts: Path | None = None, options: @Todo(specialized non-generic class) = tuple[()]) -> @Todo(specialized non-generic class)`
+- error[lint:invalid-argument-type] mkosi/__init__.py:3308:13: Argument to this function is incorrect: Expected `SandboxProtocol`, found `bound method Context.sandbox(*, network: bool = Literal[False], devices: bool = Literal[False], scripts: Path | None = None, options: @Todo(specialized non-generic class) = tuple[()]) -> @Todo(specialized non-generic class)`
+- error[lint:invalid-argument-type] mkosi/__init__.py:3397:56: Argument to this function is incorrect: Expected `SandboxProtocol`, found `bound method Context.sandbox(*, network: bool = Literal[False], devices: bool = Literal[False], scripts: Path | None = None, options: @Todo(specialized non-generic class) = tuple[()]) -> @Todo(specialized non-generic class)`
+- error[lint:invalid-argument-type] mkosi/__init__.py:3808:9: Argument to this function is incorrect: Expected `SandboxProtocol`, found `bound method Context.sandbox(*, network: bool = Literal[False], devices: bool = Literal[False], scripts: Path | None = None, options: @Todo(specialized non-generic class) = tuple[()]) -> @Todo(specialized non-generic class)`
+- error[lint:invalid-argument-type] mkosi/__init__.py:3823:13: Argument to this function is incorrect: Expected `SandboxProtocol`, found `bound method Context.sandbox(*, network: bool = Literal[False], devices: bool = Literal[False], scripts: Path | None = None, options: @Todo(specialized non-generic class) = tuple[()]) -> @Todo(specialized non-generic class)`
+- error[lint:invalid-argument-type] mkosi/__init__.py:3857:70: Argument to this function is incorrect: Expected `SandboxProtocol`, found `bound method Config.sandbox(*, network: bool = Literal[False], devices: bool = Literal[False], relaxed: bool = Literal[False], tools: bool = Literal[True], scripts: Path | None = None, overlay: Path | None = None, options: @Todo(specialized non-generic class) = tuple[()], setup: @Todo(specialized non-generic class) = tuple[()]) -> @Todo(specialized non-generic class)`
+- error[lint:invalid-argument-type] mkosi/__init__.py:3910:45: Argument to this function is incorrect: Expected `SandboxProtocol`, found `def sandbox(*, options: @Todo(specialized non-generic class) = tuple[()]) -> @Todo(specialized non-generic class)`
+- error[lint:invalid-argument-type] mkosi/__init__.py:3928:36: Argument to this function is incorrect: Expected `SandboxProtocol`, found `bound method Config.sandbox(*, network: bool = Literal[False], devices: bool = Literal[False], relaxed: bool = Literal[False], tools: bool = Literal[True], scripts: Path | None = None, overlay: Path | None = None, options: @Todo(specialized non-generic class) = tuple[()], setup: @Todo(specialized non-generic class) = tuple[()]) -> @Todo(specialized non-generic class)`
+- error[lint:invalid-argument-type] mkosi/__init__.py:3952:83: Argument to this function is incorrect: Expected `SandboxProtocol`, found `bound method Context.sandbox(*, network: bool = Literal[False], devices: bool = Literal[False], scripts: Path | None = None, options: @Todo(specialized non-generic class) = tuple[()]) -> @Todo(specialized non-generic class)`
+- error[lint:invalid-argument-type] mkosi/__init__.py:4062:77: Argument to this function is incorrect: Expected `SandboxProtocol`, found `bound method Context.sandbox(*, network: bool = Literal[False], devices: bool = Literal[False], scripts: Path | None = None, options: @Todo(specialized non-generic class) = tuple[()]) -> @Todo(specialized non-generic class)`
+- error[lint:invalid-argument-type] mkosi/__init__.py:4070:85: Argument to this function is incorrect: Expected `SandboxProtocol`, found `bound method Context.sandbox(*, network: bool = Literal[False], devices: bool = Literal[False], scripts: Path | None = None, options: @Todo(specialized non-generic class) = tuple[()]) -> @Todo(specialized non-generic class)`
+- error[lint:invalid-argument-type] mkosi/__init__.py:4072:66: Argument to this function is incorrect: Expected `SandboxProtocol`, found `bound method Context.sandbox(*, network: bool = Literal[False], devices: bool = Literal[False], scripts: Path | None = None, options: @Todo(specialized non-generic class) = tuple[()]) -> @Todo(specialized non-generic class)`
+- error[lint:invalid-argument-type] mkosi/__init__.py:4079:86: Argument to this function is incorrect: Expected `SandboxProtocol`, found `bound method Context.sandbox(*, network: bool = Literal[False], devices: bool = Literal[False], scripts: Path | None = None, options: @Todo(specialized non-generic class) = tuple[()]) -> @Todo(specialized non-generic class)`
+- error[lint:invalid-argument-type] mkosi/__init__.py:4175:60: Argument to this function is incorrect: Expected `SandboxProtocol`, found `bound method Config.sandbox(*, network: bool = Literal[False], devices: bool = Literal[False], relaxed: bool = Literal[False], tools: bool = Literal[True], scripts: Path | None = None, overlay: Path | None = None, options: @Todo(specialized non-generic class) = tuple[()], setup: @Todo(specialized non-generic class) = tuple[()]) -> @Todo(specialized non-generic class)`
+- error[lint:invalid-argument-type] mkosi/__init__.py:4694:17: Argument to this function is incorrect: Expected `SandboxProtocol`, found `partial`
+- error[lint:invalid-argument-type] mkosi/__init__.py:4741:34: Argument to this function is incorrect: Expected `SandboxProtocol`, found `partial`
+- error[lint:invalid-argument-type] mkosi/__init__.py:4752:52: Argument to this function is incorrect: Expected `SandboxProtocol`, found `partial`
+- error[lint:invalid-argument-type] mkosi/__init__.py:4771:17: Argument to this function is incorrect: Expected `SandboxProtocol`, found `partial`
+- error[lint:invalid-parameter-default] mkosi/archive.py:25:39: Default value of type `def nosandbox(*, options: @Todo(specialized non-generic class) = tuple[()]) -> @Todo(specialized non-generic class)` is not assignable to annotated parameter type `SandboxProtocol`
+- error[lint:invalid-parameter-default] mkosi/archive.py:71:5: Default value of type `def nosandbox(*, options: @Todo(specialized non-generic class) = tuple[()]) -> @Todo(specialized non-generic class)` is not assignable to annotated parameter type `SandboxProtocol`
+- error[lint:invalid-parameter-default] mkosi/archive.py:114:5: Default value of type `def nosandbox(*, options: @Todo(specialized non-generic class) = tuple[()]) -> @Todo(specialized non-generic class)` is not assignable to annotated parameter type `SandboxProtocol`
+- error[lint:invalid-argument-type] mkosi/bootloader.py:686:50: Argument to this function is incorrect: Expected `SandboxProtocol`, found `bound method Context.sandbox(*, network: bool = Literal[False], devices: bool = Literal[False], scripts: Path | None = None, options: @Todo(specialized non-generic class) = tuple[()]) -> @Todo(specialized non-generic class)`
+- error[lint:invalid-argument-type] mkosi/config.py:4295:9: Argument to this function is incorrect: Expected `_FormatterClass`, found `Literal[CustomHelpFormatter]`
+- error[lint:invalid-argument-type] mkosi/config.py:5605:73: Argument to this function is incorrect: Expected `DataclassInstance | type[DataclassInstance]`, found `type[Args] | type[Config]`
++ error[lint:invalid-argument-type] mkosi/config.py:5605:73: Argument to this function is incorrect: Expected `DataclassInstance`, found `type[Args] | type[Config]`
+- error[lint:invalid-parameter-default] mkosi/config.py:5834:45: Default value of type `def nosandbox(*, options: @Todo(specialized non-generic class) = tuple[()]) -> @Todo(specialized non-generic class)` is not assignable to annotated parameter type `SandboxProtocol`
+- error[lint:invalid-argument-type] mkosi/distributions/arch.py:53:21: Argument to this function is incorrect: Expected `SandboxProtocol`, found `bound method Context.sandbox(*, network: bool = Literal[False], devices: bool = Literal[False], scripts: Path | None = None, options: @Todo(specialized non-generic class) = tuple[()]) -> @Todo(specialized non-generic class)`
+- error[lint:invalid-argument-type] mkosi/distributions/debian.py:182:21: Argument to this function is incorrect: Expected `SandboxProtocol`, found `bound method Context.sandbox(*, network: bool = Literal[False], devices: bool = Literal[False], scripts: Path | None = None, options: @Todo(specialized non-generic class) = tuple[()]) -> @Todo(specialized non-generic class)`
+- error[lint:invalid-argument-type] mkosi/installer/__init__.py:207:21: Argument to this function is incorrect: Expected `SandboxProtocol`, found `bound method Context.sandbox(*, network: bool = Literal[False], devices: bool = Literal[False], scripts: Path | None = None, options: @Todo(specialized non-generic class) = tuple[()]) -> @Todo(specialized non-generic class)`
+- error[lint:invalid-argument-type] mkosi/installer/pacman.py:226:17: Argument to this function is incorrect: Expected `SandboxProtocol`, found `bound method Context.sandbox(*, network: bool = Literal[False], devices: bool = Literal[False], scripts: Path | None = None, options: @Todo(specialized non-generic class) = tuple[()]) -> @Todo(specialized non-generic class)`
+- error[lint:invalid-parameter-default] mkosi/partition.py:36:37: Default value of type `def nosandbox(*, options: @Todo(specialized non-generic class) = tuple[()]) -> @Todo(specialized non-generic class)` is not assignable to annotated parameter type `SandboxProtocol`
+- error[lint:invalid-argument-type] mkosi/qemu.py:172:50: Argument to this function is incorrect: Expected `SandboxProtocol`, found `bound method Config.sandbox(*, network: bool = Literal[False], devices: bool = Literal[False], relaxed: bool = Literal[False], tools: bool = Literal[True], scripts: Path | None = None, overlay: Path | None = None, options: @Todo(specialized non-generic class) = tuple[()], setup: @Todo(specialized non-generic class) = tuple[()]) -> @Todo(specialized non-generic class)`
+- error[lint:invalid-argument-type] mkosi/qemu.py:616:17: Argument to this function is incorrect: Expected `SandboxProtocol`, found `bound method Config.sandbox(*, network: bool = Literal[False], devices: bool = Literal[False], relaxed: bool = Literal[False], tools: bool = Literal[True], scripts: Path | None = None, overlay: Path | None = None, options: @Todo(specialized non-generic class) = tuple[()], setup: @Todo(specialized non-generic class) = tuple[()]) -> @Todo(specialized non-generic class)`
+- error[lint:invalid-argument-type] mkosi/qemu.py:628:25: Argument to this function is incorrect: Expected `SandboxProtocol`, found `bound method Config.sandbox(*, network: bool = Literal[False], devices: bool = Literal[False], relaxed: bool = Literal[False], tools: bool = Literal[True], scripts: Path | None = None, overlay: Path | None = None, options: @Todo(specialized non-generic class) = tuple[()], setup: @Todo(specialized non-generic class) = tuple[()]) -> @Todo(specialized non-generic class)`
+- error[lint:invalid-argument-type] mkosi/qemu.py:637:39: Argument to this function is incorrect: Expected `SandboxProtocol`, found `bound method Config.sandbox(*, network: bool = Literal[False], devices: bool = Literal[False], relaxed: bool = Literal[False], tools: bool = Literal[True], scripts: Path | None = None, overlay: Path | None = None, options: @Todo(specialized non-generic class) = tuple[()], setup: @Todo(specialized non-generic class) = tuple[()]) -> @Todo(specialized non-generic class)`
+- error[lint:invalid-argument-type] mkosi/qemu.py:1360:61: Argument to this function is incorrect: Expected `SandboxProtocol`, found `bound method Config.sandbox(*, network: bool = Literal[False], devices: bool = Literal[False], relaxed: bool = Literal[False], tools: bool = Literal[True], scripts: Path | None = None, overlay: Path | None = None, options: @Todo(specialized non-generic class) = tuple[()], setup: @Todo(specialized non-generic class) = tuple[()]) -> @Todo(specialized non-generic class)`
+- error[lint:invalid-parameter-default] mkosi/tree.py:25:19: Default value of type `def nosandbox(*, options: @Todo(specialized non-generic class) = tuple[()]) -> @Todo(specialized non-generic class)` is not assignable to annotated parameter type `SandboxProtocol`
+- error[lint:invalid-parameter-default] mkosi/tree.py:41:5: Default value of type `def nosandbox(*, options: @Todo(specialized non-generic class) = tuple[()]) -> @Todo(specialized non-generic class)` is not assignable to annotated parameter type `SandboxProtocol`
+- error[lint:invalid-parameter-default] mkosi/tree.py:101:5: Default value of type `def nosandbox(*, options: @Todo(specialized non-generic class) = tuple[()]) -> @Todo(specialized non-generic class)` is not assignable to annotated parameter type `SandboxProtocol`
+- error[lint:invalid-parameter-default] mkosi/tree.py:183:26: Default value of type `def nosandbox(*, options: @Todo(specialized non-generic class) = tuple[()]) -> @Todo(specialized non-generic class)` is not assignable to annotated parameter type `SandboxProtocol`
+- error[lint:invalid-parameter-default] mkosi/tree.py:217:5: Default value of type `def nosandbox(*, options: @Todo(specialized non-generic class) = tuple[()]) -> @Todo(specialized non-generic class)` is not assignable to annotated parameter type `SandboxProtocol`
+- Found 300 diagnostics
++ Found 243 diagnostics
+
+pip (https://github.com/pypa/pip)
+- error[lint:invalid-argument-type] src/pip/_internal/index/collector.py:223:1: Argument to this function is incorrect: Expected `ParseLinks`, found `def parse_links(page: IndexContent) -> @Todo(specialized non-generic class)`
+- error[lint:invalid-argument-type] src/pip/_internal/metadata/importlib/_envs.py:110:57: Argument to this function is incorrect: Expected `BasePath | None`, found `Path`
+- error[lint:invalid-return-type] src/pip/_internal/operations/install/wheel.py:489:20: Return type does not match returned value: Expected `File`, found `ZipBackedFile`
+- error[lint:invalid-return-type] src/pip/_internal/operations/install/wheel.py:523:20: Return type does not match returned value: Expected `File`, found `ZipBackedFile`
+- error[lint:invalid-argument-type] src/pip/_internal/req/req_file.py:182:29: Argument to this function is incorrect: Expected `Iterable`, found `enumerate`
+- error[lint:invalid-return-type] src/pip/_internal/resolution/resolvelib/provider.py:222:16: Return type does not match returned value: Expected `Preference`, found `tuple[bool, bool, bool, Unknown, bool, str]`
+- error[lint:no-matching-overload] src/pip/_vendor/distlib/locators.py:593:27: No overload of bound method `__init__` matches arguments
+- error[lint:invalid-argument-type] src/pip/_vendor/distro/distro.py:1118:29: Argument to this function is incorrect: Expected `str | _ShlexInstream | None`, found `TextIO`
+- error[lint:invalid-argument-type] src/pip/_vendor/idna/codec.py:113:9: Argument to this function is incorrect: Expected `_Encoder`, found `bound method Codec.encode(data: str, errors: str = Literal["strict"]) -> tuple[bytes, int]`
+- error[lint:invalid-argument-type] src/pip/_vendor/idna/codec.py:114:9: Argument to this function is incorrect: Expected `_Decoder`, found `bound method Codec.decode(data: bytes, errors: str = Literal["strict"]) -> tuple[str, int]`
+- error[lint:invalid-argument-type] src/pip/_vendor/idna/codec.py:115:9: Argument to this function is incorrect: Expected `_IncrementalEncoder | None`, found `Literal[IncrementalEncoder]`
+- error[lint:invalid-argument-type] src/pip/_vendor/idna/codec.py:116:9: Argument to this function is incorrect: Expected `_IncrementalDecoder | None`, found `Literal[IncrementalDecoder]`
+- error[lint:invalid-argument-type] src/pip/_vendor/idna/codec.py:117:9: Argument to this function is incorrect: Expected `_StreamWriter | None`, found `Literal[StreamWriter]`
+- error[lint:invalid-argument-type] src/pip/_vendor/idna/codec.py:118:9: Argument to this function is incorrect: Expected `_StreamReader | None`, found `Literal[StreamReader]`
+- error[lint:invalid-argument-type] src/pip/_vendor/packaging/metadata.py:528:43: Argument to this function is incorrect: Expected `_FormatMapMapping`, found `dict`
+- error[lint:invalid-assignment] src/pip/_vendor/packaging/version.py:478:13: Object of type `Literal[0]` is not assignable to `str | bytes | SupportsInt | None`
+- error[lint:invalid-assignment] src/pip/_vendor/pyproject_hooks/_impl.py:146:13: Object of type `def default_subprocess_runner(cmd: @Todo(specialized non-generic class), cwd: str | None = None, extra_environ: @Todo(specialized non-generic class) | None = None) -> None` is not assignable to `SubprocessRunner | None`
+- error[lint:invalid-argument-type] src/pip/_vendor/rich/control.py:198:27: Argument to this function is incorrect: Expected `_TranslateTable`, found `dict | @Todo(dict comprehension type)`
+- error[lint:invalid-argument-type] src/pip/_vendor/rich/control.py:214:27: Argument to this function is incorrect: Expected `_TranslateTable`, found `dict`
+- error[lint:invalid-return-type] src/pip/_vendor/rich/logging.py:205:16: Return type does not match returned value: Expected `ConsoleRenderable`, found `Text | @Todo(Type::Intersection.call())`
+- error[lint:invalid-argument-type] src/pip/_vendor/rich/progress.py:1378:17: Argument to this function is incorrect: Argument type `_Reader` does not satisfy upper bound of type variable `_BufferT_co`
+- error[lint:invalid-argument-type] src/pip/_vendor/rich/progress.py:1378:17: Argument to this function is incorrect: Expected `_WrappedBuffer`, found `_Reader`
+- error[lint:invalid-return-type] src/pip/_vendor/rich/scope.py:62:12: Return type does not match returned value: Expected `ConsoleRenderable`, found `Panel`
+- error[lint:invalid-assignment] src/pip/_vendor/rich/traceback.py:622:17: Object of type `Panel` is not assignable to `ConsoleRenderable`
+- error[lint:invalid-assignment] src/pip/_vendor/rich/traceback.py:630:17: Object of type `Constrain` is not assignable to `ConsoleRenderable`
+- Found 1242 diagnostics
++ Found 1217 diagnostics
+
+isort (https://github.com/pycqa/isort)
+- error[lint:invalid-argument-type] isort/io.py:47:34: Argument to this function is incorrect: Argument type `TextIOWrapper` does not satisfy upper bound of type variable `_BufferT_co`
+- error[lint:invalid-argument-type] isort/io.py:47:34: Argument to this function is incorrect: Expected `_WrappedBuffer`, found `TextIOWrapper`
+- Found 53 diagnostics
++ Found 51 diagnostics
+
+pydantic (https://github.com/pydantic/pydantic)
+- error[lint:invalid-return-type] pydantic/_internal/_decorators_v1.py:150:16: Return type does not match returned value: Expected `V2CoreBeforeRootValidator | V2CoreAfterRootValidator`, found `def _wrapper1(values: Unknown, _: ValidationInfo) -> Unknown`
+- error[lint:invalid-return-type] pydantic/_internal/_decorators_v1.py:174:12: Return type does not match returned value: Expected `V2CoreBeforeRootValidator | V2CoreAfterRootValidator`, found `def _wrapper2(fields_tuple: Unknown, _: ValidationInfo) -> Unknown`
+- error[lint:invalid-argument-type] pydantic/types.py:233:34: Argument to this function is incorrect: Expected `SupportsGt | None`, found `int | None`
+- error[lint:invalid-argument-type] pydantic/types.py:233:41: Argument to this function is incorrect: Expected `SupportsGe | None`, found `int | None`
+- error[lint:invalid-argument-type] pydantic/types.py:233:48: Argument to this function is incorrect: Expected `SupportsLt | None`, found `int | None`
+- error[lint:invalid-argument-type] pydantic/types.py:233:55: Argument to this function is incorrect: Expected `SupportsLe | None`, found `int | None`
+- error[lint:invalid-argument-type] pydantic/types.py:234:36: Argument to this function is incorrect: Expected `SupportsDiv | SupportsMod`, found `int`
+- error[lint:invalid-argument-type] pydantic/types.py:238:49: Argument to this function is incorrect: Expected `SupportsGt`, found `Literal[0]`
+- error[lint:invalid-argument-type] pydantic/types.py:269:49: Argument to this function is incorrect: Expected `SupportsLt`, found `Literal[0]`
+- error[lint:invalid-argument-type] pydantic/types.py:300:52: Argument to this function is incorrect: Expected `SupportsLe`, found `Literal[0]`
+- error[lint:invalid-argument-type] pydantic/types.py:331:52: Argument to this function is incorrect: Expected `SupportsGe`, found `Literal[0]`
+- error[lint:invalid-argument-type] pydantic/types.py:494:34: Argument to this function is incorrect: Expected `SupportsGt | None`, found `int | float | None`
+- error[lint:invalid-argument-type] pydantic/types.py:494:41: Argument to this function is incorrect: Expected `SupportsGe | None`, found `int | float | None`
+- error[lint:invalid-argument-type] pydantic/types.py:494:48: Argument to this function is incorrect: Expected `SupportsLt | None`, found `int | float | None`
+- error[lint:invalid-argument-type] pydantic/types.py:494:55: Argument to this function is incorrect: Expected `SupportsLe | None`, found `int | float | None`
+- error[lint:invalid-argument-type] pydantic/types.py:495:36: Argument to this function is incorrect: Expected `SupportsDiv | SupportsMod`, found `int | float`
+- error[lint:invalid-argument-type] pydantic/types.py:500:53: Argument to this function is incorrect: Expected `SupportsGt`, found `Literal[0]`
+- error[lint:invalid-argument-type] pydantic/types.py:531:53: Argument to this function is incorrect: Expected `SupportsLt`, found `Literal[0]`
+- error[lint:invalid-argument-type] pydantic/types.py:562:56: Argument to this function is incorrect: Expected `SupportsLe`, found `Literal[0]`
+- error[lint:invalid-argument-type] pydantic/types.py:593:56: Argument to this function is incorrect: Expected `SupportsGe`, found `Literal[0]`
+- error[lint:invalid-argument-type] pydantic/types.py:1128:34: Argument to this function is incorrect: Expected `SupportsGt | None`, found `int | Decimal | None`
+- error[lint:invalid-argument-type] pydantic/types.py:1128:41: Argument to this function is incorrect: Expected `SupportsGe | None`, found `int | Decimal | None`
+- error[lint:invalid-argument-type] pydantic/types.py:1128:48: Argument to this function is incorrect: Expected `SupportsLt | None`, found `int | Decimal | None`
+- error[lint:invalid-argument-type] pydantic/types.py:1128:55: Argument to this function is incorrect: Expected `SupportsLe | None`, found `int | Decimal | None`
+- error[lint:invalid-argument-type] pydantic/types.py:1129:36: Argument to this function is incorrect: Expected `SupportsDiv | SupportsMod`, found `int | Decimal`
+- error[lint:invalid-argument-type] pydantic/types.py:2265:34: Argument to this function is incorrect: Expected `SupportsGt | None`, found `date | None`
+- error[lint:invalid-argument-type] pydantic/types.py:2265:41: Argument to this function is incorrect: Expected `SupportsGe | None`, found `date | None`
+- error[lint:invalid-argument-type] pydantic/types.py:2265:48: Argument to this function is incorrect: Expected `SupportsLt | None`, found `date | None`
+- error[lint:invalid-argument-type] pydantic/types.py:2265:55: Argument to this function is incorrect: Expected `SupportsLe | None`, found `date | None`
+- error[lint:invalid-argument-type] pydantic/types.py:3228:17: Argument to this function is incorrect: Expected `str | ((Any, /) -> Hashable)`, found `def _get_type_name(x: Any) -> str`
+- Found 908 diagnostics
++ Found 878 diagnostics
+
+stone (https://github.com/dropbox/stone)
+- error[lint:invalid-argument-type] stone/cli.py:203:43: Argument to this function is incorrect: Argument type `BinaryIO | @Todo(Support for `typing.TypeAlias`)` does not satisfy upper bound of type variable `_BufferT_co`
+- error[lint:invalid-argument-type] stone/cli.py:203:43: Argument to this function is incorrect: Expected `_WrappedBuffer`, found `BinaryIO | @Todo(Support for `typing.TypeAlias`)`
+- Found 187 diagnostics
++ Found 185 diagnostics
+
+cki-lib (https://gitlab.com/cki-project/cki-lib)
+- error[lint:invalid-argument-type] cki_lib/footer.py:136:38: Argument to this function is incorrect: Expected `_FormatterClass`, found `Literal[ArgumentDefaultsHelpFormatter]`
+- Found 174 diagnostics
++ Found 173 diagnostics
+
+urllib3 (https://github.com/urllib3/urllib3)
+- error[lint:invalid-argument-type] dummyserver/app.py:214:33: Argument to this function is incorrect: Argument type `GzipFile` does not satisfy upper bound of type variable `_SupportsCloseT`
+- error[lint:no-matching-overload] dummyserver/app.py:214:33: No overload of bound method `__init__` matches arguments
+- error[lint:invalid-assignment] src/urllib3/contrib/emscripten/connection.py:254:5: Object of type `EmscriptenHTTPConnection` is not assignable to `BaseHTTPConnection`
+- error[lint:invalid-assignment] src/urllib3/contrib/emscripten/connection.py:255:5: Object of type `EmscriptenHTTPSConnection` is not assignable to `BaseHTTPSConnection`
+- error[lint:invalid-argument-type] src/urllib3/util/ssltransport.py:164:33: Argument to this function is incorrect: Argument type `BinaryIO` does not satisfy upper bound of type variable `_BufferT_co`
+- error[lint:invalid-argument-type] src/urllib3/util/ssltransport.py:164:33: Argument to this function is incorrect: Expected `_WrappedBuffer`, found `BinaryIO`
+- error[lint:invalid-argument-type] test/with_dummyserver/test_connection.py:26:29: Argument to this function is incorrect: Argument type `BaseHTTPConnection` does not satisfy upper bound of type variable `_SupportsCloseT`
+- error[lint:invalid-argument-type] test/with_dummyserver/test_connection.py:34:29: Argument to this function is incorrect: Argument type `BaseHTTPConnection` does not satisfy upper bound of type variable `_SupportsCloseT`
+- error[lint:invalid-argument-type] test/with_dummyserver/test_connection.py:47:29: Argument to this function is incorrect: Argument type `BaseHTTPConnection` does not satisfy upper bound of type variable `_SupportsCloseT`
+- error[lint:invalid-argument-type] test/with_dummyserver/test_connection.py:56:29: Argument to this function is incorrect: Argument type `BaseHTTPConnection` does not satisfy upper bound of type variable `_SupportsCloseT`
+- error[lint:invalid-argument-type] test/with_dummyserver/test_connection.py:71:29: Argument to this function is incorrect: Argument type `BaseHTTPConnection` does not satisfy upper bound of type variable `_SupportsCloseT`
+- error[lint:invalid-argument-type] test/with_dummyserver/test_socketlevel.py:988:17: Argument to this function is incorrect: Argument type `SSLSocket` does not satisfy upper bound of type variable `_SupportsCloseT`
+- error[lint:invalid-argument-type] test/with_dummyserver/test_socketlevel.py:1021:17: Argument to this function is incorrect: Argument type `SSLSocket` does not satisfy upper bound of type variable `_SupportsCloseT`
+- Found 483 diagnostics
++ Found 470 diagnostics
+
+tornado (https://github.com/tornadoweb/tornado)
+- error[lint:invalid-return-type] tornado/template.py:752:16: Return type does not match returned value: Expected `ContextManager`, found `Indenter`
+- error[lint:invalid-return-type] tornado/template.py:765:16: Return type does not match returned value: Expected `ContextManager`, found `IncludeTemplate`
+- error[lint:invalid-argument-type] tornado/test/httpclient_test.py:150:30: Argument to this function is incorrect: Expected `SizedBuffer`, found `bytes`
+- error[lint:invalid-argument-type] tornado/test/httpclient_test.py:231:22: Argument to this function is incorrect: Argument type `socket` does not satisfy upper bound of type variable `_SupportsCloseT`
+- error[lint:invalid-argument-type] tornado/test/httpclient_test.py:534:22: Argument to this function is incorrect: Argument type `socket` does not satisfy upper bound of type variable `_SupportsCloseT`
+- error[lint:invalid-argument-type] tornado/test/httpserver_test.py:209:22: Argument to this function is incorrect: Argument type `IOStream` does not satisfy upper bound of type variable `_SupportsCloseT`
+- error[lint:invalid-argument-type] tornado/test/httpserver_test.py:622:51: Argument to this function is incorrect: Argument type `IOStream` does not satisfy upper bound of type variable `_SupportsCloseT`
+- error[lint:invalid-argument-type] tornado/test/httpserver_test.py:666:25: Argument to this function is incorrect: Argument type `IOStream` does not satisfy upper bound of type variable `_SupportsCloseT`
+- error[lint:invalid-argument-type] tornado/test/httpserver_test.py:835:22: Argument to this function is incorrect: Argument type `IOStream` does not satisfy upper bound of type variable `_SupportsCloseT`
+- error[lint:invalid-argument-type] tornado/test/httpserver_test.py:850:26: Argument to this function is incorrect: Argument type `IOStream` does not satisfy upper bound of type variable `_SupportsCloseT`
+- error[lint:no-matching-overload] tornado/test/httpserver_test.py:1106:21: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tornado/test/httpserver_test.py:1133:21: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tornado/test/httpserver_test.py:1209:18: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tornado/test/ioloop_test.py:281:21: No overload of bound method `add_handler` matches arguments
+- error[lint:invalid-argument-type] tornado/test/ioloop_test.py:300:33: Argument to this function is incorrect: Argument type `socket` does not satisfy upper bound of type variable `_SupportsCloseT`
+- error[lint:invalid-argument-type] tornado/test/ioloop_test.py:305:33: Argument to this function is incorrect: Argument type `socket` does not satisfy upper bound of type variable `_SupportsCloseT`
+- error[lint:invalid-argument-type] tornado/test/simple_httpclient_test.py:213:22: Argument to this function is incorrect: Argument type `IOLoop` does not satisfy upper bound of type variable `_SupportsCloseT`
+- error[lint:invalid-argument-type] tornado/test/simple_httpclient_test.py:616:22: Argument to this function is incorrect: Argument type `AsyncHTTPClient` does not satisfy upper bound of type variable `_SupportsCloseT`
+- error[lint:invalid-argument-type] tornado/test/simple_httpclient_test.py:618:22: Argument to this function is incorrect: Argument type `AsyncHTTPClient` does not satisfy upper bound of type variable `_SupportsCloseT`
+- error[lint:invalid-argument-type] tornado/test/simple_httpclient_test.py:624:22: Argument to this function is incorrect: Argument type `AsyncHTTPClient` does not satisfy upper bound of type variable `_SupportsCloseT`
+- error[lint:invalid-argument-type] tornado/test/simple_httpclient_test.py:626:22: Argument to this function is incorrect: Argument type `AsyncHTTPClient` does not satisfy upper bound of type variable `_SupportsCloseT`
+- error[lint:invalid-argument-type] tornado/test/simple_httpclient_test.py:628:22: Argument to this function is incorrect: Argument type `AsyncHTTPClient` does not satisfy upper bound of type variable `_SupportsCloseT`
+- error[lint:no-matching-overload] tornado/test/web_test.py:2503:21: No overload of bound method `__init__` matches arguments
+- error[lint:invalid-return-type] tornado/websocket.py:769:16: Return type does not match returned value: Expected `_Compressor`, found `_Compress`
+- error[lint:invalid-return-type] tornado/websocket.py:806:16: Return type does not match returned value: Expected `_Decompressor`, found `_Decompress`
+- Found 411 diagnostics
++ Found 386 diagnostics
+
+jinja (https://github.com/pallets/jinja)
+- error[lint:invalid-argument-type] src/jinja2/bccache.py:73:32: Argument to this function is incorrect: Expected `_ReadableFileobj`, found `BinaryIO`
+- error[lint:invalid-argument-type] tests/test_bytecode_cache.py:49:36: Argument to this function is incorrect: Expected `_MemcachedClient`, found `MockMemcached`
+- error[lint:invalid-argument-type] tests/test_bytecode_cache.py:64:36: Argument to this function is incorrect: Expected `_MemcachedClient`, found `MockMemcached`
+- Found 448 diagnostics
++ Found 445 diagnostics
+
+typeshed-stats (https://github.com/AlexWaygood/typeshed-stats)
+- error[lint:invalid-argument-type] src/typeshed_stats/_cli.py:127:9: Argu...*[Comment body truncated]*
+
+---
+
+_Comment by @AlexWaygood on 2025-04-28 17:51_
+
+Here's a minimized repro of the `pip` panic we're observing in mypy_primer:
+
+```py
+from typing import Protocol
+
+class A(Protocol):
+    def x(self) -> "B | A": ...
+
+class B(Protocol):
+    def y(self): ...
+
+obj = record
+if isinstance(obj, (B, A)):
+    obj
+```
+
+EDIT: I've now fixed this panic, and added the snippet as a regression test.
+
+---
+
+_Comment by @AlexWaygood on 2025-04-29 15:00_
+
+> ```diff
+> strawberry (https://github.com/strawberry-graphql/strawberry)
+> - error[lint:invalid-argument-type] strawberry/experimental/pydantic/conversion.py:106:37: Argument to this function is incorrect: Expected `DataclassInstance | type[DataclassInstance]`, found `type`
+> + error[lint:invalid-argument-type] strawberry/experimental/pydantic/conversion.py:106:37: Argument to this function is incorrect: Expected `DataclassInstance`, found `type`
+> ```
+
+This isn't a new false positive (just an error message changing slightly), but it's worth some further comment. The code is here: <https://github.com/strawberry-graphql/strawberry/blob/fc1ab18a3334784e71e178de7063d4fbb90dce55/strawberry/experimental/pydantic/conversion.py#L104-L109>. The reason we emit the error is that [`dataclasses.is_dataclass()`](https://github.com/python/typeshed/blob/12ef43c8d01032ab0991365f631f7d79a434f85a/stdlib/dataclasses.pyi#L222-L228) returns `TypeIs[DataclassInstance]` in typeshed, where `DataclassInstance` is a protocol. If we understood `TypeIs`, we'd narrow the type in that branch to one that is assignable to the function parameter's annotation, and the error would go away.
+
+---
+
+_Marked ready for review by @AlexWaygood on 2025-04-29 15:24_
+
+---
+
+_Review requested from @carljm by @AlexWaygood on 2025-04-29 15:24_
+
+---
+
+_Review requested from @sharkdp by @AlexWaygood on 2025-04-29 15:24_
+
+---
+
+_Review requested from @dcreager by @AlexWaygood on 2025-04-29 15:24_
+
+---
+
+_Comment by @AlexWaygood on 2025-04-29 15:29_
+
+A 1-2% regression on the red-knot benchmarks: https://codspeed.io/astral-sh/ruff/branches/alex%2Fprotocol-variant-2
+
+---
+
+_Comment by @AlexWaygood on 2025-04-29 16:30_
+
+I spotted this line in the mypy_primer logs (it didn't make it into the comment posted by the bot):
+
+```diff
+- error[lint:invalid-argument-type] zerver/tests/test_decorators.py:1609:25: Argument to this function is incorrect: Expected `_GetResponseCallable | _AsyncGetResponseCallable`, found `(request) -> Unknown`
++ error[lint:invalid-argument-type] zerver/tests/test_decorators.py:1609:25: Argument to this function is incorrect: Expected `_GetResponseCallable`, found `(request) -> Unknown`
+```
+
+It's again not a _new_ false positive, but it deserves comment for why the existing false positive isn't going away. We don't yet understand any `Callable` types as being assignable to any `Protocol` types, and the reason for this is that we don't yet understand that all `Callable` types necessarily have a `__call__` method. (https://playknot.ruff.rs/f45263ee-cb36-4bce-8273-bd71d0543e84).
+
+I haven't addressed this in my PR, as:
+- It's not a regression in this PR, just something that isn't fixed by this PR
+- The false positive would be fixed naturally if we modeled `Callable` types as synthesized protocols with a single method member (`__call__`) rather than a separate `Type` variant, and this is something I'd like to experiment with once our support for protocols is further along.
+
+I added failing tests for this outstanding issue in https://github.com/astral-sh/ruff/pull/17682/commits/6609ecc73aaf262c307d44b5e8d8d354242bb67b.
+
+---
+
+_Review comment by @carljm on `crates/red_knot_python_semantic/resources/mdtest/protocols.md`:233 on 2025-04-29 23:43_
+
+Is this just cleaning up an unnecessary annotation that doesn't add anything to the test, or is it significant somehow?
+
+---
+
+_Review comment by @carljm on `crates/red_knot_python_semantic/src/types/class.rs`:539 on 2025-04-29 23:48_
+
+This comment looks maybe out of date? I don't see any hardcoding knowledge about certain special-cased classes here.
+
+---
+
+_Review comment by @carljm on `crates/red_knot_python_semantic/src/types/class.rs`:555 on 2025-04-29 23:49_
+
+I realize it's not new in this PR, but I think the `.rev().take(3)` deserves a comment.
+
+---
+
+_Review comment by @carljm on `crates/red_knot_python_semantic/src/types/type_ordering.rs`:138 on 2025-04-30 00:33_
+
+Is it generally invariant that we only order normalized types? Is there a more general way we should enforce/check that invariant?
+
+---
+
+_Review comment by @carljm on `crates/red_knot_python_semantic/src/types.rs`:492 on 2025-04-30 00:34_
+
+Should this comment also appear for `ProtocolInstance`?
+
+---
+
+_Review comment by @carljm on `crates/red_knot_python_semantic/src/types.rs`:1183 on 2025-04-30 00:39_
+
+It's not totally clear to me what change this TODO is suggesting, since it seems like Protocol being a subtype of Callable is already handled two arms above?
+
+---
+
+_Review comment by @carljm on `crates/red_knot_python_semantic/src/types.rs`:1513 on 2025-04-30 00:40_
+
+Same question as above
+
+---
+
+_Review comment by @carljm on `crates/red_knot_python_semantic/src/types.rs`:1514 on 2025-04-30 00:41_
+
+There will need to be an argument or a different method to distinguish fully-static `satisfies_protocol` from gradual `satisfies_protocol`.
+
+---
+
+_Review comment by @carljm on `crates/red_knot_python_semantic/src/types.rs`:1540 on 2025-04-30 00:42_
+
+`first` and `right` is a slightly odd pairing :)
+
+---
+
+_Review comment by @carljm on `crates/red_knot_python_semantic/src/types.rs`:1597 on 2025-04-30 00:42_
+
+another `first` and `right`
+
+---
+
+_Review comment by @carljm on `crates/red_knot_python_semantic/src/types.rs`:493 on 2025-04-30 00:45_
+
+As a favor to reviewers, next time you might consider splitting out a mass rename like this into its own PR :)
+
+---
+
+_Review comment by @carljm on `crates/red_knot_python_semantic/resources/mdtest/protocols.md`:999 on 2025-04-30 00:51_
+
+Weren't these correctly failing before, and are wrongly passing now? Should there be a TODO comment here?
+
+---
+
+_@carljm approved on 2025-04-30 00:52_
+
+Looks great!!
+
+---
+
+_@AlexWaygood reviewed on 2025-04-30 09:53_
+
+---
+
+_Review comment by @AlexWaygood on `crates/red_knot_python_semantic/resources/mdtest/protocols.md`:233 on 2025-04-30 09:53_
+
+The former -- sorry, I should have commented! It was just a minor distraction for me while updating the mdtests
+
+---
+
+_@AlexWaygood reviewed on 2025-04-30 09:59_
+
+---
+
+_Review comment by @AlexWaygood on `crates/red_knot_python_semantic/resources/mdtest/protocols.md`:999 on 2025-04-30 09:59_
+
+I think it was incorrect for these to fail before, and it is correct for them to pass now? I think these were just lacking a TODO comment (sorry for missing it when adding the tests!).
+
+The `HasXProperty` interface demands that inhabitants of the type must have an `x` attribute on them that is at least readable, and where the `x` attribute evaluates to an object of type `int` (or some subtype thereof) when it is read. `XClassVar` is a subtype of `HasXProperty`, since all inhabitants of `XClassVar` will satisfy these demands. All inhabitants of `XClassVar` have an `x` attribute on them that is readable, and where the `x` attribute evaluates to an object of type `int` (or some subtype thereof) when it is read. `XClassVar` _exceeds_ the demands of the `HasXProperty` interface, because the `x` attribute on an instance `y` of `XClassVar` can also be read on the meta-type of `y`, and indeed can be _set_ on the meta-type of `y` as well.
+
+---
+
+_@AlexWaygood reviewed on 2025-04-30 10:05_
+
+---
+
+_Review comment by @AlexWaygood on `crates/red_knot_python_semantic/src/types.rs`:493 on 2025-04-30 10:05_
+
+Sorry about that :-(
+
+It didn't feel to me like the change made sense as a standalone PR; the renaming is only a logical change in the context of us adding a new `Instance` variant alongside `NominalInstance`. And it wasn't clear to me that adding a new variant would work out well until this branch was finally compiling and panic-free.
+
+I originally planned to try to keep a clean commit history with this PR branch (the renaming change is its own commit on this branch) so that it could be reviewed commit-by-commit. But the commit history on this branch ended up getting pretty messy due to playing Salsa-panic-whackamole over the last few days. I probably should have spent a bit longer cleaning up the commit history before moving it out of draft mode, but I've already had to fix merge conflicts several times due to the size of the branch, so I (selfishly) just wanted to open it up for review as soon as it was panic-free.
+
+Will try to do better next time!
+
+---
+
+_Review comment by @AlexWaygood on `crates/red_knot_python_semantic/src/types.rs`:1183 on 2025-04-30 10:07_
+
+Oops, yes -- good catch! I originally planned to defer this to a followup PR, but mypy_primer highlighted several places where the PR was _introducing_ false positives due to protocols never being considered subtypes of Callable types. So I ended up just implementing it as part of this PR, since it's not too hard to do anyway. I'll get rid of the TODO.
+
+---
+
+_@AlexWaygood reviewed on 2025-04-30 10:07_
+
+---
+
+_@AlexWaygood reviewed on 2025-04-30 10:08_
+
+---
+
+_Review comment by @AlexWaygood on `crates/red_knot_python_semantic/src/types.rs`:1514 on 2025-04-30 10:08_
+
+Yes! For now I'll just add a TODO to the doc-comment for `satisfies_protocol()`. There'll need to be lots of changes (which I plan to make incrementally) when we start considering the types of the protocol members.
+
+---
+
+_Review comment by @AlexWaygood on `crates/red_knot_python_semantic/src/types/class.rs`:539 on 2025-04-30 10:11_
+
+It's not out of date, but it's perhaps unclear. The very existence of the `KnownClass::is_protocol` method hardcodes knowledge about certain special-cased classes (and we rely on that hardcoded knowledge in this method by calling `KnownClass::is_protocol`). In the (albeit very unlikely!) event that typeshed changes the definition of `str` tomorrow to make it a protocol class, we won't automatically understand that change, because we don't iterate over the bases at all for any of our `KnownClass`es.
+
+I think harcoding this knowledge about certain classes is justified because:
+- It's honestly very unlikely that any of these `KnownClass`es will change from being a protocol class to being a non-protocol class (or vice versa)
+- It avoids lots of Salsa cycles that were causing panics on early versions of this branch!
+- It's probably better for performance
+
+But it's still somewhat ugly to me that we have to have the `KnownClass::is_protocol` method at all -- I'd prefer for us to just use the generalised logic for all classes.
+
+I'll update the comment to make it clearer.
+
+---
+
+_@AlexWaygood reviewed on 2025-04-30 10:11_
+
+---
+
+_@AlexWaygood reviewed on 2025-04-30 10:16_
+
+---
+
+_Review comment by @AlexWaygood on `crates/red_knot_python_semantic/src/types/type_ordering.rs`:138 on 2025-04-30 10:16_
+
+> Is it generally invariant that we only order normalized types?
+
+Yes. It doesn't really make sense to order a non-normalized `UnionType`, for example, because it might contain intersections that are not ordered (or Tuples that contain unions that are not ordered, or tuples that contain unions that contain intersections that are not ordered... you get my drift :-).
+
+> Is there a more general way we should enforce/check that invariant?
+
+Yes, good point. I can update the various `debug_assert`s in this function.
+
+---
+
+_@AlexWaygood reviewed on 2025-04-30 10:47_
+
+---
+
+_Review comment by @AlexWaygood on `crates/red_knot_python_semantic/src/types/type_ordering.rs`:138 on 2025-04-30 10:47_
+
+https://github.com/astral-sh/ruff/pull/17734 (I've rebased this PR on top of that one, and I've got rid of the new `debug_assert_eq!`s here)
+
+---
+
+_@AlexWaygood reviewed on 2025-04-30 10:55_
+
+---
+
+_Review comment by @AlexWaygood on `crates/red_knot_python_semantic/src/types/class.rs`:555 on 2025-04-30 10:55_
+
+added a comment explaining this
+
+---
+
+_Merged by @AlexWaygood on 2025-04-30 11:03_
+
+---
+
+_Closed by @AlexWaygood on 2025-04-30 11:03_
+
+---
+
+_Branch deleted on 2025-04-30 11:03_
+
+---
+
+_Review comment by @carljm on `crates/red_knot_python_semantic/src/types.rs`:493 on 2025-04-30 14:37_
+
+No worries, just a thought! Since you raised the question, I think the multi-PR sequencing that I was imagining is that when you had the idea that maybe we should rename `Instance` to `NominalInstance` if we add `ProtocolInstance`, there's still really no pressing need to do that rename right away. Having both `Instance` and `ProtocolInstance` is maybe confusing (though I think tbh it would probably be fine even if left that way) but otherwise not a problem. So it could be left to a later follow-up.
+
+---
+
+_Review comment by @carljm on `crates/red_knot_python_semantic/resources/mdtest/protocols.md`:999 on 2025-04-30 14:38_
+
+Ah of course, makes sense, I was forgetting that a classvar is of course always accessible on instances, too.
+
+---
+
+_@carljm reviewed on 2025-04-30 14:40_
+
+---

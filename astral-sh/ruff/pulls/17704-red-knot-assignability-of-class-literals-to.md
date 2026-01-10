@@ -1,0 +1,624 @@
+```yaml
+number: 17704
+title: "[red-knot] Assignability of class literals to Callables"
+type: pull_request
+state: merged
+author: sharkdp
+labels:
+  - ty
+assignees: []
+merged: true
+base: main
+head: david/assignability-class-literal-callable
+created_at: 2025-04-29T12:55:32Z
+updated_at: 2025-04-29T13:04:28Z
+url: https://github.com/astral-sh/ruff/pull/17704
+synced_at: 2026-01-10T19:03:00Z
+```
+
+# [red-knot] Assignability of class literals to Callables
+
+---
+
+_Pull request opened by @sharkdp on 2025-04-29 12:55_
+
+## Summary
+
+Subtyping was already modeled, but assignability also needs an explicit branch. Removes 921 ecosystem false positives.
+
+## Test Plan
+
+New Markdown tests.
+
+
+---
+
+_Review requested from @carljm by @sharkdp on 2025-04-29 12:55_
+
+---
+
+_Review requested from @AlexWaygood by @sharkdp on 2025-04-29 12:55_
+
+---
+
+_Review requested from @dcreager by @sharkdp on 2025-04-29 12:55_
+
+---
+
+_Label `red-knot` added by @sharkdp on 2025-04-29 12:55_
+
+---
+
+_Comment by @github-actions[bot] on 2025-04-29 12:59_
+
+<!-- generated-comment mypy_primer -->
+## `mypy_primer` results
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+```diff
+packaging (https://github.com/pypa/packaging)
+- error[lint:no-matching-overload] src/packaging/tags.py:410:46: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] src/packaging/tags.py:426:50: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] src/packaging/tags.py:494:46: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] src/packaging/tags.py:633:20: No overload of function `__new__` matches arguments
+- Found 22 diagnostics
++ Found 18 diagnostics
+
+parso (https://github.com/davidhalter/parso)
+- error[lint:no-matching-overload] parso/pgen2/grammar_parser.py:157:45: No overload of function `__new__` matches arguments
+- Found 80 diagnostics
++ Found 79 diagnostics
+
+mypy_primer (https://github.com/hauntsaninja/mypy_primer)
+- error[lint:no-matching-overload] mypy_primer/model.py:190:31: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] mypy_primer/model.py:539:38: No overload of bound method `__init__` matches arguments
+- Found 22 diagnostics
++ Found 20 diagnostics
+
+paroxython (https://github.com/laowantong/paroxython)
+- error[lint:no-matching-overload] paroxython/derived_labels_db.py:180:58: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] paroxython/derived_labels_db.py:221:33: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] paroxython/filter_programs.py:439:69: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] paroxython/goodies.py:33:35: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] paroxython/make_db.py:178:38: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] paroxython/make_db.py:189:38: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] paroxython/map_taxonomy.py:380:42: No overload of function `__new__` matches arguments
+- Found 34 diagnostics
++ Found 27 diagnostics
+
+git-revise (https://github.com/mystor/git-revise)
+- error[lint:no-matching-overload] gitrevise/odb.py:213:25: No overload of bound method `__init__` matches arguments
+- Found 5 diagnostics
++ Found 4 diagnostics
+
+aioredis (https://github.com/aio-libs/aioredis)
+- error[lint:no-matching-overload] aioredis/client.py:756:41: No overload of function `__new__` matches arguments
+- Found 29 diagnostics
++ Found 28 diagnostics
+
+more-itertools (https://github.com/more-itertools/more-itertools)
+- error[lint:no-matching-overload] more_itertools/more.py:1664:32: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] more_itertools/more.py:2435:34: No overload of function `__new__` matches arguments
+- error[lint:invalid-argument-type] more_itertools/more.py:2441:38: Argument to this function is incorrect: Expected `(...) -> @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `Unknown | Literal[bool]`
+- error[lint:invalid-argument-type] more_itertools/more.py:2997:44: Argument to this function is incorrect: Expected `(...) -> @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `Literal[repeat]`
+- error[lint:no-matching-overload] more_itertools/more.py:3015:24: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] more_itertools/more.py:4071:18: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] more_itertools/more.py:4522:14: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] more_itertools/more.py:4909:32: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] more_itertools/more.py:4925:11: No overload of bound method `__init__` matches arguments
+- error[lint:invalid-argument-type] more_itertools/recipes.py:98:27: Argument to this function is incorrect: Expected `(...) -> @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `Literal[zip]`
+- error[lint:no-matching-overload] more_itertools/recipes.py:246:16: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] more_itertools/recipes.py:471:18: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] more_itertools/recipes.py:471:18: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] more_itertools/recipes.py:471:18: No overload of function `__new__` matches arguments
+- error[lint:invalid-argument-type] more_itertools/recipes.py:897:22: Argument to this function is incorrect: Expected `(...) -> @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `Literal[slice]`
+- Found 88 diagnostics
++ Found 73 diagnostics
+
+attrs (https://github.com/python-attrs/attrs)
+- error[lint:no-matching-overload] bench/test_benchmarks.py:66:25: No overload of function `Factory` matches arguments
+- error[lint:no-matching-overload] tests/test_converters.py:110:14: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/test_converters.py:289:36: No overload of bound method `__init__` matches arguments
+- Found 674 diagnostics
++ Found 671 diagnostics
+
+starlette (https://github.com/encode/starlette)
+- error[lint:no-matching-overload] starlette/responses.py:254:30: No overload of function `__new__` matches arguments
+- error[lint:invalid-argument-type] tests/test_config.py:86:29: Argument to this function is incorrect: Expected `((Any, /) -> Any) | None`, found `Literal[int]`
+- error[lint:invalid-argument-type] tests/test_config.py:89:40: Argument to this function is incorrect: Expected `((Any, /) -> Any) | None`, found `Literal[bool]`
+- error[lint:invalid-argument-type] tests/test_config.py:98:49: Argument to this function is incorrect: Expected `((Any, /) -> Any) | None`, found `Literal[int]`
+- error[lint:invalid-argument-type] tests/test_config.py:99:38: Argument to this function is incorrect: Expected `((Any, /) -> Any) | None`, found `Literal[bool]`
+- error[lint:invalid-argument-type] tests/test_config.py:103:35: Argument to this function is incorrect: Expected `((Any, /) -> Any) | None`, found `Literal[bool]`
+- Found 197 diagnostics
++ Found 191 diagnostics
+
+sockeye (https://github.com/awslabs/sockeye)
+- error[lint:no-matching-overload] docs/tutorials/multilingual/remove_tag_from_translations.py:33:17: No overload of bound method `__init__` matches arguments
+- error[lint:invalid-parameter-default] sockeye/arguments.py:234:21: Default value of type `Literal[int]` is not assignable to annotated parameter type `(...) -> Unknown`
+- error[lint:invalid-argument-type] sockeye/arguments.py:687:89: Argument to this function is incorrect: Expected `(...) -> Unknown`, found `Literal[str]`
+- error[lint:invalid-argument-type] sockeye/arguments.py:702:89: Argument to this function is incorrect: Expected `(...) -> Unknown`, found `Literal[str]`
+- error[lint:invalid-argument-type] sockeye/arguments.py:712:89: Argument to this function is incorrect: Expected `(...) -> Unknown`, found `Literal[str]`
+- error[lint:invalid-argument-type] sockeye/arguments.py:967:55: Argument to this function is incorrect: Expected `(...) -> Unknown`, found `Literal[float]`
+- error[lint:invalid-argument-type] sockeye/arguments.py:972:55: Argument to this function is incorrect: Expected `(...) -> Unknown`, found `Literal[float]`
+- error[lint:invalid-argument-type] sockeye/arguments.py:977:55: Argument to this function is incorrect: Expected `(...) -> Unknown`, found `Literal[float]`
+- error[lint:invalid-argument-type] sockeye/arguments.py:982:55: Argument to this function is incorrect: Expected `(...) -> Unknown`, found `Literal[float]`
+- error[lint:invalid-argument-type] sockeye/arguments.py:992:55: Argument to this function is incorrect: Expected `(...) -> Unknown`, found `Literal[float]`
+- error[lint:invalid-argument-type] sockeye/arguments.py:1348:67: Argument to this function is incorrect: Expected `(...) -> Unknown`, found `Literal[str]`
+- error[lint:no-matching-overload] sockeye/data_io.py:1220:17: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] sockeye/test_utils.py:117:22: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] sockeye/test_utils.py:128:22: No overload of function `__new__` matches arguments
+- error[lint:invalid-parameter-default] sockeye/vocab.py:43:64: Default value of type `Literal[map]` is not assignable to annotated parameter type `(...) -> Unknown`
+- error[lint:invalid-parameter-default] sockeye/vocab.py:260:68: Default value of type `Literal[map]` is not assignable to annotated parameter type `(...) -> Unknown`
+- error[lint:invalid-parameter-default] sockeye/vocab.py:283:27: Default value of type `Literal[map]` is not assignable to annotated parameter type `(...) -> Unknown`
+- Found 367 diagnostics
++ Found 350 diagnostics
+
+porcupine (https://github.com/Akuli/porcupine)
+- error[lint:no-matching-overload] porcupine/menubar.py:440:21: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] porcupine/plugins/autocomplete.py:329:20: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] porcupine/plugins/autocomplete.py:330:20: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] porcupine/plugins/autocomplete.py:363:40: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] porcupine/plugins/autocomplete.py:363:40: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] porcupine/plugins/autocomplete.py:363:40: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] porcupine/plugins/autocomplete.py:364:40: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] porcupine/plugins/autocomplete.py:364:40: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] porcupine/plugins/autocomplete.py:364:40: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] porcupine/plugins/comment_selected_lines.py:33:34: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] porcupine/plugins/comment_selected_lines.py:33:34: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] porcupine/plugins/comment_selected_lines.py:33:34: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] porcupine/plugins/directory_tree.py:503:17: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] porcupine/plugins/drop_to_open.py:12:17: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] porcupine/plugins/editorconfig.py:178:21: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] porcupine/plugins/geometry.py:17:27: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] porcupine/plugins/geometry.py:17:27: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] porcupine/plugins/geometry.py:17:27: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] porcupine/plugins/geometry.py:17:27: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] porcupine/plugins/geometry.py:17:27: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] porcupine/plugins/highlight/base_highlighter.py:19:23: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] porcupine/plugins/highlight/pygments_highlighter.py:77:26: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] porcupine/plugins/highlight/pygments_highlighter.py:77:26: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] porcupine/plugins/highlight/pygments_highlighter.py:77:26: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] porcupine/plugins/highlight/tree_sitter_highlighter.py:140:32: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] porcupine/plugins/highlight/tree_sitter_highlighter.py:140:32: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] porcupine/plugins/highlight/tree_sitter_highlighter.py:140:32: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] porcupine/plugins/highlight/tree_sitter_highlighter.py:141:28: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] porcupine/plugins/highlight/tree_sitter_highlighter.py:141:28: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] porcupine/plugins/highlight/tree_sitter_highlighter.py:141:28: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] porcupine/plugins/indent_block.py:13:34: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] porcupine/plugins/indent_block.py:13:34: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] porcupine/plugins/indent_block.py:13:34: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] porcupine/plugins/langserver.py:174:24: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] porcupine/plugins/langserver.py:174:24: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] porcupine/plugins/langserver.py:174:24: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] porcupine/plugins/matching_paren.py:24:34: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] porcupine/plugins/matching_paren.py:24:34: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] porcupine/plugins/matching_paren.py:24:34: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] porcupine/plugins/update_check.py:55:24: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] porcupine/plugins/update_check.py:55:24: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] porcupine/plugins/update_check.py:55:24: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] porcupine/plugins/update_check.py:55:24: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] porcupine/textutils.py:287:32: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] porcupine/textutils.py:287:32: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] porcupine/textutils.py:287:32: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] porcupine/textutils.py:761:26: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] porcupine/textutils.py:761:26: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] porcupine/textutils.py:761:26: No overload of function `__new__` matches arguments
+- Found 157 diagnostics
++ Found 108 diagnostics
+
+strawberry (https://github.com/strawberry-graphql/strawberry)
+- error[lint:no-matching-overload] strawberry/cli/commands/upgrade/_run_codemod.py:28:31: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] strawberry/cli/commands/upgrade/_run_codemod.py:28:31: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] strawberry/cli/commands/upgrade/_run_codemod.py:28:31: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] strawberry/cli/commands/upgrade/_run_codemod.py:28:31: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] strawberry/ext/mypy_plugin.py:68:30: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] strawberry/extensions/tracing/datadog.py:154:51: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] strawberry/extensions/tracing/datadog.py:185:51: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] strawberry/extensions/tracing/opentelemetry.py:138:26: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] strawberry/extensions/tracing/opentelemetry.py:141:33: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] strawberry/schema/types/base_scalars.py:57:11: No overload of function `scalar` matches arguments
+- error[lint:no-matching-overload] strawberry/schema/types/base_scalars.py:65:8: No overload of function `scalar` matches arguments
+- error[lint:no-matching-overload] strawberry/schema/types/scalar.py:67:9: No overload of function `scalar` matches arguments
+- Found 590 diagnostics
++ Found 578 diagnostics
+
+mkosi (https://github.com/systemd/mkosi)
++ warning[lint:unused-ignore-comment] mkosi/config.py:1125:39: Unused blanket `type: ignore` directive
+- error[lint:invalid-argument-type] mkosi/config.py:2674:40: Argument to this function is incorrect: Expected `(str, /) -> @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `Literal[str]`
+- error[lint:no-matching-overload] mkosi/util.py:185:50: No overload of function `__new__` matches arguments
+- Found 274 diagnostics
++ Found 273 diagnostics
+
+SinbadCogs (https://github.com/mikeshardmind/SinbadCogs)
+- error[lint:no-matching-overload] guildjoinrestrict/core.py:169:44: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] guildjoinrestrict/core.py:260:56: No overload of function `__new__` matches arguments
+- Found 176 diagnostics
++ Found 174 diagnostics
+
+pylox (https://github.com/sco1/pylox)
+- error[lint:no-matching-overload] pylox/callable.py:116:20: No overload of function `attrib` matches arguments
+- error[lint:no-matching-overload] pylox/environment.py:16:32: No overload of function `attrib` matches arguments
+- Found 41 diagnostics
++ Found 39 diagnostics
+
+black (https://github.com/psf/black)
+- error[lint:no-matching-overload] src/black/trans.py:346:72: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/blib2to3/pgen2/conv.py:135:32: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] src/blib2to3/pgen2/conv.py:135:32: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] src/blib2to3/pgen2/conv.py:135:32: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] src/blib2to3/pgen2/conv.py:135:32: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] src/blib2to3/pgen2/conv.py:141:33: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] src/blib2to3/pgen2/conv.py:141:33: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] src/blib2to3/pgen2/conv.py:141:33: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] src/blib2to3/pgen2/conv.py:149:25: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] src/blib2to3/pgen2/conv.py:149:25: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] src/blib2to3/pgen2/conv.py:149:25: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] src/blib2to3/pgen2/conv.py:156:32: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] src/blib2to3/pgen2/conv.py:156:32: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] src/blib2to3/pgen2/conv.py:156:32: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] src/blib2to3/pgen2/conv.py:156:32: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] src/blib2to3/pgen2/conv.py:176:36: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] src/blib2to3/pgen2/conv.py:176:36: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] src/blib2to3/pgen2/conv.py:176:36: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] src/blib2to3/pgen2/conv.py:176:36: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] src/blib2to3/pgen2/conv.py:176:36: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] src/blib2to3/pgen2/driver.py:230:35: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] src/blib2to3/pgen2/pgen.py:358:45: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] src/blib2to3/pytree.py:283:24: No overload of function `__new__` matches arguments
+- Found 148 diagnostics
++ Found 125 diagnostics
+
+stone (https://github.com/dropbox/stone)
+- error[lint:no-matching-overload] stone/backends/python_types.py:429:31: No overload of function `sorted` matches arguments
+- error[lint:no-matching-overload] stone/backends/python_types.py:882:31: No overload of function `sorted` matches arguments
+- Found 187 diagnostics
++ Found 185 diagnostics
+
+pip (https://github.com/pypa/pip)
+- error[lint:no-matching-overload] src/pip/_internal/commands/show.py:189:40: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] src/pip/_internal/index/package_finder.py:89:32: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] src/pip/_internal/models/target_python.py:56:31: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] src/pip/_internal/operations/check.py:104:37: No overload of function `sorted` matches arguments
+- error[lint:no-matching-overload] src/pip/_internal/operations/check.py:106:41: No overload of function `sorted` matches arguments
+- error[lint:no-matching-overload] src/pip/_internal/resolution/legacy/resolver.py:93:24: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] src/pip/_internal/resolution/resolvelib/reporter.py:14:63: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_internal/utils/compatibility_tags.py:24:20: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] src/pip/_internal/utils/misc.py:285:19: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] src/pip/_internal/utils/packaging.py:31:45: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] src/pip/_internal/utils/wheel.py:107:22: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] src/pip/_internal/utils/wheel.py:127:44: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] src/pip/_internal/utils/wheel.py:132:22: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] src/pip/_internal/vcs/subversion.py:223:36: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] src/pip/_vendor/packaging/tags.py:410:46: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] src/pip/_vendor/packaging/tags.py:426:50: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] src/pip/_vendor/packaging/tags.py:494:46: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] src/pip/_vendor/packaging/tags.py:633:20: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] src/pip/_vendor/pygments/util.py:49:93: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] src/pip/_vendor/requests/__init__.py:86:37: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] src/pip/_vendor/rich/columns.py:75:34: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_vendor/rich/pretty.py:971:9: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_vendor/truststore/_macos.py:22:27: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] src/pip/_vendor/urllib3/contrib/_securetransport/bindings.py:57:22: No overload of function `__new__` matches arguments
+- Found 1088 diagnostics
++ Found 1064 diagnostics
+
+isort (https://github.com/pycqa/isort)
+- error[lint:no-matching-overload] isort/api.py:635:41: No overload of function `__new__` matches arguments
+- Found 50 diagnostics
++ Found 49 diagnostics
+
+pydantic (https://github.com/pydantic/pydantic)
+- error[lint:invalid-parameter-default] pydantic/_internal/_utils.py:152:5: Default value of type `Literal[str]` is not assignable to annotated parameter type `(@Todo(Support for `typing.TypeVar` instances in type expressions), /) -> str`
+- error[lint:no-matching-overload] pydantic/json_schema.py:275:51: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] pydantic/v1/mypy.py:88:18: No overload of function `__new__` matches arguments
+- error[lint:invalid-parameter-default] pydantic/v1/utils.py:331:5: Default value of type `Literal[str]` is not assignable to annotated parameter type `(@Todo(Support for `typing.TypeVar` instances in type expressions), /) -> str`
+- error[lint:no-matching-overload] pydantic/version.py:84:18: No overload of function `__new__` matches arguments
+- Found 906 diagnostics
++ Found 901 diagnostics
+
+poetry (https://github.com/python-poetry/poetry)
+- error[lint:no-matching-overload] src/poetry/puzzle/transaction.py:79:26: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/poetry/utils/env/site_packages.py:101:13: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] tests/inspection/test_lazy_wheel.py:107:22: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] tests/inspection/test_lazy_wheel.py:107:22: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] tests/inspection/test_lazy_wheel.py:107:22: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] tests/masonry/builders/test_editable_builder.py:168:33: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] tests/test_factory.py:141:37: No overload of function `__new__` matches arguments
+- Found 1109 diagnostics
++ Found 1102 diagnostics
+
+dragonchain (https://github.com/dragonchain/dragonchain)
+- error[lint:invalid-return-type] dragonchain/lib/crypto.py:95:16: Return type does not match returned value: Expected `(...) -> Unknown`, found `Literal[blake2b]`
+- Found 335 diagnostics
++ Found 334 diagnostics
+
+jinja (https://github.com/pallets/jinja)
++ warning[lint:unused-ignore-comment] src/jinja2/environment.py:1505:48: Unused blanket `type: ignore` directive
+- error[lint:no-matching-overload] src/jinja2/exceptions.py:81:35: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] src/jinja2/filters.py:612:28: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] src/jinja2/runtime.py:90:19: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] tests/test_regression.py:387:21: No overload of function `__new__` matches arguments
+- Found 413 diagnostics
++ Found 410 diagnostics
+
+operator (https://github.com/canonical/operator)
+- error[lint:no-matching-overload] ops/model.py:343:13: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] ops/model.py:1306:13: No overload of bound method `__init__` matches arguments
+- Found 245 diagnostics
++ Found 243 diagnostics
+
+pylint (https://github.com/pycqa/pylint)
+- error[lint:no-matching-overload] pylint/checkers/design_analysis.py:439:26: No overload of bound method `__init__` matches arguments
+- Found 255 diagnostics
++ Found 254 diagnostics
+
+psycopg (https://github.com/psycopg/psycopg)
+- error[lint:no-matching-overload] psycopg/psycopg/_py_transformer.py:82:25: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] psycopg/psycopg/_typeinfo.py:200:39: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] psycopg/psycopg/types/multirange.py:91:31: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] tests/test_rows.py:171:20: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] tests/types/test_datetime.py:776:21: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] tests/types/test_datetime.py:786:29: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] tests/types/test_datetime.py:786:29: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] tests/types/test_datetime.py:786:29: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] tests/types/test_datetime.py:786:29: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] tests/types/test_datetime.py:786:29: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] tests/types/test_datetime.py:809:39: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] tests/types/test_datetime.py:809:39: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] tests/types/test_datetime.py:809:39: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] tests/types/test_datetime.py:809:39: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] tests/types/test_datetime.py:809:39: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] tests/types/test_datetime.py:809:39: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] tests/types/test_datetime.py:809:39: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] tests/types/test_datetime.py:809:39: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] tests/types/test_datetime.py:825:50: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] tests/types/test_multirange.py:308:24: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] tests/types/test_multirange.py:309:24: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] tests/types/test_numeric.py:227:23: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] tests/types/test_range.py:206:24: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] tests/types/test_range.py:207:24: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] tests/utils.py:110:38: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] tests/utils.py:119:38: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] tools/async_to_sync.py:74:33: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] tools/bump_version.py:89:53: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] tools/bump_version.py:148:55: No overload of function `__new__` matches arguments
+- Found 1291 diagnostics
++ Found 1262 diagnostics
+
+mkdocs (https://github.com/mkdocs/mkdocs)
+- error[lint:invalid-argument-type] mkdocs/config/config_options.py:95:55: Argument to this function is incorrect: Expected `(...) -> @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `Literal[LegacyConfig]`
+- error[lint:invalid-argument-type] mkdocs/contrib/search/search_index.py:98:78: Argument to this function is incorrect: Expected `((Any, /) -> Any) | None`, found `Literal[str]`
+- error[lint:no-matching-overload] mkdocs/utils/__init__.py:374:39: No overload of bound method `__init__` matches arguments
+- Found 176 diagnostics
++ Found 173 diagnostics
+
+scrapy (https://github.com/scrapy/scrapy)
+- error[lint:no-matching-overload] docs/conf.py:52:24: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] scrapy/extensions/closespider.py:47:47: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] scrapy/utils/versions.py:20:25: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] tests/mocks/dummydbm.py:17:41: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/test_utils_deprecate.py:246:33: No overload of function `__new__` matches arguments
+- error[lint:invalid-argument-type] tests/test_utils_python.py:233:30: Argument to this function is incorrect: Expected `(...) -> Any`, found `Literal[object]`
+- Found 1476 diagnostics
++ Found 1470 diagnostics
+
+aiortc (https://github.com/aiortc/aiortc)
+- error[lint:no-matching-overload] src/aiortc/sdp.py:225:44: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] src/aiortc/sdp.py:231:67: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] src/aiortc/sdp.py:286:66: No overload of function `__new__` matches arguments
+- Found 134 diagnostics
++ Found 131 diagnostics
+
+schema_salad (https://github.com/common-workflow-language/schema_salad)
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:499:62: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:508:73: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:553:68: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:742:70: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:756:66: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:764:75: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:789:50: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:1241:58: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:1254:58: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:1297:57: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:1310:57: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:1345:54: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:1358:54: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:1382:49: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:1501:60: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:1514:60: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:1549:54: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:1562:54: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:1586:49: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:1713:58: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:1726:58: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:1770:57: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:1783:57: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:1818:54: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:1831:54: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:1855:49: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:1974:55: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:1987:55: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:2022:54: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:2035:54: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:2059:49: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:2173:54: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:2186:54: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:2221:56: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:2234:56: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:2258:49: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:2372:55: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:2385:55: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:2420:54: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:2433:54: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:2457:49: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:2620:57: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:2633:57: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:2667:59: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:2680:59: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:2714:64: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:2727:64: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:2761:62: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:2774:62: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:2808:65: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:2821:65: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:2855:64: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:2868:64: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:2902:66: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:2915:66: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:2949:62: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:2962:62: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:2996:61: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:3009:61: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:3043:71: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:3056:71: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:3090:62: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:3103:62: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:3127:49: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:3318:64: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:3331:64: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:3366:62: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:3379:62: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:3403:49: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:3554:58: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:3567:58: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:3610:57: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:3623:57: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:3658:54: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:3671:54: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:3705:69: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:3718:69: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:3752:61: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:3765:61: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:3789:49: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:3975:58: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:3988:58: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:4031:61: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:4044:61: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:4078:60: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:4091:60: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:4126:54: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:4139:54: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:4173:57: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:4186:57: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:4220:63: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:4233:63: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:4267:62: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:4280:62: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:4314:62: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:4327:62: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:4361:69: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:4374:69: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:4408:66: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:4421:66: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:4455:62: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:4468:62: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:4502:61: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:4515:61: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:4549:64: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:4562:64: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:4586:49: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:4830:58: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:4843:58: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:4886:61: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:4899:61: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:4934:57: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:4947:57: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:4982:54: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:4995:54: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:5029:57: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:5042:57: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:5076:63: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:5089:63: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:5123:62: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:5136:62: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:5170:62: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:5183:62: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:5217:69: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:5230:69: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:5264:66: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:5277:66: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:5311:61: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:5324:61: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:5348:49: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:5569:58: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:5582:58: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:5625:61: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:5638:61: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:5673:54: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:5686:54: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:5721:56: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:5734:56: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:5768:57: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:5781:57: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:5815:63: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:5828:63: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:5862:62: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:5875:62: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:5909:62: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:5922:62: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:5956:69: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:5969:69: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:6003:66: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:6016:66: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:6040:49: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:6252:58: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:6265:58: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:6308:61: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:6321:61: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:6356:55: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:6369:55: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:6404:54: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:6417:54: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:6451:57: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:6464:57: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:6498:63: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:6511:63: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:6545:62: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:6558:62: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:6592:62: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:6605:62: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:6639:66: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:6652:66: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:6676:49: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:6872:58: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:6885:58: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:6928:61: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:6941:61: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:6975:57: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:6988:57: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:7022:63: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:7035:63: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:7069:62: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:7082:62: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:7116:62: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:7129:62: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:7164:54: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:7177:54: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/metaschema.py:7201:49: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/python_codegen_support.py:496:62: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/python_codegen_support.py:505:73: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/python_codegen_support.py:550:68: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/python_codegen_support.py:739:70: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/python_codegen_support.py:753:66: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/python_codegen_support.py:761:75: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-argument-type] schema_salad/python_codegen_support.py:786:50: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `Literal[str]`
+- error[lint:invalid-parameter-default] schema_salad/ref_resolver.py:99:24: Default value of type `Literal[str]` is not assignable to annotated parameter...*[Comment body truncated]*
+
+---
+
+_@AlexWaygood approved on 2025-04-29 13:02_
+
+---
+
+_Merged by @sharkdp on 2025-04-29 13:04_
+
+---
+
+_Closed by @sharkdp on 2025-04-29 13:04_
+
+---
+
+_Branch deleted on 2025-04-29 13:04_
+
+---

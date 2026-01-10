@@ -1,0 +1,481 @@
+```yaml
+number: 17634
+title: "red_knot_python_semantic: improve `not-iterable` diagnostic"
+type: pull_request
+state: merged
+author: BurntSushi
+labels:
+  - ty
+  - diagnostics
+assignees: []
+merged: true
+base: main
+head: ag/low-hanging-diagnostic-fruits1
+created_at: 2025-04-25T18:11:39Z
+updated_at: 2025-04-28T15:03:43Z
+url: https://github.com/astral-sh/ruff/pull/17634
+synced_at: 2026-01-10T19:03:00Z
+```
+
+# red_knot_python_semantic: improve `not-iterable` diagnostic
+
+---
+
+_Pull request opened by @BurntSushi on 2025-04-25 18:11_
+
+This cleans up one particular TODO by splitting the "because" part of
+the `not-iterable` diagnostic out into an info sub-diagnostic.
+
+
+---
+
+_Review requested from @carljm by @BurntSushi on 2025-04-25 18:11_
+
+---
+
+_Review requested from @AlexWaygood by @BurntSushi on 2025-04-25 18:11_
+
+---
+
+_Review requested from @sharkdp by @BurntSushi on 2025-04-25 18:11_
+
+---
+
+_Review requested from @dcreager by @BurntSushi on 2025-04-25 18:11_
+
+---
+
+_Review request for @dcreager removed by @BurntSushi on 2025-04-25 18:12_
+
+---
+
+_Review request for @carljm removed by @BurntSushi on 2025-04-25 18:12_
+
+---
+
+_Review request for @sharkdp removed by @BurntSushi on 2025-04-25 18:12_
+
+---
+
+_Review request for @AlexWaygood removed by @BurntSushi on 2025-04-25 18:12_
+
+---
+
+_Review requested from @MichaReiser by @BurntSushi on 2025-04-25 18:12_
+
+---
+
+_Label `red-knot` added by @BurntSushi on 2025-04-25 18:12_
+
+---
+
+_Label `diagnostics` added by @BurntSushi on 2025-04-25 18:12_
+
+---
+
+_Comment by @github-actions[bot] on 2025-04-25 18:14_
+
+<!-- generated-comment mypy_primer -->
+## `mypy_primer` results
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+```diff
+pyinstrument (https://github.com/joerick/pyinstrument)
+- error[lint:not-iterable] /tmp/mypy_primer/projects/pyinstrument/pyinstrument/__main__.py:487:32: Object of type `@Todo(specialized non-generic class) | None` may not be iterable because it may not have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/pyinstrument/pyinstrument/__main__.py:487:32: Object of type `@Todo(specialized non-generic class) | None` may not be iterable
+
+check-jsonschema (https://github.com/python-jsonschema/check-jsonschema)
+- error[lint:not-iterable] /tmp/mypy_primer/projects/check-jsonschema/src/check_jsonschema/utils.py:140:18: Object of type `@Todo(specialized non-generic class) | None` may not be iterable because it may not have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/check-jsonschema/src/check_jsonschema/utils.py:140:18: Object of type `@Todo(specialized non-generic class) | None` may not be iterable
+
+sockeye (https://github.com/awslabs/sockeye)
+- error[lint:not-iterable] /tmp/mypy_primer/projects/sockeye/sockeye/output_handler.py:151:69: Object of type `list | None` may not be iterable because it may not have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/sockeye/sockeye/output_handler.py:151:69: Object of type `list | None` may not be iterable
+- error[lint:not-iterable] /tmp/mypy_primer/projects/sockeye/sockeye/test_utils.py:99:101: Object of type `None | @Todo(list comprehension type)` may not be iterable because it may not have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/sockeye/sockeye/test_utils.py:99:101: Object of type `None | @Todo(list comprehension type)` may not be iterable
+- error[lint:not-iterable] /tmp/mypy_primer/projects/sockeye/sockeye/test_utils.py:105:101: Object of type `None | @Todo(list comprehension type)` may not be iterable because it may not have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/sockeye/sockeye/test_utils.py:105:101: Object of type `None | @Todo(list comprehension type)` may not be iterable
+- error[lint:not-iterable] /tmp/mypy_primer/projects/sockeye/sockeye_contrib/plot_metrics.py:167:44: Object of type `Unknown | None` may not be iterable because it may not have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/sockeye/sockeye_contrib/plot_metrics.py:167:44: Object of type `Unknown | None` may not be iterable
+- error[lint:not-iterable] /tmp/mypy_primer/projects/sockeye/test/unit/test_inference.py:128:23: Object of type `list | None` may not be iterable because it may not have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/sockeye/test/unit/test_inference.py:128:23: Object of type `list | None` may not be iterable
+- error[lint:not-iterable] /tmp/mypy_primer/projects/sockeye/test/unit/test_inference.py:163:23: Object of type `list | None` may not be iterable because it may not have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/sockeye/test/unit/test_inference.py:163:23: Object of type `list | None` may not be iterable
+
+python-chess (https://github.com/niklasf/python-chess)
+- error[lint:not-iterable] /tmp/mypy_primer/projects/python-chess/chess/engine.py:2349:33: Object of type `@Todo(specialized non-generic class) | None` may not be iterable because it may not have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/python-chess/chess/engine.py:2349:33: Object of type `@Todo(specialized non-generic class) | None` may not be iterable
+
+nox (https://github.com/wntrblm/nox)
+- error[lint:not-iterable] /tmp/mypy_primer/projects/nox/nox/manifest.py:335:27: Object of type `Unknown | None` may not be iterable because it may not have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/nox/nox/manifest.py:335:27: Object of type `Unknown | None` may not be iterable
+
+pip (https://github.com/pypa/pip)
+- error[lint:not-iterable] /tmp/mypy_primer/projects/pip/src/pip/_internal/utils/logging.py:177:34: Object of type `None` is not iterable because it doesn't have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/pip/src/pip/_internal/utils/logging.py:177:34: Object of type `None` is not iterable
+- error[lint:not-iterable] /tmp/mypy_primer/projects/pip/src/pip/_vendor/rich/logging.py:141:50: Object of type `None` is not iterable because it doesn't have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/pip/src/pip/_vendor/rich/logging.py:141:50: Object of type `None` is not iterable
+- error[lint:not-iterable] /tmp/mypy_primer/projects/pip/src/pip/_vendor/urllib3/util/retry.py:303:33: Object of type `object` is not iterable because it doesn't have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/pip/src/pip/_vendor/urllib3/util/retry.py:303:33: Object of type `object` is not iterable
+
+mkosi (https://github.com/systemd/mkosi)
+- error[lint:not-iterable] /tmp/mypy_primer/projects/mkosi/mkosi/__init__.py:1301:28: Object of type `None` is not iterable because it doesn't have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/mkosi/mkosi/__init__.py:1301:28: Object of type `None` is not iterable
+
+bandersnatch (https://github.com/pypa/bandersnatch)
+- error[lint:not-iterable] /tmp/mypy_primer/projects/bandersnatch/src/bandersnatch/simple.py:66:49: Object of type `Literal[SimpleDigest]` is not iterable because it doesn't have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/bandersnatch/src/bandersnatch/simple.py:66:49: Object of type `Literal[SimpleDigest]` is not iterable
+- error[lint:not-iterable] /tmp/mypy_primer/projects/bandersnatch/src/bandersnatch/tests/test_simple.py:52:59: Object of type `Literal[SimpleDigest]` is not iterable because it doesn't have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/bandersnatch/src/bandersnatch/tests/test_simple.py:52:59: Object of type `Literal[SimpleDigest]` is not iterable
+
+dulwich (https://github.com/dulwich/dulwich)
+- error[lint:not-iterable] /tmp/mypy_primer/projects/dulwich/dulwich/graph.py:85:19: Object of type `None` is not iterable because it doesn't have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/dulwich/dulwich/graph.py:85:19: Object of type `None` is not iterable
+- error[lint:not-iterable] /tmp/mypy_primer/projects/dulwich/dulwich/porcelain.py:690:18: Object of type `Unknown | None` may not be iterable because it may not have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/dulwich/dulwich/porcelain.py:690:18: Object of type `Unknown | None` may not be iterable
+
+pydantic (https://github.com/pydantic/pydantic)
+- error[lint:not-iterable] /tmp/mypy_primer/projects/pydantic/pydantic/types.py:1695:25: Object of type `Any | None` may not be iterable because it may not have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/pydantic/pydantic/types.py:1695:25: Object of type `Any | None` may not be iterable
+- error[lint:not-iterable] /tmp/mypy_primer/projects/pydantic/pydantic/v1/env_settings.py:240:101: Object of type `list | None` may not be iterable because it may not have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/pydantic/pydantic/v1/env_settings.py:240:101: Object of type `list | None` may not be iterable
+- error[lint:not-iterable] /tmp/mypy_primer/projects/pydantic/pydantic/v1/typing.py:540:22: Object of type `list | None` may not be iterable because it may not have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/pydantic/pydantic/v1/typing.py:540:22: Object of type `list | None` may not be iterable
+
+psycopg (https://github.com/psycopg/psycopg)
+- error[lint:not-iterable] /tmp/mypy_primer/projects/psycopg/tests/types/test_enum.py:159:17: Object of type `Unknown | Enum` may not be iterable because it may not have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/psycopg/tests/types/test_enum.py:159:17: Object of type `Unknown | Enum` may not be iterable
+- error[lint:not-iterable] /tmp/mypy_primer/projects/psycopg/tests/types/test_enum.py:197:17: Object of type `Unknown | Enum` may not be iterable because it may not have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/psycopg/tests/types/test_enum.py:197:17: Object of type `Unknown | Enum` may not be iterable
+- error[lint:not-iterable] /tmp/mypy_primer/projects/psycopg/tests/types/test_enum.py:359:66: Object of type `Enum` is not iterable because it doesn't have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/psycopg/tests/types/test_enum.py:359:66: Object of type `Enum` is not iterable
+
+asynq (https://github.com/quora/asynq)
+- error[lint:not-iterable] /tmp/mypy_primer/projects/asynq/asynq/tests/test_debug.py:268:19: Object of type `None` is not iterable because it doesn't have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/asynq/asynq/tests/test_debug.py:268:19: Object of type `None` is not iterable
+
+dragonchain (https://github.com/dragonchain/dragonchain)
+- error[lint:not-iterable] /tmp/mypy_primer/projects/dragonchain/dragonchain/lib/crypto.py:258:19: Object of type `Unknown | None` may not be iterable because it may not have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/dragonchain/dragonchain/lib/crypto.py:258:19: Object of type `Unknown | None` may not be iterable
+- error[lint:not-iterable] /tmp/mypy_primer/projects/dragonchain/dragonchain/lib/crypto.py:260:18: Object of type `Unknown | None` may not be iterable because it may not have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/dragonchain/dragonchain/lib/crypto.py:260:18: Object of type `Unknown | None` may not be iterable
+- error[lint:not-iterable] /tmp/mypy_primer/projects/dragonchain/dragonchain/lib/crypto.py:265:22: Object of type `Unknown | None` may not be iterable because it may not have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/dragonchain/dragonchain/lib/crypto.py:265:22: Object of type `Unknown | None` may not be iterable
+
+PyGithub (https://github.com/PyGithub/PyGithub)
+- error[lint:not-iterable] /tmp/mypy_primer/projects/PyGithub/github/AuthenticatedUser.py:746:73: Object of type `@Todo(unknown type subscript) | _NotSetType` may not be iterable because it may not have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/PyGithub/github/AuthenticatedUser.py:746:73: Object of type `@Todo(unknown type subscript) | _NotSetType` may not be iterable
+- error[lint:not-iterable] /tmp/mypy_primer/projects/PyGithub/github/AuthenticatedUser.py:779:73: Object of type `@Todo(unknown type subscript) | _NotSetType` may not be iterable because it may not have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/PyGithub/github/AuthenticatedUser.py:779:73: Object of type `@Todo(unknown type subscript) | _NotSetType` may not be iterable
+- error[lint:not-iterable] /tmp/mypy_primer/projects/PyGithub/github/Branch.py:210:106: Object of type `@Todo(unknown type subscript) | _NotSetType` may not be iterable because it may not have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/PyGithub/github/Branch.py:210:106: Object of type `@Todo(unknown type subscript) | _NotSetType` may not be iterable
+- error[lint:not-iterable] /tmp/mypy_primer/projects/PyGithub/github/Branch.py:221:34: Object of type `@Todo(unknown type subscript) | _NotSetType` may not be iterable because it may not have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/PyGithub/github/Branch.py:221:34: Object of type `@Todo(unknown type subscript) | _NotSetType` may not be iterable
+- error[lint:not-iterable] /tmp/mypy_primer/projects/PyGithub/github/Branch.py:224:74: Object of type `@Todo(unknown type subscript) | _NotSetType` may not be iterable because it may not have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/PyGithub/github/Branch.py:224:74: Object of type `@Todo(unknown type subscript) | _NotSetType` may not be iterable
+- error[lint:not-iterable] /tmp/mypy_primer/projects/PyGithub/github/Branch.py:377:106: Object of type `@Todo(unknown type subscript) | _NotSetType` may not be iterable because it may not have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/PyGithub/github/Branch.py:377:106: Object of type `@Todo(unknown type subscript) | _NotSetType` may not be iterable
+- error[lint:not-iterable] /tmp/mypy_primer/projects/PyGithub/github/Branch.py:383:30: Object of type `@Todo(unknown type subscript) | _NotSetType` may not be iterable because it may not have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/PyGithub/github/Branch.py:383:30: Object of type `@Todo(unknown type subscript) | _NotSetType` may not be iterable
+- error[lint:not-iterable] /tmp/mypy_primer/projects/PyGithub/github/Branch.py:386:70: Object of type `@Todo(unknown type subscript) | _NotSetType` may not be iterable because it may not have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/PyGithub/github/Branch.py:386:70: Object of type `@Todo(unknown type subscript) | _NotSetType` may not be iterable
+- error[lint:not-iterable] /tmp/mypy_primer/projects/PyGithub/github/Issue.py:434:32: Object of type `@Todo(unknown type subscript) | _NotSetType` may not be iterable because it may not have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/PyGithub/github/Issue.py:434:32: Object of type `@Todo(unknown type subscript) | _NotSetType` may not be iterable
+- error[lint:not-iterable] /tmp/mypy_primer/projects/PyGithub/github/Organization.py:784:88: Object of type `@Todo(unknown type subscript) | _NotSetType` may not be iterable because it may not have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/PyGithub/github/Organization.py:784:88: Object of type `@Todo(unknown type subscript) | _NotSetType` may not be iterable
+- error[lint:not-iterable] /tmp/mypy_primer/projects/PyGithub/github/Organization.py:786:93: Object of type `@Todo(unknown type subscript) | _NotSetType` may not be iterable because it may not have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/PyGithub/github/Organization.py:786:93: Object of type `@Todo(unknown type subscript) | _NotSetType` may not be iterable
+- error[lint:not-iterable] /tmp/mypy_primer/projects/PyGithub/github/Organization.py:879:79: Object of type `@Todo(unknown type subscript) | _NotSetType` may not be iterable because it may not have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/PyGithub/github/Organization.py:879:79: Object of type `@Todo(unknown type subscript) | _NotSetType` may not be iterable
+- error[lint:not-iterable] /tmp/mypy_primer/projects/PyGithub/github/Organization.py:914:85: Object of type `@Todo(unknown type subscript) | _NotSetType` may not be iterable because it may not have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/PyGithub/github/Organization.py:914:85: Object of type `@Todo(unknown type subscript) | _NotSetType` may not be iterable
+- error[lint:not-iterable] /tmp/mypy_primer/projects/PyGithub/github/Organization.py:1104:73: Object of type `@Todo(unknown type subscript) | _NotSetType` may not be iterable because it may not have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/PyGithub/github/Organization.py:1104:73: Object of type `@Todo(unknown type subscript) | _NotSetType` may not be iterable
+- error[lint:not-iterable] /tmp/mypy_primer/projects/PyGithub/github/Organization.py:1310:53: Object of type `@Todo(unknown type subscript) | _NotSetType` may not be iterable because it may not have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/PyGithub/github/Organization.py:1310:53: Object of type `@Todo(unknown type subscript) | _NotSetType` may not be iterable
+
+werkzeug (https://github.com/pallets/werkzeug)
+- error[lint:not-iterable] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/serving.py:273:35: Object of type `@Todo(specialized non-generic class) | None` may not be iterable because it may not have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/serving.py:273:35: Object of type `@Todo(specialized non-generic class) | None` may not be iterable
+
+mitmproxy (https://github.com/mitmproxy/mitmproxy)
+- error[lint:not-iterable] /tmp/mypy_primer/projects/mitmproxy/mitmproxy/addons/next_layer.py:221:30: Object of type `None` is not iterable because it doesn't have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/mitmproxy/mitmproxy/addons/next_layer.py:221:30: Object of type `None` is not iterable
+- error[lint:not-iterable] /tmp/mypy_primer/projects/mitmproxy/mitmproxy/addons/next_layer.py:224:30: Object of type `None` is not iterable because it doesn't have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/mitmproxy/mitmproxy/addons/next_layer.py:224:30: Object of type `None` is not iterable
+- error[lint:not-iterable] /tmp/mypy_primer/projects/mitmproxy/mitmproxy/addons/proxyserver.py:379:42: Object of type `None` is not iterable because it doesn't have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/mitmproxy/mitmproxy/addons/proxyserver.py:379:42: Object of type `None` is not iterable
+- error[lint:not-iterable] /tmp/mypy_primer/projects/mitmproxy/mitmproxy/proxy/layers/http/_upstream_proxy.py:34:27: Object of type `None` is not iterable because it doesn't have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/mitmproxy/mitmproxy/proxy/layers/http/_upstream_proxy.py:34:27: Object of type `None` is not iterable
+
+strawberry (https://github.com/strawberry-graphql/strawberry)
+- error[lint:not-iterable] /tmp/mypy_primer/projects/strawberry/strawberry/http/__init__.py:21:52: Object of type `@Todo(specialized non-generic class) | None` may not be iterable because it may not have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/strawberry/strawberry/http/__init__.py:21:52: Object of type `@Todo(specialized non-generic class) | None` may not be iterable
+- error[lint:not-iterable] /tmp/mypy_primer/projects/strawberry/strawberry/subscriptions/protocols/graphql_transport_ws/handlers.py:405:64: Object of type `@Todo(specialized non-generic class) | None` may not be iterable because it may not have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/strawberry/strawberry/subscriptions/protocols/graphql_transport_ws/handlers.py:405:64: Object of type `@Todo(specialized non-generic class) | None` may not be iterable
+- error[lint:not-iterable] /tmp/mypy_primer/projects/strawberry/strawberry/subscriptions/protocols/graphql_ws/handlers.py:225:42: Object of type `@Todo(specialized non-generic class) | None` may not be iterable because it may not have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/strawberry/strawberry/subscriptions/protocols/graphql_ws/handlers.py:225:42: Object of type `@Todo(specialized non-generic class) | None` may not be iterable
+
+rich (https://github.com/Textualize/rich)
+- error[lint:not-iterable] /tmp/mypy_primer/projects/rich/rich/logging.py:141:50: Object of type `None` is not iterable because it doesn't have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/rich/rich/logging.py:141:50: Object of type `None` is not iterable
+
+scrapy (https://github.com/scrapy/scrapy)
+- error[lint:not-iterable] /tmp/mypy_primer/projects/scrapy/scrapy/http/response/text.py:277:24: Object of type `@Todo(specialized non-generic class) | None` may not be iterable because it may not have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/scrapy/scrapy/http/response/text.py:277:24: Object of type `@Todo(specialized non-generic class) | None` may not be iterable
+
+arviz (https://github.com/arviz-devs/arviz)
+- error[lint:not-iterable] /tmp/mypy_primer/projects/arviz/arviz/sel_utils.py:112:21: Object of type `Unknown | None | list` may not be iterable because it may not have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/arviz/arviz/sel_utils.py:112:21: Object of type `Unknown | None | list` may not be iterable
+
+cwltool (https://github.com/common-workflow-language/cwltool)
+- error[lint:not-iterable] /tmp/mypy_primer/projects/cwltool/cwltool/job.py:491:24: Object of type `@Todo(specialized non-generic class) | None` may not be iterable because it may not have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/cwltool/cwltool/job.py:491:24: Object of type `@Todo(specialized non-generic class) | None` may not be iterable
+- error[lint:not-iterable] /tmp/mypy_primer/projects/cwltool/cwltool/workflow.py:206:29: Object of type `@Todo(specialized non-generic class) | None` may not be iterable because it may not have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/cwltool/cwltool/workflow.py:206:29: Object of type `@Todo(specialized non-generic class) | None` may not be iterable
+
+openlibrary (https://github.com/internetarchive/openlibrary)
+- error[lint:not-iterable] /tmp/mypy_primer/projects/openlibrary/openlibrary/data/mapreduce.py:119:25: Object of type `@Todo(specialized non-generic class) | None` may not be iterable because it may not have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/openlibrary/openlibrary/data/mapreduce.py:119:25: Object of type `@Todo(specialized non-generic class) | None` may not be iterable
+
+cloud-init (https://github.com/canonical/cloud-init)
+- error[lint:not-iterable] /tmp/mypy_primer/projects/cloud-init/cloudinit/sources/DataSourceAzure.py:376:56: Object of type `Unknown | None` may not be iterable because it may not have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/cloud-init/cloudinit/sources/DataSourceAzure.py:376:56: Object of type `Unknown | None` may not be iterable
+- error[lint:not-iterable] /tmp/mypy_primer/projects/cloud-init/cloudinit/sources/DataSourceSmartOS.py:918:16: Object of type `Unknown | None` may not be iterable because it may not have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/cloud-init/cloudinit/sources/DataSourceSmartOS.py:918:16: Object of type `Unknown | None` may not be iterable
+- error[lint:not-iterable] /tmp/mypy_primer/projects/cloud-init/cloudinit/sources/DataSourceWSL.py:289:20: Object of type `dict | None` may not be iterable because it may not have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/cloud-init/cloudinit/sources/DataSourceWSL.py:289:20: Object of type `dict | None` may not be iterable
+- error[lint:not-iterable] /tmp/mypy_primer/projects/cloud-init/cloudinit/util.py:2003:26: Object of type `list | None` may not be iterable because it may not have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/cloud-init/cloudinit/util.py:2003:26: Object of type `list | None` may not be iterable
+
+apprise (https://github.com/caronc/apprise)
+- error[lint:not-iterable] /tmp/mypy_primer/projects/apprise/apprise/persistent_store.py:1250:37: Object of type `Unknown | None | list` may not be iterable because it may not have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/apprise/apprise/persistent_store.py:1250:37: Object of type `Unknown | None | list` may not be iterable
+- error[lint:not-iterable] /tmp/mypy_primer/projects/apprise/apprise/plugins/smseagle.py:513:54: Object of type `Any | None` may not be iterable because it may not have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/apprise/apprise/plugins/smseagle.py:513:54: Object of type `Any | None` may not be iterable
+
+bokeh (https://github.com/bokeh/bokeh)
+- error[lint:not-iterable] /tmp/mypy_primer/projects/bokeh/src/bokeh/core/property/container.py:266:59: Object of type `Unknown | None` may not be iterable because it may not have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/bokeh/src/bokeh/core/property/container.py:266:59: Object of type `Unknown | None` may not be iterable
+- error[lint:not-iterable] /tmp/mypy_primer/projects/bokeh/src/bokeh/server/session.py:105:26: Object of type `@Todo(specialized non-generic class) | None` may not be iterable because it may not have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/bokeh/src/bokeh/server/session.py:105:26: Object of type `@Todo(specialized non-generic class) | None` may not be iterable
+- error[lint:not-iterable] /tmp/mypy_primer/projects/bokeh/src/bokeh/sphinxext/bokeh_palette.py:134:79: Object of type `Unknown | None` may not be iterable because it may not have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/bokeh/src/bokeh/sphinxext/bokeh_palette.py:134:79: Object of type `Unknown | None` may not be iterable
+
+static-frame (https://github.com/static-frame/static-frame)
+- error[lint:not-iterable] /tmp/mypy_primer/projects/static-frame/static_frame/core/frame.py:5826:61: Object of type `Unknown | Literal[0]` may not be iterable because it may not have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/static-frame/static_frame/core/frame.py:5826:61: Object of type `Unknown | Literal[0]` may not be iterable
+
+dd-trace-py (https://github.com/DataDog/dd-trace-py)
+- error[lint:not-iterable] /tmp/mypy_primer/projects/dd-trace-py/ddtrace/appsec/_iast/_evidence_redaction/_sensitive_handler.py:336:50: Object of type `Unknown | None` may not be iterable because it may not have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/dd-trace-py/ddtrace/appsec/_iast/_evidence_redaction/_sensitive_handler.py:336:50: Object of type `Unknown | None` may not be iterable
+- error[lint:not-iterable] /tmp/mypy_primer/projects/dd-trace-py/ddtrace/contrib/internal/django/patch.py:909:18: Object of type `Any | None` may not be iterable because it may not have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/dd-trace-py/ddtrace/contrib/internal/django/patch.py:909:18: Object of type `Any | None` may not be iterable
+- error[lint:not-iterable] /tmp/mypy_primer/projects/dd-trace-py/ddtrace/contrib/internal/redis_utils.py:56:34: Object of type `list | dict | str | None` may not be iterable because it may not have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/dd-trace-py/ddtrace/contrib/internal/redis_utils.py:56:34: Object of type `list | dict | str | None` may not be iterable
+- error[lint:not-iterable] /tmp/mypy_primer/projects/dd-trace-py/ddtrace/contrib/internal/redis_utils.py:60:34: Object of type `list | dict | str | None` may not be iterable because it may not have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/dd-trace-py/ddtrace/contrib/internal/redis_utils.py:60:34: Object of type `list | dict | str | None` may not be iterable
+- error[lint:not-iterable] /tmp/mypy_primer/projects/dd-trace-py/ddtrace/contrib/internal/valkey_utils.py:56:34: Object of type `list | dict | str | None` may not be iterable because it may not have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/dd-trace-py/ddtrace/contrib/internal/valkey_utils.py:56:34: Object of type `list | dict | str | None` may not be iterable
+- error[lint:not-iterable] /tmp/mypy_primer/projects/dd-trace-py/ddtrace/contrib/internal/valkey_utils.py:60:34: Object of type `list | dict | str | None` may not be iterable because it may not have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/dd-trace-py/ddtrace/contrib/internal/valkey_utils.py:60:34: Object of type `list | dict | str | None` may not be iterable
+- error[lint:not-iterable] /tmp/mypy_primer/projects/dd-trace-py/ddtrace/internal/utils/retry.py:26:22: Object of type `repeat | int | float | @Todo(specialized non-generic class)` may not be iterable because it may not have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/dd-trace-py/ddtrace/internal/utils/retry.py:26:22: Object of type `repeat | int | float | @Todo(specialized non-generic class)` may not be iterable
+- error[lint:not-iterable] /tmp/mypy_primer/projects/dd-trace-py/ddtrace/llmobs/_integrations/openai.py:151:89: Object of type `Any | None` may not be iterable because it may not have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/dd-trace-py/ddtrace/llmobs/_integrations/openai.py:151:89: Object of type `Any | None` may not be iterable
+- error[lint:not-iterable] /tmp/mypy_primer/projects/dd-trace-py/tests/internal/test_wrapping.py:588:21: Object of type `None` is not iterable because it doesn't have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/dd-trace-py/tests/internal/test_wrapping.py:588:21: Object of type `None` is not iterable
+- error[lint:not-iterable] /tmp/mypy_primer/projects/dd-trace-py/tests/internal/test_wrapping.py:612:21: Object of type `None` is not iterable because it doesn't have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/dd-trace-py/tests/internal/test_wrapping.py:612:21: Object of type `None` is not iterable
+- error[lint:not-iterable] /tmp/mypy_primer/projects/dd-trace-py/tests/internal/test_wrapping.py:771:21: Object of type `None` is not iterable because it doesn't have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/dd-trace-py/tests/internal/test_wrapping.py:771:21: Object of type `None` is not iterable
+- error[lint:not-iterable] /tmp/mypy_primer/projects/dd-trace-py/tests/profiling/test_profiler.py:55:16: Object of type `Unknown | list | None` may not be iterable because it may not have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/dd-trace-py/tests/profiling/test_profiler.py:55:16: Object of type `Unknown | list | None` may not be iterable
+- error[lint:not-iterable] /tmp/mypy_primer/projects/dd-trace-py/tests/profiling/test_profiler.py:67:16: Object of type `Unknown | list | None` may not be iterable because it may not have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/dd-trace-py/tests/profiling/test_profiler.py:67:16: Object of type `Unknown | list | None` may not be iterable
+- error[lint:not-iterable] /tmp/mypy_primer/projects/dd-trace-py/tests/profiling/test_profiler.py:126:16: Object of type `Unknown | list | None` may not be iterable because it may not have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/dd-trace-py/tests/profiling/test_profiler.py:126:16: Object of type `Unknown | list | None` may not be iterable
+- error[lint:not-iterable] /tmp/mypy_primer/projects/dd-trace-py/tests/profiling/test_profiler.py:139:16: Object of type `Unknown | list | None` may not be iterable because it may not have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/dd-trace-py/tests/profiling/test_profiler.py:139:16: Object of type `Unknown | list | None` may not be iterable
+- error[lint:not-iterable] /tmp/mypy_primer/projects/dd-trace-py/tests/profiling/test_profiler.py:153:16: Object of type `Unknown | list | None` may not be iterable because it may not have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/dd-trace-py/tests/profiling/test_profiler.py:153:16: Object of type `Unknown | list | None` may not be iterable
+
+rotki (https://github.com/rotki/rotki)
+- error[lint:not-iterable] /tmp/mypy_primer/projects/rotki/rotkehlchen/inquirer.py:449:87: Object of type `@Todo(specialized non-generic class) | None` may not be iterable because it may not have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/rotki/rotkehlchen/inquirer.py:449:87: Object of type `@Todo(specialized non-generic class) | None` may not be iterable
+
+setuptools (https://github.com/pypa/setuptools)
+- error[lint:not-iterable] /tmp/mypy_primer/projects/setuptools/setuptools/_vendor/wheel/vendored/packaging/utils.py:86:46: Object of type `tuple[str, int] | None` may not be iterable because it may not have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/setuptools/setuptools/_vendor/wheel/vendored/packaging/utils.py:86:46: Object of type `tuple[str, int] | None` may not be iterable
+
+pwndbg (https://github.com/pwndbg/pwndbg)
+- error[lint:not-iterable] /tmp/mypy_primer/projects/pwndbg/pwndbg/commands/cyclic.py:92:43: Object of type `(Unknown & ~str) | None | bytes` may not be iterable because it may not have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/pwndbg/pwndbg/commands/cyclic.py:92:43: Object of type `(Unknown & ~str) | None | bytes` may not be iterable
+- error[lint:not-iterable] /tmp/mypy_primer/projects/pwndbg/pwndbg/commands/killthreads.py:54:30: Object of type `list | None` may not be iterable because it may not have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/pwndbg/pwndbg/commands/killthreads.py:54:30: Object of type `list | None` may not be iterable
+- error[lint:not-iterable] /tmp/mypy_primer/projects/pwndbg/pwndbg/commands/killthreads.py:60:26: Object of type `list | None | @Todo(list comprehension type)` may not be iterable because it may not have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/pwndbg/pwndbg/commands/killthreads.py:60:26: Object of type `list | None | @Todo(list comprehension type)` may not be iterable
+- error[lint:not-iterable] /tmp/mypy_primer/projects/pwndbg/pwndbg/commands/killthreads.py:73:62: Object of type `list | None | @Todo(list comprehension type)` may not be iterable because it may not have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/pwndbg/pwndbg/commands/killthreads.py:73:62: Object of type `list | None | @Todo(list comprehension type)` may not be iterable
+- error[lint:not-iterable] /tmp/mypy_primer/projects/pwndbg/pwndbg/commands/slab.py:63:21: Object of type `Unknown | None` may not be iterable because it may not have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/pwndbg/pwndbg/commands/slab.py:63:21: Object of type `Unknown | None` may not be iterable
+- error[lint:not-iterable] /tmp/mypy_primer/projects/pwndbg/pwndbg/commands/slab.py:66:21: Object of type `Unknown | None` may not be iterable because it may not have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/pwndbg/pwndbg/commands/slab.py:66:21: Object of type `Unknown | None` may not be iterable
+- error[lint:not-iterable] /tmp/mypy_primer/projects/pwndbg/pwndbg/dbg/lldb/pset.py:76:56: Object of type `Unknown | None` may not be iterable because it may not have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/pwndbg/pwndbg/dbg/lldb/pset.py:76:56: Object of type `Unknown | None` may not be iterable
+- error[lint:not-iterable] /tmp/mypy_primer/projects/pwndbg/pwndbg/lib/config.py:97:54: Object of type `@Todo(specialized non-generic class) | None` may not be iterable because it may not have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/pwndbg/pwndbg/lib/config.py:97:54: Object of type `@Todo(specialized non-generic class) | None` may not be iterable
+
+jax (https://github.com/google/jax)
+- error[lint:not-iterable] /tmp/mypy_primer/projects/jax/jax/_src/interpreters/mlir.py:1938:20: Object of type `tuple[tuple[Primitive, LoweringRule]] | None` may not be iterable because it may not have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/jax/jax/_src/interpreters/mlir.py:1938:20: Object of type `tuple[tuple[Primitive, LoweringRule]] | None` may not be iterable
+- error[lint:not-iterable] /tmp/mypy_primer/projects/jax/jax/_src/lax/linalg.py:2825:57: Object of type `Unknown | None` may not be iterable because it may not have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/jax/jax/_src/lax/linalg.py:2825:57: Object of type `Unknown | None` may not be iterable
+- error[lint:not-iterable] /tmp/mypy_primer/projects/jax/jax/_src/lax/linalg.py:2825:69: Object of type `Unknown | None` may not be iterable because it may not have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/jax/jax/_src/lax/linalg.py:2825:69: Object of type `Unknown | None` may not be iterable
+- error[lint:not-iterable] /tmp/mypy_primer/projects/jax/jax/_src/lax/linalg.py:2828:46: Object of type `Unknown | None` may not be iterable because it may not have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/jax/jax/_src/lax/linalg.py:2828:46: Object of type `Unknown | None` may not be iterable
+- error[lint:not-iterable] /tmp/mypy_primer/projects/jax/jax/_src/lax/linalg.py:2833:21: Object of type `Unknown | None` may not be iterable because it may not have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/jax/jax/_src/lax/linalg.py:2833:21: Object of type `Unknown | None` may not be iterable
+- error[lint:not-iterable] /tmp/mypy_primer/projects/jax/jax/_src/lax/linalg.py:2837:21: Object of type `Unknown | None` may not be iterable because it may not have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/jax/jax/_src/lax/linalg.py:2837:21: Object of type `Unknown | None` may not be iterable
+- error[lint:not-iterable] /tmp/mypy_primer/projects/jax/jax/_src/pallas/fuser/block_spec.py:999:57: Object of type `@Todo(full tuple[...] support) | None` may not be iterable because it may not have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/jax/jax/_src/pallas/fuser/block_spec.py:999:57: Object of type `@Todo(full tuple[...] support) | None` may not be iterable
+- error[lint:not-iterable] /tmp/mypy_primer/projects/jax/jax/_src/pallas/fuser/block_spec.py:1005:15: Object of type `@Todo(full tuple[...] support) | None` may not be iterable because it may not have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/jax/jax/_src/pallas/fuser/block_spec.py:1005:15: Object of type `@Todo(full tuple[...] support) | None` may not be iterable
+- error[lint:not-iterable] /tmp/mypy_primer/projects/jax/jax/_src/pallas/fuser/block_spec.py:1038:69: Object of type `@Todo(specialized non-generic class) | None` may not be iterable because it may not have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/jax/jax/_src/pallas/fuser/block_spec.py:1038:69: Object of type `@Todo(specialized non-generic class) | None` may not be iterable
+- error[lint:not-iterable] /tmp/mypy_primer/projects/jax/jax/_src/pallas/mosaic/interpret.py:877:26: Object of type `int` is not iterable because it doesn't have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/jax/jax/_src/pallas/mosaic/interpret.py:877:26: Object of type `int` is not iterable
+- error[lint:not-iterable] /tmp/mypy_primer/projects/jax/jax/_src/pallas/mosaic/interpret.py:1402:43: Object of type `@Todo(specialized non-generic class) | None` may not be iterable because it may not have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/jax/jax/_src/pallas/mosaic/interpret.py:1402:43: Object of type `@Todo(specialized non-generic class) | None` may not be iterable
+- error[lint:not-iterable] /tmp/mypy_primer/projects/jax/jax/_src/pallas/mosaic/pipeline.py:212:49: Object of type `@Todo(specialized non-generic class) | None` may not be iterable because it may not have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/jax/jax/_src/pallas/mosaic/pipeline.py:212:49: Object of type `@Todo(specialized non-generic class) | None` may not be iterable
+- error[lint:not-iterable] /tmp/mypy_primer/projects/jax/jax/_src/pallas/mosaic_gpu/lowering.py:592:50: Object of type `@Todo(specialized non-generic class) | None` may not be iterable because it may not have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/jax/jax/_src/pallas/mosaic_gpu/lowering.py:592:50: Object of type `@Todo(specialized non-generic class) | None` may not be iterable
+- error[lint:not-iterable] /tmp/mypy_primer/projects/jax/jax/_src/pallas/mosaic_gpu/pipeline.py:56:46: Object of type `@Todo(specialized non-generic class) | None` may not be iterable because it may not have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/jax/jax/_src/pallas/mosaic_gpu/pipeline.py:56:46: Object of type `@Todo(specialized non-generic class) | None` may not be iterable
+- error[lint:not-iterable] /tmp/mypy_primer/projects/jax/jax/_src/tree_util.py:1033:47: Object of type `@Todo(specialized non-generic class) | None` may not be iterable because it may not have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/jax/jax/_src/tree_util.py:1033:47: Object of type `@Todo(specialized non-generic class) | None` may not be iterable
+- error[lint:not-iterable] /tmp/mypy_primer/projects/jax/jax/_src/tree_util.py:1034:47: Object of type `@Todo(specialized non-generic class) | None` may not be iterable because it may not have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/jax/jax/_src/tree_util.py:1034:47: Object of type `@Todo(specialized non-generic class) | None` may not be iterable
+- error[lint:not-iterable] /tmp/mypy_primer/projects/jax/jax/_src/tree_util.py:1201:48: Object of type `Unknown | None` may not be iterable because it may not have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/jax/jax/_src/tree_util.py:1201:48: Object of type `Unknown | None` may not be iterable
+- error[lint:not-iterable] /tmp/mypy_primer/projects/jax/jax/experimental/jax2tf/jax2tf.py:930:30: Object of type `Unknown | None` may not be iterable because it may not have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/jax/jax/experimental/jax2tf/jax2tf.py:930:30: Object of type `Unknown | None` may not be iterable
+- error[lint:not-iterable] /tmp/mypy_primer/projects/jax/jax/experimental/jax2tf/jax2tf.py:973:24: Object of type `Unknown | None` may not be iterable because it may not have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/jax/jax/experimental/jax2tf/jax2tf.py:973:24: Object of type `Unknown | None` may not be iterable
+- error[lint:not-iterable] /tmp/mypy_primer/projects/jax/jax/experimental/jax2tf/tests/shape_poly_test.py:1159:31: Object of type `None` is not iterable because it doesn't have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/jax/jax/experimental/jax2tf/tests/shape_poly_test.py:1159:31: Object of type `None` is not iterable
+
+zulip (https://github.com/zulip/zulip)
+- error[lint:not-iterable] /tmp/mypy_primer/projects/zulip/zerver/lib/export.py:667:14: Object of type `Unknown | None | list` may not be iterable because it may not have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/zulip/zerver/lib/export.py:667:14: Object of type `Unknown | None | list` may not be iterable
+- error[lint:not-iterable] /tmp/mypy_primer/projects/zulip/zerver/lib/export.py:680:22: Object of type `Unknown | None` may not be iterable because it may not have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/zulip/zerver/lib/export.py:680:22: Object of type `Unknown | None` may not be iterable
+- error[lint:not-iterable] /tmp/mypy_primer/projects/zulip/zerver/lib/export.py:689:18: Object of type `Unknown | None` may not be iterable because it may not have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/zulip/zerver/lib/export.py:689:18: Object of type `Unknown | None` may not be iterable
+- error[lint:not-iterable] /tmp/mypy_primer/projects/zulip/zerver/lib/export.py:782:32: Object of type `None` is not iterable because it doesn't have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/zulip/zerver/lib/export.py:782:32: Object of type `None` is not iterable
+- error[lint:not-iterable] /tmp/mypy_primer/projects/zulip/zerver/lib/export.py:807:14: Object of type `Unknown | None | list` may not be iterable because it may not have an `__iter__` method or a `__getitem__` method
++ error[lint:not-iterable] /tmp/mypy_primer/projects/zulip/zerver/lib/export.py:807:14: Object of type `Unknown | None | list` may not be iterable
+
+```
+</details>
+
+
+---
+
+_@carljm approved on 2025-04-25 21:18_
+
+Looks like an improvement! Eventually ideally we might point to the definitions of the problematic `__iter__`, `__getitem__`, etc, but that depends on find-definition.
+
+---
+
+_Review comment by @MichaReiser on `crates/red_knot_python_semantic/resources/mdtest/snapshots/for.md_-_For_loops_-_Bad_`__getitem__`_method.snap`:39 on 2025-04-26 06:16_
+
+Have you considered making this two info? It would shorten the line by a bit
+
+---
+
+_@MichaReiser approved on 2025-04-26 06:17_
+
+Nice
+
+---
+
+_Review comment by @AlexWaygood on `crates/red_knot_python_semantic/resources/mdtest/snapshots/for.md_-_For_loops_-_Possibly_invalid_`__iter__`_methods.snap`:58 on 2025-04-28 11:32_
+
+```suggestion
+info: Its `__iter__` method may have an invalid signature
+info: Type of `__iter__` is `(bound method Iterable1.__iter__() -> Iterator) | (bound method Iterable1.__iter__(invalid_extra_arg) -> Iterator)`
+info: Expected signature for `__iter__` is `def __iter__(self): ...`
+```
+
+---
+
+_Review comment by @AlexWaygood on `crates/red_knot_python_semantic/resources/mdtest/snapshots/for.md_-_For_loops_-_Possibly_invalid_`__next__`_method.snap`:62 on 2025-04-28 11:34_
+
+```suggestion
+info: Its `__iter__` method returns an object of type `Iterator1`, which may have an invalid `__next__` method
+info: Expected signature for `__next__` is `def __next__(self): ...`
+```
+
+---
+
+_Review comment by @AlexWaygood on `crates/red_knot_python_semantic/resources/mdtest/snapshots/for.md_-_For_loops_-_Bad_`__getitem__`_method.snap`:39 on 2025-04-28 11:34_
+
+I agree -- you could do something like this?
+
+```suggestion
+info: It has no `__iter__` method and its `__getitem__` method has an incorrect signature for the old-style iteration protocol
+info: `__getitem__` must be at least as permissive as `def __getitem__(self, key: int): ...` to satisfy the old-style iteration protocol
+```
+
+or even:
+
+```suggestion
+info: It has no `__iter__` method and its `__getitem__` method has an incorrect signature for the old-style iteration protocol
+info: `__getitem__` must be at least as permissive as `def __getitem__(self, key: int): ...` to satisfy the old-style iteration protocol
+info: See https://snarky.ca/unravelling-for-statements/ for more details
+```
+
+---
+
+_Review comment by @AlexWaygood on `crates/red_knot_python_semantic/resources/mdtest/snapshots/for.md_-_For_loops_-_Possibly-not-callable_`__getitem__`_method.snap`:86 on 2025-04-28 11:37_
+
+```suggestion
+info: It has no `__iter__` method and its `__getitem__` attribute is invalid
+info: `__getitem__` has type `(bound method Iterable2.__getitem__(key: int) -> int) | None`, which is not callable 
+```
+
+---
+
+_@AlexWaygood approved on 2025-04-28 11:39_
+
+Nice! Left a few suggestions, but nothing blocking (and nothing that can't be postponed to a followup if that's easier)
+
+---
+
+_@BurntSushi reviewed on 2025-04-28 14:33_
+
+---
+
+_Review comment by @BurntSushi on `crates/red_knot_python_semantic/resources/mdtest/snapshots/for.md_-_For_loops_-_Bad_`__getitem__`_method.snap`:39 on 2025-04-28 14:33_
+
+I went with the first one. I'm unsure about sticking links to blogs in our diagnostics.
+
+---
+
+_Merged by @BurntSushi on 2025-04-28 15:03_
+
+---
+
+_Closed by @BurntSushi on 2025-04-28 15:03_
+
+---
+
+_Branch deleted on 2025-04-28 15:03_
+
+---

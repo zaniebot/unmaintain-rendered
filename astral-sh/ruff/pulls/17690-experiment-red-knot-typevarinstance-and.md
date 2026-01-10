@@ -1,0 +1,661 @@
+```yaml
+number: 17690
+title: "[EXPERIMENT] [red-knot] TypeVarInstance and intersection of callables"
+type: pull_request
+state: closed
+author: dhruvmanila
+labels:
+  - do-not-merge
+  - ty
+assignees: []
+draft: true
+base: main
+head: dhruv/typevarinstance-intersection-of-callables
+created_at: 2025-04-28T21:28:15Z
+updated_at: 2025-04-28T23:07:11Z
+url: https://github.com/astral-sh/ruff/pull/17690
+synced_at: 2026-01-10T19:03:00Z
+```
+
+# [EXPERIMENT] [red-knot] TypeVarInstance and intersection of callables
+
+---
+
+_Pull request opened by @dhruvmanila on 2025-04-28 21:28_
+
+## Ecosystem analysis
+It _does_ seem to be reducing the number of overall diagnostics but not by much compared to what already exists.
+
+<details><summary>Stats until "TypeVarInstance PR"</summary>
+<p>
+
+```
+                           Diagnostic Analysis Report                           
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━┳━━━━━━━┳━━━━━━━━━━━━┓
+┃ Diagnostic ID                      ┃ Severity ┃ Removed ┃ Added ┃ Net Change ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━━╇━━━━━━━╇━━━━━━━━━━━━┩
+│ lint:call-non-callable             │ error    │      98 │   497 │       +399 │
+│ lint:call-possibly-unbound-method  │ warning  │       9 │    53 │        +44 │
+│ lint:invalid-argument-type         │ error    │     409 │   818 │       +409 │
+│ lint:invalid-assignment            │ error    │      16 │    95 │        +79 │
+│ lint:invalid-legacy-type-variable  │ error    │       0 │     6 │         +6 │
+│ lint:invalid-parameter-default     │ error    │       2 │     7 │         +5 │
+│ lint:invalid-raise                 │ error    │       0 │     1 │         +1 │
+│ lint:invalid-return-type           │ error    │      23 │    92 │        +69 │
+│ lint:invalid-type-form             │ error    │       0 │    11 │        +11 │
+│ lint:missing-argument              │ error    │      12 │     3 │         -9 │
+│ lint:no-matching-overload          │ error    │       0 │ 19051 │     +19051 │
+│ lint:non-subscriptable             │ error    │       0 │     2 │         +2 │
+│ lint:not-iterable                  │ error    │       0 │     7 │         +7 │
+│ lint:possibly-unbound-attribute    │ warning  │      24 │    50 │        +26 │
+│ lint:possibly-unresolved-reference │ warning  │       2 │     0 │         -2 │
+│ lint:redundant-cast                │ warning  │       4 │     5 │         +1 │
+│ lint:type-assertion-failure        │ error    │       8 │     8 │          0 │
+│ lint:unknown-argument              │ error    │      26 │     0 │        -26 │
+│ lint:unresolved-attribute          │ error    │      14 │    67 │        +53 │
+│ lint:unresolved-reference          │ warning  │       2 │     1 │         -1 │
+│ lint:unsupported-operator          │ error    │      19 │    65 │        +46 │
+│ lint:unused-ignore-comment         │ warning  │     150 │     0 │       -150 │
+├────────────────────────────────────┼──────────┼─────────┼───────┼────────────┤
+│ TOTAL                              │          │     818 │ 20839 │     +20021 │
+└────────────────────────────────────┴──────────┴─────────┴───────┴────────────┘
+Analysis complete. Found 22 unique diagnostic IDs.
+Total diagnostics removed: 818
+Total diagnostics added: 20839
+Net change: +20021
+```
+
+</p>
+</details> 
+
+<details><summary>Stats with "intersection of callables" on top of "TypeVarInstance PR"</summary>
+<p>
+
+```
+                           Diagnostic Analysis Report                           
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━┳━━━━━━━┳━━━━━━━━━━━━┓
+┃ Diagnostic ID                      ┃ Severity ┃ Removed ┃ Added ┃ Net Change ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━━╇━━━━━━━╇━━━━━━━━━━━━┩
+│ lint:call-non-callable             │ error    │     124 │   158 │        +34 │
+│ lint:call-possibly-unbound-method  │ warning  │      25 │    63 │        +38 │
+│ lint:division-by-zero              │ error    │       0 │    13 │        +13 │
+│ lint:invalid-argument-type         │ error    │     493 │   807 │       +314 │
+│ lint:invalid-assignment            │ error    │      37 │    95 │        +58 │
+│ lint:invalid-base                  │ error    │       2 │     2 │          0 │
+│ lint:invalid-legacy-type-variable  │ error    │       0 │     6 │         +6 │
+│ lint:invalid-parameter-default     │ error    │       2 │     7 │         +5 │
+│ lint:invalid-raise                 │ error    │       0 │     1 │         +1 │
+│ lint:invalid-return-type           │ error    │      76 │    91 │        +15 │
+│ lint:invalid-super-argument        │ error    │       1 │     1 │          0 │
+│ lint:invalid-type-form             │ error    │       2 │    11 │         +9 │
+│ lint:missing-argument              │ error    │      12 │     2 │        -10 │
+│ lint:no-matching-overload          │ error    │       5 │ 19049 │     +19044 │
+│ lint:non-subscriptable             │ error    │       6 │     2 │         -4 │
+│ lint:not-iterable                  │ error    │       3 │     8 │         +5 │
+│ lint:possibly-unbound-attribute    │ warning  │     134 │   126 │         -8 │
+│ lint:possibly-unresolved-reference │ warning  │      13 │     0 │        -13 │
+│ lint:redundant-cast                │ warning  │       4 │     5 │         +1 │
+│ lint:type-assertion-failure        │ error    │      30 │    33 │         +3 │
+│ lint:unknown-argument              │ error    │      26 │     0 │        -26 │
+│ lint:unresolved-attribute          │ error    │      64 │    62 │         -2 │
+│ lint:unresolved-reference          │ warning  │       2 │     9 │         +7 │
+│ lint:unsupported-operator          │ error    │      48 │    70 │        +22 │
+│ lint:unused-ignore-comment         │ warning  │     145 │     3 │       -142 │
+├────────────────────────────────────┼──────────┼─────────┼───────┼────────────┤
+│ TOTAL                              │          │    1254 │ 20624 │     +19370 │
+└────────────────────────────────────┴──────────┴─────────┴───────┴────────────┘
+Analysis complete. Found 25 unique diagnostic IDs.
+Total diagnostics removed: 1254
+Total diagnostics added: 20624
+Net change: +19370
+```
+
+</p>
+</details> 
+
+Here's the diff of the mypy-primer diffs: https://www.diffchecker.com/409icClh/
+
+
+---
+
+_Label `do-not-merge` added by @dhruvmanila on 2025-04-28 21:28_
+
+---
+
+_Comment by @github-actions[bot] on 2025-04-28 21:31_
+
+<!-- generated-comment mypy_primer -->
+## `mypy_primer` results
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+```diff
+packaging (https://github.com/pypa/packaging)
++ error[lint:no-matching-overload] src/packaging/_manylinux.py:195:19: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] src/packaging/_manylinux.py:198:19: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] src/packaging/_manylinux.py:201:19: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] src/packaging/_manylinux.py:231:22: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] src/packaging/_manylinux.py:234:26: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] src/packaging/_manylinux.py:235:21: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] src/packaging/_musllinux.py:30:12: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] src/packaging/_parser.py:83:12: No overload of bound method `__init__` matches arguments
+- warning[lint:unused-ignore-comment] src/packaging/metadata.py:439:65: Unused blanket `type: ignore` directive
++ warning[lint:possibly-unbound-attribute] src/packaging/metadata.py:576:13: Attribute `params` on type `str | @Todo(Support for `typing.TypeAlias`)` is possibly unbound
++ warning[lint:possibly-unbound-attribute] src/packaging/metadata.py:576:13: Attribute `params` on type `str | @Todo(Support for `typing.TypeAlias`)` is possibly unbound
++ warning[lint:possibly-unbound-attribute] src/packaging/metadata.py:576:13: Attribute `params` on type `str | @Todo(Support for `typing.TypeAlias`)` is possibly unbound
++ error[lint:no-matching-overload] src/packaging/version.py:205:25: No overload of bound method `__init__` matches arguments
+- Found 22 diagnostics
++ Found 33 diagnostics
+
+parso (https://github.com/davidhalter/parso)
++ error[lint:invalid-argument-type] parso/__init__.py:57:28: Argument to this function is incorrect: Expected `str`, found `(None & Unknown) | None`
++ error[lint:no-matching-overload] parso/python/diff.py:495:27: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] parso/python/diff.py:508:31: No overload of bound method `__init__` matches arguments
+- warning[lint:possibly-unbound-attribute] parso/python/pep8.py:719:31: Attribute `group` on type `@Todo(specialized non-generic class) | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] parso/python/pep8.py:719:31: Attribute `group` on type `@Todo(specialized non-generic class) | (None & @Todo(specialized non-generic class)) | None` is possibly unbound
++ error[lint:no-matching-overload] parso/python/tokenize.py:228:12: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] parso/python/tokenize.py:289:21: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] parso/python/tokenize.py:381:23: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] parso/python/tokenize.py:385:19: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] parso/python/tokenize.py:429:23: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] parso/python/tokenize.py:445:31: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] parso/python/tokenize.py:508:31: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] parso/python/tokenize.py:518:23: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] parso/python/tokenize.py:528:23: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] parso/python/tokenize.py:538:27: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] parso/python/tokenize.py:546:27: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] parso/python/tokenize.py:554:27: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] parso/python/tokenize.py:564:27: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] parso/python/tokenize.py:594:27: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] parso/python/tokenize.py:597:23: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] parso/python/tokenize.py:621:23: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] parso/python/tokenize.py:624:15: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] parso/python/tokenize.py:631:19: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] parso/python/tokenize.py:644:15: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] parso/python/tokenize.py:645:11: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] parso/python/tokenize.py:650:16: No overload of bound method `__init__` matches arguments
+- warning[lint:possibly-unbound-attribute] parso/python/tree.py:259:16: Attribute `group` on type `@Todo(specialized non-generic class) | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] parso/python/tree.py:259:16: Attribute `group` on type `@Todo(specialized non-generic class) | (None & @Todo(specialized non-generic class)) | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] parso/python/tree.py:267:16: Attribute `group` on type `@Todo(specialized non-generic class) | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] parso/python/tree.py:267:16: Attribute `group` on type `@Todo(specialized non-generic class) | (None & @Todo(specialized non-generic class)) | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] parso/python/tree.py:267:37: Attribute `group` on type `@Todo(specialized non-generic class) | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] parso/python/tree.py:267:37: Attribute `group` on type `@Todo(specialized non-generic class) | (None & @Todo(specialized non-generic class)) | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] parso/utils.py:95:27: Attribute `group` on type `@Todo(specialized non-generic class) | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] parso/utils.py:95:27: Attribute `group` on type `@Todo(specialized non-generic class) | (None & @Todo(specialized non-generic class)) | None` is possibly unbound
++ error[lint:no-matching-overload] parso/utils.py:132:12: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] parso/utils.py:180:12: No overload of bound method `__init__` matches arguments
+- Found 80 diagnostics
++ Found 106 diagnostics
+
+bidict (https://github.com/jab/bidict)
++ error[lint:no-matching-overload] bidict/_dup.py:57:34: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] bidict/_dup.py:59:32: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] bidict/_dup.py:61:35: No overload of bound method `__init__` matches arguments
+- error[lint:call-non-callable] bidict/_iter.py:50:34: Object of type `None` is not callable
+- Found 4 diagnostics
++ Found 6 diagnostics
+
+paroxython (https://github.com/laowantong/paroxython)
++ error[lint:no-matching-overload] paroxython/derived_labels_db.py:189:38: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] paroxython/label_programs.py:49:37: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] paroxython/list_programs.py:89:12: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] paroxython/parse_program.py:76:12: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] paroxython/parse_program.py:284:22: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] paroxython/parse_program.py:289:77: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] paroxython/parse_program.py:316:19: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] paroxython/parse_program.py:333:31: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] paroxython/parse_program.py:366:15: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] paroxython/preprocess_source.py:455:40: No overload of bound method `__init__` matches arguments
+- Found 34 diagnostics
++ Found 44 diagnostics
+
+pegen (https://github.com/we-like-parsers/pegen)
+- error[lint:call-non-callable] src/pegen/grammar.py:30:16: Object of type `None` is not callable
+- error[lint:unresolved-attribute] src/pegen/parser.py:85:19: Type `(@Todo(Support for `typing.TypeVar` instances in type expressions), /) -> @Todo(Support for `typing.TypeVar` instances in type expressions) | None` has no attribute `__name__`
++ error[lint:unresolved-attribute] src/pegen/parser.py:28:19: Type `F` has no attribute `__name__`
++ error[lint:call-non-callable] src/pegen/parser.py:32:20: Object of type `F` is not callable
++ error[lint:call-non-callable] src/pegen/parser.py:37:16: Object of type `F` is not callable
++ error[lint:unresolved-attribute] src/pegen/parser.py:48:19: Type `F` has no attribute `__name__`
++ error[lint:call-non-callable] src/pegen/parser.py:66:20: Object of type `F` is not callable
++ error[lint:unresolved-attribute] src/pegen/parser.py:85:19: Type `(P, /) -> T | None` has no attribute `__name__`
++ error[lint:invalid-argument-type] src/pegen/parser.py:332:45: Argument to this function is incorrect: Expected `() -> str`, found `(bound method TextIO.readline(limit: int = Literal[-1], /) -> AnyStr) | @Todo(Support for `typing.TypeAlias`)`
+- Found 52 diagnostics
++ Found 57 diagnostics
+
+pyinstrument (https://github.com/joerick/pyinstrument)
+- error[lint:call-non-callable] pyinstrument/middleware.py:50:13: Object of type `None` is not callable
+- error[lint:invalid-argument-type] pyinstrument/renderers/html.py:104:25: Argument to this function is incorrect: Expected `str`, found `Literal[b""]`
+- Found 87 diagnostics
++ Found 85 diagnostics
+
+aioredis (https://github.com/aio-libs/aioredis)
++ error[lint:no-matching-overload] aioredis/client.py:337:25: No overload of function `__new__` matches arguments
++ error[lint:no-matching-overload] aioredis/client.py:462:38: No overload of function `__new__` matches arguments
+- Found 29 diagnostics
++ Found 31 diagnostics
+
+pytest-robotframework (https://github.com/detachhead/pytest-robotframework)
++ error[lint:no-matching-overload] pytest_robotframework/__init__.py:502:12: No overload of function `keyword` matches arguments
++ error[lint:no-matching-overload] pytest_robotframework/__init__.py:569:9: No overload of function `keyword` matches arguments
+- error[lint:missing-argument] pytest_robotframework/__init__.py:502:12: No argument provided for required parameter `fn` of function `keyword`
+- error[lint:unknown-argument] pytest_robotframework/__init__.py:503:9: Argument `name` does not match any known parameter of function `keyword`
+- error[lint:unknown-argument] pytest_robotframework/__init__.py:503:20: Argument `tags` does not match any known parameter of function `keyword`
+- error[lint:unknown-argument] pytest_robotframework/__init__.py:503:31: Argument `module` does not match any known parameter of function `keyword`
+- error[lint:unknown-argument] pytest_robotframework/__init__.py:503:46: Argument `wrap_context_manager` does not match any known parameter of function `keyword`
+- error[lint:missing-argument] pytest_robotframework/__init__.py:569:9: No argument provided for required parameter `fn` of function `keyword`
+- error[lint:unknown-argument] pytest_robotframework/__init__.py:569:17: Argument `name` does not match any known parameter of function `keyword`
+- error[lint:unknown-argument] pytest_robotframework/__init__.py:569:28: Argument `tags` does not match any known parameter of function `keyword`
+- error[lint:unknown-argument] pytest_robotframework/__init__.py:569:39: Argument `module` does not match any known parameter of function `keyword`
+- error[lint:unknown-argument] pytest_robotframework/__init__.py:569:54: Argument `wrap_context_manager` does not match any known parameter of function `keyword`
+- error[lint:missing-argument] tests/fixtures/test_python/test_keyword_decorator_context_manager_that_doesnt_suppress.py:14:2: No argument provided for required parameter `fn` of function `keyword`
+- error[lint:unknown-argument] tests/fixtures/test_python/test_keyword_decorator_context_manager_that_doesnt_suppress.py:14:10: Argument `wrap_context_manager` does not match any known parameter of function `keyword`
+- error[lint:missing-argument] tests/fixtures/test_python/test_keyword_decorator_context_manager_that_raises_in_body_and_exit.py:14:2: No argument provided for required parameter `fn` of function `keyword`
+- error[lint:unknown-argument] tests/fixtures/test_python/test_keyword_decorator_context_manager_that_raises_in_body_and_exit.py:14:10: Argument `wrap_context_manager` does not match any known parameter of function `keyword`
+- error[lint:missing-argument] tests/fixtures/test_python/test_keyword_decorator_context_manager_that_raises_in_exit.py:14:2: No argument provided for required parameter `fn` of function `keyword`
+- error[lint:unknown-argument] tests/fixtures/test_python/test_keyword_decorator_context_manager_that_raises_in_exit.py:14:10: Argument `wrap_context_manager` does not match any known parameter of function `keyword`
+- error[lint:missing-argument] tests/fixtures/test_python/test_keyword_decorator_custom_name_and_tags.py:6:2: No argument provided for required parameter `fn` of function `keyword`
+- error[lint:unknown-argument] tests/fixtures/test_python/test_keyword_decorator_custom_name_and_tags.py:6:10: Argument `name` does not match any known parameter of function `keyword`
+- error[lint:unknown-argument] tests/fixtures/test_python/test_keyword_decorator_custom_name_and_tags.py:6:26: Argument `tags` does not match any known parameter of function `keyword`
+- error[lint:missing-argument] tests/fixtures/test_python/test_keyword_decorator_returns_context_manager_that_isnt_used.py:14:2: No argument provided for required parameter `fn` of function `keyword`
+- error[lint:unknown-argument] tests/fixtures/test_python/test_keyword_decorator_returns_context_manager_that_isnt_used.py:14:10: Argument `wrap_context_manager` does not match any known parameter of function `keyword`
+- error[lint:missing-argument] tests/type_tests.py:18:6: No argument provided for required parameter `fn` of function `keyword`
+- error[lint:unknown-argument] tests/type_tests.py:18:14: Argument `name` does not match any known parameter of function `keyword`
+- error[lint:unknown-argument] tests/type_tests.py:18:30: Argument `tags` does not match any known parameter of function `keyword`
+- error[lint:type-assertion-failure] tests/type_tests.py:21:9: Actual type `Unknown` is not the same as asserted type `() -> None`
++ error[lint:type-assertion-failure] tests/type_tests.py:21:9: Actual type `Never` is not the same as asserted type `() -> None`
+- error[lint:type-assertion-failure] tests/type_tests.py:27:9: Actual type `(...) -> Unknown` is not the same as asserted type `() -> None`
++ error[lint:type-assertion-failure] tests/type_tests.py:27:9: Actual type `Never` is not the same as asserted type `() -> None`
+- error[lint:type-assertion-failure] tests/type_tests.py:33:9: Actual type `(...) -> Unknown` is not the same as asserted type `() -> Never`
++ error[lint:type-assertion-failure] tests/type_tests.py:33:9: Actual type `Never` is not the same as asserted type `() -> Never`
+- error[lint:missing-argument] tests/type_tests.py:36:6: No argument provided for required parameter `fn` of function `keyword`
+- error[lint:unknown-argument] tests/type_tests.py:36:14: Argument `wrap_context_manager` does not match any known parameter of function `keyword`
+- error[lint:type-assertion-failure] tests/type_tests.py:41:9: Actual type `Unknown` is not the same as asserted type `() -> @Todo(specialized non-generic class)`
++ error[lint:type-assertion-failure] tests/type_tests.py:41:9: Actual type `(...) -> Unknown` is not the same as asserted type `() -> @Todo(specialized non-generic class)`
+- error[lint:missing-argument] tests/type_tests.py:44:6: No argument provided for required parameter `fn` of function `keyword`
+- error[lint:unknown-argument] tests/type_tests.py:44:14: Argument `wrap_context_manager` does not match any known parameter of function `keyword`
+- error[lint:type-assertion-failure] tests/type_tests.py:49:9: Actual type `Unknown` is not the same as asserted type `() -> @Todo(specialized non-generic class)`
++ error[lint:type-assertion-failure] tests/type_tests.py:49:9: Actual type `(...) -> Unknown` is not the same as asserted type `() -> @Todo(specialized non-generic class)`
+- error[lint:type-assertion-failure] tests/type_tests.py:57:9: Actual type `(...) -> Unknown` is not the same as asserted type `Never`
+- error[lint:missing-argument] tests/type_tests.py:61:6: No argument provided for required parameter `fn` of function `keyword`
+- error[lint:unknown-argument] tests/type_tests.py:61:14: Argument `wrap_context_manager` does not match any known parameter of function `keyword`
+- error[lint:missing-argument] tests/type_tests.py:66:6: No argument provided for required parameter `fn` of function `keyword`
+- error[lint:unknown-argument] tests/type_tests.py:66:14: Argument `wrap_context_manager` does not match any known parameter of function `keyword`
+- Found 352 diagnostics
++ Found 321 diagnostics
+
+more-itertools (https://github.com/more-itertools/more-itertools)
+- error[lint:invalid-argument-type] more_itertools/more.py:2441:38: Argument to this function is incorrect: Expected `(...) -> @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `Unknown | Literal[bool]`
++ error[lint:invalid-argument-type] more_itertools/more.py:2441:38: Argument to this function is incorrect: Expected `(...) -> Unknown`, found `Unknown | Literal[bool]`
+- error[lint:invalid-argument-type] more_itertools/more.py:2997:44: Argument to this function is incorrect: Expected `(...) -> @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `Literal[repeat]`
++ error[lint:invalid-argument-type] more_itertools/more.py:2997:44: Argument to this function is incorrect: Expected `(...) -> Unknown`, found `Literal[repeat]`
+- error[lint:invalid-argument-type] more_itertools/recipes.py:98:27: Argument to this function is incorrect: Expected `(...) -> @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `Literal[zip]`
++ error[lint:invalid-argument-type] more_itertools/recipes.py:98:27: Argument to this function is incorrect: Expected `(...) -> Unknown`, found `Literal[zip]`
+- error[lint:invalid-argument-type] more_itertools/recipes.py:897:22: Argument to this function is incorrect: Expected `(...) -> @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `Literal[slice]`
++ error[lint:invalid-argument-type] more_itertools/recipes.py:897:22: Argument to this function is incorrect: Expected `(...) -> Unknown`, found `Literal[slice]`
+
+attrs (https://github.com/python-attrs/attrs)
++ error[lint:no-matching-overload] src/attr/_make.py:480:12: No overload of bound method `__init__` matches arguments
+- info[revealed-type] tests/dataclass_transform_example.py:21:1: Revealed type: `(with_converter: int = @Todo(Support for `typing.TypeVar` instances in type expressions)) -> None`
++ info[revealed-type] tests/dataclass_transform_example.py:21:1: Revealed type: `(with_converter: int = Unknown) -> None`
++ error[lint:no-matching-overload] tests/test_funcs.py:251:22: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/test_funcs.py:253:27: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/test_funcs.py:455:22: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/test_funcs.py:457:17: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/test_make.py:204:16: No overload of bound method `__init__` matches arguments
++ error[lint:invalid-argument-type] tests/test_make.py:1255:28: Argument to this function is incorrect: Expected `type[AttrsInstance]`, found `type`
+- error[lint:invalid-argument-type] tests/test_validators.py:228:32: Argument to this function is incorrect: Expected `((@Todo(Support for `typing.TypeVar` instances in type expressions), @Todo(Support for `typing.TypeVar` instances in type expressions), int, /) -> @Todo(specialized non-generic class) | None) | None`, found `() -> Unknown`
++ error[lint:invalid-argument-type] tests/test_validators.py:228:32: Argument to this function is incorrect: Expected `((Literal["a"], Literal["a"], int, /) -> @Todo(specialized non-generic class) | None) | None`, found `() -> Unknown`
+- Found 674 diagnostics
++ Found 681 diagnostics
+
+python-sop (https://gitlab.com/dkg/python-sop)
+- error[lint:invalid-assignment] sop/__init__.py:380:13: Object of type `TextIOWrapper` is not assignable to `BinaryIO`
+- error[lint:invalid-assignment] sop/__init__.py:382:13: Object of type `TextIOWrapper` is not assignable to `BinaryIO`
+- Found 3 diagnostics
++ Found 1 diagnostic
+
+kornia (https://github.com/kornia/kornia)
++ error[lint:no-matching-overload] kornia/augmentation/container/ops.py:138:21: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] kornia/augmentation/container/patch.py:268:26: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] kornia/contrib/models/rt_detr/architecture/hgnetv2.py:131:21: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] kornia/contrib/models/rt_detr/architecture/hgnetv2.py:132:21: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] kornia/contrib/models/rt_detr/architecture/hgnetv2.py:133:21: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] kornia/contrib/models/rt_detr/architecture/hgnetv2.py:134:21: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] kornia/contrib/models/rt_detr/architecture/hgnetv2.py:141:21: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] kornia/contrib/models/rt_detr/architecture/hgnetv2.py:142:21: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] kornia/contrib/models/rt_detr/architecture/hgnetv2.py:143:21: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] kornia/contrib/models/rt_detr/architecture/hgnetv2.py:144:21: No overload of bound method `__init__` matches arguments
+- error[lint:invalid-argument-type] kornia/feature/dedode/transformer/dinov2.py:336:26: Argument to this function is incorrect: Expected `(...) -> @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `Literal[NestedTensorBlock]`
++ error[lint:invalid-argument-type] kornia/feature/dedode/transformer/dinov2.py:336:26: Argument to this function is incorrect: Expected `(...) -> Unknown`, found `Literal[NestedTensorBlock]`
+- error[lint:invalid-argument-type] kornia/feature/dedode/transformer/dinov2.py:350:26: Argument to this function is incorrect: Expected `(...) -> @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `Literal[NestedTensorBlock]`
++ error[lint:invalid-argument-type] kornia/feature/dedode/transformer/dinov2.py:350:26: Argument to this function is incorrect: Expected `(...) -> Unknown`, found `Literal[NestedTensorBlock]`
+- error[lint:invalid-argument-type] kornia/feature/dedode/transformer/dinov2.py:364:26: Argument to this function is incorrect: Expected `(...) -> @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `Literal[NestedTensorBlock]`
++ error[lint:invalid-argument-type] kornia/feature/dedode/transformer/dinov2.py:364:26: Argument to this function is incorrect: Expected `(...) -> Unknown`, found `Literal[NestedTensorBlock]`
+- error[lint:invalid-argument-type] kornia/feature/dedode/transformer/dinov2.py:378:26: Argument to this function is incorrect: Expected `(...) -> @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `Literal[NestedTensorBlock]`
++ error[lint:invalid-argument-type] kornia/feature/dedode/transformer/dinov2.py:378:26: Argument to this function is incorrect: Expected `(...) -> Unknown`, found `Literal[NestedTensorBlock]`
++ error[lint:no-matching-overload] kornia/feature/sold2/backbones.py:59:23: No overload of bound method `__init__` matches arguments
+- error[lint:call-non-callable] kornia/filters/kernels_geometry.py:172:17: Method `__getitem__` of type `Unknown | (Overload[(key: SupportsIndex, /) -> @Todo(Support for `typing.TypeVar` instances in type expressions), (key: slice, /) -> @Todo(full tuple[...] support)])` is not callable on object of type `Unknown | tuple[int | float, int | float, int | float]`
++ error[lint:call-non-callable] kornia/filters/kernels_geometry.py:172:17: Method `__getitem__` of type `Unknown | (Overload[(key: SupportsIndex, /) -> _T_co, (key: slice, /) -> @Todo(full tuple[...] support)])` is not callable on object of type `Unknown | tuple[int | float, int | float, int | float]`
+- error[lint:call-non-callable] kornia/filters/kernels_geometry.py:203:31: Method `__getitem__` of type `Unknown | (Overload[(key: SupportsIndex, /) -> @Todo(Support for `typing.TypeVar` instances in type expressions), (key: slice, /) -> @Todo(full tuple[...] support)])` is not callable on object of type `Unknown | tuple[int | float, int | float, int | float]`
++ error[lint:call-non-callable] kornia/filters/kernels_geometry.py:203:31: Method `__getitem__` of type `Unknown | (Overload[(key: SupportsIndex, /) -> _T_co, (key: slice, /) -> @Todo(full tuple[...] support)])` is not callable on object of type `Unknown | tuple[int | float, int | float, int | float]`
+- error[lint:call-non-callable] kornia/filters/kernels_geometry.py:203:44: Method `__getitem__` of type `Unknown | (Overload[(key: SupportsIndex, /) -> @Todo(Support for `typing.TypeVar` instances in type expressions), (key: slice, /) -> @Todo(full tuple[...] support)])` is not callable on object of type `Unknown | tuple[int | float, int | float, int | float]`
++ error[lint:call-non-callable] kornia/filters/kernels_geometry.py:203:44: Method `__getitem__` of type `Unknown | (Overload[(key: SupportsIndex, /) -> _T_co, (key: slice, /) -> @Todo(full tuple[...] support)])` is not callable on object of type `Unknown | tuple[int | float, int | float, int | float]`
+- error[lint:call-non-callable] kornia/filters/kernels_geometry.py:203:57: Method `__getitem__` of type `Unknown | (Overload[(key: SupportsIndex, /) -> @Todo(Support for `typing.TypeVar` instances in type expressions), (key: slice, /) -> @Todo(full tuple[...] support)])` is not callable on object of type `Unknown | tuple[int | float, int | float, int | float]`
++ error[lint:call-non-callable] kornia/filters/kernels_geometry.py:203:57: Method `__getitem__` of type `Unknown | (Overload[(key: SupportsIndex, /) -> _T_co, (key: slice, /) -> @Todo(full tuple[...] support)])` is not callable on object of type `Unknown | tuple[int | float, int | float, int | float]`
+- error[lint:call-non-callable] kornia/geometry/boxes.py:349:21: Method `__getitem__` of type `Unknown | (Overload[(key: SupportsIndex, /) -> @Todo(Support for `typing.TypeVar` instances in type expressions), (key: slice, /) -> @Todo(full tuple[...] support)])` is not callable on object of type `Unknown | tuple[int, int] | None`
+- error[lint:call-non-callable] kornia/geometry/boxes.py:352:21: Method `__getitem__` of type `Unknown | (Overload[(key: SupportsIndex, /) -> @Todo(Support for `typing.TypeVar` instances in type expressions), (key: slice, /) -> @Todo(full tuple[...] support)])` is not callable on object of type `Unknown | tuple[int, int] | None`
+- error[lint:call-non-callable] kornia/geometry/boxes.py:355:22: Method `__getitem__` of type `Unknown | (Overload[(key: SupportsIndex, /) -> @Todo(Support for `typing.TypeVar` instances in type expressions), (key: slice, /) -> @Todo(full tuple[...] support)])` is not callable on object of type `Unknown | tuple[int, int] | None`
+- error[lint:call-non-callable] kornia/geometry/boxes.py:358:22: Method `__getitem__` of type `Unknown | (Overload[(key: SupportsIndex, /) -> @Todo(Support for `typing.TypeVar` instances in type expressions), (key: slice, /) -> @Todo(full tuple[...] support)])` is not callable on object of type `Unknown | tuple[int, int] | None`
++ error[lint:call-non-callable] kornia/geometry/boxes.py:349:21: Method `__getitem__` of type `Unknown | (Overload[(key: SupportsIndex, /) -> _T_co, (key: slice, /) -> @Todo(full tuple[...] support)])` is not callable on object of type `Unknown | tuple[int, int] | None`
++ error[lint:call-non-callable] kornia/geometry/boxes.py:352:21: Method `__getitem__` of type `Unknown | (Overload[(key: SupportsIndex, /) -> _T_co, (key: slice, /) -> @Todo(full tuple[...] support)])` is not callable on object of type `Unknown | tuple[int, int] | None`
++ error[lint:call-non-callable] kornia/geometry/boxes.py:355:22: Method `__getitem__` of type `Unknown | (Overload[(key: SupportsIndex, /) -> _T_co, (key: slice, /) -> @Todo(full tuple[...] support)])` is not callable on object of type `Unknown | tuple[int, int] | None`
++ error[lint:call-non-callable] kornia/geometry/boxes.py:358:22: Method `__getitem__` of type `Unknown | (Overload[(key: SupportsIndex, /) -> _T_co, (key: slice, /) -> @Todo(full tuple[...] support)])` is not callable on object of type `Unknown | tuple[int, int] | None`
+- Found 1003 diagnostics
++ Found 1014 diagnostics
+
+check-jsonschema (https://github.com/python-jsonschema/check-jsonschema)
++ error[lint:unsupported-operator] src/check_jsonschema/schema_loader/resolver.py:66:12: Operator `in` is not supported for types `None` and `ResourceCache`, in comparing `Unknown | str | None` with `Unknown | ResourceCache`
++ error[lint:call-non-callable] src/check_jsonschema/schema_loader/resolver.py:67:20: Method `__getitem__` of type `Unknown | (bound method ResourceCache.__getitem__(uri: str) -> @Todo(specialized non-generic class))` is not callable on object of type `Unknown | ResourceCache`
++ error[lint:no-matching-overload] src/check_jsonschema/schema_loader/resolver.py:69:27: No overload of function `urlsplit` matches arguments
++ error[lint:invalid-argument-type] src/check_jsonschema/schema_loader/resolver.py:73:58: Argument to this function is incorrect: Expected `Path | str`, found `Unknown | str | None`
++ error[lint:invalid-argument-type] src/check_jsonschema/schema_loader/resolver.py:76:17: Argument to this function is incorrect: Expected `str`, found `Unknown | str | None`
++ error[lint:invalid-argument-type] src/check_jsonschema/schema_loader/resolver.py:81:67: Argument to this function is incorrect: Expected `Path | str`, found `Unknown | str | None`
++ error[lint:invalid-argument-type] src/check_jsonschema/schema_loader/resolver.py:83:44: Argument to this function is incorrect: Expected `str`, found `Unknown | str | None`
++ error[lint:call-non-callable] src/check_jsonschema/schema_loader/resolver.py:85:9: Method `__getitem__` of type `Unknown | (bound method ResourceCache.__getitem__(uri: str) -> @Todo(specialized non-generic class))` is not callable on object of type `Unknown | ResourceCache`
++ error[lint:call-non-callable] src/check_jsonschema/schema_loader/resolver.py:86:16: Method `__getitem__` of type `Unknown | (bound method ResourceCache.__getitem__(uri: str) -> @Todo(specialized non-generic class))` is not callable on object of type `Unknown | ResourceCache`
+- Found 60 diagnostics
++ Found 69 diagnostics
+
+anyio (https://github.com/agronholm/anyio)
+- error[lint:invalid-argument-type] src/anyio/_backends/_asyncio.py:2634:13: Argument to this function is incorrect: Expected `() -> @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `Literal[DatagramProtocol]`
++ error[lint:invalid-argument-type] src/anyio/_backends/_asyncio.py:2634:13: Argument to this function is incorrect: Expected `() -> Unknown`, found `Literal[DatagramProtocol]`
+- error[lint:invalid-argument-type] src/anyio/_backends/_asyncio.py:2634:13: Argument to this function is incorrect: Expected `() -> @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `Literal[DatagramProtocol]`
++ error[lint:invalid-argument-type] src/anyio/_backends/_asyncio.py:2634:13: Argument to this function is incorrect: Expected `() -> Unknown`, found `Literal[DatagramProtocol]`
+- error[lint:invalid-argument-type] src/anyio/_backends/_asyncio.py:2634:13: Argument to this function is incorrect: Expected `() -> @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `Literal[DatagramProtocol]`
++ error[lint:invalid-argument-type] src/anyio/_backends/_asyncio.py:2634:13: Argument to this function is incorrect: Expected `() -> Unknown`, found `Literal[DatagramProtocol]`
+- warning[lint:redundant-cast] src/anyio/from_thread.py:290:16: Value is already of type `Unknown`
++ error[lint:no-matching-overload] src/anyio/streams/memory.py:62:16: No overload of bound method `__init__` matches arguments
++ error[lint:invalid-return-type] src/anyio/streams/memory.py:124:24: Return type does not match returned value: Expected `T_co`, found `T_Item`
+- Found 137 diagnostics
++ Found 138 diagnostics
+
+starlette (https://github.com/encode/starlette)
+- error[lint:invalid-assignment] starlette/endpoints.py:35:9: Object of type `Any | None` is not assignable to `(Request, /) -> Any`
++ error[lint:no-matching-overload] starlette/requests.py:154:20: No overload of bound method `__init__` matches arguments
+- warning[lint:possibly-unbound-attribute] starlette/requests.py:114:20: Attribute `endswith` on type `@Todo(Support for `typing.TypeVar` instances in type expressions) | None` is possibly unbound
+- error[lint:unsupported-operator] starlette/requests.py:115:17: Operator `+=` is unsupported between objects of type `None` and `Literal["/"]`
++ error[lint:no-matching-overload] starlette/schemas.py:60:21: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] starlette/schemas.py:77:43: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] starlette/schemas.py:84:43: No overload of bound method `__init__` matches arguments
+- error[lint:invalid-argument-type] tests/conftest.py:20:9: Argument to this function is incorrect: Expected `(...) -> @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `Literal[TestClient]`
++ error[lint:invalid-argument-type] tests/conftest.py:20:9: Argument to this function is incorrect: Expected `(...) -> Unknown`, found `Literal[TestClient]`
++ error[lint:type-assertion-failure] tests/test_config.py:19:5: Actual type `str & Unknown` is not the same as asserted type `str`
++ error[lint:type-assertion-failure] tests/test_config.py:20:5: Actual type `str & Unknown` is not the same as asserted type `str`
+- error[lint:type-assertion-failure] tests/test_config.py:21:5: Actual type `Unknown` is not the same as asserted type `str`
++ error[lint:type-assertion-failure] tests/test_config.py:21:5: Actual type `Unknown & str` is not the same as asserted type `str`
++ error[lint:type-assertion-failure] tests/test_config.py:22:5: Actual type `(None & Unknown) | (str & Unknown)` is not the same as asserted type `str | None`
+- error[lint:type-assertion-failure] tests/test_config.py:23:5: Actual type `Unknown` is not the same as asserted type `str | None`
++ error[lint:type-assertion-failure] tests/test_config.py:23:5: Actual type `None` is not the same as asserted type `str | None`
+- error[lint:type-assertion-failure] tests/test_config.py:24:5: Actual type `Unknown` is not the same as asserted type `str`
++ error[lint:type-assertion-failure] tests/test_config.py:24:5: Actual type `Literal[""]` is not the same as asserted type `str`
+- error[lint:type-assertion-failure] tests/test_config.py:27:5: Actual type `Unknown` is not the same as asserted type `bool`
++ error[lint:type-assertion-failure] tests/test_config.py:27:5: Actual type `Literal[False]` is not the same as asserted type `bool`
+- error[lint:type-assertion-failure] tests/test_config.py:28:5: Actual type `Unknown` is not the same as asserted type `bool | None`
++ error[lint:type-assertion-failure] tests/test_config.py:28:5: Actual type `None` is not the same as asserted type `bool | None`
+- Found 197 diagnostics
++ Found 201 diagnostics
+
+httpx-caching (https://github.com/johtso/httpx-caching)
+- warning[lint:possibly-unbound-attribute] setup.py:15:12: Attribute `group` on type `@Todo(specialized non-generic class) | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] setup.py:15:12: Attribute `group` on type `@Todo(specialized non-generic class) | (None & @Todo(specialized non-generic class)) | None` is possibly unbound
+
+ppb-vector (https://github.com/ppb/ppb-vector)
++ error[lint:unsupported-operator] ppb_vector/__init__.py:472:25: Operator `*` is unsupported between objects of type `SupportsFloat` and `Unknown | int | float`
+- Found 150 diagnostics
++ Found 151 diagnostics
+
+pylox (https://github.com/sco1/pylox)
++ error[lint:no-matching-overload] pylox/preprocessor.py:90:32: No overload of bound method `__init__` matches arguments
+- error[lint:invalid-argument-type] tests/scanning/test_identifiers.py:18:25: Argument to this function is incorrect: Expected `(...) -> @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `Literal[Token]`
++ error[lint:invalid-argument-type] tests/scanning/test_identifiers.py:18:25: Argument to this function is incorrect: Expected `(...) -> Unknown`, found `Literal[Token]`
+- error[lint:invalid-argument-type] tests/scanning/test_keywords.py:17:25: Argument to this function is incorrect: Expected `(...) -> @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `Literal[Token]`
++ error[lint:invalid-argument-type] tests/scanning/test_keywords.py:17:25: Argument to this function is incorrect: Expected `(...) -> Unknown`, found `Literal[Token]`
+- error[lint:invalid-argument-type] tests/scanning/test_punctuators.py:17:25: Argument to this function is incorrect: Expected `(...) -> @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `Literal[Token]`
++ error[lint:invalid-argument-type] tests/scanning/test_punctuators.py:17:25: Argument to this function is incorrect: Expected `(...) -> Unknown`, found `Literal[Token]`
+- Found 41 diagnostics
++ Found 42 diagnostics
+
+strawberry (https://github.com/strawberry-graphql/strawberry)
+- warning[lint:unused-ignore-comment] strawberry/aiohttp/views.py:210:60: Unused blanket `type: ignore` directive
+- warning[lint:unused-ignore-comment] strawberry/asgi/__init__.py:192:60: Unused blanket `type: ignore` directive
+- warning[lint:unused-ignore-comment] strawberry/chalice/views.py:114:60: Unused blanket `type: ignore` directive
+- warning[lint:unused-ignore-comment] strawberry/channels/handlers/http_handler.py:271:12: Unused blanket `type: ignore` directive
+- warning[lint:unused-ignore-comment] strawberry/channels/handlers/http_handler.py:345:12: Unused blanket `type: ignore` directive
+- warning[lint:unused-ignore-comment] strawberry/channels/handlers/ws_handler.py:157:12: Unused blanket `type: ignore` directive
+- error[lint:invalid-argument-type] strawberry/codegen/query_codegen.py:356:17: Argument to this function is incorrect: Expected `(...) -> @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `Literal[GraphQLFragmentType]`
++ error[lint:invalid-argument-type] strawberry/codegen/query_codegen.py:356:17: Argument to this function is incorrect: Expected `(...) -> Unknown`, found `Literal[GraphQLFragmentType]`
++ error[lint:no-matching-overload] strawberry/directive.py:75:19: No overload of bound method `__init__` matches arguments
+- error[lint:unresolved-attribute] strawberry/directive.py:134:25: Type `(...) -> Unknown` has no attribute `__name__`
++ error[lint:unresolved-attribute] strawberry/directive.py:134:25: Type `(...) -> T` has no attribute `__name__`
+- warning[lint:unused-ignore-comment] strawberry/django/views.py:223:77: Unused blanket `type: ignore` directive
+- warning[lint:unused-ignore-comment] strawberry/django/views.py:283:77: Unused blanket `type: ignore` directive
++ error[lint:no-matching-overload] strawberry/experimental/pydantic/object_type.py:105:12: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] strawberry/experimental/pydantic/object_type.py:202:13: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] strawberry/extensions/context.py:89:24: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] strawberry/extensions/context.py:97:24: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] strawberry/extensions/context.py:129:20: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] strawberry/extensions/context.py:141:16: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] strawberry/extensions/context.py:155:20: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] strawberry/extensions/context.py:162:16: No overload of bound method `__init__` matches arguments
+- warning[lint:unused-ignore-comment] strawberry/federation/object_type.py:89:24: Unused blanket `type: ignore` directive
+- warning[lint:unused-ignore-comment] strawberry/flask/views.py:111:60: Unused blanket `type: ignore` directive
+- warning[lint:unused-ignore-comment] strawberry/flask/views.py:174:60: Unused blanket `type: ignore` directive
+- warning[lint:redundant-cast] strawberry/http/async_base_view.py:309:19: Value is already of type `Unknown`
+- warning[lint:unused-ignore-comment] strawberry/quart/views.py:92:60: Unused blanket `type: ignore` directive
+- warning[lint:unused-ignore-comment] strawberry/sanic/views.py:152:60: Unused blanket `type: ignore` directive
+- warning[lint:unused-ignore-comment] strawberry/types/enum.py:150:45: Unused blanket `type: ignore` directive
++ error[lint:no-matching-overload] strawberry/types/fields/resolver.py:137:25: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] strawberry/types/fields/resolver.py:166:20: No overload of bound method `__init__` matches arguments
+- warning[lint:unused-ignore-comment] strawberry/types/object_type.py:144:66: Unused blanket `type: ignore` directive
+- warning[lint:unused-ignore-comment] strawberry/types/object_type.py:160:41: Unused blanket `type: ignore` directive
+- error[lint:non-subscriptable] strawberry/utils/typing.py:381:13: Cannot subscript object of type `type` with no `__class_getitem__` method
+- Found 590 diagnostics
++ Found 583 diagnostics
+
+sockeye (https://github.com/awslabs/sockeye)
+- error[lint:invalid-argument-type] sockeye/inference.py:350:50: Argument to this function is incorrect: Expected `Sized`, found `(@Todo(Support for `typing.TypeVar` instances in type expressions) & ~list) | None | @Todo(list comprehension type)`
++ error[lint:invalid-argument-type] sockeye/inference.py:350:50: Argument to this function is incorrect: Expected `Sized`, found `(Unknown & ~list) | None | @Todo(list comprehension type)`
+- error[lint:invalid-argument-type] sockeye/inference.py:352:34: Argument to this function is incorrect: Expected `Sized`, found `(@Todo(Support for `typing.TypeVar` instances in type expressions) & ~list) | None | @Todo(list comprehension type)`
++ error[lint:invalid-argument-type] sockeye/inference.py:352:34: Argument to this function is incorrect: Expected `Sized`, found `(Unknown & ~list) | None | @Todo(list comprehension type)`
+- error[lint:invalid-argument-type] sockeye/test_utils.py:224:34: Argument to this function is incorrect: Expected `list`, found `None | @Todo(Support for `typing.TypeVar` instances in type expressions)`
++ error[lint:invalid-argument-type] sockeye/test_utils.py:224:34: Argument to this function is incorrect: Expected `list`, found `None | Unknown`
++ error[lint:division-by-zero] sockeye/utils.py:241:12: Cannot divide object of type `Literal[0]` by zero
++ error[lint:division-by-zero] sockeye/utils.py:258:22: Cannot divide object of type `Literal[0]` by zero
+- Found 367 diagnostics
++ Found 369 diagnostics
+
+kopf (https://github.com/nolar/kopf)
++ error[lint:invalid-assignment] kopf/_cogs/aiokits/aioenums.py:54:9: Object of type `FlagReasonT | Unknown` is not assignable to `FlagReasonT | None`
++ error[lint:no-matching-overload] kopf/_cogs/aiokits/aiotasks.py:344:43: No overload of bound method `__init__` matches arguments
++ error[lint:call-non-callable] kopf/_cogs/clients/auth.py:41:30: Object of type `_F` is not callable
++ error[lint:call-non-callable] kopf/_cogs/clients/auth.py:51:34: Object of type `_F` is not callable
++ error[lint:no-matching-overload] kopf/_cogs/structs/diffs.py:74:29: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] kopf/_cogs/structs/diffs.py:119:19: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] kopf/_cogs/structs/diffs.py:124:19: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] kopf/_cogs/structs/diffs.py:170:15: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] kopf/_cogs/structs/diffs.py:172:15: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] kopf/_cogs/structs/diffs.py:183:15: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] kopf/_core/actions/application.py:142:13: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] kopf/_core/actions/progression.py:279:22: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] kopf/_core/actions/progression.py:298:16: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] kopf/_core/engines/posting.py:67:13: No overload of bound method `__init__` matches arguments
++ error[lint:call-non-callable] kopf/_core/intents/callbacks.py:254:20: Object of type `_FnT` is not callable
++ error[lint:no-matching-overload] kopf/_core/reactor/orchestration.py:198:16: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] kopf/_core/reactor/orchestration.py:245:16: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] kopf/_core/reactor/queueing.py:204:32: No overload of bound method `__init__` matches arguments
++ error[lint:call-non-callable] kopf/_kits/webhacks.py:86:24: Object of type `_ServerFn` is not callable
+- error[lint:invalid-return-type] kopf/_kits/webhooks.py:272:16: Return type does not match returned value: Expected `str`, found `Literal[b""]`
+- Found 136 diagnostics
++ Found 154 diagnostics
+
+flake8 (https://github.com/pycqa/flake8)
++ error[lint:no-matching-overload] src/flake8/plugins/finder.py:139:12: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] src/flake8/plugins/finder.py:163:19: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] src/flake8/plugins/finder.py:169:19: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] src/flake8/plugins/finder.py:173:19: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] src/flake8/plugins/finder.py:210:23: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] src/flake8/plugins/finder.py:224:18: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] src/flake8/plugins/finder.py:225:19: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] src/flake8/plugins/finder.py:299:12: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] src/flake8/plugins/finder.py:344:12: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] src/flake8/plugins/finder.py:345:18: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] src/flake8/style_guide.py:409:17: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/integration/test_checker.py:85:9: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/integration/test_checker.py:88:13: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/integration/test_checker.py:273:44: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/integration/test_checker.py:338:17: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:17:12: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:23:12: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:31:12: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:48:15: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:49:18: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:67:15: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:68:18: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:172:9: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:175:13: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:181:9: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:184:13: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:190:9: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:193:13: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:199:9: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:202:13: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:206:9: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:209:13: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:269:9: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:272:13: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:276:9: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:279:13: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:285:9: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:288:13: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:294:9: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:297:13: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:303:9: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:306:13: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:310:9: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:313:13: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:317:9: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:320:13: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:369:9: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:372:13: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:378:9: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:381:13: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:387:9: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:390:13: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:407:16: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:484:9: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:487:13: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:491:9: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:494:13: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:498:9: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:501:13: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:505:9: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:508:13: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:512:9: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:515:13: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:517:9: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:520:13: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:524:9: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:527:13: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:529:9: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:532:13: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:538:9: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:541:13: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:547:9: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:550:13: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:561:35: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:566:28: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:584:35: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:589:28: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:618:12: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:685:22: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:706:12: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:716:9: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:742:26: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:743:18: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:758:19: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:764:20: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:771:33: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:772:18: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:776:34: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:777:18: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:791:26: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:792:18: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:816:12: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:825:19: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:826:18: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/plugins/finder_test.py:828:17: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/plugins/reporter_test.py:23:16: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/plugins/reporter_test.py:24:13: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/plugins/reporter_test.py:27:17: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/test_base_formatter.py:53:13: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/test_base_formatter.py:62:13: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/test_base_formatter.py:73:13: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/test_base_formatter.py:102:13: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/test_base_formatter.py:211:13: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/test_checker_manager.py:23:44: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/test_checker_manager.py:60:48: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/test_checker_manager.py:68:44: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/test_checker_manager.py:78:44: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/test_debug.py:12:16: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/test_debug.py:13:13: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/test_debug.py:16:17: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/test_debug.py:24:15: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/test_debug.py:25:18: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/test_file_checker.py:20:17: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/test_file_checker.py:30:17: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/test_file_checker.py:45:14: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/test_file_checker.py:46:9: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/test_file_checker.py:49:13: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/test_file_checker.py:56:17: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/test_file_processor.py:271:13: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/test_filenameonly_formatter.py:23:22: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/test_filenameonly_formatter.py:30:13: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/test_filenameonly_formatter.py:39:13: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/test_nothing_formatter.py:21:13: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/test_nothing_formatter.py:29:13: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/test_statistics.py:21:12: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/test_violation.py:38:13: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] tests/unit/test_violation.py:48:13: No overload of bound method `__init__` matches arguments
+- Found 77 diagnostics
++ Found 204 diagnostics
+
+SinbadCogs (https://github.com/mikeshardmind/SinbadCogs)
++ error[lint:no-matching-overload] guildjoinrestrict/core.py:322:17: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] modnotes/modnotes.py:168:23: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] modnotes/modnotes.py:183:23: No overload of bound method `__init__` matches arguments
++ error[lint:no-matchi...*[Comment body truncated]*
+
+---
+
+_Comment by @github-actions[bot] on 2025-04-28 21:35_
+
+<!-- generated-comment ecosystem -->
+## `ruff-ecosystem` results
+### Linter (stable)
+✅ ecosystem check detected no linter changes.
+
+### Linter (preview)
+✅ ecosystem check detected no linter changes.
+
+
+
+
+---
+
+_Label `red-knot` added by @AlexWaygood on 2025-04-28 21:58_
+
+---
+
+_Closed by @dhruvmanila on 2025-04-28 23:07_
+
+---

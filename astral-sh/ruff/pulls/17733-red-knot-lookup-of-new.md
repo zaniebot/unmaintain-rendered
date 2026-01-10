@@ -1,0 +1,871 @@
+```yaml
+number: 17733
+title: "[red-knot] Lookup of `__new__`"
+type: pull_request
+state: merged
+author: sharkdp
+labels:
+  - ty
+assignees: []
+merged: true
+base: main
+head: david/new-and-init-calls
+created_at: 2025-04-30T10:15:09Z
+updated_at: 2025-04-30T15:27:10Z
+url: https://github.com/astral-sh/ruff/pull/17733
+synced_at: 2026-01-10T19:03:00Z
+```
+
+# [red-knot] Lookup of `__new__`
+
+---
+
+_Pull request opened by @sharkdp on 2025-04-30 10:15_
+
+## Summary
+
+Model the lookup of `__new__` without going through `Type::try_call_dunder`. The `__new__` method is only looked up on the constructed type itself, not on the meta-type.
+
+This now removes ~930 false positives across the ecosystem (vs 255 for https://github.com/astral-sh/ruff/pull/17662). It introduces 30 new false positives related to the construction of enums via something like `Color = enum.Enum("Color", ["RED", "GREEN"])`. This is expected, because we don't handle custom metaclass `__call__` methods. The fact that we previously didn't emit diagnostics there was a coincidence (we incorrectly called `EnumMeta.__new__`, and since we don't fully understand its signature, that happened to work with `str`, `list` arguments).
+
+closes #17462
+
+## Test Plan
+
+Regression test
+
+---
+
+_Label `red-knot` added by @sharkdp on 2025-04-30 10:15_
+
+---
+
+_Comment by @github-actions[bot] on 2025-04-30 10:17_
+
+<!-- generated-comment mypy_primer -->
+## `mypy_primer` results
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+```diff
+parso (https://github.com/davidhalter/parso)
+- error[lint:missing-argument] parso/grammar.py:183:16: No argument provided for required parameter `dct` of bound method `__new__`
+- Found 105 diagnostics
++ Found 104 diagnostics
+
+nionutils (https://github.com/nion-software/nionutils)
+- error[lint:no-matching-overload] nion/utils/Recorder.py:160:41: No overload of bound method `__init__` matches arguments
+- Found 27 diagnostics
++ Found 26 diagnostics
+
+com2ann (https://github.com/ilevkivskyi/com2ann)
+- error[lint:no-matching-overload] src/com2ann.py:116:50: No overload of bound method `__init__` matches arguments
+- Found 10 diagnostics
++ Found 9 diagnostics
+
+paroxython (https://github.com/laowantong/paroxython)
+- error[lint:no-matching-overload] paroxython/make_db.py:255:26: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] paroxython/make_db.py:285:26: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] paroxython/map_taxonomy.py:170:60: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] paroxython/parse_program.py:293:31: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] paroxython/preprocess_source.py:449:36: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] paroxython/preprocess_source.py:450:50: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] paroxython/recommend_programs.py:259:49: No overload of bound method `__init__` matches arguments
+- Found 37 diagnostics
++ Found 30 diagnostics
+
+pyp (https://github.com/hauntsaninja/pyp)
+- error[lint:no-matching-overload] pyp.py:255:51: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] pyp.py:257:46: No overload of bound method `__init__` matches arguments
+- Found 19 diagnostics
++ Found 17 diagnostics
+
+attrs (https://github.com/python-attrs/attrs)
+- error[lint:no-matching-overload] tests/test_annotations.py:111:35: No overload of function `Factory` matches arguments
+- error[lint:no-matching-overload] tests/test_annotations.py:127:16: No overload of function `Factory` matches arguments
+- error[lint:no-matching-overload] tests/test_annotations.py:411:37: No overload of function `Factory` matches arguments
+- error[lint:no-matching-overload] tests/test_converters.py:205:13: No overload of function `default_if_none` matches arguments
+- error[lint:no-matching-overload] tests/test_converters.py:221:13: No overload of function `default_if_none` matches arguments
+- error[lint:no-matching-overload] tests/test_converters.py:225:37: No overload of function `Factory` matches arguments
+- error[lint:no-matching-overload] tests/test_dunders.py:639:30: No overload of function `attrib` matches arguments
+- error[lint:no-matching-overload] tests/test_dunders.py:645:30: No overload of function `attrib` matches arguments
+- error[lint:no-matching-overload] tests/test_functional.py:43:25: No overload of function `Factory` matches arguments
+- error[lint:no-matching-overload] tests/test_functional.py:49:25: No overload of function `Factory` matches arguments
+- error[lint:no-matching-overload] tests/test_functional.py:137:25: No overload of function `Factory` matches arguments
+- error[lint:no-matching-overload] tests/test_functional.py:366:33: No overload of function `Factory` matches arguments
+- error[lint:no-matching-overload] tests/test_make.py:791:17: No overload of function `attrib` matches arguments
+- error[lint:no-matching-overload] tests/test_make.py:803:21: No overload of function `attrib` matches arguments
+- error[lint:no-matching-overload] tests/typing_example.py:413:36: No overload of function `Factory` matches arguments
+- error[lint:no-matching-overload] tests/typing_example.py:414:36: No overload of function `Factory` matches arguments
+- error[lint:no-matching-overload] tests/typing_example.py:420:40: No overload of function `Factory` matches arguments
+- error[lint:no-matching-overload] tests/typing_example.py:421:40: No overload of function `Factory` matches arguments
+- Found 663 diagnostics
++ Found 645 diagnostics
+
+anyio (https://github.com/agronholm/anyio)
+- error[lint:no-matching-overload] src/anyio/_backends/_asyncio.py:2590:19: No overload of bound method `create_connection` matches arguments
+- error[lint:no-matching-overload] src/anyio/_backends/_asyncio.py:2590:19: No overload of bound method `create_connection` matches arguments
+- error[lint:no-matching-overload] src/anyio/_backends/_asyncio.py:2590:19: No overload of bound method `create_connection` matches arguments
+- error[lint:invalid-argument-type] src/anyio/_backends/_asyncio.py:2634:13: Argument to this function is incorrect: Expected `() -> Unknown`, found `Literal[DatagramProtocol]`
+- error[lint:invalid-argument-type] src/anyio/_backends/_asyncio.py:2634:13: Argument to this function is incorrect: Expected `() -> Unknown`, found `Literal[DatagramProtocol]`
+- error[lint:invalid-argument-type] src/anyio/_backends/_asyncio.py:2634:13: Argument to this function is incorrect: Expected `() -> Unknown`, found `Literal[DatagramProtocol]`
+- Found 136 diagnostics
++ Found 130 diagnostics
+
+more-itertools (https://github.com/more-itertools/more-itertools)
+- error[lint:no-matching-overload] more_itertools/more.py:807:24: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] more_itertools/more.py:1057:23: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] more_itertools/more.py:3167:11: No overload of bound method `__init__` matches arguments
+- Found 73 diagnostics
++ Found 70 diagnostics
+
+mypy-protobuf (https://github.com/dropbox/mypy-protobuf)
+- error[lint:no-matching-overload] mypy_protobuf/main.py:166:69: No overload of bound method `__init__` matches arguments
+- Found 80 diagnostics
++ Found 79 diagnostics
+
+async-utils (https://github.com/mikeshardmind/async-utils)
+- error[lint:invalid-parameter-default] src/async_utils/_paramkey.py:52:5: Default value of type `Literal[type]` is not assignable to annotated parameter type `(object, /) -> type`
+- Found 23 diagnostics
++ Found 22 diagnostics
+
+httpx-caching (https://github.com/johtso/httpx-caching)
++ error[lint:too-many-positional-arguments] httpx_caching/_policy.py:26:25: Too many positional arguments to function `__new__`: expected 1, got 2
++ error[lint:too-many-positional-arguments] httpx_caching/_policy.py:27:33: Too many positional arguments to function `__new__`: expected 1, got 2
++ error[lint:too-many-positional-arguments] httpx_caching/_policy.py:28:31: Too many positional arguments to function `__new__`: expected 1, got 2
+- Found 45 diagnostics
++ Found 48 diagnostics
+
+sockeye (https://github.com/awslabs/sockeye)
+- error[lint:no-matching-overload] sockeye/evaluate.py:171:18: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] sockeye/evaluate.py:179:26: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] sockeye/lexicon.py:350:30: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] sockeye/utils.py:571:15: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] sockeye_contrib/plot_metrics.py:65:15: No overload of bound method `__init__` matches arguments
+- Found 350 diagnostics
++ Found 345 diagnostics
+
+starlette (https://github.com/encode/starlette)
+- error[lint:invalid-argument-type] tests/middleware/test_base.py:80:31: Argument to this function is incorrect: Expected `(...) -> Any`, found `Literal[NoResponse]`
+- error[lint:invalid-argument-type] tests/test_applications.py:125:25: Argument to this function is incorrect: Expected `(...) -> Any`, found `Literal[Homepage]`
+- error[lint:invalid-argument-type] tests/test_applications.py:259:25: Argument to this function is incorrect: Expected `(...) -> Any`, found `Literal[Homepage]`
+- error[lint:invalid-argument-type] tests/test_authentication.py:194:35: Argument to this function is incorrect: Expected `(...) -> Any`, found `Literal[Dashboard]`
+- error[lint:invalid-argument-type] tests/test_endpoints.py:22:33: Argument to this function is incorrect: Expected `(...) -> Any`, found `Literal[Homepage]`
+- error[lint:invalid-argument-type] tests/test_endpoints.py:22:74: Argument to this function is incorrect: Expected `(...) -> Any`, found `Literal[Homepage]`
+- error[lint:invalid-argument-type] tests/test_routing.py:1139:31: Argument to this function is incorrect: Expected `(...) -> Any`, found `Literal[Endpoint]`
+- error[lint:invalid-argument-type] tests/test_schemas.py:122:24: Argument to this function is incorrect: Expected `(...) -> Any`, found `Literal[OrganisationsEndpoint]`
+- Found 192 diagnostics
++ Found 184 diagnostics
+
+pybind11 (https://github.com/pybind/pybind11)
++ error[lint:invalid-argument-type] tests/test_native_enum.py:110:32: Argument to this function is incorrect: Expected `int`, found `Literal["pure_native"]`
++ error[lint:too-many-positional-arguments] tests/test_native_enum.py:110:47: Too many positional arguments to function `__new__`: expected 1, got 2
++ error[lint:invalid-argument-type] tests/test_native_enum.py:116:32: Argument to this function is incorrect: Expected `int`, found `Literal["pure_native"]`
++ error[lint:too-many-positional-arguments] tests/test_native_enum.py:116:47: Too many positional arguments to function `__new__`: expected 1, got 2
+- Found 255 diagnostics
++ Found 259 diagnostics
+
+strawberry (https://github.com/strawberry-graphql/strawberry)
+- error[lint:no-matching-overload] strawberry/channels/handlers/base.py:61:72: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] strawberry/codegen/plugins/python.py:52:45: No overload of bound method `__init__` matches arguments
+- error[lint:invalid-argument-type] strawberry/codegen/query_codegen.py:356:17: Argument to this function is incorrect: Expected `(...) -> Unknown`, found `Literal[GraphQLFragmentType]`
+- error[lint:no-matching-overload] strawberry/federation/schema.py:257:56: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] strawberry/relay/fields.py:128:61: No overload of bound method `__init__` matches arguments
+- error[lint:invalid-argument-type] strawberry/schema/types/base_scalars.py:69:29: Argument to this function is incorrect: Expected `(...) -> Unknown`, found `Literal[UUID]`
+- error[lint:no-matching-overload] strawberry/schema_codegen/__init__.py:277:61: No overload of bound method `__init__` matches arguments
+- Found 568 diagnostics
++ Found 561 diagnostics
+
+kopf (https://github.com/nolar/kopf)
+- error[lint:no-matching-overload] kopf/_cogs/structs/credentials.py:119:25: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] kopf/_cogs/structs/credentials.py:218:23: No overload of bound method `__init__` matches arguments
+- error[lint:invalid-argument-type] kopf/_kits/webhooks.py:541:20: Argument to this function is incorrect: Expected `str`, found `Literal[WebhookServer]`
+- error[lint:missing-argument] kopf/_kits/webhooks.py:541:20: No arguments provided for required parameters `bases`, `namespace` of bound method `__new__`
+- error[lint:invalid-argument-type] kopf/_kits/webhooks.py:679:22: Argument to this function is incorrect: Expected `str`, found `Literal[WebhookNgrokTunnel]`
+- error[lint:missing-argument] kopf/_kits/webhooks.py:679:22: No arguments provided for required parameters `bases`, `namespace` of bound method `__new__`
+- error[lint:invalid-argument-type] kopf/_kits/webhooks.py:682:22: Argument to this function is incorrect: Expected `str`, found `Literal[WebhookServer]`
+- error[lint:missing-argument] kopf/_kits/webhooks.py:682:22: No arguments provided for required parameters `bases`, `namespace` of bound method `__new__`
+- Found 140 diagnostics
++ Found 132 diagnostics
+
+flake8 (https://github.com/pycqa/flake8)
++ error[lint:too-many-positional-arguments] src/flake8/options/manager.py:19:26: Too many positional arguments to function `__new__`: expected 1, got 2
+- Found 203 diagnostics
++ Found 204 diagnostics
+
+flake8-pyi (https://github.com/PyCQA/flake8-pyi)
+- error[lint:no-matching-overload] pyi.py:594:57: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] pyi.py:642:57: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] pyi.py:716:52: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] pyi.py:1009:33: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] pyi.py:1010:30: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] pyi.py:1011:39: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] pyi.py:1012:44: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] pyi.py:1013:32: No overload of bound method `__init__` matches arguments
+- Found 32 diagnostics
++ Found 24 diagnostics
+
+pylox (https://github.com/sco1/pylox)
+- error[lint:invalid-argument-type] tests/scanning/test_identifiers.py:18:25: Argument to this function is incorrect: Expected `(...) -> Unknown`, found `Literal[Token]`
+- error[lint:invalid-argument-type] tests/scanning/test_keywords.py:17:25: Argument to this function is incorrect: Expected `(...) -> Unknown`, found `Literal[Token]`
+- error[lint:invalid-argument-type] tests/scanning/test_punctuators.py:17:25: Argument to this function is incorrect: Expected `(...) -> Unknown`, found `Literal[Token]`
+- Found 30 diagnostics
++ Found 27 diagnostics
+
+black (https://github.com/psf/black)
+- error[lint:no-matching-overload] src/black/handle_ipynb_magics.py:434:56: No overload of bound method `__init__` matches arguments
+- Found 134 diagnostics
++ Found 133 diagnostics
+
+pip (https://github.com/pypa/pip)
+- error[lint:invalid-argument-type] src/pip/_internal/cli/cmdoptions.py:123:5: Argument to this function is incorrect: Expected `(...) -> Unknown`, found `Literal[Option]`
+- error[lint:invalid-argument-type] src/pip/_internal/cli/cmdoptions.py:132:5: Argument to this function is incorrect: Expected `(...) -> Unknown`, found `Literal[Option]`
+- error[lint:invalid-argument-type] src/pip/_internal/cli/cmdoptions.py:144:5: Argument to this function is incorrect: Expected `(...) -> Unknown`, found `Literal[Option]`
+- error[lint:invalid-argument-type] src/pip/_internal/cli/cmdoptions.py:156:5: Argument to this function is incorrect: Expected `(...) -> Unknown`, found `Literal[Option]`
+- error[lint:invalid-argument-type] src/pip/_internal/cli/cmdoptions.py:169:5: Argument to this function is incorrect: Expected `(...) -> Unknown`, found `Literal[Option]`
+- error[lint:invalid-argument-type] src/pip/_internal/cli/cmdoptions.py:177:5: Argument to this function is incorrect: Expected `(...) -> Unknown`, found `Literal[Option]`
+- error[lint:invalid-argument-type] src/pip/_internal/cli/cmdoptions.py:184:5: Argument to this function is incorrect: Expected `(...) -> Unknown`, found `Literal[Option]`
+- error[lint:invalid-argument-type] src/pip/_internal/cli/cmdoptions.py:194:5: Argument to this function is incorrect: Expected `(...) -> Unknown`, found `Literal[Option]`
+- error[lint:invalid-argument-type] src/pip/_internal/cli/cmdoptions.py:203:5: Argument to this function is incorrect: Expected `(...) -> Unknown`, found `Literal[Option]`
+- error[lint:invalid-argument-type] src/pip/_internal/cli/cmdoptions.py:212:5: Argument to this function is incorrect: Expected `(...) -> Unknown`, found `Literal[Option]`
+- error[lint:invalid-argument-type] src/pip/_internal/cli/cmdoptions.py:226:5: Argument to this function is incorrect: Expected `(...) -> Unknown`, found `Literal[Option]`
+- error[lint:invalid-argument-type] src/pip/_internal/cli/cmdoptions.py:236:5: Argument to this function is incorrect: Expected `(...) -> Unknown`, found `Literal[PipOption]`
+- error[lint:invalid-argument-type] src/pip/_internal/cli/cmdoptions.py:247:5: Argument to this function is incorrect: Expected `(...) -> Unknown`, found `Literal[Option]`
+- error[lint:invalid-argument-type] src/pip/_internal/cli/cmdoptions.py:257:5: Argument to this function is incorrect: Expected `(...) -> Unknown`, found `Literal[Option]`
+- error[lint:invalid-argument-type] src/pip/_internal/cli/cmdoptions.py:270:5: Argument to this function is incorrect: Expected `(...) -> Unknown`, found `Literal[Option]`
+- error[lint:invalid-argument-type] src/pip/_internal/cli/cmdoptions.py:279:5: Argument to this function is incorrect: Expected `(...) -> Unknown`, found `Literal[Option]`
+- error[lint:invalid-argument-type] src/pip/_internal/cli/cmdoptions.py:288:5: Argument to this function is incorrect: Expected `(...) -> Unknown`, found `Literal[Option]`
+- error[lint:invalid-argument-type] src/pip/_internal/cli/cmdoptions.py:298:5: Argument to this function is incorrect: Expected `(...) -> Unknown`, found `Literal[Option]`
+- error[lint:invalid-argument-type] src/pip/_internal/cli/cmdoptions.py:325:5: Argument to this function is incorrect: Expected `(...) -> Unknown`, found `Literal[PipOption]`
+- error[lint:invalid-argument-type] src/pip/_internal/cli/cmdoptions.py:339:5: Argument to this function is incorrect: Expected `(...) -> Unknown`, found `Literal[PipOption]`
+- error[lint:invalid-argument-type] src/pip/_internal/cli/cmdoptions.py:350:5: Argument to this function is incorrect: Expected `(...) -> Unknown`, found `Literal[Option]`
+- error[lint:invalid-argument-type] src/pip/_internal/cli/cmdoptions.py:378:5: Argument to this function is incorrect: Expected `(...) -> Unknown`, found `Literal[Option]`
+- error[lint:invalid-argument-type] src/pip/_internal/cli/cmdoptions.py:462:5: Argument to this function is incorrect: Expected `(...) -> Unknown`, found `Literal[PipOption]`
+- error[lint:invalid-argument-type] src/pip/_internal/cli/cmdoptions.py:543:5: Argument to this function is incorrect: Expected `(...) -> Unknown`, found `Literal[Option]`
+- error[lint:invalid-argument-type] src/pip/_internal/cli/cmdoptions.py:602:5: Argument to this function is incorrect: Expected `(...) -> Unknown`, found `Literal[Option]`
+- error[lint:invalid-argument-type] src/pip/_internal/cli/cmdoptions.py:623:5: Argument to this function is incorrect: Expected `(...) -> Unknown`, found `Literal[Option]`
+- error[lint:invalid-argument-type] src/pip/_internal/cli/cmdoptions.py:639:5: Argument to this function is incorrect: Expected `(...) -> Unknown`, found `Literal[Option]`
+- error[lint:invalid-argument-type] src/pip/_internal/cli/cmdoptions.py:688:5: Argument to this function is incorrect: Expected `(...) -> Unknown`, found `Literal[PipOption]`
+- error[lint:invalid-argument-type] src/pip/_internal/cli/cmdoptions.py:728:5: Argument to this function is incorrect: Expected `(...) -> Unknown`, found `Literal[Option]`
+- error[lint:invalid-argument-type] src/pip/_internal/cli/cmdoptions.py:737:5: Argument to this function is incorrect: Expected `(...) -> Unknown`, found `Literal[Option]`
+- error[lint:invalid-argument-type] src/pip/_internal/cli/cmdoptions.py:773:5: Argument to this function is incorrect: Expected `(...) -> Unknown`, found `Literal[Option]`
+- error[lint:invalid-argument-type] src/pip/_internal/cli/cmdoptions.py:787:5: Argument to this function is incorrect: Expected `(...) -> Unknown`, found `Literal[Option]`
+- error[lint:invalid-argument-type] src/pip/_internal/cli/cmdoptions.py:795:5: Argument to this function is incorrect: Expected `(...) -> Unknown`, found `Literal[Option]`
+- error[lint:invalid-argument-type] src/pip/_internal/cli/cmdoptions.py:806:5: Argument to this function is incorrect: Expected `(...) -> Unknown`, found `Literal[Option]`
+- error[lint:invalid-argument-type] src/pip/_internal/cli/cmdoptions.py:851:5: Argument to this function is incorrect: Expected `(...) -> Unknown`, found `Literal[Option]`
+- error[lint:invalid-argument-type] src/pip/_internal/cli/cmdoptions.py:861:5: Argument to this function is incorrect: Expected `(...) -> Unknown`, found `Literal[Option]`
+- error[lint:invalid-argument-type] src/pip/_internal/cli/cmdoptions.py:891:5: Argument to this function is incorrect: Expected `(...) -> Unknown`, found `Literal[Option]`
+- error[lint:invalid-argument-type] src/pip/_internal/cli/cmdoptions.py:905:5: Argument to this function is incorrect: Expected `(...) -> Unknown`, found `Literal[Option]`
+- error[lint:invalid-argument-type] src/pip/_internal/cli/cmdoptions.py:914:5: Argument to this function is incorrect: Expected `(...) -> Unknown`, found `Literal[Option]`
+- error[lint:invalid-argument-type] src/pip/_internal/cli/cmdoptions.py:924:5: Argument to this function is incorrect: Expected `(...) -> Unknown`, found `Literal[Option]`
+- error[lint:invalid-argument-type] src/pip/_internal/cli/cmdoptions.py:932:5: Argument to this function is incorrect: Expected `(...) -> Unknown`, found `Literal[Option]`
+- error[lint:invalid-argument-type] src/pip/_internal/cli/cmdoptions.py:941:5: Argument to this function is incorrect: Expected `(...) -> Unknown`, found `Literal[Option]`
+- error[lint:invalid-argument-type] src/pip/_internal/cli/cmdoptions.py:949:5: Argument to this function is incorrect: Expected `(...) -> Unknown`, found `Literal[Option]`
+- error[lint:invalid-argument-type] src/pip/_internal/cli/cmdoptions.py:959:5: Argument to this function is incorrect: Expected `(...) -> Unknown`, found `Literal[Option]`
+- error[lint:invalid-argument-type] src/pip/_internal/cli/cmdoptions.py:993:5: Argument to this function is incorrect: Expected `(...) -> Unknown`, found `Literal[Option]`
+- error[lint:invalid-argument-type] src/pip/_internal/cli/cmdoptions.py:1007:5: Argument to this function is incorrect: Expected `(...) -> Unknown`, found `Literal[Option]`
+- error[lint:invalid-argument-type] src/pip/_internal/cli/cmdoptions.py:1019:5: Argument to this function is incorrect: Expected `(...) -> Unknown`, found `Literal[PipOption]`
+- error[lint:invalid-argument-type] src/pip/_internal/cli/cmdoptions.py:1035:5: Argument to this function is incorrect: Expected `(...) -> Unknown`, found `Literal[PipOption]`
+- error[lint:invalid-argument-type] src/pip/_internal/cli/cmdoptions.py:1046:5: Argument to this function is incorrect: Expected `(...) -> Unknown`, found `Literal[Option]`
+- error[lint:invalid-argument-type] src/pip/_internal/cli/cmdoptions.py:1062:5: Argument to this function is incorrect: Expected `(...) -> Unknown`, found `Literal[Option]`
+- error[lint:invalid-argument-type] src/pip/_internal/cli/cmdoptions.py:1076:5: Argument to this function is incorrect: Expected `(...) -> Unknown`, found `Literal[Option]`
+- error[lint:no-matching-overload] src/pip/_internal/index/sources.py:53:60: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_internal/operations/freeze.py:57:43: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_internal/operations/install/wheel.py:136:43: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_internal/resolution/legacy/resolver.py:152:65: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_vendor/pkg_resources/__init__.py:876:23: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/pip/_vendor/rich/pretty.py:983:24: No overload of bound method `__init__` matches arguments
+- Found 1217 diagnostics
++ Found 1160 diagnostics
+
+bandersnatch (https://github.com/pypa/bandersnatch)
+- error[lint:no-matching-overload] src/bandersnatch/filter.py:159:65: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/bandersnatch/storage.py:31:54: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/bandersnatch/storage.py:357:34: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/bandersnatch/tests/conftest.py:60:51: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/bandersnatch/tests/plugins/test_allowlist_name.py:27:55: No overload of bound method `__init__` matches arguments
+- Found 170 diagnostics
++ Found 165 diagnostics
+
+nox (https://github.com/wntrblm/nox)
+- error[lint:invalid-argument-type] nox/virtualenv.py:711:32: Argument to this function is incorrect: Expected `(...) -> Unknown`, found `Literal[CondaEnv]`
+- error[lint:invalid-argument-type] nox/virtualenv.py:712:32: Argument to this function is incorrect: Expected `(...) -> Unknown`, found `Literal[CondaEnv]`
+- error[lint:invalid-argument-type] nox/virtualenv.py:713:37: Argument to this function is incorrect: Expected `(...) -> Unknown`, found `Literal[CondaEnv]`
+- error[lint:invalid-argument-type] nox/virtualenv.py:714:37: Argument to this function is incorrect: Expected `(...) -> Unknown`, found `Literal[VirtualEnv]`
+- error[lint:invalid-argument-type] nox/virtualenv.py:715:31: Argument to this function is incorrect: Expected `(...) -> Unknown`, found `Literal[VirtualEnv]`
+- error[lint:invalid-argument-type] nox/virtualenv.py:716:29: Argument to this function is incorrect: Expected `(...) -> Unknown`, found `Literal[VirtualEnv]`
+- Found 55 diagnostics
++ Found 49 diagnostics
+
+stone (https://github.com/dropbox/stone)
+- error[lint:no-matching-overload] stone/frontend/ir_generator.py:165:14: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] stone/frontend/ir_generator.py:1711:24: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] stone/frontend/ir_generator.py:1712:25: No overload of bound method `__init__` matches arguments
+- Found 185 diagnostics
++ Found 182 diagnostics
+
+pydantic (https://github.com/pydantic/pydantic)
+- error[lint:no-matching-overload] pydantic/_internal/_known_annotated_metadata.py:70:55: No overload of bound method `__init__` matches arguments
+- error[lint:invalid-return-type] pydantic/_internal/_model_construction.py:768:16: Return type does not match returned value: Expected `tuple[(...) -> Unknown, tuple[ReferenceType | None]]`, found `tuple[Literal[_PydanticWeakRef], tuple[Unknown]]`
+- error[lint:no-matching-overload] pydantic/json_schema.py:158:78: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] pydantic/v1/schema.py:959:30: No overload of bound method `__init__` matches arguments
+- Found 878 diagnostics
++ Found 874 diagnostics
+
+ignite (https://github.com/pytorch/ignite)
+- error[lint:no-matching-overload] ignite/engine/engine.py:138:49: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] ignite/handlers/clearml_logger.py:850:87: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/ignite/handlers/test_clearml_logger.py:883:25: No overload of bound method `__init__` matches arguments
+- Found 2464 diagnostics
++ Found 2461 diagnostics
+
+python-chess (https://github.com/niklasf/python-chess)
+- error[lint:no-matching-overload] chess/pgn.py:1850:12: No overload of function `read_game` matches arguments
+- error[lint:no-matching-overload] chess/pgn.py:1857:17: No overload of function `read_game` matches arguments
+- Found 55 diagnostics
++ Found 53 diagnostics
+
+websockets (https://github.com/aaugustin/websockets)
+- error[lint:invalid-argument-type] src/websockets/cli.py:114:56: Argument to this function is incorrect: Expected `() -> Unknown`, found `Literal[ReadLines]`
+- error[lint:invalid-argument-type] src/websockets/cli.py:114:56: Argument to this function is incorrect: Expected `() -> Unknown`, found `Literal[ReadLines]`
+- error[lint:invalid-argument-type] src/websockets/cli.py:114:56: Argument to this function is incorrect: Expected `() -> Unknown`, found `Literal[ReadLines]`
+- error[lint:invalid-assignment] src/websockets/legacy/auth.py:179:9: Object of type `Literal[BasicAuthWebSocketServerProtocol]` is not assignable to `((...) -> BasicAuthWebSocketServerProtocol) | None`
+- error[lint:invalid-assignment] src/websockets/legacy/client.py:459:13: Object of type `Literal[WebSocketClientProtocol]` is not assignable to `((...) -> WebSocketClientProtocol) | None`
+- error[lint:invalid-assignment] src/websockets/legacy/server.py:1028:13: Object of type `Literal[WebSocketServerProtocol]` is not assignable to `((...) -> WebSocketServerProtocol) | None`
+- Found 114 diagnostics
++ Found 108 diagnostics
+
+poetry (https://github.com/python-poetry/poetry)
+- error[lint:no-matching-overload] src/poetry/console/commands/group_command.py:111:27: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/poetry/installation/executor.py:173:37: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/poetry/mixology/version_solver.py:78:13: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/poetry/mixology/version_solver.py:81:13: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/poetry/mixology/version_solver.py:167:13: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/poetry/puzzle/provider.py:136:71: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/poetry/puzzle/provider.py:596:51: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/poetry/puzzle/provider.py:611:65: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/poetry/puzzle/provider.py:890:72: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/poetry/puzzle/solver.py:240:54: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/poetry/puzzle/solver.py:248:52: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/poetry/puzzle/solver.py:384:51: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/poetry/repositories/link_sources/html.py:31:48: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/poetry/repositories/link_sources/json.py:26:48: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] src/poetry/utils/cache.py:194:66: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/repositories/link_sources/test_base.py:31:21: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] tests/repositories/link_sources/test_base.py:33:44: No overload of bound method `__init__` matches arguments
+- Found 1093 diagnostics
++ Found 1076 diagnostics
+
+jinja (https://github.com/pallets/jinja)
+- error[lint:missing-argument] docs/examples/cache_extension.py:30:25: No argument provided for required parameter `d` of bound method `__new__`
+- error[lint:too-many-positional-arguments] docs/examples/cache_extension.py:39:59: Too many positional arguments to bound method `__new__`: expected 2, got 4
+- error[lint:unknown-argument] src/jinja2/environment.py:816:67: Argument `lineno` does not match any known parameter of bound method `__new__`
+- error[lint:missing-argument] src/jinja2/environment.py:817:37: No argument provided for required parameter `d` of bound method `__new__`
+- error[lint:unknown-argument] src/jinja2/environment.py:817:58: Argument `lineno` does not match any known parameter of bound method `__new__`
+- error[lint:unknown-argument] src/jinja2/ext.py:136:64: Argument `lineno` does not match any known parameter of bound method `__new__`
+- error[lint:too-many-positional-arguments] src/jinja2/ext.py:157:13: Too many positional arguments to bound method `__new__`: expected 2, got 5
+- error[lint:unknown-argument] src/jinja2/ext.py:160:13: Argument `lineno` does not match any known parameter of bound method `__new__`
+- error[lint:missing-argument] src/jinja2/ext.py:533:42: No argument provided for required parameter `d` of bound method `__new__`
+- error[lint:missing-argument] src/jinja2/ext.py:536:33: No argument provided for required parameter `d` of bound method `__new__`
+- error[lint:missing-argument] src/jinja2/ext.py:541:31: No argument provided for required parameter `d` of bound method `__new__`
+- error[lint:too-many-positional-arguments] src/jinja2/ext.py:543:69: Too many positional arguments to bound method `__new__`: expected 2, got 5
+- error[lint:missing-argument] src/jinja2/ext.py:560:20: No argument provided for required parameter `d` of bound method `__new__`
+- error[lint:missing-argument] src/jinja2/ext.py:564:21: No argument provided for required parameter `d` of bound method `__new__`
+- error[lint:missing-argument] src/jinja2/ext.py:566:40: No argument provided for required parameter `d` of bound method `__new__`
+- error[lint:missing-argument] src/jinja2/ext.py:571:16: No argument provided for required parameter `d` of bound method `__new__`
+- error[lint:missing-argument] src/jinja2/ext.py:582:16: No arguments provided for required parameters `bases`, `d` of bound method `__new__`
+- error[lint:unknown-argument] src/jinja2/ext.py:582:31: Argument `lineno` does not match any known parameter of bound method `__new__`
+- error[lint:missing-argument] src/jinja2/ext.py:595:20: No arguments provided for required parameters `bases`, `d` of bound method `__new__`
+- error[lint:unknown-argument] src/jinja2/ext.py:595:32: Argument `lineno` does not match any known parameter of bound method `__new__`
+- error[lint:missing-argument] src/jinja2/ext.py:596:16: No arguments provided for required parameters `bases`, `d` of bound method `__new__`
+- error[lint:unknown-argument] src/jinja2/ext.py:596:31: Argument `lineno` does not match any known parameter of bound method `__new__`
+- error[lint:missing-argument] src/jinja2/ext.py:624:19: No arguments provided for required parameters `bases`, `d` of bound method `__new__`
+- error[lint:missing-argument] src/jinja2/ext.py:626:16: No argument provided for required parameter `d` of bound method `__new__`
+- error[lint:unknown-argument] src/jinja2/ext.py:626:39: Argument `lineno` does not match any known parameter of bound method `__new__`
+- error[lint:unknown-argument] src/jinja2/parser.py:231:47: Argument `lineno` does not match any known parameter of bound method `__new__`
+- error[lint:too-many-positional-arguments] src/jinja2/parser.py:234:55: Too many positional arguments to bound method `__new__`: expected 2, got 3
+- error[lint:unknown-argument] src/jinja2/parser.py:234:61: Argument `lineno` does not match any known parameter of bound method `__new__`
+- error[lint:too-many-positional-arguments] src/jinja2/parser.py:253:40: Too many positional arguments to bound method `__new__`: expected 2, got 6
+- error[lint:unknown-argument] src/jinja2/parser.py:253:70: Argument `lineno` does not match any known parameter of bound method `__new__`
+- error[lint:missing-argument] src/jinja2/parser.py:257:25: No arguments provided for required parameters `bases`, `d` of bound method `__new__`
+- error[lint:missing-argument] src/jinja2/parser.py:257:25: No arguments provided for required parameters `bases`, `d` of bound method `__new__`
+- error[lint:unknown-argument] src/jinja2/parser.py:257:34: Argument `lineno` does not match any known parameter of bound method `__new__`
+- error[lint:unknown-argument] src/jinja2/parser.py:257:34: Argument `lineno` does not match any known parameter of bound method `__new__`
+- error[lint:missing-argument] src/jinja2/parser.py:265:24: No arguments provided for required parameters `bases`, `d` of bound method `__new__`
+- error[lint:unknown-argument] src/jinja2/parser.py:265:33: Argument `lineno` does not match any known parameter of bound method `__new__`
+- error[lint:missing-argument] src/jinja2/parser.py:274:16: No arguments provided for required parameters `bases`, `d` of bound method `__new__`
+- error[lint:unknown-argument] src/jinja2/parser.py:274:27: Argument `lineno` does not match any known parameter of bound method `__new__`
+- error[lint:missing-argument] src/jinja2/parser.py:291:16: No arguments provided for required parameters `bases`, `d` of bound method `__new__`
+- error[lint:unknown-argument] src/jinja2/parser.py:291:48: Argument `lineno` does not match any known parameter of bound method `__new__`
+- error[lint:missing-argument] src/jinja2/parser.py:294:16: No argument provided for required parameter `d` of bound method `__new__`
+- error[lint:missing-argument] src/jinja2/parser.py:297:16: No arguments provided for required parameters `bases`, `d` of bound method `__new__`
+- error[lint:unknown-argument] src/jinja2/parser.py:297:28: Argument `lineno` does not match any known parameter of bound method `__new__`
+- error[lint:missing-argument] src/jinja2/parser.py:329:16: No arguments provided for required parameters `bases`, `d` of bound method `__new__`
+- error[lint:unknown-argument] src/jinja2/parser.py:329:30: Argument `lineno` does not match any known parameter of bound method `__new__`
+- error[lint:missing-argument] src/jinja2/parser.py:346:16: No arguments provided for required parameters `bases`, `d` of bound method `__new__`
+- error[lint:unknown-argument] src/jinja2/parser.py:346:30: Argument `lineno` does not match any known parameter of bound method `__new__`
+- error[lint:missing-argument] src/jinja2/parser.py:358:16: No arguments provided for required parameters `bases`, `d` of bound method `__new__`
+- error[lint:unknown-argument] src/jinja2/parser.py:358:29: Argument `lineno` does not match any known parameter of bound method `__new__`
+- error[lint:missing-argument] src/jinja2/parser.py:365:16: No arguments provided for required parameters `bases`, `d` of bound method `__new__`
+- error[lint:unknown-argument] src/jinja2/parser.py:365:33: Argument `lineno` does not match any known parameter of bound method `__new__`
+- error[lint:missing-argument] src/jinja2/parser.py:423:16: No arguments provided for required parameters `bases`, `d` of bound method `__new__`
+- error[lint:unknown-argument] src/jinja2/parser.py:423:32: Argument `lineno` does not match any known parameter of bound method `__new__`
+- error[lint:missing-argument] src/jinja2/parser.py:438:16: No arguments provided for required parameters `bases`, `d` of bound method `__new__`
+- error[lint:unknown-argument] src/jinja2/parser.py:438:34: Argument `lineno` does not match any known parameter of bound method `__new__`
+- error[lint:missing-argument] src/jinja2/parser.py:444:16: No arguments provided for required parameters `bases`, `d` of bound method `__new__`
+- error[lint:unknown-argument] src/jinja2/parser.py:444:28: Argument `lineno` does not match any known parameter of bound method `__new__`
+- error[lint:missing-argument] src/jinja2/parser.py:451:16: No arguments provided for required parameters `bases`, `d` of bound method `__new__`
+- error[lint:unknown-argument] src/jinja2/parser.py:451:29: Argument `lineno` does not match any known parameter of bound method `__new__`
+- error[lint:unknown-argument] src/jinja2/parser.py:492:55: Argument `lineno` does not match any known parameter of bound method `__new__`
+- error[lint:too-many-positional-arguments] src/jinja2/parser.py:532:50: Too many positional arguments to bound method `__new__`: expected 2, got 3
+- error[lint:unknown-argument] src/jinja2/parser.py:532:57: Argument `lineno` does not match any known parameter of bound method `__new__`
+- error[lint:unknown-argument] src/jinja2/parser.py:541:42: Argument `lineno` does not match any known parameter of bound method `__new__`
+- error[lint:unknown-argument] src/jinja2/parser.py:550:43: Argument `lineno` does not match any known parameter of bound method `__new__`
+- error[lint:missing-argument] src/jinja2/parser.py:557:20: No argument provided for required parameter `d` of bound method `__new__`
+- error[lint:unknown-argument] src/jinja2/parser.py:557:48: Argument `lineno` does not match any known parameter of bound method `__new__`
+- error[lint:unknown-argument] src/jinja2/parser.py:581:41: Argument `lineno` does not match any known parameter of bound method `__new__`
+- error[lint:missing-argument] src/jinja2/parser.py:602:16: No argument provided for required parameter `d` of bound method `__new__`
+- error[lint:unknown-argument] src/jinja2/parser.py:602:35: Argument `lineno` does not match any known parameter of bound method `__new__`
+- error[lint:unknown-argument] src/jinja2/parser.py:621:43: Argument `lineno` does not match any known parameter of bound method `__new__`
+- error[lint:missing-argument] src/jinja2/parser.py:632:20: No argument provided for required parameter `d` of bound method `__new__`
+- error[lint:unknown-argument] src/jinja2/parser.py:632:55: Argument `lineno` does not match any known parameter of bound method `__new__`
+- error[lint:missing-argument] src/jinja2/parser.py:635:20: No argument provided for required parameter `d` of bound method `__new__`
+- error[lint:unknown-argument] src/jinja2/parser.py:635:55: Argument `lineno` does not match any known parameter of bound method `__new__`
+- error[lint:missing-argument] src/jinja2/parser.py:651:24: No argument provided for required parameter `d` of bound method `__new__`
+- error[lint:unknown-argument] src/jinja2/parser.py:651:69: Argument `lineno` does not match any known parameter of bound method `__new__`
+- error[lint:missing-argument] src/jinja2/parser.py:653:24: No argument provided for required parameter `d` of bound method `__new__`
+- error[lint:unknown-argument] src/jinja2/parser.py:653:42: Argument `lineno` does not match any known parameter of bound method `__new__`
+- error[lint:unknown-argument] src/jinja2/parser.py:659:61: Argument `lineno` does not match any known parameter of bound method `__new__`
+- error[lint:unknown-argument] src/jinja2/parser.py:661:56: Argument `lineno` does not match any known parameter of bound method `__new__`
+- error[lint:missing-argument] src/jinja2/parser.py:669:20: No argument provided for required parameter `d` of bound method `__new__`
+- error[lint:unknown-argument] src/jinja2/parser.py:669:46: Argument `lineno` does not match any known parameter of bound method `__new__`
+- error[lint:missing-argument] src/jinja2/parser.py:672:20: No argument provided for required parameter `d` of bound method `__new__`
+- error[lint:unknown-argument] src/jinja2/parser.py:672:45: Argument `lineno` does not match any known parameter of bound method `__new__`
+- error[lint:unknown-argument] src/jinja2/parser.py:752:42: Argument `lineno` does not match any known parameter of bound method `__new__`
+- error[lint:missing-argument] src/jinja2/parser.py:764:16: No argument provided for required parameter `d` of bound method `__new__`
+- error[lint:unknown-argument] src/jinja2/parser.py:764:34: Argument `lineno` does not match any known parameter of bound method `__new__`
+- error[lint:unknown-argument] src/jinja2/parser.py:777:49: Argument `lineno` does not match any known parameter of bound method `__new__`
+- error[lint:missing-argument] src/jinja2/parser.py:779:16: No argument provided for required parameter `d` of bound method `__new__`
+- error[lint:unknown-argument] src/jinja2/parser.py:779:34: Argument `lineno` does not match any known parameter of bound method `__new__`
+- error[lint:too-many-positional-arguments] src/jinja2/parser.py:820:45: Too many positional arguments to bound method `__new__`: expected 2, got 3
+- error[lint:unknown-argument] src/jinja2/parser.py:820:53: Argument `lineno` does not match any known parameter of bound method `__new__`
+- error[lint:missing-argument] src/jinja2/parser.py:824:19: No argument provided for required parameter `d` of bound method `__new__`
+- error[lint:unknown-argument] src/jinja2/parser.py:824:49: Argument `lineno` does not match any known parameter of bound method `__new__`
+- error[lint:too-many-positional-arguments] src/jinja2/parser.py:825:45: Too many positional arguments to bound method `__new__`: expected 2, got 3
+- error[lint:unknown-argument] src/jinja2/parser.py:825:53: Argument `lineno` does not match any known parameter of bound method `__new__`
+- error[lint:unknown-argument] src/jinja2/parser.py:836:49: Argument `lineno` does not match any known parameter of bound method `__new__`
+- error[lint:too-many-positional-arguments] src/jinja2/parser.py:837:45: Too many positional arguments to bound method `__new__`: expected 2, got 3
+- error[lint:unknown-argument] src/jinja2/parser.py:837:53: Argument `lineno` does not match any known parameter of bound method `__new__`
+- error[lint:missing-argument] src/jinja2/parser.py:870:16: No arguments provided for required parameters `bases`, `d` of bound method `__new__`
+- error[lint:unknown-argument] src/jinja2/parser.py:870:28: Argument `lineno` does not match any known parameter of bound method `__new__`
+- error[lint:unknown-argument] src/jinja2/parser.py:917:61: Argument `lineno` does not match any known parameter of bound method `__new__`
+- error[lint:too-many-positional-arguments] src/jinja2/parser.py:933:39: Too many positional arguments to bound method `__new__`: expected 2, got 5
+- error[lint:unknown-argument] src/jinja2/parser.py:933:69: Argument `lineno` does not match any known parameter of bound method `__new__`
+- error[lint:too-many-positional-arguments] src/jinja2/parser.py:953:29: Too many positional arguments to bound method `__new__`: expected 2, got 6
+- error[lint:unknown-argument] src/jinja2/parser.py:953:65: Argument `lineno` does not match any known parameter of bound method `__new__`
+- error[lint:too-many-positional-arguments] src/jinja2/parser.py:990:25: Too many positional arguments to bound method `__new__`: expected 2, got 6
+- error[lint:unknown-argument] src/jinja2/parser.py:990:61: Argument `lineno` does not match any known parameter of bound method `__new__`
+- error[lint:missing-argument] src/jinja2/parser.py:993:20: No argument provided for required parameter `d` of bound method `__new__`
+- error[lint:unknown-argument] src/jinja2/parser.py:993:36: Argument `lineno` does not match any known parameter of bound method `__new__`
+- error[lint:missing-argument] src/jinja2/parser.py:1009:29: No argument provided for required parameter `d` of bound method `__new__`
+- error[lint:unknown-argument] src/jinja2/parser.py:1009:58: Argument `lineno` does not match any known parameter of bound method `__new__`
+- error[lint:missing-argument] src/jinja2/parser.py:1017:34: No argument provided for required parameter `d` of bound method `__new__`
+- error[lint:unknown-argument] src/jinja2/parser.py:1017:66: Argument `lineno` does not match any known parameter of bound method `__new__`
+- error[lint:missing-argument] src/jinja2/parser.py:1047:18: No argument provided for required parameter `d` of bound method `__new__`
+- error[lint:unknown-argument] src/jinja2/parser.py:1047:50: Argument `lineno` does not match any known parameter of bound method `__new__`
+- error[lint:missing-argument] tests/test_ext.py:158:16: No argument provided for required parameter `d` of bound method `__new__`
+- error[lint:missing-argument] tests/test_ext.py:163:25: No argument provided for required parameter `d` of bound method `__new__`
+- error[lint:missing-argument] tests/test_ext.py:165:25: No argument provided for required parameter `d` of bound method `__new__`
+- error[lint:missing-argument] tests/test_ext.py:492:24: No arguments provided for required parameters `bases`, `d` of bound method `__new__`
+- error[lint:unknown-argument] tests/test_ext.py:492:36: Argument `lineno` does not match any known parameter of bound method `__new__`
+- error[lint:unknown-argument] tests/test_ext.py:501:67: Argument `lineno` does not match any known parameter of bound method `__new__`
+- error[lint:missing-argument] tests/test_ext.py:718:24: No arguments provided for required parameters `bases`, `d` of bound method `__new__`
+- error[lint:unknown-argument] tests/test_ext.py:718:43: Argument `lineno` does not match any known parameter of bound method `__new__`
+- error[lint:too-many-positional-arguments] tests/test_idtracking.py:9:9: Too many positional arguments to bound method `__new__`: expected 2, got 6
+- error[lint:missing-argument] tests/test_idtracking.py:9:10: No argument provided for required parameter `d` of bound method `__new__`
+- error[lint:missing-argument] tests/test_idtracking.py:14:12: No argument provided for required parameter `d` of bound method `__new__`
+- error[lint:missing-argument] tests/test_idtracking.py:41:19: No argument provided for required parameter `d` of bound method `__new__`
+- error[lint:missing-argument] tests/test_idtracking.py:41:33: No argument provided for required parameter `d` of bound method `__new__`
+- error[lint:too-many-positional-arguments] tests/test_idtracking.py:41:70: Too many positional arguments to bound method `__new__`: expected 2, got 4
+- error[lint:too-many-positional-arguments] tests/test_idtracking.py:47:9: Too many positional arguments to bound method `__new__`: expected 2, got 4
+- error[lint:missing-argument] tests/test_idtracking.py:49:13: No argument provided for required parameter `d` of bound method `__new__`
+- error[lint:missing-argument] tests/test_idtracking.py:51:21: No argument provided for required parameter `d` of bound method `__new__`
+- error[lint:missing-argument] tests/test_idtracking.py:53:21: No argument provided for required parameter `d` of bound method `__new__`
+- error[lint:missing-argument] tests/test_idtracking.py:55:21: No argument provided for required parameter `d` of bound method `__new__`
+- error[lint:missing-argument] tests/test_idtracking.py:59:50: No argument provided for required parameter `d` of bound method `__new__`
+- error[lint:missing-argument] tests/test_idtracking.py:61:13: No argument provided for required parameter `d` of bound method `__new__`
+- error[lint:missing-argument] tests/test_idtracking.py:63:21: No argument provided for required parameter `d` of bound method `__new__`
+- error[lint:missing-argument] tests/test_idtracking.py:65:21: No argument provided for required parameter `d` of bound method `__new__`
+- error[lint:too-many-positional-arguments] tests/test_idtracking.py:74:37: Too many positional arguments to bound method `__new__`: expected 2, got 6
+- error[lint:missing-argument] tests/test_idtracking.py:80:29: No argument provided for required parameter `d` of bound method `__new__`
+- error[lint:missing-argument] tests/test_idtracking.py:85:42: No argument provided for required parameter `d` of bound method `__new__`
+- error[lint:too-many-positional-arguments] tests/test_idtracking.py:86:41: Too many positional arguments to bound method `__new__`: expected 2, got 5
+- error[lint:too-many-positional-arguments] tests/test_idtracking.py:93:25: Too many positional arguments to bound method `__new__`: expected 2, got 4
+- error[lint:too-many-positional-arguments] tests/test_idtracking.py:104:9: Too many positional arguments to bound method `__new__`: expected 2, got 6
+- error[lint:missing-argument] tests/test_idtracking.py:105:13: No argument provided for required parameter `d` of bound method `__new__`
+- error[lint:missing-argument] tests/test_idtracking.py:107:21: No argument provided for required parameter `d` of bound method `__new__`
+- error[lint:missing-argument] tests/test_idtracking.py:109:21: No argument provided for required parameter `d` of bound method `__new__`
+- error[lint:missing-argument] tests/test_idtracking.py:112:27: No argument provided for required parameter `d` of bound method `__new__`
+- error[lint:too-many-positional-arguments] tests/test_idtracking.py:112:61: Too many positional arguments to bound method `__new__`: expected 2, got 3
+- error[lint:missing-argument] tests/test_idtracking.py:113:13: No argument provided for required parameter `d` of bound method `__new__`
+- error[lint:missing-argument] tests/test_idtracking.py:113:27: No argument provided for required parameter `d` of bound method `__new__`
+- error[lint:missing-argument] tests/test_idtracking.py:123:13: No argument provided for required parameter `d` of bound method `__new__`
+- error[lint:missing-argument] tests/test_idtracking.py:125:21: No argument provided for required parameter `d` of bound method `__new__`
+- error[lint:too-many-positional-arguments] tests/test_idtracking.py:129:25: Too many positional arguments to bound method `__new__`: expected 2, got 5
+- error[lint:missing-argument] tests/test_idtracking.py:133:21: No argument provided for required parameter `d` of bound method `__new__`
+- error[lint:missing-argument] tests/test_idtracking.py:137:13: No argument provided for required parameter `d` of bound method `__new__`
+- error[lint:missing-argument] tests/test_idtracking.py:137:27: No argument provided for required parameter `d` of bound method `__new__`
+- error[lint:too-many-positional-arguments] tests/test_idtracking.py:139:9: Too many positional arguments to bound method `__new__`: expected 2, got 4
+- error[lint:missing-argument] tests/test_idtracking.py:143:12: No argument provided for required parameter `d` of bound method `__new__`
+- error[lint:missing-argument] tests/test_idtracking.py:145:13: No argument provided for required parameter `d` of bound method `__new__`
+- error[lint:missing-argument] tests/test_idtracking.py:145:27: No argument provided for required parameter `d` of bound method `__new__`
+- error[lint:missing-argument] tests/test_idtracking.py:213:12: No argument provided for required parameter `d` of bound method `__new__`
+- error[lint:missing-argument] tests/test_idtracking.py:217:64: No argument provided for required parameter `d` of bound method `__new__`
+- error[lint:too-many-positional-arguments] tests/test_idtracking.py:218:17: Too many positional arguments to bound method `__new__`: expected 2, got 4
+- error[lint:missing-argument] tests/test_idtracking.py:237:12: No argument provided for required parameter `d` of bound method `__new__`
+- error[lint:missing-argument] tests/test_idtracking.py:239:59: No argument provided for required parameter `d` of bound method `__new__`
+- error[lint:missing-argument] tests/test_idtracking.py:242:64: No argument provided for required parameter `d` of bound method `__new__`
+- error[lint:too-many-positional-arguments] tests/test_idtracking.py:243:17: Too many positional arguments to bound method `__new__`: expected 2, got 4
+- error[lint:too-many-positional-arguments] tests/test_idtracking.py:265:9: Too many positional arguments to bound method `__new__`: expected 2, got 6
+- error[lint:missing-argument] tests/test_idtracking.py:268:57: No argument provided for required parameter `d` of bound method `__new__`
+- error[lint:too-many-positional-arguments] tests/test_idtracking.py:269:17: Too many positional arguments to bound method `__new__`: expected 2, got 4
+- error[lint:missing-argument] tests/test_idtracking.py:272:27: No argument provided for required parameter `d` of bound method `__new__`
+- error[lint:too-many-positional-arguments] tests/test_idtracking.py:272:61: Too many positional arguments to bound method `__new__`: expected 2, got 3
+- error[lint:missing-argument] tests/test_idtracking.py:279:12: No argument provided for required parameter `d` of bound method `__new__`
+- error[lint:missing-argument] tests/test_idtracking.py:280:49: No argument provided for required parameter `d` of bound method `__new__`
+- Found 445 diagnostics
++ Found 269 diagnostics
+
+beartype (https://github.com/beartype/beartype)
+- error[lint:no-matching-overload] beartype/_decor/_type/decortype.py:298:55: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] beartype/_util/cache/pool/utilcachepool.py:127:51: No overload of bound method `__init__` matches arguments
+- Found 570 diagnostics
++ Found 568 diagnostics
+
+cki-lib (https://gitlab.com/cki-project/cki-lib)
++ error[lint:too-many-positional-arguments] cki_lib/stomp.py:22:34: Too many positional arguments to function `__new__`: expected 1, got 2
+- Found 173 diagnostics
++ Found 174 diagnostics
+
+psycopg (https://github.com/psycopg/psycopg)
++ error[lint:too-many-positional-arguments] psycopg/psycopg/types/enum.py:175:31: Too many positional arguments to function `__new__`: expected 1, got 2
++ error[lint:unknown-argument] psycopg/psycopg/types/enum.py:175:39: Argument `module` does not match any known parameter of function `__new__`
++ error[lint:too-many-positional-arguments] tests/types/test_enum.py:28:5: Too many positional arguments to function `__new__`: expected 1, got 2
++ error[lint:unknown-argument] tests/types/test_enum.py:29:5: Argument `type` does not match any known parameter of function `__new__`
++ error[lint:too-many-positional-arguments] tests/types/test_enum.py:310:39: Too many positional arguments to function `__new__`: expected 1, got 2
++ error[lint:too-many-positional-arguments] tests/types/test_enum.py:323:37: Too many positional arguments to function `__new__`: expected 1, got 2
++ error[lint:too-many-positional-arguments] tests/types/test_enum.py:339:39: Too many positional arguments to function `__new__`: expected 1, got 2
++ error[lint:too-many-positional-arguments] tests/types/test_enum.py:356:9: Too many positional arguments to function `__new__`: expected 1, got 2
+- Found 1270 diagnostics
++ Found 1278 diagnostics
+
+isort (https://github.com/pycqa/isort)
+- error[lint:no-matching-overload] isort/parse.py:167:21: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] isort/parse.py:168:17: No overload of bound method `__init__` matches arguments
++ error[lint:too-many-positional-arguments] isort/wrap_modes.py:373:18: Too many positional arguments to function `__new__`: expected 1, got 2
+- Found 51 diagnostics
++ Found 50 diagnostics
+
+werkzeug (https://github.com/pallets/werkzeug)
+- error[lint:no-matching-overload] src/werkzeug/test.py:742:28: No overload of bound method `__init__` matches arguments
+- Found 471 diagnostics
++ Found 470 diagnostics
+
+mongo-python-driver (https://github.com/mongodb/mongo-python-driver)
+- error[lint:invalid-argument-type] pymongo/asynchronous/auth.py:439:38: Argument to this function is incorrect: Expected `(...) -> Unknown`, found `Literal[_ScramContext]`
+- error[lint:invalid-argument-type] pymongo/asynchronous/auth.py:440:40: Argument to this function is incorrect: Expected `(...) -> Unknown`, found `Literal[_ScramContext]`
+- error[lint:invalid-argument-type] pymongo/asynchronous/auth.py:442:34: Argument to this function is incorrect: Expected `(...) -> Unknown`, found `Literal[_ScramContext]`
+- error[lint:no-matching-overload] pymongo/asynchronous/mongo_client.py:2188:33: No overload of bound method `__init__` matches arguments
+- error[lint:invalid-argument-type] pymongo/synchronous/auth.py:434:38: Argument to this function is incorrect: Expected `(...) -> Unknown`, found `Literal[_ScramContext]`
+- error[lint:invalid-argument-type] pymongo/synchronous/auth.py:435:40: Argument to this function is incorrect: Expected `(...) -> Unknown`, found `Literal[_ScramContext]`
+- error[lint:invalid-argument-type] pymongo/synchronous/auth.py:437:34: Argument to this function is incorrect: Expected `(...) -> Unknown`, found `Literal[_ScramContext]`
+- error[lint:no-matching-overload] pymongo/synchronous/mongo_client.py:2182:33: No overload of bound method `__init__` matches arguments
+- Found 562 diagnostics
++ Found 554 diagnostics
+
+asynq (https://github.com/quora/asynq)
+- error[lint:no-matching-overload] asynq/tests/test_profiler.py:76:21: No overload of bound method `__init__` matches arguments
+- Found 247 diagnostics
++ Found 246 diagnostics
+
+dulwich (https://github.com/dulwich/dulwich)
+- error[lint:no-matching-overload] dulwich/diff_tree.py:503:19: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] dulwich/diff_tree.py:506:22: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] dulwich/pack.py:1429:51: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] dulwich/pack.py:1430:53: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] dulwich/pack.py:2568:56: No overload of bound method `__init__` matches arguments
+- Found 128 diagnostics
++ Found 123 diagnostics
+
+mitmproxy (https://github.com/mitmproxy/mitmproxy)
+- error[lint:no-matching-overload] mitmproxy/contentviews/_view_http3.py:81:71: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] mitmproxy/proxy/layers/http/__init__.py:943:42: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] mitmproxy/proxy/layers/http/_http2.py:503:29: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] mitmproxy/proxy/layers/http/_http_h2.py:57:31: No overload of bound method `__init__` matches arguments
+- error[lint:invalid-argument-type] test/mitmproxy/addons/test_next_layer.py:495:25: Argument to this function is incorrect: Expected `(...) -> Unknown`, found `Literal[HttpLayer]`
+- error[lint:invalid-argument-type] test/mitmproxy/addons/test_next_layer.py:496:25: Argument to this function is incorrect: Expected `(...) -> Unknown`, found `Literal[HttpStream]`
+- error[lint:invalid-argument-type] test/mitmproxy/addons/test_next_layer.py:526:25: Argument to this function is incorrect: Expected `(...) -> Unknown`, found `Literal[HttpLayer]`
+- error[lint:invalid-argument-type] test/mitmproxy/addons/test_next_layer.py:527:25: Argument to this function is incorrect: Expected `(...) -> Unknown`, found `Literal[HttpStream]`
+- error[lint:invalid-argument-type] test/mitmproxy/addons/test_next_layer.py:538:25: Argument to this function is incorrect: Expected `(...) -> Unknown`, found `Literal[HttpLayer]`
+- error[lint:invalid-argument-type] test/mitmproxy/addons/test_next_layer.py:539:25: Argument to this function is incorrect: Expected `(...) -> Unknown`, found `Literal[HttpStream]`
+- error[lint:invalid-argument-type] test/mitmproxy/addons/test_next_layer.py:556:25: Argument to this function is incorrect: Expected `(...) -> Unknown`, found `Literal[HttpLayer]`
+- error[lint:invalid-argument-type] test/mitmproxy/addons/test_next_layer.py:557:25: Argument to this function is incorrect: Expected `(...) -> Unknown`, found `Literal[HttpStream]`
+- error[lint:invalid-argument-type] test/mitmproxy/addons/test_next_layer.py:577:25: Argument to this function is incorrect: Expected `(...) -> Unknown`, found `Literal[HttpLayer]`
+- error[lint:invalid-argument-type] test/mitmproxy/addons/test_next_layer.py:578:25: Argument to this function is incorrect: Expected `(...) -> Unknown`, found `Literal[HttpStream]`
+- Found 1458 diagnostics
++ Found 1444 diagnostics
+
+dedupe (https://github.com/dedupeio/dedupe)
+- error[lint:no-matching-overload] dedupe/blocking.py:33:12: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] dedupe/clustering.py:241:46: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] dedupe/convenience.py:319:26: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] dedupe/training.py:163:26: No overload of bound method `__init__` matches arguments
+- Found 118 diagnostics
++ Found 114 diagnostics
+
+paasta (https://github.com/yelp/paasta)
+- error[lint:no-matching-overload] paasta_tools/check_spark_jobs.py:134:29: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] paasta_tools/contrib/bounce_log_latency_parser.py:26:18: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] paasta_tools/contrib/check_orphans.py:225:68: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] paasta_tools/contrib/check_orphans.py:248:68: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] paasta_tools/contrib/shared_ip_check.py:21:24: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] paasta_tools/envoy_tools.py:229:9: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] paasta_tools/envoy_tools.py:293:60: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] paasta_tools/firewall.py:316:22: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] paasta_tools/firewall_update.py:142:32: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] paasta_tools/instance/kubernetes.py:772:9: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] paasta_tools/instance/kubernetes.py:1044:29: No overload of bound method `__init__` matches arguments...*[Comment body truncated]*
+
+---
+
+_Renamed from "[red-knot] Implicit `__new__` and `__init__` calls" to "[red-knot] Lookup of `__new__`" by @sharkdp on 2025-04-30 11:22_
+
+---
+
+_Marked ready for review by @sharkdp on 2025-04-30 13:01_
+
+---
+
+_Review requested from @carljm by @sharkdp on 2025-04-30 13:01_
+
+---
+
+_Review requested from @AlexWaygood by @sharkdp on 2025-04-30 13:01_
+
+---
+
+_Review requested from @dcreager by @sharkdp on 2025-04-30 13:01_
+
+---
+
+_Review comment by @AlexWaygood on `crates/red_knot_python_semantic/resources/mdtest/call/constructor.md`:8 on 2025-04-30 13:29_
+
+I find the second clause of this first sentence confusing, because it's not clear who "the user" is: a custom metaclass could easily come from a third-party library as well as first-party code. Maybe something like this?
+
+```suggestion
+When classes are instantiated, Python calls the metaclass's `__call__` method. The metaclass of
+most Python classes is the class `builtins.type`.
+
+`type.__call__` calls the `__new__` method of the class, which is responsible for creating the instance.
+`__init__` is then called on the constructed instance with the same arguments that were passed to `__new__`.
+```
+
+---
+
+_Review comment by @AlexWaygood on `crates/red_knot_python_semantic/resources/mdtest/call/constructor.md`:10 on 2025-04-30 13:30_
+
+```suggestion
+Both `__new__` and `__init__` are looked up using the descriptor protocol, i.e., `__get__` is called
+```
+
+---
+
+_Review comment by @AlexWaygood on `crates/red_knot_python_semantic/resources/mdtest/call/constructor.md`:11 on 2025-04-30 13:31_
+
+```suggestion
+if these attributes are descriptors. `__new__` is always treated as a static method, i.e., `cls` is
+```
+
+---
+
+_Review comment by @AlexWaygood on `crates/red_knot_python_semantic/resources/mdtest/call/constructor.md`:13 on 2025-04-30 13:31_
+
+```suggestion
+passed as the first argument. `__init__` has no special handling; it is fetched as a bound method and
+called just like any other dunder method.
+```
+
+---
+
+_Review comment by @AlexWaygood on `crates/red_knot_python_semantic/resources/mdtest/call/constructor.md`:22 on 2025-04-30 13:32_
+
+```suggestion
+- If `__new__` is defined but `__init__` is not, `object.__init__` will allow arbitrary arguments!
+```
+
+---
+
+_Review comment by @dcreager on `crates/red_knot_python_semantic/resources/mdtest/call/constructor.md`:149 on 2025-04-30 13:53_
+
+nit: I think these new sections should be `h4`s not `h3`s
+
+---
+
+_Review comment by @dcreager on `crates/red_knot_python_semantic/src/types.rs`:4363 on 2025-04-30 13:56_
+
+nit: If it's not too invasive, can we update `try_call` to take in `&mut CallArgumentTypes`? That would let you avoid the clone here. (I did that in a previous PR to `try_call_dunder_with_policy`) It's probably not performance-critical, just seems like conceptually unnecessary work.
+
+---
+
+_@dcreager reviewed on 2025-04-30 13:58_
+
+---
+
+_Review comment by @AlexWaygood on `crates/red_knot_python_semantic/src/types.rs`:4372 on 2025-04-30 14:04_
+
+it feels like we should have an API that allows us to do this mapping operation more easily, but it doesn't look like we have one right now (and a single use-case probably doesn't justify spending time on it right now)
+
+---
+
+_Review comment by @AlexWaygood on `crates/red_knot_python_semantic/src/types/class.rs`:879 on 2025-04-30 14:06_
+
+```suggestion
+                    if class.is_known(db, KnownClass::Type)
+```
+
+---
+
+_@AlexWaygood reviewed on 2025-04-30 14:06_
+
+not yet a full review
+
+---
+
+_Review comment by @AlexWaygood on `crates/red_knot_python_semantic/src/symbol.rs`:112 on 2025-04-30 14:30_
+
+Worth adding a note and/or link here to say that this is part of our modelling of the descriptor protocol? A first-time reader of the codebase might wonder why we check for `__get__` here
+
+---
+
+_Review request for @carljm removed by @carljm on 2025-04-30 14:31_
+
+---
+
+_Review comment by @AlexWaygood on `crates/red_knot_python_semantic/src/types.rs`:6151 on 2025-04-30 14:41_
+
+am I correct in saying that this represents the fact that there are three possible ways a `__new__` call could generate a diagnostic?
+
+1. It could be called with incorrect arguments
+2. It could be possibly unbound
+3. It could be called with incorrect arguments AND be possibly unbound
+
+I think the enum structure is fine, but you could possibly add a doc-comment to the enum as a whole
+
+---
+
+_Review comment by @AlexWaygood on `crates/red_knot_python_semantic/src/types.rs`:6215 on 2025-04-30 14:46_
+
+nit: I would name this variable
+
+```suggestion
+        let report_dunder_new_error = |error: &DunderNewCallError<'db>| match error {
+```
+
+to make clear that it's an error to do with the `__new__` method, not a "new error"
+
+---
+
+_Review comment by @AlexWaygood on `crates/red_knot_python_semantic/src/types/class.rs`:794 on 2025-04-30 14:47_
+
+similarly, this would be clearer if it were named `dunder_new_symbol` or similar
+
+---
+
+_@AlexWaygood reviewed on 2025-04-30 14:49_
+
+---
+
+_@AlexWaygood approved on 2025-04-30 14:50_
+
+This looks excellent, thank you
+
+---
+
+_@sharkdp reviewed on 2025-04-30 14:51_
+
+---
+
+_Review comment by @sharkdp on `crates/red_knot_python_semantic/src/types.rs`:4363 on 2025-04-30 14:51_
+
+I did that in https://github.com/astral-sh/ruff/pull/17733/commits/7768b9bf1ea2e27163c11e9c32492ea11dcd0c55. It's a bit awkward if you want to call it with a temporary `CallArgumentTypes`:
+```
+x.try_call(db, &mut CallArgumentTypes::positional(…)…)
+```
+
+I'm not entirely sure why the call API takes in mutable references to `CallArgumentTypes` in functions like `Bindings::check_types` etc.? For performance reasons.. since we want to make `.with_self` efficient? It looks a bit weird, because as a caller, I don't know if it's guaranteed that my call arguments are left unmodified.
+
+What do you think?
+
+---
+
+_@sharkdp reviewed on 2025-04-30 14:55_
+
+---
+
+_Review comment by @sharkdp on `crates/red_knot_python_semantic/src/types.rs`:4372 on 2025-04-30 14:55_
+
+Yeah, I think this is a relatively strange call site since we're not just mapping type => type, but type => option of result of call outcome, so I don't think it warrants introducing a new helper.
+
+---
+
+_Review comment by @dcreager on `crates/red_knot_python_semantic/src/types.rs`:4363 on 2025-04-30 15:22_
+
+> For performance reasons.. since we want to make `.with_self` efficient?
+
+That's right, so that we're not cloning the non-bound arguments each time we prepend a bound `self`.
+
+> It looks a bit weird, because as a caller, I don't know if it's guaranteed that my call arguments are left unmodified.
+
+That's a good point. It does signify that we're using internal state in a way that isn't reentrant, but doesn't describe that it comes back to you unmodified. (Or rather, with any modifications reverted.)
+
+I can see two other ways to handle `with_self`, either of which would drop the `mut` requirement:
+
+- Eat the cost of copying the non-bound arguments
+
+- Use something like
+  ```rust
+  struct CallArgumentTypes {
+    bound_self: Option<Type>,
+    non_bound_arguments: Rc<[Type]>,
+  }
+  ```
+
+I'd be fine with either of those modifications, but think that should be a separate PR, and that this one should try to remain consistent with our current handling.
+
+---
+
+_@dcreager reviewed on 2025-04-30 15:22_
+
+---
+
+_@sharkdp reviewed on 2025-04-30 15:26_
+
+---
+
+_Review comment by @sharkdp on `crates/red_knot_python_semantic/src/types.rs`:4363 on 2025-04-30 15:26_
+
+Ok, thanks. I'll note this down as a (lower priority) TODO for myself.
+
+---
+
+_Merged by @sharkdp on 2025-04-30 15:27_
+
+---
+
+_Closed by @sharkdp on 2025-04-30 15:27_
+
+---
+
+_Branch deleted on 2025-04-30 15:27_
+
+---
