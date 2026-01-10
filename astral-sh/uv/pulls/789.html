@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>pep440: rewrite the parser and make version comparisons cheaper - astral-sh/uv #789</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>pep440: rewrite the parser and make version comparisons cheaper</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/789">#789</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2024-01-04 19:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-01-04 19:55</div>
+            <div class="timeline-body"><p>This PR builds on #780 by making both version parsing faster, and
+perhaps more importantly, making version comparisons much faster.
+Overall, these changes result in a considerable improvement for the
+<code>boto3.in</code> workload. Here's the status quo:</p>
+<pre><code>$ time puffin pip-compile --no-build --cache-dir ~/astral/tmp/cache/ -o /dev/null ./scripts/requirements/boto3.in
+Resolved 31 packages in 34.56s
+
+real    34.579
+user    34.004
+sys     0.413
+maxmem  2867 MB
+faults  0
+</code></pre>
+<p>And now with this PR:</p>
+<pre><code>$ time puffin pip-compile --no-build --cache-dir ~/astral/tmp/cache/ -o /dev/null ./scripts/requirements/boto3.in
+Resolved 31 packages in 9.20s
+
+real    9.218
+user    8.919
+sys     0.165
+maxmem  463 MB
+faults  0
+</code></pre>
+<p>This particular workload gets stuck in pubgrub doing resolution, and
+thus benefits mightily from a faster <code>Version::cmp</code> routine. With that
+said, this change does also help a fair bit with &quot;normal&quot; runs:</p>
+<pre><code>$ hyperfine -w10 \
+    &quot;puffin-base pip-compile --cache-dir ~/astral/tmp/cache/ -o /dev/null ./scripts/benchmarks/requirements.in&quot; \
+    &quot;puffin-cmparc pip-compile --cache-dir ~/astral/tmp/cache/ -o /dev/null ./scripts/benchmarks/requirements.in&quot;
+Benchmark 1: puffin-base pip-compile --cache-dir ~/astral/tmp/cache/ -o /dev/null ./scripts/benchmarks/requirements.in
+  Time (mean ± σ):     337.5 ms ±   3.9 ms    [User: 310.5 ms, System: 73.2 ms]
+  Range (min … max):   333.6 ms … 343.4 ms    10 runs
+
+Benchmark 2: puffin-cmparc pip-compile --cache-dir ~/astral/tmp/cache/ -o /dev/null ./scripts/benchmarks/requirements.in
+  Time (mean ± σ):     189.8 ms ±   3.0 ms    [User: 168.1 ms, System: 78.4 ms]
+  Range (min … max):   185.0 ms … 196.2 ms    15 runs
+
+Summary
+  puffin-cmparc pip-compile --cache-dir ~/astral/tmp/cache/ -o /dev/null ./scripts/benchmarks/requirements.in ran
+    1.78 ± 0.03 times faster than puffin-base pip-compile --cache-dir ~/astral/tmp/cache/ -o /dev/null ./scripts/benchmarks/requirements.in
+</code></pre>
+<p>There is perhaps some future work here (detailed in the commit
+messages), but I suspect it would be more fruitful to explore ways of
+making resolution itself and/or deserialization faster.</p>
+<p>Fixes #373, Closes #396</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @BurntSushi on 2024-01-04 19:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @BurntSushi on 2024-01-04 19:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-04 19:57</div>
+            <div class="timeline-body"><p>Can't wait to read this, I feel like I'm gonna learn a lot.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @charliermarsh on 2024-01-04 19:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/pep440-rs/src/version.rs</code>:866 on 2024-01-05 01:35</div>
+            <div class="timeline-body"><p>Nit: I think <code>KINDS</code> got renamed to <code>SPELLINGS</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-05 01:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-05 01:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/pep440-rs/src/version.rs</code>:1754 on 2024-01-05 01:37</div>
+            <div class="timeline-body"><p>That's neat.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/pep440-rs/src/version.rs</code>:1461 on 2024-01-05 01:44</div>
+            <div class="timeline-body"><p>So in this case, what ultimately happens to the separator? Now that we ate-and-then-reset for pre, then post, then dev? Like if you had a separator at the end of the version.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-05 01:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-05 01:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/pep440-rs/src/version.rs</code>:1701 on 2024-01-05 01:44</div>
+            <div class="timeline-body"><p>Interesting, so this is optimized for the case in which most versions don't contain any of the alphabetical characters?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/pep440-rs/src/version.rs</code>:749 on 2024-01-05 01:49</div>
+            <div class="timeline-body"><p>This is ridiculously good! And the commentary is excellent!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-05 01:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-05 01:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/pep440-rs/src/version.rs</code>:509 on 2024-01-05 01:53</div>
+            <div class="timeline-body"><p>Very interesting pattern.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-05 01:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/pep440-rs/src/version.rs</code>:771 on 2024-01-05 01:54</div>
+            <div class="timeline-body"><p>Interesting, this seems quite doable (but perhaps not critical).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-05 01:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/pep440-rs/src/version.rs</code>:245 on 2024-01-05 01:55</div>
+            <div class="timeline-body"><p>I will ask a dumb question: why <code>Arc</code> and not <code>Box</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-05 01:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/pep440-rs/src/version.rs</code>:245 on 2024-01-05 01:56</div>
+            <div class="timeline-body"><p>Oh, is it because <code>Arc</code> allows for cheap cloning...?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-01-05 01:56</div>
+            <div class="timeline-body"><p>This is really quite an incredible PR, and you did a great job of breaking down some very sophisticated optimizations and decision-making. I loved reading it, and the results are remarkable!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/pep440-rs/src/version.rs</code>:1253 on 2024-01-05 02:44</div>
+            <div class="timeline-body"><p>I'm surprised you don't explicitly note what happens if it doesn't match that format since your docstrings are so thorough. Is it just obviously implied that it returns <code>None</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-01-05 02:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-01-05 02:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/pep440-rs/src/version.rs</code>:509 on 2024-01-05 02:46</div>
+            <div class="timeline-body"><p>🤯 cool</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/pep440-rs/src/version.rs</code>:245 on 2024-01-05 13:38</div>
+            <div class="timeline-body"><p>Do we want the <code>Arc</code> here or in <code>PubGrubVersion</code>? That is, would it have any disadvantages to only use it in <code>PubGrubVersion</code> so <code>Version</code> itself remains the &quot;real&quot; type / does the copy on write make a noticeable impact?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/pep440-rs/src/version.rs</code>:771 on 2024-01-05 13:49</div>
+            <div class="timeline-body"><p>Looking at the callers of <code>.release()</code>, we don't seem to have any arbitrary indexing, mostly either <code>.iter()</code> or <code>.to_vec()</code>, so would a <code>impl Iterator&lt;u64&gt;</code> also do?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/pep440-rs/src/version.rs</code>:1221 on 2024-01-05 14:16</div>
+            <div class="timeline-body"><p>Should we <code>_</code> -&gt; <code>PatternErrorKind::WildcardNotTrailing</code> here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/pep440-rs/src/version.rs</code>:1642 on 2024-01-05 14:37</div>
+            <div class="timeline-body"><p>How does this compare to a <code>SmallVec::&lt;[u64; 4]&gt;</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2024-01-05 14:46</div>
+            <div class="timeline-body"><p>woah</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/pep440-rs/src/version.rs</code>:1461 on 2024-01-05 16:05</div>
+            <div class="timeline-body"><p>This runs at the end of the top-level parse routine:</p>
+<pre><code>        if !self.is_done() {
+            let remaining = String::from_utf8_lossy(&amp;self.v[self.i..]).into_owned();
+            let version = self.into_pattern().version;
+            return Err(ErrorKind::UnexpectedEnd { version, remaining }.into());
+        }
+</code></pre>
+<p>So basically, if by the time you have nothing left to try you still have stuff left to parse, you know you've hit a dead end and an invalid version.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-01-05 16:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-01-05 16:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/pep440-rs/src/version.rs</code>:1701 on 2024-01-05 16:07</div>
+            <div class="timeline-body"><p>Right. It saves us from needing to do a case insensitive comparison for every alphabetical version component.</p>
+<p>I wouldn't be surprised if this didn't make much of a difference in practice, since most versions are handled by the &quot;fast path&quot; in the parser.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-01-05 16:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/pep440-rs/src/version.rs</code>:771 on 2024-01-05 16:20</div>
+            <div class="timeline-body"><p>You could very like make <code>impl Iterator&lt;u64&gt;</code> work, but it comes at the cost of convenience. See for example:</p>
+<p>https://github.com/astral-sh/puffin/blob/9d51b22e189d972c7bfe6902ca250dea4e040664/crates/puffin-cli/src/python_version.rs#L31-L59</p>
+<p>and</p>
+<p>https://github.com/astral-sh/puffin/blob/9d51b22e189d972c7bfe6902ca250dea4e040664/crates/puffin-resolver/src/pubgrub/specifier.rs#L39-L41</p>
+<p>There are maybe a few other spots where an <code>impl Iterator&lt;u64&gt;</code> would be inconvenient. But not bad.</p>
+<p>I was also thinking about this from the perspective of this crate being an ecosystem crate. Using <code>&amp;[u64]</code> is really nice. It's convenient. Composes well. Works with slice patterns.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-01-05 16:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/pep440-rs/src/version.rs</code>:245 on 2024-01-05 16:29</div>
+            <div class="timeline-body"><p>Yes, <code>Arc</code> makes cloning essentially free.</p>
+<p>I think <code>Version</code> is fine with an <code>Arc</code> inside of it, and it's hard for me to conceive of a way that copy-on-write would hurt things. I would expect that the vast majority of the time, when <code>Arc::make_mut</code> is called, an extra copy is <em>not</em> made. (Since it's done as part of building a new <code>Version</code>.) And even then, in the cases where <code>Arc::make_mut</code> does make a copy, the caller would have had to make a copy anyway if <code>Arc</code> weren't used.</p>
+<p>I think there are really only two downsides to using <code>Arc</code> here. Firstly, it introduces an alloc in the happy path of building/parsing a version. Secondly, it requires using either <code>alloc</code> or <code>std</code>. I don't think the first makes too much of a difference, and I think the latter doesn't matter for this crate (unless you want to take in the direction of <code>core</code>-only, which would be quite tricky).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-01-05 16:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/pep440-rs/src/version.rs</code>:1253 on 2024-01-05 16:31</div>
+            <div class="timeline-body"><p>That's fair. I added a sentence!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-01-05 16:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/pep440-rs/src/version.rs</code>:1221 on 2024-01-05 16:34</div>
+            <div class="timeline-body"><p>I can do that. I think the idea is that all version-specific errors would be grouped into <code>PatternErrorKind::Version</code>, and thus, everything else would be an error associated with something wrong with it being a pattern. But since there's only one other variant (and that will probably never change), it's not a bad idea to explicitly spell it out.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-01-05 16:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/pep440-rs/src/version.rs</code>:1642 on 2024-01-05 16:35</div>
+            <div class="timeline-body"><p>A lot less code. One fewer dependency. No use of <code>unsafe</code>. <em>Probably</em> not much if any difference in perf. But I didn't test the last claim.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-01-05 16:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/pep440-rs/src/version.rs</code>:1642 on 2024-01-05 16:37</div>
+            <div class="timeline-body"><p>If <code>smallvec</code> were already a dependency of this crate, I probably would have used it. But this didn't feel like enough of a reason to add it all on its own IMO. Also, if this were a strictly internal crate with no plans to publish it back out into the world, I might have also used <code>smallvec</code>. But if this is going back out into the world, then I don't think it's worth passing on a dependency for <code>smallvec</code> here. IMO anyway.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-01-05 16:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/pep440-rs/src/version.rs</code>:245 on 2024-01-05 16:40</div>
+            <div class="timeline-body"><blockquote>
+<p>does the copy on write make a noticeable impact?</p>
+</blockquote>
+<p>It might help to clarify here: <code>Arc::make_mut</code> isn't quite just copy-on-write. It only makes a copy when the reference count is greater than 1. But if it's 1, and I suspect it usually will be in this context, then a mutable borrow with no copying can be handed out safely because exclusivity has been proven.</p>
+<p>Typically copy-on-write implies something closer to &quot;whenever one needs to write, you always copy first.&quot; And indeed, if that were the case here, it might make <code>Arc</code>-usage a little more suspicious.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @BurntSushi on 2024-01-05 16:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2024-01-05 16:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-01-05 16:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-01-09 16:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/pep440-rs/src/version.rs</code>:620 on 2024-01-09 16:31</div>
+            <div class="timeline-body"><p>Should we add a fast path here that avoids calling into <code>cmp_slow</code> if both <code>self.inner</code> and <code>other.inner</code> point to the same <code>Arc</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-01-09 16:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/pep440-rs/src/version.rs</code>:620 on 2024-01-09 16:37</div>
+            <div class="timeline-body"><p>Not sure. <code>cmp_slow</code> is designed to be called very infrequently (in practice), and I don't know the portion of comparisons that enter <code>cmp_slow</code> that have pointer equality internally. My prior is that the portion would be rather small, but I could be wrong. Especially for particular benchmarks that might hit <code>cmp_slow</code> more often than is intended. For example: https://github.com/astral-sh/puffin/pull/799</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 15:39:25 UTC
+    </footer>
+</body>
+</html>

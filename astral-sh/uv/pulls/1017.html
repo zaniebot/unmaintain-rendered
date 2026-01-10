@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enable PowerPC builds - astral-sh/uv #1017</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Enable PowerPC builds</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/1017">#1017</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-01-19 20:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-19 20:26</div>
+            <div class="timeline-body"><p>Closes #1015.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-01-19 22:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-01-19 22:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-01-19 22:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-20 00:21</div>
+            <div class="timeline-body"><p>I also added a feature here to conditionally enable <code>zlib-ng</code>, since it wasn't working on some of the more obscure architectures (https://github.com/astral-sh/puffin/issues/1022).</p>
+<p>To test it...</p>
+<ul>
+<li>I verified that the PowerPC builds failed when I added the feature (with libng as the default): https://github.com/astral-sh/puffin/actions/runs/7589457457/job/20674121200?pr=1017.</li>
+<li>I verified that they succeeded once I add <code>--no-default-features --features rust_backend</code>: https://github.com/astral-sh/puffin/actions/runs/7589489511/job/20674224333?pr=1017</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-20 00:30</div>
+            <div class="timeline-body"><p>I am pretty sure this is working as intended... the crate appears by default:</p>
+<pre><code>❯ cargo tree -e features -i libz-ng-sys -p puffin
+libz-ng-sys v1.1.14
+└── libz-ng-sys feature &quot;default&quot;
+    └── flate2 v1.0.28
+        ├── puffin v0.0.3 (/Users/crmarsh/workspace/guffin/crates/puffin)
+        │   └── puffin feature &quot;flate2-zlib-ng&quot; (command-line)
+        ├── puffin-extract v0.0.1 (/Users/crmarsh/workspace/guffin/crates/puffin-extract)
+        │   └── puffin-extract feature &quot;default&quot;
+        │       ├── puffin-build v0.0.1 (/Users/crmarsh/workspace/guffin/crates/puffin-build)
+        │       │   └── puffin-build feature &quot;default&quot;
+        │       │       ├── puffin v0.0.3 (/Users/crmarsh/workspace/guffin/crates/puffin) (*)
+        │       │       └── puffin-dispatch v0.0.1 (/Users/crmarsh/workspace/guffin/crates/puffin-dispatch)
+        │       │           └── puffin-dispatch feature &quot;default&quot;
+        │       │               └── puffin v0.0.3 (/Users/crmarsh/workspace/guffin/crates/puffin) (*)
+        │       ├── puffin-distribution v0.0.1 (/Users/crmarsh/workspace/guffin/crates/puffin-distribution)
+        │       │   └── puffin-distribution feature &quot;default&quot;
+        │       │       ├── puffin v0.0.3 (/Users/crmarsh/workspace/guffin/crates/puffin) (*)
+        │       │       ├── puffin-dispatch v0.0.1 (/Users/crmarsh/workspace/guffin/crates/puffin-dispatch) (*)
+        │       │       ├── puffin-installer v0.0.1 (/Users/crmarsh/workspace/guffin/crates/puffin-installer)
+        │       │       │   └── puffin-installer feature &quot;default&quot;
+        │       │       │       ├── puffin v0.0.3 (/Users/crmarsh/workspace/guffin/crates/puffin) (*)
+        │       │       │       └── puffin-dispatch v0.0.1 (/Users/crmarsh/workspace/guffin/crates/puffin-dispatch) (*)
+        │       │       └── puffin-resolver v0.0.1 (/Users/crmarsh/workspace/guffin/crates/puffin-resolver)
+        │       │           ├── puffin-resolver feature &quot;clap&quot;
+        │       │           │   └── puffin v0.0.3 (/Users/crmarsh/workspace/guffin/crates/puffin) (*)
+        │       │           └── puffin-resolver feature &quot;default&quot;
+        │       │               ├── puffin v0.0.3 (/Users/crmarsh/workspace/guffin/crates/puffin) (*)
+        │       │               └── puffin-dispatch v0.0.1 (/Users/crmarsh/workspace/guffin/crates/puffin-dispatch) (*)
+        │       └── puffin-installer v0.0.1 (/Users/crmarsh/workspace/guffin/crates/puffin-installer) (*)
+        └── zip v0.6.6
+            ├── zip feature &quot;deflate&quot;
+            │   ├── install-wheel-rs v0.0.1 (/Users/crmarsh/workspace/guffin/crates/install-wheel-rs)
+            │   │   ├── puffin v0.0.3 (/Users/crmarsh/workspace/guffin/crates/puffin) (*)
+            │   │   └── puffin-installer v0.0.1 (/Users/crmarsh/workspace/guffin/crates/puffin-installer) (*)
+            │   │   ├── install-wheel-rs feature &quot;clap&quot;
+            │   │   │   └── install-wheel-rs feature &quot;cli&quot;
+            │   │   │       └── install-wheel-rs feature &quot;default&quot;
+            │   │   │           ├── puffin-client v0.0.1 (/Users/crmarsh/workspace/guffin/crates/puffin-client)
+            │   │   │           │   └── puffin-client feature &quot;default&quot;
+            │   │   │           │       ├── puffin v0.0.3 (/Users/crmarsh/workspace/guffin/crates/puffin) (*)
+            │   │   │           │       ├── puffin-dispatch v0.0.1 (/Users/crmarsh/workspace/guffin/crates/puffin-dispatch) (*)
+            │   │   │           │       ├── puffin-distribution v0.0.1 (/Users/crmarsh/workspace/guffin/crates/puffin-distribution) (*)
+            │   │   │           │       ├── puffin-installer v0.0.1 (/Users/crmarsh/workspace/guffin/crates/puffin-installer) (*)
+            │   │   │           │       └── puffin-resolver v0.0.1 (/Users/crmarsh/workspace/guffin/crates/puffin-resolver) (*)
+            │   │   │           ├── puffin-distribution v0.0.1 (/Users/crmarsh/workspace/guffin/crates/puffin-distribution) (*)
+            │   │   │           └── puffin-resolver v0.0.1 (/Users/crmarsh/workspace/guffin/crates/puffin-resolver) (*)
+            │   │   ├── install-wheel-rs feature &quot;cli&quot; (*)
+            │   │   ├── install-wheel-rs feature &quot;default&quot; (*)
+            │   │   ├── install-wheel-rs feature &quot;parallel&quot;
+            │   │   │   └── install-wheel-rs feature &quot;default&quot; (*)
+            │   │   └── install-wheel-rs feature &quot;rayon&quot;
+            │   │       └── install-wheel-rs feature &quot;parallel&quot; (*)
+            │   ├── puffin-distribution v0.0.1 (/Users/crmarsh/workspace/guffin/crates/puffin-distribution) (*)
+            │   ├── puffin-extract v0.0.1 (/Users/crmarsh/workspace/guffin/crates/puffin-extract) (*)
+            │   └── puffin-resolver v0.0.1 (/Users/crmarsh/workspace/guffin/crates/puffin-resolver) (*)
+            └── zip feature &quot;flate2&quot;
+                └── zip feature &quot;deflate&quot; (*)
+        ├── flate2 feature &quot;any_impl&quot;
+        │   ├── flate2 feature &quot;any_zlib&quot;
+        │   │   └── flate2 feature &quot;zlib-ng&quot;
+        │   │       └── puffin feature &quot;flate2-zlib-ng&quot; (command-line)
+        │   └── flate2 feature &quot;rust_backend&quot;
+        │       ├── flate2 feature &quot;default&quot;
+        │       │   └── async-compression v0.4.6
+        │       │       ├── async-compression feature &quot;brotli&quot;
+        │       │       │   └── reqwest feature &quot;brotli&quot;
+        │       │       │       ├── puffin-client v0.0.1 (/Users/crmarsh/workspace/guffin/crates/puffin-client) (*)
+        │       │       │       ├── puffin-distribution v0.0.1 (/Users/crmarsh/workspace/guffin/crates/puffin-distribution) (*)
+        │       │       │       ├── puffin-git v0.0.1 (/Users/crmarsh/workspace/guffin/crates/puffin-git)
+        │       │       │       │   ├── puffin-git feature &quot;default&quot;
+        │       │       │       │   │   ├── distribution-types v0.0.1 (/Users/crmarsh/workspace/guffin/crates/distribution-types)
+        │       │       │       │   │   │   └── distribution-types feature &quot;default&quot;
+        │       │       │       │   │   │       ├── puffin v0.0.3 (/Users/crmarsh/workspace/guffin/crates/puffin) (*)
+        │       │       │       │   │   │       ├── puffin-build v0.0.1 (/Users/crmarsh/workspace/guffin/crates/puffin-build) (*)
+        │       │       │       │   │   │       ├── puffin-cache v0.0.1 (/Users/crmarsh/workspace/guffin/crates/puffin-cache)
+        │       │       │       │   │   │       │   ├── puffin-cache feature &quot;clap&quot;
+        │       │       │       │   │   │       │   │   └── puffin v0.0.3 (/Users/crmarsh/workspace/guffin/crates/puffin) (*)
+        │       │       │       │   │   │       │   └── puffin-cache feature &quot;default&quot;
+        │       │       │       │   │   │       │       ├── gourgeist v0.0.4 (/Users/crmarsh/workspace/guffin/crates/gourgeist)
+        │       │       │       │   │   │       │       │   └── gourgeist feature &quot;default&quot;
+        │       │       │       │   │   │       │       │       ├── puffin v0.0.3 (/Users/crmarsh/workspace/guffin/crates/puffin) (*)
+        │       │       │       │   │   │       │       │       ├── puffin-build v0.0.1 (/Users/crmarsh/workspace/guffin/crates/puffin-build) (*)
+        │       │       │       │   │   │       │       │       └── puffin-dispatch v0.0.1 (/Users/crmarsh/workspace/guffin/crates/puffin-dispatch) (*)
+        │       │       │       │   │   │       │       ├── puffin v0.0.3 (/Users/crmarsh/workspace/guffin/crates/puffin) (*)
+        │       │       │       │   │   │       │       ├── puffin-client v0.0.1 (/Users/crmarsh/workspace/guffin/crates/puffin-client) (*)
+        │       │       │       │   │   │       │       ├── puffin-dispatch v0.0.1 (/Users/crmarsh/workspace/guffin/crates/puffin-dispatch) (*)
+        │       │       │       │   │   │       │       ├── puffin-distribution v0.0.1 (/Users/crmarsh/workspace/guffin/crates/puffin-distribution) (*)
+        │       │       │       │   │   │       │       ├── puffin-installer v0.0.1 (/Users/crmarsh/workspace/guffin/crates/puffin-installer) (*)
+        │       │       │       │   │   │       │       ├── puffin-interpreter v0.0.1 (/Users/crmarsh/workspace/guffin/crates/puffin-interpreter)
+        │       │       │       │   │   │       │       │   └── puffin-interpreter feature &quot;default&quot;
+        │       │       │       │   │   │       │       │       ├── gourgeist v0.0.4 (/Users/crmarsh/workspace/guffin/crates/gourgeist) (*)
+        │       │       │       │   │   │       │       │       ├── puffin v0.0.3 (/Users/crmarsh/workspace/guffin/crates/puffin) (*)
+        │       │       │       │   │   │       │       │       ├── puffin-build v0.0.1 (/Users/crmarsh/workspace/guffin/crates/puffin-build) (*)
+        │       │       │       │   │   │       │       │       ├── puffin-dispatch v0.0.1 (/Users/crmarsh/workspace/guffin/crates/puffin-dispatch) (*)
+        │       │       │       │   │   │       │       │       ├── puffin-installer v0.0.1 (/Users/crmarsh/workspace/guffin/crates/puffin-installer) (*)
+        │       │       │       │   │   │       │       │       ├── puffin-resolver v0.0.1 (/Users/crmarsh/workspace/guffin/crates/puffin-resolver) (*)
+        │       │       │       │   │   │       │       │       └── puffin-traits v0.0.1 (/Users/crmarsh/workspace/guffin/crates/puffin-traits)
+        │       │       │       │   │   │       │       │           └── puffin-traits feature &quot;default&quot;
+        │       │       │       │   │   │       │       │               ├── puffin v0.0.3 (/Users/crmarsh/workspace/guffin/crates/puffin) (*)
+        │       │       │       │   │   │       │       │               ├── puffin-build v0.0.1 (/Users/crmarsh/workspace/guffin/crates/puffin-build) (*)
+        │       │       │       │   │   │       │       │               ├── puffin-dispatch v0.0.1 (/Users/crmarsh/workspace/guffin/crates/puffin-dispatch) (*)
+        │       │       │       │   │   │       │       │               ├── puffin-distribution v0.0.1 (/Users/crmarsh/workspace/guffin/crates/puffin-distribution) (*)
+        │       │       │       │   │   │       │       │               ├── puffin-installer v0.0.1 (/Users/crmarsh/workspace/guffin/crates/puffin-installer) (*)
+        │       │       │       │   │   │       │       │               └── puffin-resolver v0.0.1 (/Users/crmarsh/workspace/guffin/crates/puffin-resolver) (*)
+        │       │       │       │   │   │       │       ├── puffin-resolver v0.0.1 (/Users/crmarsh/workspace/guffin/crates/puffin-resolver) (*)
+        │       │       │       │   │   │       │       └── puffin-traits v0.0.1 (/Users/crmarsh/workspace/guffin/crates/puffin-traits) (*)
+        │       │       │       │   │   │       ├── puffin-client v0.0.1 (/Users/crmarsh/workspace/guffin/crates/puffin-client) (*)
+        │       │       │       │   │   │       ├── puffin-dispatch v0.0.1 (/Users/crmarsh/workspace/guffin/crates/puffin-dispatch) (*)
+        │       │       │       │   │   │       ├── puffin-distribution v0.0.1 (/Users/crmarsh/workspace/guffin/crates/puffin-distribution) (*)
+        │       │       │       │   │   │       ├── puffin-installer v0.0.1 (/Users/crmarsh/workspace/guffin/crates/puffin-installer) (*)
+        │       │       │       │   │   │       ├── puffin-resolver v0.0.1 (/Users/crmarsh/workspace/guffin/crates/puffin-resolver) (*)
+        │       │       │       │   │   │       └── puffin-traits v0.0.1 (/Users/crmarsh/workspace/guffin/crates/puffin-traits) (*)
+        │       │       │       │   │   ├── puffin-distribution v0.0.1 (/Users/crmarsh/workspace/guffin/crates/puffin-distribution) (*)
+        │       │       │       │   │   ├── puffin-installer v0.0.1 (/Users/crmarsh/workspace/guffin/crates/puffin-installer) (*)
+        │       │       │       │   │   └── puffin-resolver v0.0.1 (/Users/crmarsh/workspace/guffin/crates/puffin-resolver) (*)
+        │       │       │       │   └── puffin-git feature &quot;vendored-openssl&quot;
+        │       │       │       │       ├── distribution-types v0.0.1 (/Users/crmarsh/workspace/guffin/crates/distribution-types) (*)
+        │       │       │       │       ├── puffin-distribution v0.0.1 (/Users/crmarsh/workspace/guffin/crates/puffin-distribution) (*)
+        │       │       │       │       ├── puffin-installer v0.0.1 (/Users/crmarsh/workspace/guffin/crates/puffin-installer) (*)
+        │       │       │       │       └── puffin-resolver v0.0.1 (/Users/crmarsh/workspace/guffin/crates/puffin-resolver) (*)
+        │       │       │       └── puffin-resolver v0.0.1 (/Users/crmarsh/workspace/guffin/crates/puffin-resolver) (*)
+        │       │       ├── async-compression feature &quot;deflate&quot;
+        │       │       │   └── async_zip feature &quot;deflate&quot;
+        │       │       │       ├── puffin-client v0.0.1 (/Users/crmarsh/workspace/guffin/crates/puffin-client) (*)
+        │       │       │       └── puffin-extract v0.0.1 (/Users/crmarsh/workspace/guffin/crates/puffin-extract) (*)
+        │       │       ├── async-compression feature &quot;flate2&quot;
+        │       │       │   ├── async-compression feature &quot;deflate&quot; (*)
+        │       │       │   └── async-compression feature &quot;gzip&quot;
+        │       │       │       └── reqwest feature &quot;gzip&quot;
+        │       │       │           ├── puffin-client v0.0.1 (/Users/crmarsh/workspace/guffin/crates/puffin-client) (*)
+        │       │       │           ├── puffin-distribution v0.0.1 (/Users/crmarsh/workspace/guffin/crates/puffin-distribution) (*)
+        │       │       │           ├── puffin-git v0.0.1 (/Users/crmarsh/workspace/guffin/crates/puffin-git) (*)
+        │       │       │           └── puffin-resolver v0.0.1 (/Users/crmarsh/workspace/guffin/crates/puffin-resolver) (*)
+        │       │       ├── async-compression feature &quot;futures-io&quot;
+        │       │       │   └── async_zip v0.0.16
+        │       │       │       ├── async_zip feature &quot;async-compression&quot;
+        │       │       │       │   └── async_zip feature &quot;deflate&quot; (*)
+        │       │       │       ├── async_zip feature &quot;default&quot;
+        │       │       │       │   ├── puffin-client v0.0.1 (/Users/crmarsh/workspace/guffin/crates/puffin-client) (*)
+        │       │       │       │   └── puffin-extract v0.0.1 (/Users/crmarsh/workspace/guffin/crates/puffin-extract) (*)
+        │       │       │       ├── async_zip feature &quot;deflate&quot; (*)
+        │       │       │       ├── async_zip feature &quot;tokio&quot;
+        │       │       │       │   ├── puffin-client v0.0.1 (/Users/crmarsh/workspace/guffin/crates/puffin-client) (*)
+        │       │       │       │   └── puffin-extract v0.0.1 (/Users/crmarsh/workspace/guffin/crates/puffin-extract) (*)
+        │       │       │       └── async_zip feature &quot;tokio-util&quot;
+        │       │       │           └── async_zip feature &quot;tokio&quot; (*)
+        │       │       ├── async-compression feature &quot;gzip&quot; (*)
+        │       │       └── async-compression feature &quot;tokio&quot;
+        │       │           └── reqwest v0.11.23
+        │       │               └── reqwest-retry v0.3.0
+        │       │                   └── reqwest-retry feature &quot;default&quot;
+        │       │                       └── puffin-client v0.0.1 (/Users/crmarsh/workspace/guffin/crates/puffin-client) (*)
+        │       │               ├── reqwest feature &quot;__rustls&quot;
+        │       │               │   └── reqwest feature &quot;rustls-tls-webpki-roots&quot;
+        │       │               │       └── reqwest feature &quot;rustls-tls&quot;
+        │       │               │           ├── puffin-client v0.0.1 (/Users/crmarsh/workspace/guffin/crates/puffin-client) (*)
+        │       │               │           ├── puffin-distribution v0.0.1 (/Users/crmarsh/workspace/guffin/crates/puffin-distribution) (*)
+        │       │               │           ├── puffin-git v0.0.1 (/Users/crmarsh/workspace/guffin/crates/puffin-git) (*)
+        │       │               │           └── puffin-resolver v0.0.1 (/Users/crmarsh/workspace/guffin/crates/puffin-resolver) (*)
+        │       │               ├── reqwest feature &quot;__tls&quot;
+        │       │               │   └── reqwest feature &quot;__rustls&quot; (*)
+        │       │               ├── reqwest feature &quot;async-compression&quot;
+        │       │               │   ├── reqwest feature &quot;brotli&quot; (*)
+        │       │               │   └── reqwest feature &quot;gzip&quot; (*)
+        │       │               ├── reqwest feature &quot;blocking&quot;
+        │       │               │   └── puffin-git v0.0.1 (/Users/crmarsh/workspace/guffin/crates/puffin-git) (*)
+        │       │               │   [dev-dependencies]
+        │       │               │   └── puffin v0.0.3 (/Users/crmarsh/workspace/guffin/crates/puffin) (*)
+        │       │               ├── reqwest feature &quot;brotli&quot; (*)
+        │       │               ├── reqwest feature &quot;gzip&quot; (*)
+        │       │               ├── reqwest feature &quot;hyper-rustls&quot;
+        │       │               │   └── reqwest feature &quot;__rustls&quot; (*)
+        │       │               ├── reqwest feature &quot;json&quot;
+        │       │               │   ├── puffin-client v0.0.1 (/Users/crmarsh/workspace/guffin/crates/puffin-client) (*)
+        │       │               │   ├── puffin-distribution v0.0.1 (/Users/crmarsh/workspace/guffin/crates/puffin-distribution) (*)
+        │       │               │   ├── puffin-git v0.0.1 (/Users/crmarsh/workspace/guffin/crates/puffin-git) (*)
+        │       │               │   ├── puffin-resolver v0.0.1 (/Users/crmarsh/workspace/guffin/crates/puffin-resolver) (*)
+        │       │               │   └── reqwest-middleware v0.2.4
+        │       │               │       └── reqwest-middleware feature &quot;default&quot;
+        │       │               │           ├── puffin-client v0.0.1 (/Users/crmarsh/workspace/guffin/crates/puffin-client) (*)
+        │       │               │           └── reqwest-retry v0.3.0 (*)
+        │       │               ├── reqwest feature &quot;mime_guess&quot;
+        │       │               │   └── reqwest feature &quot;multipart&quot;
+        │       │               │       └── reqwest-middleware v0.2.4 (*)
+        │       │               ├── reqwest feature &quot;multipart&quot; (*)
+        │       │               ├── reqwest feature &quot;rustls&quot;
+        │       │               │   [dev-dependencies]
+        │       │               │   └── puffin v0.0.3 (/Users/crmarsh/workspace/guffin/crates/puffin) (*)
+        │       │               │   └── reqwest feature &quot;__rustls&quot; (*)
+        │       │               ├── reqwest feature &quot;rustls-pemfile&quot;
+        │       │               │   └── reqwest feature &quot;__rustls&quot; (*)
+        │       │               ├── reqwest feature &quot;rustls-tls&quot; (*)
+        │       │               ├── reqwest feature &quot;rustls-tls-webpki-roots&quot; (*)
+        │       │               ├── reqwest feature &quot;serde_json&quot;
+        │       │               │   └── reqwest feature &quot;json&quot; (*)
+        │       │               ├── reqwest feature &quot;stream&quot;
+        │       │               │   ├── async_http_range_reader v0.4.0 (https://github.com/baszalmstra/async_http_range_reader?rev=8dab2c08ac864fec1df014465264f9a7c8eae905#8dab2c08)
+        │       │               │   │   └── async_http_range_reader feature &quot;default&quot;
+        │       │               │   │       └── puffin-client v0.0.1 (/Users/crmarsh/workspace/guffin/crates/puffin-client) (*)
+        │       │               │   ├── puffin-client v0.0.1 (/Users/crmarsh/workspace/guffin/crates/puffin-client) (*)
+        │       │               │   ├── puffin-distribution v0.0.1 (/Users/crmarsh/workspace/guffin/crates/puffin-distribution) (*)
+        │       │               │   ├── puffin-git v0.0.1 (/Users/crmarsh/workspace/guffin/crates/puffin-git) (*)
+        │       │               │   └── puffin-resolver v0.0.1 (/Users/crmarsh/workspace/guffin/crates/puffin-resolver) (*)
+        │       │               ├── reqwest feature &quot;tokio-rustls&quot;
+        │       │               │   └── reqwest feature &quot;__rustls&quot; (*)
+        │       │               ├── reqwest feature &quot;tokio-util&quot;
+        │       │               │   ├── reqwest feature &quot;brotli&quot; (*)
+        │       │               │   ├── reqwest feature &quot;gzip&quot; (*)
+        │       │               │   └── reqwest feature &quot;stream&quot; (*)
+        │       │               ├── reqwest feature &quot;wasm-streams&quot;
+        │       │               │   └── reqwest feature &quot;stream&quot; (*)
+        │       │               └── reqwest feature &quot;webpki-roots&quot;
+        │       │                   └── reqwest feature &quot;rustls-tls-webpki-roots&quot; (*)
+        │       └── zip feature &quot;deflate&quot; (*)
+        ├── flate2 feature &quot;any_zlib&quot; (*)
+        ├── flate2 feature &quot;default&quot; (*)
+        ├── flate2 feature &quot;libz-ng-sys&quot;
+        │   └── flate2 feature &quot;zlib-ng&quot; (*)
+        ├── flate2 feature &quot;miniz_oxide&quot;
+        │   └── flate2 feature &quot;rust_backend&quot; (*)
+        ├── flate2 feature &quot;rust_backend&quot; (*)
+        └── flate2 feature &quot;zlib-ng&quot; (*)
+</code></pre>
+<p>But not with <code>--no-default-features --features flate2-rust_backend</code>:</p>
+<pre><code>guffin on  main [$] is 📦 v0.0.3 via 🐍 v3.9.10 via 🦀 v1.75.0
+❯ cargo tree -e features -i libz-ng-sys -p puffin --no-default-features --features flate2-rust_backend
+error: package ID specification `libz-ng-sys` did not match any packages
+
+	Did you mean `libz-sys`?
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-20 00:30</div>
+            <div class="timeline-body"><p>\cc @BurntSushi</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 15:39:26 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Set permissions after streaming unzip - astral-sh/uv #1151</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Set permissions after streaming unzip</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/1151">#1151</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-01-28 00:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-28 00:10</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>When we migrated to an &quot;unzip while we stream&quot; solution, we lost the logic to set permissions on the extracted files, so executables in wheels were no longer executable. It turns out this is a little tricky, since the permissions metadata is in the central directory at the <em>end</em> of the zip file, and the async ZIP reader explicitly stops iteration once it hits the central directory. (Specifically, it goes 4 bytes into the central directory, since it sees the 4-byte signature header and then stops.)</p>
+<p>So, to solve that, I've added a <code>CentralDirectoryReader</code> that continues where that iterator left off. This required forking the async zip crate: https://github.com/charliermarsh/rs-async-zip/pull/1. It took a lot of fiddling but I'm quite confident in the code now, especially since the async zip crate validates the signature kind on every read.</p>
+<p>The central directory is typically quite small (even for the Zig wheel, which is enormous, it's just around 1MB), so I don't expect this to have a high cost.</p>
+<p>Closes https://github.com/astral-sh/puffin/issues/1148.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-28 00:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>Cargo.toml</code>:23 on 2024-01-28 00:11</div>
+            <div class="timeline-body"><p>I also tagged this commit (as <code>d76801d</code>). It's <code>main</code> in that fork.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-28 00:13</div>
+            <div class="timeline-body"><p>To ensure no fatal regression, I did benchmark this with:</p>
+<pre><code>python -m scripts.bench --puffin-path ./target/release/main --puffin-path ./target/release/puffin scripts/requirements/compiled/trio.txt --min-runs 50 --benchmark install-cold &amp;&amp; python -m scripts.bench --puffin-path ./target/release/main --puffin-path ./target/release/puffin scripts/requirements/compiled/black.txt --min-runs 50 --benchmark install-cold &amp;&amp; python -m scripts.bench --puffin-path ./target/release/main --puffin-path ./target/release/puffin scripts/requirements/compiled/pdm_2193.txt --min-runs 50 --benchmark install-cold
+</code></pre>
+<p>It's pretty noisy. On the second iteration, this branch was faster once, and <code>main</code> was faster twice:</p>
+<pre><code>Benchmark 1: ./target/release/main (install-cold)
+  Time (mean ± σ):      1.297 s ±  0.323 s    [User: 0.372 s, System: 0.718 s]
+  Range (min … max):    1.003 s …  2.214 s    50 runs
+
+Benchmark 2: ./target/release/puffin (install-cold)
+  Time (mean ± σ):      1.685 s ±  0.463 s    [User: 0.397 s, System: 0.813 s]
+  Range (min … max):    1.012 s …  3.404 s    50 runs
+
+Summary
+  './target/release/main (install-cold)' ran
+    1.30 ± 0.48 times faster than './target/release/puffin (install-cold)'
+Benchmark 1: ./target/release/main (install-cold)
+  Time (mean ± σ):     278.5 ms ±  10.7 ms    [User: 68.9 ms, System: 73.0 ms]
+  Range (min … max):   259.7 ms … 303.5 ms    50 runs
+
+Benchmark 2: ./target/release/puffin (install-cold)
+  Time (mean ± σ):     313.1 ms ±  85.8 ms    [User: 70.2 ms, System: 78.9 ms]
+  Range (min … max):   263.1 ms … 660.0 ms    50 runs
+
+  Warning: Statistical outliers were detected. Consider re-running this benchmark on a quiet PC without any interferences from other programs. It might help to use the '--warmup' or '--prepare' options.
+
+Summary
+  './target/release/main (install-cold)' ran
+    1.12 ± 0.31 times faster than './target/release/puffin (install-cold)'
+Benchmark 1: ./target/release/main (install-cold)
+  Time (mean ± σ):      1.519 s ±  0.473 s    [User: 0.663 s, System: 0.569 s]
+  Range (min … max):    1.167 s …  3.643 s    50 runs
+
+  Warning: Statistical outliers were detected. Consider re-running this benchmark on a quiet PC without any interferences from other programs. It might help to use the '--warmup' or '--prepare' options.
+
+Benchmark 2: ./target/release/puffin (install-cold)
+  Time (mean ± σ):      1.419 s ±  0.095 s    [User: 0.654 s, System: 0.624 s]
+  Range (min … max):    1.149 s …  1.599 s    50 runs
+</code></pre>
+<p>On a previous benchmark run, it was a wash on all three.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-01-28 00:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-01-28 00:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-01-28 00:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-01-28 00:22</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 15:39:26 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prefer target Python version over current version for builds - astral-sh/uv #1040</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Prefer target Python version over current version for builds</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/1040">#1040</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2024-01-22 18:14
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/zanieb">@zanieb</a> on 2024-01-22 18:14</div>
+            <div class="timeline-body"><p>Extends #1029
+Closes https://github.com/astral-sh/puffin/issues/1038</p>
+<p>Instead of always using the current Python version for builds when a target version is provided, we will do our best to use a compatible Python version for builds.</p>
+<p>Removes behavior where Python versions without patch versions were always assumed to be the latest known patch version (previously discussed in https://github.com/astral-sh/puffin/pull/534). While this was convenient for resolutions which include packages which require minimum patch versions e.g. <code>requires-python=&quot;&gt;=3.7.4&quot;</code>, it conflicts with the idea that the target Python version you provide is the <em>minimum</em> compatible version. Additionally, it complicates interpreter lookup as we cannot tell if the user has asked for that specific patch version or not.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-01-22 19:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/puffin-interpreter/src/interpreter.rs</code>:117 on 2024-01-22 19:30</div>
+            <div class="timeline-body"><p>We could consider changing this method to return <code>None</code> here and let the caller choose this behavior explicitly?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-01-23 22:00</div>
+            <div class="timeline-body"><p>This introduces some unfortunately complexity to our Python version tests in <code>pip compile</code> since we now need to isolate scenarios to a certain subset of available Python versions. I think that should be tackled separately from this work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @zanieb on 2024-01-23 22:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-01-23 22:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/puffin/tests/pip_compile_scenarios.rs</code>:319 on 2024-01-23 22:02</div>
+            <div class="timeline-body"><p>While this test is no longer working as intended, it's great to see it passing! Now that we build with a matching version if it's available, the requirements are satisfiable in CI. We'll need to introduce some more complexity to test error messages in this case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @zanieb on 2024-01-23 22:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-24 00:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-interpreter/src/interpreter.rs</code>:117 on 2024-01-24 00:46</div>
+            <div class="timeline-body"><p>I think I would prefer something like that. It was a little confusing to me that the logic below in this method still relies on <code>python_version</code>, since shouldn't that be covered by <code>find_strict</code>? I'm talking about, e.g., <code>if let Some(python_version) = python_version {</code> below.</p>
+<p>In other words, wondering if we have one method that takes <code>python_version: &amp;PythonVersion</code> and returns <code>Result&lt;Option&lt;Self&gt;&gt;</code>, and then another that doesn't take <code>python_version</code> and returns <code>Result&lt;Self&gt;</code>. Then we can do some <code>map</code> or <code>and_then</code> or whatever at the call site.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin-interpreter/src/interpreter.rs</code>:153 on 2024-01-24 11:00</div>
+            <div class="timeline-body"><p>Can we move this onto <code>PythonVersion</code> as something like <code>PythonVersion::is_compatible</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin-interpreter/src/interpreter.rs</code>:165 on 2024-01-24 11:04</div>
+            <div class="timeline-body"><p>I'm currently going for <code>if cfg!(...)</code> with a final <code>unimplemented!(...)</code> branch in the windows compat changes; The idea is that you get coverage for all platforms with a local <code>cargo check</code> and it avoids sprinkling <code>allow(unused)</code> over platform dependent code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2024-01-24 11:07</div>
+            <div class="timeline-body"><p>I think we should unconditionally print a line about the used installed and target python interpreter when using <code>--python-version</code>, this will avoid confusion about source distribution building.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-01-24 15:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/puffin-interpreter/src/interpreter.rs</code>:153 on 2024-01-24 15:08</div>
+            <div class="timeline-body"><p>Done!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-01-24 15:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin-interpreter/src/interpreter.rs</code>:165 on 2024-01-24 15:12</div>
+            <div class="timeline-body"><p>See #940</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-01-24 15:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/puffin-interpreter/src/interpreter.rs</code>:165 on 2024-01-24 15:15</div>
+            <div class="timeline-body"><p>Makes sense, didn't mean to change that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-01-24 15:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/puffin-interpreter/src/interpreter.rs</code>:117 on 2024-01-24 15:17</div>
+            <div class="timeline-body"><p>It's a bit different than what's presented here, but I think what I have now is much better.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-24 15:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-interpreter/src/interpreter.rs</code>:101 on 2024-01-24 15:19</div>
+            <div class="timeline-body"><p>I still find the structure here a bit confusing, because <code>find_version</code> takes an Option.</p>
+<p>I think I would've expected something like <code>find_version</code> taking a non-Option, and then here...</p>
+<pre><code>if let Some(python_version) = python_version {
+    if let Some(interpreter) = Self::find_version(...) {
+        return Ok(interpreter);
+    }
+    
+    // If that fails, try with a different patch
+    ...
+} else {
+   Self::find_generic(platform, cache)
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-01-24 15:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/puffin-interpreter/src/interpreter.rs</code>:101 on 2024-01-24 15:21</div>
+            <div class="timeline-body"><p>Then we need to duplicate all of the logic for looking up Python interpreters at given locations, which seems more brittle.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2024-01-24 17:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-01-24 17:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-01-24 17:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin-interpreter/src/interpreter.rs</code>:108 on 2024-01-24 17:13</div>
+            <div class="timeline-body"><p>Does this mean we ignore an explicit patch version request if it can't be fulfilled, even it means picking an incompatible patch version?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-01-24 17:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-interpreter/src/interpreter.rs</code>:101 on 2024-01-24 17:31</div>
+            <div class="timeline-body"><p>This is what I was thinking, but I defer to you: https://github.com/astral-sh/puffin/pull/1078/files</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-24 17:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-24 17:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-interpreter/src/interpreter.rs</code>:95 on 2024-01-24 17:31</div>
+            <div class="timeline-body"><p>Nit: <code>find_strict</code> no longer exists.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-interpreter/src/interpreter.rs</code>:137 on 2024-01-24 17:31</div>
+            <div class="timeline-body"><p>Nit: this can be private.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-24 17:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/puffin-interpreter/src/interpreter.rs</code>:108 on 2024-01-24 17:33</div>
+            <div class="timeline-body"><p>Unless you call <code>find_version</code> directly, yeah. #1072 will warn the user in this case.</p>
+<p>We will still use the patch version requested for resolution, we just won't build with a matching version.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-01-24 17:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-01-24 17:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/puffin-interpreter/src/interpreter.rs</code>:95 on 2024-01-24 17:34</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/puffin/pull/1079</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-01-24 17:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/puffin-interpreter/src/interpreter.rs</code>:137 on 2024-01-24 17:35</div>
+            <div class="timeline-body"><p>This was intentional — I think this makes sense as part of the public interface if you actually need a specific version.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 15:39:26 UTC
+    </footer>
+</body>
+</html>

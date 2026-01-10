@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support more formats in `puffin venv`, incl. windows support - astral-sh/uv #1039</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Support more formats in <code>puffin venv</code>, incl. windows support</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/1039">#1039</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2024-01-22 18:14
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2024-01-22 18:14</div>
+            <div class="timeline-body"><p>Mirroring <code>virtualenv -p</code> and driven by the lack of <code>pythonx.y</code> in <code>PATH</code> on windows, this PR adds <code>-p x.y</code> support to <code>puffin venv</code> (first commit).</p>
+<p>Supported formats:</p>
+<ul>
+<li>NEW: <code>-p 3.10</code> searches for an installed Python 3.10 (Looking for <code>python3.10</code> on linux/mac).
+Specifying a patch version is not supported</li>
+<li><code>-p python3.10</code> or <code>-p python.exe</code> looks for a binary in <code>PATH</code></li>
+<li><code>-p /home/ferris/.local/bin/python3.10</code> uses this exact Python</li>
+</ul>
+<p>In the second commit, we add python interpreter search on windows using <code>py --list-paths</code>. On windows, all python are called <code>python.exe</code> so the unix trick of looking for <code>python{}.{}</code> in <code>PATH</code> doesn't work. Instead, we ask the python launcher for windows to tell us about all installed packages. We should eventually migrate this to <a href="https://peps.python.org/pep-0514/">PEP 514</a> by reading the registry entries ourselves.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @konstin on 2024-01-22 18:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">windows</span> added by @konstin on 2024-01-22 18:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-01-22 18:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin-interpreter/src/python_query.rs</code>:56 on 2024-01-22 18:20</div>
+            <div class="timeline-body"><p>I'm not clear about how we want to struct platform dependent symbols. I expect there will be two or three platforms generally (windows, unix and maybe wasm) and atm it looks like there won't be too much platform specific code.</p>
+<p>I chose to not <code>cfg</code> gate them so it's easier to keep the code in sync with all platforms when working on one platform.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-01-22 19:15</div>
+            <div class="timeline-body"><p>Minor conflict with #1040</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-interpreter/src/lib.rs</code>:11 on 2024-01-23 00:12</div>
+            <div class="timeline-body"><p>Nit: mind adding <code>crate</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-interpreter/src/python_query.rs</code>:42 on 2024-01-23 00:13</div>
+            <div class="timeline-body"><p>Should we try to canonicalize first, and then fallback to <code>which</code>? Otherwise, this would be wrong if <code>python3.10</code> were a binary in the current directory...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-01-23 00:13</div>
+            <div class="timeline-body"><p>Looks good to me!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-23 00:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-interpreter/src/python_query.rs</code>:56 on 2024-01-23 00:14</div>
+            <div class="timeline-body"><p>It seems okay to me for now. Harder choice if it only <em>compiles</em> on one platform.</p>
+<p>Should we add <code>installed_pythons_unix</code> for consistency, and just inline the <code>which</code> code?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-01-23 15:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin-interpreter/src/python_query.rs</code>:42 on 2024-01-23 15:31</div>
+            <div class="timeline-body"><p>To use a binary in the current directory, you'd need to use <code>./python3.10</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @konstin on 2024-01-23 15:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2024-01-23 15:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-01-23 15:35</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 15:39:26 UTC
+    </footer>
+</body>
+</html>

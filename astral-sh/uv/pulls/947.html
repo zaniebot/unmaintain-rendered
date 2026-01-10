@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reduce stack usage by boxing `File` in `Dist`, `CachePolicy` and large futures - astral-sh/uv #947</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Reduce stack usage by boxing <code>File</code> in <code>Dist</code>, <code>CachePolicy</code> and large futures</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/947">#947</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2024-01-17 13:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2024-01-17 13:15</div>
+            <div class="timeline-body"><p>Windows has a default stack size of 1MB, which makes puffin often fail with stack overflows. The PR reduces stack size by three changes:</p>
+<ul>
+<li>Boxing <code>File</code> in <code>Dist</code>, reducing the size from 496 to 240.</li>
+<li>Boxing the largest futures.</li>
+<li>Boxing <code>CachePolicy</code></li>
+</ul>
+<h2>Method</h2>
+<p>Debugging happened on linux using https://github.com/astral-sh/puffin/pull/941 to limit the stack size to 1MB. Used ran the command below.</p>
+<pre><code>RUSTFLAGS=-Zprint-type-sizes cargo +nightly build -p puffin-cli -j 1 &gt; type-sizes.txt &amp;&amp; top-type-sizes -w -s -h 10 &lt; type-sizes.txt &gt; sizes.txt
+</code></pre>
+<p>The main drawback is top-type-sizes not saying what the <code>__awaitee</code> is, so it requires manually looking up with a future with matching size.</p>
+<p>When the <code>brotli</code> features on <code>reqwest</code> is active, a lot of brotli types show up. Toggling this feature however seems to have no effect. I assume they are false positives since the <code>brotli</code> crate has elaborate control about allocation. The sizes are therefore shown with the feature off.</p>
+<h2>Results</h2>
+<p>The largest future goes from 12208B to 6416B, the largest type (<code>PrioritizedDistribution</code>, see also #948) from 17448B to 9264B. Full diff: https://gist.github.com/konstin/62635c0d12110a616a1b2bfcde21304f</p>
+<p>For the second commit, i iteratively boxed the largest file until the tests passed, then with an 800KB stack limit looked through the backtrace of a failing test and added some more boxing.</p>
+<p>Quick benchmarking showed no difference:</p>
+<pre><code class="language-console">$ hyperfine --warmup 2 &quot;target/profiling/main-dev resolve meine_stadt_transparent&quot; &quot;target/profiling/puffin-dev resolve meine_stadt_transparent&quot; 
+Benchmark 1: target/profiling/main-dev resolve meine_stadt_transparent
+  Time (mean ± σ):      49.2 ms ±   3.0 ms    [User: 39.8 ms, System: 24.0 ms]
+  Range (min … max):    46.6 ms …  63.0 ms    55 runs
+ 
+  Warning: Statistical outliers were detected. Consider re-running this benchmark on a quiet system without any interferences from other programs. It might help to use the '--warmup' or '--prepare' options.
+ 
+Benchmark 2: target/profiling/puffin-dev resolve meine_stadt_transparent
+  Time (mean ± σ):      47.4 ms ±   3.2 ms    [User: 41.3 ms, System: 20.6 ms]
+  Range (min … max):    44.6 ms …  60.5 ms    62 runs
+ 
+  Warning: Statistical outliers were detected. Consider re-running this benchmark on a quiet system without any interferences from other programs. It might help to use the '--warmup' or '--prepare' options.
+ 
+Summary
+  target/profiling/puffin-dev resolve meine_stadt_transparent ran
+    1.04 ± 0.09 times faster than target/profiling/main-dev resolve meine_stadt_transparent
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @konstin on 2024-01-17 13:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @konstin on 2024-01-17 13:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/distribution-types/src/lib.rs</code>:207 on 2024-01-17 13:23</div>
+            <div class="timeline-body"><p>Do you think it's worth having these? I have a few tests like this in various crates, but I usually regret them because they can change easily. (Whenever the type definitions or changed, or even compiling on different targets with a different pointer size.) What I usually try to do instead is express them as an inequality. That is, we probably don't care if any these types get <em>smaller</em> in size, but maybe we want to be flagged if they get bigger. Still, even then, I'd use these assertions sparingly personally.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-01-17 13:26</div>
+            <div class="timeline-body"><p>What do you think about boxing <code>BuiltDist</code> and <code>SourceDist</code> instead? That should bring the size of <code>Dist</code> down considerably. You can even leave the box on <code>File</code>.</p>
+<p>At least for the boxes inside types like <code>File</code>, those look like marginal allocations to me. (That is, <code>File</code> already has a bunch of tiny little allocations in it.) The main other possible impact is the overall effect of an extra pointer dereference, but usually that has to be in some very critical section to have much of an effect. But still a good idea to run benchmarks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-01-17 13:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/distribution-types/src/lib.rs</code>:207 on 2024-01-17 13:43</div>
+            <div class="timeline-body"><p>Any recommendations how to express just that <code>Dist</code> shouldn't become larger, at least not without somebody explicitly raising the limit? <code>static_assertions</code> doesn't have a macro for that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-01-17 13:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/distribution-types/src/lib.rs</code>:207 on 2024-01-17 13:46</div>
+            <div class="timeline-body"><p>I wouldn't bother with <code>static_assertions</code> for this personally. I would write a normal unit test with <code>assert!(std::mem::size_of::&lt;Dist&gt;() &lt;= N)</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-17 14:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/distribution-types/src/lib.rs</code>:207 on 2024-01-17 14:16</div>
+            <div class="timeline-body"><p>The PR summary says Dist was reduced to 420 bytes. Is that a typo in the summary?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-01-17 14:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/distribution-types/src/lib.rs</code>:207 on 2024-01-17 14:22</div>
+            <div class="timeline-body"><p>Yes, fixed</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-01-17 17:26</div>
+            <div class="timeline-body"><blockquote>
+<p>What do you think about boxing BuiltDist and SourceDist instead? That should bring the size of Dist down considerably. You can even leave the box on File.</p>
+</blockquote>
+<p>This way ...</p>
+<pre><code class="language-rust">#[derive(Debug, Clone)]
+pub enum Dist {
+    Built(Box&lt;BuiltDist&gt;),
+    Source(Box&lt;SourceDist&gt;),
+}
+</code></pre>
+<p>... or this ways?</p>
+<pre><code class="language-rust">#[derive(Debug, Clone)]
+pub struct Dist(Box&lt;DistInner&gt;);
+
+#[derive(Debug, Clone)]
+pub enum DistInner {
+    Built(BuiltDist),
+    Source(SourceDist),
+}
+</code></pre>
+<p>It changes all our <code>Dist</code> matches, but if we have consensus i'll do it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-01-17 18:52</div>
+            <div class="timeline-body"><p>Hmmm yes I see the conundrum. Given those choices, and given the fact that you can't pattern match through a <code>Box</code> (bah), I'd probably go with the <code>DistInner</code> approach since <code>BuiltDist</code> and <code>SourceDist</code> are themselves both enums.</p>
+<p>But... Looking at the types again, I think what I might do instead is:</p>
+<ol>
+<li>Make all struct types opaque. So that's <code>RegistryBuiltDist</code>, <code>DirectUrlBuiltDist</code>, <code>PathBuiltDist</code>, <code>RegistrySourceDist</code>, <code>DirectUrlSourceDist</code>, <code>GitSourceDist</code> and <code>PathSourceDist</code>.</li>
+<li>Expose their fields as public getter methods.</li>
+<li>For all the types above, add a box inside of them, probably requiring an <code>Inner</code> type for each.</li>
+</ol>
+<p>This way, I think for the most part pattern matching won't be as annoying/awkward. Some might need to change in places where we match on the struct fields, but it should be pretty straight-forward to tweak those.</p>
+<p>With that said, this is a larger and annoying refactor. So if this PR solves the immediate issue, I'd be happy punting on this for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Reduce stack usage by boxing `File` in `Dist` and large futures" to "Reduce stack usage by boxing `File` in `Dist`, `CachePolicy` and large futures" by @konstin on 2024-01-18 11:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-01-18 11:53</div>
+            <div class="timeline-body"><p>Yeah i'd prefer to move ahead without refactoring <code>Dist</code> more, the payoff from that refactor looks much smaller than the other boxing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2024-01-18 13:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @konstin on 2024-01-19 09:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2024-01-19 09:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-01-19 09:29</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 15:39:25 UTC
+    </footer>
+</body>
+</html>

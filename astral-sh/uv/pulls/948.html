@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Box `PrioritizedDistribution` - astral-sh/uv #948</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Box <code>PrioritizedDistribution</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/948">#948</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2024-01-17 13:45
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2024-01-17 13:45</div>
+            <div class="timeline-body"><p>On top of https://github.com/astral-sh/puffin/pull/947, we can also box <code>PrioritizedDistribution</code>.</p>
+<p>In a simple benchmark, this seems to slightly improve performance when comparing only this commit to main, even though the benchmark is too noisy to establish significance:</p>
+<pre><code>$ hyperfine --warmup 30 --runs 300 &quot;target/profiling/main-dev resolve meine_stadt_transparent&quot; &quot;target/profiling/puffin-dev resolve meine_stadt_transparent&quot;
+  Benchmark 1: target/profiling/main-dev resolve meine_stadt_transparent
+    Time (mean ± σ):      83.6 ms ±   2.0 ms    [User: 77.7 ms, System: 20.0 ms]
+    Range (min … max):    81.4 ms …  98.2 ms    300 runs
+
+    Warning: Statistical outliers were detected. Consider re-running this benchmark on a quiet system without any interferences from other programs. It might help to use the '--warmup' or '--prepare' options.
+
+  Benchmark 2: target/profiling/puffin-dev resolve meine_stadt_transparent
+    Time (mean ± σ):      80.8 ms ±   2.2 ms    [User: 75.4 ms, System: 19.5 ms]
+    Range (min … max):    78.6 ms …  98.6 ms    300 runs
+
+    Warning: Statistical outliers were detected. Consider re-running this benchmark on a quiet system without any interferences from other programs. It might help to use the '--warmup' or '--prepare' options.
+
+  Summary
+    target/profiling/puffin-dev resolve meine_stadt_transparent ran
+      1.03 ± 0.04 times faster than target/profiling/main-dev resolve meine_stadt_transparent
+</code></pre>
+<p>The effect on type sizes however is considerable (<a href="https://gist.github.com/konstin/38e6c774db541db46d61f1d4ea6b498f">downstack PR</a> vs. <a href="https://gist.github.com/konstin/003a77fe7d7d246b0d535e3fc843cb36">this PR</a>):</p>
+<pre><code class="language-patch">--- branch.txt  2024-01-17 14:26:01.826085176 +0100
++++ boxed-prioritized-dist.txt  2024-01-17 14:25:57.101900963 +0100
+@@ -1,19 +1,3 @@
+-9264 alloc::collections::btree::node::InternalNode&lt;pep440_rs::version::Version, distribution_types::PrioritizedDistribution&gt; align=8
+-   9168 data
+-     96 edges
+-
+-9264 alloc::collections::btree::node::InternalNode&lt;pep440_rs::Version, distribution_types::PrioritizedDistribution&gt; align=8
+-   9168 data
+-     96 edges
+-
+-9168 alloc::collections::btree::node::LeafNode&lt;pep440_rs::version::Version, distribution_types::PrioritizedDistribution&gt; align=8
+-   9064 vals
+-     88 keys
+-
+-9168 alloc::collections::btree::node::LeafNode&lt;pep440_rs::Version, distribution_types::PrioritizedDistribution&gt; align=8
+-   9064 vals
+-     88 keys
+-
+ 8992 tokio::sync::mpsc::block::Block&lt;hyper::client::dispatch::Envelope&lt;http::request::Request&lt;reqwest::async_impl::body::ImplStream&gt;, http::response::Response&lt;hyper::body::body::Body&gt;&gt;&gt; align=8
+    8960 values
+      32 header
+@@ -74,10 +58,23 @@
+          40 __tracing_attr_span
+      64 variant Unresumed, Returned, Panicked
+
++5648 {async fn body@crates/puffin-client/src/registry_client.rs:224:5: 224:30} align=8
++   5647 variant Suspend0
++       5576 __awaitee align=8
++         40 __tracing_attr_span
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-01-17 13:49</div>
+            <div class="timeline-body"><p>What about putting the <code>Box</code> inside of <code>PrioritizedDistribution</code>? Then consumers don't need to care about it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-01-17 13:50</div>
+            <div class="timeline-body"><p>Oh, the other concern I had here was on the boxed futures. It seems like it might be easy for those <code>boxed()</code> calls to disappear accidentally. Maybe just a quick comment on each one to say <code>// reduces stack size</code> or something?</p>
+<p>Also, how did you pick the futures to box?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-01-17 13:56</div>
+            <div class="timeline-body"><blockquote>
+<p>What about putting the Box inside of PrioritizedDistribution? Then consumers don't need to care about it.</p>
+</blockquote>
+<p>Good question, my thinking was that this still allows using the plain <code>PrioritizedDistribution</code> if you don't want the <code>Box</code> without enforcing the allocation?</p>
+<blockquote>
+<p>Also, how did you pick the futures to box?</p>
+</blockquote>
+<p>I went from the largest future to their callees until i arrived at one that was large not due to it's callee but due to variant/data and then boxed this one at all of its callsites. It's not an exact methodology, but it seems to have worked. I'm still having trouble understanding the numbers from top-type-sizes and the exact construction of future sizes.</p>
+<p>I had also considered splitting some of the large methods into helper methods for easier debugging and maybe more boxing spots but wanted to avoid the churn.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-01-17 14:12</div>
+            <div class="timeline-body"><blockquote>
+<p>Good question, my thinking was that this still allows using the plain <code>PrioritizedDistribution</code> if you don't want the <code>Box</code> without enforcing the allocation?</p>
+</blockquote>
+<p>Right. But I don't think it matters. A <code>PrioritizedDistribution</code> is a huge type with a whole mess of things inside of it, including <em>many</em> allocations. Adding one more is what I think of as &quot;marginal.&quot; As in, it's unlikely to make a meaningful difference given its definition today.</p>
+<blockquote>
+<p>I went from the largest future to their callees until i arrived at one that was large not due to it's callee but due to variant/data and then boxed this one at all of its callsites. It's not an exact methodology, but it seems to have worked. I'm still having trouble understanding the numbers from top-type-sizes and the exact construction of future sizes.</p>
+</blockquote>
+<p>Gotya. Seems sensible to me I think. It does seem a little tricky. (And sorry, I added the comment about boxed futures on the wrong PR.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2024-01-18 13:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @konstin on 2024-01-19 09:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2024-01-19 09:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-01-19 09:44</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 15:39:25 UTC
+    </footer>
+</body>
+</html>

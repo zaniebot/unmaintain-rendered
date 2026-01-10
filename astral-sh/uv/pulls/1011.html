@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add scenario tests for `pip-compile` - astral-sh/uv #1011</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add scenario tests for <code>pip-compile</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/1011">#1011</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2024-01-19 18:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/zanieb">@zanieb</a> on 2024-01-19 18:46</div>
+            <div class="timeline-body"><p>e.g. for scenarios that test resolution <em>without</em> installation.</p>
+<p>This refactors the <code>update</code> script to generate scenario test files for <code>pip compile</code> <em>and</em> <code>pip install</code>. We don't overlap scenarios to save time. We only generate <code>pip compile</code> test cases for scenarios we cannot represent with <code>pip install</code> e.g. a <code>--python-version</code> override.</p>
+<p>The <em>one</em> scenario I added happened to reveal a bug in our resolver where we were incorrectly filtering versions by the installed version when wheels were available. Per the comment at https://github.com/astral-sh/puffin/issues/883#issuecomment-1890773112, we should <em>only</em> need to check for a compatible installed Python version when using a different <em>target</em> Python version if we need to build a source distribution. https://github.com/astral-sh/puffin/commit/53bce684007aec7662ad2abb493a5f083e194681 resolves this by removing the excessive constraints — the correct Python version incompatibilities are applied elsewhere.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-01-19 18:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/puffin/tests/pip_compile_scenarios.rs</code>:72 on 2024-01-19 18:47</div>
+            <div class="timeline-body"><p>So uh this is wrong I feel like this should have resolved successfully since we set 3.11?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-01-19 18:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>scripts/scenarios/update.py</code>:194 on 2024-01-19 18:48</div>
+            <div class="timeline-body"><p>Here we check if the scenario requires a custom resolver option that wouldn't let it be installed</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-01-19 18:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/puffin/tests/pip_compile_scenarios.rs</code>:53 on 2024-01-19 18:51</div>
+            <div class="timeline-body"><p>I would <em>also</em> like to include satisfiability assertions here like this scenario tells us it should succeed so we should assert the command succeeded and we also know which versions we should resolve but I can't figure out how to do that <em>and</em> have a nice snapshot.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-01-19 18:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/puffin/tests/pip_compile_scenarios.rs</code>:53 on 2024-01-19 18:52</div>
+            <div class="timeline-body"><p>@konstin ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-01-19 22:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/puffin/tests/pip_compile_scenarios.rs</code>:72 on 2024-01-19 22:19</div>
+            <div class="timeline-body"><p>Resolved by https://github.com/astral-sh/puffin/pull/1011/commits/53bce684007aec7662ad2abb493a5f083e194681</p>
+<p>This was a bug in our resolver.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @zanieb on 2024-01-19 22:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin/tests/pip_compile_scenarios.rs</code>:53 on 2024-01-20 12:26</div>
+            <div class="timeline-body"><p>This is the best I have for it: https://github.com/astral-sh/puffin/blob/53b7e3cb4f44e9ac7178154c0dcdf99ebd3f8cef/crates/puffin/tests/pip_compile.rs#L3326.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-20 12:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-01-20 12:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-20 12:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin/tests/pip_compile_scenarios.rs</code>:53 on 2024-01-20 12:27</div>
+            <div class="timeline-body"><p>Err, wait, I think I'm misunderstanding the comment. Can you rephrase?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-01-20 16:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/puffin/tests/pip_compile_scenarios.rs</code>:53 on 2024-01-20 16:36</div>
+            <div class="timeline-body"><p>Oh I could read the output file! Good idea.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2024-01-21 23:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-01-21 23:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-01-21 23:47</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 15:39:26 UTC
+    </footer>
+</body>
+</html>

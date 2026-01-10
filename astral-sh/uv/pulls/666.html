@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allow explicitly-requested pre-release versions - astral-sh/uv #666</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Allow explicitly-requested pre-release versions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/pull/666">#666</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-12-15 20:06
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-15 20:06</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR modifies our pre-release handling to enable resolving packages like <code>msgraph-sdk</code>.</p>
+<p>Historically, by default, we've allowed pre-releases in two cases:</p>
+<ol>
+<li>The package <em>only</em> has pre-release versions. (This used to be the case for Black, most famously.)</li>
+<li>The package is a first-party requirement, and includes a pre-release marker.</li>
+</ol>
+<p>In either case, we chose the <em>most recent</em> pre-release version.</p>
+<p>This doesn't work for <code>msgraph-sdk</code>, because it depends on <code>msgraph-core&gt;=1.0.0a2</code>. <code>msgraph-core</code> has a <code>0.2.2</code> stable release, so it doesn't qualify under Criteria 1; and because it's not a first-party dependency, it doesn't qualify under Criteria 2. The user could &quot;fix&quot; this by adding a direct dependency on <code>msgraph-core&gt;=1.0.0a2</code>, and we could try to put up a better error message in this case... But I also think we can make pre-release handling smarter.</p>
+<p>So, instead, this PR removes the if-necessary and explicit variants in favor of a single <code>IfRequested</code> variant, the semantics of which are as follows.</p>
+<ol>
+<li>If a package <em>only</em> has pre-release versions, accept the most recent compatible pre-release.</li>
+<li>If <em>anyone</em> asked for a pre-release version of the package (first-party, third-party, etc.), then allow pre-releases <em>if</em> there are no stable releases in the range.</li>
+</ol>
+<p>This leads to a much better resolution for <code>msgraph-sdk</code> without any user involvement (we select <code>msgraph-core==1.0.0a4</code>, the most recent pre-release; if a stable release is published, we'll then select that instead).</p>
+<p>Determining whether <em>anyone</em> asked for a pre-release version is tricky due to backtracking. Like, we can't just naively track which packages appear with a pre-release marker in <em>any</em> package's requirements, because we might backtrack and remove the package with the pre-release dependency... The solution I opted for here is to iterate over the <code>Range</code>, look at the boundary, and check if <em>any</em> of the boundary markers include pre-releases. We never make a non-pre-release marker into a pre-release marker in <code>PubGrubVersion::next</code>, so if any marker includes a pre-release, then <em>some</em> requesting package included a pre-release. Presumedly, if we then backtrack, those ranges will be removed from the term, but this is honestly hard to test.</p>
+<p>Closes https://github.com/astral-sh/puffin/issues/659.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-12-15 20:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-resolver/src/candidate_selector.rs</code>:103 on 2023-12-15 20:07</div>
+            <div class="timeline-body"><p>This requires a change in PubGrub, separate PR:</p>
+<pre><code class="language-diff">diff --git a/src/range.rs b/src/range.rs
+index fc04e8b..b817f23 100644
+--- a/src/range.rs
++++ b/src/range.rs
+@@ -122,6 +122,23 @@ impl&lt;V&gt; Range&lt;V&gt; {
+     pub fn is_empty(&amp;self) -&gt; bool {
+         self.segments.is_empty()
+     }
++
++    pub fn bounds(&amp;self) -&gt; impl Iterator&lt;Item = &amp;V&gt; {
++        self.segments.iter().flat_map(|segment| {
++            let (v1, v2) = segment;
++            let v1 = match v1 {
++                Included(v) =&gt; Some(v),
++                Excluded(v) =&gt; Some(v),
++                Unbounded =&gt; None
++            };
++            let v2 = match v2 {
++                Included(v) =&gt; Some(v),
++                Excluded(v) =&gt; Some(v),
++                Unbounded =&gt; None
++            };
++            v1.into_iter().chain(v2)
++        })
++    }
+ }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @charliermarsh on 2023-12-15 20:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2023-12-15 20:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-12-15 20:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-resolver/src/candidate_selector.rs</code>:104 on 2023-12-15 20:09</div>
+            <div class="timeline-body"><p>This will accept the most-compatible pre-release version, if there are no matching stable versions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-resolver/src/candidate_selector.rs</code>:106 on 2023-12-15 20:09</div>
+            <div class="timeline-body"><p>This will accept the most-compatible pre-release version, if there are <em>no</em> stable versions at all.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-12-15 20:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-12-15 20:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-resolver/src/candidate_selector.rs</code>:103 on 2023-12-15 20:15</div>
+            <div class="timeline-body"><p>I actually can't say <em>for sure</em> that backtracking will avoid leaving pre-release markers in here. Like, if you have a dependency <code>foo</code>, and you try <code>foo==1.0.0</code>, and that adds a dependency on <code>bar&gt;=1.0.0a1</code>... But you then backtrack, and remove <code>foo==1.0.0</code>, will <code>bar</code> <em>definitely</em> not contain a pre-release marker anymore?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-12-15 20:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-resolver/src/candidate_selector.rs</code>:103 on 2023-12-15 20:15</div>
+            <div class="timeline-body"><p>But that's the assumption that this rests upon.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-17 15:46</div>
+            <div class="timeline-body"><p>@konstin and I discussed in Discord, and what's now proposed is:</p>
+<ul>
+<li>Prefer stable release over all pre-releases. If you're ever looking at a constraint, and there's a stable release that fits the constraints, ignore the pre-releases.</li>
+<li>If there are no stable releases in the range (regardless of whether the version marker included a pre-release explicitly), use the latest pre-release.</li>
+</ul>
+<p>The primary difference between this and what's described in the PR summary is that we would no longer require that someone requested a pre-release explicitly (e.g., <code>foo&gt;=1.0.0a1</code>). So it's a more permissive strategy, though one that <em>seems</em> to adhere to PEP 508, which says: &quot;accept remotely available pre-releases for version specifiers where there is no final or post release that satisfies the version specifier&quot;.</p>
+<p>The main downside of this approach is that it... could be &quot;wrong&quot;. Imagine we find ourselves in a situation where we have a pre-release that satisfies some constraints, and no stable releases. So we select the pre-release. It's possible that if we instead backtracked, we might find a global resolution that <em>doesn't</em> require any pre-releases. I think handling that case would be <em>very</em> hard to implement, maybe impossible? My hope is that this is minimally impactful in reality. But that's the reason we have the behavior we do on <code>main</code>: we need to know the set of packages that are <em>allowed</em> to have pre-releases upfront.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-17 15:48</div>
+            <div class="timeline-body"><p>I've pushed this updated strategy, though gonna hold on merging since I'd like @zanieb opinion.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-17 15:57</div>
+            <div class="timeline-body"><p>I'm actually now worried that <em>either</em> of these approaches will break PubGrub assumptions since we're now making it such that <em>more</em> packages are available as the range gets constraint. And this suggests as much: https://pubgrub-rs-guide.netlify.app/limitations/prerelease_versions. We may need to stick to our current strategy and just try to improve the error message.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-17 16:11</div>
+            <div class="timeline-body"><p>Okay, I'm now more convinced that we should close this and keep our current behavior. We'll need to add better error messages somehow.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-17 16:46</div>
+            <div class="timeline-body"><p>We're gonna ask Jacob his perspective.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @charliermarsh on 2023-12-17 16:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-12-17 20:02</div>
+            <div class="timeline-body"><blockquote>
+<p>If there are no stable releases in the range (regardless of whether the version marker included a pre-release explicitly), use the latest pre-release.</p>
+</blockquote>
+<p>This seems like bad behavior? I would be <em>very</em> confused if a pre-release version got selected without an explicit request for a pre-release (whether that happens first or third party). Your original proposal makes much more sense to me.</p>
+<p>Sounds like we'll be running into limitations of PubGrub here. I'm not opposed to moving forward with our current behavior and improved error messages i.e. requiring the user to explicitly opt into pre-release versions for the transitive dependency, but we may want to explore a better solution again in the future.</p>
+<p>Perhaps interesting https://github.com/dart-lang/pub/pull/3078</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-17 20:09</div>
+            <div class="timeline-body"><blockquote>
+<p>This seems like bad behavior? I would be very confused if a pre-release version got selected without an explicit request for a pre-release (whether that happens first or third party). Your original proposal makes much more sense to me.</p>
+</blockquote>
+<p>For what it's worth, this is the behavior suggested in the standard (PEP 508).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-01-09 23:44</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 15:39:25 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>add initial rkyv support - astral-sh/uv #1135</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>add initial rkyv support</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/1135">#1135</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2024-01-26 19:57
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-01-26 19:57</div>
+            <div class="timeline-body"><p>This PR adds initial support for <a href="https://rkyv.org/">rkyv</a> to puffin. In particular,
+the main aim here is to make puffin-client's <code>SimpleMetadata</code> type
+possible to deserialize from a <code>&amp;[u8]</code> without doing any copies. This
+PR <strong>stops short of actuallying doing that zero-copy deserialization</strong>.
+Instead, this PR is about adding the necessary trait impls to a variety
+of types, along with a smattering of small refactorings to make rkyv
+possible to use.</p>
+<p>For those unfamiliar, rkyv works via the interplay of three traits:
+<code>Archive</code>, <code>Serialize</code> and <code>Deserialize</code>. The usual flow of things is
+this:</p>
+<ul>
+<li>Make a type <code>T</code> implement <code>Archive</code>, <code>Serialize</code> and <code>Deserialize</code>. rkyv
+helpfully provides <code>derive</code> macros to make this pretty painless in most
+cases.</li>
+<li>The process of implementing <code>Archive</code> for <code>T</code> <em>usually</em> creates an entirely
+new distinct type within the same namespace. One can refer to this type
+without naming it explicitly via <code>Archived&lt;T&gt;</code> (where <code>Archived</code> is a clever
+type alias defined by rkyv).</li>
+<li>Serialization happens from <code>T</code> to (conceptually) a <code>Vec&lt;u8&gt;</code>. The
+serialization format is specifically designed to reflect the in-memory layout
+of <code>Archived&lt;T&gt;</code>. Notably, <em>not</em> <code>T</code>. But <code>Archived&lt;T&gt;</code>.</li>
+<li>One can then get an <code>Archived&lt;T&gt;</code> with no copying (albeit, we will likely
+need to incur some cost for validation) from the previously created <code>&amp;[u8]</code>.
+This is quite literally <a href="https://docs.rs/rkyv/latest/src/rkyv/util/mod.rs.html#63-68">implemented as a pointer cast</a>.</li>
+<li>The problem with an <code>Archived&lt;T&gt;</code> is that it isn't your <code>T</code>. It's something
+else. And while there is limited interoperability between a <code>T</code> and an
+<code>Archived&lt;T&gt;</code>, the main issue is that the surrounding code generally demands
+a <code>T</code> and not an <code>Archived&lt;T&gt;</code>. <strong>This is at the heart of the tension for
+introducing zero-copy deserialization, and this is mostly an intrinsic
+problem to the technique and not an rkyv-specific issue.</strong> For this reason,
+given an <code>Archived&lt;T&gt;</code>, one can get a <code>T</code> back via an explicit
+deserialization step. This step is like any other kind of deserialization,
+although generally faster since no real &quot;parsing&quot; is required. But it will
+allocate and create all necessary objects.</li>
+</ul>
+<p>This PR largely proceeds by deriving the three aforementioned traits
+for <code>SimpleMetadata</code>. And, of course, all of its type dependencies. But
+we stop there for now.</p>
+<p>The main issue with carrying this work forward so that rkyv is actually
+used to deserialize a <code>SimpleMetadata</code> is figuring out how to deal
+with <code>DataWithCachePolicy</code> inside of the cached client. Ideally, this
+type would itself have rkyv support, but adding it is difficult. The
+main difficulty lay in the fact that its <code>CachePolicy</code> type is opaque,
+not easily constructable and is internally the tip of the iceberg of
+a rat's nest of types found in more crates such as <code>http</code>. While one
+&quot;dumb&quot;-but-annoying approach would be to fork both of those crates
+and add rkyv trait impls to all necessary types, it is my belief that
+this is the wrong approach. What we'd <em>like</em> to do is not just use
+rkyv to deserialize a <code>DataWithCachePolicy</code>, but we'd actually like to
+get an <code>Archived&lt;DataWithCachePolicy&gt;</code> and make actual decisions used
+the archived type directly. Doing that will require some work to make
+<code>Archived&lt;DataWithCachePolicy&gt;</code> directly useful.</p>
+<p>My suspicion is that, after doing the above, we may want to mush
+forward with a similar approach for <code>SimpleMetadata</code>. That is, we want
+<code>Archived&lt;SimpleMetadata&gt;</code> to be as useful as possible. But right
+now, the structure of the code demands an eager conversion (and thus
+deserialization) into a <code>SimpleMetadata</code> and then into a <code>VersionMap</code>.
+Getting rid of that eagerness is, I think, the next step after dealing
+with <code>DataWithCachePolicy</code> to unlock bigger wins here.</p>
+<p>There are many commits in this PR, but most are tiny. I still encourage
+review to happen commit-by-commit.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @BurntSushi on 2024-01-26 19:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @BurntSushi on 2024-01-26 19:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-26 20:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/distribution-types/src/file.rs</code>:35 on 2024-01-26 20:01</div>
+            <div class="timeline-body"><p>The benefits of having our own internal types separate from PyPI.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-01-26 20:06</div>
+            <div class="timeline-body"><p>#1136 shows the diff between this PR and some hacks I've done to make it possible to get some kind of measurement for the impact of zero-copy deserialization on just <code>SimpleMetadata</code>. Effectively, I had to &quot;stub&quot; out <code>DataWithCachePolicy</code> and hard-code some caching decisions. But, this does let me get an idea of the impact here:</p>
+<pre><code>$ hyperfine -w5 --cleanup 'rm -rf /home/andrew/.cache/puffin' \
+    &quot;puffin-main pip compile ~/astral/tmp/reqs/home-assistant-reduced.in -o /dev/null&quot; \
+    &quot;PUFFIN_STUB_CACHE_POLICY=1 puffin-test pip compile ~/astral/tmp/reqs/home-assistant-reduced.in -o /dev/null&quot; ; A kang
+Benchmark 1: puffin-main pip compile ~/astral/tmp/reqs/home-assistant-reduced.in -o /dev/null
+  Time (mean ± σ):     280.0 ms ±   3.4 ms    [User: 258.8 ms, System: 127.2 ms]
+  Range (min … max):   274.4 ms … 286.4 ms    10 runs
+
+Benchmark 2: PUFFIN_STUB_CACHE_POLICY=1 puffin-test pip compile ~/astral/tmp/reqs/home-assistant-reduced.in -o /dev/null
+  Time (mean ± σ):     210.4 ms ±   2.1 ms    [User: 185.8 ms, System: 143.0 ms]
+  Range (min … max):   207.5 ms … 213.1 ms    13 runs
+
+Summary
+  PUFFIN_STUB_CACHE_POLICY=1 puffin-test pip compile ~/astral/tmp/reqs/home-assistant-reduced.in -o /dev/null ran
+    1.33 ± 0.02 times faster than puffin-main pip compile ~/astral/tmp/reqs/home-assistant-reduced.in -o /dev/null
+</code></pre>
+<p>The speed-up isn't huge, but it's worth pointing out the following things:</p>
+<ul>
+<li>It removes <code>rmp_serde</code> completely, and I believe this is the primary thing getting us our speed-up here.</li>
+<li>While we can get an <code>Archived&lt;SimpleMetadata&gt;</code> (isomorphic to a <code>SimpleMetadataRaw</code> in that draft PR) without cost, we still need to do a deserialize step (for now) into a <code>SimpleMetadata</code> before we create a <code>VersionMap</code>. This is also where some cost is coming from.</li>
+<li>While I haven't investigated much, there's also now a fair bit of time being spent in dropping a <code>OnceMap</code>. (Haven't looked at this at all yet.)</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @BurntSushi on 2024-01-27 13:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @BurntSushi on 2024-01-27 13:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-distribution/src/distribution_database.rs</code>:98 on 2024-01-28 15:18</div>
+            <div class="timeline-body"><p>We could consider making this lazy. Internally, this method parses <code>url</code>, checks if it's absolute and, if not, joins <code>base</code> to it. So perhaps we should move the base parsing into <code>BaseUrl</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/distribution-filename/Cargo.toml</code>:23 on 2024-01-28 15:20</div>
+            <div class="timeline-body"><p>How did you decide where / when to make this optional?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/pep440-rs/src/version.rs</code>:1131 on 2024-01-28 15:28</div>
+            <div class="timeline-body"><p>(Seems like a good change regardless.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-resolver/src/finder.rs</code>:179 on 2024-01-28 15:29</div>
+            <div class="timeline-body"><p>I personally would prefer <code>version_wheel</code> and <code>version_sdist</code> or <code>version_source_dist</code>, but defer to you as author :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-resolver/src/resolver/mod.rs</code>:205 on 2024-01-28 15:30</div>
+            <div class="timeline-body"><p>Can you explain this, for my understanding? (I probably didn't understand this even when I wrote it, and was just following Tokio examples.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-01-28 15:33</div>
+            <div class="timeline-body"><p>Very nice! I actually thought this would end up being even <em>more</em> invasive than it played out in this PR.</p>
+<p>Is your plan to merge this as-is, or wait for the following PRs to play out?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-01-28 16:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/distribution-filename/Cargo.toml</code>:23 on 2024-01-28 16:08</div>
+            <div class="timeline-body"><p>I copied whether <code>serde</code> was optional or not. (And I don't think I understand the reasoning for when <code>serde</code> is optional versus when it isn't. It seems like maybe it is made optional for crates that aren't tightly coupled to puffin.)</p>
+<p>IMO, we should make <code>serde</code> (and <code>rkyv</code>) required everywhere. If and when we ever publish any of our crates, then we can make things optional (and possibly do other things that would be appropriate for an &quot;ecosystem&quot; crate).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-01-28 16:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/puffin-resolver/src/finder.rs</code>:179 on 2024-01-28 16:12</div>
+            <div class="timeline-body"><p>I don't feel too strongly. I can change them. I usually like to keep the length of variable names roughly proportional to their scope. But this is a big loop.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-01-28 16:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/puffin-resolver/src/resolver/mod.rs</code>:205 on 2024-01-28 16:25</div>
+            <div class="timeline-body"><p>I actually don't have easy access to a root cause explanation here. The general idea is that explicit pin is only needed when the thing you're using is <code>!Unpin</code>. <a href="https://doc.rust-lang.org/std/marker/trait.Unpin.html">Most things in the Rust universe implement <code>Unpin</code></a>. The key thing, AIUI, that is not <code>Unpin</code> are async tasks with borrows in them. But these don't typically manifest themselves as a named type. (Like closures.) So when you get an async task that is <code>!Unpin</code> and need to do something with it, it's usually <em>then</em> that you need to pin it.</p>
+<p>So answering your question in this context is somewhat like answering a negative. We'd have to go down the stack through all async tasks and basically note, &quot;yeah this doesn't have any borrows in it, so it is <code>Unpin</code> and thus doesn't need to be pinned.&quot;</p>
+<p>And then of course, this whole pinning thing is needed because async tasks might get moved around in memory. But they might also have &quot;self&quot; references to things on their stack. So in order for moving those tasks to be safe, you need to guarantee that all of those self references will continue to be valid after the task gets moved. And the way to do that is to &quot;pin&quot; it, and usually that introducing indirection (i.e., a pointer) of some kind.</p>
+<p>(I am overall about 95% confident in this explanation.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-01-28 16:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/puffin-distribution/src/distribution_database.rs</code>:98 on 2024-01-28 16:55</div>
+            <div class="timeline-body"><p>So I don't think it's worth doing this for perf reasons. It doesn't show up on a profile as far as I can see. So I'm not sure it makes sense to spend the extra effort to optimize it.</p>
+<p>But I do think it makes the code clearer here. So I did it for those reasons. :) See: https://github.com/astral-sh/puffin/pull/1135/commits/8a5a0aff14173ba4584af70b392814e789a2e124</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-01-28 16:56</div>
+            <div class="timeline-body"><blockquote>
+<p>Is your plan to merge this as-is, or wait for the following PRs to play out?</p>
+</blockquote>
+<p>No I definitely want to merge it unless there are objections. I want to merge #1150 too. I devised both PRs to intentionally stop short of actually changing how puffin works. But it's helpful to get this work on to <code>main</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @BurntSushi on 2024-01-28 17:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2024-01-28 17:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-01-28 17:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-01-28 18:12</div>
+            <div class="timeline-body"><blockquote>
+<p>I actually thought this would end up being even <em>more</em> invasive than it played out in this PR.</p>
+</blockquote>
+<p>It's partially due to <code>rkyv</code> providing a very nice set of <code>derive</code> macros, and partially because this is only supporting (not actually doing, yet) zero-copy deseriliazation &quot;at the edges.&quot; The invasive part comes when we, for example, want to use <code>Archived&lt;SimpleMetadata&gt;</code> (or similar) in more places than &quot;use it to eagerly build a <code>VersionMap</code>.&quot; Essentially, the invasive part comes from the tension between <code>T</code> and <code>Archived&lt;T&gt;</code>. You want the latter---because it takes no copies or explicit deserialization to produce---but the surrounding code wants <code>T</code>.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 15:39:26 UTC
+    </footer>
+</body>
+</html>

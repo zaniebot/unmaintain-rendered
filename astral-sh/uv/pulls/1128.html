@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trim `get_cached_with_callback` and `send_cached` down some more. - astral-sh/uv #1128</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Trim <code>get_cached_with_callback</code> and <code>send_cached</code> down some more.</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/1128">#1128</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2024-01-26 16:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2024-01-26 16:56</div>
+            <div class="timeline-body"><p>I noticed that <code>get_cached_with_callback</code> and <code>send_cached</code> are large both in terms of llvm lines and in terms of types (and large types can cause buffer overflows on windows). <code>get_cached_with_callback</code>  specifically is large because it's monomorphized for each callback. I've split both functions into smaller units and boxed the callback.</p>
+<p>llvm lines, before:</p>
+<pre><code>  Lines                 Copies               Function name
+  -----                 ------               -------------
+  909511                21625                (TOTAL)
+   36026 (4.0%,  4.0%)     33 (0.2%,  0.2%)  &lt;&amp;mut rmp_serde::decode::Deserializer&lt;R,C&gt; as serde::de::Deserializer&gt;::deserialize_any
+   14688 (1.6%,  5.6%)      8 (0.0%,  0.2%)  puffin_client::cached_client::CachedClient::get_cached_with_callback::{{closure}}::{{closure}}
+   13748 (1.5%,  7.1%)      5 (0.0%,  0.2%)  puffin_client::cached_client::CachedClient::send_cached::{{closure}}
+   12460 (1.4%,  8.5%)     35 (0.2%,  0.4%)  alloc::raw_vec::RawVec&lt;T,A&gt;::grow_amortized
+   10731 (1.2%,  9.6%)    122 (0.6%,  0.9%)  &lt;alloc::boxed::Box&lt;T,A&gt; as core::ops::drop::Drop&gt;::drop
+    8952 (1.0%, 10.6%)      9 (0.0%,  1.0%)  core::slice::sort::partition_in_blocks
+    8216 (0.9%, 11.5%)    323 (1.5%,  2.5%)  &lt;core::result::Result&lt;T,E&gt; as core::ops::try_trait::Try&gt;::branch
+    7745 (0.9%, 12.4%)    205 (0.9%,  3.4%)  core::result::Result&lt;T,E&gt;::map_err
+    6862 (0.8%, 13.1%)     54 (0.2%,  3.7%)  &lt;alloc::vec::Vec&lt;T&gt; as alloc::vec::spec_from_iter_nested::SpecFromIterNested&lt;T,I&gt;&gt;::from_iter
+    6720 (0.7%, 13.9%)    133 (0.6%,  4.3%)  std::panicking::try
+    6600 (0.7%, 14.6%)     45 (0.2%,  4.5%)  &lt;alloc::sync::Weak&lt;T,A&gt; as core::ops::drop::Drop&gt;::drop
+    5899 (0.6%, 15.2%)     33 (0.2%,  4.6%)  rmp_serde::decode::Deserializer&lt;R,C&gt;::read_str_data
+    5610 (0.6%, 15.9%)     33 (0.2%,  4.8%)  alloc::raw_vec::RawVec&lt;T,A&gt;::allocate_in
+    5187 (0.6%, 16.4%)    133 (0.6%,  5.4%)  std::panicking::try::do_catch
+    4740 (0.5%, 17.0%)    268 (1.2%,  6.7%)  core::ops::function::FnOnce::call_once
+    4670 (0.5%, 17.5%)     40 (0.2%,  6.8%)  puffin_client::cached_client::CachedClient::get_cached_with_callback::{{closure}}::{{closure}}::{{closure}}
+    4527 (0.5%, 18.0%)     54 (0.2%,  7.1%)  core::iter::traits::iterator::Iterator::try_fold
+</code></pre>
+<p>after:</p>
+<pre><code>  Lines                 Copies               Function name
+  -----                 ------               -------------
+  910275                21712                (TOTAL)
+   36026 (4.0%,  4.0%)     33 (0.2%,  0.2%)  &lt;&amp;mut rmp_serde::decode::Deserializer&lt;R,C&gt; as serde::de::Deserializer&gt;::deserialize_any
+   12460 (1.4%,  5.3%)     35 (0.2%,  0.3%)  alloc::raw_vec::RawVec&lt;T,A&gt;::grow_amortized
+   10935 (1.2%,  6.5%)    124 (0.6%,  0.9%)  &lt;alloc::boxed::Box&lt;T,A&gt; as core::ops::drop::Drop&gt;::drop
+    8952 (1.0%,  7.5%)      9 (0.0%,  0.9%)  core::slice::sort::partition_in_blocks
+    8714 (1.0%,  8.5%)      5 (0.0%,  0.9%)  puffin_client::cached_client::CachedClient::send_cached_handle_stale::{{closure}}
+    8216 (0.9%,  9.4%)    323 (1.5%,  2.4%)  &lt;core::result::Result&lt;T,E&gt; as core::ops::try_trait::Try&gt;::branch
+    8192 (0.9%, 10.3%)      8 (0.0%,  2.5%)  puffin_client::cached_client::CachedClient::get_cached_with_callback::{{closure}}::{{closure}}
+    7745 (0.9%, 11.1%)    205 (0.9%,  3.4%)  core::result::Result&lt;T,E&gt;::map_err
+    6862 (0.8%, 11.9%)     54 (0.2%,  3.7%)  &lt;alloc::vec::Vec&lt;T&gt; as alloc::vec::spec_from_iter_nested::SpecFromIterNested&lt;T,I&gt;&gt;::from_iter
+    6778 (0.7%, 12.6%)      5 (0.0%,  3.7%)  puffin_client::cached_client::CachedClient::send_cached::{{closure}}
+    6720 (0.7%, 13.4%)    133 (0.6%,  4.3%)  std::panicking::try
+    6600 (0.7%, 14.1%)     45 (0.2%,  4.5%)  &lt;alloc::sync::Weak&lt;T,A&gt; as core::ops::drop::Drop&gt;::drop
+    5899 (0.6%, 14.7%)     33 (0.2%,  4.7%)  rmp_serde::decode::Deserializer&lt;R,C&gt;::read_str_data
+    5610 (0.6%, 15.3%)     33 (0.2%,  4.8%)  alloc::raw_vec::RawVec&lt;T,A&gt;::allocate_in
+    5187 (0.6%, 15.9%)    133 (0.6%,  5.4%)  std::panicking::try::do_catch
+    4740 (0.5%, 16.4%)    268 (1.2%,  6.7%)  core::ops::function::FnOnce::call_once
+    4527 (0.5%, 16.9%)     54 (0.2%,  6.9%)  core::iter::traits::iterator::Iterator::try_fold
+</code></pre>
+<p>Stack sizes diff: https://gist.github.com/konstin/a3f38276aacf1170038a756c8c49793c</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @konstin on 2024-01-26 16:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">windows</span> added by @konstin on 2024-01-26 16:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @konstin on 2024-01-26 16:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2024-01-26 17:56</div>
+            <div class="timeline-body"><p>LGTM.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-26 21:35</div>
+            <div class="timeline-body"><p>Any idea why the total number of lines increased? (Am I misreading?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-01-29 08:07</div>
+            <div class="timeline-body"><p>I think it's just that each function declaration has a bit overhead; It still feels like a good trade</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @konstin on 2024-01-29 08:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2024-01-29 08:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-01-29 08:31</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 15:39:26 UTC
+    </footer>
+</body>
+</html>

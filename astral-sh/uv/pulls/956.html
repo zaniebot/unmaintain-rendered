@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add support for disabling installation from pre-built wheels - astral-sh/uv #956</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add support for disabling installation from pre-built wheels</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/956">#956</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2024-01-17 23:09
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/zanieb">@zanieb</a> on 2024-01-17 23:09</div>
+            <div class="timeline-body"><p>Adds support for disabling installation from pre-built wheels i.e. the package must be built from source locally.
+We will still always use pre-built wheels for metadata during resolution.</p>
+<p>Available via <code>--no-binary</code> and <code>--no-binary-package &lt;name&gt;</code> flags in <code>pip install</code> and <code>pip sync</code>. There is no flag for <code>pip compile</code> since no installation happens there.</p>
+<pre><code>--no-binary
+
+    Don't install pre-built wheels.
+    
+    When enabled, all installed packages will be installed from a source distribution. 
+    The resolver will still use pre-built wheels for metadata.
+
+
+--no-binary-package &lt;NO_BINARY_PACKAGE&gt;
+
+    Don't install pre-built wheels for a specific package.
+    
+    When enabled, the specified packages will be installed from a source distribution. 
+    The resolver will still use pre-built wheels for metadata.
+</code></pre>
+<p>When packages are already installed, the <code>--no-binary</code> flag will have no affect without the <code>--reinstall</code> flag. In the future, I'd like to change this by tracking if a local distribution is from a pre-built wheel or a locally-built wheel. However, this is significantly more complex and different than <code>pip</code>'s behavior so deferring for now.</p>
+<p>For reference, <code>pip</code>'s flag works as follows:</p>
+<pre><code>--no-binary &lt;format_control&gt;
+
+    Do not use binary packages. Can be supplied multiple times, and each time adds to the
+    existing value. Accepts either &quot;:all:&quot; to disable all binary packages, &quot;:none:&quot; to empty the
+    set (notice the colons), or one or more package names with commas between them (no colons).
+    Note that some packages are tricky to compile and may fail to install when this option is
+    used on them.
+</code></pre>
+<p>Note we are not matching the exact <code>pip</code> interface here because it seems complicated to use. I think we may want to consider adjusting our interface for this behavior since we're not entirely compatible anyway e.g. I think <code>--force-build</code> and <code>--force-build-package</code> are clearer names. We could also consider matching the <code>pip</code> interface or only allowing <code>--no-binary &lt;package&gt;</code> for compatibility. We can of course do whatever we want in our <em>own</em> install interfaces later.</p>
+<p>Additionally, we may want to further consider the semantics of <code>--no-binary</code>. For example, if I run <code>pip install pydantic --no-binary</code> I expect <em>just</em> Pydantic to be installed without binaries but by default we will build all of Pydantic's dependencies too.</p>
+<p>This work was prompted by #895, as it is much easier to measure performance gains from building source distributions if we have a flag to ensure we actually build source distributions. Additionally, this is a flag I have used frequently in production to debug packages that ship Cythonized wheels.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Add `--no-binary` and `--no-binary-package <name>`" to "Add support for disabling installation from pre-built wheels" by @zanieb on 2024-01-17 23:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @zanieb on 2024-01-17 23:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-01-17 23:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/puffin-traits/src/lib.rs</code>:164 on 2024-01-17 23:28</div>
+            <div class="timeline-body"><p>Please do correct me if there's somewhere better for this.</p>
+<p>I tried to put it alongside <code>Reinstall</code> but it's needed in the resolver as well so I put it in this shared crate.</p>
+<p>It's <a href="https://github.com/astral-sh/puffin/pull/956/files#diff-f207c79e0088b89d8661e116139d2c6b61a3221e3035993341818bb391d2cbdeR5-R6">still re-exported in the installer</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-01-17 23:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/puffin-cli/tests/pip_install.rs</code>:749 on 2024-01-17 23:31</div>
+            <div class="timeline-body"><p>These tests are slow (~5s). Maybe I should use a scenario that builds faster?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-01-17 23:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/puffin-cli/tests/pip_install.rs</code>:749 on 2024-01-17 23:31</div>
+            <div class="timeline-body"><p>It'd also be ideal to have coverage for e.g. installing a wheel via direct URL with <code>--no-binary</code> (which should fail)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-01-17 23:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/puffin-resolver/src/finder.rs</code>:163 on 2024-01-17 23:36</div>
+            <div class="timeline-body"><p>The following made conditional and indented without change.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @zanieb on 2024-01-18 14:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-18 14:47</div>
+            <div class="timeline-body"><p>Will review today!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-18 21:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-installer/src/lib.rs</code>:6 on 2024-01-18 21:35</div>
+            <div class="timeline-body"><p>Is this stale / can it be removed? It looks like you are importing from <code>puffin_traits</code> in the various files.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-18 21:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-traits/src/lib.rs</code>:164 on 2024-01-18 21:36</div>
+            <div class="timeline-body"><p>Seems okay -- we don't have a much better / obvious answer.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-18 21:37</div>
+            <div class="timeline-body"><p>This looks good to me, nice work. My only concern is that we now have <code>--no-binary</code> and <code>--no-build</code> which does the opposite. Should those somehow be a single flag...? Should they be marked as conflicting in some sense, since providing both excludes all distributions?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-01-18 22:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/puffin-installer/src/lib.rs</code>:6 on 2024-01-18 22:22</div>
+            <div class="timeline-body"><p>Yeah commentary at https://github.com/astral-sh/puffin/pull/956#discussion_r1456615647</p>
+<p>We should probably remove it and fix the imports that use this crate.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-01-18 22:25</div>
+            <div class="timeline-body"><blockquote>
+<p>My only concern is that we now have --no-binary and --no-build which does the opposite. Should those somehow be a single flag...?</p>
+</blockquote>
+<p>Well, <code>pip</code> has <code>--no-binary &lt;package,:all:,:none:&gt;</code> and <code>--only-binary &lt;package,:all:,:none:&gt;</code>. Perhaps we should change ours to match this interface?</p>
+<p>I don't think we should explore some sort of &quot;unified&quot; flag in the pip-compatible interface. I think we can consider it in our own interface later.</p>
+<blockquote>
+<p>Should they be marked as conflicting in some sense, since providing both excludes all distributions?</p>
+</blockquote>
+<p>Yes I think we should mark them as conflicting.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-01-18 23:03</div>
+            <div class="timeline-body"><p>Opening https://github.com/astral-sh/puffin/issues/977 for the first point.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-01-19 03:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2024-01-19 17:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-01-19 17:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-01-19 17:24</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 15:39:25 UTC
+    </footer>
+</body>
+</html>

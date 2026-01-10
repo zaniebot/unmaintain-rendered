@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Use `nextest` test runner in CI - astral-sh/uv #875</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Use <code>nextest</code> test runner in CI</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/pull/875">#875</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2024-01-10 21:17
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/zanieb">@zanieb</a> on 2024-01-10 21:17</div>
+            <div class="timeline-body"><p>Optimizes our test suite in CI:</p>
+<ul>
+<li>~Uses <code>mold</code> as a linker for a 50% compilation improvement~ split out into #887</li>
+<li>Uses <code>cargo nextest</code> to partition test runs into separate parallel jobs</li>
+<li>Splits build and test jobs to avoid recompilation in partitioned test jobs</li>
+<li>Disables <code>upload-artifact</code> compression of the built artifacts for a 50% upload time improvement</li>
+</ul>
+<p>At https://github.com/astral-sh/puffin/pull/875/commits/5ccb0af3518689fbd64f3e92cd9fa4ca1eadc1e4 (baseline), the <code>cargo test</code> job took 5m 9s
+At 0dfbddd27545e0664aa4bb312b9d73916c4e48ab(baseline, the <code>cargo test</code> job took 4m 37s
+As of https://github.com/astral-sh/puffin/pull/875/commits/56ac4e30757ce78f05182b18da979bf842b4cd83, the <code>cargo build</code> job takes 1m 52s  and the <code>cargo test</code> jobs take a 1m 37s for a total of 3m 29s.
+This comes out to a 25-32% total improvement</p>
+<p>Tracking individual slow tests in #878</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-01-10 21:18</div>
+            <div class="timeline-body"><p>I totally want this (i'm using it almost exclusively locally), but will this ensure <code>--unreferenced reject</code> and other cargo insta features?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-01-10 21:19</div>
+            <div class="timeline-body"><p>We cannot use <code>--unreferenced reject</code> with <code>nextest</code> (last I checked)</p>
+<p>https://github.com/astral-sh/ruff/pull/6979#issuecomment-1697640501</p>
+<p>If it's a 2x speedup like I see locally — it's probably worth it anyway.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-01-10 21:20</div>
+            <div class="timeline-body"><p>I could explore setting <code>unreferenced</code> another way too — my qualms about forking <code>insta</code> are minor.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-10 21:21</div>
+            <div class="timeline-body"><p>I'm fine just dropping <code>--unreferenced reject</code>. I think we now use inline snapshots everywhere anyway?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-01-10 21:29</div>
+            <div class="timeline-body"><p>Hm 4m 22s (insta) vs 4m 6s (nextest) in CI, not motivating. About half that time is compilation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-01-10 21:37</div>
+            <div class="timeline-body"><p>A very impressive repeated 4m 6s when forcing more threads.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-01-10 23:00</div>
+            <div class="timeline-body"><p>At https://github.com/astral-sh/puffin/pull/875/commits/5ccb0af3518689fbd64f3e92cd9fa4ca1eadc1e4, the <code>cargo test</code> job took 5m 9s
+As of https://github.com/astral-sh/puffin/pull/875/commits/56ac4e30757ce78f05182b18da979bf842b4cd83, the <code>cargo build</code> job takes 1m 52s  and the <code>cargo test</code> jobs take a 1m 37s for a total of 3m 29s
+This comes out to a 32% improvement</p>
+<p>These numbers are pretty variable depending on the GitHub runners.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-01-10 23:46</div>
+            <div class="timeline-body"><p>Significant times remaining:</p>
+<ul>
+<li>Compilation ~60s</li>
+<li>Test runs ~40s</li>
+<li>Build artifact download ~30s</li>
+<li>Build artifact extraction ~17s</li>
+<li>Build artifact compression ~16s</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-01-11 00:23</div>
+            <div class="timeline-body"><p>Increasing the compression level increases compression time to 45s without decreasing download times</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-01-11 19:06</div>
+            <div class="timeline-body"><p>After splitting <code>mold</code> out:</p>
+<p>build 2m 15s and test 1m 41s for 3m 56s total
+vs test (main) 4m 56s total
+roughly 20% improvement</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-01-11 20:25</div>
+            <div class="timeline-body"><p>#889 is better.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-01-11 20:25</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 15:39:25 UTC
+    </footer>
+</body>
+</html>

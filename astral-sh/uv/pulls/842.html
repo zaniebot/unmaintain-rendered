@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add support for `prepare_metadata_for_build_wheel` - astral-sh/uv #842</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add support for <code>prepare_metadata_for_build_wheel</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/842">#842</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-01-08 22:14
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-08 22:14</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR adds support for <code>prepare_metadata_for_build_wheel</code>, which allows us to determine source distribution metadata without building the source distribution. This represents an optimization for the resolver, as we can skip the expensive build phase for build backends that support it.</p>
+<p>For reference, <code>prepare_metadata_for_build_wheel</code> seems to be supported by:</p>
+<ul>
+<li><code>hatchling</code> (as of <a href="https://hatch.pypa.io/latest/history/hatchling/#hatchling-v1.9.0">1.0.9</a>).</li>
+<li><code>flit</code></li>
+<li><code>setuptools</code></li>
+</ul>
+<p>In fact, it seems to work for every backend <em>except</em> those using legacy <code>setup.py</code>.</p>
+<p>Closes #599.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-08 22:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-dispatch/src/lib.rs</code>:226 on 2024-01-08 22:15</div>
+            <div class="timeline-body"><p>I think this should be enforced in the build step, not the setup step.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-08 22:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-distribution/src/distribution_database.rs</code>:274 on 2024-01-08 22:15</div>
+            <div class="timeline-body"><p>@konstin -- In this PR, I allow <code>prepare_metadata_for_build_wheel</code> even if <code>--no-build</code> is specified. Do you feel that's correct?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-08 22:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-distribution/src/source/mod.rs</code>:512 on 2024-01-08 22:16</div>
+            <div class="timeline-body"><p>These methods are structurally similar to (e.g.) <code>async fn path</code>, but with the distinction that it will try to use <code>prepare_metadata_for_build_wheel</code>. If the build backend doesn't support it, it ends up being identical to calling <code>path</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2024-01-08 22:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @charliermarsh on 2024-01-08 22:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @charliermarsh on 2024-01-08 22:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-01-08 22:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin-distribution/src/distribution_database.rs</code>:274 on 2024-01-08 22:24</div>
+            <div class="timeline-body"><p>No, my idea was that <code>--no-build</code> doesn't run untrusted code, while <code>prepare_metadata_for_build_wheel</code> runs arbitrary code. (Less in a security way and more in a doesn't mess with my system way)</p>
+<p>(will review properly tomorrow)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @charliermarsh on 2024-01-08 22:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-08 22:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-distribution/src/distribution_database.rs</code>:274 on 2024-01-08 22:47</div>
+            <div class="timeline-body"><p>We <em>might</em> want separate flags for this then? Since there seem to be two different intents here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-09 00:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-distribution/src/distribution_database.rs</code>:274 on 2024-01-09 00:13</div>
+            <div class="timeline-body"><p>Actually I agree with you. I'm gonna revert. It's hard to test now though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin-build/src/lib.rs</code>:403 on 2024-01-09 21:53</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        // The method could have been called before, so the directory may already exist.
+        fs::create_dir_all(&amp;metadata_directory)?;
+</code></pre>
+<p>Feels wrong though, should we remove it before instead? (non-blocking for this PR, we aren't using this)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin-distribution/src/source/manifest.rs</code>:12 on 2024-01-09 21:58</div>
+            <div class="timeline-body"><p><code>build_wheel</code> returns only one wheel, aren't the others from the cache? (I think the code is correct but the comment misleading)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin-distribution/src/source/mod.rs</code>:580 on 2024-01-09 22:12</div>
+            <div class="timeline-body"><p>It's already there, but i think this should be <code>read_cached_metadata</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin-distribution/src/source/mod.rs</code>:972 on 2024-01-09 22:15</div>
+            <div class="timeline-body"><p>Complaining about my own oversight here:</p>
+<pre><code class="language-suggestion">    #[instrument(skip_all, fields(dist))]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin-distribution/src/source/mod.rs</code>:367 on 2024-01-09 22:16</div>
+            <div class="timeline-body"><p>I'd move that check into <code>build_source_dist_metadata</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2024-01-09 22:17</div>
+            <div class="timeline-body"><p>Do we have a test case for both a backend with <code>prepare_metadata_for_build_wheel</code> and without? If the existing test cases cover this we should document it.</p>
+<p>Otherwise only very minor comments :shipit:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-09 23:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-build/src/lib.rs</code>:403 on 2024-01-09 23:20</div>
+            <div class="timeline-body"><p>I think you're right that we should use <code>create_dir</code> here...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-01-10 00:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-01-10 00:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-01-10 00:07</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 15:39:25 UTC
+    </footer>
+</body>
+</html>

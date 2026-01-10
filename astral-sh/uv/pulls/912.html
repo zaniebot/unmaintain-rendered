@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Implement `--find-links` as flat indexes (directories in pip-compile) - astral-sh/uv #912</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Implement <code>--find-links</code> as flat indexes (directories in pip-compile)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/912">#912</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2024-01-14 15:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2024-01-14 15:40</div>
+            <div class="timeline-body"><p>Add directory <code>--find-links</code> support for local paths to pip-compile.</p>
+<p>It seems that pip joins all sources and then picks the best package. We explicitly give find links packages precedence if the same exists on an index and locally by prefilling the <code>VersionMap</code>, otherwise they are added as another index and the existing rules of precedence apply.</p>
+<p>Internally, the feature is called <em>flat index</em>, which is more meaningful than <em>find links</em>: We're not looking for links, we're picking up local directories, and (TBD) support another index format that's just a flat list of files instead of a nested index.</p>
+<p><code>RegistryBuiltDist</code> and <code>RegistrySourceDist</code> now use <code>WheelFilename</code> and <code>SourceDistFilename</code> respectively. The <code>File</code> inside <code>RegistryBuiltDist</code> and <code>RegistrySourceDist</code> gained the ability to represent both a url and a path so that <code>--find-links</code> with a url and with a path works the same, both being locked as <code>&lt;package_name&gt;@&lt;version&gt;</code> instead of <code>&lt;package_name&gt; @ &lt;url&gt;</code>. (This is more of a detail, this PR in general still work if we strip that and have directory find links represented as <code>&lt;package_name&gt; @ file:///path/to/file.ext</code>)</p>
+<p><code>PrioritizedDistribution</code> and <code>FlatIndex</code> have been moved to locations where we can use them in the upstack PR.</p>
+<p>I added a <code>scripts/wheels</code> directory with stripped down wheels to use for testing.</p>
+<p>We're lacking tests for correct tag priority precedence with flat indexes, i only confirmed this manually since it is not covered in the pip-compile or pip-sync output.</p>
+<p>Closes #876</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-01-14 15:40</div>
+            <div class="timeline-body"><blockquote>
+<p>[!WARNING]
+<b>This pull request is not mergeable via GitHub because a downstack PR is open. Once all requirements are satisfied, merge this PR as a stack <a href="https://app.graphite.dev/github/pr/astral-sh/puffin/912?utm_source=stack-comment-downstack-mergeability-warning" >on Graphite</a>.</b>
+<a href="https://graphite.dev/docs/merge-pull-requests">Learn more</a></p>
+</blockquote>
+<p>Current dependencies on/for this PR:</p>
+<ul>
+<li><code>main</code><ul>
+<li><strong>PR #910</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/puffin/910?utm_source=stack-comment-icon" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a><ul>
+<li><strong>PR #912</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/puffin/912?utm_source=stack-comment-icon" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a>  👈<ul>
+<li><strong>PR #913</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/puffin/913?utm_source=stack-comment-icon" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a><ul>
+<li><strong>PR #914</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/puffin/914?utm_source=stack-comment-icon" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>This <a href="https://stacking.dev/?utm_source=stack-comment">stack of pull requests</a> is managed by <a href="https://app.graphite.dev/github/pr/astral-sh/puffin/912?utm_source=stack-comment">Graphite</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-01-14 17:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin-client/src/registry_client.rs</code>:128 on 2024-01-14 17:59</div>
+            <div class="timeline-body"><p>This is fixed in an upstack PR</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/distribution-types/src/prioritized_distribution.rs</code>:1 on 2024-01-14 18:35</div>
+            <div class="timeline-body"><p>Open to moving those anywhere else, they just need to be accessible from both the resolver and the dist finder</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-01-14 18:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-01-14 18:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin-distribution/src/source/mod.rs</code>:104 on 2024-01-14 18:39</div>
+            <div class="timeline-body"><p>Not ideal, but feels fine for the few cases and getting consistency.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-15 01:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-resolver/src/resolver/mod.rs</code>:871 on 2024-01-15 01:40</div>
+            <div class="timeline-body"><p>(May've simplified to do this as a small, separate change.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-01-15 01:42</div>
+            <div class="timeline-body"><p>This looks good to me -- I'm gonna apply some tweaks and merge.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-15 01:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-distribution/src/source/mod.rs</code>:104 on 2024-01-15 01:42</div>
+            <div class="timeline-body"><p>I do wonder if these could be separate distribution types, but not critical.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-01-15 02:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-01-15 02:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-01-15 02:04</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 15:39:25 UTC
+    </footer>
+</body>
+</html>

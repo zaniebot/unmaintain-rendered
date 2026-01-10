@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Windows launchers using posy trampolines - astral-sh/uv #1092</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Windows launchers using posy trampolines</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/1092">#1092</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2024-01-25 13:33
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2024-01-25 13:33</div>
+            <div class="timeline-body"><h2>Background</h2>
+<p>In virtual environments, we want to install python programs as console commands, e.g. <code>black .</code> over <code>python -m black .</code>. They may be called <a href="https://packaging.python.org/en/latest/specifications/entry-points/">entrypoints</a> or scripts. For entrypoints, we're given a module name and function to call in that module.</p>
+<p>On Unix, we generate a minimal python script launcher. Text files are runnable on unix by adding a shebang at their top, e.g.</p>
+<pre><code class="language-python">#!/usr/bin/env python
+</code></pre>
+<p>will make the operating system run the file with the current python interpreter. A venv launcher for black in <code>/home/ferris/colorize/.venv</code> (module name: <code>black</code>, function to call: <code>patched_main</code>) would look like this:</p>
+<pre><code class="language-python">#!/home/ferris/colorize/.venv/bin/python
+# -*- coding: utf-8 -*-
+import re
+import sys
+from black import patched_main
+if __name__ == &quot;__main__&quot;:
+    sys.argv[0] = re.sub(r&quot;(-script\.pyw|\.exe)?$&quot;, &quot;&quot;, sys.argv[0])
+    sys.exit(patched_main())
+</code></pre>
+<p>On windows, this doesn't work, we can only rely on launching <code>.exe</code> files.</p>
+<h2>Summary</h2>
+<p>We use posy's rust implementation of a trampoline, which is based on distlib's c++ implementation. We pre-build a minimal exe and append the launcher script as stored zip archive behind it. The exe will look for the venv python interpreter next to it and use it to execute the appended script.</p>
+<p>The changes in this PR make the <code>black</code> entrypoint work:</p>
+<pre><code class="language-powershell">cargo run -- venv .venv
+cargo run -q -- pip install black
+.\.venv\Scripts\black --version
+</code></pre>
+<p>Integration with our existing tests will be done in follow-up PRs.</p>
+<h2>Implementation and Details</h2>
+<p>I've vendored the posy trampoline crate. It is a formatted, renamed and slightly changed for embedding version of https://github.com/njsmith/posy/pull/28.</p>
+<p>The posy launchers are smaller than the distlib launchers, 16K vs 106K for black. Currently only <code>x86_64-pc-windows-msvc</code> is supported. The crate requires a nightly compiler for its no-std binary size tricks.</p>
+<p>On windows, an application can be launched with a console or without (to create windows instead), which needs two different launchers. The gui launcher will subsequently use <code>pythonw.exe</code> while the console launcher uses <code>python.exe</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">windows</span> added by @konstin on 2024-01-25 13:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-25 17:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/install-wheel-rs/src/lib.rs</code>:73 on 2024-01-25 17:36</div>
+            <div class="timeline-body"><p>Can change the error name here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-25 17:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/install-wheel-rs/src/lib.rs</code>:71 on 2024-01-25 17:36</div>
+            <div class="timeline-body"><p>&quot;Unable to create Windows launch for {0} (only x64_64 is supported)&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-01-25 17:37</div>
+            <div class="timeline-body"><p>I'm not reviewing the vendored code, but this looks great. Why does the trampoline crate require nightly? Can we remove that requirement?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @konstin on 2024-01-26 13:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2024-01-26 13:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-01-26 13:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-01-26 16:57</div>
+            <div class="timeline-body"><blockquote>
+<p>Why does the trampoline crate require nightly? Can we remove that requirement?</p>
+</blockquote>
+<p>Building std and custom panic handler are required for the minimal binary sized. Tracked in #1126.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 15:39:26 UTC
+    </footer>
+</body>
+</html>

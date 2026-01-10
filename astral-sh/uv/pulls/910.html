@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Make hashes optional - astral-sh/uv #910</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Make hashes optional</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/910">#910</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2024-01-14 12:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2024-01-14 12:34</div>
+            <div class="timeline-body"><p>There is no guarantee that indexes provide hashes at all or the sha256 we support specifically. <a href="https://peps.python.org/pep-0503/#specification">PEP 503</a>:</p>
+<blockquote>
+<p>The URL SHOULD include a hash in the form of a URL fragment with the following syntax: #<hashname>=<hashvalue>, where <hashname> is the lowercase name of the hash function (such as sha256) and <hashvalue> is the hex encoded digest.</p>
+</blockquote>
+<p>We instead use the url as input to generate a hash when caching.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-01-14 12:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/distribution-types/src/file.rs</code>:47 on 2024-01-14 12:36</div>
+            <div class="timeline-body"><p>This may be the relative url, should we change the dists to carry the absolute url instead? In my mental model it makes more sense than passing the <code>BaseUrl</code> around. Alternatively we could pass the base url into <code>DistributionDatabase</code>. As it currently is we run the risk of collisions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-14 15:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/distribution-types/src/lib.rs</code>:669 on 2024-01-14 15:22</div>
+            <div class="timeline-body"><p>Shouldn't this be <code>self.url.distribution_id()</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-14 15:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/pypi-types/src/simple_json.rs</code>:97 on 2024-01-14 15:25</div>
+            <div class="timeline-body"><p>This isn't a <code>str</code>, it allocates.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-14 15:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/distribution-types/src/lib.rs</code>:674 on 2024-01-14 15:25</div>
+            <div class="timeline-body"><p>This strings me as an unnecessary allocation given that we call this a lot.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-14 15:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/distribution-types/src/file.rs</code>:47 on 2024-01-14 15:27</div>
+            <div class="timeline-body"><p>Shouldn't this use <code>cache_key::digest(&amp;cache_key::RepositoryUrl::new(self.url))</code>? Why an entirely new hash construction vs. what we use elsewhere?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-14 15:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/distribution-types/src/file.rs</code>:43 on 2024-01-14 15:27</div>
+            <div class="timeline-body"><p>I kinda think this method shouldn't exist. In the URL case, it's kind of misleading since it doesn't return a hash of the file.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-14 15:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/distribution-types/src/file.rs</code>:43 on 2024-01-14 15:28</div>
+            <div class="timeline-body"><p>Can we instead just call <code>.distribution_id</code> on the file wherever we're using this, to make it clearer?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-01-14 15:40</div>
+            <div class="timeline-body"><p>Current dependencies on/for this PR:</p>
+<ul>
+<li><code>main</code><ul>
+<li><strong>PR #910</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/puffin/910?utm_source=stack-comment-icon" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a>  👈<ul>
+<li><strong>PR #912</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/puffin/912?utm_source=stack-comment-icon" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a><ul>
+<li><strong>PR #913</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/puffin/913?utm_source=stack-comment-icon" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a><ul>
+<li><strong>PR #914</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/puffin/914?utm_source=stack-comment-icon" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>This <a href="https://stacking.dev/?utm_source=stack-comment">stack of pull requests</a> is managed by <a href="https://app.graphite.dev/github/pr/astral-sh/puffin/910?utm_source=stack-comment">Graphite</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-01-14 15:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/distribution-types/src/file.rs</code>:47 on 2024-01-14 15:45</div>
+            <div class="timeline-body"><p>Yeah that's better than going with sha256 consistency; <code>cache_key::digest(&amp;self.url)</code> works, self.url is a string.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-01-14 15:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/distribution-types/src/lib.rs</code>:669 on 2024-01-14 15:45</div>
+            <div class="timeline-body"><p>It's a string not a url and doesn't have that method</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-01-14 21:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-01-14 21:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-01-14 21:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-01-14 21:32</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 15:39:25 UTC
+    </footer>
+</body>
+</html>

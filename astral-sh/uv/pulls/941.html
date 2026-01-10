@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Add an env var to artificially limit the stack size  - astral-sh/uv #941</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add an env var to artificially limit the stack size</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/941">#941</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2024-01-16 16:24
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2024-01-16 16:24</div>
+            <div class="timeline-body"><p>By default, windows has a stack size limit of 1MB which we run against in debug without any explicit culprit. A new environment variable <code>PUFFIN_STACK_SIZE</code> allows setting an artificially smaller stack size.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/puffin-cli/src/main.rs</code>:736 on 2024-01-16 17:25</div>
+            <div class="timeline-body"><p>The <a href="https://docs.rs/tokio/latest/tokio/runtime/struct.Builder.html#method.build">tokio docs don't make it clear under what conditions this routine fails</a>, but it returns an <code>io::Error</code> on failure. I do wonder under what conditions this can fail, and perhaps it might be better to not panic? On the other hand, if <code>unwrap()</code> is what <code>#[tokio::main]</code> was already doing, then I guess it's probably fine.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2024-01-16 17:26</div>
+            <div class="timeline-body"><p>Can we create an issue for looking into this? The thing I'm worried about here is that we have 1MB+ stacks lying around, and that probably isn't a great thing. With that said, if this fixes things on Windows I'm fine with it as a temporary work-around I think.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @konstin on 2024-01-17 12:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-01-18 10:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin-cli/src/main.rs</code>:736 on 2024-01-18 10:10</div>
+            <div class="timeline-body"><pre><code class="language-rust">#[tokio::main]
+async fn main() {
+    println!(&quot;Hello, world!&quot;);
+}
+</code></pre>
+<p>expands to</p>
+<pre><code class="language-rust">#![feature(prelude_import)]
+#[prelude_import]
+use std::prelude::rust_2021::*;
+#[macro_use]
+extern crate std;
+fn main() {
+    let body = async {
+        {
+            ::std::io::_print(format_args!(&quot;Hello, world!\n&quot;));
+        };
+    };
+    #[allow(clippy::expect_used, clippy::diverging_sub_expression)]
+    {
+        return tokio::runtime::Builder::new_multi_thread()
+            .enable_all()
+            .build()
+            .expect(&quot;Failed building the Runtime&quot;)
+            .block_on(body);
+    }
+}
+</code></pre>
+<p>so i think that's what you're expected to do.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Set explicit stack size to avoid stack overflows on windows" to " Add a feature to simulate a smaller stack size " by @konstin on 2024-01-18 10:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @konstin on 2024-01-18 11:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @konstin on 2024-01-18 11:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-18 13:39</div>
+            <div class="timeline-body"><p>@konstin - Do you only see these failures in debug, or release too?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-01-18 13:42</div>
+            <div class="timeline-body"><p>Only in debug mode</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2024-01-18 13:52</div>
+            <div class="timeline-body"><p>Nice I like it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-01-18 13:56</div>
+            <div class="timeline-body"><p>Actually, given #963, I now realize I'm less a fan of this approach. It'd be really nice to make <code>--all-features</code> continue to work. Otherwise, it <a href="https://github.com/BurntSushi/dotfiles/blob/fcba29da12d05e78331bf03c7799f2d44e6a72d1/.config/ag/nvim/default#L13">breaks things like this</a>. Requiring a non-standard way to enable all features <em>just</em> so we can test with a smaller stack size seems non-ideal to me.</p>
+<p>What do you think about configuring this with an environment variable instead?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from " Add a feature to simulate a smaller stack size " to " Add an env var to artificially limit the stack size " by @konstin on 2024-01-18 14:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/puffin-cli/src/main.rs</code>:719 on 2024-01-18 16:21</div>
+            <div class="timeline-body"><p>Do you need to also set the stack size here? i.e., https://docs.rs/tokio/latest/tokio/runtime/struct.Builder.html#method.thread_stack_size</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-01-18 16:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin-cli/src/main.rs</code>:719 on 2024-01-18 16:52</div>
+            <div class="timeline-body"><p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-01-18 16:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2024-01-18 17:13</div>
+            <div class="timeline-body"><p>Love it!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @konstin on 2024-01-19 09:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2024-01-19 09:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-01-19 09:34</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 15:39:25 UTC
+    </footer>
+</body>
+</html>

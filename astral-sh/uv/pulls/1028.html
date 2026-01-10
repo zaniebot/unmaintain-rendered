@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add support for PyPy wheels - astral-sh/uv #1028</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add support for PyPy wheels</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/1028">#1028</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-01-20 22:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-20 22:29</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR adds support for PyPy wheels by changing the compatible tags based on the implementation name and version of the current interpreter.</p>
+<p>For now, we only support CPython and PyPy, and explicitly error out when given other interpreters. (Is this right? Should we just fallback to CPython tags...? Or skip the ABI-specific tags for unknown interpreters?)</p>
+<p>The logic is based on https://github.com/pypa/packaging/blob/4d8534061364e3cbfee582192ab81a095ec2db51/src/packaging/tags.py#L247. Note, however, that <code>packaging</code> uses the <code>EXT_SUFFIX</code> variable from <code>sysconfig</code>... Instead, I looked at the way that PyPy formats the tags, and recreated them based on the Python and implementation version. For example, PyPy wheels look like <code>cchardet-2.1.7-pp37-pypy37_pp73-win_amd64.whl</code> -- so that's <code>pp37</code> for PyPy with Python version 3.7, and then <code>pypy37_pp73</code> for PyPy with Python version 3.7 and PyPy version 7.3.</p>
+<p>Closes https://github.com/astral-sh/puffin/issues/1013.</p>
+<h2>Test Plan</h2>
+<p>I tested this manually, but I couldn't find macOS universal PyPy wheels... So instead I added <code>cchardet</code> to a <code>requirements.in</code>, ran <code>cargo run pip sync requirements.in --index-url https://pypy.kmtea.eu/simple --verbose</code>, and added logging to verify that the platform tags matched (even if the architecture didn't).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2024-01-20 22:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @charliermarsh on 2024-01-20 22:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-20 22:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/platform-tags/src/lib.rs</code>:257 on 2024-01-20 22:31</div>
+            <div class="timeline-body"><p>@konstin - Not sure if you have an opinion on this. Should I just skip all the tags that rely on calling <code>abi_tag</code>? So just include 3, 4, and 5 in <code>from_env</code>, and skip the ones that rely on the ABI and language version?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-20 22:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/platform-tags/src/lib.rs</code>:257 on 2024-01-20 22:31</div>
+            <div class="timeline-body"><p>I guess we need to read <code>EXT_SUFFIX</code> to <em>exactly</em> mimic <code>packaging</code>. We could add that to our environment markers...? But not required for this PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/platform-tags/src/lib.rs</code>:257 on 2024-01-22 08:48</div>
+            <div class="timeline-body"><p>wdym by &quot;calling abi_tag&quot;?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/puffin-interpreter/src/interpreter.rs</code>:202 on 2024-01-22 08:57</div>
+            <div class="timeline-body"><p>For pypy the implementation version is different from the python version. E.g. i have pypy 7.3.1 installed which implements python 3.10. The current implementation says the tag is <code>pypy310_pp310</code>, while it's actually <code>pypy310_pp73</code>. It's the version we track in the markers' <code>implementation_version</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-01-22 08:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/puffin-interpreter/src/interpreter.rs</code>:202 on 2024-01-22 13:39</div>
+            <div class="timeline-body"><p>Sorry, I know this and thought I did it correctly (?), it’s just a typo.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-22 13:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2024-01-22 14:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-22 14:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/platform-tags/src/lib.rs</code>:257 on 2024-01-22 14:16</div>
+            <div class="timeline-body"><p>Above, we have cases like:</p>
+<pre><code class="language-rust">// 1. This exact c api version
+for platform_tag in &amp;platform_tags {
+    tags.push((
+        implementation.language_tag(python_version),
+        implementation.abi_tag(python_version, implementation_version),
+        platform_tag.clone(),
+    ));
+    tags.push((
+        implementation.language_tag(python_version),
+        &quot;none&quot;.to_string(),
+        platform_tag.clone(),
+    ));
+}
+// 2. abi3 and no abi (e.g. executable binary)
+if matches!(implementation, Implementation::CPython) {
+    // For some reason 3.2 is the minimum python for the cp abi
+    for minor in 2..=python_version.1 {
+        for platform_tag in &amp;platform_tags {
+            tags.push((
+                implementation.language_tag((python_version.0, minor)),
+                &quot;abi3&quot;.to_string(),
+                platform_tag.clone(),
+            ));
+        }
+    }
+}
+// 3. no abi (e.g. executable binary)
+for minor in 0..=python_version.1 {
+    for platform_tag in &amp;platform_tags {
+        tags.push((
+            format!(&quot;py{}{}&quot;, python_version.0, minor),
+            &quot;none&quot;.to_string(),
+            platform_tag.clone(),
+        ));
+    }
+}
+// 4. major only
+...
+</code></pre>
+<p>If we don't know how to create ABI tags (e.g., you're using ironpython), we could skip (1), (2), and (3), but allow (4) and (5) (the no-ABI tags). Right now, we error out saying we don't support them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-01-22 14:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/platform-tags/src/lib.rs</code>:257 on 2024-01-22 14:19</div>
+            <div class="timeline-body"><p>I'm for continuing to error out, otherwise it gets confusing when it seems to work but then doesn't pick up any binary wheels.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2024-01-22 14:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-01-22 14:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-01-22 14:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-01-22 14:22</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 15:39:26 UTC
+    </footer>
+</body>
+</html>
