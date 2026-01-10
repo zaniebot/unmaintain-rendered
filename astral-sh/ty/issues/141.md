@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-04-02T07:36:35Z
 updated_at: 2025-12-17T14:07:56Z
 url: https://github.com/astral-sh/ty/issues/141
-synced_at: 2026-01-10T01:53:59Z
+synced_at: 2026-01-10T01:54:59Z
 ```
 
 # Fix `@no_type_check` regression involving unknown decorators
@@ -25,6 +25,18 @@ astral-sh/ruff#17017 introduced a regression in our understanding of `@no_type_c
 https://github.com/astral-sh/ruff/blob/ae2cf91a360e927f5da307d0290be1a6229ced9a/crates/red_knot_python_semantic/resources/mdtest/suppressions/no_type_check.md?plain=1#L41-L72
 
 Addressing this might involve introducing a new function (salsa query?) that explicitly checks for the existence of a `@no_type_check` decorator in the definition of the function that is currently being type checked.
+
+---
+
+_Label `bug` added by @sharkdp on 2025-04-02 07:36_
+
+---
+
+_Renamed from "[red-knot] Fix `@no_type_check` regression involving unknown decorators" to "Fix `@no_type_check` regression involving unknown decorators" by @MichaReiser on 2025-05-07 15:25_
+
+---
+
+_Label `typing semantics` added by @AlexWaygood on 2025-05-11 07:54_
 
 ---
 
