@@ -1,0 +1,1404 @@
+```yaml
+number: 17637
+title: "[ty] Implement `global` handling and `load-before-global-declaration` syntax error"
+type: pull_request
+state: merged
+author: ntBre
+labels:
+  - ty
+assignees: []
+merged: true
+base: main
+head: brent/simple-red-knot-globals
+created_at: 2025-04-25T21:33:12Z
+updated_at: 2025-05-08T14:30:05Z
+url: https://github.com/astral-sh/ruff/pull/17637
+synced_at: 2026-01-10T18:57:02Z
+```
+
+# [ty] Implement `global` handling and `load-before-global-declaration` syntax error
+
+---
+
+_Pull request opened by @ntBre on 2025-04-25 21:33_
+
+Summary
+--
+
+This PR resolves both the typing-related and syntax error TODOs added in #17563 by tracking a set of `global` bindings for each scope. As discussed below, we avoid the additional AST traversal from ruff by collecting `Name`s from `global`  statements while building the semantic index and emit a syntax error if the `Name` is already bound in the current scope at the point of the `global` statement. This has the downside of separating the error from the `SemanticSyntaxChecker`, but I plan to explore using this approach in the `SemanticSyntaxChecker` itself as a follow-up. It seems like this may be a better approach for ruff as well.
+
+Test Plan
+--
+
+Updated all of the related mdtests to remove the TODOs (and add quotes I forgot on the messages).
+
+There is one remaining TODO, but it requires `nonlocal` support, which isn't even incorporated into the `SemanticSyntaxChecker` yet.
+
+
+---
+
+_Label `red-knot` added by @ntBre on 2025-04-25 21:33_
+
+---
+
+_Comment by @github-actions[bot] on 2025-04-25 21:35_
+
+<!-- generated-comment mypy_primer -->
+## `mypy_primer` results
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+```diff
+pytest-robotframework (https://github.com/detachhead/pytest-robotframework)
+- warning[lint:unresolved-reference] tests/fixtures/test_python/test_fixture_class_scope.py:13:5: Name `count_1` used when not defined
+- warning[lint:unresolved-reference] tests/fixtures/test_python/test_fixture_class_scope.py:19:5: Name `count_2` used when not defined
+- warning[lint:unresolved-reference] tests/fixtures/test_python/test_fixture_module_scope/conftest.py:11:5: Name `count` used when not defined
+- Found 236 diagnostics
++ Found 233 diagnostics
+
+mypy_primer (https://github.com/hauntsaninja/mypy_primer)
+- warning[lint:unresolved-reference] mypy_primer/utils.py:88:8: Name `_semaphore` used when not defined
+- warning[lint:possibly-unresolved-reference] mypy_primer/utils.py:90:16: Name `_semaphore` used when possibly not defined
+- Found 17 diagnostics
++ Found 15 diagnostics
+
+nionutils (https://github.com/nion-software/nionutils)
+- warning[lint:unresolved-reference] nion/utils/Process.py:200:25: Name `_audit_enabled` used when not defined
+- Found 26 diagnostics
++ Found 25 diagnostics
+
+beartype (https://github.com/beartype/beartype)
+- warning[lint:unresolved-reference] beartype/_data/hint/pep/datapeprepr.py:372:9: Name `HINTS_PEP484_REPR_PREFIX_DEPRECATED` used when not defined
++ warning[lint:unused-ignore-comment] beartype/_data/hint/pep/datapeprepr.py:322:55: Unused blanket `type: ignore` directive
+
+pyinstrument (https://github.com/joerick/pyinstrument)
+- warning[lint:unresolved-reference] pyinstrument/low_level/pyi_timing_thread_python.py:42:16: Name `thread_alive` used when not defined
++ warning[lint:possibly-unbound-attribute] pyinstrument/magic/magic.py:210:33: Attribute `is_running` on type `Unknown | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] pyinstrument/magic/magic.py:211:13: Attribute `stop` on type `Unknown | None` is possibly unbound
+- warning[lint:unresolved-reference] pyinstrument/magic/magic.py:210:12: Name `_active_profiler` used when not defined
+- warning[lint:unresolved-reference] pyinstrument/magic/magic.py:210:33: Name `_active_profiler` used when not defined
+- warning[lint:unresolved-reference] pyinstrument/magic/magic.py:211:13: Name `_active_profiler` used when not defined
++ error[lint:invalid-return-type] pyinstrument/stack_sampler.py:344:12: Return type does not match returned value: Expected `dict[Unknown, int | float]`, found `dict[Unknown, Unknown] | dict[Unknown, int | float] | None`
+- warning[lint:unresolved-reference] pyinstrument/stack_sampler.py:342:8: Name `_timing_overhead` used when not defined
+- warning[lint:possibly-unresolved-reference] pyinstrument/stack_sampler.py:344:12: Name `_timing_overhead` used when possibly not defined
+- Found 97 diagnostics
++ Found 94 diagnostics
+
+anyio (https://github.com/agronholm/anyio)
++ error[lint:invalid-return-type] src/anyio/_core/_asyncio_selector_thread.py:167:16: Return type does not match returned value: Expected `Selector`, found `Selector | None`
+- warning[lint:unresolved-reference] src/anyio/_core/_asyncio_selector_thread.py:163:12: Name `_selector` used when not defined
+- warning[lint:possibly-unresolved-reference] src/anyio/_core/_asyncio_selector_thread.py:167:16: Name `_selector` used when possibly not defined
++ warning[lint:possibly-unbound-attribute] src/anyio/pytest_plugin.py:63:13: Attribute `close` on type `ExitStack[bool | None] | None` is possibly unbound
+- warning[lint:unresolved-reference] src/anyio/pytest_plugin.py:42:8: Name `_current_runner` used when not defined
+- warning[lint:unresolved-reference] src/anyio/pytest_plugin.py:56:5: Name `_runner_leases` used when not defined
+- warning[lint:possibly-unresolved-reference] src/anyio/pytest_plugin.py:58:15: Name `_current_runner` used when possibly not defined
+- warning[lint:possibly-unresolved-reference] src/anyio/pytest_plugin.py:62:20: Name `_runner_stack` used when possibly not defined
+- warning[lint:possibly-unresolved-reference] src/anyio/pytest_plugin.py:63:13: Name `_runner_stack` used when possibly not defined
+- Found 128 diagnostics
++ Found 123 diagnostics
+
+kopf (https://github.com/nolar/kopf)
+- warning[lint:unresolved-reference] kopf/_core/actions/lifecycles.py:61:8: Name `_default_lifecycle` used when not defined
+- warning[lint:unresolved-reference] kopf/_core/actions/lifecycles.py:62:67: Name `_default_lifecycle` used when not defined
++ error[lint:invalid-return-type] kopf/_core/intents/registries.py:576:12: Return type does not match returned value: Expected `OperatorRegistry`, found `OperatorRegistry | None`
+- warning[lint:unresolved-reference] kopf/_core/intents/registries.py:574:8: Name `_default_registry` used when not defined
+- warning[lint:possibly-unresolved-reference] kopf/_core/intents/registries.py:576:12: Name `_default_registry` used when possibly not defined
+- Found 172 diagnostics
++ Found 169 diagnostics
+
+comtypes (https://github.com/enthought/comtypes)
+- warning[lint:unresolved-reference] comtypes/server/inprocserver.py:89:8: Name `_logging_configured` used when not defined
+- warning[lint:unresolved-reference] comtypes/test/test_createwrappers.py:59:27: Name `number` used when not defined
+- warning[lint:unresolved-reference] comtypes/test/test_createwrappers.py:60:5: Name `number` used when not defined
+- Found 679 diagnostics
++ Found 676 diagnostics
+
+trio (https://github.com/python-trio/trio)
+- warning[lint:unresolved-reference] src/trio/_tests/test_exports.py:47:12: Name `mypy_cache_updated` used when not defined
+- Found 969 diagnostics
++ Found 968 diagnostics
+
+pydantic (https://github.com/pydantic/pydantic)
++ warning[lint:possibly-unbound-attribute] pydantic/plugin/_loader.py:57:12: Attribute `values` on type `dict[Unknown, Unknown] | dict[str, PydanticPluginProtocol] | None` is possibly unbound
+- warning[lint:unresolved-reference] pydantic/plugin/_loader.py:29:8: Name `_loading_plugins` used when not defined
+- warning[lint:unresolved-reference] pydantic/plugin/_loader.py:34:10: Name `_plugins` used when not defined
+- warning[lint:possibly-unresolved-reference] pydantic/plugin/_loader.py:57:12: Name `_plugins` used when possibly not defined
++ error[lint:invalid-return-type] pydantic/v1/networks.py:120:12: Return type does not match returned value: Expected `Pattern[str]`, found `Pattern[str] | Unknown | None`
++ error[lint:invalid-return-type] pydantic/v1/networks.py:138:12: Return type does not match returned value: Expected `Pattern[str]`, found `Pattern[str] | Unknown | None`
++ error[lint:invalid-return-type] pydantic/v1/networks.py:149:12: Return type does not match returned value: Expected `Pattern[str]`, found `Pattern[str] | Unknown | None`
++ error[lint:invalid-return-type] pydantic/v1/networks.py:158:12: Return type does not match returned value: Expected `Pattern[str]`, found `Pattern[str] | Unknown | None`
++ error[lint:invalid-return-type] pydantic/v1/networks.py:168:12: Return type does not match returned value: Expected `Pattern[str]`, found `Pattern[str] | Unknown | None`
+- warning[lint:unresolved-reference] pydantic/v1/networks.py:115:8: Name `_url_regex_cache` used when not defined
+- warning[lint:possibly-unresolved-reference] pydantic/v1/networks.py:120:12: Name `_url_regex_cache` used when possibly not defined
+- warning[lint:unresolved-reference] pydantic/v1/networks.py:131:8: Name `_multi_host_url_regex_cache` used when not defined
+- warning[lint:possibly-unresolved-reference] pydantic/v1/networks.py:138:12: Name `_multi_host_url_regex_cache` used when possibly not defined
+- warning[lint:unresolved-reference] pydantic/v1/networks.py:143:8: Name `_ascii_domain_regex_cache` used when not defined
+- warning[lint:possibly-unresolved-reference] pydantic/v1/networks.py:149:12: Name `_ascii_domain_regex_cache` used when possibly not defined
+- warning[lint:unresolved-reference] pydantic/v1/networks.py:154:8: Name `_int_domain_regex_cache` used when not defined
+- warning[lint:possibly-unresolved-reference] pydantic/v1/networks.py:158:12: Name `_int_domain_regex_cache` used when possibly not defined
+- warning[lint:unresolved-reference] pydantic/v1/networks.py:163:8: Name `_host_regex_cache` used when not defined
+- warning[lint:possibly-unresolved-reference] pydantic/v1/networks.py:168:12: Name `_host_regex_cache` used when possibly not defined
+- Found 781 diagnostics
++ Found 774 diagnostics
+
+sockeye (https://github.com/awslabs/sockeye)
+- warning[lint:unresolved-reference] sockeye/utils.py:731:12: Name `_faiss_checked` used when not defined
+- Found 383 diagnostics
++ Found 382 diagnostics
+
+pip (https://github.com/pypa/pip)
+- warning[lint:unresolved-reference] src/pip/_internal/utils/deprecation.py:52:8: Name `_original_showwarning` used when not defined
+- warning[lint:unresolved-reference] src/pip/_internal/utils/temp_dir.py:41:49: Name `_tempdir_manager` used when not defined
+- warning[lint:unresolved-reference] src/pip/_internal/utils/temp_dir.py:41:49: Name `_tempdir_manager` used when not defined
+- warning[lint:unresolved-reference] src/pip/_internal/utils/temp_dir.py:41:49: Name `_tempdir_manager` used when not defined
+- warning[lint:unresolved-reference] src/pip/_internal/utils/temp_dir.py:76:28: Name `_tempdir_registry` used when not defined
++ error[lint:invalid-return-type] src/pip/_vendor/certifi/core.py:44:16: Return type does not match returned value: Expected `str`, found `str | Unknown | None`
++ error[lint:invalid-return-type] src/pip/_vendor/certifi/core.py:80:16: Return type does not match returned value: Expected `str`, found `str | Unknown | None`
++ warning[lint:possibly-unbound-attribute] src/pip/_vendor/distlib/resources.py:99:16: Attribute `get` on type `ResourceCache | Unknown | None` is possibly unbound
+- warning[lint:unresolved-reference] src/pip/_vendor/distlib/resources.py:97:12: Name `cache` used when not defined
+- warning[lint:possibly-unresolved-reference] src/pip/_vendor/distlib/resources.py:99:16: Name `cache` used when possibly not defined
+- warning[lint:unresolved-reference] src/pip/_vendor/distlib/wheel.py:736:12: Name `cache` used when not defined
+- warning[lint:possibly-unresolved-reference] src/pip/_vendor/distlib/wheel.py:740:16: Name `cache` used when possibly not defined
++ error[lint:invalid-return-type] src/pip/_vendor/rich/__init__.py:36:12: Return type does not match returned value: Expected `Console`, found `Console | None`
+- warning[lint:unresolved-reference] src/pip/_vendor/rich/__init__.py:31:8: Name `_console` used when not defined
+- warning[lint:possibly-unresolved-reference] src/pip/_vendor/rich/__init__.py:36:12: Name `_console` used when possibly not defined
++ error[lint:invalid-return-type] src/pip/_vendor/rich/console.py:581:16: Return type does not match returned value: Expected `WindowsConsoleFeatures`, found `WindowsConsoleFeatures | None`
+- warning[lint:unresolved-reference] src/pip/_vendor/rich/console.py:580:8: Name `_windows_console_features` used when not defined
+- warning[lint:unresolved-reference] src/pip/_vendor/rich/console.py:581:16: Name `_windows_console_features` used when not defined
+- error[lint:missing-argument] src/pip/_vendor/urllib3/util/wait.py:138:12: No argument provided for required parameter `sock` of function `poll_wait_for_socket`
++ error[lint:invalid-assignment] src/pip/_vendor/urllib3/util/wait.py:133:9: Implicit shadowing of function `wait_for_socket`
++ error[lint:invalid-assignment] src/pip/_vendor/urllib3/util/wait.py:135:9: Implicit shadowing of function `wait_for_socket`
++ error[lint:invalid-assignment] src/pip/_vendor/urllib3/util/wait.py:137:9: Implicit shadowing of function `wait_for_socket`
+- Found 966 diagnostics
++ Found 960 diagnostics
+
+mkosi (https://github.com/systemd/mkosi)
+- warning[lint:unresolved-reference] mkosi/__main__.py:22:8: Name `INTERRUPTED` used when not defined
+- warning[lint:unresolved-reference] mkosi/log.py:50:5: Name `LEVEL` used when not defined
+- Found 303 diagnostics
++ Found 301 diagnostics
+
+flake8 (https://github.com/pycqa/flake8)
+- warning[lint:unresolved-reference] src/flake8/checker.py:72:9: Name `_mp_plugins` used when not defined
+- warning[lint:unresolved-reference] src/flake8/checker.py:72:22: Name `_mp_options` used when not defined
+- Found 45 diagnostics
++ Found 43 diagnostics
+
+porcupine (https://github.com/Akuli/porcupine)
+- warning[lint:unresolved-reference] porcupine/_state.py:52:12: Name `_global_state` used when not defined
++ warning[lint:possibly-unbound-attribute] porcupine/pluginmanager.py:235:31: Attribute `winfo_exists` on type `Toplevel | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] porcupine/pluginmanager.py:236:9: Attribute `lift` on type `Toplevel | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] porcupine/pluginmanager.py:237:9: Attribute `focus` on type `Toplevel | None` is possibly unbound
+- warning[lint:unresolved-reference] porcupine/pluginmanager.py:235:8: Name `dialog` used when not defined
+- warning[lint:unresolved-reference] porcupine/pluginmanager.py:235:31: Name `dialog` used when not defined
+- warning[lint:unresolved-reference] porcupine/pluginmanager.py:236:9: Name `dialog` used when not defined
+- warning[lint:unresolved-reference] porcupine/pluginmanager.py:237:9: Name `dialog` used when not defined
++ warning[lint:possibly-unbound-attribute] porcupine/plugins/filemanager.py:212:32: Attribute `path` on type `PasteState | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] porcupine/plugins/filemanager.py:219:27: Attribute `path` on type `PasteState | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] porcupine/plugins/filemanager.py:225:8: Attribute `is_cut` on type `PasteState | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] porcupine/plugins/filemanager.py:226:43: Attribute `path` on type `PasteState | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] porcupine/plugins/filemanager.py:231:25: Attribute `path` on type `PasteState | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] porcupine/plugins/filemanager.py:233:57: Attribute `path` on type `PasteState | None` is possibly unbound
+- warning[lint:unresolved-reference] porcupine/plugins/filemanager.py:207:12: Name `paste_state` used when not defined
+- warning[lint:unresolved-reference] porcupine/plugins/filemanager.py:212:32: Name `paste_state` used when not defined
+- warning[lint:unresolved-reference] porcupine/plugins/filemanager.py:219:27: Name `paste_state` used when not defined
+- warning[lint:unresolved-reference] porcupine/plugins/filemanager.py:225:8: Name `paste_state` used when not defined
+- warning[lint:unresolved-reference] porcupine/plugins/filemanager.py:226:43: Name `paste_state` used when not defined
+- warning[lint:unresolved-reference] porcupine/plugins/filemanager.py:231:25: Name `paste_state` used when not defined
+- warning[lint:unresolved-reference] porcupine/plugins/filemanager.py:233:57: Name `paste_state` used when not defined
+- warning[lint:unresolved-reference] porcupine/plugins/run/no_terminal.py:449:12: Name `runner` used when not defined
+- warning[lint:unresolved-reference] porcupine/settings.py:973:12: Name `_dialog_content` used when not defined
+- Found 101 diagnostics
++ Found 96 diagnostics
+
+poetry (https://github.com/python-poetry/poetry)
++ error[lint:invalid-return-type] src/poetry/config/config.py:432:16: Return type does not match returned value: Expected `Config`, found `Unknown | Config | None`
+- warning[lint:unresolved-reference] src/poetry/config/config.py:413:12: Name `_default_config` used when not defined
+- warning[lint:possibly-unresolved-reference] src/poetry/config/config.py:432:16: Name `_default_config` used when possibly not defined
++ error[lint:invalid-return-type] src/poetry/utils/authenticator.py:469:12: Return type does not match returned value: Expected `Authenticator`, found `Authenticator | None`
+- warning[lint:unresolved-reference] src/poetry/utils/authenticator.py:466:8: Name `_authenticator` used when not defined
+- warning[lint:possibly-unresolved-reference] src/poetry/utils/authenticator.py:469:12: Name `_authenticator` used when possibly not defined
+- Found 1039 diagnostics
++ Found 1037 diagnostics
+
+asynq (https://github.com/quora/asynq)
+- warning[lint:unresolved-reference] asynq/debug.py:312:12: Name `is_attached` used when not defined
+- warning[lint:unresolved-reference] asynq/debug.py:323:12: Name `is_attached` used when not defined
+- warning[lint:unresolved-reference] asynq/tests/test_contexts.py:99:13: Name `change_amount` used when not defined
++ warning[lint:unresolved-reference] asynq/tests/test_contexts.py:112:19: Name `expected_change_amount_base` used when not defined
++ warning[lint:unresolved-reference] asynq/tests/test_contexts.py:114:23: Name `expected_change_amount_base` used when not defined
++ warning[lint:unresolved-reference] asynq/tests/test_contexts.py:116:23: Name `expected_change_amount_base` used when not defined
++ warning[lint:unresolved-reference] asynq/tests/test_contexts.py:119:27: Name `expected_change_amount_base` used when not defined
+- warning[lint:unresolved-reference] asynq/tests/test_contexts.py:103:13: Name `change_amount` used when not defined
++ warning[lint:unresolved-reference] asynq/tests/test_contexts.py:120:23: Name `expected_change_amount_base` used when not defined
++ warning[lint:unresolved-reference] asynq/tests/test_contexts.py:121:19: Name `expected_change_amount_base` used when not defined
+- warning[lint:unresolved-reference] asynq/tests/test_exceptions.py:31:16: Name `counter` used when not defined
+- warning[lint:unresolved-reference] asynq/tests/test_exceptions.py:33:36: Name `counter` used when not defined
+- warning[lint:unresolved-reference] asynq/tests/test_exceptions.py:36:9: Name `counter` used when not defined
+- warning[lint:unresolved-reference] asynq/tests/test_exceptions.py:81:13: Name `context_is_active` used when not defined
+- warning[lint:unresolved-reference] asynq/tests/test_exceptions.py:85:13: Name `context_is_active` used when not defined
+- warning[lint:unresolved-reference] asynq/tests/test_tools.py:258:9: Name `constant_call_count` used when not defined
+- warning[lint:unresolved-reference] asynq/tests/test_tools.py:282:9: Name `constant_call_count` used when not defined
+- warning[lint:unresolved-reference] asynq/tests/test_tools.py:426:5: Name `i` used when not defined
+- warning[lint:unresolved-reference] asynq/tests/test_tools.py:447:8: Name `i` used when not defined
+- warning[lint:unresolved-reference] asynq/tests/test_tools.py:448:16: Name `i` used when not defined
+- warning[lint:unresolved-reference] asynq/tests/test_tools.py:449:5: Name `i` used when not defined
+- warning[lint:unresolved-reference] asynq/tests/test_tools.py:468:16: Name `i` used when not defined
+- warning[lint:unresolved-reference] asynq/tests/test_yield_result.py:27:9: Name `counter` used when not defined
+- warning[lint:unresolved-reference] asynq/tests/test_yield_result.py:34:9: Name `counter` used when not defined
+- Found 232 diagnostics
++ Found 220 diagnostics
+
+tornado (https://github.com/tornadoweb/tornado)
+- warning[lint:unresolved-reference] tornado/platform/asyncio.py:401:8: Name `_AnyThreadEventLoopPolicy` used when not defined
+- warning[lint:possibly-unresolved-reference] tornado/platform/asyncio.py:458:12: Name `_AnyThreadEventLoopPolicy` used when possibly not defined
+- Found 509 diagnostics
++ Found 507 diagnostics
+
+cki-lib (https://gitlab.com/cki-project/cki-lib)
+- warning[lint:unresolved-reference] cki_lib/logger.py:106:23: Name `CKI_HANDLER` used when not defined
+- Found 182 diagnostics
++ Found 181 diagnostics
+
+yarl (https://github.com/aio-libs/yarl)
+- warning[lint:unresolved-reference] yarl/_url.py:1602:48: Name `_encode_host` used when not defined
+- warning[lint:unresolved-reference] yarl/_url.py:1603:48: Name `_idna_decode` used when not defined
+- warning[lint:unresolved-reference] yarl/_url.py:1604:48: Name `_idna_encode` used when not defined
+- Found 166 diagnostics
++ Found 163 diagnostics
+
+urllib3 (https://github.com/urllib3/urllib3)
+- warning[lint:unresolved-reference] dummyserver/app.py:261:34: Name `LAST_RETRY_AFTER_REQ` used when not defined
+- warning[lint:unresolved-reference] src/urllib3/contrib/emscripten/fetch.py:473:12: Name `_SHOWN_TIMEOUT_WARNING` used when not defined
+- warning[lint:unresolved-reference] src/urllib3/contrib/emscripten/fetch.py:484:12: Name `_SHOWN_STREAMING_WARNING` used when not defined
+- warning[lint:possibly-unresolved-reference] src/urllib3/util/wait.py:110:12: Name `wait_for_socket` used when possibly not defined
++ error[lint:invalid-assignment] src/urllib3/util/wait.py:107:9: Implicit shadowing of function `wait_for_socket`
++ error[lint:invalid-assignment] src/urllib3/util/wait.py:109:9: Implicit shadowing of function `wait_for_socket`
+- warning[lint:unresolved-reference] test/__init__.py:172:16: Name `_requires_network_has_route` used when not defined
+- warning[lint:possibly-unresolved-reference] test/__init__.py:174:20: Name `_requires_network_has_route` used when possibly not defined
+- warning[lint:unresolved-reference] test/contrib/emscripten/conftest.py:23:5: Name `_coverage_count` used when not defined
+- Found 428 diagnostics
++ Found 423 diagnostics
+
+vision (https://github.com/pytorch/vision)
+- warning[lint:unresolved-reference] torchvision/io/image.py:410:8: Name `_EXTRA_DECODERS_ALREADY_LOADED` used when not defined
+- warning[lint:unresolved-reference] torchvision/io/video.py:188:5: Name `_CALLED_TIMES` used when not defined
+- warning[lint:unresolved-reference] torchvision/tv_tensors/_torch_function_helpers.py:57:18: Name `_TORCHFUNCTION_SUBCLASS` used when not defined
+- Found 1850 diagnostics
++ Found 1847 diagnostics
+
+werkzeug (https://github.com/pallets/werkzeug)
+- warning[lint:unresolved-reference] src/werkzeug/_internal.py:88:8: Name `_logger` used when not defined
+- warning[lint:possibly-unresolved-reference] src/werkzeug/_internal.py:97:13: Name `_logger` used when possibly not defined
+- warning[lint:unresolved-reference] src/werkzeug/debug/__init__.py:54:8: Name `_machine_id` used when not defined
+- warning[lint:unresolved-reference] src/werkzeug/debug/__init__.py:55:16: Name `_machine_id` used when not defined
+- warning[lint:unresolved-reference] src/werkzeug/testapp.py:185:12: Name `_werkzeug_version` used when not defined
+- warning[lint:possibly-unresolved-reference] src/werkzeug/testapp.py:188:12: Name `_werkzeug_version` used when possibly not defined
+- Found 455 diagnostics
++ Found 449 diagnostics
+
+dragonchain (https://github.com/dragonchain/dragonchain)
+- warning[lint:unresolved-reference] dragonchain/lib/database/redis.py:42:8: Name `redis_client` used when not defined
+- warning[lint:unresolved-reference] dragonchain/lib/database/redis.py:48:8: Name `redis_client_lru` used when not defined
+- warning[lint:unresolved-reference] dragonchain/lib/database/redis.py:54:8: Name `async_redis_client` used when not defined
+- warning[lint:unresolved-reference] dragonchain/lib/database/redisearch.py:112:8: Name `_redis_connection` used when not defined
+- warning[lint:possibly-unresolved-reference] dragonchain/lib/database/redisearch.py:116:42: Name `_redis_connection` used when possibly not defined
+- warning[lint:unresolved-reference] dragonchain/lib/keys.py:56:12: Name `_public_id` used when not defined
++ error[lint:invalid-return-type] dragonchain/lib/keys.py:73:12: Return type does not match returned value: Expected `DCKeys`, found `DCKeys | Unknown | None`
+- warning[lint:possibly-unresolved-reference] dragonchain/lib/keys.py:61:12: Name `_public_id` used when possibly not defined
+- warning[lint:unresolved-reference] dragonchain/lib/keys.py:69:8: Name `_my_keys` used when not defined
+- warning[lint:possibly-unresolved-reference] dragonchain/lib/keys.py:73:12: Name `_my_keys` used when possibly not defined
+- warning[lint:unresolved-reference] dragonchain/transaction_processor/level_5_actions.py:347:25: Name `FUNDED` used when not defined
+- warning[lint:unresolved-reference] dragonchain/transaction_processor/level_5_actions.py:349:12: Name `FUNDED` used when not defined
+- warning[lint:unresolved-reference] dragonchain/transaction_processor/level_5_actions.py:365:16: Name `FUNDED` used when not defined
+- Found 328 diagnostics
++ Found 317 diagnostics
+
+bandersnatch (https://github.com/pypa/bandersnatch)
+- warning[lint:unresolved-reference] src/bandersnatch/mirror.py:98:16: Name `LOG_PLUGINS` used when not defined
+- warning[lint:possibly-unresolved-reference] src/bandersnatch/storage.py:360:22: Name `loaded_storage_plugins` used when possibly not defined
+- warning[lint:possibly-unresolved-reference] src/bandersnatch/storage.py:375:5: Name `loaded_storage_plugins` used when possibly not defined
+- Found 163 diagnostics
++ Found 160 diagnostics
+
+schema_salad (https://github.com/common-workflow-language/schema_salad)
++ error[lint:invalid-return-type] schema_salad/schema.py:78:16: Return type does not match returned value: Expected `tuple[Names, @Todo(specialized non-generic class), Loader]`, found `tuple[Names, @Todo(specialized non-generic class), Loader] | None`
+- warning[lint:unresolved-reference] schema_salad/schema.py:77:8: Name `cached_metaschema` used when not defined
+- warning[lint:unresolved-reference] schema_salad/schema.py:78:16: Name `cached_metaschema` used when not defined
+- Found 387 diagnostics
++ Found 386 diagnostics
+
+mitmproxy (https://github.com/mitmproxy/mitmproxy)
+- warning[lint:unresolved-reference] mitmproxy/net/encoding.py:54:13: Name `_cache` used when not defined
+- warning[lint:unresolved-reference] mitmproxy/net/encoding.py:55:13: Name `_cache` used when not defined
+- warning[lint:unresolved-reference] mitmproxy/net/encoding.py:56:13: Name `_cache` used when not defined
+- warning[lint:unresolved-reference] mitmproxy/net/encoding.py:59:16: Name `_cache` used when not defined
+- warning[lint:unresolved-reference] mitmproxy/net/encoding.py:112:13: Name `_cache` used when not defined
+- warning[lint:unresolved-reference] mitmproxy/net/encoding.py:113:13: Name `_cache` used when not defined
+- warning[lint:unresolved-reference] mitmproxy/net/encoding.py:114:13: Name `_cache` used when not defined
+- warning[lint:unresolved-reference] mitmproxy/net/encoding.py:117:16: Name `_cache` used when not defined
+- warning[lint:unresolved-reference] test/helper_tools/memoryleak.py:37:5: Name `step` used when not defined
+- Found 2153 diagnostics
++ Found 2144 diagnostics
+
+scrapy (https://github.com/scrapy/scrapy)
++ error[lint:invalid-argument-type] scrapy/utils/log.py:139:36: Argument to this function is incorrect: Expected `Handler`, found `Handler | None`
+- warning[lint:unresolved-reference] scrapy/utils/log.py:136:9: Name `_scrapy_root_handler` used when not defined
+- warning[lint:unresolved-reference] scrapy/utils/log.py:137:13: Name `_scrapy_root_handler` used when not defined
+- warning[lint:unresolved-reference] scrapy/utils/log.py:139:36: Name `_scrapy_root_handler` used when not defined
+- Found 1390 diagnostics
++ Found 1388 diagnostics
+
+psycopg (https://github.com/psycopg/psycopg)
+- warning[lint:unresolved-reference] psycopg/psycopg/types/net.py:47:12: Name `ip_address` used when not defined
+- warning[lint:unresolved-reference] psycopg/psycopg/types/uuid.py:42:12: Name `UUID` used when not defined
+- Found 1158 diagnostics
++ Found 1156 diagnostics
+
+pytest (https://github.com/pytest-dev/pytest)
+- warning[lint:unresolved-reference] src/_pytest/doctest.py:239:8: Name `RUNNER_CLASS` used when not defined
+- error[lint:unknown-argument] src/_pytest/doctest.py:247:9: Argument `continue_on_failure` does not match any known parameter of bound method `__init__`
++ error[lint:call-non-callable] src/_pytest/doctest.py:698:12: Object of type `None` is not callable
+- warning[lint:unresolved-reference] src/_pytest/doctest.py:696:8: Name `CHECKER_CLASS` used when not defined
+- warning[lint:possibly-unresolved-reference] src/_pytest/doctest.py:698:12: Name `CHECKER_CLASS` used when possibly not defined
+- warning[lint:unresolved-reference] src/_pytest/unittest.py:398:16: Name `classImplements_has_run` used when not defined
+- Found 737 diagnostics
++ Found 733 diagnostics
+
+setuptools (https://github.com/pypa/setuptools)
+- warning[lint:unresolved-reference] setuptools/_distutils/sysconfig.py:564:8: Name `_config_vars` used when not defined
+- warning[lint:possibly-unresolved-reference] setuptools/_distutils/sysconfig.py:568:67: Name `_config_vars` used when possibly not defined
++ warning[lint:possibly-unbound-attribute] setuptools/_distutils/versionpredicate.py:168:9: Attribute `match` on type `Pattern[str] | Unknown | None` is possibly unbound
+- warning[lint:unresolved-reference] setuptools/_distutils/versionpredicate.py:163:8: Name `_provision_rx` used when not defined
+- warning[lint:possibly-unresolved-reference] setuptools/_distutils/versionpredicate.py:168:9: Name `_provision_rx` used when possibly not defined
+- warning[lint:unresolved-reference] setuptools/_vendor/typeguard/_suppression.py:59:13: Name `type_checks_suppressed` used when not defined
+- warning[lint:unresolved-reference] setuptools/_vendor/typeguard/_suppression.py:72:13: Name `type_checks_suppressed` used when not defined
+- Found 1034 diagnostics
++ Found 1029 diagnostics
+
+rich (https://github.com/Textualize/rich)
++ error[lint:invalid-return-type] rich/__init__.py:36:12: Return type does not match returned value: Expected `Console`, found `Console | None`
+- warning[lint:unresolved-reference] rich/__init__.py:31:8: Name `_console` used when not defined
+- warning[lint:possibly-unresolved-reference] rich/__init__.py:36:12: Name `_console` used when possibly not defined
++ error[lint:invalid-return-type] rich/console.py:581:16: Return type does not match returned value: Expected `WindowsConsoleFeatures`, found `WindowsConsoleFeatures | None`
+- warning[lint:unresolved-reference] rich/console.py:580:8: Name `_windows_console_features` used when not defined
+- warning[lint:unresolved-reference] rich/console.py:581:16: Name `_windows_console_features` used when not defined
+- Found 384 diagnostics
++ Found 382 diagnostics
+
+optuna (https://github.com/optuna/optuna)
+- warning[lint:unresolved-reference] optuna/logging.py:70:12: Name `_default_handler` used when not defined
++ error[lint:invalid-argument-type] optuna/logging.py:91:43: Argument to this function is incorrect: Expected `Handler`, found `Handler | None`
+- warning[lint:unresolved-reference] optuna/logging.py:87:16: Name `_default_handler` used when not defined
+- warning[lint:unresolved-reference] optuna/logging.py:91:43: Name `_default_handler` used when not defined
+- warning[lint:unresolved-reference] tutorial/20_recipes/013_wilcoxon_pruner.py:234:9: Name `num_evaluation` used when not defined
+- Found 1224 diagnostics
++ Found 1221 diagnostics
+
+pwndbg (https://github.com/pwndbg/pwndbg)
+- warning[lint:unresolved-reference] pwndbg/aglib/argv.py:50:8: Name `_was_updated` used when not defined
+- warning[lint:unresolved-reference] pwndbg/aglib/disasm/disassembly.py:246:12: Name `first_time_emulate` used when not defined
+- warning[lint:unresolved-reference] pwndbg/aglib/file.py:27:8: Name `_remote_files_dir` used when not defined
+- warning[lint:unresolved-reference] pwndbg/aglib/file.py:28:23: Name `_remote_files_dir` used when not defined
+- warning[lint:unresolved-reference] pwndbg/aglib/file.py:35:8: Name `_remote_files_dir` used when not defined
+- warning[lint:possibly-unresolved-reference] pwndbg/aglib/file.py:38:12: Name `_remote_files_dir` used when possibly not defined
+- warning[lint:unresolved-reference] pwndbg/aglib/heap/__init__.py:137:8: Name `current` used when not defined
+- warning[lint:unresolved-reference] pwndbg/aglib/heap/__init__.py:138:24: Name `current` used when not defined
+- warning[lint:unresolved-reference] pwndbg/aglib/heap/ptmalloc.py:179:8: Name `HEAP_MAX_SIZE` used when not defined
+- warning[lint:possibly-unresolved-reference] pwndbg/aglib/heap/ptmalloc.py:182:20: Name `HEAP_MAX_SIZE` used when possibly not defined
++ error[lint:invalid-argument-type] pwndbg/aglib/kernel/__init__.py:141:14: Argument to this function is incorrect: Expected `Sized`, found `Kconfig | None`
+- warning[lint:unresolved-reference] pwndbg/aglib/kernel/__init__.py:139:8: Name `_kconfig` used when not defined
+- warning[lint:unresolved-reference] pwndbg/aglib/kernel/__init__.py:141:14: Name `_kconfig` used when not defined
+- warning[lint:possibly-unresolved-reference] pwndbg/aglib/kernel/__init__.py:143:12: Name `_kconfig` used when possibly not defined
+- warning[lint:unresolved-reference] pwndbg/aglib/kernel/__init__.py:525:8: Name `_arch_ops` used when not defined
+- error[lint:unresolved-attribute] pwndbg/aglib/kernel/__init__.py:526:12: Type `<module 'pwndbg.aglib.arch'>` has no attribute `name`
+- error[lint:unresolved-attribute] pwndbg/aglib/kernel/__init__.py:528:14: Type `<module 'pwndbg.aglib.arch'>` has no attribute `name`
+- error[lint:unresolved-attribute] pwndbg/aglib/kernel/__init__.py:530:14: Type `<module 'pwndbg.aglib.arch'>` has no attribute `name`
+- warning[lint:possibly-unresolved-reference] pwndbg/aglib/kernel/__init__.py:533:12: Name `_arch_ops` used when possibly not defined
+- warning[lint:unresolved-reference] pwndbg/aglib/kernel/vmmap.py:250:36: Name `monitor_info_mem_not_warned` used when not defined
+- warning[lint:unresolved-reference] pwndbg/commands/ai.py:505:22: Name `last_pc` used when not defined
+- warning[lint:unresolved-reference] pwndbg/commands/ai.py:506:19: Name `last_command` used when not defined
+- warning[lint:unresolved-reference] pwndbg/commands/ai.py:509:8: Name `last_pc` used when not defined
+- warning[lint:possibly-unresolved-reference] pwndbg/commands/ai.py:509:33: Name `last_command` used when possibly not defined
++ error[lint:unsupported-operator] pwndbg/commands/context.py:408:27: Operator `>=` is not supported for types `None` and `int`, in comparing `int | None` with `int`
+- warning[lint:unresolved-reference] pwndbg/commands/context.py:386:21: Name `selected_history_index` used when not defined
+- warning[lint:unresolved-reference] pwndbg/commands/context.py:399:48: Name `selected_history_index` used when not defined
+- warning[lint:possibly-unresolved-reference] pwndbg/commands/context.py:406:12: Name `selected_history_index` used when possibly not defined
+- warning[lint:possibly-unresolved-reference] pwndbg/commands/context.py:408:27: Name `selected_history_index` used when possibly not defined
+- warning[lint:possibly-unresolved-reference] pwndbg/commands/context.py:410:24: Name `selected_history_index` used when possibly not defined
+- warning[lint:unresolved-reference] pwndbg/commands/context.py:447:8: Name `selected_history_index` used when not defined
+- warning[lint:unresolved-reference] pwndbg/commands/context.py:451:21: Name `selected_history_index` used when not defined
+- warning[lint:unresolved-reference] pwndbg/commands/context.py:473:8: Name `selected_history_index` used when not defined
+- warning[lint:unresolved-reference] pwndbg/commands/context.py:476:21: Name `selected_history_index` used when not defined
+- warning[lint:unresolved-reference] pwndbg/commands/context.py:521:8: Name `selected_history_index` used when not defined
+- warning[lint:unresolved-reference] pwndbg/commands/context.py:525:27: Name `selected_history_index` used when not defined
+- warning[lint:unresolved-reference] pwndbg/commands/search.py:198:21: Name `saved` used when not defined
+- warning[lint:unresolved-reference] pwndbg/commands/search.py:312:21: Name `saved` used when not defined
+- warning[lint:possibly-unresolved-reference] pwndbg/commands/search.py:343:13: Name `saved` used when possibly not defined
+- warning[lint:unresolved-reference] pwndbg/dbg/lldb/hooks.py:89:8: Name `should_show_context` used when not defined
+- warning[lint:unresolved-reference] pwndbg/exception.py:23:8: Name `_rich_console` used when not defined
++ warning[lint:possibly-unbound-attribute] pwndbg/exception.py:32:9: Attribute `print_exception` on type `(Unknown & ~EllipsisType) | Unknown | None` is possibly unbound
+- warning[lint:possibly-unresolved-reference] pwndbg/exception.py:31:23: Name `_rich_console` used when possibly not defined
+- warning[lint:possibly-unresolved-reference] pwndbg/exception.py:32:9: Name `_rich_console` used when possibly not defined
+- warning[lint:unresolved-reference] pwndbg/gdblib/prompt.py:90:8: Name `cur` used when not defined
+- warning[lint:unresolved-reference] pwndbg/gdblib/prompt.py:91:54: Name `cur` used when not defined
+- warning[lint:unresolved-reference] pwndbg/gdblib/prompt.py:94:12: Name `context_shown` used when not defined
+- warning[lint:unresolved-reference] pwndbg/gdblib/prompt.py:100:8: Name `last_alive_state` used when not defined
++ warning[lint:possibly-unbound-attribute] pwndbg/gdblib/ptmalloc2_tracking.py:702:9: Attribute `delete` on type `Unknown | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] pwndbg/gdblib/ptmalloc2_tracking.py:703:9: Attribute `delete` on type `Unknown | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] pwndbg/gdblib/ptmalloc2_tracking.py:709:13: Attribute `delete` on type `Unknown | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] pwndbg/gdblib/ptmalloc2_tracking.py:712:13: Attribute `delete` on type `Unknown | None` is possibly unbound
+- warning[lint:unresolved-reference] pwndbg/gdblib/ptmalloc2_tracking.py:702:9: Name `malloc_enter` used when not defined
+- warning[lint:unresolved-reference] pwndbg/gdblib/ptmalloc2_tracking.py:703:9: Name `free_enter` used when not defined
+- warning[lint:unresolved-reference] pwndbg/gdblib/ptmalloc2_tracking.py:708:12: Name `calloc_enter` used when not defined
+- warning[lint:unresolved-reference] pwndbg/gdblib/ptmalloc2_tracking.py:709:13: Name `calloc_enter` used when not defined
+- warning[lint:unresolved-reference] pwndbg/gdblib/ptmalloc2_tracking.py:711:12: Name `realloc_enter` used when not defined
+- warning[lint:unresolved-reference] pwndbg/gdblib/ptmalloc2_tracking.py:712:13: Name `realloc_enter` used when not defined
++ warning[lint:possibly-unbound-attribute] pwndbg/integration/binja.py:124:16: Attribute `args` on type `Unknown | None` is possibly unbound
+- warning[lint:unresolved-reference] pwndbg/integration/binja.py:94:8: Name `_bn` used when not defined
+- warning[lint:unresolved-reference] pwndbg/integration/binja.py:94:31: Name `_bn_last_connection_check` used when not defined
+- warning[lint:unresolved-reference] pwndbg/integration/binja.py:123:28: Name `_bn_last_exception` used when not defined
+- warning[lint:unresolved-reference] pwndbg/integration/binja.py:124:16: Name `_bn_last_exception` used when not defined
+- warning[lint:unresolved-reference] pwndbg/integration/binja.py:167:16: Name `_bn` used when not defined
+- warning[lint:unresolved-reference] pwndbg/integration/binja.py:171:20: Name `_bn` used when not defined
++ warning[lint:possibly-unbound-attribute] pwndbg/integration/ida.py:97:16: Attribute `args` on type `BaseException | None` is possibly unbound
+- warning[lint:unresolved-reference] pwndbg/integration/ida.py:70:8: Name `_ida` used when not defined
+- warning[lint:unresolved-reference] pwndbg/integration/ida.py:70:32: Name `_ida_last_connection_check` used when not defined
+- warning[lint:unresolved-reference] pwndbg/integration/ida.py:96:28: Name `_ida_last_exception` used when not defined
+- warning[lint:unresolved-reference] pwndbg/integration/ida.py:97:16: Name `_ida_last_exception` used when not defined
+- warning[lint:unresolved-reference] pwndbg/integration/ida.py:342:8: Name `colored_pc` used when not defined
+- warning[lint:unresolved-reference] pwndbg/integration/ida.py:343:18: Name `colored_pc` used when not defined
+- warning[lint:unresolved-reference] pwndbg/lib/gcc.py:24:16: Name `printed_message` used when not defined
+- Found 2820 diagnostics
++ Found 2765 diagnostics
+
+cwltool (https://github.com/common-workflow-language/cwltool)
+- warning[lint:unresolved-reference] cwltool/docker.py:35:8: Name `__docker_machine_mounts` used when not defined
+- warning[lint:possibly-unresolved-reference] cwltool/docker.py:54:12: Name `__docker_machine_mounts` used when possibly not defined
+- warning[lint:unresolved-reference] cwltool/process.py:535:12: Name `SCHEMA_FILE` used when not defined
+- warning[lint:unresolved-reference] cwltool/process.py:535:35: Name `SCHEMA_ANY` used when not defined
+- warning[lint:unresolved-reference] cwltool/process.py:535:57: Name `SCHEMA_DIR` used when not defined
+- warning[lint:possibly-unresolved-reference] cwltool/process.py:550:40: Name `SCHEMA_FILE` used when possibly not defined
+- warning[lint:possibly-unresolved-reference] cwltool/process.py:550:53: Name `SCHEMA_DIR` used when possibly not defined
+- warning[lint:possibly-unresolved-reference] cwltool/process.py:550:65: Name `SCHEMA_ANY` used when possibly not defined
+- warning[lint:unresolved-reference] cwltool/singularity.py:50:8: Name `_SINGULARITY_VERSION` used when not defined
+- warning[lint:possibly-unresolved-reference] cwltool/singularity.py:62:13: Name `_SINGULARITY_VERSION` used when possibly not defined
+- warning[lint:possibly-unresolved-reference] cwltool/singularity.py:62:35: Name `_SINGULARITY_FLAVOR` used when possibly not defined
++ error[lint:invalid-return-type] cwltool/singularity_utils.py:30:12: Return type does not match returned value: Expected `bool`, found `bool | None`
+- warning[lint:unresolved-reference] cwltool/singularity_utils.py:14:8: Name `_USERNS` used when not defined
+- warning[lint:possibly-unresolved-reference] cwltool/singularity_utils.py:30:12: Name `_USERNS` used when possibly not defined
++ error[lint:invalid-return-type] cwltool/utils.py:227:12: Return type does not match returned value: Expected `str`, found `str | None`
+- warning[lint:unresolved-reference] cwltool/utils.py:222:12: Name `__random_outdir` used when not defined
+- warning[lint:unresolved-reference] cwltool/utils.py:227:12: Name `__random_outdir` used when not defined
++ error[lint:invalid-return-type] tests/util.py:83:12: Return type does not match returned value: Expected `bool`, found `bool | None`
+- warning[lint:unresolved-reference] tests/util.py:75:8: Name `_env_accepts_null` used when not defined
+- warning[lint:possibly-unresolved-reference] tests/util.py:83:12: Name `_env_accepts_null` used when possibly not defined
+- Found 342 diagnostics
++ Found 328 diagnostics
+
+meson (https://github.com/mesonbuild/meson)
+- warning[lint:unresolved-reference] mesonbuild/scripts/depfixer.py:482:8: Name `INSTALL_NAME_TOOL` used when not defined
+- warning[lint:possibly-unresolved-reference] mesonbuild/scripts/depfixer.py:484:8: Name `INSTALL_NAME_TOOL` used when possibly not defined
+- warning[lint:possibly-unresolved-reference] run_project_tests.py:1320:13: Name `safe_print` used when possibly not defined
+- warning[lint:possibly-unresolved-reference] run_project_tests.py:1321:13: Name `safe_print` used when possibly not defined
+- warning[lint:possibly-unresolved-reference] run_project_tests.py:1349:17: Name `safe_print` used when possibly not defined
+- warning[lint:possibly-unresolved-reference] run_project_tests.py:1365:13: Name `safe_print` used when possibly not defined
+- warning[lint:possibly-unresolved-reference] run_project_tests.py:1373:13: Name `safe_print` used when possibly not defined
+- warning[lint:possibly-unresolved-reference] run_project_tests.py:1374:13: Name `safe_print` used when possibly not defined
+- warning[lint:possibly-unresolved-reference] run_project_tests.py:1406:17: Name `safe_print` used when possibly not defined
++ error[lint:unsupported-operator] run_tests.py:324:47: Operator `+` is unsupported between objects of type `Unknown | list | None` and `list`
+- Found 1436 diagnostics
++ Found 1428 diagnostics
+
+openlibrary (https://github.com/internetarchive/openlibrary)
++ warning[lint:possibly-unbound-attribute] openlibrary/core/helpers.py:288:12: Attribute `sub` on type `Pattern[str] | Unknown | None` is possibly unbound
+- warning[lint:unresolved-reference] openlibrary/core/helpers.py:284:8: Name `_texsafe_re` used when not defined
+- warning[lint:possibly-unresolved-reference] openlibrary/core/helpers.py:288:12: Name `_texsafe_re` used when possibly not defined
+- warning[lint:unresolved-reference] openlibrary/coverstore/db.py:13:8: Name `_db` used when not defined
++ warning[lint:possibly-unbound-attribute] openlibrary/coverstore/db.py:24:12: Attribute `get` on type `dict[Unknown, Unknown] | Unknown | None` is possibly unbound
+- warning[lint:possibly-unresolved-reference] openlibrary/coverstore/db.py:15:12: Name `_db` used when possibly not defined
+- warning[lint:unresolved-reference] openlibrary/coverstore/db.py:20:8: Name `_categories` used when not defined
+- warning[lint:possibly-unresolved-reference] openlibrary/coverstore/db.py:24:12: Name `_categories` used when possibly not defined
+- warning[lint:unresolved-reference] openlibrary/coverstore/oldb.py:22:8: Name `_db` used when not defined
+- warning[lint:possibly-unresolved-reference] openlibrary/coverstore/oldb.py:24:12: Name `_db` used when possibly not defined
+- warning[lint:unresolved-reference] openlibrary/coverstore/oldb.py:32:8: Name `_memcache` used when not defined
+- warning[lint:possibly-unresolved-reference] openlibrary/coverstore/oldb.py:34:12: Name `_memcache` used when possibly not defined
+- warning[lint:unresolved-reference] openlibrary/plugins/ol_infobase.py:263:12: Name `most_recent_change` used when not defined
+- warning[lint:possibly-unresolved-reference] openlibrary/plugins/ol_infobase.py:266:16: Name `most_recent_change` used when possibly not defined
++ warning[lint:possibly-unbound-attribute] openlibrary/plugins/openlibrary/code.py:1087:49: Attribute `rsplit` on type `str | Unknown | None` is possibly unbound
+- warning[lint:unresolved-reference] openlibrary/plugins/openlibrary/code.py:1082:12: Name `local_ip` used when not defined
+- warning[lint:possibly-unresolved-reference] openlibrary/plugins/openlibrary/code.py:1087:49: Name `local_ip` used when possibly not defined
+- warning[lint:unresolved-reference] openlibrary/plugins/openlibrary/connection.py:281:12: Name `_memcache` used when not defined
+- warning[lint:possibly-unresolved-reference] openlibrary/plugins/openlibrary/connection.py:285:16: Name `_memcache` used when possibly not defined
+- warning[lint:unresolved-reference] openlibrary/plugins/worksearch/search.py:11:12: Name `_ACTIVE_SOLR` used when not defined
+- warning[lint:possibly-unresolved-reference] openlibrary/plugins/worksearch/search.py:14:12: Name `_ACTIVE_SOLR` used when possibly not defined
+- warning[lint:unresolved-reference] openlibrary/solr/update.py:83:8: Name `data_provider` used when not defined
+- warning[lint:possibly-unresolved-reference] openlibrary/solr/update.py:95:31: Name `data_provider` used when possibly not defined
+- warning[lint:possibly-unresolved-reference] openlibrary/solr/update.py:102:35: Name `data_provider` used when possibly not defined
+- warning[lint:unresolved-reference] openlibrary/solr/update.py:154:8: Name `data_provider` used when not defined
+- warning[lint:possibly-unresolved-reference] openlibrary/solr/update.py:161:12: Name `data_provider` used when possibly not defined
++ error[lint:invalid-return-type] openlibrary/solr/utils.py:56:12: Return type does not match returned value: Expected `bool`, found `Unknown | bool | None`
+- warning[lint:unresolved-reference] openlibrary/solr/utils.py:35:12: Name `solr_base_url` used when not defined
+- warning[lint:possibly-unresolved-reference] openlibrary/solr/utils.py:38:12: Name `solr_base_url` used when possibly not defined
+- warning[lint:unresolved-reference] openlibrary/solr/utils.py:52:8: Name `solr_next` used when not defined
+- warning[lint:possibly-unresolved-reference] openlibrary/solr/utils.py:56:12: Name `solr_next` used when possibly not defined
+- warning[lint:unresolved-reference] openlibrary/tests/solr/test_update.py:22:5: Name `author_counter` used when not defined
+- warning[lint:unresolved-reference] openlibrary/tests/solr/test_update.py:38:5: Name `edition_counter` used when not defined
+- warning[lint:unresolved-reference] openlibrary/tests/solr/test_update.py:55:5: Name `work_counter` used when not defined
+- Found 762 diagnostics
++ Found 736 diagnostics
+
+paasta (https://github.com/yelp/paasta)
++ error[lint:call-non-callable] paasta_tools/api/api.py:233:12: Object of type `None` is not callable
+- warning[lint:unresolved-reference] paasta_tools/api/api.py:226:12: Name `_app` used when not defined
+- warning[lint:possibly-unresolved-reference] paasta_tools/api/api.py:233:12: Name `_app` used when possibly not defined
+- warning[lint:unresolved-reference] paasta_tools/cli/cmds/mark_for_deployment.py:1559:12: Name `already_pinged` used when not defined
+- Found 963 diagnostics
++ Found 961 diagnostics
+
+cloud-init (https://github.com/canonical/cloud-init)
++ error[lint:unsupported-operator] cloudinit/util.py:1328:16: Operator `not in` is not supported for types `@Todo(specialized non-generic class)` and `None`, in comparing `@Todo(specialized non-generic class)` with `set | Unknown | None`
+- warning[lint:unresolved-reference] cloudinit/util.py:1297:8: Name `_DNS_REDIRECT_IP` used when not defined
+- warning[lint:possibly-unresolved-reference] cloudinit/util.py:1328:28: Name `_DNS_REDIRECT_IP` used when possibly not defined
+- warning[lint:possibly-unresolved-reference] tests/integration_tests/conftest.py:491:21: Name `_SESSION_CLOUD` used when possibly not defined
+- warning[lint:possibly-unresolved-reference] tests/integration_tests/conftest.py:495:12: Name `_SESSION_CLOUD` used when possibly not defined
+- warning[lint:possibly-unresolved-reference] tests/integration_tests/conftest.py:497:16: Name `_SESSION_CLOUD` used when possibly not defined
+- warning[lint:possibly-unresolved-reference] tests/integration_tests/conftest.py:499:17: Name `_SESSION_CLOUD` used when possibly not defined
+- warning[lint:possibly-unresolved-reference] tests/integration_tests/conftest.py:500:13: Name `_SESSION_CLOUD` used when possibly not defined
+- warning[lint:unresolved-reference] tests/integration_tests/test_instance_id.py:18:39: Name `_INSTANCE_ID` used when not defined
+- Found 707 diagnostics
++ Found 700 diagnostics
+
+pyodide (https://github.com/pyodide/pyodide)
+- warning[lint:unresolved-reference] pyodide-build/pyodide_build/vendor/loky.py:166:8: Name `physical_cores_cache` used when not defined
+- warning[lint:unresolved-reference] pyodide-build/pyodide_build/vendor/loky.py:167:16: Name `physical_cores_cache` used when not defined
+- Found 1046 diagnostics
++ Found 1044 diagnostics
+
+aiohttp (https://github.com/aio-libs/aiohttp)
+- warning[lint:unresolved-reference] aiohttp/helpers.py:496:15: Name `_cached_current_datetime` used when not defined
+- warning[lint:possibly-unresolved-reference] aiohttp/helpers.py:528:12: Name `_cached_formatted_datetime` used when possibly not defined
+- Found 181 diagnostics
++ Found 179 diagnostics
+
+sphinx (https://github.com/sphinx-doc/sphinx)
+- warning[lint:unresolved-reference] sphinx/util/docutils.py:806:37: Name `__document_cache__` used when not defined
+- warning[lint:unresolved-reference] sphinx/util/docutils.py:806:37: Name `__document_cache__` used when not defined
+- warning[lint:unresolved-reference] sphinx/util/docutils.py:806:37: Name `__document_cache__` used when not defined
+- Found 684 diagnostics
++ Found 681 diagnostics
+
+bokeh (https://github.com/bokeh/bokeh)
+- warning[lint:unresolved-reference] src/bokeh/io/notebook.py:466:12: Name `_NOTEBOOK_LOADED` used when not defined
++ error[lint:invalid-return-type] src/bokeh/io/state.py:233:12: Return type does not match returned value: Expected `State`, found `State | None`
+- warning[lint:unresolved-reference] src/bokeh/io/state.py:231:8: Name `_STATE` used when not defined
+- warning[lint:possibly-unresolved-reference] src/bokeh/io/state.py:233:12: Name `_STATE` used when possibly not defined
++ error[lint:invalid-return-type] src/bokeh/util/compiler.py:421:12: Return type does not match returned value: Expected `Path`, found `Path | None`
++ error[lint:invalid-return-type] src/bokeh/util/compiler.py:428:12: Return type does not match returned value: Expected `Path`, found `Unknown | Path | None`
+- warning[lint:unresolved-reference] src/bokeh/util/compiler.py:419:8: Name `_nodejs` used when not defined
+- warning[lint:possibly-unresolved-reference] src/bokeh/util/compiler.py:421:12: Name `_nodejs` used when possibly not defined
+- warning[lint:unresolved-reference] src/bokeh/util/compiler.py:425:8: Name `_npmjs` used when not defined
+- warning[lint:possibly-unresolved-reference] src/bokeh/util/compiler.py:428:12: Name `_npmjs` used when possibly not defined
+- warning[lint:unresolved-reference] src/bokeh/util/serialization.py:264:13: Name `_simple_id` used when not defined
+- Found 1029 diagnostics
++ Found 1024 diagnostics
+
+apprise (https://github.com/caronc/apprise)
+- warning[lint:unresolved-reference] apprise/emojis.py:2259:8: Name `EMOJI_COMPILED_MAP` used when not defined
+- warning[lint:possibly-unresolved-reference] apprise/emojis.py:2269:16: Name `EMOJI_COMPILED_MAP` used when possibly not defined
++ warning[lint:possibly-unbound-attribute] apprise/emojis.py:2269:16: Attribute `sub` on type `Pattern[str] | Unknown | None` is possibly unbound
+- Found 3592 diagnostics
++ Found 3591 diagnostics
+
+streamlit (https://github.com/streamlit/streamlit)
++ error[lint:invalid-return-type] lib/streamlit/config.py:1572:20: Return type does not match returned value: Expected `dict[str, Unknown]`, found `dict[str, Unknown] | None`
+- warning[lint:unresolved-reference] lib/streamlit/config.py:1564:22: Name `_config_options` used when not defined
+- warning[lint:unresolved-reference] lib/streamlit/config.py:1571:12: Name `_config_options` used when not defined
+- warning[lint:unresolved-reference] lib/streamlit/config.py:1572:20: Name `_config_options` used when not defined
+- warning[lint:unresolved-reference] lib/streamlit/config.py:1574:23: Name `_config_options` used when not defined
+- warning[lint:unresolved-reference] lib/streamlit/delta_generator.py:126:12: Name `_use_warning_has_been_displayed` used when not defined
+- warning[lint:unresolved-reference] lib/streamlit/elements/lib/policies.py:87:17: Name `_shown_default_value_warning` used when not defined
+- warning[lint:unresolved-reference] lib/streamlit/net_util.py:45:8: Name `_external_ip` used when not defined
+- warning[lint:unresolved-reference] lib/streamlit/net_util.py:46:16: Name `_external_ip` used when not defined
+- warning[lint:unresolved-reference] lib/streamlit/net_util.py:78:8: Name `_internal_ip` used when not defined
+- warning[lint:unresolved-reference] lib/streamlit/net_util.py:79:16: Name `_internal_ip` used when not defined
+- warning[lint:unresolved-reference] lib/streamlit/runtime/runtime_util.py:105:8: Name `_max_message_size_bytes` used when not defined
+- warning[lint:possibly-unresolved-reference] lib/streamlit/runtime/runtime_util.py:108:24: Name `_max_message_size_bytes` used when possibly not defined
+- warning[lint:unresolved-reference] lib/streamlit/runtime/state/session_state_proxy.py:53:16: Name `_state_use_warning_already_displayed` used when not defined
+- warning[lint:unresolved-reference] lib/streamlit/runtime/state/session_state_proxy.py:62:12: Name `_mock_session_state` used when not defined
+- warning[lint:possibly-unresolved-reference] lib/streamlit/runtime/state/session_state_proxy.py:65:16: Name `_mock_session_state` used when possibly not defined
+- warning[lint:unresolved-reference] lib/streamlit/user_info.py:532:12: Name `has_shown_experimental_user_warning` used when not defined
+- warning[lint:unresolved-reference] lib/streamlit/vendor/pympler/asizeof.py:2530:9: Name `_amapped` used when not defined
++ error[lint:call-non-callable] lib/streamlit/watcher/local_sources_watcher.py:166:25: Object of type `None` is not callable
+- warning[lint:unresolved-reference] lib/streamlit/watcher/local_sources_watcher.py:155:12: Name `PathWatcher` used when not defined
+- warning[lint:possibly-unresolved-reference] lib/streamlit/watcher/local_sources_watcher.py:158:12: Name `PathWatcher` used when possibly not defined
+- warning[lint:possibly-unresolved-reference] lib/streamlit/watcher/local_sources_watcher.py:166:25: Name `PathWatcher` used when possibly not defined
+- Found 3275 diagnostics
++ Found 3257 diagnostics
+
+dd-trace-py (https://github.com/DataDog/dd-trace-py)
+- warning[lint:unresolved-reference] benchmarks/bm/iast_fixtures/str_methods_py3.py:101:19: Name `COUNTER` used when not defined
+- warning[lint:unresolved-reference] ddtrace/appsec/_common_module_patches.py:46:8: Name `_is_patched` used when not defined
+- warning[lint:unresolved-reference] ddtrace/appsec/_common_module_patches.py:57:12: Name `_is_patched` used when not defined
+- warning[lint:unresolved-reference] ddtrace/appsec/_iast/__init__.py:92:8: Name `_iast_propagation_enabled` used when not defined
+- warning[lint:unresolved-reference] ddtrace/appsec/_iast/__init__.py:127:12: Name `_iast_propagation_enabled` used when not defined
+- warning[lint:unresolved-reference] ddtrace/appsec/_iast/__init__.py:146:8: Name `_IAST_TO_BE_LOADED` used when not defined
+- warning[lint:unresolved-reference] ddtrace/appsec/_iast/taint_sinks/path_traversal.py:30:12: Name `IS_REPORTED_INTRUMENTED_SINK` used when not defined
+- warning[lint:unresolved-reference] ddtrace/appsec/_listeners.py:14:8: Name `_APPSEC_TO_BE_LOADED` used when not defined
+- warning[lint:unresolved-reference] ddtrace/contrib/internal/aws_lambda/_cold_start.py:12:24: Name `__lambda_container_initialized` used when not defined
+- warning[lint:unresolved-reference] ddtrace/contrib/internal/django/patch.py:110:8: Name `psycopg_cursor_cls` used when not defined
+- error[lint:invalid-assignment] ddtrace/contrib/internal/django/patch.py:116:13: Implicit shadowing of class `Psycopg3TracedCursor`
+- error[lint:conflicting-declarations] ddtrace/contrib/internal/django/patch.py:122:17: Conflicting declared types for `psycopg_cursor_cls`: Unknown, Unknown
+- error[lint:invalid-assignment] ddtrace/contrib/internal/django/patch.py:123:17: Implicit shadowing of class `Psycopg2TracedCursor`
+- warning[lint:unresolved-reference] ddtrace/contrib/internal/protobuf/patch.py:45:38: Name `_WRAPPED_MESSAGE_CLASSES` used when not defined
+- warning[lint:unresolved-reference] ddtrace/contrib/internal/pytest/_plugin_v1.py:650:9: Name `_global_skipped_elements` used when not defined
+- warning[lint:unresolved-reference] ddtrace/contrib/internal/unittest/patch.py:134:5: Name `_global_skipped_elements` used when not defined
+- warning[lint:unresolved-reference] ddtrace/contrib/internal/vertica/patch.py:131:8: Name `_PATCHED` used when not defined
+- warning[lint:unresolved-reference] ddtrace/contrib/internal/vertica/patch.py:140:8: Name `_PATCHED` used when not defined
+- warning[lint:unresolved-reference] ddtrace/internal/core/event_hub.py:80:44: Name `_all_listeners` used when not defined
+- warning[lint:unresolved-reference] ddtrace/internal/core/event_hub.py:86:13: Name `_all_listeners` used when not defined
+- warning[lint:unresolved-reference] ddtrace/internal/datastreams/__init__.py:21:45: Name `_processor` used when not defined
+- warning[lint:possibly-unresolved-reference] ddtrace/internal/datastreams/__init__.py:26:12: Name `_processor` used when possibly not defined
+- warning[lint:unresolved-reference] ddtrace/internal/datastreams/kafka.py:64:39: Name `disable_header_injection` used when not defined
+- warning[lint:unresolved-reference] ddtrace/internal/gitmetadata.py:101:12: Name `_GITMETADATA_TAGS` used when not defined
+- warning[lint:unresolved-reference] ddtrace/internal/gitmetadata.py:102:20: Name `_GITMETADATA_TAGS` used when not defined
+- warning[lint:unresolved-reference] ddtrace/internal/hostname.py:11:12: Name `_hostname` used when not defined
+- warning[lint:possibly-unresolved-reference] ddtrace/internal/hostname.py:13:12: Name `_hostname` used when possibly not defined
+- warning[lint:unresolved-reference] ddtrace/internal/module.py:67:8: Name `_run_code` used when not defined
+- warning[lint:unresolved-reference] ddtrace/internal/packages.py:49:8: Name `_PACKAGE_DISTRIBUTIONS` used when not defined
+- warning[lint:possibly-unresolved-reference] ddtrace/internal/packages.py:60:12: Name `_PACKAGE_DISTRIBUTIONS` used when possibly not defined
++ error[lint:invalid-return-type] ddtrace/internal/packages.py:60:12: Return type does not match returned value: Expected `Mapping[str, list]`, found `Unknown | Mapping[str, list] | None`
+- warning[lint:unresolved-reference] ddtrace/internal/runtime/__init__.py:35:8: Name `_ANCESTOR_RUNTIME_ID` used when not defined
+- warning[lint:unresolved-reference] ddtrace/internal/runtime/__init__.py:36:32: Name `_RUNTIME_ID` used when not defined
+- warning[lint:unresolved-reference] ddtrace/internal/telemetry/data.py:109:8: Name `_host_info` used when not defined
+- warning[lint:possibly-unresolved-reference] ddtrace/internal/telemetry/data.py:119:12: Name `_host_info` used when possibly not defined
+- warning[lint:unresolved-reference] ddtrace/internal/utils/http.py:330:31: Name `_HTML_BLOCKED_TEMPLATE_CACHE` used when not defined
+- warning[lint:unresolved-reference] ddtrace/internal/utils/http.py:331:16: Name `_HTML_BLOCKED_TEMPLATE_CACHE` used when not defined
+- warning[lint:unresolved-reference] ddtrace/internal/utils/http.py:333:35: Name `_JSON_BLOCKED_TEMPLATE_CACHE` used when not defined
+- warning[lint:unresolved-reference] ddtrace/internal/utils/http.py:334:16: Name `_JSON_BLOCKED_TEMPLATE_CACHE` used when not defined
+- warning[lint:unresolved-reference] ddtrace/profiling/_asyncio.py:51:8: Name `THREAD_LINK` used when not defined
++ warning[lint:possibly-unbound-attribute] ddtrace/profiling/_asyncio.py:96:12: Attribute `get_object` on type `Unknown | None` is possibly unbound
+- warning[lint:unresolved-reference] ddtrace/vendor/psutil/__init__.py:1866:18: Name `_last_cpu_times` used when not defined
+- warning[lint:unresolved-reference] ddtrace/vendor/psutil/__init__.py:1881:20: Name `_last_per_cpu_times` used when not defined
+- warning[lint:unresolved-reference] ddtrace/vendor/psutil/__init__.py:1942:18: Name `_last_cpu_times_2` used when not defined
+- warning[lint:unresolved-reference] ddtrace/vendor/psutil/__init__.py:1957:20: Name `_last_per_cpu_times_2` used when not defined
+- warning[lint:unresolved-reference] ddtrace/vendor/psutil/_pswindows.py:365:16: Name `_loadavg_inititialized` used when not defined
++ warning[lint:possibly-unresolved-reference] ddtrace/vendor/psutil/_pswindows.py:365:16: Name `_loadavg_inititialized` used when possibly not defined
+- warning[lint:unresolved-reference] ddtrace/vendor/psutil/_pswindows.py:470:18: Name `_last_btime` used when not defined
+- warning[lint:unresolved-reference] ddtrace/vendor/psutil/_pswindows.py:471:16: Name `_last_btime` used when not defined
+- warning[lint:unresolved-reference] tests/appsec/iast_packages/test_packages.py:951:52: Name `TEMPLATE_VENV_DIR` used when not defined
+- warning[lint:unresolved-reference] tests/appsec/iast_packages/test_packages.py:956:68: Name `PIP_CACHE_SHARED_VENVS_DIR` used when not defined
+- warning[lint:unresolved-reference] tests/appsec/iast_packages/test_packages.py:961:29: Name `TEMPLATE_VENV_DIR` used when not defined
+- warning[lint:unresolved-reference] tests/appsec/iast_packages/test_packages.py:963:102: Name `TEMPLATE_VENV_DIR` used when not defined
+- warning[lint:unresolved-reference] tests/appsec/iast_packages/test_packages.py:966:66: Name `TEMPLATE_VENV_DIR` used when not defined
+- warning[lint:possibly-unresolved-reference] tests/appsec/iast_packages/test_packages.py:979:12: Name `TEMPLATE_VENV_DIR` used when possibly not defined
+- warning[lint:unresolved-reference] tests/appsec/iast_packages/test_packages.py:1039:5: Name `NUM_TEST` used when not defined
+- warning[lint:unresolved-reference] tests/appsec/iast_packages/test_packages.py:1085:5: Name `NUM_TEST` used when not defined
+- warning[lint:unresolved-reference] tests/tracer/test_utils.py:346:9: Name `i` used when not defined
+- warning[lint:unresolved-reference] tests/tracer/test_utils.py:364:9: Name `i` used when not defined
+- warning[lint:unresolved-reference] tests/utils.py:1406:9: Name `_ID` used when not defined
+- warning[lint:possibly-unresolved-reference] tests/utils.py:1410:56: Name `_ID` used when possibly not defined
+- Found 8612 diagnostics
++ Found 8557 diagnostics
+
+jax (https://github.com/google/jax)
+- warning[lint:unresolved-reference] jax/_src/cache_key.py:40:3: Name `_extra_flag_prefixes` used when not defined
++ warning[lint:possibly-unbound-attribute] jax/_src/compilation_cache.py:326:16: Attribute `_path` on type `CacheInterface | None` is possibly unbound
+- warning[lint:unresolved-reference] jax/_src/compilation_cache.py:65:8: Name `_cache_checked` used when not defined
+- warning[lint:unresolved-reference] jax/_src/compilation_cache.py:66:14: Name `_cache_used` used when not defined
+- warning[lint:unresolved-reference] jax/_src/compilation_cache.py:69:12: Name `_cache_checked` used when not defined
+- warning[lint:possibly-unresolved-reference] jax/_src/compilation_cache.py:86:14: Name `_cache_used` used when possibly not defined
+- wa...*[Comment body truncated]*
+
+---
+
+_Comment by @carljm on 2025-04-29 23:36_
+
+Thanks for working on this!
+
+My preference for red-knot would be to avoid the double AST visit if we can -- and I think we fairly easily can. I admit I'm a little surprised to see that it has 0% perf impact in the benchmark. I do wonder if this result would hold up on much larger projects? In particular, semantic indexing is a cost we pay on _every_ file, even third-party files we aren't checking, and this could make a difference when checking a project with lots of big third-party dependencies.
+
+I think the way I would do this in red-knot, without the double visit, is for semantic indexing to do nothing more than record which names are marked global in each scope, and handle the rest of it in type checking. When checking a scope we'd again record which symbols we've seen marked as global when we hit the global statement, and on every `Name` node we'd check if the symbol is a) marked as `global` in the semantic index, but b) we haven't yet seen in a `global` statement in checking, and if so we'd emit the diagnostic.
+
+---
+
+_Comment by @ntBre on 2025-04-30 13:58_
+
+> Thanks for working on this!
+
+Thanks for taking a look!
+
+> My preference for red-knot would be to avoid the double AST visit if we can -- and I think we fairly easily can. I admit I'm a little surprised to see that it has 0% perf impact in the benchmark. I do wonder if this result would hold up on much larger projects? In particular, semantic indexing is a cost we pay on every file, even third-party files we aren't checking, and this could make a difference when checking a project with lots of big third-party dependencies.
+
+I was definitely surprised by this too. I haven't tried a larger project, but it does sound like that would cause problems.
+
+> I think the way I would do this in red-knot, without the double visit, is for semantic indexing to do nothing more than record which names are marked global in each scope, and handle the rest of it in type checking. When checking a scope we'd again record which symbols we've seen marked as global when we hit the global statement, and on every `Name` node we'd check if the symbol is a) marked as `global` in the semantic index, but b) we haven't yet seen in a `global` statement in checking, and if so we'd emit the diagnostic.
+
+That approach definitely makes sense to me for red-knot. However, if I'm following correctly, I think this might conflict a bit with how the semantic syntax errors are currently detected in the semantic indexing phase. I may need to move the embedded `SemanticSyntaxChecker` from the `SemanticIndexBuilder` to the `TypeInferenceBuilder`, or just emit the `global` error separately. I'll take a closer look at those approaches this week.
+
+---
+
+_Comment by @carljm on 2025-04-30 14:50_
+
+> think this might conflict a bit with how the semantic syntax errors are currently detected in the semantic indexing phase. I may need to move the embedded `SemanticSyntaxChecker` from the `SemanticIndexBuilder` to the `TypeInferenceBuilder`, or just emit the `global` error separately.
+
+I was assuming the latter. Is there any need for all semantic syntax errors to be emitted from `SemanticSyntaxChecker`? It doesn't seem necessary to change the implementation of all the existing checks just to keep them together.
+
+---
+
+_Comment by @MichaReiser on 2025-04-30 15:08_
+
+> I was assuming the latter. Is there any need for all semantic syntax errors to be emitted from SemanticSyntaxChecker? It doesn't seem necessary to change the implementation of all the existing checks just to keep them together.
+
+Not strictly, but the visitor assumes that at least, the entire function body is visited in one go. I think that would also prevent us from moving this to type inference because we aren't visiting the body eagerly (and always in chunks without preserving any state in between)
+
+---
+
+_Comment by @MichaReiser on 2025-04-30 15:10_
+
+Could we instead record all global usages in `SemanticIndexBuilder` and then do a post processing in `SemanticSyntaxChecker` where, given all known symbols and the known places of global usages. 
+
+Alternatively. I would also be okay if that one check would be implemented separately between Red Knot and Ruff. It isn't a complicated check either way.
+
+---
+
+_Comment by @ntBre on 2025-04-30 17:19_
+
+> Could we instead record all global usages in `SemanticIndexBuilder` and then do a post processing in `SemanticSyntaxChecker` where, given all known symbols and the known places of global usages.
+
+This sounds promising, I'll give it a try!
+
+> Alternatively. I would also be okay if that one check would be implemented separately between Red Knot and Ruff. It isn't a complicated check either way.
+
+Yeah I don't really mind implementing it separately either. I think we might run into something similar for a couple of other errors ([nonlocal-and-global (PLE0115)](https://docs.astral.sh/ruff/rules/nonlocal-and-global/#nonlocal-and-global-ple0115) comes to mind, but I think there's at least one more `global` error I'm forgetting). So it would be nice to keep them in the `Checker` but not a huge deal in any case.
+
+---
+
+_Comment by @ntBre on 2025-05-02 21:00_
+
+Thanks to help from @AlexWaygood in our pairing session today, we are now handling all of the typing-related todos as well as the semantic errors. There's one todo left for `nonlocal` and `global`, but the `SemanticSyntaxChecker` doesn't handle `nonlocal` at all yet either.
+
+We avoided the double AST visit by recording the globals while building the semantic index and then emitting them directly in `build` without relying on the `SemanticSyntaxChecker`. I'm actually wondering if this might be the better approach to these errors in general (querying the parent visitor to see if the name is bound in the current scope at the `global` statement rather than the other way around), so I'll leave this as a draft a bit longer. This also means the error is emitted on the `global` statement rather than the name. That's in line with CPython but not the corresponding ruff rule ([PLE0118](https://docs.astral.sh/ruff/rules/load-before-global-declaration/)).
+
+Also I apparently caused a new panic with this backtrace, which I can reproduce locally based on the fuzzer output:
+
+```
+  crates/red_knot_python_semantic/resources/mdtest/scopes/global.md:184 panicked at /home/brent/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/42f1583/src/function/fetch.rs:130:25
+  crates/red_knot_python_semantic/resources/mdtest/scopes/global.md:184 dependency graph cycle when querying value_type_(Id(1400)), set cycle_fn/cycle_initial to fixpoint iterate.
+Query stack:
+[
+    check_types(Id(0)),
+    infer_scope_types(Id(800)),
+    infer_definition_types(Id(c02)),
+    value_type_(Id(1400)),
+    infer_scope_types(Id(802)),
+]
+  crates/red_knot_python_semantic/resources/mdtest/scopes/global.md:184 run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+  crates/red_knot_python_semantic/resources/mdtest/scopes/global.md:184 query stacktrace:
+  crates/red_knot_python_semantic/resources/mdtest/scopes/global.md:184    0: infer_scope_types(Id(802)) -> (R1, Durability::LOW)
+  crates/red_knot_python_semantic/resources/mdtest/scopes/global.md:184              at crates/red_knot_python_semantic/src/types/infer.rs:117
+  crates/red_knot_python_semantic/resources/mdtest/scopes/global.md:184    1: value_type_(Id(1400)) -> (R1, Durability::LOW)
+  crates/red_knot_python_semantic/resources/mdtest/scopes/global.md:184              at crates/red_knot_python_semantic/src/types.rs:7312
+  crates/red_knot_python_semantic/resources/mdtest/scopes/global.md:184    2: infer_definition_types(Id(c02)) -> (R1, Durability::LOW)
+  crates/red_knot_python_semantic/resources/mdtest/scopes/global.md:184              at crates/red_knot_python_semantic/src/types/infer.rs:144
+  crates/red_knot_python_semantic/resources/mdtest/scopes/global.md:184    3: infer_scope_types(Id(800)) -> (R1, Durability::LOW)
+  crates/red_knot_python_semantic/resources/mdtest/scopes/global.md:184              at crates/red_knot_python_semantic/src/types/infer.rs:117
+  crates/red_knot_python_semantic/resources/mdtest/scopes/global.md:184    4: check_types(Id(0)) -> (R1, Durability::LOW)
+  crates/red_knot_python_semantic/resources/mdtest/scopes/global.md:184              at crates/red_knot_python_semantic/src/types.rs:82
+  crates/red_knot_python_semantic/resources/mdtest/scopes/global.md:184 
+```
+
+Input code:
+
+```python
+global name_5
+(name_2 := name_5)
+
+def name_1(name_4: name_2, /):
+    pass
+type name_5 = name_5
+```
+
+So that's another reason to stay in draft!
+
+---
+
+_@AlexWaygood reviewed on 2025-05-02 22:28_
+
+---
+
+_Review comment by @AlexWaygood on `crates/red_knot_python_semantic/src/types/infer.rs`:1355 on 2025-05-02 22:28_
+
+this gets rid of one of the failing seeds on the fuzzer CI job:
+
+```suggestion
+        let declarations = if is_global && file_scope_id != FileScopeId::global() {
+```
+
+---
+
+_@AlexWaygood reviewed on 2025-05-02 22:33_
+
+---
+
+_Review comment by @AlexWaygood on `crates/red_knot_python_semantic/src/types/infer.rs`:5154 on 2025-05-02 22:33_
+
+Similar to https://github.com/astral-sh/ruff/pull/17637/files#r2072209268, I think this might cause infinite recursion if we're already in the global scope. I'm also not sure this is totally correct -- if a symbol is declared as `global` in a function scope, it _can_ fallback to bindings in the global scope, but we still need to iterate over bindings in the inner scope before falling back to the global-scope bindings. The global-scope `x = 42` binding here is overridden by the `x = 56` binding later on in the function scope:
+
+```pycon
+>>> x = 42
+>>> def f():
+...     global x
+...     print(x)
+...     x = 56
+...     print(x)
+...     
+>>> f()
+42
+56
+```
+
+The way this differs from normal local variables is that you're not normally allowed to fallback to the global scope like that if the variable has also been assigned to in the function scope. This produces an error because `x` is not declared as `global`: falling back to the global scope is forbidden because `x` is assigned to later on in the function, making it a local-only variable:
+
+```pycon
+>>> x = 42
+>>> def f():
+...     print(x)
+...     x = 56
+...     print(x)
+...     
+>>> f()
+Traceback (most recent call last):
+  File "<python-input-4>", line 1, in <module>
+    f()
+    ~^^
+  File "<python-input-3>", line 2, in f
+    print(x)
+          ^
+UnboundLocalError: cannot access local variable 'x' where it is not associated with a value
+```
+
+---
+
+_@ntBre reviewed on 2025-05-05 19:18_
+
+---
+
+_Review comment by @ntBre on `crates/red_knot_python_semantic/src/types/infer.rs`:5154 on 2025-05-05 19:18_
+
+I'm confident that I'm missing something here because your explanation makes sense to me, but I tried turning these into mdtests and they seem to be working as I would expect:
+
+````markdown
+```py
+x = 42
+
+def f():
+    global x
+    reveal_type(x)  # revealed: Unknown | Literal[42]
+    x = "56"
+    reveal_type(x)  # revealed: Literal["56"]
+```
+
+```py
+x = 42
+
+def f():
+    print(x)  # error: [unresolved-reference] "Name `x` used when not defined"
+    x = "56"
+    print(x)
+```
+````
+
+Is there a better way I could test that this is behaving properly?
+
+---
+
+_@AlexWaygood reviewed on 2025-05-05 22:21_
+
+---
+
+_Review comment by @AlexWaygood on `crates/red_knot_python_semantic/src/types/infer.rs`:5154 on 2025-05-05 22:21_
+
+Ahh I think I forgot how this function worked. We'll have already iterated over the definitions in the scope we're currently in before we get here! So it's actually no surprise that you're observing the correct behaviour here already.
+
+One more test you could add would be to check that we _skip_ over intermediate scopes in between the global scope and the current scope for `global` names. I think you get this right currently, but it would be good to test it explicitly:
+
+```py
+x: int = 42
+
+def f():
+    x: str = "foo"
+
+    def g():
+        global x
+        reveal_type(x)  # revealed: int
+```
+
+---
+
+_Comment by @AlexWaygood on 2025-05-05 22:22_
+
+The primer report here looks fantastic, and makes me think we should try to get this into the alpha if we can!
+
+---
+
+_Review comment by @AlexWaygood on `crates/red_knot_python_semantic/src/types/infer.rs`:5154 on 2025-05-05 22:23_
+
+Scratch that, you already have that test case, it's just not in the diff of this PR! Sorry!
+
+---
+
+_@AlexWaygood reviewed on 2025-05-05 22:23_
+
+---
+
+_Renamed from "[red-knot] Copy and paste ruff's `global` handling" to "[ty] Implement `global` handling and `load-before-global-declaration` syntax error" by @ntBre on 2025-05-06 14:37_
+
+---
+
+_@ntBre reviewed on 2025-05-06 15:18_
+
+---
+
+_Review comment by @ntBre on `crates/red_knot_python_semantic/src/types/infer.rs`:5154 on 2025-05-06 15:18_
+
+Thanks again for the help! Marking this as resolved, but please un-resolve if I misunderstood the status here.
+
+---
+
+_Marked ready for review by @ntBre on 2025-05-06 15:19_
+
+---
+
+_Review requested from @carljm by @ntBre on 2025-05-06 15:19_
+
+---
+
+_Review requested from @sharkdp by @ntBre on 2025-05-06 15:19_
+
+---
+
+_Review requested from @dcreager by @ntBre on 2025-05-06 15:19_
+
+---
+
+_Review comment by @MichaReiser on `crates/ty_python_semantic/src/semantic_index.rs`:182 on 2025-05-06 15:26_
+
+Is the idea here for using a hash map that only very few scopes have globals (it's not a densly populated array), which is why it doesn't make sense to use an `IndexVec`.
+
+---
+
+_Review comment by @MichaReiser on `crates/ty_python_semantic/src/semantic_index.rs`:46 on 2025-05-06 15:27_
+
+Could we store `ScopedSymbolId` instead of storing names. That would be cheaper. Or do we need the lookup by name.
+
+---
+
+_Review comment by @MichaReiser on `crates/ty_python_semantic/src/semantic_index/builder.rs`:1920 on 2025-05-06 15:28_
+
+could we reuse `enclsoing_scope_info.file_scope_id` here (or `enclosing_scope_id`)?
+
+---
+
+_@MichaReiser approved on 2025-05-06 15:30_
+
+Nice
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/semantic_index.rs`:182 on 2025-05-06 15:31_
+
+yes
+
+---
+
+_@AlexWaygood reviewed on 2025-05-06 15:31_
+
+---
+
+_Comment by @AlexWaygood on 2025-05-06 16:15_
+
+I think you could do something like this to implement the changes @MichaReiser's suggesting (which I agree make sense -- a `ScopedSymbolId` will take up less memory than a `Name`):
+
+<details>
+<summary>Suggested patch</summary>
+
+```diff
+diff --git a/crates/ty_python_semantic/src/semantic_index.rs b/crates/ty_python_semantic/src/semantic_index.rs
+index 584064564c..7978ee189d 100644
+--- a/crates/ty_python_semantic/src/semantic_index.rs
++++ b/crates/ty_python_semantic/src/semantic_index.rs
+@@ -43,8 +43,6 @@ pub(crate) use self::use_def::{
+ 
+ type SymbolMap = hashbrown::HashMap<ScopedSymbolId, (), FxBuildHasher>;
+ 
+-type Globals = FxHashSet<ruff_python_ast::name::Name>;
+-
+ /// Returns the semantic index for `file`.
+ ///
+ /// Prefer using [`symbol_table`] when working with symbols from a single scope.
+@@ -179,7 +177,7 @@ pub(crate) struct SemanticIndex<'db> {
+     scope_ids_by_scope: IndexVec<FileScopeId, ScopeId<'db>>,
+ 
+     /// Map from the file-local [`FileScopeId`] to the [`Globals`] it contains.
+-    globals_by_scope: FxHashMap<FileScopeId, Globals>,
++    globals_by_scope: FxHashMap<FileScopeId, FxHashSet<ScopedSymbolId>>,
+ 
+     /// Use-def map for each scope in this file.
+     use_def_maps: IndexVec<FileScopeId, Arc<UseDefMap<'db>>>,
+@@ -260,8 +258,14 @@ impl<'db> SemanticIndex<'db> {
+         self.scope_ids_by_scope.iter().copied()
+     }
+ 
+-    pub(crate) fn globals_by_scope(&self, scope_id: FileScopeId) -> Option<&Globals> {
+-        self.globals_by_scope.get(&scope_id)
++    pub(crate) fn symbol_is_global_in_scope(
++        &self,
++        symbol: ScopedSymbolId,
++        scope: FileScopeId,
++    ) -> bool {
++        self.globals_by_scope
++            .get(&scope)
++            .is_some_and(|globals| globals.contains(&symbol))
+     }
+ 
+     /// Returns the id of the parent scope.
+diff --git a/crates/ty_python_semantic/src/semantic_index/builder.rs b/crates/ty_python_semantic/src/semantic_index/builder.rs
+index aa0dee089c..39e94fc98a 100644
+--- a/crates/ty_python_semantic/src/semantic_index/builder.rs
++++ b/crates/ty_python_semantic/src/semantic_index/builder.rs
+@@ -51,8 +51,6 @@ use crate::semantic_index::SemanticIndex;
+ use crate::unpack::{Unpack, UnpackKind, UnpackPosition, UnpackValue};
+ use crate::{Db, Program};
+ 
+-use super::Globals;
+-
+ mod except_handlers;
+ 
+ #[derive(Clone, Debug, Default)]
+@@ -108,7 +106,7 @@ pub(super) struct SemanticIndexBuilder<'db> {
+     use_def_maps: IndexVec<FileScopeId, UseDefMapBuilder<'db>>,
+     scopes_by_node: FxHashMap<NodeWithScopeKey, FileScopeId>,
+     scopes_by_expression: FxHashMap<ExpressionNodeKey, FileScopeId>,
+-    globals_by_scope: FxHashMap<FileScopeId, Globals>,
++    globals_by_scope: FxHashMap<FileScopeId, FxHashSet<ScopedSymbolId>>,
+     definitions_by_node: FxHashMap<DefinitionNodeKey, Definitions<'db>>,
+     expressions_by_node: FxHashMap<ExpressionNodeKey, Expression<'db>>,
+     imported_modules: FxHashSet<ModuleName>,
+@@ -1089,6 +1087,7 @@ impl<'db> SemanticIndexBuilder<'db> {
+         self.scopes_by_node.shrink_to_fit();
+         self.generator_functions.shrink_to_fit();
+         self.eager_snapshots.shrink_to_fit();
++        self.globals_by_scope.shrink_to_fit();
+ 
+         SemanticIndex {
+             symbol_tables,
+@@ -1904,12 +1903,11 @@ where
+                 self.mark_unreachable();
+             }
+             ast::Stmt::Global(ast::StmtGlobal { range: _, names }) => {
+-                let enclosing_scope_info = self.current_scope_info();
+-                let enclosing_scope_id = enclosing_scope_info.file_scope_id;
+-                let enclosing_symbol_table = &self.symbol_tables[enclosing_scope_id];
+                 for name in names {
+-                    let bound = enclosing_symbol_table.symbol_id_by_name(name).is_some();
+-                    if bound {
++                    let symbol_id = self.add_symbol(name.id.clone());
++                    let symbol_table = self.current_symbol_table();
++                    let symbol = symbol_table.symbol(symbol_id);
++                    if symbol.is_bound() || symbol.is_declared() || symbol.is_used() {
+                         self.report_semantic_error(SemanticSyntaxError {
+                             kind: SemanticSyntaxErrorKind::LoadBeforeGlobalDeclaration {
+                                 name: name.to_string(),
+@@ -1923,7 +1921,16 @@ where
+                     self.globals_by_scope
+                         .entry(scope_id)
+                         .or_default()
+-                        .insert(name.id.clone());
++                        .insert(symbol_id);
++                }
++                walk_stmt(self, stmt);
++            }
++            ast::Stmt::Delete(ast::StmtDelete { targets, range: _ }) => {
++                for target in targets {
++                    if let ast::Expr::Name(ast::ExprName { id, .. }) = target {
++                        let symbol_id = self.add_symbol(id.clone());
++                        self.current_symbol_table().mark_symbol_used(symbol_id);
++                    }
+                 }
+                 walk_stmt(self, stmt);
+             }
+diff --git a/crates/ty_python_semantic/src/types/infer.rs b/crates/ty_python_semantic/src/types/infer.rs
+index 21b7699691..490ade86e6 100644
+--- a/crates/ty_python_semantic/src/types/infer.rs
++++ b/crates/ty_python_semantic/src/types/infer.rs
+@@ -1373,17 +1373,18 @@ impl<'db> TypeInferenceBuilder<'db> {
+ 
+         let file_scope_id = binding.file_scope(self.db());
+         let symbol_table = self.index.symbol_table(file_scope_id);
+-        let symbol_name = symbol_table.symbol(binding.symbol(self.db())).name();
+         let use_def = self.index.use_def_map(file_scope_id);
+         let mut bound_ty = ty;
++        let symbol_id = binding.symbol(self.db());
+ 
+-        let is_global = self
+-            .index
+-            .globals_by_scope(file_scope_id)
+-            .is_some_and(|globals| globals.contains(symbol_name));
++        let skip_non_global_scopes = !file_scope_id.is_global()
++            && self
++                .index
++                .symbol_is_global_in_scope(symbol_id, file_scope_id);
+ 
+         let global_use_def_map = self.index.use_def_map(FileScopeId::global());
+-        let declarations = if is_global && !file_scope_id.is_global() {
++        let declarations = if skip_non_global_scopes {
++            let symbol_name = symbol_table.symbol(symbol_id).name();
+             match self
+                 .index
+                 .symbol_table(FileScopeId::global())
+@@ -5211,12 +5212,15 @@ impl<'db> TypeInferenceBuilder<'db> {
+ 
+             let current_file = self.file();
+ 
+-            let is_global = self
+-                .index
+-                .globals_by_scope(file_scope_id)
+-                .is_some_and(|globals| globals.contains(symbol_name));
++            let skip_non_global_scopes = !file_scope_id.is_global()
++                && symbol_table
++                    .symbol_id_by_name(symbol_name)
++                    .is_some_and(|symbol_id| {
++                        self.index
++                            .symbol_is_global_in_scope(symbol_id, file_scope_id)
++                    });
+ 
+-            if is_global && !file_scope_id.is_global() {
++            if skip_non_global_scopes {
+                 return symbol(
+                     db,
+                     FileScopeId::global().to_scope_id(db, current_file),
+```
+
+</details>
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/semantic_index.rs`:179 on 2025-05-06 18:18_
+
+```suggestion
+    /// Map from the file-local [`FileScopeId`] to the set of global names it contains.
+```
+
+---
+
+_@AlexWaygood approved on 2025-05-06 18:19_
+
+This LGTM, thank you! I'd love for @carljm to take a quick look too though
+
+---
+
+_@ntBre reviewed on 2025-05-06 18:20_
+
+---
+
+_Review comment by @ntBre on `crates/ty_python_semantic/src/semantic_index.rs`:179 on 2025-05-06 18:20_
+
+Thanks, I just changed this to "globals" locally but this looks nicer!
+
+---
+
+_Review comment by @carljm on `crates/ty_python_semantic/resources/mdtest/scopes/global.md`:195 on 2025-05-07 23:56_
+
+Probably best to give this a separate heading. Two unnamed code blocks under a single heading are merged into a single file for checking. Seems to be ok here at the moment, but this can lead to future confusion when we're dealing with global scope. E.g. at the moment the first test is only showing `Literal[42]` because the second test also assigns `x = 42` -- if the second test assigned something different to `x`, the first test would see that instead.
+
+---
+
+_Review comment by @carljm on `crates/ty_python_semantic/resources/mdtest/scopes/global.md`:199 on 2025-05-07 23:57_
+
+any particular reason to use `print` rather than `reveal_type` here?
+
+---
+
+_Review comment by @carljm on `crates/ty_python_semantic/src/semantic_index.rs`:179 on 2025-05-08 00:01_
+
+```suggestion
+    /// Map from the file-local [`FileScopeId`] to the set of explicit-global symbols it contains.
+```
+
+---
+
+_Review comment by @carljm on `crates/ty_python_semantic/resources/mdtest/scopes/global.md`:42 on 2025-05-08 00:09_
+
+I think there's a set of cases that we aren't testing, which is when we mark a name `global` in a nested scope, and then declare that name with a new type in that scope, e.g.
+
+```py
+x: int = 1
+
+def f():
+    global x
+    x: str = "foo"
+```
+
+We should definitely error on that assignment, since it's an assignment to the global with the wrong type. I think we should probably error any time a `global` name is declared with a type in the local scope, even if the type is the same -- that kind of local re-declaration of a global gives the wrong impression and doesn't make sense.
+
+It's OK if this is a TODO in this PR, but we should at least add a TODO for it.
+
+---
+
+_Review comment by @carljm on `crates/ty_python_semantic/src/types/infer.rs`:1380 on 2025-05-08 00:10_
+
+We can push this down into the only branch where it's needed?
+
+---
+
+_Review comment by @carljm on `crates/ty_python_semantic/src/types/infer.rs`:5221 on 2025-05-08 00:14_
+
+This looks similar to something we do above in `add_binding`; we could extract a method?
+
+---
+
+_@carljm approved on 2025-05-08 00:15_
+
+This looks great! A few minor comments if you feel inspired, but this is good to go. Thank you!!
+
+---
+
+_@AlexWaygood reviewed on 2025-05-08 03:31_
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/scopes/global.md`:42 on 2025-05-08 03:31_
+
+that's actually a (currently unimplemented?) syntax error to provide a local-scope annotation for a name declared global. So I don't think we should emit an error about it in type inference — that would lead to unnecessary double diagnostics.
+
+We should implement the syntax error (either here or in a followup PR) though! And we should add tests now.
+
+```pycon
+>>> x: int = 1
+>>> def f():
+...     global x
+...     x: str = "foo"
+  File "<string>", line 3
+SyntaxError: annotated name 'x' can't be global
+```
+
+
+---
+
+_@carljm reviewed on 2025-05-08 04:47_
+
+---
+
+_Review comment by @carljm on `crates/ty_python_semantic/resources/mdtest/scopes/global.md`:42 on 2025-05-08 04:47_
+
+Oh cool, didn't realize that was a syntax error -- even if the declaration comes after the `global` statement. Agreed.
+
+---
+
+_@ntBre reviewed on 2025-05-08 13:01_
+
+---
+
+_Review comment by @ntBre on `crates/ty_python_semantic/resources/mdtest/scopes/global.md`:195 on 2025-05-08 13:01_
+
+Oh I see, thanks! This was a good excuse to come up with better headings anyway.
+
+---
+
+_@ntBre reviewed on 2025-05-08 13:03_
+
+---
+
+_Review comment by @ntBre on `crates/ty_python_semantic/resources/mdtest/scopes/global.md`:199 on 2025-05-08 13:03_
+
+Not really, just avoiding two comments on the first one haha I've updated it!
+
+---
+
+_@ntBre reviewed on 2025-05-08 13:10_
+
+---
+
+_Review comment by @ntBre on `crates/ty_python_semantic/src/types/infer.rs`:1380 on 2025-05-08 13:10_
+
+I ran into some "borrowed value does not live long enough" errors when trying to move this into the `if` or `match`. Happy to try again if I'm missing something here, though. I think the `declarations` binding just below this is storing a reference to `global_use_def_map`.
+
+---
+
+_@AlexWaygood reviewed on 2025-05-08 13:16_
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/infer.rs`:1380 on 2025-05-08 13:16_
+
+You might be able to make it a little lazier, e.g.
+
+```diff
+diff --git a/crates/ty_python_semantic/src/types/infer.rs b/crates/ty_python_semantic/src/types/infer.rs
+index 490ade86e6..0c3a9efc5c 100644
+--- a/crates/ty_python_semantic/src/types/infer.rs
++++ b/crates/ty_python_semantic/src/types/infer.rs
+@@ -1382,15 +1382,17 @@ impl<'db> TypeInferenceBuilder<'db> {
+                 .index
+                 .symbol_is_global_in_scope(symbol_id, file_scope_id);
+ 
+-        let global_use_def_map = self.index.use_def_map(FileScopeId::global());
+-        let declarations = if skip_non_global_scopes {
++        let global_use_def_map =
++            skip_non_global_scopes.then(|| self.index.use_def_map(FileScopeId::global()));
++
++        let declarations = if let Some(global_use_def) = &global_use_def_map {
+             let symbol_name = symbol_table.symbol(symbol_id).name();
+             match self
+                 .index
+                 .symbol_table(FileScopeId::global())
+                 .symbol_id_by_name(symbol_name)
+             {
+-                Some(id) => global_use_def_map.public_declarations(id),
++                Some(id) => global_use_def.public_declarations(id),
+                 // This case is a syntax error (load before global declaration) but ignore that here
+                 None => use_def.declarations_at_binding(binding),
+```
+
+---
+
+_@ntBre reviewed on 2025-05-08 13:32_
+
+---
+
+_Review comment by @ntBre on `crates/ty_python_semantic/resources/mdtest/scopes/global.md`:42 on 2025-05-08 13:32_
+
+I added this to the `global` mdtest as a TODO and added the syntax error to https://github.com/astral-sh/ruff/issues/17412!
+
+---
+
+_Comment by @ntBre on 2025-05-08 13:39_
+
+Thank you all for the very helpful reviews (and the help implementing this)! I'll merge this later today in case anyone wants one more look at the recent small changes.
+
+---
+
+_Review comment by @carljm on `crates/ty_python_semantic/src/types/infer.rs`:1380 on 2025-05-08 14:22_
+
+Not a big deal, it's just one hashmap lookup
+
+---
+
+_@carljm approved on 2025-05-08 14:22_
+
+Looks good to me!
+
+---
+
+_Merged by @ntBre on 2025-05-08 14:30_
+
+---
+
+_Closed by @ntBre on 2025-05-08 14:30_
+
+---
+
+_Branch deleted on 2025-05-08 14:30_
+
+---

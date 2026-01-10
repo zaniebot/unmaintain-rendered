@@ -1,0 +1,689 @@
+```yaml
+number: 17892
+title: "[ty] Propagate specializations to ancestor base classes"
+type: pull_request
+state: merged
+author: dcreager
+labels:
+  - ty
+assignees: []
+merged: true
+base: main
+head: dcreager/ancestor-specialization
+created_at: 2025-05-06T15:43:56Z
+updated_at: 2025-05-06T18:25:23Z
+url: https://github.com/astral-sh/ruff/pull/17892
+synced_at: 2026-01-10T18:57:03Z
+```
+
+# [ty] Propagate specializations to ancestor base classes
+
+---
+
+_Pull request opened by @dcreager on 2025-05-06 15:43_
+
+@AlexWaygood discovered that even though we've been propagating specializations to _parent_ base classes correctly, we haven't been passing them on to _grandparent_ base classes: https://github.com/astral-sh/ruff/pull/17832#issuecomment-2854360969
+
+```py
+class Bar[T]:
+    x: T
+
+class Baz[T](Bar[T]): ...
+class Spam[T](Baz[T]): ...
+
+reveal_type(Spam[int]().x) # revealed: `T`, but should be `int`
+```
+
+This PR updates the MRO machinery to apply the current specialization when starting to iterate the MRO of each base class.
+
+---
+
+_Review requested from @carljm by @dcreager on 2025-05-06 15:43_
+
+---
+
+_Review requested from @AlexWaygood by @dcreager on 2025-05-06 15:43_
+
+---
+
+_Review requested from @sharkdp by @dcreager on 2025-05-06 15:43_
+
+---
+
+_Label `ty` added by @dcreager on 2025-05-06 15:43_
+
+---
+
+_Comment by @github-actions[bot] on 2025-05-06 15:47_
+
+<!-- generated-comment mypy_primer -->
+## `mypy_primer` results
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+```diff
+packaging (https://github.com/pypa/packaging)
+- warning[lint:possibly-unbound-attribute] src/packaging/metadata.py:576:13: Attribute `params` on type `_HeaderRegistryT | @Todo(Support for `typing.TypeAlias`)` is possibly unbound
+- warning[lint:possibly-unbound-attribute] src/packaging/metadata.py:576:13: Attribute `params` on type `_HeaderRegistryT | @Todo(Support for `typing.TypeAlias`)` is possibly unbound
+- warning[lint:possibly-unbound-attribute] src/packaging/metadata.py:576:13: Attribute `params` on type `_HeaderRegistryT | @Todo(Support for `typing.TypeAlias`)` is possibly unbound
+- Found 16 diagnostics
++ Found 13 diagnostics
+
+pytest-robotframework (https://github.com/detachhead/pytest-robotframework)
+- error[lint:invalid-argument-type] pytest_robotframework/_internal/pytest/plugin.py:359:13: Argument to this function is incorrect: Expected `Mapping[str, object]`, found `dict[str, object]`
+- Found 265 diagnostics
++ Found 264 diagnostics
+
+bidict (https://github.com/jab/bidict)
++ error[lint:invalid-return-type] bidict/_orderedbidict.py:104:16: Return type does not match returned value: Expected `ItemsView[KT, VT]`, found `_OrderedBidictItemsView[Unknown, Unknown]`
+- Found 16 diagnostics
++ Found 17 diagnostics
+
+paroxython (https://github.com/laowantong/paroxython)
+- error[lint:invalid-assignment] paroxython/derived_labels_db.py:180:9: Object of type `defaultdict[Unknown, Unknown]` is not assignable to `dict[Unknown, Unknown]`
+- error[lint:invalid-assignment] paroxython/filter_programs.py:439:13: Object of type `defaultdict[Unknown, Unknown]` is not assignable to `dict[Unknown, Unknown]`
+- error[lint:invalid-assignment] paroxython/goodies.py:33:5: Object of type `defaultdict[Unknown, Unknown]` is not assignable to `dict[Unknown, Unknown]`
+- error[lint:invalid-assignment] paroxython/recommend_programs.py:259:9: Object of type `defaultdict[Unknown, Unknown]` is not assignable to `dict[Unknown, Unknown]`
+- Found 20 diagnostics
++ Found 16 diagnostics
+
+nionutils (https://github.com/nion-software/nionutils)
+- error[lint:invalid-assignment] nion/utils/Stream.py:335:13: Object of type `ConstantStream[Observable]` is not assignable to `AbstractStream[Observable]`
+- error[lint:invalid-argument-type] nion/utils/test/Model_test.py:43:49: Argument to this function is incorrect: Expected `AbstractStream[() -> Unknown]`, found `ValueStream[() -> Unknown]`
+- Found 35 diagnostics
++ Found 33 diagnostics
+
+pyinstrument (https://github.com/joerick/pyinstrument)
+- error[lint:invalid-argument-type] pyinstrument/stack_sampler.py:29:37: Argument to this function is incorrect: Expected `str`, found `_VT | Unknown`
+- Found 98 diagnostics
++ Found 97 diagnostics
+
+beartype (https://github.com/beartype/beartype)
+- error[lint:invalid-assignment] beartype/_decor/_type/decortype.py:298:1: Object of type `defaultdict[Unknown, Unknown]` is not assignable to `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] beartype/_util/hint/pep/proposal/pep585.py:508:29: Argument to this function is incorrect: Expected `MutableMapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] beartype/_util/kind/map/utilmapset.py:313:39: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `MutableMapping[Unknown, Unknown]`
+- error[lint:invalid-argument-type] beartype/vale/_is/_valeisobj.py:294:17: Argument to this function is incorrect: Expected `MutableMapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- Found 566 diagnostics
++ Found 562 diagnostics
+
+kopf (https://github.com/nolar/kopf)
+- error[lint:no-matching-overload] kopf/_cogs/configs/conventions.py:70:18: No overload of bound method `get` matches arguments
+- error[lint:invalid-argument-type] kopf/_cogs/configs/diffbase.py:67:36: Argument to this function is incorrect: Expected `MutableMapping[Any, Any]`, found `dict[Any, Any]`
+- error[lint:invalid-argument-type] kopf/_cogs/configs/diffbase.py:83:36: Argument to this function is incorrect: Expected `MutableMapping[Any, Any]`, found `dict[Any, Any]`
+- error[lint:invalid-argument-type] kopf/_cogs/configs/diffbase.py:188:22: Argument to this function is incorrect: Expected `MutableMapping[Any, Any]`, found `dict[Any, Any]`
+- error[lint:invalid-argument-type] kopf/_cogs/configs/progress.py:367:22: Argument to this function is incorrect: Expected `MutableMapping[Any, Any]`, found `dict[Any, Any]`
+- error[lint:no-matching-overload] kopf/_cogs/structs/bodies.py:239:14: No overload of bound method `get` matches arguments
+- error[lint:no-matching-overload] kopf/_cogs/structs/bodies.py:240:13: No overload of bound method `get` matches arguments
+- error[lint:no-matching-overload] kopf/_cogs/structs/bodies.py:241:19: No overload of bound method `get` matches arguments
+- error[lint:no-matching-overload] kopf/_cogs/structs/bodies.py:266:14: No overload of bound method `get` matches arguments
+- error[lint:no-matching-overload] kopf/_cogs/structs/bodies.py:267:13: No overload of bound method `get` matches arguments
+- error[lint:no-matching-overload] kopf/_cogs/structs/finalizers.py:14:12: No overload of bound method `get` matches arguments
+- error[lint:no-matching-overload] kopf/_cogs/structs/finalizers.py:21:18: No overload of bound method `get` matches arguments
+- error[lint:no-matching-overload] kopf/_cogs/structs/finalizers.py:32:22: No overload of bound method `get` matches arguments
+- error[lint:no-matching-overload] kopf/_cogs/structs/finalizers.py:33:9: No overload of bound method `setdefault` matches arguments
+- error[lint:no-matching-overload] kopf/_cogs/structs/finalizers.py:44:22: No overload of bound method `get` matches arguments
+- error[lint:no-matching-overload] kopf/_cogs/structs/finalizers.py:45:9: No overload of bound method `setdefault` matches arguments
+- error[lint:invalid-return-type] kopf/_core/actions/execution.py:230:12: Return type does not match returned value: Expected `Mapping[Unknown, Outcome]`, found `MutableMapping[Unknown, Outcome]`
+- error[lint:no-matching-overload] kopf/_core/actions/loggers.py:132:22: No overload of bound method `get` matches arguments
+- error[lint:no-matching-overload] kopf/_core/actions/loggers.py:133:21: No overload of bound method `get` matches arguments
+- error[lint:no-matching-overload] kopf/_core/actions/loggers.py:134:27: No overload of bound method `get` matches arguments
+- error[lint:no-matching-overload] kopf/_core/actions/progression.py:354:13: No overload of bound method `setdefault` matches arguments
+- error[lint:no-matching-overload] kopf/_core/actions/progression.py:356:13: No overload of bound method `setdefault` matches arguments
+- error[lint:invalid-argument-type] kopf/_core/engines/activities.py:144:61: Argument to this function is incorrect: Expected `Mapping[Unknown, Outcome]`, found `MutableMapping[Unknown, Outcome]`
+- error[lint:no-matching-overload] kopf/_core/engines/indexing.py:233:16: No overload of bound method `get` matches arguments
+- error[lint:invalid-assignment] kopf/_core/engines/probing.py:38:5: Object of type `dict[Unknown, Unknown]` is not assignable to `MutableMapping[Unknown, Unknown]`
+- error[lint:no-matching-overload] kopf/_core/intents/registries.py:440:39: No overload of bound method `get` matches arguments
+- error[lint:no-matching-overload] kopf/_core/intents/registries.py:451:39: No overload of bound method `get` matches arguments
++ error[lint:invalid-argument-type] kopf/_core/intents/registries.py:440:31: Argument to this function is incorrect: Expected `Mapping[str, str]`, found `Any | dict[Unknown, Unknown]`
++ error[lint:invalid-argument-type] kopf/_core/intents/registries.py:451:31: Argument to this function is incorrect: Expected `Mapping[str, str]`, found `Any | dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] kopf/_core/reactor/processing.py:338:13: Argument to this function is incorrect: Expected `Mapping[Unknown, Daemon]`, found `dict[Unknown, Daemon]`
+- error[lint:invalid-argument-type] kopf/_core/reactor/processing.py:349:13: Argument to this function is incorrect: Expected `MutableMapping[Unknown, Daemon]`, found `dict[Unknown, Daemon]`
+- error[lint:invalid-argument-type] kopf/_core/reactor/processing.py:356:13: Argument to this function is incorrect: Expected `MutableMapping[Unknown, Daemon]`, found `dict[Unknown, Daemon]`
+- error[lint:invalid-argument-type] kopf/_core/reactor/subhandling.py:80:32: Argument to this function is incorrect: Expected `ResourceHandlerT`, found `ChangingHandler`
+- error[lint:invalid-argument-type] kopf/_core/reactor/subhandling.py:94:32: Argument to this function is incorrect: Expected `ResourceHandlerT`, found `ChangingHandler`
+- error[lint:no-matching-overload] kopf/_kits/hierarchies.py:114:18: No overload of bound method `get` matches arguments
++ error[lint:invalid-assignment] kopf/_kits/hierarchies.py:114:9: Object of type `Any | dict[Unknown, Unknown]` is not assignable to `Mapping[str, None | str] | _UNSET`
+- error[lint:no-matching-overload] kopf/_kits/hierarchies.py:164:16: No overload of bound method `get` matches arguments
+- error[lint:no-matching-overload] kopf/_kits/hierarchies.py:219:21: No overload of bound method `get` matches arguments
++ error[lint:invalid-argument-type] kopf/_kits/hierarchies.py:256:47: Argument to this function is incorrect: Expected `Mapping[str, None | str] | _UNSET`, found `Any | dict[Unknown, Unknown]`
+- error[lint:no-matching-overload] kopf/_kits/hierarchies.py:250:23: No overload of bound method `get` matches arguments
+- error[lint:no-matching-overload] kopf/_kits/hierarchies.py:251:28: No overload of bound method `get` matches arguments
+- error[lint:no-matching-overload] kopf/_kits/hierarchies.py:252:25: No overload of bound method `get` matches arguments
+- error[lint:invalid-argument-type] kopf/on.py:196:40: Argument to this function is incorrect: Expected `ResourceHandlerT`, found `WebhookHandler`
+- error[lint:invalid-argument-type] kopf/on.py:256:40: Argument to this function is incorrect: Expected `ResourceHandlerT`, found `WebhookHandler`
+- error[lint:invalid-argument-type] kopf/on.py:313:40: Argument to this function is incorrect: Expected `ResourceHandlerT`, found `ChangingHandler`
+- error[lint:invalid-argument-type] kopf/on.py:369:40: Argument to this function is incorrect: Expected `ResourceHandlerT`, found `ChangingHandler`
+- error[lint:invalid-argument-type] kopf/on.py:427:40: Argument to this function is incorrect: Expected `ResourceHandlerT`, found `ChangingHandler`
+- error[lint:invalid-argument-type] kopf/on.py:484:40: Argument to this function is incorrect: Expected `ResourceHandlerT`, found `ChangingHandler`
+- error[lint:invalid-argument-type] kopf/on.py:542:40: Argument to this function is incorrect: Expected `ResourceHandlerT`, found `ChangingHandler`
+- error[lint:invalid-argument-type] kopf/on.py:596:40: Argument to this function is incorrect: Expected `ResourceHandlerT`, found `IndexingHandler`
+- error[lint:invalid-argument-type] kopf/on.py:646:40: Argument to this function is incorrect: Expected `ResourceHandlerT`, found `WatchingHandler`
+- error[lint:invalid-argument-type] kopf/on.py:708:40: Argument to this function is incorrect: Expected `ResourceHandlerT`, found `DaemonHandler`
+- error[lint:invalid-argument-type] kopf/on.py:768:40: Argument to this function is incorrect: Expected `ResourceHandlerT`, found `TimerHandler`
+- Found 272 diagnostics
++ Found 227 diagnostics
+
+starlette (https://github.com/encode/starlette)
+- error[lint:invalid-parameter-default] starlette/config.py:18:24: Default value of type `_Environ[str]` is not assignable to annotated parameter type `MutableMapping[str, str]`
+- error[lint:invalid-parameter-default] starlette/config.py:52:9: Default value of type `Environ` is not assignable to annotated parameter type `Mapping[str, str]`
+- error[lint:no-matching-overload] tests/test_datastructures.py:287:12: No overload of bound method `get` matches arguments
+- error[lint:no-matching-overload] tests/test_datastructures.py:371:12: No overload of bound method `get` matches arguments
+- error[lint:no-matching-overload] tests/test_datastructures.py:406:12: No overload of bound method `get` matches arguments
+- error[lint:no-matching-overload] tests/test_datastructures.py:437:12: No overload of bound method `get` matches arguments
+- Found 212 diagnostics
++ Found 206 diagnostics
+
+graphql-core (https://github.com/graphql-python/graphql-core)
+- error[lint:invalid-argument-type] tests/execution/test_resolve.py:49:31: Argument to this function is incorrect: Expected `MutableMapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- Found 553 diagnostics
++ Found 552 diagnostics
+
+porcupine (https://github.com/Akuli/porcupine)
+- error[lint:invalid-assignment] porcupine/plugins/run/terminal.py:75:5: Object of type `_VT | Unknown` is not assignable to `str`
+- Found 112 diagnostics
++ Found 111 diagnostics
+
+strawberry (https://github.com/strawberry-graphql/strawberry)
+- warning[lint:possibly-unbound-attribute] strawberry/exceptions/handler.py:20:12: Attribute `lower` on type `_VT | Unknown` is possibly unbound
+- Found 463 diagnostics
++ Found 462 diagnostics
+
+koda-validate (https://github.com/keithasaurus/koda-validate)
+- error[lint:invalid-parameter-default] koda_validate/none.py:53:9: Default value of type `NoneValidator` is not assignable to annotated parameter type `Validator[None]`
+- error[lint:invalid-return-type] koda_validate/typehints.py:107:16: Return type does not match returned value: Expected `Validator[Any]`, found `AlwaysValid[Any]`
+- Found 105 diagnostics
++ Found 103 diagnostics
+
+pybind11 (https://github.com/pybind/pybind11)
+- error[lint:no-matching-overload] pybind11/setup_helpers.py:155:27: No overload of function `split` matches arguments
+- error[lint:no-matching-overload] pybind11/setup_helpers.py:155:53: No overload of function `split` matches arguments
+- Found 259 diagnostics
++ Found 257 diagnostics
+
+pydantic (https://github.com/pydantic/pydantic)
+- error[lint:invalid-argument-type] pydantic/_internal/_dataclasses.py:141:9: Argument to this function is incorrect: Expected `Mapping[TypeVar, Any] | None`, found `dict[TypeVar, Any] | None`
+- error[lint:invalid-argument-type] pydantic/_internal/_generate_schema.py:1335:56: Argument to this function is incorrect: Expected `Mapping[TypeVar, Any] | None`, found `dict[TypeVar, Any] | None`
+- error[lint:invalid-argument-type] pydantic/_internal/_generate_schema.py:1417:82: Argument to this function is incorrect: Expected `Mapping[TypeVar, Any] | None`, found `dict[TypeVar, Any] | None`
+- error[lint:invalid-argument-type] pydantic/_internal/_generate_schema.py:1487:59: Argument to this function is incorrect: Expected `Mapping[TypeVar, Any] | None`, found `dict[TypeVar, Any] & ~AlwaysFalsy`
+- error[lint:invalid-argument-type] pydantic/_internal/_generate_schema.py:1594:49: Argument to this function is incorrect: Expected `Mapping[TypeVar, Any] | None`, found `dict[TypeVar, Any] & ~AlwaysFalsy`
+- error[lint:invalid-argument-type] pydantic/_internal/_model_construction.py:542:81: Argument to this function is incorrect: Expected `Mapping[TypeVar, Any] | None`, found `dict[TypeVar, Any]`
+- error[lint:invalid-argument-type] pydantic/_internal/_model_construction.py:542:81: Argument to this function is incorrect: Expected `Mapping[TypeVar, Any] | None`, found `dict[TypeVar, Any]`
+- error[lint:invalid-argument-type] pydantic/_internal/_model_construction.py:542:81: Argument to this function is incorrect: Expected `Mapping[TypeVar, Any] | None`, found `dict[TypeVar, Any]`
+- error[lint:invalid-argument-type] pydantic/_internal/_model_construction.py:603:17: Argument to this function is incorrect: Expected `Mapping[TypeVar, Any]`, found `dict[TypeVar, Any]`
+- error[lint:invalid-argument-type] pydantic/_internal/_model_construction.py:620:9: Argument to this function is incorrect: Expected `Mapping[TypeVar, Any] | None`, found `dict[TypeVar, Any]`
+- error[lint:invalid-assignment] pydantic/deprecated/decorator.py:80:9: Object of type `MappingProxyType[str, Parameter]` is not assignable to `Mapping[str, Parameter]`
+- error[lint:invalid-assignment] pydantic/json_schema.py:2283:9: Object of type `Counter[Unknown]` is not assignable to `dict[Unknown, int]`
+- error[lint:invalid-argument-type] pydantic/main.py:879:59: Argument to this function is incorrect: Expected `Mapping[TypeVar, Any] | None`, found `dict[TypeVar, Any]`
+- error[lint:invalid-assignment] pydantic/v1/decorator.py:64:9: Object of type `MappingProxyType[str, Parameter]` is not assignable to `Mapping[str, Parameter]`
+- error[lint:invalid-return-type] pydantic/v1/fields.py:1045:20: Return type does not match returned value: Expected `T | dict[Unknown, Unknown]`, found `defaultdict[Unknown, Unknown]`
+- Found 814 diagnostics
++ Found 799 diagnostics
+
+pip (https://github.com/pypa/pip)
+- warning[lint:possibly-unbound-attribute] src/pip/_internal/index/collector.py:73:22: Attribute `lower` on type `Unknown | _VT` is possibly unbound
+- error[lint:invalid-argument-type] src/pip/_internal/index/collector.py:83:26: Argument to this function is incorrect: Expected `str`, found `Unknown | _VT`
+- error[lint:invalid-return-type] src/pip/_internal/network/download.py:40:12: Return type does not match returned value: Expected `str | None`, found `Unknown | _VT`
+- error[lint:invalid-argument-type] src/pip/_internal/network/download.py:127:41: Argument to this function is incorrect: Expected `str`, found `Unknown | _VT`
+- warning[lint:possibly-unbound-attribute] src/pip/_internal/operations/install/wheel.py:138:18: Attribute `split` on type `_VT | Unknown` is possibly unbound
+- warning[lint:possibly-unbound-attribute] src/pip/_internal/operations/install/wheel.py:179:30: Attribute `split` on type `_VT | Unknown` is possibly unbound
+- warning[lint:possibly-unbound-attribute] src/pip/_internal/utils/misc.py:203:19: Attribute `split` on type `_VT | Unknown` is possibly unbound
+- error[lint:unsupported-operator] src/pip/_vendor/cachecontrol/controller.py:404:12: Operator `in` is not supported for types `str` and `_VT`, in comparing `Literal["*"]` with `_VT | Unknown`
+- warning[lint:possibly-unbound-attribute] src/pip/_vendor/distlib/compat.py:242:23: Attribute `split` on type `_VT | Unknown` is possibly unbound
+- warning[lint:possibly-unbound-attribute] src/pip/_vendor/packaging/metadata.py:576:13: Attribute `params` on type `_HeaderRegistryT | @Todo(Support for `typing.TypeAlias`)` is possibly unbound
+- warning[lint:possibly-unbound-attribute] src/pip/_vendor/packaging/metadata.py:576:13: Attribute `params` on type `_HeaderRegistryT | @Todo(Support for `typing.TypeAlias`)` is possibly unbound
+- warning[lint:possibly-unbound-attribute] src/pip/_vendor/packaging/metadata.py:576:13: Attribute `params` on type `_HeaderRegistryT | @Todo(Support for `typing.TypeAlias`)` is possibly unbound
+- warning[lint:possibly-unbound-attribute] src/pip/_vendor/platformdirs/unix.py:46:16: Attribute `strip` on type `_VT | Unknown` is possibly unbound
+- warning[lint:possibly-unbound-attribute] src/pip/_vendor/platformdirs/unix.py:53:16: Attribute `strip` on type `_VT | Unknown` is possibly unbound
+- warning[lint:possibly-unbound-attribute] src/pip/_vendor/platformdirs/unix.py:55:63: Attribute `split` on type `_VT | Unknown | str` is possibly unbound
+- warning[lint:possibly-unbound-attribute] src/pip/_vendor/platformdirs/unix.py:77:16: Attribute `strip` on type `_VT | Unknown` is possibly unbound
+- warning[lint:possibly-unbound-attribute] src/pip/_vendor/platformdirs/unix.py:84:16: Attribute `strip` on type `_VT | Unknown` is possibly unbound
+- warning[lint:possibly-unbound-attribute] src/pip/_vendor/platformdirs/unix.py:86:63: Attribute `split` on type `_VT | Unknown | Literal["/etc/xdg"]` is possibly unbound
+- warning[lint:possibly-unbound-attribute] src/pip/_vendor/platformdirs/unix.py:108:16: Attribute `strip` on type `_VT | Unknown` is possibly unbound
+- warning[lint:possibly-unbound-attribute] src/pip/_vendor/platformdirs/unix.py:124:16: Attribute `strip` on type `_VT | Unknown` is possibly unbound
+- warning[lint:possibly-unbound-attribute] src/pip/_vendor/platformdirs/unix.py:178:16: Attribute `strip` on type `_VT | Unknown` is possibly unbound
+- warning[lint:possibly-unbound-attribute] src/pip/_vendor/platformdirs/unix.py:202:16: Attribute `strip` on type `_VT | Unknown` is possibly unbound
+- warning[lint:possibly-unbound-attribute] src/pip/_vendor/platformdirs/unix.py:238:21: Attribute `strip` on type `_VT | Unknown` is possibly unbound
+- error[lint:invalid-argument-type] src/pip/_vendor/resolvelib/resolvers/resolution.py:60:9: Argument to this function is incorrect: Expected `Mapping[KT, Criterion[RT, CT]]`, found `dict[KT, Criterion[RT, CT]]`
+- error[lint:invalid-assignment] src/pip/_vendor/rich/columns.py:75:9: Object of type `defaultdict[Unknown, Unknown]` is not assignable to `dict[Unknown, Unknown]`
+- error[lint:invalid-assignment] src/pip/_vendor/rich/console.py:629:5: Object of type `_Environ[str]` is not assignable to `Mapping[str, str]`
+- error[lint:invalid-argument-type] src/pip/_vendor/rich/scope.py:83:28: Argument to this function is incorrect: Expected `Mapping[str, Any]`, found `dict[str, Any]`
+- warning[lint:possibly-unbound-attribute] src/pip/_vendor/urllib3/contrib/_appengine_environ.py:23:50: Attribute `startswith` on type `_VT | Unknown` is possibly unbound
+- warning[lint:possibly-unbound-attribute] src/pip/_vendor/urllib3/contrib/_appengine_environ.py:29:50: Attribute `startswith` on type `_VT | Unknown` is possibly unbound
+- Found 1059 diagnostics
++ Found 1030 diagnostics
+
+sockeye (https://github.com/awslabs/sockeye)
+- error[lint:invalid-argument-type] sockeye/evaluate.py:175:40: Argument to this function is incorrect: Expected `dict[Unknown, Unknown]`, found `defaultdict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] sockeye/evaluate.py:182:48: Argument to this function is incorrect: Expected `dict[Unknown, Unknown]`, found `defaultdict[Unknown, Unknown]`
+- Found 385 diagnostics
++ Found 383 diagnostics
+
+isort (https://github.com/pycqa/isort)
+- error[lint:invalid-argument-type] isort/parse.py:595:9: Argument to this function is incorrect: Expected `dict[Unknown, Unknown]`, found `OrderedDict[Unknown, Unknown]`
+- Found 52 diagnostics
++ Found 51 diagnostics
+
+PyWinCtl (https://github.com/Kalmat/PyWinCtl)
+- warning[lint:possibly-unbound-attribute] src/pywinctl/_pywinctl_linux.py:74:8: Attribute `lower` on type `_VT | Unknown` is possibly unbound
+- warning[lint:possibly-unbound-attribute] src/pywinctl/_pywinctl_linux.py:115:8: Attribute `lower` on type `_VT | Unknown` is possibly unbound
+- warning[lint:possibly-unbound-attribute] src/pywinctl/_pywinctl_linux.py:393:29: Attribute `lower` on type `_VT | Unknown` is possibly unbound
+- warning[lint:possibly-unbound-attribute] src/pywinctl/_pywinctl_linux.py:394:33: Attribute `lower` on type `_VT | Unknown` is possibly unbound
+- Found 42 diagnostics
++ Found 38 diagnostics
+
+nox (https://github.com/wntrblm/nox)
+- error[lint:invalid-argument-type] nox/tasks.py:175:21: Argument to this function is incorrect: Expected `Mapping[str, Func]`, found `dict[str, Func]`
+- error[lint:invalid-argument-type] nox/virtualenv.py:106:26: Argument to this function is incorrect: Expected `str`, found `(_VT & ~AlwaysFalsy) | (Unknown & ~AlwaysFalsy) | Literal["uv"]`
+- error[lint:invalid-return-type] nox/virtualenv.py:107:12: Return type does not match returned value: Expected `tuple[bool, str, Version]`, found `tuple[bool, (_VT & ~AlwaysFalsy) | (Unknown & ~AlwaysFalsy) | Literal["uv"], Version]`
+- Found 47 diagnostics
++ Found 44 diagnostics
+
+rich (https://github.com/Textualize/rich)
+- error[lint:invalid-assignment] rich/columns.py:75:9: Object of type `defaultdict[Unknown, Unknown]` is not assignable to `dict[Unknown, Unknown]`
+- error[lint:invalid-assignment] rich/console.py:629:5: Object of type `_Environ[str]` is not assignable to `Mapping[str, str]`
+- error[lint:invalid-argument-type] rich/scope.py:83:28: Argument to this function is incorrect: Expected `Mapping[str, Any]`, found `dict[str, Any]`
+- Found 479 diagnostics
++ Found 476 diagnostics
+
+mkosi (https://github.com/systemd/mkosi)
+- error[lint:invalid-argument-type] mkosi/__init__.py:1686:9: Argument to this function is incorrect: Expected `Mapping[str, str]`, found `Unknown | dict[str, str]`
+- error[lint:invalid-argument-type] mkosi/__init__.py:2557:13: Argument to this function is incorrect: Expected `Mapping[str, str]`, found `Unknown | dict[str, str]`
+- error[lint:invalid-argument-type] mkosi/__init__.py:4273:17: Argument to this function is incorrect: Expected `Mapping[str, str]`, found `dict[str, str]`
+- error[lint:invalid-argument-type] mkosi/bootloader.py:558:13: Argument to this function is incorrect: Expected `Mapping[str, str]`, found `Unknown | dict[str, str]`
+- error[lint:invalid-argument-type] mkosi/config.py:1203:72: Argument to this function is incorrect: Expected `Mapping[str, str]`, found `_Environ[str]`
+- error[lint:invalid-argument-type] mkosi/config.py:1208:68: Argument to this function is incorrect: Expected `Mapping[str, str]`, found `_Environ[str]`
+- error[lint:invalid-argument-type] mkosi/config.py:1515:63: Argument to this function is incorrect: Expected `Mapping[str, str]`, found `_Environ[str]`
+- Found 334 diagnostics
++ Found 327 diagnostics
+
+ignite (https://github.com/pytorch/ignite)
+- error[lint:invalid-argument-type] examples/cifar10/main.py:104:9: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] examples/cifar10/main.py:327:9: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown] | None`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] examples/cifar10_qat/main.py:100:9: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] examples/cifar10_qat/main.py:311:9: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown] | None`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] examples/gan/dcgan.py:389:40: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] examples/mnist/mnist_save_resume_engine.py:236:9: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] examples/mnist/mnist_with_clearml_logger.py:147:9: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] examples/mnist/mnist_with_neptune_logger.py:145:9: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] examples/notebooks/EfficientNet_Cifar100_finetuning.ipynb:577:33: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] examples/references/classification/imagenet/main.py:210:9: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown] | None`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] examples/references/segmentation/pascal_voc2012/main.py:248:9: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown] | None`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] examples/transformers/main.py:108:9: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] examples/transformers/main.py:341:9: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown] | None`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] ignite/contrib/engines/common.py:622:9: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `dict[Unknown, Unknown] | Unknown`
+- error[lint:invalid-assignment] ignite/distributed/utils.py:319:9: Object of type `dict[Unknown, Unknown]` is not assignable to `Mapping[Unknown, Unknown] | None`
+- error[lint:invalid-assignment] ignite/handlers/base_logger.py:147:9: Object of type `OrderedDict[Unknown, Unknown]` is not assignable to `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] ignite/handlers/base_logger.py:174:50: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `OrderedDict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] ignite/handlers/base_logger.py:196:44: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] ignite/handlers/base_logger.py:199:44: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-return-type] ignite/handlers/param_scheduler.py:66:16: Return type does not match returned value: Expected `dict[Unknown, Unknown]`, found `OrderedDict[Unknown, Unknown]`
+- error[lint:invalid-assignment] ignite/handlers/param_scheduler.py:1470:9: Object of type `OrderedDict[Unknown, Unknown]` is not assignable to `dict[Unknown, Unknown]`
+- error[lint:invalid-return-type] ignite/handlers/time_profilers.py:240:16: Return type does not match returned value: Expected `dict[Unknown, Unknown]`, found `OrderedDict[Unknown, Unknown]`
+- error[lint:invalid-return-type] ignite/handlers/time_profilers.py:263:16: Return type does not match returned value: Expected `dict[Unknown, Unknown]`, found `OrderedDict[Unknown, Unknown]`
+- error[lint:invalid-return-type] ignite/metrics/nlp/rouge.py:172:16: Return type does not match returned value: Expected `Mapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-return-type] ignite/metrics/nlp/rouge.py:422:16: Return type does not match returned value: Expected `Mapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/ignite/base/test_mixins.py:14:23: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/ignite/contrib/engines/test_common.py:94:9: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown] | None`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/ignite/contrib/engines/test_common.py:141:49: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown] | None`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/ignite/contrib/engines/test_common.py:144:49: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown] | None`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/ignite/engine/test_deterministic.py:201:36: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/ignite/engine/test_deterministic.py:233:36: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/ignite/engine/test_deterministic.py:315:40: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/ignite/engine/test_deterministic.py:419:40: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/ignite/engine/test_deterministic.py:479:36: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/ignite/engine/test_deterministic.py:532:36: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/ignite/engine/test_deterministic.py:616:29: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/ignite/engine/test_engine_state_dict.py:68:32: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/ignite/engine/test_engine_state_dict.py:71:32: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/ignite/engine/test_engine_state_dict.py:74:32: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/ignite/engine/test_engine_state_dict.py:79:32: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/ignite/engine/test_engine_state_dict.py:83:32: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/ignite/engine/test_engine_state_dict.py:126:28: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/ignite/engine/test_engine_state_dict.py:140:28: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/ignite/engine/test_engine_state_dict.py:147:32: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/ignite/engine/test_engine_state_dict.py:152:32: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/ignite/engine/test_engine_state_dict.py:159:28: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `OrderedDict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/ignite/engine/test_engine_state_dict.py:251:36: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/ignite/handlers/test_checkpoint.py:55:20: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/ignite/handlers/test_checkpoint.py:63:20: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/ignite/handlers/test_checkpoint.py:66:20: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/ignite/handlers/test_checkpoint.py:69:20: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/ignite/handlers/test_checkpoint.py:87:29: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/ignite/handlers/test_checkpoint.py:89:35: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/ignite/handlers/test_checkpoint.py:95:31: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/ignite/handlers/test_checkpoint.py:102:31: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/ignite/handlers/test_checkpoint.py:177:35: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `OrderedDict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/ignite/handlers/test_checkpoint.py:202:31: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/ignite/handlers/test_checkpoint.py:307:9: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/ignite/handlers/test_checkpoint.py:429:9: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/ignite/handlers/test_checkpoint.py:465:9: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/ignite/handlers/test_checkpoint.py:496:31: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/ignite/handlers/test_checkpoint.py:513:9: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/ignite/handlers/test_checkpoint.py:538:31: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/ignite/handlers/test_checkpoint.py:578:15: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/ignite/handlers/test_checkpoint.py:587:22: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/ignite/handlers/test_checkpoint.py:602:15: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/ignite/handlers/test_checkpoint.py:613:22: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/ignite/handlers/test_checkpoint.py:623:34: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/ignite/handlers/test_checkpoint.py:674:11: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/ignite/handlers/test_checkpoint.py:687:15: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/ignite/handlers/test_checkpoint.py:697:15: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/ignite/handlers/test_checkpoint.py:701:19: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/ignite/handlers/test_checkpoint.py:719:19: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/ignite/handlers/test_checkpoint.py:742:19: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/ignite/handlers/test_checkpoint.py:767:19: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/ignite/handlers/test_checkpoint.py:789:19: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/ignite/handlers/test_checkpoint.py:852:19: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/ignite/handlers/test_checkpoint.py:855:19: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/ignite/handlers/test_checkpoint.py:987:13: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/ignite/handlers/test_checkpoint.py:1183:22: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/ignite/handlers/test_checkpoint.py:1224:31: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/ignite/handlers/test_checkpoint.py:1265:31: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/ignite/handlers/test_checkpoint.py:1338:15: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/ignite/handlers/test_checkpoint.py:1612:31: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/ignite/handlers/test_checkpoint.py:1644:31: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/ignite/handlers/test_checkpoint.py:1647:34: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/ignite/handlers/test_checkpoint.py:1689:35: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `Unknown | dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/ignite/handlers/test_checkpoint.py:1711:31: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/ignite/handlers/test_checkpoint.py:1781:9: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/ignite/handlers/test_checkpoint.py:1810:31: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/ignite/handlers/test_checkpoint.py:1846:20: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/ignite/handlers/test_clearml_logger.py:43:41: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/ignite/handlers/test_clearml_logger.py:812:29: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/ignite/handlers/test_clearml_logger.py:835:33: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/ignite/handlers/test_clearml_logger.py:977:33: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/ignite/handlers/test_param_scheduler.py:52:38: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/ignite/handlers/test_param_scheduler.py:98:35: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/ignite/handlers/test_param_scheduler.py:151:35: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/ignite/handlers/test_param_scheduler.py:194:35: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/ignite/handlers/test_param_scheduler.py:247:35: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/ignite/handlers/test_param_scheduler.py:325:35: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/ignite/handlers/test_param_scheduler.py:405:38: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/ignite/handlers/test_param_scheduler.py:411:42: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/ignite/handlers/test_param_scheduler.py:414:42: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/ignite/handlers/test_param_scheduler.py:487:42: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/ignite/handlers/test_param_scheduler.py:558:42: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/ignite/handlers/test_param_scheduler.py:631:42: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/ignite/handlers/test_param_scheduler.py:736:36: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/ignite/handlers/test_param_scheduler.py:738:36: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/ignite/handlers/test_param_scheduler.py:853:35: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/ignite/handlers/test_param_scheduler.py:1053:35: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/ignite/handlers/test_param_scheduler.py:1119:35: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/ignite/handlers/test_param_scheduler.py:1183:35: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/ignite/handlers/test_param_scheduler.py:1186:35: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/ignite/handlers/test_param_scheduler.py:1189:35: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/ignite/handlers/test_param_scheduler.py:1194:35: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/ignite/handlers/test_param_scheduler.py:1242:35: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/ignite/handlers/test_param_scheduler.py:1290:38: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `@Todo(Type::Intersection.call()) | dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/ignite/handlers/test_state_param_scheduler.py:92:56: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/ignite/handlers/test_state_param_scheduler.py:107:54: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/ignite/handlers/test_state_param_scheduler.py:125:54: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/ignite/handlers/test_state_param_scheduler.py:140:54: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/ignite/handlers/test_state_param_scheduler.py:174:51: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/ignite/handlers/test_state_param_scheduler.py:194:52: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/ignite/handlers/test_state_param_scheduler.py:220:58: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/ignite/handlers/test_state_param_scheduler.py:248:54: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/ignite/metrics/test_accuracy.py:349:33: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `OrderedDict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/ignite/metrics/test_classification_report.py:69:43: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `OrderedDict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/ignite/metrics/test_metric.py:1292:32: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/ignite/metrics/test_metric.py:1295:32: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/ignite/metrics/test_metric.py:1385:28: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `OrderedDict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/ignite/metrics/test_metrics_lambda.py:275:24: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `OrderedDict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/ignite/metrics/test_metrics_lambda.py:297:27: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `OrderedDict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/ignite/metrics/test_running_average.py:121:32: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `OrderedDict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] tests/ignite/metrics/test_running_average.py:130:32: Argument to this function is incorrect: Expected `Mapping[Unknown, Unknown]`, found `OrderedDict[Unknown, Unknown]`
+- Found 2419 diagnostics
++ Found 2284 diagnostics
+
+SinbadCogs (https://github.com/mikeshardmind/SinbadCogs)
+- error[lint:invalid-assignment] modonlymode/core.py:59:9: Object of type `defaultdict[Unknown, Unknown]` is not assignable to `dict[Unknown, Unknown]`
+- Found 146 diagnostics
++ Found 145 diagnostics
+
+websockets (https://github.com/aaugustin/websockets)
+- error[lint:invalid-parameter-default] src/websockets/asyncio/client.py:90:9: Default value of type `Unknown | _VT` is not assignable to annotated parameter type `str | None`
+- error[lint:invalid-parameter-default] src/websockets/asyncio/client.py:310:9: Default value of type `Unknown | _VT` is not assignable to annotated parameter type `str | None`
+- error[lint:invalid-parameter-default] src/websockets/asyncio/server.py:130:9: Default value of type `Unknown | _VT` is not assignable to annotated parameter type `str | None`
+- error[lint:invalid-parameter-default] src/websockets/asyncio/server.py:280:9: Default value of type `Unknown | _VT` is not assignable to annotated parameter type `str | None`
+- error[lint:invalid-parameter-default] src/websockets/asyncio/server.py:717:9: Default value of type `Unknown | _VT` is not assignable to annotated parameter type `str | None`
+- error[lint:invalid-parameter-default] src/websockets/legacy/client.py:85:9: Default value of type `Unknown | _VT` is not assignable to annotated parameter type `str | None`
+- error[lint:invalid-parameter-default] src/websockets/legacy/client.py:430:9: Default value of type `Unknown | _VT` is not assignable to annotated parameter type `str | None`
+- error[lint:invalid-parameter-default] src/websockets/legacy/server.py:106:9: Default value of type `Unknown | _VT` is not assignable to annotated parameter type `str | None`
+- error[lint:invalid-parameter-default] src/websockets/legacy/server.py:993:9: Default value of type `Unknown | _VT` is not assignable to annotated parameter type `str | None`
+- error[lint:invalid-parameter-default] src/websockets/sync/client.py:78:9: Default value of type `Unknown | _VT` is not assignable to annotated parameter type `str | None`
+- error[lint:invalid-parameter-default] src/websockets/sync/client.py:143:5: Default value of type `Unknown | _VT` is not assignable to annotated parameter type `str | None`
+- error[lint:invalid-parameter-default] src/websockets/sync/server.py:125:9: Default value of type `Unknown | _VT` is not assignable to annotated parameter type `str | None`
+- error[lint:invalid-parameter-default] src/websockets/sync/server.py:361:5: Default value of type `Unknown | _VT` is not assignable to annotated parameter type `str | None`
+- Found 125 diagnostics
++ Found 112 diagnostics
+
+cki-lib (https://gitlab.com/cki-project/cki-lib)
+- error[lint:invalid-argument-type] cki_lib/gitlab.py:154:30: Argument to this function is incorrect: Expected `str | None`, found `_VT | Unknown`
+- warning[lint:possibly-unbound-attribute] cki_lib/logger.py:129:29: Attribute `upper` on type `_VT | Unknown` is possibly unbound
+- error[lint:invalid-argument-type] cki_lib/misc.py:184:22: Argument to this function is incorrect: Expected `str`, found `_VT | Unknown`
+- Found 189 diagnostics
++ Found 186 diagnostics
+
+poetry (https://github.com/python-poetry/poetry)
+- error[lint:invalid-argument-type] tests/config/test_config.py:33:37: Argument to this function is incorrect: Expected `Mapping[str, Any]`, found `dict[str, Any]`
+- error[lint:invalid-argument-type] tests/utils/test_extras.py:73:43: Argument to this function is incorrect: Expected `Mapping[Unknown, @Todo(specialized non-generic class)]`, found `dict[Unknown, @Todo(specialized non-generic class)]`
+- Found 1140 diagnostics
++ Found 1138 diagnostics
+
+asynq (https://github.com/quora/asynq)
+- error[lint:no-matching-overload] asynq/tests/test_performance.py:28:12: No overload of function `asynq` matches arguments
+- Found 236 diagnostics
++ Found 235 diagnostics
+
+urllib3 (https://github.com/urllib3/urllib3)
+- error[lint:invalid-assignment] src/urllib3/_request_methods.py:124:17: Object of type `HTTPHeaderDict` is not assignable to `Mapping[str, str] | None`
+- warning[lint:call-possibly-unbound-method] src/urllib3/_request_methods.py:125:17: Method `__getitem__` of type `Mapping[str, str] | None` is possibly unbound
+- error[lint:invalid-argument-type] src/urllib3/connection.py:532:13: Argument to this function is incorrect: Expected `Mapping[str, str] | Mapping[bytes, bytes] | None`, found `HTTPHeaderDict`
+- error[lint:invalid-argument-type] test/with_dummyserver/test_poolmanager.py:412:26: Argument to this function is incorrect: Expected `Mapping[str, str] | None`, found `HTTPHeaderDict`
+- error[lint:invalid-argument-type] test/with_dummyserver/test_poolmanager.py:446:26: Argument to this function is incorrect: Expected `Mapping[str, str] | None`, found `HTTPHeaderDict`
+- error[lint:invalid-argument-type] test/with_dummyserver/test_poolmanager.py:467:26: Argument to this function is incorrect: Expected `Mapping[str, str] | None`, found `HTTPHeaderDict`
+- error[lint:invalid-argument-type] test/with_dummyserver/test_poolmanager.py:646:62: Argument to this function is incorrect: Expected `Mapping[str, str] | None`, found `HTTPHeaderDict`
+- error[lint:invalid-argument-type] test/with_dummyserver/test_poolmanager.py:661:26: Argument to this function is incorrect: Expected `Mapping[str, str] | None`, found `HTTPHeaderDict`
+- Found 520 diagnostics
++ Found 512 diagnostics
+
+typeshed-stats (https://github.com/AlexWaygood/typeshed-stats)
+- error[lint:invalid-return-type] src/typeshed_stats/gather.py:365:16: Return type does not match returned value: Expected `Mapping[str, Any]`, found `dict[str, Any]`
+- Found 36 diagnostics
++ Found 35 diagnostics
+
+tornado (https://github.com/tornadoweb/tornado)
+- warning[lint:possibly-unbound-attribute] tornado/http1connection.py:715:12: Attribute `lower` on type `_VT | Unknown` is possibly unbound
+- error[lint:no-matching-overload] tornado/httpclient.py:295:27: No overload of bound method `__init__` matches arguments
+- warning[lint:possibly-unbound-attribute] tornado/httpserver.py:349:54: Attribute `split` on type `_VT | Unknown` is possibly unbound
+- error[lint:invalid-argument-type] tornado/httpserver.py:353:32: Argument to this function is incorrect: Expected `str`, found `_VT | Unknown`
+- error[lint:invalid-argument-type] tornado/httputil.py:957:50: Argument to this function is incorrect: Expected `str`, found `_VT | Unknown`
+- error[lint:invalid-argument-type] tornado/httputil.py:957:50: Argument to this function is incorrect: Expected `str`, found `_VT | Unknown`
+- error[lint:invalid-argument-type] tornado/httputil.py:957:50: Argument to this function is incorrect: Expected `str`, found `_VT | Unknown`
+- error[lint:unsupported-operator] tornado/web.py:3279:26: Operator `in` is not supported for types `str` and `_VT`, in comparing `Literal["gzip"]` with `Unknown | _VT`
+- error[lint:no-matching-overload] tornado/web.py:3297:21: No overload of function `to_unicode` matches arguments
+- error[lint:no-matching-overload] tornado/websocket.py:1689:27: No overload of bound method `__init__` matches arguments
+- Found 552 diagnostics
++ Found 542 diagnostics
+
+mkdocs (https://github.com/mkdocs/mkdocs)
+- error[lint:invalid-argument-type] mkdocs/config/defaults.py:47:22: Argument to this function is incorrect: Expected `BaseConfigOption[Unknown]`, found `Nav`
+- error[lint:invalid-assignment] mkdocs/tests/build_tests.py:34:20: Object of type `dict[str, Any]` is not assignable to attribute `meta` of type `MutableMapping[str, Any]`
+- error[lint:invalid-argument-type] mkdocs/tests/config/config_options_legacy_tests.py:1294:17: Argument to this function is incorrect: Expected `BaseConfigOption[Unknown]`, found `SubConfig[Unknown]`
+- error[lint:invalid-argument-type] mkdocs/tests/config/config_options_legacy_tests.py:1318:17: Argument to this function is incorrect: Expected `BaseConfigOption[Unknown]`, found `SubConfig[Unknown]`
+- error[lint:invalid-argument-type] mkdocs/tests/config/config_options_tests.py:1451:39: Argument to this function is incorrect: Expected `BaseConfigOption[Unknown]`, found `SubConfig[Unknown]`
+- error[lint:invalid-argument-type] mkdocs/tests/config/config_options_tests.py:1472:44: Argument to this function is incorrect: Expected `BaseConfigOption[Unknown]`, found `SubConfig[Unknown]`
+- error[lint:invalid-argument-type] mkdocs/tests/config/config_options_tests.py:1497:33: Argument to this function is incorrect: Expected `BaseConfigOption[Unknown]`, found `SubConfig[Unknown]`
+- error[lint:invalid-argument-type] mkdocs/tests/config/config_options_tests.py:1539:33: Argument to this function is incorrect: Expected `BaseConfigOption[Unknown]`, found `SubConfig[Unknown]`
+- error[lint:invalid-argument-type] mkdocs/tests/config/config_options_tests.py:1561:33: Argument to this function is incorrect: Expected `BaseConfigOption[Unknown]`, found `SubConfig[Unknown]`
+- Found 344 diagnostics
++ Found 335 diagnostics
+
+hydra-zen (https://github.com/mit-ll-responsible-ai/hydra-zen)
+- error[lint:invalid-argument-type] src/hydra_zen/_launch.py:415:52: Argument to this function is incorrect: Expected `Mapping[str, @Todo(Inference of subscript on special form)]`, found `dict[str, @Todo(Inference of subscript on special form)]`
+- Found 654 diagnostics
++ Found 653 diagnostics
+
+schema_salad (https://github.com/common-workflow-language/schema_salad)
+- error[lint:invalid-argument-type] schema_salad/schema.py:359:17: Argument to this function is incorrect: Expected `Mapping[str, str] | None`, found `dict[str, str]`
+- error[lint:invalid-argument-type] schema_salad/schema.py:382:25: Argument to this function is incorrect: Expected `Mapping[str, str] | None`, found `dict[str, str]`
+- Found 423 diagnostics
++ Found 421 diagnostics
+
+paasta (https://github.com/yelp/paasta)
+- error[lint:invalid-assignment] paasta_tools/api/settings.py:25:1: Object of type `_VT | Unknown` is not assignable to `str`
+- error[lint:invalid-assignment] paasta_tools/async_utils.py:60:9: Object of type `dict[Unknown, Unknown] | defaultdict[Unknown, Unknown]` is not assignable to `dict[Unknown, Unknown]`
+- error[lint:invalid-assignment] paasta_tools/autoscaling/utils.py:23:1: Object of type `defaultdict[Unknown, Unknown]` is not assignable to `dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] paasta_tools/cli/cmds/cook_image.py:125:13: Argument to this function is incorrect: Expected `Mapping[str, str]`, found `dict[str, str]`
+- error[lint:invalid-argument-type] paasta_tools/cli/cmds/cook_image.py:125:13: Argument to this function is incorrect: Expected `Mapping[str, str]`, found `dict[str, str]`
+- error[lint:invalid-argument-type] paasta_tools/cli/cmds/cook_image.py:125:13: Argument to this function is incorrect: Expected `Mapping[str, str]`, found `dict[str, str]`
+- error[lint:invalid-argument-type] paasta_tools/cli/cmds/itest.py:98:9: Argument to this function is incorrect: Expected `Mapping[str, str]`, found `dict[str, str]`
+- error[lint:invalid-argument-type] paasta_tools/cli/cmds/itest.py:98:9: Argument to this function is incorrect: Expected `Mapping[str, str]`, found `dict[str, str]`
+- error[lint:invalid-argument-type] paasta_tools/cli/cmds/itest.py:98:9: Argument to this function is incorrect: Expected `Mapping[str, str]`, found `dict[str, str]`
+- error[lint:invalid-assignment] paasta_tools/contrib/rightsizer_soaconfigs_update.py:266:5: Object of type `defaultdict[Unknown, Unknown]` is not assignable to `dict[Unknown, Unknown]`
+- error[lint:invalid-return-type] paasta_tools/envoy_tools.py:276:12: Return type does not match returned value: Expected `dict[Unknown, Unknown]`, found `defaultdict[Unknown, Unknown]`
+- error[lint:invalid-return-type] paasta_tools/instance/kubernetes.py:374:12: Return type does not match returned value: Expected `Mapping[str, Any]`, found `MutableMapping[str, Any]`
+- error[lint:invalid-return-type] paasta_tools/instance/kubernetes.py:467:12: Return type does not match returned value: Expected `Mapping[str, Any]`, found `MutableMapping[str, Any]`
+- error[lint:invalid-return-type] paasta_tools/instance/kubernetes.py:781:12: Return type does not match returned value: Expected `dict[Unknown, Unknown]`, found `defaultdict[Unknown, Unknown]`
+- error[lint:invalid-assignment] paasta_tools/kubernetes/bin/kubernetes_remove_evicted_pods.py:137:5: Object of type `defaultdict[Unknown, Unknown]` is not assignable to `dict[Unknown, Unknown]`
+- error[lint:invalid-return-type] paasta_tools/kubernetes/bin/kubernetes_remove_evicted_pods.py:148:12: Return type does not match returned value: Expected `Mapping[str, @Todo(specialized non-generic class)]`, found `dict[Unknown, Unknown]`
++ error[lint:invalid-return-type] paasta_tools/kubernetes/bin/kubernetes_remove_evicted_pods.py:148:12: Return type does not match returned value: Expected `Mapping[str, @Todo(specialized non-generic class)]`, found `defaultdict[Unknown, Unknown]`
+- error[lint:invalid-assignment] paasta_tools/kubernetes/bin/paasta_secrets_sync.py:230:5: Object of type `defaultdict[Unknown, Unknown]` is not assignable to `dict[Unknown, Unknown]`
+- error[lint:invalid-assignment] paasta_tools/kubernetes/bin/paasta_secrets_sync.py:329:9: Object of type `defaultdict[Unknown, Unknown]` is not assignable to `dict[Unknown, Unknown]`
+- error[lint:invalid-assignment] paasta_tools/kubernetes_tools.py:583:13: Object of type `_VT | Unknown` is not assignable to `str | None`
+- error[lint:invalid...*[Comment body truncated]*
+
+---
+
+_Comment by @AlexWaygood on 2025-05-06 15:59_
+
+> ```diff
+> - error[lint:invalid-assignment] paroxython/derived_labels_db.py:180:9: Object of type `defaultdict[Unknown, Unknown]` is not assignable to `dict[Unknown, Unknown]`
+> ```
+
+Really interesting -- there are lots of diagnostics like this going away in the primer report; is it possible that this PR is also fixing the issue I identified in https://github.com/astral-sh/ruff/pull/17832#issuecomment-2851958704 ?
+
+---
+
+_@AlexWaygood reviewed on 2025-05-06 16:01_
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/annotations/stdlib_typing_aliases.md`:122 on 2025-05-06 16:01_
+
+The fact that `dict` now appears twice in this MRO (with two different specialisations!) seems (very) incorrect, but it's very possible that this is one of the things that will be fixed by https://github.com/astral-sh/ruff/pull/17832, since there are many classes in the middle of the MRO here that we don't understand as being generic when we should
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/generics/legacy/classes.md`:1 on 2025-05-06 16:02_
+
+worth adding some great-grandchild tests too, just to be on the safe side? 😆
+
+---
+
+_@AlexWaygood reviewed on 2025-05-06 16:02_
+
+---
+
+_@AlexWaygood approved on 2025-05-06 16:18_
+
+This makes sense to me as far as I can tell, but @carljm is more familiar with this code so he may be a better reviewer here!
+
+---
+
+_@AlexWaygood reviewed on 2025-05-06 16:30_
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/annotations/stdlib_typing_aliases.md`:122 on 2025-05-06 16:30_
+
+Hmmm... I'm trying locally to rebase https://github.com/astral-sh/ruff/pull/17832 on top of this, and it's actually showing some even more worrying things. With that PR stacked on top of this PR, this class:
+
+```py
+from typing import List
+
+class ListSubclass(List): ...
+```
+
+is revealed as having this MRO:
+
+```
+tuple[Literal[ListSubclass], Literal[list[Unknown]], Literal[MutableSequence[Unknown]], Literal[Sequence[Unknown]], Literal[Reversible[Unknown]], Literal[Collection[Unknown]], Literal[Iterable[Unknown]], Literal[Container[Unknown]], Literal[Iterable[_T_co]], Literal[Container[_T_co]], typing.Protocol[_T_co], typing.Generic[_T_co], Literal[object], Literal[Reversible[_T_co]], Literal[Collection[_T_co]]]
+```
+
+Notice that `object` is _in the middle_ of that MRO! That's really very concerning indeed 😬 `object` should always be the last element in the MRO.
+
+---
+
+_Comment by @dcreager on 2025-05-06 17:10_
+
+> Really interesting -- there are lots of diagnostics like this going away in the primer report; is it possible that this PR is also fixing the issue I identified in [#17832 (comment)](https://github.com/astral-sh/ruff/pull/17832#issuecomment-2851958704) ?
+
+I think so, because of [this](https://github.com/astral-sh/ruff/pull/17892/files#diff-762b66723f343209b6f05b36c201c0a0ffccd95e14319da4adb96936ceb6289cL94-R94)
+
+```diff
+-# revealed: tuple[Literal[DictSubclass], Literal[dict[Unknown, Unknown]], Literal[MutableMapping[_KT, _VT]], Literal[Mapping[_KT, _VT]], Literal[Collection], Literal[Iterable], Literal[Container], @Todo(`Protocol[]` subscript), typing.Generic, typing.Generic[_KT, _VT_co], Literal[object]]
++# revealed: tuple[Literal[DictSubclass], Literal[dict[Unknown, Unknown]], Literal[MutableMapping[Unknown, Unknown]], Literal[Mapping[Unknown, Unknown]], Literal[Collection], Literal[Iterable], Literal[Container], @Todo(`Protocol[]` subscript), typing.Generic, typing.Generic[_KT, _VT_co], Literal[object]]
+```
+
+Note that e.g. `Mapping[_KT, _VT]` now becomes `Mapping[Unknown, Unknown]`, with the (default) specialization applied.  We do have subtyping of generic aliases implemented, but we currently assume that all typevars are invariant, so the specialization needs to be _identical_ for the subtyping check to succeed.
+
+---
+
+_@dcreager reviewed on 2025-05-06 17:14_
+
+---
+
+_Review comment by @dcreager on `crates/ty_python_semantic/resources/mdtest/generics/legacy/classes.md`:1 on 2025-05-06 17:14_
+
+Done
+
+---
+
+_@dcreager reviewed on 2025-05-06 17:45_
+
+---
+
+_Review comment by @dcreager on `crates/ty_python_semantic/resources/mdtest/annotations/stdlib_typing_aliases.md`:122 on 2025-05-06 17:45_
+
+> The fact that `dict` now appears twice in this MRO (with two different specialisations!) seems (very) incorrect, but it's very possible that this is one of the things that will be fixed by #17832, since there are many classes in the middle of the MRO here that we don't understand as being generic when we should
+
+I don't think this was related to your changes in #17832 — instead we weren't specializing the base class list before doing the `c3_merge`.  So for `Counter` (which inherits from both `dict` and `Generic`), we had `dict` appear once specialized, because of it appearing (correctly specialized) in its own MRO; and once unspecialized, from it appearing (incorrectly not specialized) in `Counter`'s base class list.
+
+Just pushed up a fix for this; does it make the results on your PR look better?
+
+---
+
+_@AlexWaygood reviewed on 2025-05-06 17:51_
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/annotations/stdlib_typing_aliases.md`:122 on 2025-05-06 17:51_
+
+> Just pushed up a fix for this; does it make the results on your PR look better?
+
+Let me see!
+
+---
+
+_@AlexWaygood reviewed on 2025-05-06 18:02_
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/annotations/stdlib_typing_aliases.md`:122 on 2025-05-06 18:02_
+
+A big improvement, thank you! Other than `Generic` appearing twice for a couple of classes, the MROs in https://github.com/astral-sh/ruff/pull/17832 are looking really good now
+
+---
+
+_Merged by @dcreager on 2025-05-06 18:25_
+
+---
+
+_Closed by @dcreager on 2025-05-06 18:25_
+
+---
+
+_Branch deleted on 2025-05-06 18:25_
+
+---

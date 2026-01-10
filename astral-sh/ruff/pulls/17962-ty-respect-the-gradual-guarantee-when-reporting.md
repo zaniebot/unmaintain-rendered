@@ -1,0 +1,243 @@
+```yaml
+number: 17962
+title: "[ty] Respect the gradual guarantee when reporting errors in resolving MROs"
+type: pull_request
+state: merged
+author: AlexWaygood
+labels:
+  - ty
+assignees: []
+merged: true
+base: main
+head: alex/inconsistent-mro-gradual
+created_at: 2025-05-08T19:35:35Z
+updated_at: 2025-05-08T21:57:40Z
+url: https://github.com/astral-sh/ruff/pull/17962
+synced_at: 2026-01-10T18:57:03Z
+```
+
+# [ty] Respect the gradual guarantee when reporting errors in resolving MROs
+
+---
+
+_Pull request opened by @AlexWaygood on 2025-05-08 19:35_
+
+## Summary
+
+If you have code like this:
+
+```py
+from module_we_cannot_resolve import Base1, Base2
+
+class Foo(Base1, Base2): ...
+```
+
+then we issue a complaint about this, because both bases are inferred as `Unknown`. The duplicate bases mean that we cannot resolve a consistent Method Resolution Order for the class:
+
+```
+Cannot create a consistent method resolution order (MRO) for class `Foo` with bases list `[Unknown, Unknown]`
+```
+
+This violates [the gradual guarantee](https://typing.python.org/en/latest/spec/concepts.html#the-gradual-guarantee): if either `Unknown` were replaced with a fully static type, the error might go away. There's a long-standing TODO question about our behaviour in our tests here:
+
+https://github.com/astral-sh/ruff/blob/981bd70d393fe29324c07c3ffce5ecddd40e6bd6/crates/ty_python_semantic/resources/mdtest/mro.md?plain=1#L395-L411
+
+And I keep seeing `[inconsistent-mro]` errors in mypy_primer reports. So I think it is time that we do, indeed, revisit this and properly respect the gradual guarantee.
+
+This PR switches things so that we do not report a diagnostic for unresolvable MROs if the reason for the MRO being unresolvable is that there are duplicate bases and the duplicate base in question is a dynamic type (`Todo`, `Any` or `Unknown`). We now silently fallback to an MRO of `<the class in question>, Unknown, object` in such cases, without reporting a diagnostic.
+
+## Test Plan
+
+`cargo test -p ty_python_semantic`
+
+
+---
+
+_Review requested from @carljm by @AlexWaygood on 2025-05-08 19:35_
+
+---
+
+_Review requested from @sharkdp by @AlexWaygood on 2025-05-08 19:35_
+
+---
+
+_Review requested from @dcreager by @AlexWaygood on 2025-05-08 19:35_
+
+---
+
+_Label `ty` added by @AlexWaygood on 2025-05-08 19:35_
+
+---
+
+_Closed by @AlexWaygood on 2025-05-08 20:31_
+
+---
+
+_Reopened by @AlexWaygood on 2025-05-08 20:31_
+
+---
+
+_Comment by @github-actions[bot] on 2025-05-08 20:34_
+
+<!-- generated-comment mypy_primer -->
+## `mypy_primer` results
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+```diff
+mypy-protobuf (https://github.com/dropbox/mypy-protobuf)
+- error[lint:inconsistent-mro] test/generated/google/protobuf/duration_pb2.pyi:49:1: Cannot create a consistent method resolution order (MRO) for class `Duration` with bases list `[Unknown, Unknown]`
++ warning[lint:unused-ignore-comment] test/generated/testproto/grpc/dummy_pb2_grpc.pyi:23:74: Unused blanket `type: ignore` directive
++ warning[lint:unused-ignore-comment] test/generated/testproto/grpc/import_pb2_grpc.pyi:24:74: Unused blanket `type: ignore` directive
+- Found 45 diagnostics
++ Found 46 diagnostics
+
+pybind11 (https://github.com/pybind/pybind11)
+- error[lint:inconsistent-mro] tests/test_call_policies.py:168:5: Cannot create a consistent method resolution order (MRO) for class `Derived` with bases list `[Unknown, Unknown]`
+- error[lint:inconsistent-mro] tests/test_class.py:218:5: Cannot create a consistent method resolution order (MRO) for class `RabbitHamster` with bases list `[Unknown, Unknown]`
+- error[lint:inconsistent-mro] tests/test_class_sh_disowning_mi.py:72:1: Cannot create a consistent method resolution order (MRO) for class `MI1` with bases list `[Unknown, Unknown]`
+- error[lint:inconsistent-mro] tests/test_class_sh_disowning_mi.py:83:1: Cannot create a consistent method resolution order (MRO) for class `MI2` with bases list `[<class 'B1'>, Unknown, Unknown]`
+- error[lint:inconsistent-mro] tests/test_class_sh_disowning_mi.py:102:1: Cannot create a consistent method resolution order (MRO) for class `MI5` with bases list `[Unknown, <class 'B1'>, Unknown]`
+- error[lint:inconsistent-mro] tests/test_class_sh_inheritance.py:54:5: Cannot create a consistent method resolution order (MRO) for class `Drvd2` with bases list `[Unknown, Unknown]`
+- error[lint:inconsistent-mro] tests/test_factory_constructors.py:338:5: Cannot create a consistent method resolution order (MRO) for class `MITest` with bases list `[Unknown, Unknown]`
+- error[lint:inconsistent-mro] tests/test_multiple_inheritance.py:58:5: Cannot create a consistent method resolution order (MRO) for class `MI1` with bases list `[Unknown, Unknown]`
+- error[lint:inconsistent-mro] tests/test_multiple_inheritance.py:67:5: Cannot create a consistent method resolution order (MRO) for class `MI2` with bases list `[<class 'B1'>, Unknown, Unknown]`
+- error[lint:inconsistent-mro] tests/test_multiple_inheritance.py:83:5: Cannot create a consistent method resolution order (MRO) for class `MI5` with bases list `[Unknown, <class 'B1'>, Unknown]`
+- error[lint:inconsistent-mro] tests/test_multiple_inheritance.py:163:5: Cannot create a consistent method resolution order (MRO) for class `MIMany14` with bases list `[Unknown, Unknown, Unknown, Unknown]`
+- error[lint:inconsistent-mro] tests/test_multiple_inheritance.py:170:5: Cannot create a consistent method resolution order (MRO) for class `MIMany58` with bases list `[Unknown, Unknown, Unknown, Unknown]`
+- error[lint:inconsistent-mro] tests/test_multiple_inheritance.py:177:5: Cannot create a consistent method resolution order (MRO) for class `MIMany916` with bases list `[Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown]`
+- Found 254 diagnostics
++ Found 241 diagnostics
+
+poetry (https://github.com/python-poetry/poetry)
+- error[lint:inconsistent-mro] src/poetry/toml/exceptions.py:7:1: Cannot create a consistent method resolution order (MRO) for class `TOMLError` with bases list `[Unknown, Unknown]`
+- Found 1037 diagnostics
++ Found 1036 diagnostics
+
+mypy (https://github.com/python/mypy)
+- error[lint:inconsistent-mro] mypy/typeshed/stdlib/importlib/resources/simple.pyi:55:5: Cannot create a consistent method resolution order (MRO) for class `TraversableReader` with bases list `[Unknown, Unknown]`
+- error[lint:inconsistent-mro] mypy/typeshed/stdlib/typing.pyi:582:1: Cannot create a consistent method resolution order (MRO) for class `Sequence` with bases list `[Unknown, Unknown]`
+- error[lint:inconsistent-mro] mypyc/test-data/fixtures/typing-full.pyi:68:1: Cannot create a consistent method resolution order (MRO) for class `Generator` with bases list `[Unknown, Unknown]`
+- error[lint:inconsistent-mro] mypyc/test-data/fixtures/typing-full.pyi:81:1: Cannot create a consistent method resolution order (MRO) for class `AsyncGenerator` with bases list `[Unknown, Unknown]`
+- error[lint:inconsistent-mro] mypyc/test-data/fixtures/typing-full.pyi:102:1: Cannot create a consistent method resolution order (MRO) for class `AwaitableGenerator` with bases list `[Unknown, Unknown, Unknown]`
+- error[lint:inconsistent-mro] mypyc/test-data/fixtures/typing-full.pyi:105:1: Cannot create a consistent method resolution order (MRO) for class `Coroutine` with bases list `[Unknown, Unknown]`
+- error[lint:inconsistent-mro] mypyc/test-data/fixtures/typing-full.pyi:126:1: Cannot create a consistent method resolution order (MRO) for class `Sequence` with bases list `[Unknown, Unknown]`
+- error[lint:inconsistent-mro] mypyc/test-data/fixtures/typing-full.pyi:130:1: Cannot create a consistent method resolution order (MRO) for class `Mapping` with bases list `[Unknown, Unknown]`
+- Found 3058 diagnostics
++ Found 3050 diagnostics
+
+scrapy (https://github.com/scrapy/scrapy)
+- error[lint:inconsistent-mro] docs/_ext/scrapydocs.py:19:1: Cannot create a consistent method resolution order (MRO) for class `SettingslistNode` with bases list `[Unknown, Unknown]`
+- error[lint:inconsistent-mro] scrapy/core/http2/protocol.py:84:1: Cannot create a consistent method resolution order (MRO) for class `H2ClientProtocol` with bases list `[Unknown, Unknown]`
+- Found 1388 diagnostics
++ Found 1386 diagnostics
+
+django-stubs (https://github.com/typeddjango/django-stubs)
++ warning[lint:unused-ignore-comment] django-stubs/contrib/postgres/aggregates/general.pyi:23:98: Unused blanket `type: ignore` directive
++ warning[lint:unused-ignore-comment] django-stubs/contrib/postgres/aggregates/general.pyi:45:98: Unused blanket `type: ignore` directive
++ warning[lint:unused-ignore-comment] django-stubs/contrib/postgres/aggregates/general.pyi:58:98: Unused blanket `type: ignore` directive
+- error[lint:inconsistent-mro] django-stubs/core/files/storage/filesystem.pyi:8:1: Cannot create a consistent method resolution order (MRO) for class `FileSystemStorage` with bases list `[<class '_Deconstructible'>, Unknown, Unknown]`
+- error[lint:inconsistent-mro] django-stubs/core/files/storage/memory.pyi:8:1: Cannot create a consistent method resolution order (MRO) for class `InMemoryStorage` with bases list `[<class '_Deconstructible'>, Unknown, Unknown]`
+- error[lint:inconsistent-mro] django-stubs/db/models/fields/json.pyi:22:1: Cannot create a consistent method resolution order (MRO) for class `JSONField` with bases list `[Unknown, Unknown]`
+
+pyodide (https://github.com/pyodide/pyodide)
+- error[lint:inconsistent-mro] src/py/_pyodide/_core_docs.py:907:1: Cannot create a consistent method resolution order (MRO) for class `JsCallableDoubleProxy` with bases list `[<class 'JsDoubleProxy[(...) -> Unknown]'>, Unknown, Unknown]`
+- error[lint:inconsistent-mro] src/py/_pyodide/_core_docs.py:1183:1: Cannot create a consistent method resolution order (MRO) for class `JsOnceCallable` with bases list `[Unknown, Unknown]`
+- error[lint:inconsistent-mro] src/py/js.pyi:38:1: Cannot create a consistent method resolution order (MRO) for class `_JsMeta` with bases list `[Unknown, Unknown]`
+- error[lint:inconsistent-mro] src/py/pyodide/webloop.py:166:1: Cannot create a consistent method resolution order (MRO) for class `PyodideTask` with bases list `[@Todo(GenericAlias instance), @Todo(GenericAlias instance)]`
+- Found 998 diagnostics
++ Found 994 diagnostics
+
+bokeh (https://github.com/bokeh/bokeh)
+- error[lint:inconsistent-mro] src/bokeh/model/model.py:74:1: Cannot create a consistent method resolution order (MRO) for class `Model` with bases list `[Unknown, Unknown, Unknown, Unknown]`
+- error[lint:inconsistent-mro] src/bokeh/models/annotations/html/labels.py:189:1: Cannot create a consistent method resolution order (MRO) for class `HTMLLabelSet` with bases list `[Unknown, Unknown]`
+- error[lint:inconsistent-mro] src/bokeh/models/dom.py:65:1: Cannot create a consistent method resolution order (MRO) for class `DOMNode` with bases list `[Unknown, Unknown]`
+- error[lint:inconsistent-mro] src/bokeh/models/dom.py:118:1: Cannot create a consistent method resolution order (MRO) for class `Action` with bases list `[Unknown, Unknown]`
+- error[lint:inconsistent-mro] src/bokeh/models/glyphs.py:162:1: Cannot create a consistent method resolution order (MRO) for class `Marker` with bases list `[Unknown, Unknown, Unknown, Unknown]`
+- error[lint:inconsistent-mro] src/bokeh/models/glyphs.py:217:1: Cannot create a consistent method resolution order (MRO) for class `LRTBGlyph` with bases list `[Unknown, Unknown, Unknown, Unknown]`
+- error[lint:inconsistent-mro] src/bokeh/models/glyphs.py:232:1: Cannot create a consistent method resolution order (MRO) for class `AnnularWedge` with bases list `[Unknown, Unknown, Unknown, Unknown]`
+- error[lint:inconsistent-mro] src/bokeh/models/glyphs.py:285:1: Cannot create a consistent method resolution order (MRO) for class `Annulus` with bases list `[Unknown, Unknown, Unknown, Unknown]`
+- error[lint:inconsistent-mro] src/bokeh/models/glyphs.py:326:1: Cannot create a consistent method resolution order (MRO) for class `Arc` with bases list `[Unknown, Unknown]`
+- error[lint:inconsistent-mro] src/bokeh/models/glyphs.py:367:1: Cannot create a consistent method resolution order (MRO) for class `Bezier` with bases list `[Unknown, Unknown]`
+- error[lint:inconsistent-mro] src/bokeh/models/glyphs.py:461:1: Cannot create a consistent method resolution order (MRO) for class `Circle` with bases list `[Unknown, Unknown, Unknown, Unknown]`
+- error[lint:inconsistent-mro] src/bokeh/models/glyphs.py:521:1: Cannot create a consistent method resolution order (MRO) for class `Ellipse` with bases list `[Unknown, Unknown, Unknown, Unknown]`
+- error[lint:inconsistent-mro] src/bokeh/models/glyphs.py:566:1: Cannot create a consistent method resolution order (MRO) for class `HArea` with bases list `[Unknown, Unknown, Unknown]`
+- error[lint:inconsistent-mro] src/bokeh/models/glyphs.py:600:1: Cannot create a consistent method resolution order (MRO) for class `HAreaStep` with bases list `[Unknown, Unknown, Unknown]`
+- error[lint:inconsistent-mro] src/bokeh/models/glyphs.py:685:1: Cannot create a consistent method resolution order (MRO) for class `HexTile` with bases list `[Unknown, Unknown, Unknown, Unknown]`
+- error[lint:inconsistent-mro] src/bokeh/models/glyphs.py:969:1: Cannot create a consistent method resolution order (MRO) for class `Line` with bases list `[Unknown, Unknown]`
+- error[lint:inconsistent-mro] src/bokeh/models/glyphs.py:1003:1: Cannot create a consistent method resolution order (MRO) for class `MultiLine` with bases list `[Unknown, Unknown]`
+- error[lint:inconsistent-mro] src/bokeh/models/glyphs.py:1031:1: Cannot create a consistent method resolution order (MRO) for class `MultiPolygons` with bases list `[Unknown, Unknown, Unknown, Unknown]`
+- error[lint:inconsistent-mro] src/bokeh/models/glyphs.py:1140:1: Cannot create a consistent method resolution order (MRO) for class `Patch` with bases list `[Unknown, Unknown, Unknown, Unknown]`
+- error[lint:inconsistent-mro] src/bokeh/models/glyphs.py:1186:1: Cannot create a consistent method resolution order (MRO) for class `Patches` with bases list `[Unknown, Unknown, Unknown, Unknown]`
+- error[lint:inconsistent-mro] src/bokeh/models/glyphs.py:1276:1: Cannot create a consistent method resolution order (MRO) for class `Quadratic` with bases list `[Unknown, Unknown]`
+- error[lint:inconsistent-mro] src/bokeh/models/glyphs.py:1317:1: Cannot create a consistent method resolution order (MRO) for class `Ray` with bases list `[Unknown, Unknown]`
+- error[lint:inconsistent-mro] src/bokeh/models/glyphs.py:1351:1: Cannot create a consistent method resolution order (MRO) for class `Rect` with bases list `[Unknown, Unknown, Unknown, Unknown]`
+- error[lint:inconsistent-mro] src/bokeh/models/glyphs.py:1527:1: Cannot create a consistent method resolution order (MRO) for class `Segment` with bases list `[Unknown, Unknown]`
+- error[lint:inconsistent-mro] src/bokeh/models/glyphs.py:1560:1: Cannot create a consistent method resolution order (MRO) for class `Step` with bases list `[Unknown, Unknown]`
+- error[lint:inconsistent-mro] src/bokeh/models/glyphs.py:1600:1: Cannot create a consistent method resolution order (MRO) for class `Text` with bases list `[Unknown, Unknown]`
+- error[lint:inconsistent-mro] src/bokeh/models/glyphs.py:1786:1: Cannot create a consistent method resolution order (MRO) for class `VArea` with bases list `[Unknown, Unknown, Unknown]`
+- error[lint:inconsistent-mro] src/bokeh/models/glyphs.py:1820:1: Cannot create a consistent method resolution order (MRO) for class `VAreaStep` with bases list `[Unknown, Unknown, Unknown]`
+- error[lint:inconsistent-mro] src/bokeh/models/glyphs.py:1904:1: Cannot create a consistent method resolution order (MRO) for class `Wedge` with bases list `[Unknown, Unknown, Unknown, Unknown]`
+- error[lint:inconsistent-mro] src/bokeh/models/glyphs.py:1953:1: Cannot create a consistent method resolution order (MRO) for class `HSpan` with bases list `[Unknown, Unknown]`
+- error[lint:inconsistent-mro] src/bokeh/models/glyphs.py:1972:1: Cannot create a consistent method resolution order (MRO) for class `VSpan` with bases list `[Unknown, Unknown]`
+- error[lint:inconsistent-mro] src/bokeh/models/glyphs.py:1991:1: Cannot create a consistent method resolution order (MRO) for class `HStrip` with bases list `[Unknown, Unknown, Unknown, Unknown]`
+- error[lint:inconsistent-mro] src/bokeh/models/glyphs.py:2022:1: Cannot create a consistent method resolution order (MRO) for class `VStrip` with bases list `[Unknown, Unknown, Unknown, Unknown]`
+- error[lint:inconsistent-mro] src/bokeh/models/plots.py:913:1: Cannot create a consistent method resolution order (MRO) for class `GridPlot` with bases list `[Unknown, Unknown]`
+- error[lint:inconsistent-mro] src/bokeh/plotting/_figure.py:94:1: Cannot create a consistent method resolution order (MRO) for class `figure` with bases list `[Unknown, Unknown]`
+- error[lint:inconsistent-mro] src/bokeh/sphinxext/bokeh_palette_group.py:82:1: Cannot create a consistent method resolution order (MRO) for class `bokeh_palette_group` with bases list `[Unknown, Unknown]`
+- error[lint:inconsistent-mro] src/bokeh/sphinxext/bokeh_plot.py:138:1: Cannot create a consistent method resolution order (MRO) for class `autoload_script` with bases list `[Unknown, Unknown]`
+- error[lint:inconsistent-mro] src/bokeh/sphinxext/bokeh_sampledata_xref.py:65:1: Cannot create a consistent method resolution order (MRO) for class `gallery_xrefs` with bases list `[Unknown, Unknown]`
+- error[lint:inconsistent-mro] src/bokeh/sphinxext/bokeh_sampledata_xref.py:79:1: Cannot create a consistent method resolution order (MRO) for class `sampledata_list` with bases list `[Unknown, Unknown]`
+- error[lint:inconsistent-mro] src/bokeh/sphinxext/bokehjs_content.py:101:1: Cannot create a consistent method resolution order (MRO) for class `bokehjs_content` with bases list `[Unknown, Unknown]`
+- Found 1024 diagnostics
++ Found 984 diagnostics
+
+streamlit (https://github.com/streamlit/streamlit)
+- error[lint:inconsistent-mro] lib/streamlit/delta_generator.py:163:1: Cannot create a consistent method resolution order (MRO) for class `DeltaGenerator` with bases list `[Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown]`
+- error[lint:inconsistent-mro] lib/streamlit/runtime/memory_media_file_storage.py:91:1: Cannot create a consistent method resolution order (MRO) for class `MemoryMediaFileStorage` with bases list `[Unknown, Unknown]`
++ warning[lint:unused-ignore-comment] lib/streamlit/web/server/oidc_mixin.py:30:61: Unused blanket `type: ignore` directive
+- Found 3254 diagnostics
++ Found 3253 diagnostics
+
+dd-trace-py (https://github.com/DataDog/dd-trace-py)
+- error[lint:inconsistent-mro] benchmarks/errortracking_flask_sqli/scenario.py:5:1: Cannot create a consistent method resolution order (MRO) for class `ErrorTrackingFlaskSQLi` with bases list `[Unknown, Unknown]`
+- error[lint:inconsistent-mro] benchmarks/flask_simple/scenario.py:6:1: Cannot create a consistent method resolution order (MRO) for class `FlaskSimple` with bases list `[Unknown, Unknown]`
+- error[lint:inconsistent-mro] benchmarks/flask_sqli/scenario.py:5:1: Cannot create a consistent method resolution order (MRO) for class `FlaskSQLi` with bases list `[Unknown, Unknown]`
+- error[lint:inconsistent-mro] ddtrace/contrib/internal/flask/patch.py:87:5: Cannot create a consistent method resolution order (MRO) for class `RequestWithJson` with bases list `[Unknown, Unknown]`
+- error[lint:inconsistent-mro] ddtrace/contrib/internal/grpc/client_interceptor.py:173:1: Cannot create a consistent method resolution order (MRO) for class `_ClientInterceptor` with bases list `[Unknown, Unknown, Unknown, Unknown]`
+- Found 8557 diagnostics
++ Found 8552 diagnostics
+
+materialize (https://github.com/MaterializeInc/materialize)
+- error[lint:inconsistent-mro] misc/dbt-materialize/dbt/adapters/materialize/impl.py:110:1: Cannot create a consistent method resolution order (MRO) for class `MaterializeAdapter` with bases list `[Unknown, Unknown]`
+- error[lint:inconsistent-mro] misc/python/materialize/github.py:32:1: Cannot create a consistent method resolution order (MRO) for class `GitHubIssueWithInvalidRegexp` with bases list `[Unknown, Unknown]`
+- error[lint:inconsistent-mro] misc/python/materialize/scalability/workload/workloads/connection_workloads.py:23:1: Cannot create a consistent method resolution order (MRO) for class `EstablishConnectionWorkload` with bases list `[Unknown, Unknown]`
+- error[lint:inconsistent-mro] misc/python/materialize/scalability/workload/workloads/ddl_workloads.py:29:1: Cannot create a consistent method resolution order (MRO) for class `CreateAndDropTableWorkload` with bases list `[Unknown, Unknown]`
+- error[lint:inconsistent-mro] misc/python/materialize/scalability/workload/workloads/ddl_workloads.py:41:1: Cannot create a consistent method resolution order (MRO) for class `CreateAndDropTableWithMvWorkload` with bases list `[Unknown, Unknown]`
+- error[lint:inconsistent-mro] misc/python/materialize/scalability/workload/workloads/ddl_workloads.py:59:1: Cannot create a consistent method resolution order (MRO) for class `CreateAndReplaceViewWorkload` with bases list `[Unknown, Unknown]`
+- Found 3291 diagnostics
++ Found 3285 diagnostics
+
+```
+</details>
+
+
+---
+
+_@carljm approved on 2025-05-08 21:52_
+
+Looks good!
+
+---
+
+_Merged by @AlexWaygood on 2025-05-08 21:57_
+
+---
+
+_Closed by @AlexWaygood on 2025-05-08 21:57_
+
+---
+
+_Branch deleted on 2025-05-08 21:57_
+
+---

@@ -1,0 +1,1116 @@
+```yaml
+number: 17630
+title: "[red-knot] fix narrowing in nested scopes"
+type: pull_request
+state: merged
+author: mtshiba
+labels:
+  - ty
+assignees: []
+merged: true
+base: main
+head: nested-narrowing
+created_at: 2025-04-25T15:33:11Z
+updated_at: 2025-05-07T16:03:20Z
+url: https://github.com/astral-sh/ruff/pull/17630
+synced_at: 2026-01-10T18:57:02Z
+```
+
+# [red-knot] fix narrowing in nested scopes
+
+---
+
+_Pull request opened by @mtshiba on 2025-04-25 15:33_
+
+## Summary
+
+This PR fixes #17595.
+
+## Test Plan
+
+New test cases are added to `mdtest/narrow/conditionals/nested.md`.
+
+---
+
+_Review requested from @carljm by @mtshiba on 2025-04-25 15:33_
+
+---
+
+_Review requested from @AlexWaygood by @mtshiba on 2025-04-25 15:33_
+
+---
+
+_Review requested from @sharkdp by @mtshiba on 2025-04-25 15:33_
+
+---
+
+_Review requested from @dcreager by @mtshiba on 2025-04-25 15:33_
+
+---
+
+_Comment by @github-actions[bot] on 2025-04-25 15:37_
+
+<!-- generated-comment mypy_primer -->
+## `mypy_primer` results
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+```diff
+async-utils (https://github.com/mikeshardmind/async-utils)
+- error[lint:invalid-argument-type] src/async_utils/corofunc_cache.py:107:33: Argument to this function is incorrect: Expected `int | float`, found `int | float | None`
+- error[lint:invalid-argument-type] src/async_utils/corofunc_cache.py:186:33: Argument to this function is incorrect: Expected `int | float`, found `int | float | None`
+- error[lint:invalid-argument-type] src/async_utils/task_cache.py:166:33: Argument to this function is incorrect: Expected `int | float`, found `int | float | None`
+- error[lint:invalid-argument-type] src/async_utils/task_cache.py:252:33: Argument to this function is incorrect: Expected `int | float`, found `int | float | None`
+- Found 27 diagnostics
++ Found 23 diagnostics
+
+beartype (https://github.com/beartype/beartype)
+- error[lint:call-non-callable] beartype/_decor/_type/_pep/_decortypepep557.py:440:13: Object of type `None` is not callable
+- error[lint:call-non-callable] beartype/_util/func/utilfuncframe.py:173:20: Object of type `None` is not callable
++ warning[lint:unused-ignore-comment] beartype/_util/func/utilfuncframe.py:573:63: Unused blanket `type: ignore` directive
+- Found 576 diagnostics
++ Found 575 diagnostics
+
+python-chess (https://github.com/niklasf/python-chess)
+- error[lint:unsupported-operator] chess/engine.py:1683:69: Operator `>` is not supported for types `None` and `int`, in comparing `int | None` with `Literal[1]`
+- error[lint:not-iterable] chess/engine.py:2349:33: Object of type `@Todo(specialized non-generic class) | None` may not be iterable
+- warning[lint:possibly-unbound-attribute] chess/engine.py:2357:42: Attribute `time` on type `Limit | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] chess/engine.py:2358:100: Attribute `time` on type `Limit | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] chess/engine.py:2386:24: Attribute `time` on type `Limit | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] chess/engine.py:2386:79: Attribute `time` on type `Limit | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] chess/engine.py:2388:26: Attribute `nodes` on type `Limit | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] chess/engine.py:2388:83: Attribute `nodes` on type `Limit | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] chess/engine.py:2390:26: Attribute `depth` on type `Limit | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] chess/engine.py:2390:83: Attribute `depth` on type `Limit | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] chess/engine.py:2392:26: Attribute `mate` on type `Limit | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] chess/engine.py:2393:64: Attribute `mate` on type `Limit | None` is possibly unbound
+- error[lint:unsupported-operator] chess/engine.py:2497:40: Operator `in` is not supported for types `@Todo(specialized non-generic class)` and `None`, in comparing `@Todo(specialized non-generic class)` with `str | None`
+- Found 73 diagnostics
++ Found 60 diagnostics
+
+pyinstrument (https://github.com/joerick/pyinstrument)
+- error[lint:no-matching-overload] pyinstrument/processors.py:123:52: No overload of function `match` matches arguments
+- error[lint:no-matching-overload] pyinstrument/processors.py:124:52: No overload of function `match` matches arguments
+- Found 106 diagnostics
++ Found 104 diagnostics
+
+anyio (https://github.com/agronholm/anyio)
+- warning[lint:possibly-unbound-attribute] src/anyio/_backends/_asyncio.py:820:55: Attribute `cancelled` on type `Future | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] src/anyio/_backends/_asyncio.py:823:50: Attribute `done` on type `Future | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] src/anyio/_backends/_asyncio.py:830:21: Attribute `set_exception` on type `Future | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] src/anyio/_backends/_asyncio.py:831:57: Attribute `done` on type `Future | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] src/anyio/_backends/_asyncio.py:832:17: Attribute `set_exception` on type `Future | None` is possibly unbound
+- Found 148 diagnostics
++ Found 143 diagnostics
+
+strawberry (https://github.com/strawberry-graphql/strawberry)
+- error[lint:call-non-callable] strawberry/extensions/context.py:122:39: Object of type `None` is not callable
+- error[lint:call-non-callable] strawberry/extensions/context.py:127:39: Object of type `None` is not callable
+- error[lint:call-non-callable] strawberry/extensions/context.py:134:17: Object of type `None` is not callable
+- error[lint:call-non-callable] strawberry/extensions/context.py:139:17: Object of type `None` is not callable
+- error[lint:unsupported-operator] strawberry/relay/types.py:869:35: Unary operator `-` is unsupported for type `int | None`
+- Found 555 diagnostics
++ Found 550 diagnostics
+
+starlette (https://github.com/encode/starlette)
+- error[lint:invalid-raise] starlette/middleware/base.py:156:27: Cannot raise object of type `Exception | None` (must be a `BaseException` subclass or instance)
+- Found 215 diagnostics
++ Found 214 diagnostics
+
+graphql-core (https://github.com/graphql-python/graphql-core)
+- error[lint:unsupported-operator] src/graphql/execution/values.py:62:39: Operator `>=` is not supported for types `int` and `None`, in comparing `int` with `int | None`
+- Found 560 diagnostics
++ Found 559 diagnostics
+
+python-sop (https://gitlab.com/dkg/python-sop)
+- warning[lint:possibly-unbound-attribute] sop/__init__.py:331:13: Attribute `autocomplete` on type `Unknown | None` is possibly unbound
+- Found 12 diagnostics
++ Found 11 diagnostics
+
+trio (https://github.com/python-trio/trio)
+- error[lint:call-non-callable] src/trio/_core/_thread_cache.py:158:13: Object of type `None` is not callable
+- error[lint:call-non-callable] src/trio/_core/_thread_cache.py:172:17: Object of type `None` is not callable
+- error[lint:call-non-callable] src/trio/_core/_thread_cache.py:179:17: Object of type `None` is not callable
+- error[lint:invalid-argument-type] src/trio/_deprecate.py:115:79: Argument to this function is incorrect: Expected `int`, found `int | None`
+- error[lint:invalid-argument-type] src/trio/_tests/test_dtls.py:73:53: Argument to this function is incorrect: Expected `int`, found `int | None`
+- Found 1135 diagnostics
++ Found 1130 diagnostics
+
+kopf (https://github.com/nolar/kopf)
+- error[lint:unsupported-operator] kopf/_cogs/clients/scanning.py:70:64: Operator `in` is not supported for types `@Todo(generic `typing.Awaitable` type)` and `None`, in comparing `@Todo(generic `typing.Awaitable` type)` with `@Todo(specialized non-generic class) | None`
+- warning[lint:possibly-unbound-attribute] kopf/_core/reactor/queueing.py:157:17: Attribute `cancel` on type `Unknown | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] kopf/on.py:53:9: Attribute `_activities` on type `OperatorRegistry | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] kopf/on.py:80:9: Attribute `_activities` on type `OperatorRegistry | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] kopf/on.py:108:9: Attribute `_activities` on type `OperatorRegistry | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] kopf/on.py:136:9: Attribute `_activities` on type `OperatorRegistry | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] kopf/on.py:196:9: Attribute `_webhooks` on type `OperatorRegistry | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] kopf/on.py:256:9: Attribute `_webhooks` on type `OperatorRegistry | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] kopf/on.py:313:9: Attribute `_changing` on type `OperatorRegistry | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] kopf/on.py:369:9: Attribute `_changing` on type `OperatorRegistry | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] kopf/on.py:427:9: Attribute `_changing` on type `OperatorRegistry | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] kopf/on.py:484:9: Attribute `_changing` on type `OperatorRegistry | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] kopf/on.py:542:9: Attribute `_changing` on type `OperatorRegistry | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] kopf/on.py:596:9: Attribute `_indexing` on type `OperatorRegistry | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] kopf/on.py:646:9: Attribute `_watching` on type `OperatorRegistry | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] kopf/on.py:708:9: Attribute `_spawning` on type `OperatorRegistry | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] kopf/on.py:768:9: Attribute `_spawning` on type `OperatorRegistry | None` is possibly unbound
+- Found 294 diagnostics
++ Found 277 diagnostics
+
+kornia (https://github.com/kornia/kornia)
+- warning[lint:call-possibly-unbound-method] kornia/contrib/models/tiny_vit.py:307:21: Method `__getitem__` of type `int | float | @Todo(specialized non-generic class)` is possibly unbound
+- error[lint:unsupported-operator] kornia/core/mixin/image_module.py:67:28: Operator `in` is not supported for types `@Todo(Support for `typing.Self`)` and `None`, in comparing `@Todo(Support for `typing.Self`)` with `list | None`
+- error[lint:unsupported-operator] kornia/core/mixin/image_module.py:71:28: Operator `in` is not supported for types `@Todo(specialized non-generic class)` and `None`, in comparing `@Todo(specialized non-generic class)` with `list | None`
+- warning[lint:call-possibly-unbound-method] kornia/core/mixin/onnx.py:155:81: Method `__getitem__` of type `@Todo(specialized non-generic class) | None` is possibly unbound
+- error[lint:unsupported-operator] kornia/core/module.py:73:28: Operator `in` is not supported for types `@Todo(Support for `typing.Self`)` and `None`, in comparing `@Todo(Support for `typing.Self`)` with `@Todo(specialized non-generic class) | None`
+- error[lint:unsupported-operator] kornia/core/module.py:77:28: Operator `in` is not supported for types `@Todo(specialized non-generic class)` and `None`, in comparing `@Todo(specialized non-generic class)` with `@Todo(specialized non-generic class) | None`
+- error[lint:call-non-callable] kornia/feature/lightglue.py:139:27: Object of type `None` is not callable
+- warning[lint:call-possibly-unbound-method] kornia/models/detection/utils.py:118:81: Method `__getitem__` of type `list | None` is possibly unbound
+- error[lint:call-non-callable] kornia/x/trainer.py:95:28: Object of type `None` is not callable
+- Found 1013 diagnostics
++ Found 1004 diagnostics
+
+check-jsonschema (https://github.com/python-jsonschema/check-jsonschema)
+- error[lint:invalid-argument-type] src/check_jsonschema/schema_loader/resolver.py:62:45: Argument to this function is incorrect: Argument type `Unknown | str | None` does not satisfy constraints of type variable `AnyStr`
+- error[lint:invalid-argument-type] src/check_jsonschema/schema_loader/resolver.py:62:45: Argument to this function is incorrect: Expected `str`, found `Unknown | str | None`
+- Found 66 diagnostics
++ Found 64 diagnostics
+
+sockeye (https://github.com/awslabs/sockeye)
+- warning[lint:possibly-unbound-attribute] sockeye/checkpoint_decoder.py:160:66: Attribute `format` on type `str | None` is possibly unbound
+- error[lint:unsupported-operator] sockeye/inference.py:107:20: Operator `+` is unsupported between objects of type `int | None` and `Unknown | Literal[1]`
+- Found 394 diagnostics
++ Found 392 diagnostics
+
+porcupine (https://github.com/Akuli/porcupine)
+- error[lint:invalid-return-type] porcupine/_state.py:91:12: Return type does not match returned value: Expected `_State`, found `_State | None`
+- warning[lint:possibly-unbound-attribute] porcupine/plugins/filemanager.py:363:40: Attribute `path` on type `PasteState | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] porcupine/plugins/run/no_terminal.py:479:48: Attribute `textwidget` on type `NoTerminalRunner | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] porcupine/plugins/run/no_terminal.py:480:37: Attribute `textwidget` on type `NoTerminalRunner | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] porcupine/plugins/run/no_terminal.py:486:50: Attribute `textwidget` on type `NoTerminalRunner | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] porcupine/plugins/run/no_terminal.py:488:50: Attribute `textwidget` on type `NoTerminalRunner | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] porcupine/plugins/run/no_terminal.py:494:46: Attribute `textwidget` on type `NoTerminalRunner | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] porcupine/plugins/run/no_terminal.py:495:5: Attribute `run_command` on type `NoTerminalRunner | None` is possibly unbound
+- error[lint:invalid-argument-type] porcupine/plugins/statusbar.py:126:40: Argument to this function is incorrect: Expected `str`, found `str | None`
+- error[lint:invalid-return-type] porcupine/settings.py:580:12: Return type does not match returned value: Expected `Frame`, found `Frame | None`
+- error[lint:invalid-argument-type] porcupine/utils.py:796:38: Argument to this function is incorrect: Expected `str | _T`, found `str | None`
+- Found 123 diagnostics
++ Found 112 diagnostics
+
+pydantic (https://github.com/pydantic/pydantic)
+- error[lint:call-non-callable] pydantic/_internal/_generate_schema.py:2219:26: Object of type `None` is not callable
+- error[lint:invalid-argument-type] pydantic/v1/dataclasses.py:231:62: Argument to this function is incorrect: Expected `bool`, found `bool | None`
+- Found 908 diagnostics
++ Found 906 diagnostics
+
+pip (https://github.com/pypa/pip)
+- error[lint:unsupported-operator] src/pip/_internal/locations/__init__.py:158:46: Operator `not in` is not supported for types `str` and `None`, in comparing `Literal["/lib64/"]` with `str | None`
+- error[lint:call-non-callable] src/pip/_internal/locations/_sysconfig.py:71:16: Object of type `None` is not callable
+- error[lint:call-non-callable] src/pip/_internal/locations/_sysconfig.py:90:16: Object of type `None` is not callable
+- error[lint:call-non-callable] src/pip/_internal/locations/_sysconfig.py:105:16: Object of type `None` is not callable
+- error[lint:invalid-argument-type] src/pip/_internal/metadata/base.py:347:66: Argument to this function is incorrect: Expected `str`, found `str | None`
+- warning[lint:possibly-unbound-attribute] src/pip/_internal/req/req_file.py:434:39: Attribute `format_control` on type `PackageFinder | None` is possibly unbound
+- error[lint:invalid-return-type] src/pip/_internal/utils/logging.py:155:16: Return type does not match returned value: Expected `Console`, found `Unknown | None`
+- error[lint:invalid-return-type] src/pip/_internal/utils/logging.py:158:16: Return type does not match returned value: Expected `Console`, found `Unknown | None`
+- warning[lint:possibly-unbound-attribute] src/pip/_internal/utils/temp_dir.py:145:13: Attribute `enter_context` on type `ExitStack[bool | None] | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] src/pip/_internal/utils/temp_dir.py:162:22: Attribute `get_delete` on type `TempDirectoryTypeRegistry | None` is possibly unbound
+- error[lint:invalid-argument-type] src/pip/_vendor/dependency_groups/__main__.py:55:33: Argument to this function is incorrect: Expected `Mapping[str, str | Mapping[str, str]]`, found `Unknown | dict[Unknown, Unknown]`
++ error[lint:invalid-argument-type] src/pip/_vendor/dependency_groups/__main__.py:55:33: Argument to this function is incorrect: Expected `Mapping[str, str | Mapping[str, str]]`, found `@Todo(map_with_boundness: intersections with negative contributions) | dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] src/pip/_vendor/dependency_groups/_lint_dependency_groups.py:38:44: Argument to this function is incorrect: Expected `Mapping[str, str | Mapping[str, str]]`, found `Unknown | dict[Unknown, Unknown]`
++ error[lint:invalid-argument-type] src/pip/_vendor/dependency_groups/_lint_dependency_groups.py:38:44: Argument to this function is incorrect: Expected `Mapping[str, str | Mapping[str, str]]`, found `@Todo(map_with_boundness: intersections with negative contributions) | dict[Unknown, Unknown]`
+- error[lint:invalid-argument-type] src/pip/_vendor/dependency_groups/_pip_wrapper.py:42:44: Argument to this function is incorrect: Expected `Mapping[str, str | Mapping[str, str]]`, found `Unknown | dict[Unknown, Unknown]`
++ error[lint:invalid-argument-type] src/pip/_vendor/dependency_groups/_pip_wrapper.py:42:44: Argument to this function is incorrect: Expected `Mapping[str, str | Mapping[str, str]]`, found `@Todo(map_with_boundness: intersections with negative contributions) | dict[Unknown, Unknown]`
+- warning[lint:possibly-unbound-attribute] src/pip/_vendor/distlib/wheel.py:116:31: Attribute `get_suffixes` on type `Unknown | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] src/pip/_vendor/distlib/wheel.py:124:16: Attribute `load_dynamic` on type `Unknown | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] src/pip/_vendor/requests/help.py:80:47: Attribute `__version__` on type `Unknown | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] src/pip/_vendor/requests/help.py:82:36: Attribute `__version__` on type `Unknown | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] src/pip/_vendor/requests/help.py:90:24: Attribute `__version__` on type `None | Unknown` is possibly unbound
+- warning[lint:possibly-unbound-attribute] src/pip/_vendor/requests/help.py:91:35: Attribute `SSL` on type `None | Unknown` is possibly unbound
+- warning[lint:possibly-unbound-attribute] src/pip/_vendor/rich/pretty.py:205:13: Attribute `print` on type `Console | None` is possibly unbound
+- error[lint:unsupported-operator] src/pip/_vendor/rich/pretty.py:606:17: Operator `>` is not supported for types `int` and `None`, in comparing `int` with `int | None`
+- error[lint:unsupported-operator] src/pip/_vendor/rich/pretty.py:608:25: Operator `-` is unsupported between objects of type `int` and `int | None`
+- error[lint:unsupported-operator] src/pip/_vendor/rich/pretty.py:631:55: Operator `>=` is not supported for types `int` and `None`, in comparing `int` with `int | None`
+- error[lint:unsupported-operator] src/pip/_vendor/rich/pretty.py:862:47: Operator `>` is not supported for types `int` and `None`, in comparing `int` with `int | None`
+- error[lint:unsupported-operator] src/pip/_vendor/rich/pretty.py:863:52: Operator `-` is unsupported between objects of type `int` and `int | None`
+- error[lint:unsupported-operator] src/pip/_vendor/rich/syntax.py:503:35: Operator `-` is unsupported between objects of type `Unknown | int | None` and `Literal[1]`
+- error[lint:unsupported-operator] src/pip/_vendor/rich/syntax.py:519:45: Operator `>=` is not supported for types `int` and `None`, in comparing `Literal[1, 2]` with `Unknown | int | None`
+- warning[lint:possibly-unbound-attribute] src/pip/_vendor/urllib3/util/ssl_.py:498:9: Attribute `_validate_ssl_context_for_tls_in_tls` on type `None | Literal[SSLTransport]` is possibly unbound
+- error[lint:call-non-callable] src/pip/_vendor/urllib3/util/ssl_.py:499:16: Object of type `None` is not callable
+- Found 1089 diagnostics
++ Found 1063 diagnostics
+
+websockets (https://github.com/aaugustin/websockets)
+- error[lint:call-non-callable] src/websockets/asyncio/server.py:782:28: Object of type `None` is not callable
+- warning[lint:call-possibly-unbound-method] src/websockets/imports.py:74:22: Method `__getitem__` of type `dict[str, str] | None` is possibly unbound
+- warning[lint:call-possibly-unbound-method] src/websockets/imports.py:82:22: Method `__getitem__` of type `dict[str, str] | None` is possibly unbound
+- error[lint:call-non-callable] src/websockets/sync/server.py:562:28: Object of type `None` is not callable
+- error[lint:call-non-callable] src/websockets/sync/server.py:578:26: Object of type `None` is not callable
+- Found 130 diagnostics
++ Found 125 diagnostics
+
+jinja (https://github.com/pallets/jinja)
+- error[lint:call-non-callable] src/jinja2/filters.py:79:20: Object of type `None` is not callable
+- error[lint:call-non-callable] src/jinja2/filters.py:118:26: Object of type `None` is not callable
+- Found 387 diagnostics
++ Found 385 diagnostics
+
+SinbadCogs (https://github.com/mikeshardmind/SinbadCogs)
+- warning[lint:possibly-unbound-attribute] relays/helpers.py:106:28: Attribute `group` on type `Unknown | (Unknown & ~AlwaysFalsy) | Match[str] | None` is possibly unbound
+- Found 179 diagnostics
++ Found 178 diagnostics
+
+mkosi (https://github.com/systemd/mkosi)
+- error[lint:no-matching-overload] mkosi/config.py:1140:25: No overload of bound method `replace` matches arguments
+- error[lint:no-matching-overload] mkosi/config.py:1228:25: No overload of bound method `replace` matches arguments
+- Found 336 diagnostics
++ Found 334 diagnostics
+
+aiohttp-devtools (https://github.com/aio-libs/aiohttp-devtools)
++ warning[lint:unused-ignore-comment] aiohttp_devtools/runserver/serve.py:50:51: Unused blanket `type: ignore` directive
++ warning[lint:unused-ignore-comment] aiohttp_devtools/runserver/serve.py:60:43: Unused blanket `type: ignore` directive
+- Found 60 diagnostics
++ Found 62 diagnostics
+
+black (https://github.com/psf/black)
+- warning[lint:possibly-unbound-attribute] src/black/trans.py:2479:9: Attribute `insert_child` on type `Unknown | Node | None` is possibly unbound
+- Found 141 diagnostics
++ Found 140 diagnostics
+
+werkzeug (https://github.com/pallets/werkzeug)
+- warning[lint:possibly-unbound-attribute] src/werkzeug/serving.py:267:37: Attribute `split` on type `str | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] src/werkzeug/serving.py:267:37: Attribute `split` on type `str | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] src/werkzeug/serving.py:267:37: Attribute `split` on type `str | None` is possibly unbound
+- error[lint:not-iterable] src/werkzeug/serving.py:273:35: Object of type `@Todo(specialized non-generic class) | None` may not be iterable
+- error[lint:call-non-callable] tests/test_datastructures.py:953:20: Object of type `None` is not callable
+- Found 612 diagnostics
++ Found 607 diagnostics
+
+asynq (https://github.com/quora/asynq)
+- error[lint:call-non-callable] asynq/debug.py:279:9: Object of type `None` is not callable
+- Found 271 diagnostics
++ Found 270 diagnostics
+
+poetry (https://github.com/python-poetry/poetry)
+- error[lint:unsupported-operator] src/poetry/layouts/layout.py:196:36: Operator `+` is unsupported between objects of type `Literal[">="]` and `str | None`
+- error[lint:unsupported-operator] src/poetry/layouts/layout.py:200:37: Operator `+` is unsupported between objects of type `Literal["<"]` and `str | None`
+- error[lint:call-non-callable] tests/conftest.py:726:28: Object of type `str` is not callable
+- warning[lint:call-possibly-unbound-method] tests/inspection/test_lazy_wheel.py:149:20: Method `__getitem__` of type `tuple[int, bytes] | None` is possibly unbound
+- warning[lint:call-possibly-unbound-method] tests/inspection/test_lazy_wheel.py:151:20: Method `__getitem__` of type `tuple[int, bytes] | None` is possibly unbound
+- warning[lint:call-possibly-unbound-method] tests/inspection/test_lazy_wheel.py:153:22: Method `__getitem__` of type `tuple[int, bytes] | None` is possibly unbound
+- warning[lint:call-possibly-unbound-method] tests/inspection/test_lazy_wheel.py:157:25: Method `__getitem__` of type `tuple[int, bytes] | None` is possibly unbound
+- warning[lint:call-possibly-unbound-method] tests/inspection/test_lazy_wheel.py:159:25: Method `__getitem__` of type `tuple[int, bytes] | None` is possibly unbound
+- error[lint:call-non-callable] tests/repositories/fixtures/legacy.py:136:22: Object of type `str` is not callable
+- Found 1149 diagnostics
++ Found 1140 diagnostics
+
+urllib3 (https://github.com/urllib3/urllib3)
+- warning[lint:possibly-unbound-attribute] dummyserver/testcase.py:112:31: Attribute `wait` on type `Event | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] dummyserver/testcase.py:116:21: Attribute `clear` on type `Event | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] src/urllib3/contrib/emscripten/fetch.py:462:16: Attribute `send` on type `_StreamingFetcher | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] src/urllib3/contrib/emscripten/fetch.py:698:16: Attribute `streaming_ready` on type `_StreamingFetcher | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] src/urllib3/contrib/emscripten/fetch.py:705:15: Attribute `js_worker_ready_promise` on type `_StreamingFetcher | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] src/urllib3/response.py:311:35: Attribute `error` on type `Unknown | None` is possibly unbound
+- error[lint:call-non-callable] src/urllib3/util/ssl_.py:298:15: Object of type `None` is not callable
+- error[lint:invalid-assignment] src/urllib3/util/ssl_.py:301:9: Object of type `int | (Unknown & ~None)` is not assignable to attribute `minimum_version` on type `Unknown | SSLContext`
++ error[lint:invalid-assignment] src/urllib3/util/ssl_.py:301:9: Object of type `int | (Unknown & ~None)` is not assignable to attribute `minimum_version` of type `TLSVersion`
+- error[lint:invalid-assignment] src/urllib3/util/ssl_.py:306:9: Object of type `int | (Unknown & ~None)` is not assignable to attribute `maximum_version` on type `Unknown | SSLContext`
++ error[lint:invalid-assignment] src/urllib3/util/ssl_.py:306:9: Object of type `int | (Unknown & ~None)` is not assignable to attribute `maximum_version` of type `TLSVersion`
+- error[lint:invalid-assignment] src/urllib3/util/ssl_.py:356:9: Object of type `int` is not assignable to attribute `verify_mode` on type `Unknown | SSLContext`
++ error[lint:invalid-assignment] src/urllib3/util/ssl_.py:356:9: Object of type `int` is not assignable to attribute `verify_mode` of type `VerifyMode`
+- error[lint:invalid-assignment] src/urllib3/util/ssl_.py:360:9: Object of type `int` is not assignable to attribute `verify_mode` on type `Unknown | SSLContext`
++ error[lint:invalid-assignment] src/urllib3/util/ssl_.py:360:9: Object of type `int` is not assignable to attribute `verify_mode` of type `VerifyMode`
+- warning[lint:possibly-unbound-attribute] src/urllib3/util/ssl_.py:521:9: Attribute `_validate_ssl_context_for_tls_in_tls` on type `None | Literal[SSLTransport]` is possibly unbound
+- error[lint:call-non-callable] src/urllib3/util/ssl_.py:522:16: Object of type `None` is not callable
+- Found 537 diagnostics
++ Found 528 diagnostics
+
+ignite (https://github.com/pytorch/ignite)
+- warning[lint:possibly-unbound-attribute] examples/references/classification/imagenet/vis.py:92:61: Attribute `state` on type `Unknown | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] examples/references/segmentation/pascal_voc2012/vis.py:123:61: Attribute `state` on type `Unknown | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] ignite/engine/__init__.py:210:13: Attribute `scale` on type `Unknown | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] ignite/engine/__init__.py:212:17: Attribute `step` on type `Unknown | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] ignite/engine/__init__.py:213:17: Attribute `update` on type `Unknown | None` is possibly unbound
+- error[lint:invalid-assignment] ignite/handlers/utils.py:21:13: Object of type `Events | None` is not assignable to `Events`
+- warning[lint:call-possibly-unbound-method] ignite/metrics/classification_report.py:145:16: Method `__getitem__` of type `list | None` is possibly unbound
+- Found 2566 diagnostics
++ Found 2559 diagnostics
+
+tornado (https://github.com/tornadoweb/tornado)
+- error[lint:unsupported-operator] tornado/auth.py:236:22: Operator `+` is unsupported between objects of type `Literal["openid."]` and `Unknown | None`
+- error[lint:unsupported-operator] tornado/auth.py:241:31: Operator `+` is unsupported between objects of type `Literal["openid."]` and `Unknown | None`
+- warning[lint:call-possibly-unbound-method] tornado/autoreload.py:231:36: Method `__getitem__` of type `list | None | @Todo(specialized non-generic class)` is possibly unbound
+- error[lint:call-non-callable] tornado/httpclient.py:107:20: Object of type `None` is not callable
+- warning[lint:possibly-unbound-attribute] tornado/log.py:64:21: Attribute `initialise` on type `Unknown | None` is possibly unbound
+- Found 557 diagnostics
++ Found 552 diagnostics
+
+Expression (https://github.com/cognitedata/Expression)
+- error[lint:call-non-callable] expression/core/mailbox.py:87:17: Object of type `None` is not callable
+- Found 555 diagnostics
++ Found 554 diagnostics
+
+pwndbg (https://github.com/pwndbg/pwndbg)
+- error[lint:invalid-argument-type] pwndbg/aglib/godbg.py:576:43: Argument to this function is incorrect: Expected `str`, found `Unknown | str | None`
+- error[lint:unsupported-operator] pwndbg/aglib/godbg.py:627:49: Operator `+` is unsupported between objects of type `Unknown | int | None` and `int`
+- error[lint:unsupported-operator] pwndbg/aglib/godbg.py:628:36: Operator `+` is unsupported between objects of type `Unknown | int | None` and `int`
+- error[lint:unsupported-operator] pwndbg/commands/context.py:711:43: Operator `+` is unsupported between objects of type `int | None` and `Literal[1]`
+- warning[lint:possibly-unbound-attribute] pwndbg/integration/ida.py:147:33: Attribute `init_hexrays_plugin` on type `ServerProxy | None` is possibly unbound
+- Found 2827 diagnostics
++ Found 2822 diagnostics
+
+mitmproxy (https://github.com/mitmproxy/mitmproxy)
+- error[lint:invalid-argument-type] mitmproxy/net/tls.py:161:37: Argument to this function is incorrect: Expected `(Connection, bytes, /) -> object`, found `Unknown | MasterSecretLogger | None`
+- error[lint:call-non-callable] mitmproxy/tools/main.py:104:31: Object of type `None` is not callable
+- Found 2197 diagnostics
++ Found 2195 diagnostics
+
+vision (https://github.com/pytorch/vision)
+- error[lint:no-matching-overload] setup.py:133:30: No overload of function `split` matches arguments
+- warning[lint:possibly-unbound-attribute] torchvision/models/_api.py:228:101: Attribute `__name__` on type `ModuleType | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] torchvision/transforms/_functional_pil.py:18:46: Attribute `Image` on type `Unknown | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] torchvision/transforms/functional.py:161:49: Attribute `Image` on type `Unknown | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] torchvision/transforms/functional.py:202:49: Attribute `Image` on type `Unknown | None` is possibly unbound
+- Found 2469 diagnostics
++ Found 2464 diagnostics
+
+pyppeteer (https://github.com/pyppeteer/pyppeteer)
+- error[lint:call-non-callable] pyppeteer/page.py:939:29: Object of type `str` is not callable
+- error[lint:call-non-callable] pyppeteer/page.py:973:29: Object of type `str` is not callable
+- Found 174 diagnostics
++ Found 172 diagnostics
+
+boostedblob (https://github.com/hauntsaninja/boostedblob)
+- error[lint:unsupported-operator] boostedblob/copying.py:383:25: Operator `/` is unsupported between objects of type `BasePath | BlobPath | str` and `str`
+- error[lint:unsupported-operator] boostedblob/copying.py:456:36: Operator `/` is unsupported between objects of type `BasePath | BlobPath | str` and `str`
+- warning[lint:possibly-unbound-attribute] boostedblob/syncing.py:57:72: Attribute `search` on type `Unknown | Pattern[str] | None` is possibly unbound
+- Found 140 diagnostics
++ Found 137 diagnostics
+
+mypy (https://github.com/python/mypy)
+- error[lint:unresolved-attribute] mypy/checker.py:5942:35: Type `Expression` has no attribute `name`
+- error[lint:unresolved-attribute] mypy/checker.py:5943:48: Type `Expression` has no attribute `fullname`
+- error[lint:unresolved-attribute] mypy/checker.py:5944:28: Type `Expression` has no attribute `fullname`
+- error[lint:unresolved-attribute] mypy/checker.py:5946:31: Type `Expression` has no attribute `callee`
+- error[lint:unresolved-attribute] mypy/checker.py:5947:32: Type `Expression` has no attribute `callee`
+- error[lint:unresolved-attribute] mypy/checker.py:5948:33: Type `Expression` has no attribute `callee`
+- error[lint:unresolved-attribute] mypy/checker.py:5948:59: Type `Expression` has no attribute `callee`
+- error[lint:unresolved-attribute] mypy/checker.py:5949:32: Type `Expression` has no attribute `callee`
+- error[lint:unresolved-attribute] mypy/checker.py:5956:28: Type `Expression` has no attribute `name`
+- error[lint:unsupported-operator] mypy/erasetype.py:151:16: Operator `in` is not supported for types `TypeVarId` and `None`, in comparing `TypeVarId` with `@Todo(specialized non-generic class) | None`
+- error[lint:invalid-argument-type] mypy/stubgenc.py:338:50: Argument to this function is incorrect: Expected `Sized`, found `Unknown | None`
+- warning[lint:call-possibly-unbound-method] mypy/stubgenc.py:339:24: Method `__getitem__` of type `Unknown | None` is possibly unbound
+- error[lint:invalid-argument-type] mypy/stubgenc.py:339:54: Argument to this function is incorrect: Expected `Sized`, found `Unknown | None`
+- error[lint:unsupported-operator] mypy/stubgenc.py:353:35: Operator `in` is not supported for types `str` and `None`, in comparing `str` with `Unknown | dict[str, Any] | None`
+- warning[lint:call-possibly-unbound-method] mypy/stubgenc.py:354:24: Method `__getitem__` of type `Unknown | dict[str, Any] | None` is possibly unbound
+- error[lint:invalid-argument-type] mypyc/irbuild/statement.py:788:53: Argument to this function is incorrect: Expected `Value | AssignmentTarget`, found `Unknown | None | Value | AssignmentTarget`
+- Found 3275 diagnostics
++ Found 3259 diagnostics
+
+operator (https://github.com/canonical/operator)
+- error[lint:unsupported-operator] ops/_private/harness.py:3887:77: Operator `in` is not supported for types `Unknown` and `None`, in comparing `Unknown` with `(@Todo(specialized non-generic class) & None) | None | frozenset`
+- Found 248 diagnostics
++ Found 247 diagnostics
+
+AutoSplit (https://github.com/Toufool/AutoSplit)
+- warning[lint:possibly-unbound-attribute] src/AutoSplit.py:996:17: Attribute `accept` on type `QCloseEvent | None` is possibly unbound
+- Found 77 diagnostics
++ Found 76 diagnostics
+
+pytest (https://github.com/pytest-dev/pytest)
+- error[lint:call-non-callable] src/_pytest/unittest.py:145:21: Object of type `None` is not callable
+- error[lint:call-non-callable] src/_pytest/unittest.py:155:21: Object of type `None` is not callable
+- error[lint:call-non-callable] src/_pytest/unittest.py:185:17: Object of type `None` is not callable
+- error[lint:call-non-callable] src/_pytest/unittest.py:188:17: Object of type `None` is not callable
+- error[lint:invalid-return-type] testing/test_assertion.py:36:28: Return type does not match returned value: Expected `int`, found `int | None`
+- Found 918 diagnostics
++ Found 913 diagnostics
+
+arviz (https://github.com/arviz-devs/arviz)
+- warning[lint:possibly-unbound-attribute] arviz/data/base.py:99:33: Attribute `_TEXT_OR_BYTES` on type `Unknown | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] arviz/data/base.py:100:34: Attribute `collections_abc` on type `Unknown | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] arviz/data/base.py:101:12: Attribute `_is_namedtuple` on type `Unknown | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] arviz/data/base.py:102:12: Attribute `_is_attrs` on type `Unknown | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] arviz/data/base.py:106:27: Attribute `_yield_sorted_items` on type `Unknown | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] arviz/data/base.py:107:45: Attribute `_yield_sorted_items` on type `Unknown | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] arviz/data/base.py:107:45: Attribute `_yield_sorted_items` on type `Unknown | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] arviz/data/base.py:107:45: Attribute `_yield_sorted_items` on type `Unknown | None` is possibly unbound
+- error[lint:call-non-callable] arviz/plots/ecdfplot.py:274:15: Object of type `None` is not callable
+- Found 2664 diagnostics
++ Found 2655 diagnostics
+
+optuna (https://github.com/optuna/optuna)
+- error[lint:invalid-argument-type] optuna/_deprecated.py:95:34: Argument to this function is incorrect: Expected `str`, found `str | None`
+- error[lint:unsupported-operator] optuna/_deprecated.py:112:28: Operator `+` is unsupported between objects of type `Literal[" "]` and `str | None`
+- error[lint:unsupported-operator] optuna/_deprecated.py:173:32: Operator `+` is unsupported between objects of type `Literal[" "]` and `str | None`
+- error[lint:invalid-argument-type] optuna/_deprecated.py:191:38: Argument to this function is incorrect: Expected `str`, found `str | None`
+- error[lint:call-non-callable] optuna/importance/_base.py:154:13: Object of type `None` is not callable
+- error[lint:call-non-callable] optuna/importance/_base.py:175:22: Object of type `None` is not callable
+- error[lint:invalid-argument-type] optuna/logging.py:247:46: Argument to this function is incorrect: Expected `Handler`, found `Handler | None`
+- error[lint:invalid-argument-type] optuna/logging.py:259:43: Argument to this function is incorrect: Expected `Handler`, found `Handler | None`
+- error[lint:call-non-callable] optuna/samplers/_tpe/sampler.py:757:64: Object of type `None` is not callable
+- error[lint:invalid-argument-type] tests/study_tests/test_optimize.py:88:38: Argument to this function is incorrect: Expected `int | float`, found `int | float | None`
+- Found 2287 diagnostics
++ Found 2277 diagnostics
+
+rich (https://github.com/Textualize/rich)
+- warning[lint:possibly-unbound-attribute] rich/pretty.py:205:13: Attribute `print` on type `Console | None` is possibly unbound
+- error[lint:unsupported-operator] rich/pretty.py:606:17: Operator `>` is not supported for types `int` and `None`, in comparing `int` with `int | None`
+- error[lint:unsupported-operator] rich/pretty.py:608:25: Operator `-` is unsupported between objects of type `int` and `int | None`
+- error[lint:unsupported-operator] rich/pretty.py:631:55: Operator `>=` is not supported for types `int` and `None`, in comparing `int` with `int | None`
+- error[lint:unsupported-operator] rich/pretty.py:862:47: Operator `>` is not supported for types `int` and `None`, in comparing `int` with `int | None`
+- error[lint:unsupported-operator] rich/pretty.py:863:52: Operator `-` is unsupported between objects of type `int` and `int | None`
+- error[lint:unsupported-operator] rich/syntax.py:503:35: Operator `-` is unsupported between objects of type `Unknown | int | None` and `Literal[1]`
+- error[lint:unsupported-operator] rich/syntax.py:519:45: Operator `>=` is not supported for types `int` and `None`, in comparing `Literal[1, 2]` with `Unknown | int | None`
+- Found 502 diagnostics
++ Found 494 diagnostics
+
+mongo-python-driver (https://github.com/mongodb/mongo-python-driver)
+- warning[lint:possibly-unbound-attribute] pymongo/pyopenssl_context.py:310:24: Attribute `encode` on type `str | None` is possibly unbound
+- Found 844 diagnostics
++ Found 843 diagnostics
+
+meson (https://github.com/mesonbuild/meson)
+- error[lint:unresolved-attribute] mesonbuild/cargo/interpreter.py:82:19: Type `ModuleType | None` has no attribute `load`
+- warning[lint:possibly-unbound-attribute] mesonbuild/cmake/generator.py:53:29: Attribute `properties` on type `CMakeTarget | None` is possibly unbound
+- error[lint:invalid-argument-type] mesonbuild/interpreterbase/decorators.py:198:49: Argument to this function is incorrect: Expected `Sized`, found `list | None`
+- error[lint:invalid-argument-type] mesonbuild/interpreterbase/decorators.py:199:84: Argument to this function is incorrect: Expected `Sized`, found `list | None`
+- warning[lint:call-possibly-unbound-method] mesonbuild/interpreterbase/decorators.py:203:56: Method `__getitem__` of type `list | None` is possibly unbound
+- error[lint:invalid-argument-type] mesonbuild/interpreterbase/decorators.py:230:47: Argument to this function is incorrect: Expected `Sized`, found `list | None`
+- error[lint:invalid-argument-type] mesonbuild/interpreterbase/decorators.py:231:44: Argument to this function is incorrect: Expected `Sized`, found `list | None`
+- error[lint:unsupported-operator] mesonbuild/interpreterbase/decorators.py:493:28: Operator `in` is not supported for types `@Todo(specialized non-generic class)` and `None`, in comparing `@Todo(specialized non-generic class) & ~ContainerTypeInfo & ~type` with `Unknown | None | list`
+- warning[lint:possibly-unbound-attribute] mesonbuild/interpreterbase/decorators.py:496:33: Attribute `keys` on type `Unknown | None | list` is possibly unbound
+- error[lint:too-many-positional-arguments] mesonbuild/modules/sourceset.py:235:50: Too many positional arguments to bound method `get`: expected 1, got 2
+- warning[lint:call-possibly-unbound-method] mesonbuild/modules/sourceset.py:243:50: Method `__getitem__` of type `Unknown | tuple[str | int, str | None] | None` is possibly unbound
+- error[lint:invalid-argument-type] run_meson_command_tests.py:37:48: Argument to this function is incorrect: Expected `str`, found `Unknown | None | (Unknown & ~Literal["posix_local"]) | Literal["posix_prefix"]`
+- error[lint:invalid-argument-type] run_meson_command_tests.py:46:46: Argument to this function is incorrect: Expected `str`, found `Unknown | None | (Unknown & ~Literal["posix_local"]) | Literal["posix_prefix"]`
+- error[lint:unsupported-operator] run_project_tests.py:800:29: Operator `in` is not supported for types `Unknown` and `_VT`, in comparing `Unknown` with `Unknown | (_VT & ~Literal["thirdparty"]) | (Unknown & ~Literal["thirdparty"]) | None`
++ error[lint:unsupported-operator] run_project_tests.py:800:29: Operator `in` is not supported for types `Unknown` and `_VT`, in comparing `Unknown` with `(Unknown & ~None) | (_VT & ~Literal["thirdparty"] & ~None) | (Unknown & ~Literal["thirdparty"] & ~None)`
+- warning[lint:possibly-unbound-attribute] run_project_tests.py:1607:13: Attribute `unlink` on type `Unknown | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] run_project_tests.py:1612:13: Attribute `unlink` on type `Unknown | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] run_project_tests.py:1617:13: Attribute `unlink` on type `Unknown | None` is possibly unbound
+- error[lint:unsupported-operator] run_tests.py:324:47: Operator `+` is unsupported between objects of type `Unknown | list | None` and `list`
+- Found 1695 diagnostics
++ Found 1678 diagnostics
+
+static-frame (https://github.com/static-frame/static-frame)
+- warning[lint:call-possibly-unbound-method] static_frame/core/container_util.py:205:27: Method `__getitem__` of type `@Todo(specialized non-generic class) | IndexBase | ndarray[Any, Any] | None` is possibly unbound
+- warning[lint:call-possibly-unbound-method] static_frame/core/container_util.py:266:27: Method `__getitem__` of type `@Todo(specialized non-generic class) | None | IndexBase` is possibly unbound
+- warning[lint:call-possibly-unbound-method] static_frame/core/container_util.py:309:27: Method `__getitem__` of type `@Todo(specialized non-generic class) | IndexBase | None` is possibly unbound
+- error[lint:call-non-callable] static_frame/core/frame.py:1046:42: Object of type `None` is not callable
+- error[lint:call-non-callable] static_frame/core/frame.py:1048:42: Object of type `None` is not callable
+- error[lint:call-non-callable] static_frame/core/frame.py:1052:42: Object of type `None` is not callable
+- error[lint:call-non-callable] static_frame/core/frame.py:1212:66: Object of type `None` is not callable
+- error[lint:call-non-callable] static_frame/core/frame.py:1342:66: Object of type `None` is not callable
+- error[lint:call-non-callable] static_frame/core/frame.py:1442:27: Object of type `None` is not callable
+- error[lint:call-non-callable] static_frame/core/frame.py:1444:26: Object of type `None` is not callable
+- error[lint:call-non-callable] static_frame/core/frame.py:1446:26: Object of type `None` is not callable
+- warning[lint:possibly-unbound-attribute] static_frame/core/frame.py:1549:35: Attribute `to_type_filter_array` on type `StoreFilter | None` is possibly unbound
+- error[lint:call-non-callable] static_frame/core/frame.py:1553:29: Object of type `None` is not callable
+- error[lint:call-non-callable] static_frame/core/frame.py:3079:29: Object of type `None` is not callable
+- warning[lint:possibly-unbound-attribute] static_frame/core/quilt.py:586:44: Attribute `cell_placeholder` on type `DisplayConfig | None` is possibly unbound
+- error[lint:invalid-argument-type] static_frame/test/property/strategies.py:750:21: Argument to this function is incorrect: Expected `DTGroup`, found `DTGroup | None`
+- error[lint:invalid-argument-type] static_frame/test/property/strategies.py:811:21: Argument to this function is incorrect: Expected `(...) -> IndexHierarchy`, found `bound method type[Index].from_labels(labels: @Todo(specialized non-generic class), *, /, name: Unknown = None) -> I`
+- error[lint:invalid-argument-type] static_frame/test/property/strategies.py:882:21: Argument to this function is incorrect: Expected `(...) -> IndexHierarchy`, found `bound method type[Index].from_labels(labels: @Todo(specialized non-generic class), *, /, name: Unknown = None) -> I`
+- Found 5646 diagnostics
++ Found 5628 diagnostics
+
+sphinx (https://github.com/sphinx-doc/sphinx)
+- error[lint:unsupported-operator] sphinx/ext/autodoc/__init__.py:268:21: Operator `not in` is not supported for types `Unknown` and `None`, in comparing `Unknown` with `@Todo(specialized non-generic class) | None`
+- error[lint:unsupported-operator] sphinx/ext/extlinks.py:115:25: Operator `%` is unsupported between objects of type `str | None` and `str`
+- Found 781 diagnostics
++ Found 779 diagnostics
+
+aiohttp (https://github.com/aio-libs/aiohttp)
+- warning[lint:possibly-unbound-attribute] aiohttp/pytest_plugin.py:250:37: Attribute `EventLoopPolicy` on type `Unknown | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] aiohttp/resolver.py:91:26: Attribute `DNSResolver` on type `Unknown | None` is possibly unbound
+- Found 237 diagnostics
++ Found 235 diagnostics
+
+pycryptodome (https://github.com/Legrandin/pycryptodome)
+- warning[lint:possibly-unbound-attribute] lib/Crypto/Cipher/AES.py:94:27: Attribute `AESNI_start_operation` on type `Unknown | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] lib/Crypto/Cipher/AES.py:95:26: Attribute `AESNI_stop_operation` on type `Unknown | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] lib/Crypto/Util/number.py:276:16: Attribute `getStrongPrime` on type `Unknown | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] lib/Crypto/Util/number.py:388:16: Attribute `isPrime` on type `Unknown | None` is possibly unbound
+- Found 2261 diagnostics
++ Found 2257 diagnostics
+
+cloud-init (https://github.com/canonical/cloud-init)
+- error[lint:invalid-return-type] cloudinit/url_helper.py:782:16: Return type does not match returned value: Expected `int | float`, found `int | float | None`
+- error[lint:call-non-callable] cloudinit/url_helper.py:880:51: Object of type `None` is not callable
+- warning[lint:possibly-unbound-attribute] tests/unittests/sources/test_gce.py:117:30: Attribute `keys` on type `Unknown | None` is possibly unbound
+- warning[lint:call-possibly-unbound-method] tests/unittests/sources/test_gce.py:118:42: Method `__getitem__` of type `Unknown | None` is possibly unbound
+- Found 744 diagnostics
++ Found 740 diagnostics
+
+openlibrary (https://github.com/internetarchive/openlibrary)
+- error[lint:call-non-callable] openlibrary/core/helpers.py:92:24: Object of type `None` is not callable
+- warning[lint:possibly-unbound-attribute] openlibrary/data/db.py:124:17: Attribute `get_multi` on type `Unknown | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] openlibrary/data/db.py:219:16: Attribute `set_multi` on type `Unknown | None` is possibly unbound
+- error[lint:call-non-callable] openlibrary/plugins/upstream/account.py:929:64: Object of type `None` is not callable
+- error[lint:call-non-callable] openlibrary/plugins/upstream/account.py:929:64: Object of type `None` is not callable
+- error[lint:call-non-callable] openlibrary/plugins/upstream/account.py:929:64: Object of type `None` is not callable
+- error[lint:call-non-callable] openlibrary/plugins/upstream/account.py:931:39: Object of type `None` is not callable
+- error[lint:unsupported-operator] openlibrary/utils/bulkimport.py:346:31: Operator `not in` is not supported for types `Unknown` and `None`, in comparing `(Unknown & ~AlwaysTruthy) | Unknown` with `Unknown | None`
+- Found 818 diagnostics
++ Found 810 diagnostics
+
+setuptools (https://github.com/pypa/setuptools)
+- warning[lint:possibly-unbound-attribute] setuptools/_vendor/autocommand/autoasync.py:130:13: Attribute `create_task` on type `AbstractEventLoop | Unknown | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] setuptools/_vendor/autocommand/autoasync.py:133:13: Attribute `run_forever` on type `AbstractEventLoop | Unknown | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] setuptools/_vendor/autocommand/autoasync.py:135:20: Attribute `run_until_complete` on type `AbstractEventLoop | Unknown | None` is possibly unbound
+- error[lint:call-non-callable] setuptools/compat/py311.py:25:13: Object of type `None` is not callable
+- Found 1285 diagnostics
++ Found 1281 diagnostics
+
+paasta (https://github.com/yelp/paasta)
+- warning[lint:possibly-unbound-attribute] paasta_tools/api/api.py:279:9: Attribute `config` on type `Unknown | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] paasta_tools/api/tweens/request_logger.py:74:13: Attribute `log_line` on type `Unknown | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] paasta_tools/oom_logger.py:245:9: Attribute `events` on type `Unknown | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] paasta_tools/oom_logger.py:249:19: Attribute `create_counter` on type `Unknown | None` is possibly unbound
+- Found 1066 diagnostics
++ Found 1062 diagnostics
+
+bokeh (https://github.com/bokeh/bokeh)
+- error[lint:unsupported-operator] src/bokeh/core/property/wrappers.py:501:49: Operator `>` is not supported for types `int` and `None`, in comparing `int` with `int | None`
+- error[lint:unsupported-operator] src/bokeh/core/property/wrappers.py:502:34: Operator `-` is unsupported between objects of type `int` and `int | None`
+- error[lint:invalid-argument-type] src/bokeh/core/validation/decorators.py:80:48: Argument to this function is incorrect: Expected `int`, found `int | str | Issue`
+- error[lint:invalid-assignment] src/bokeh/core/validation/decorators.py:85:17: Object of type `int | str | Issue` is not assignable to `Issue`
+- error[lint:call-non-callable] src/bokeh/resources.py:634:20: Object of type `None` is not callable
+- warning[lint:possibly-unbound-attribute] src/bokeh/server/views/ws.py:254:21: Attribute `received` on type `MessageTestPort | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] src/bokeh/server/views/ws.py:283:17: Attribute `sent` on type `MessageTestPort | None` is possibly unbound
+- error[lint:no-matching-overload] src/bokeh/sphinxext/bokeh_plot.py:337:12: No overload of bound method `replace` matches arguments
+- error[lint:invalid-argument-type] src/bokeh/util/logconfig.py:65:36: Argument to this function is incorrect: Expected `Handler`, found `Handler | None`
+- Found 1921 diagnostics
++ Found 1912 diagnostics
+
+streamlit (https://github.com/streamlit/streamlit)
+- warning[lint:call-possibly-unbound-method] lib/streamlit/config.py:350:13: Method `__getitem__` of type `dict[str, Unknown] | None` is possibly unbound
+- error[lint:unsupported-operator] lib/streamlit/config.py:1334:8: Operator `not in` is not supported for types `str` and `None`, in comparing `str` with `dict[str, Unknown] | None`
+- warning[lint:call-possibly-unbound-method] lib/streamlit/config.py:1346:9: Method `__getitem__` of type `dict[str, Unknown] | None` is possibly unbound
+- error[lint:call-non-callable] lib/streamlit/elements/widgets/button_group.py:859:27: Object of type `None` is not callable
+- error[lint:unsupported-operator] lib/streamlit/runtime/forward_msg_queue.py:151:36: Operator `not in` is not supported for types `Unknown` and `None`, in comparing `Unknown` with `@Todo(specialized non-generic class) | None`
+- Found 4292 diagnostics
++ Found 4287 diagnostics
+
+apprise (https://github.com/caronc/apprise)
+- error[lint:not-iterable] apprise/persistent_store.py:1250:37: Object of type `Unknown | None | list` may not be iterable
+- error[lint:unsupported-operator] apprise/persistent_store.py:1253:38: Operator `in` is not supported for types `@Todo(Support for `typing.Self`)` and `None`, in comparing `@Todo(Support for `typing.Self`)` with `Unknown | None | list`
+- Found 3624 diagnostics
++ Found 3622 diagnostics
+
+rotki (https://github.com/rotki/rotki)
+- warning[lint:possibly-unbound-attribute] rotkehlchen/tests/api/test_history_base_entry.py:104:31: Attribute `items` on type `dict[str, Any] | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] rotkehlchen/tests/api/test_history_base_entry.py:104:31: Attribute `items` on type `dict[str, Any] | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] rotkehlchen/tests/api/test_history_base_entry.py:104:31: Attribute `items` on type `dict[str, Any] | None` is possibly unbound
+- error[lint:unsupported-operator] rotkehlchen/tests/utils/blockchain.py:189:45: Operator `in` is not supported for types `str` and `None`, in comparing `Literal["beaconchain"]` with `@Todo(specialized non-generic class) | None`
+- error[lint:unsupported-operator] rotkehlchen/tests/utils/blockchain.py:644:38: Operator `in` is not supported for types `@Todo(map_with_boundness: intersections with negative contributions)` and `None`, in comparing `@Todo(map_with_boundness: intersections with negative contributions)` with `@Todo(specialized non-generic class) | None`
+- Found 2243 diagnostics
++ Found 2238 diagnostics
+
+dd-trace-py (https://github.com/DataDog/dd-trace-py)
+- error[lint:call-non-callable] ddtrace/contrib/internal/celery/app.py:100:33: Object of type `None` is not callable
+- error[lint:call-non-callable] ddtrace/contrib/internal/kafka/patch.py:322:15: Object of type `None` is not callable
+- warning[lint:possibly-unbound-attribute] ddtrace/contrib/internal/kafka/patch.py:322:44: Attribute `KEY` on type `Unknown | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] ddtrace/contrib/internal/langchain/patch.py:131:41: Attribute `OpenAI` on type `Unknown | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] ddtrace/contrib/internal/langchain/patch.py:133:41: Attribute `llms` on type `Unknown | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] ddtrace/contrib/internal/langchain/patch.py:145:41: Attribute `ChatOpenAI` on type `Unknown | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] ddtrace/contrib/internal/langchain/patch.py:147:41: Attribute `chat_models` on type `Unknown | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] ddtrace/contrib/internal/langchain/patch.py:159:41: Attribute `PineconeVectorStore` on type `Unknown | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] ddtrace/contrib/internal/langchain/patch.py:161:41: Attribute `vectorstores` on type `Unknown | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] ddtrace/contrib/internal/langchain/patch.py:704:42: Attribute `output_parsers` on type `Unknown | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] ddtrace/contrib/internal/langchain/patch.py:957:20: Attribute `embeddings` on type `Unknown | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] ddtrace/contrib/internal/langchain/patch.py:960:30: Attribute `embeddings` on type `Unknown | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] ddtrace/contrib/internal/langchain/patch.py:964:21: Attribute `__name__` on type `Unknown | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] ddtrace/contrib/internal/langchain/patch.py:969:30: Attribute `embeddings` on type `Unknown | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] ddtrace/contrib/internal/langchain/patch.py:973:21: Attribute `__name__` on type `Unknown | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] ddtrace/contrib/internal/langchain/patch.py:978:20: Attribute `vectorstores` on type `Unknown | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] ddtrace/contrib/internal/langchain/patch.py:981:30: Attribute `vectorstores` on type `Unknown | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] ddtrace/contrib/internal/langchain/patch.py:985:21: Attribute `__name__` on type `Unknown | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] ddtrace/contrib/internal/langchain/patch.py:1000:20: Attribute `embeddings` on type `Unknown | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] ddtrace/contrib/internal/langchain/patch.py:1002:30: Attribute `embeddings` on type `Unknown | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] ddtrace/contrib/internal/langchain/patch.py:1005:32: Attribute `embeddings` on type `Unknown | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] ddtrace/contrib/internal/langchain/patch.py:1007:30: Attribute `embeddings` on type `Unknown | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] ddtrace/contrib/internal/langchain/patch.py:1010:32: Attribute `embeddings` on type `Unknown | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] ddtrace/contrib/internal/langchain/patch.py:1012:20: Attribute `vectorstores` on type `Unknown | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] ddtrace/contrib/internal/langchain/patch.py:1014:30: Attribute `vectorstores` on type `Unknown | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] ddtrace/contrib/internal/langchain/patch.py:1017:32: Attribute `vectorstores` on type `Unknown | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] ddtrace/contrib/internal/langchain/patch.py:1118:16: Attribute `OpenAIEmbeddings` on type `Unknown | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] ddtrace/contrib/internal/langchain/patch.py:1120:16: Attribute `PineconeVectorStore` on type `Unknown | None` is possibly unbound
+- error[lint:call-non-callable] ddtrace/contrib/internal/pylibmc/addrs.py:14:12: Object of type `None` is not callable
+- warning[lint:possibly-unbound-attribute] ddtrace/errortracking/_handled_exceptions/bytecode_reporting.py:113:9: Attribute `instrument_module_conditionally` on type `HandledExceptionReportingInjector | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] ddtrace/internal/core/__init__.py:375:44: Attribute `current_root_span` on type `Unknown | None` is possibly unbound
+- error[lint:call-non-callable] ddtrace/internal/datastreams/kafka.py:59:13: Object of type `None` is not callable
+- error[lint:call-non-callable] ddtrace/internal/module.py:57:16: Object of type `None` is not callable
+- error[lint:not-iterable] ddtrace/internal/utils/retry.py:26:22: Object of type `repeat[Unknown] | int | float | @Todo(specialized non-generic class)` may not be iterable
+- warning[lint:possibly-unbound-attribute] ddtrace/internal/wrapping/asyncs.py:552:27: Attribute `bind` on type `Unknown | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] ddtrace/internal/wrapping/generators.py:397:23: Attribute `bind` on type `Unknown | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] ddtrace/profiling/_asyncio.py:96:12: Attribute `get_object` on type `Unknown | None` is possibly unbound
+- error[lint:call-non-callable] ddtrace/vendor/psutil/__init__.py:1639:21: Object of type `None` is not callable
+- error[lint:invalid-argument-type] ddtrace/vendor/psutil/_common.py:403:30: Argument to this function is incorrect: Expected `int`, found `@Todo(Attribute access on enum classes) | None`
+- warning[lint:possibly-unbound-attribute] scripts/diff.py:108:13: Attribute `debug` on type `Logger | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] scripts/diff.py:109:13: Attribute `debug` on type `Logger | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] scripts/diff.py:144:13: Attribute `debug` on type `Logger | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] scripts/diff.py:145:13: Attribute `debug` on type `Logger | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] scripts/diff.py:160:13: Attribute `debug` on type `Logger | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] scripts/diff.py:161:13: Attribute `debug` on type `Logger | None` is possibly unbound
+- warning[lint:call-possibly-unbound-method] tests/appsec/contrib_appsec/utils.py:385:24: Method `__getitem__` of type `Unknown | None` is possibly unbound
++ warning[lint:call-possibly-unbound-method] tests/appsec/contrib_appsec/utils.py:385:24: Method `__getitem__` of type `@Todo(map_with_boundness: intersections with negative contributions) | None` is possibly unbound
+- warning[lint:call-possibly-unbound-method] tests/appsec/contrib_appsec/utils.py:386:28: Method `__getitem__` of type `Unknown | None` is possibly unbound
++ warning[lint:call-possibly-unbound-method] tests/appsec/contrib_appsec/utils.py:386:28: Method `__getitem__` of type `@Todo(map_with_boundness: intersections with negative contributions) | None` is possibly unbound
+- error[lint:invalid-argument-type] tests/ci_visibility/util.py:95:56: Argument to this function is incorrect: Expected `set`, found `Unknown | None`
+- Found 8774 diagnostics
++ Found 8728 diagnostics
+
+jax (https://github.com/google/jax)
+- error[lint:invalid-argument-type] jax/_src/api.py:1095:43: Argument to this function is incorrect: Expected `Sized`, found `int | None | @Todo(specialized non-generic class)`
+- error[lint:invalid-argument-type] jax/_src/api.py:1098:39: Argument to this function is incorrect: Expected `Sized`, found `int | None | @Todo(specialized non-generic class)`
+- warning[lint:possibly-unbound-attribute] jax/_src/buffer_callback.py:140:34: Attribute `items` on type `dict[int, int] | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] jax/_src/buffer_callback.py:140:34: Attribute `items` on type `dict[int, int] | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] jax/_src/buffer_callback.py:140:34: Attribute `items` on type `dict[int, int] | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] jax/_src/compilation_cache.py:186:18: Attribute `ZstdCompressor` on type `Unknown | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] jax/_src/compilation_cache.py:193:20: Attribute `ZstdDecompressor` on type `Unknown | None` is possibly unbound
+- error[lint:call-non-callable] jax/_src/config.py:604:7: Object of type `None` is not callable
+- warning[lint:possibly-unbound-attribute] jax/_src/custom_partitioning_sharding_rule.py:210:7: Attribute `append` on type `@Todo(specialized non-generic class) | None` is possibly unbound
+- error[lint:invalid-argument-type] jax/_src/ffi.py:457:14: Argument to this function is incorrect: Expected `Sized`, found `@Todo(specialized non-generic class) | None`
+- error[lint:invalid-argument-type] jax/_src/ffi.py:460:45: Argument to this function is incorrect: Expected `Sized`, found `@Todo(specialized non-generic class) | None`
+- error[lint:invalid-argument-type] jax/_src/ffi.py:467:14: Argument to this function is incorrect: Expected `Sized`, found `@Todo(specialized non-generic class) | None`
+- error[lint:invalid-argument-type] jax/_src/ffi.py:470:46: Argument to this function is incorrect: Expected `Sized`, found `@Todo(specialized non-generic class) | None`
+- warning[lint:possibly-unbound-attribute] jax/_src/ffi.py:476:34: Attribute `items` on type `dict[int, int] | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] jax/_src/ffi.py:476:34: Attribute `items` on type `dict[int, int] | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] jax/_src/ffi.py:476:34: Attribute `items` on type `dict[int, int] | None` is possibly unbound
+- error[lint:not-iterable] jax/_src/lax/linalg.py:2825:57: Object of type ...*[Comment body truncated]*
+
+---
+
+_Review comment by @carljm on `crates/red_knot_python_semantic/src/semantic_index/builder.rs`:1884 on 2025-04-25 22:27_
+
+This seems like a duplication of the existing eager-nested-scopes handling, just a different way to implement it. With eager nested scopes, we don't use `ScopedUseId`, and we snapshot the bindings in the outer scope after the nested scope is visited. But fundamentally it seems like it provides exactly the same information -- snapshots of the visible bindings of symbols from outer scopes that are referenced in eager nested scopes. Why do we need both? Is it possible to implement the functionality in this PR used the existing eager-nested-scopes bindings instead? If not, why not?
+
+---
+
+_Review comment by @carljm on `crates/red_knot_python_semantic/src/semantic_index/builder.rs`:1879 on 2025-04-25 22:32_
+
+Hmm, up until now my mental model of the semantics of `mark_used` is that it means a symbol is used _in that same scope_, not that it may be referenced from a nested scope. I think we may not even really make any use of the `USED` flag currently, so maybe it doesn't even matter currently? (No test fails if this line is removed.) If that's the case, I would probably remove this line and keep the semantics same-scope.
+
+---
+
+_Review comment by @carljm on `crates/red_knot_python_semantic/src/semantic_index/builder.rs`:1883 on 2025-04-25 22:35_
+
+If the symbol is found in a scope, and is bound in that scope, and the scope is not a class scope, then it seems we could break off the scope walking at that point? That could potentially save a lot of useless extra snapshotting in outer scopes, if the name is shadowed in an inner scope.
+
+---
+
+_Review comment by @carljm on `crates/red_knot_python_semantic/src/semantic_index/use_def.rs`:572 on 2025-04-26 00:28_
+
+I like the idea of putting this method directly on `ConstraintsIterator`!
+
+---
+
+_Label `red-knot` added by @AlexWaygood on 2025-04-28 11:48_
+
+---
+
+_Review comment by @carljm on `crates/red_knot_python_semantic/src/types/narrow.rs`:42 on 2025-04-28 17:21_
+
+The doc comment above this function needs a few minor updates to match this change to the signature.
+
+---
+
+_Review comment by @carljm on `crates/red_knot_python_semantic/src/semantic_index/builder.rs`:1876 on 2025-04-28 17:27_
+
+For narrowing in a given scope to apply to a nested scope, it requires that the nested scope be eager; it doesn't require that the outer scope be eager?
+
+I think maybe this example, which fails to narrow in this PR, is related?
+
+```py
+x: str | int = 1
+def _():
+    if isinstance(x, int):
+        class C:
+            reveal_type(x)  # in this PR `str | int`, but should be `int`?
+```
+
+The function scope is not eager, so we see `str | int` from the global scope. But the `isinstance` narrowing within the function should still apply, because everything inside it is eager?
+
+---
+
+_Review comment by @carljm on `crates/red_knot_python_semantic/resources/mdtest/narrow/conditionals/nested.md`:64 on 2025-04-28 18:01_
+
+The limitation here is that we don't do narrowing for `if` clauses in comprehensions?
+
+At first I thought it was that we don't support comprehensions at all, but I think that's not right, since I see a comprehension case below; maybe the comment can clarify?
+
+---
+
+_Review comment by @carljm on `crates/red_knot_python_semantic/resources/mdtest/narrow/conditionals/nested.md`:49 on 2025-04-28 18:05_
+
+Nit: our usual "literate test suite" style usually involves breaking up tests into more separate cases than this, with some commentary explaining what functionality each test is supposed to demonstrate, for the benefit of future readers. (Even if this results in a bit more duplication of setting up test context.) It's not a blocker for the PR, but once the PR is otherwise ready I might make an extra pass over this test to break it up a bit.
+
+---
+
+_Review comment by @carljm on `crates/red_knot_python_semantic/src/types/infer.rs`:4679 on 2025-04-28 18:13_
+
+This technique of using the constraints from the first visible binding is clever, but I don't think it works in all cases. Here's one case where it doesn't work:
+
+```py
+def _(x: str | int):
+    class D:
+        if isinstance(x, int):
+            x = "foo"
+            class C:
+                reveal_type(x)
+```
+
+The `x = "foo"` binding is not visible to the nested scope, because class scopes in general are not visible to nested scopes. But because we still see it as the sole visible binding at the synthetic "use", and we see no narrowing constraints attached to it, we don't narrow from the `isinstance` as we should. Effectively, in a class scope we should always treat the symbol as "unbound" and use narrowing constraints attached to unbound, not to some other binding which is not visible to nested scopes.
+
+I feel like this is more general than just class scopes, though. In general this narrowing in intermediate scopes only applies when the name is unbound (or might be unbound) in that scope, and we are walking up to an enclosing scope. So I don't think we should ever be applying narrowing constraints here if "unbound" is not visible (except in class scopes, where we need to consider "unbound" visible even when it looks like it wouldn't be!)
+
+---
+
+_Review comment by @carljm on `crates/red_knot_python_semantic/src/types/infer.rs`:4674 on 2025-04-28 18:14_
+
+We already walk up enclosing scopes below. Is it possible that we can just do one walk, both looking for the symbol and collecting applicable bindings, instead of two walks? It feels like this will help us avoid logic duplication (e.g. for things like "names in class scopes are not visible to nested scopes") which will help us avoid bugs.
+
+---
+
+_@carljm reviewed on 2025-04-28 18:16_
+
+Thank you for this PR! This is a very valuable feature, and it is clearly impactful in the ecosystem checks -- from what I can tell, it removes a lot of false positives.
+
+I do have some questions about the implementation; it feels very "layered on top", as if it tries to only add new code and avoid touching existing code, and it seems like this results in some avoidable duplication (both of logic, and of real runtime work).
+
+---
+
+_Review request for @AlexWaygood removed by @AlexWaygood on 2025-04-28 18:42_
+
+---
+
+_@mtshiba reviewed on 2025-04-30 10:44_
+
+---
+
+_Review comment by @mtshiba on `crates/red_knot_python_semantic/src/semantic_index/builder.rs`:1884 on 2025-04-30 10:44_
+
+If it's not my misunderstanding, this handling cannot be done within eager-nested-scopes handling, i.e. `pop_scope`. It can be seen, for example, in the following code:
+
+```python
+def _(x: str | int):
+    class C:
+        if isinstance(x, int):
+            # symbol_states[symbol].bindings: [x: int = <unbound>]
+            # snapshot here
+            reveal_type(x)  # int
+        if isinstance(x, str):
+            # .bindings: [x: str = <unbound>]
+            # snapshot here (2)
+            reveal_type(x)  # str
+        # .bindings: [x = <unbound>]
+```
+
+There are multiple different narrowing constraints in the class scope, and to get the correct constraint, we need to key in the use of variable.
+So we need to keep flow-sensitive variable information and I think it should be stored in `bindings_at_use`.
+
+---
+
+_@mtshiba reviewed on 2025-04-30 13:48_
+
+---
+
+_Review comment by @mtshiba on `crates/red_knot_python_semantic/src/types/infer.rs`:4679 on 2025-04-30 13:48_
+
+I see, thank you for the explanation.
+
+But I'm now in trouble: when an unbound binding is overwritten, the binding to which the narrowing constraint should be associated no longer exists.
+`SymbolBindings::record_binding` clears `live_bindings`, but if we leave it without doing this, it will conflict with the important role of the unbound binding, which is to ensure that the variable is definitely bound by its absence.
+So we should leave it during the scope visiting and delete it when the actual bindings are found in `pop_scope`? I'll give it a try anyway.
+
+---
+
+_@carljm reviewed on 2025-04-30 18:19_
+
+---
+
+_Review comment by @carljm on `crates/red_knot_python_semantic/src/semantic_index/builder.rs`:1884 on 2025-04-30 18:19_
+
+Yes, I see, that makes sense. For snapshotting the bindings in enclosing scopes, doing it at `pop_scope` would work, but we also need to snapshot the constraints on the "unbound" binding in the current scope, and for that we can't use the eager-nested-scopes handling.
+
+It still seems to me that the rest of it (the "walking up outer scopes" part) should be redundant? Perhaps the best solution is for this code here to replace the eager-nested-scopes handling in `pop_scope`? But I'm not sure without trying it. 
+
+---
+
+_@carljm reviewed on 2025-04-30 18:43_
+
+---
+
+_Review comment by @carljm on `crates/red_knot_python_semantic/src/types/infer.rs`:4679 on 2025-04-30 18:43_
+
+Yes, I think to handle this correctly it would require some special-casing of the "unbound" binding, where we track narrowing constraints on it even when it is not actually live, and we provide special use-def map API to get the narrowing constraints on it specifically.
+
+Does that seem possible?
+
+---
+
+_Comment by @codspeed-hq[bot] on 2025-05-01 17:45_
+
+<!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+<!-- __CODSPEED_INSTRUMENTATION_PERFORMANCE_REPORT_COMMENT__ -->
+
+## [CodSpeed Performance Report](https://codspeed.io/astral-sh/ruff/branches/mtshiba%3Anested-narrowing)
+
+### Merging #17630 will **not alter performance**
+
+<sub>Comparing <code>mtshiba:nested-narrowing</code> (9e04457) with <code>main</code> (ada4c4c)</sub>
+
+
+
+### Summary
+
+`✅ 33` untouched benchmarks  
+
+
+
+
+
+---
+
+_@mtshiba reviewed on 2025-05-01 17:59_
+
+---
+
+_Review comment by @mtshiba on `crates/red_knot_python_semantic/src/types/infer.rs`:4679 on 2025-05-01 17:59_
+
+I've made it so that narrowing constraints can be referenced even after the unbound binding becomes invisible, by having `SymbolBindings` also retain narrowing constraints.
+Also, `UseDefMap` can now obtain a `ConstraintsIterator` directly from `ScopedUseId` (`UseDefMap::narrowing_constraints_at_use`).
+
+But it seems like a regression is occurring.
+
+
+
+---
+
+_Review comment by @carljm on `crates/red_knot_python_semantic/src/semantic_index/builder.rs`:1876 on 2025-05-02 04:53_
+
+If the scope is a class scope, then names bound in it are not visible to nested scopes, and we will walk further up to find the name; this doesn't seem to be handled here?
+
+---
+
+_Review comment by @carljm on `crates/red_knot_python_semantic/resources/mdtest/narrow/conditionals/nested.md`:49 on 2025-05-02 04:56_
+
+These tests are looking really good!
+
+I think I showed this example in a previous comment, but it looks like we still don't have a test for this case?
+
+```py
+def _(x: str | int):
+    class D:
+        if isinstance(x, int):
+            x = "foo"
+            class C:
+                reveal_type(x)  # revealed: int
+```
+
+---
+
+_Review comment by @carljm on `crates/red_knot_python_semantic/src/semantic_index/use_def/symbol_state.rs`:188 on 2025-05-02 05:06_
+
+Does it help the regression if we only maintain this extra narrowing constraint in a class scope? I think that should be the only place where we need it, because we need to effectively pretend that no local binding exists in a class scope (when looking up a name from a nested scope). In any other scope, we can only be doing this extra narrowing if the symbol may be unbound, in which case "unbound" binding is visible anyway.
+
+---
+
+_Review comment by @carljm on `crates/red_knot_python_semantic/src/semantic_index/builder.rs`:1870 on 2025-05-02 05:10_
+
+Should we also be stopping this walk if we encounter a non-eager scope, since the code in `infer.rs` means we won't use the narrowing in those outer scopes anyway?
+
+---
+
+_Review comment by @carljm on `crates/red_knot_python_semantic/src/types/infer.rs`:4713 on 2025-05-02 05:19_
+
+I _think_ putting this here means we are doing unnecessary work? If we don't end up walking up enclosing scopes, we don't need this; the visible binding(s) in this scope will already have narrowing constraints attached to them. So this could be moved down below line 4738.
+
+---
+
+_Review comment by @carljm on `crates/red_knot_python_semantic/src/types/infer.rs`:4756 on 2025-05-02 05:22_
+
+The `continue` below on line 4764 should be the only case where we need to use the special unbound-always-visible logic (because we are ignoring any bindings in this scope) -- otherwise we should only add this scope to `use_ids` if we have decided there are no bindings of the name in this scope and we are moving up to the next enclosing scope. Right?
+
+---
+
+_Review comment by @carljm on `crates/red_knot_python_semantic/src/types/narrow.rs`:23 on 2025-05-02 05:22_
+
+```suggestion
+/// Return the type constraint that `test` (if true) would place on `symbol`, if any.
+```
+
+---
+
+_Review comment by @carljm on `crates/red_knot_python_semantic/src/types/narrow.rs`:38 on 2025-05-02 05:22_
+
+```suggestion
+/// constraint is applied to that symbol, so we'd just return `None`.
+```
+
+---
+
+_@carljm reviewed on 2025-05-02 05:23_
+
+Looking good! It still seems to me like we are doing more work than necessary here, and if we do less we may be able to reduce the regression.
+
+---
+
+_@mtshiba reviewed on 2025-05-02 12:36_
+
+---
+
+_Review comment by @mtshiba on `crates/red_knot_python_semantic/src/semantic_index/builder.rs`:1876 on 2025-05-02 12:36_
+
+Symbols in a class scope are indeed not visible to eager nested scopes, but `SymbolBindings::narrowing_constraint_at_use` information is required and recorded here.
+
+---
+
+_Review comment by @mtshiba on `crates/red_knot_python_semantic/resources/mdtest/narrow/conditionals/nested.md`:49 on 2025-05-02 12:42_
+
+This case is tested here.
+
+https://github.com/astral-sh/ruff/blob/ebe861819616910eca41227b84664cf85ae34274/crates/red_knot_python_semantic/resources/mdtest/narrow/conditionals/nested.md?plain=1#L141-L145
+
+---
+
+_@mtshiba reviewed on 2025-05-02 12:42_
+
+---
+
+_@mtshiba reviewed on 2025-05-02 12:45_
+
+---
+
+_Review comment by @mtshiba on `crates/red_knot_python_semantic/src/types/infer.rs`:4713 on 2025-05-02 12:45_
+
+This part is still necessary, because we need to be able to apply narrowing constraints introduced in the current scope to symbols in the outer scope as well.
+
+```python
+def f(x: str | None):
+    def _():
+        # x is not defined in this scope
+        if x is not None:
+            reveal_type(x)  # revealed: str
+```
+
+---
+
+_@mtshiba reviewed on 2025-05-02 14:15_
+
+---
+
+_Review comment by @mtshiba on `crates/red_knot_python_semantic/src/semantic_index/builder.rs`:1884 on 2025-05-02 14:15_
+
+It seems I misunderstood a bit.
+
+Actually we can save flow-sensitive information in `pop_scope`. Basically, we just save the narrowing constraint of the unbound binding of the outer scope when the current scope ends.
+
+The problem is the key to retrieve it, which is `ScopedUseId`. We can get this by calling `AstIdsBuilder::record_use`. To call `record_use`, we need `ast::Expr` (or `ExpressionNodeKey`). So I think we need to collect this while visiting the scope.
+
+---
+
+_@mtshiba reviewed on 2025-05-02 17:04_
+
+---
+
+_Review comment by @mtshiba on `crates/red_knot_python_semantic/src/semantic_index/builder.rs`:1884 on 2025-05-02 17:04_
+
+I've added a field called `used_names` to `UseDefMapBuilder` to collect it, and I was able to move this handling to `pop_scope`.
+
+---
+
+_@carljm reviewed on 2025-05-02 17:11_
+
+---
+
+_Review comment by @carljm on `crates/red_knot_python_semantic/src/types/infer.rs`:4713 on 2025-05-02 17:11_
+
+Yes, I know. What I'm saying is that we only need this if the symbol is (maybe) not bound in the current scope and we will find it in an enclosing scope. That is, if we enter the `or_fall_back_to` below, and make it past the check on line 4726. So it seems like we don't need to add this here, we can add it below instead, and avoid adding it in cases where we don't need it.
+
+We will still add it for the current scope, just only once we have confirmed the symbol wasn't bound in the current scope.
+
+---
+
+_Review comment by @mtshiba on `crates/red_knot_python_semantic/src/types/infer.rs`:4713 on 2025-05-02 17:27_
+
+Ah, finally I get what you mean!
+Moved.
+
+---
+
+_@mtshiba reviewed on 2025-05-02 17:27_
+
+---
+
+_Review requested from @carljm by @mtshiba on 2025-05-02 17:34_
+
+---
+
+_Review comment by @carljm on `crates/red_knot_python_semantic/src/semantic_index/builder.rs`:314 on 2025-05-02 22:33_
+
+Sorry, I should have been clearer in my comments on the previous thread that I don't consider it valuable to do this here in `pop_scope`, for its own sake. The ideal would be if we could actually unify our existing "eager nested scopes" handling for snapshotting the right visible bindings in nested scopes, with this new system for snapshotting the right narrowing constraints in nested scopes. The two seem very closely related, and thus it seems strange that we would have two independent systems for them. In particular, recording a "use" records not only the one narrowing constraint we need (on unbound), but records narrowing constraints for all visible bindings, as well as recording the visible bindings themselves -- and we don't need any of that for the narrowing-constraints handling (but it could be used for the eager-nested-scopes visible-bindings finding). So it still feels like there is duplicated work here that we would ideally unify into a single system.
+
+But I'm OK with deferring the above with a TODO comment, so we can go ahead and land this.
+
+But if we are not going to actually unify them in this PR, I don't see any advantage to doing this here in `pop_scope` -- it just looks more complex and requires the new `used_names` tracking. So if we are not going to fully unify, then I think we should move this back to how you were doing it before.
+
+Let me know if this doesn't make sense or you don't agree with any of the above!
+
+---
+
+_@carljm reviewed on 2025-05-02 22:34_
+
+---
+
+_Review comment by @mtshiba on `crates/red_knot_python_semantic/src/semantic_index/builder.rs`:314 on 2025-05-03 09:58_
+
+I noticed the following facts (TL;DR: I could unify them):
+* By the time the scope walking is finished, it is necessary to save narrowing constraints at the positions of all name references that appear in that scope. I thought that all of these "uses" should be recorded and narrowing constraints should be retrieved using `ScopedUseId` as a key, but this is not necessary in all cases.
+  * When a name reference and a predicate are in the same scope and the name refer to the outer scope definition, the corresponding predicate cannot be uniquely determined by `ScopedSymbolId` alone, but since `record_use` has already been called in `visit_expr`, there is no need to snapshot the state again in `pop_scope`.
+  * The only case it is necessary to snapshot the state in `pop_scope` is when the name reference and the predicate are in different scopes. And in fact, in this case, neither `ScopedUseId` nor `ExpressionNodeKey` is required. This is because only one predicate outside the current scope is visible per scope. Therefore, the corresponding predicate can be uniquely identified by `ScopedSymbolId` in the enclosing scope. That is, this information can be saved in `eager_bindings`.
+
+Therefore, there is no need to save the states in both `bindings_by_use` and `eager_bindings` in `pop_scope`, but only save the states that hold "either bindings or the narrowing constraint of the scope" (I named this `EagerSnapshot`. The variant of only narrowing constraints is necessary for class scope, etc.) in `eager_bindings` (which I renamed to `eager_snapshots`).
+
+---
+
+_@mtshiba reviewed on 2025-05-03 09:58_
+
+---
+
+_@carljm reviewed on 2025-05-03 15:58_
+
+---
+
+_Review comment by @carljm on `crates/red_knot_python_semantic/src/semantic_index/builder.rs`:314 on 2025-05-03 15:58_
+
+This makes sense, thank you for thinking it through! Will take a look at the code soon.
+
+---
+
+_Comment by @MichaReiser on 2025-05-03 17:55_
+
+@mtshiba I rebased your PR passed the Red Knot renaming. Make sure to pull before making new commits.
+
+---
+
+_Comment by @carljm on 2025-05-05 23:28_
+
+Thank you, this looks great! I thought of one bug while reviewing, but I went ahead and just fixed it, along with some other cleanups. (The bug was that in a class scope, although we do need to preserve the narrowing constraints that applied to "unbound", even if "unbound" becomes not-visible, new narrowing checks after unbound becomes not-visible do not apply, as they aren't narrowing the outer-scope value we will see in nested scopes, they are narrowing only the local bindings we don't see.)
+
+After rebasing on top of the `signature` cycles fix, everything is passing in CI and ecosystem results still look good. Going ahead and landing this!
+
+---
+
+_Merged by @carljm on 2025-05-05 23:28_
+
+---
+
+_Closed by @carljm on 2025-05-05 23:28_
+
+---
+
+_Branch deleted on 2025-05-07 16:03_
+
+---

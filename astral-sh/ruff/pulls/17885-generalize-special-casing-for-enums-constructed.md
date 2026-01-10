@@ -1,0 +1,370 @@
+```yaml
+number: 17885
+title: Generalize special-casing for enums constructed with the functional syntax
+type: pull_request
+state: merged
+author: AlexWaygood
+labels:
+  - ty
+assignees: []
+merged: true
+base: main
+head: alex/enum-nmtpl-type-expr-2
+created_at: 2025-05-06T09:51:46Z
+updated_at: 2025-05-06T10:02:56Z
+url: https://github.com/astral-sh/ruff/pull/17885
+synced_at: 2026-01-10T18:57:03Z
+```
+
+# Generalize special-casing for enums constructed with the functional syntax
+
+---
+
+_Pull request opened by @AlexWaygood on 2025-05-06 09:51_
+
+## Summary
+
+This generalises the special-casing added in https://github.com/astral-sh/ruff/pull/17873 so that we also no longer emit false-positive diagnostics when enums are _created_ using the functional syntax. As a bonus, it also ends up being fewer lines of code overall.
+
+## Test Plan
+
+mdtests
+
+
+---
+
+_Label `ty` added by @AlexWaygood on 2025-05-06 09:51_
+
+---
+
+_Review requested from @carljm by @AlexWaygood on 2025-05-06 09:51_
+
+---
+
+_Review requested from @sharkdp by @AlexWaygood on 2025-05-06 09:51_
+
+---
+
+_Review requested from @dcreager by @AlexWaygood on 2025-05-06 09:51_
+
+---
+
+_Comment by @github-actions[bot] on 2025-05-06 09:54_
+
+<!-- generated-comment mypy_primer -->
+## `mypy_primer` results
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+```diff
+httpx-caching (https://github.com/johtso/httpx-caching)
+- warning[lint:possibly-unbound-attribute] httpx_caching/_async/_transport.py:57:55: Attribute `CACHE` on type `Unknown | Enum` is possibly unbound
+- error[lint:too-many-positional-arguments] httpx_caching/_policy.py:26:25: Too many positional arguments to function `__new__`: expected 1, got 2
+- error[lint:too-many-positional-arguments] httpx_caching/_policy.py:27:33: Too many positional arguments to function `__new__`: expected 1, got 2
+- error[lint:too-many-positional-arguments] httpx_caching/_policy.py:28:31: Too many positional arguments to function `__new__`: expected 1, got 2
+- warning[lint:possibly-unbound-attribute] httpx_caching/_policy.py:130:42: Attribute `GOOD` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] httpx_caching/_policy.py:131:33: Attribute `CACHE` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] httpx_caching/_policy.py:201:33: Attribute `GOOD` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] httpx_caching/_policy.py:212:33: Attribute `INCONCLUSIVE` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] httpx_caching/_policy.py:253:33: Attribute `GOOD` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] httpx_caching/_policy.py:262:29: Attribute `INCONCLUSIVE` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] httpx_caching/_policy.py:300:33: Attribute `SERVER` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] httpx_caching/_policy.py:326:45: Attribute `CACHE` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] httpx_caching/_policy.py:328:33: Attribute `SERVER` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] httpx_caching/_policy.py:344:29: Attribute `SERVER` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] httpx_caching/_sync/_transport.py:57:55: Attribute `CACHE` on type `Unknown | Enum` is possibly unbound
+- Found 48 diagnostics
++ Found 33 diagnostics
+
+trio (https://github.com/python-trio/trio)
+- error[lint:too-many-positional-arguments] src/trio/_ssl.py:253:26: Too many positional arguments to function `__new__`: expected 1, got 2
+- warning[lint:possibly-unbound-attribute] src/trio/_ssl.py:366:23: Attribute `OK` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] src/trio/_ssl.py:448:27: Attribute `OK` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] src/trio/_ssl.py:450:29: Attribute `BROKEN` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] src/trio/_ssl.py:452:29: Attribute `CLOSED` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] src/trio/_ssl.py:503:31: Attribute `BROKEN` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] src/trio/_ssl.py:609:39: Attribute `BROKEN` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] src/trio/_ssl.py:644:27: Attribute `BROKEN` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] src/trio/_ssl.py:780:27: Attribute `CLOSED` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] src/trio/_ssl.py:796:27: Attribute `CLOSED` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] src/trio/_ssl.py:799:27: Attribute `BROKEN` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] src/trio/_ssl.py:800:27: Attribute `CLOSED` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] src/trio/_ssl.py:867:27: Attribute `CLOSED` on type `Unknown | Enum` is possibly unbound
+- Found 1130 diagnostics
++ Found 1117 diagnostics
+
+pybind11 (https://github.com/pybind/pybind11)
+- error[lint:invalid-argument-type] tests/test_native_enum.py:110:32: Argument to this function is incorrect: Expected `int`, found `Literal["pure_native"]`
+- error[lint:too-many-positional-arguments] tests/test_native_enum.py:110:47: Too many positional arguments to function `__new__`: expected 1, got 2
+- error[lint:invalid-argument-type] tests/test_native_enum.py:116:32: Argument to this function is incorrect: Expected `int`, found `Literal["pure_native"]`
+- error[lint:too-many-positional-arguments] tests/test_native_enum.py:116:47: Too many positional arguments to function `__new__`: expected 1, got 2
+- Found 268 diagnostics
++ Found 264 diagnostics
+
+flake8 (https://github.com/pycqa/flake8)
+- error[lint:too-many-positional-arguments] src/flake8/options/manager.py:19:26: Too many positional arguments to function `__new__`: expected 1, got 2
+- error[lint:unresolved-attribute] src/flake8/options/manager.py:46:41: Type `Enum` has no attribute `NO`
+- error[lint:unresolved-attribute] src/flake8/options/manager.py:47:40: Type `Enum` has no attribute `NO`
+- error[lint:unresolved-attribute] src/flake8/options/manager.py:49:54: Type `Enum` has no attribute `NO`
+- error[lint:unresolved-attribute] src/flake8/options/manager.py:50:31: Type `Enum` has no attribute `NO`
+- error[lint:unresolved-attribute] src/flake8/options/manager.py:51:43: Type `Enum` has no attribute `NO`
+- error[lint:unresolved-attribute] src/flake8/options/manager.py:52:28: Type `Enum` has no attribute `NO`
+- error[lint:unresolved-attribute] src/flake8/options/manager.py:53:35: Type `Enum` has no attribute `NO`
+- error[lint:unresolved-attribute] src/flake8/options/manager.py:54:29: Type `Enum` has no attribute `NO`
+- error[lint:unresolved-attribute] src/flake8/options/manager.py:55:41: Type `Enum` has no attribute `NO`
+- error[lint:unresolved-attribute] src/flake8/options/manager.py:56:28: Type `Enum` has no attribute `NO`
+- error[lint:unresolved-attribute] src/flake8/options/manager.py:57:31: Type `Enum` has no attribute `NO`
+- error[lint:unresolved-attribute] src/flake8/options/manager.py:58:33: Type `Enum` has no attribute `NO`
+- warning[lint:possibly-unbound-attribute] src/flake8/options/manager.py:114:33: Attribute `NO` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] src/flake8/options/manager.py:115:42: Attribute `NO` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] src/flake8/options/manager.py:118:51: Attribute `NO` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] src/flake8/options/manager.py:118:51: Attribute `NO` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] src/flake8/options/manager.py:118:51: Attribute `NO` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] src/flake8/options/manager.py:133:25: Attribute `NO` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] src/flake8/options/manager.py:165:36: Attribute `NO` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] src/flake8/options/manager.py:178:69: Attribute `NO` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] tests/unit/test_option_manager.py:80:55: Attribute `NO` on type `Unknown | Enum` is possibly unbound
+- Found 67 diagnostics
++ Found 45 diagnostics
+
+cki-lib (https://gitlab.com/cki-project/cki-lib)
+- error[lint:too-many-positional-arguments] cki_lib/stomp.py:22:34: Too many positional arguments to function `__new__`: expected 1, got 2
+- Found 190 diagnostics
++ Found 189 diagnostics
+
+isort (https://github.com/pycqa/isort)
+- warning[lint:possibly-unbound-attribute] isort/main.py:547:22: Attribute `__members__` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] isort/main.py:548:40: Attribute `__members__` on type `Unknown | Enum` is possibly unbound
+- error[lint:call-non-callable] isort/main.py:954:46: Object of type `Enum` is not callable
+- warning[lint:call-possibly-unbound-method] isort/main.py:956:46: Method `__getitem__` of type `Unknown | Enum` is possibly unbound
++ warning[lint:unused-ignore-comment] isort/output.py:511:68: Unused blanket `type: ignore` directive
++ warning[lint:unused-ignore-comment] isort/output.py:537:70: Unused blanket `type: ignore` directive
++ warning[lint:unused-ignore-comment] isort/output.py:544:74: Unused blanket `type: ignore` directive
++ warning[lint:unused-ignore-comment] isort/settings.py:167:52: Unused blanket `type: ignore` directive
++ warning[lint:unused-ignore-comment] isort/settings.py:272:81: Unused blanket `type: ignore` directive
++ warning[lint:unused-ignore-comment] isort/settings.py:273:70: Unused blanket `type: ignore` directive
+- error[lint:call-non-callable] isort/wrap_modes.py:13:52: Object of type `Enum` is not callable
++ warning[lint:unused-ignore-comment] isort/wrap.py:74:72: Unused blanket `type: ignore` directive
++ warning[lint:unused-ignore-comment] isort/wrap.py:119:61: Unused blanket `type: ignore` directive
++ warning[lint:unused-ignore-comment] isort/wrap.py:120:59: Unused blanket `type: ignore` directive
++ warning[lint:unused-ignore-comment] isort/wrap.py:141:102: Unused blanket `type: ignore` directive
+- error[lint:too-many-positional-arguments] isort/wrap_modes.py:373:18: Too many positional arguments to function `__new__`: expected 1, got 2
+- Found 48 diagnostics
++ Found 52 diagnostics
+
+pytest (https://github.com/pytest-dev/pytest)
+- error[lint:too-many-positional-arguments] testing/test_compat.py:163:24: Too many positional arguments to function `__new__`: expected 1, got 2
+- error[lint:unresolved-attribute] testing/test_compat.py:164:12: Type `Enum` has no attribute `a`
+- error[lint:unresolved-attribute] testing/test_compat.py:166:13: Type `Enum` has no attribute `a`
+- error[lint:unresolved-attribute] testing/test_compat.py:172:13: Type `Enum` has no attribute `a`
+- error[lint:unresolved-attribute] testing/test_compat.py:174:15: Type `Enum` has no attribute `b`
+- Found 912 diagnostics
++ Found 907 diagnostics
+
+psycopg (https://github.com/psycopg/psycopg)
+- error[lint:too-many-positional-arguments] psycopg/psycopg/types/enum.py:175:31: Too many positional arguments to function `__new__`: expected 1, got 2
+- error[lint:unknown-argument] psycopg/psycopg/types/enum.py:175:39: Argument `module` does not match any known parameter of function `__new__`
+- error[lint:too-many-positional-arguments] tests/types/test_enum.py:28:5: Too many positional arguments to function `__new__`: expected 1, got 2
+- error[lint:unknown-argument] tests/types/test_enum.py:29:5: Argument `type` does not match any known parameter of function `__new__`
+- warning[lint:possibly-unbound-attribute] tests/types/test_enum.py:111:33: Attribute `__name__` on type `Unknown | Enum` is possibly unbound
+- warning[lint:call-possibly-unbound-method] tests/types/test_enum.py:118:37: Method `__getitem__` of type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] tests/types/test_enum.py:156:33: Attribute `__name__` on type `Unknown | Enum` is possibly unbound
+- error[lint:not-iterable] tests/types/test_enum.py:159:17: Object of type `Unknown | Enum` may not be iterable
+- error[lint:not-iterable] tests/types/test_enum.py:197:17: Object of type `Unknown | Enum` may not be iterable
+- warning[lint:possibly-unbound-attribute] tests/types/test_enum.py:222:18: Attribute `__members__` on type `Unknown | Enum` is possibly unbound
+- error[lint:too-many-positional-arguments] tests/types/test_enum.py:310:39: Too many positional arguments to function `__new__`: expected 1, got 2
+- error[lint:unresolved-attribute] tests/types/test_enum.py:313:46: Type `Enum` has no attribute `QUX`
+- error[lint:non-subscriptable] tests/types/test_enum.py:316:48: Cannot subscript object of type `Enum` with no `__getitem__` method
+- error[lint:non-subscriptable] tests/types/test_enum.py:319:37: Cannot subscript object of type `Enum` with no `__getitem__` method
+- error[lint:too-many-positional-arguments] tests/types/test_enum.py:323:37: Too many positional arguments to function `__new__`: expected 1, got 2
+- error[lint:non-subscriptable] tests/types/test_enum.py:326:16: Cannot subscript object of type `Enum` with no `__getitem__` method
+- error[lint:non-subscriptable] tests/types/test_enum.py:330:48: Cannot subscript object of type `Enum` with no `__getitem__` method
+- error[lint:non-subscriptable] tests/types/test_enum.py:335:37: Cannot subscript object of type `Enum` with no `__getitem__` method
+- error[lint:too-many-positional-arguments] tests/types/test_enum.py:339:39: Too many positional arguments to function `__new__`: expected 1, got 2
+- error[lint:unresolved-attribute] tests/types/test_enum.py:342:17: Type `Enum` has no attribute `FOO`
+- error[lint:unresolved-attribute] tests/types/test_enum.py:342:36: Type `Enum` has no attribute `FOO`
+- error[lint:unresolved-attribute] tests/types/test_enum.py:345:44: Type `Enum` has no attribute `FOO`
+- error[lint:unresolved-attribute] tests/types/test_enum.py:350:37: Type `Enum` has no attribute `FOO`
+- error[lint:too-many-positional-arguments] tests/types/test_enum.py:356:9: Too many positional arguments to function `__new__`: expected 1, got 2
+- error[lint:not-iterable] tests/types/test_enum.py:359:66: Object of type `Enum` is not iterable
+- error[lint:non-subscriptable] tests/types/test_enum.py:362:48: Cannot subscript object of type `Enum` with no `__getitem__` method
+- error[lint:non-subscriptable] tests/types/test_enum.py:366:37: Cannot subscript object of type `Enum` with no `__getitem__` method
+- Found 1302 diagnostics
++ Found 1275 diagnostics
+
+setuptools (https://github.com/pypa/setuptools)
++ warning[lint:unused-ignore-comment] setuptools/tests/integration/test_pip_install_sdist.py:33:34: Unused blanket `type: ignore` directive
+- Found 1281 diagnostics
++ Found 1282 diagnostics
+
+mypy (https://github.com/python/mypy)
+- error[lint:too-many-positional-arguments] mypy/stubgenc.py:215:34: Too many positional arguments to function `__new__`: expected 1, got 2
+- warning[lint:possibly-unbound-attribute] mypy/stubgenc.py:322:41: Attribute `VALUE` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] mypy/stubgenc.py:341:24: Attribute `VALUE` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] mypy/stubgenc.py:356:24: Attribute `VALUE` on type `Unknown | Enum` is possibly unbound
+- Found 3256 diagnostics
++ Found 3252 diagnostics
+
+meson (https://github.com/mesonbuild/meson)
+- warning[lint:possibly-unbound-attribute] run_project_tests.py:716:23: Attribute `ninja` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] run_project_tests.py:1027:23: Attribute `ninja` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] run_project_tests.py:1068:23: Attribute `ninja` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] run_project_tests.py:1128:53: Attribute `ninja` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] run_project_tests.py:1130:53: Attribute `ninja` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] run_project_tests.py:1131:57: Attribute `ninja` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] run_project_tests.py:1133:47: Attribute `ninja` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] run_project_tests.py:1134:61: Attribute `ninja` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] run_project_tests.py:1134:76: Attribute `xcode` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] run_project_tests.py:1135:65: Attribute `ninja` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] run_project_tests.py:1135:80: Attribute `xcode` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] run_project_tests.py:1136:71: Attribute `ninja` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] run_project_tests.py:1137:56: Attribute `ninja` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] run_project_tests.py:1137:71: Attribute `xcode` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] run_project_tests.py:1139:54: Attribute `ninja` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] run_project_tests.py:1139:69: Attribute `xcode` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] run_project_tests.py:1140:59: Attribute `ninja` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] run_project_tests.py:1145:85: Attribute `ninja` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] run_tests.py:95:19: Attribute `vs` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] run_tests.py:98:19: Attribute `xcode` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] run_tests.py:101:19: Attribute `ninja` on type `Unknown | Enum` is possibly unbound
+- error[lint:too-many-positional-arguments] run_tests.py:174:27: Too many positional arguments to function `__new__`: expected 1, got 2
+- warning[lint:possibly-unbound-attribute] run_tests.py:221:19: Attribute `vs` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] run_tests.py:247:19: Attribute `vs` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] run_tests.py:250:21: Attribute `xcode` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] run_tests.py:252:21: Attribute `ninja` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] run_tests.py:265:19: Attribute `vs` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] run_tests.py:269:21: Attribute `xcode` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] run_tests.py:273:21: Attribute `ninja` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] unittests/allplatformstests.py:529:32: Attribute `ninja` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] unittests/allplatformstests.py:578:32: Attribute `ninja` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] unittests/allplatformstests.py:907:32: Attribute `ninja` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] unittests/allplatformstests.py:1464:32: Attribute `ninja` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] unittests/allplatformstests.py:1493:32: Attribute `ninja` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] unittests/allplatformstests.py:1515:32: Attribute `ninja` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] unittests/allplatformstests.py:2539:28: Attribute `ninja` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] unittests/allplatformstests.py:2736:28: Attribute `ninja` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] unittests/allplatformstests.py:3148:32: Attribute `ninja` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] unittests/allplatformstests.py:3198:32: Attribute `ninja` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] unittests/allplatformstests.py:3213:32: Attribute `ninja` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] unittests/allplatformstests.py:3920:28: Attribute `ninja` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] unittests/allplatformstests.py:3925:30: Attribute `vs` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] unittests/allplatformstests.py:3990:32: Attribute `ninja` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] unittests/allplatformstests.py:4457:32: Attribute `ninja` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] unittests/allplatformstests.py:4953:32: Attribute `ninja` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] unittests/allplatformstests.py:4971:32: Attribute `ninja` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] unittests/allplatformstests.py:4989:32: Attribute `ninja` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] unittests/allplatformstests.py:5002:32: Attribute `ninja` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] unittests/allplatformstests.py:5009:32: Attribute `ninja` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] unittests/allplatformstests.py:5040:32: Attribute `ninja` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] unittests/allplatformstests.py:5070:28: Attribute `ninja` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] unittests/allplatformstests.py:5245:32: Attribute `ninja` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] unittests/allplatformstests.py:5260:32: Attribute `ninja` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] unittests/baseplatformtests.py:84:27: Attribute `ninja` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] unittests/baseplatformtests.py:265:32: Attribute `ninja` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] unittests/baseplatformtests.py:308:32: Attribute `ninja` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] unittests/baseplatformtests.py:404:28: Attribute `ninja` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] unittests/baseplatformtests.py:410:30: Attribute `vs` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] unittests/baseplatformtests.py:418:30: Attribute `xcode` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] unittests/baseplatformtests.py:425:28: Attribute `ninja` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] unittests/baseplatformtests.py:427:30: Attribute `vs` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] unittests/baseplatformtests.py:437:30: Attribute `xcode` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] unittests/baseplatformtests.py:444:28: Attribute `ninja` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] unittests/baseplatformtests.py:446:30: Attribute `vs` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] unittests/baseplatformtests.py:450:30: Attribute `xcode` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] unittests/baseplatformtests.py:464:28: Attribute `ninja` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] unittests/baseplatformtests.py:471:30: Attribute `vs` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] unittests/baseplatformtests.py:477:30: Attribute `xcode` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] unittests/linuxliketests.py:1885:32: Attribute `ninja` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] unittests/machinefiletests.py:389:32: Attribute `ninja` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] unittests/machinefiletests.py:644:32: Attribute `ninja` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] unittests/platformagnostictests.py:163:28: Attribute `ninja` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] unittests/pythontests.py:23:32: Attribute `ninja` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] unittests/windowstests.py:185:32: Attribute `ninja` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] unittests/windowstests.py:436:32: Attribute `ninja` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] unittests/windowstests.py:449:32: Attribute `ninja` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] unittests/windowstests.py:461:32: Attribute `ninja` on type `Unknown | Enum` is possibly unbound
+- Found 1670 diagnostics
++ Found 1593 diagnostics
+
+graphql-core (https://github.com/graphql-python/graphql-core)
+- error[lint:too-many-positional-arguments] tests/type/test_definition.py:717:33: Too many positional arguments to function `__new__`: expected 1, got 2
+- error[lint:too-many-positional-arguments] tests/type/test_definition.py:725:33: Too many positional arguments to function `__new__`: expected 1, got 2
+- error[lint:too-many-positional-arguments] tests/type/test_definition.py:733:33: Too many positional arguments to function `__new__`: expected 1, got 2
+- error[lint:too-many-positional-arguments] tests/type/test_definition.py:741:33: Too many positional arguments to function `__new__`: expected 1, got 2
+- error[lint:unresolved-attribute] tests/type/test_definition.py:744:37: Type `Enum` has no attribute `RED`
+- error[lint:unresolved-attribute] tests/type/test_definition.py:745:38: Type `Enum` has no attribute `BLUE`
+- Found 559 diagnostics
++ Found 553 diagnostics
+
+optuna (https://github.com/optuna/optuna)
+- error[lint:invalid-argument-type] optuna/_gp/optim_mixed.py:219:38: Argument to this function is incorrect: Expected `int`, found `ndarray[Unknown, _DType_co]`
+- error[lint:invalid-argument-type] optuna/storages/journal/_storage.py:539:30: Argument to this function is incorrect: Expected `int`, found `Unknown | None`
+- Found 2277 diagnostics
++ Found 2275 diagnostics
+
+aiohttp (https://github.com/aio-libs/aiohttp)
++ warning[lint:unused-ignore-comment] aiohttp/client_reqrep.py:126:37: Unused blanket `type: ignore` directive
+- error[lint:too-many-positional-arguments] aiohttp/helpers.py:83:36: Too many positional arguments to function `__new__`: expected 1, got 2
+- error[lint:unresolved-attribute] aiohttp/helpers.py:84:12: Type `Enum` has no attribute `sentinel`
+- Found 210 diagnostics
++ Found 209 diagnostics
+
+dd-trace-py (https://github.com/DataDog/dd-trace-py)
+- error[lint:invalid-argument-type] ddtrace/vendor/psutil/_pslinux.py:111:34: Argument to this function is incorrect: Expected `int`, found `Literal["AddressFamily"]`
+- error[lint:too-many-positional-arguments] ddtrace/vendor/psutil/_pslinux.py:112:34: Too many positional arguments to function `__new__`: expected 1, got 2
+- error[lint:invalid-argument-type] ddtrace/vendor/psutil/_pswindows.py:89:34: Argument to this function is incorrect: Expected `int`, found `Literal["AddressFamily"]`
+- error[lint:too-many-positional-arguments] ddtrace/vendor/psutil/_pswindows.py:89:51: Too many positional arguments to function `__new__`: expected 1, got 2
+- Found 8727 diagnostics
++ Found 8723 diagnostics
+
+jax (https://github.com/google/jax)
+- error[lint:too-many-positional-arguments] jax/_src/pretty_printer.py:176:28: Too many positional arguments to function `__new__`: expected 1, got 2
+- error[lint:too-many-positional-arguments] jax/_src/pretty_printer.py:178:36: Too many positional arguments to function `__new__`: expected 1, got 2
+- error[lint:too-many-positional-arguments] jax/_src/pretty_printer.py:197:38: Too many positional arguments to function `__new__`: expected 1, got 2
+- warning[lint:possibly-unbound-attribute] jax/_src/pretty_printer.py:312:32: Attribute `RESET` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] jax/_src/pretty_printer.py:312:45: Attribute `RESET` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] jax/_src/pretty_printer.py:312:58: Attribute `NORMAL` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] jax/_src/pretty_printer.py:313:35: Attribute `RESET` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] jax/_src/pretty_printer.py:313:48: Attribute `RESET` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] jax/_src/pretty_printer.py:313:61: Attribute `DIM` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] jax/_src/pretty_printer.py:318:23: Attribute `BREAK` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] jax/_src/pretty_printer.py:343:15: Attribute `BREAK` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] jax/_src/pretty_printer.py:370:33: Attribute `FLAT` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] jax/_src/pretty_printer.py:372:33: Attribute `BREAK` on type `Unknown | Enum` is possibly unbound
+- error[lint:unresolved-attribute] jax/_src/pretty_printer.py:466:44: Type `Enum` has no attribute `NORMAL`
+- error[lint:unresolved-attribute] jax/_src/pretty_printer.py:467:38: Type `Enum` has no attribute `MAGENTA`
+- error[lint:unresolved-attribute] jax/_src/pretty_printer.py:468:36: Type `Enum` has no attribute `BRIGHT`
+- error[lint:unresolved-attribute] jax/_src/pretty_printer.py:468:65: Type `Enum` has no attribute `BLUE`
+- warning[lint:possibly-unbound-attribute] jax/_src/shard_map.py:226:18: Attribute `input` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] jax/_src/shard_map.py:228:18: Attribute `out` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] jax/_src/shard_map.py:262:22: Attribute `out` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] jax/_src/shard_map.py:284:32: Attribute `out` on type `Unknown | Enum` is possibly unbound
+- error[lint:too-many-positional-arguments] jax/_src/shard_map.py:327:44: Too many positional arguments to function `__new__`: expected 1, got 2
+- warning[lint:possibly-unbound-attribute] jax/_src/shard_map.py:330:20: Attribute `input` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] jax/_src/shard_map.py:349:34: Attribute `input` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] jax/_src/shard_map.py:382:28: Attribute `input` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] jax/_src/shard_map.py:405:20: Attribute `input` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] jax/_src/shard_map.py:413:22: Attribute `input` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] jax/_src/state/primitives.py:312:42: Attribute `NORMAL` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] jax/_src/state/primitives.py:313:29: Attribute `GREEN` on type `Unknown | Enum` is possibly unbound
+- warning[lint:possibly-unbound-attribute] jax/_src/state/types.py:41:21: Attribute `GREEN` on type `Unknown | Enum` is possibly unbound
+- Found 5389 diagnostics
++ Found 5359 diagnostics
+
+```
+</details>
+
+
+---
+
+_Merged by @AlexWaygood on 2025-05-06 10:02_
+
+---
+
+_Closed by @AlexWaygood on 2025-05-06 10:02_
+
+---
+
+_Branch deleted on 2025-05-06 10:02_
+
+---
