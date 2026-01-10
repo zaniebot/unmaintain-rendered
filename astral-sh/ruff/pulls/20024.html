@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`flake8-bugbear`] Include certain guaranteed-mutable expressions: tuples, generators, and assignment expressions (`B006`) - astral-sh/ruff #20024</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>flake8-bugbear</code>] Include certain guaranteed-mutable expressions: tuples, generators, and assignment expressions (<code>B006</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/20024">#20024</a>
+        opened by <a href="https://github.com/IDrokin117">@IDrokin117</a>
+        on 2025-08-21 16:57
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/IDrokin117">@IDrokin117</a> on 2025-08-21 16:57</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Resolves #20004</p>
+<p>The implementation now supports guaranteed-mutable expressions in the following cases:</p>
+<ul>
+<li>Tuple literals with mutable elements (supporting deep nesting)</li>
+<li>Generator expressions</li>
+<li>Named expressions (walrus operator) containing mutable components</li>
+</ul>
+<p>Preserves original formatting for assignment value:</p>
+<pre><code class="language-python"># Test case
+def f5(x=([1, ])):
+    print(x)
+</code></pre>
+<pre><code class="language-python"># Fix before
+def f5(x=(None)):
+    if x is None:
+        x = [1]
+    print(x)
+</code></pre>
+<pre><code class="language-python"># Fix after 
+def f5(x=None):
+    if x is None:
+        x = ([1, ])
+    print(x)
+</code></pre>
+<p>The expansion of detected expressions and the new fixes gated behind previews.</p>
+<h2>Test Plan</h2>
+<ul>
+<li>Added B006_9.py with a bunch of test cases</li>
+<li>Generated snapshots</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/IDrokin117">@IDrokin117</a> on <code>crates/ruff_python_codegen/src/generator.rs</code>:133 on 2025-08-21 17:04</div>
+            <div class="timeline-body"><p>I've added this method to be able to generate an expression with parentheses. I didn't find a way to ensure it is parenthesized. Using <code>expr</code> to generate source code for Tuple, I got</p>
+<pre><code>tuple_expr = &quot;([1], 2)&quot;
+.expr(tuple_expr) # -&gt; &quot;[1], 2&quot;, but expected ([1], 2)
+</code></pre>
+<p>I am not sure about this, would be appreciated for more sophisticated solution.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/IDrokin117">@IDrokin117</a> on <code>crates/ruff_linter/src/rules/flake8_bugbear/rules/mutable_argument_default.rs</code>:166 on 2025-08-21 17:06</div>
+            <div class="timeline-body"><p>Would it be reasonable to eliminate all these parameters and pass only the <code>checker</code> object? Since this is a private function that will not be utilized elsewhere, using <code>checker</code> directly might be more convenient.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/IDrokin117">@IDrokin117</a> reviewed on 2025-08-21 17:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-21 17:27</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dylwil3 by @dylwil3 on 2025-08-29 19:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @dylwil3 on 2025-09-01 20:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dylwil3">@dylwil3</a> on <code>crates/ruff_linter/src/rules/flake8_bugbear/rules/mutable_argument_default.rs</code>:198 on 2025-09-15 20:02</div>
+            <div class="timeline-body"><p>Is there some reason why the following would be a bad idea? It has the virtue of preserving whatever idiosyncracies were used in the original formatting, as well as type annotations. (I realize this is sort of orthogonal to the PR, but it looks like you had to use <code>expr_parenthesized</code> anyway to avoid a syntax error, and this is an alternative approach which feels like an improvement in any case?)</p>
+<p>Do you want to try it and see if anything horrible happens in the ecosystem check?</p>
+<pre><code class="language-diff">diff --git i/crates/ruff_linter/src/rules/flake8_bugbear/rules/mutable_argument_default.rs w/crates/ruff_linter/src/rules/flake8_bugbear/rules/mutable_argument_default.rs
+index 6a753f94a..ba2b2261b 100644
+--- i/crates/ruff_linter/src/rules/flake8_bugbear/rules/mutable_argument_default.rs
++++ w/crates/ruff_linter/src/rules/flake8_bugbear/rules/mutable_argument_default.rs
+@@ -5,7 +5,7 @@ use ruff_python_ast::helpers::is_docstring_stmt;
+ use ruff_python_ast::name::QualifiedName;
+ use ruff_python_ast::parenthesize::parenthesized_range;
+ use ruff_python_ast::{self as ast, Expr, ParameterWithDefault};
+-use ruff_python_codegen::{Generator, Stylist};
++use ruff_python_codegen::Stylist;
+ use ruff_python_index::Indexer;
+ use ruff_python_semantic::SemanticModel;
+ use ruff_python_semantic::analyze::function_type::is_stub;
+@@ -128,7 +128,6 @@ pub(crate) fn mutable_argument_default(checker: &amp;Checker, function_def: &amp;ast::St
+                 checker.locator(),
+                 checker.stylist(),
+                 checker.indexer(),
+-                checker.generator(),
+                 checker.comment_ranges(),
+                 checker.source(),
+             ) {
+@@ -161,7 +160,6 @@ fn move_initialization(
+     locator: &amp;Locator,
+     stylist: &amp;Stylist,
+     indexer: &amp;Indexer,
+-    generator: Generator,
+     comment_ranges: &amp;CommentRanges,
+     source: &amp;str,
+ ) -&gt; Option&lt;Fix&gt; {
+@@ -191,12 +189,7 @@ fn move_initialization(
+     let _ = write!(&amp;mut content, &quot;if {} is None:&quot;, parameter.parameter.name());
+     content.push_str(stylist.line_ending().as_str());
+     content.push_str(stylist.indentation());
+-    let _ = write!(
+-        &amp;mut content,
+-        &quot;{} = {}&quot;,
+-        parameter.parameter.name(),
+-        generator.expr_parenthesized(default)
+-    );
++    let _ = write!(&amp;mut content, &quot;{}&quot;, locator.slice(parameter));
+     content.push_str(stylist.line_ending().as_str());
+ 
+     // Determine the indentation depth of the function body.
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dylwil3">@dylwil3</a> requested changes on 2025-09-15 20:03</div>
+            <div class="timeline-body"><p>This is great thank you, and sorry for the delay! Can we experiment a bit with the fix?</p>
+<p>Also, we should be gating this behind preview - both the expansion of detected expressions and the new fix. If you'd like, you can make these two separate functions in <code>preview.rs</code> since we may stabilize them independently.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dylwil3">@dylwil3</a> on <code>crates/ruff_linter/src/rules/flake8_bugbear/rules/mutable_argument_default.rs</code>:166 on 2025-09-15 20:04</div>
+            <div class="timeline-body"><p>That seems fine to me - go for it!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dylwil3">@dylwil3</a> reviewed on 2025-09-15 20:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dylwil3">@dylwil3</a> reviewed on 2025-09-15 20:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dylwil3">@dylwil3</a> on <code>crates/ruff_linter/src/rules/flake8_bugbear/rules/mutable_argument_default.rs</code>:198 on 2025-09-15 20:08</div>
+            <div class="timeline-body"><p>I guess the formatting of assignments is often a little different than for parameter defaults, so you could also keep it closer to the original fix but use the locator to slice out the <code>default</code> instead of generating it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/IDrokin117">@IDrokin117</a> on <code>crates/ruff_linter/src/rules/flake8_bugbear/rules/mutable_argument_default.rs</code>:198 on 2025-09-23 16:35</div>
+            <div class="timeline-body"><p>@dylwil3 I've experimented with your proposal and got some results:</p>
+<ol>
+<li>Using <code>write!(&amp;mut content, &quot;{}&quot;, locator.slice(parameter));</code> preserves formatting, but, as you mention, variable assignment requires spaces around <code>=</code> unlike parameter.</li>
+<li>Using <code>locator.slice(default)</code> will lead to a problem that <code>generator.expr_parenthesized(default)</code> tries to solve: <code>default</code> doesn't grab parenthesizes.</li>
+</ol>
+<pre><code class="language-rust">let _ = write!(
+    &amp;mut content,
+    &quot;{} = {}&quot;,
+    parameter.parameter.name(),
+    locator.slice(default)
+);
+</code></pre>
+<p>I used <code>locator.slice</code> to grab annotation from parameter and place it to variable assignment. What you think?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/IDrokin117">@IDrokin117</a> reviewed on 2025-09-23 17:16</div>
+            <div class="timeline-body"><p>@dylwil3 Thanks for your review! I've pushed some changes according to your points:</p>
+<ol>
+<li>Added 2 preview flags.</li>
+<li>Added annotation expr into fix content if any. It is gated behind preview. There already exists a test, so it might solve the annotation issue.</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/IDrokin117">@IDrokin117</a> reviewed on 2025-09-23 17:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/IDrokin117">@IDrokin117</a> on <code>crates/ruff_linter/src/rules/flake8_bugbear/rules/mutable_argument_default.rs</code>:166 on 2025-09-23 17:17</div>
+            <div class="timeline-body"><p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dylwil3 by @IDrokin117 on 2025-09-23 17:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/IDrokin117">@IDrokin117</a> on 2025-09-30 18:56</div>
+            <div class="timeline-body"><p>@dylwil3 Could you please review the PR again?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-10-01 12:28</div>
+            <div class="timeline-body"><blockquote>
+<p>@dylwil3 Could you please review the PR again?</p>
+</blockquote>
+<p>Yes! Sorry for the delay - I will not be able to get to this till the end of the week, but I have not forgotten!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dylwil3">@dylwil3</a> reviewed on 2025-10-03 14:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dylwil3">@dylwil3</a> on <code>crates/ruff_linter/src/rules/flake8_bugbear/rules/mutable_argument_default.rs</code>:198 on 2025-10-03 14:25</div>
+            <div class="timeline-body"><p>I pushed a commit to grab the <code>parenthesized_range</code> instead which seems to work!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dylwil3">@dylwil3</a> approved on 2025-10-03 14:25</div>
+            <div class="timeline-body"><p>Thank you for your patience and for the great contribution!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @dylwil3 on 2025-10-03 14:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @dylwil3 on 2025-10-03 14:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dylwil3 on 2025-10-03 14:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dylwil3 on 2025-10-03 14:29</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:34:59 UTC
+    </footer>
+</body>
+</html>

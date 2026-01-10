@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Treat `Callable` dunder members as bound method descriptors - astral-sh/ruff #20860</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Treat <code>Callable</code> dunder members as bound method descriptors</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/20860">#20860</a>
+        opened by <a href="https://github.com/sharkdp">@sharkdp</a>
+        on 2025-10-14 10:12
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-10-14 10:12</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Dunder methods (at least the ones defined in the standard library) always take an instance of the class as the first parameter. So it seems reasonable to generally treat them as bound method descriptors if they are defined via a <code>Callable</code> type.</p>
+<p>This removes just a few false positives from the ecosystem, but solves three user-reported issues:</p>
+<p>closes https://github.com/astral-sh/ty/issues/908
+closes https://github.com/astral-sh/ty/issues/1143
+closes https://github.com/astral-sh/ty/issues/1209</p>
+<p>In addition to the change here, I also considered <a href="https://github.com/astral-sh/ruff/pull/20861">making <code>ClassVar</code>s bound method descriptors</a>. However, there was zero ecosystem impact. So I think we can also close https://github.com/astral-sh/ty/issues/491 with this PR.</p>
+<p>closes https://github.com/astral-sh/ty/issues/491</p>
+<h2>Test Plan</h2>
+<p>Added regression test</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @sharkdp on 2025-10-14 10:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-10-14 10:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-10-14 10:14</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-10-14 10:15</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">pydantic (https://github.com/pydantic/pydantic)
+- pydantic/v1/dataclasses.py:315:17: error[missing-argument] No argument provided for required parameter 1
+- pydantic/v1/dataclasses.py:332:17: error[missing-argument] No argument provided for required parameter 1
+- Found 767 diagnostics
++ Found 765 diagnostics
+
+hydpy (https://github.com/hydpy-dev/hydpy)
+- hydpy/core/testtools.py:1931:41: error[unresolved-attribute] Type `(...) -&gt; Unknown` has no attribute `__code__`
+- hydpy/cythons/modelutils.py:2110:44: error[unresolved-attribute] Type `(...) -&gt; Unknown` has no attribute `__code__`
+- Found 611 diagnostics
++ Found 609 diagnostics
+
+</code></pre>
+</details>
+No memory usage changes detected ✅
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-10-14 10:17</div>
+            <div class="timeline-body"><!-- generated-comment ty ecosystem-analyzer -->
+
+<h2><code>ecosystem-analyzer</code> results</h2>
+<p>| Lint rule | Added | Removed | Changed |
+|-----------|------:|--------:|--------:|
+| <code>missing-argument</code> | 0 | 2 | 0 |
+| <code>unresolved-attribute</code> | 0 | 2 | 0 |
+| <strong>Total</strong> | <strong>0</strong> | <strong>4</strong> | <strong>0</strong> |</p>
+<p><strong><a href="https://david-treat-dunder-method-ca.ecosystem-663.pages.dev/diff">Full report with detailed diff</a></strong> (<a href="https://david-treat-dunder-method-ca.ecosystem-663.pages.dev/timing">timing results</a>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @sharkdp on 2025-10-14 10:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-10-14 10:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-10-14 11:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/resources/mdtest/type_properties/is_assignable_to.md</code>:1195 on 2025-10-14 11:41</div>
+            <div class="timeline-body"><p>The previous example here would have failed at runtime.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @sharkdp on 2025-10-14 11:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @sharkdp on 2025-10-14 11:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @sharkdp on 2025-10-14 11:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @sharkdp on 2025-10-14 11:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:2026 on 2025-10-14 12:16</div>
+            <div class="timeline-body"><p>of course, if we just represented function-like callables as <code>FunctionType &amp; &lt;some Callable type&gt;</code>, all we'd need to do here would be to insert <code>FunctionType</code> into the intersection; no need for a new <code>Intersection::map_positive</code> method!</p>
+<p>...anyway, sorry for beating this drum, I'll try to shut up about beautiful refactors we could do until the beta's out 🙈</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-10-14 12:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-10-14 12:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:2026 on 2025-10-14 12:27</div>
+            <div class="timeline-body"><p>If things wouldn't always turn out to be more complicated than I initially think, I would have already started that project. But I'm almost certain this would reveal at least three issues with our intersection handling, lead to unexpected performance regressions, and probably uncover a new salsa concurrency bug. So it has to wait a little longer :smile:.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @sharkdp on 2025-10-14 12:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-10-14 12:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-10-14 12:27</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:35:00 UTC
+    </footer>
+</body>
+</html>

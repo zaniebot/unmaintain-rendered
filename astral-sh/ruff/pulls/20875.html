@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Avoid unnecessarily widening generic specializations - astral-sh/ruff #20875</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Avoid unnecessarily widening generic specializations</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/20875">#20875</a>
+        opened by <a href="https://github.com/ibraheemdev">@ibraheemdev</a>
+        on 2025-10-15 00:23
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2025-10-15 00:23</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Ignore the type context when specializing a generic call if it leads to an unnecessarily wide return type. For example, <a href="https://github.com/astral-sh/ruff/pull/20796#issuecomment-3403319536">the example mentioned here</a> works as expected after this change:</p>
+<pre><code class="language-py">def id[T](x: T) -&gt; T:
+    return x
+
+def _(i: int):
+    x: int | None = id(i)
+    y: int | None = i
+    reveal_type(x)  # revealed: int
+    reveal_type(y)  # revealed: int
+</code></pre>
+<p>I also added extended our usage of <code>filter_disjoint_elements</code> to tuple and typed-dict inference, which resolves https://github.com/astral-sh/ty/issues/1266.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @ibraheemdev on 2025-10-15 00:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @ibraheemdev on 2025-10-15 00:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @ibraheemdev on 2025-10-15 00:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @ibraheemdev on 2025-10-15 00:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @ibraheemdev on 2025-10-15 00:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-10-15 00:25</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a></h2>
+<details>
+<summary>Changes were detected when running ty on typing conformance tests</summary>
+
+<pre><code class="language-diff">--- old-output.txt	2025-10-16 19:14:50.885037218 +0000
++++ new-output.txt	2025-10-16 19:14:54.231077442 +0000
+@@ -266,8 +266,8 @@
+ dataclasses_transform_class.py:119:18: error[unknown-argument] Argument `id` does not match any known parameter of bound method `__init__`
+ dataclasses_transform_class.py:119:24: error[unknown-argument] Argument `name` does not match any known parameter of bound method `__init__`
+ dataclasses_transform_converter.py:25:6: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `T@model_field`
+-dataclasses_transform_converter.py:48:31: error[invalid-argument-type] Argument to function `model_field` is incorrect: Expected `(Unknown, /) -&gt; int`, found `def bad_converter1() -&gt; int`
+-dataclasses_transform_converter.py:49:31: error[invalid-argument-type] Argument to function `model_field` is incorrect: Expected `(Unknown, /) -&gt; int`, found `def bad_converter2(*, x: int) -&gt; int`
++dataclasses_transform_converter.py:48:31: error[invalid-argument-type] Argument to function `model_field` is incorrect: Expected `(Unknown, /) -&gt; Unknown`, found `def bad_converter1() -&gt; int`
++dataclasses_transform_converter.py:49:31: error[invalid-argument-type] Argument to function `model_field` is incorrect: Expected `(Unknown, /) -&gt; Unknown`, found `def bad_converter2(*, x: int) -&gt; int`
+ dataclasses_transform_converter.py:107:5: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 6
+ dataclasses_transform_converter.py:108:5: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 6
+ dataclasses_transform_converter.py:109:5: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 6
+@@ -277,7 +277,7 @@
+ dataclasses_transform_converter.py:116:1: error[invalid-assignment] Object of type `Literal[b&quot;f6&quot;]` is not assignable to attribute `field3` of type `ConverterClass`
+ dataclasses_transform_converter.py:119:1: error[invalid-assignment] Object of type `Literal[1]` is not assignable to attribute `field3` of type `ConverterClass`
+ dataclasses_transform_converter.py:121:11: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 7
+-dataclasses_transform_converter.py:130:31: error[invalid-argument-type] Argument to function `model_field` is incorrect: Expected `(Literal[1], /) -&gt; int`, found `def converter_simple(s: str) -&gt; int`
++dataclasses_transform_converter.py:130:31: error[invalid-argument-type] Argument to function `model_field` is incorrect: Expected `(Literal[1], /) -&gt; Unknown`, found `def converter_simple(s: str) -&gt; int`
+ dataclasses_transform_field.py:49:43: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `(...) -&gt; @Todo(unsupported type[X] special form)`
+ dataclasses_transform_field.py:64:16: error[unknown-argument] Argument `id` does not match any known parameter
+ dataclasses_transform_field.py:75:1: error[missing-argument] No argument provided for required parameter `name`
+@@ -301,7 +301,6 @@
+ dataclasses_usage.py:51:28: error[invalid-argument-type] Argument is incorrect: Expected `int | float`, found `Literal[&quot;price&quot;]`
+ dataclasses_usage.py:52:36: error[too-many-positional-arguments] Too many positional arguments: expected 3, got 4
+ dataclasses_usage.py:83:13: error[too-many-positional-arguments] Too many positional arguments: expected 1, got 2
+-dataclasses_usage.py:88:14: error[no-matching-overload] No overload of function `field` matches arguments
+ dataclasses_usage.py:127:8: error[too-many-positional-arguments] Too many positional arguments: expected 1, got 2
+ dataclasses_usage.py:130:1: error[missing-argument] No argument provided for required parameter `y` of bound method `__init__`
+ dataclasses_usage.py:179:6: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
+@@ -901,5 +900,5 @@
+ typeddicts_usage.py:28:17: error[missing-typed-dict-key] Missing required key 'name' in TypedDict `Movie` constructor
+ typeddicts_usage.py:28:18: error[invalid-key] Invalid key access on TypedDict `Movie`: Unknown key &quot;title&quot;
+ typeddicts_usage.py:40:24: error[invalid-type-form] The special form `typing.TypedDict` is not allowed in type expressions. Did you mean to use a concrete TypedDict or `collections.abc.Mapping[str, object]` instead?
+-Found 903 diagnostics
++Found 902 diagnostics
+ WARN A fatal error occurred while checking some files. Not all project files were analyzed. See the diagnostics list above for details.
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-10-15 00:26</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">werkzeug (https://github.com/pallets/werkzeug)
+- src/werkzeug/local.py:511:24: error[invalid-return-type] Return type does not match returned value: expected `T@LocalProxy`, found `T@LocalProxy | ~None | Unknown`
++ src/werkzeug/local.py:511:24: error[invalid-return-type] Return type does not match returned value: expected `T@LocalProxy`, found `~None | T@LocalProxy | Unknown`
+- src/werkzeug/routing/exceptions.py:107:20: error[no-matching-overload] No overload of function `max` matches arguments
+- Found 384 diagnostics
++ Found 383 diagnostics
+
+paasta (https://github.com/yelp/paasta)
+- paasta_tools/utils.py:3416:12: error[invalid-return-type] Return type does not match returned value: expected `InstanceConfigDict`, found `InstanceConfigDict | (Unknown &amp; ~None) | dict[str, Any]`
++ paasta_tools/utils.py:3416:12: error[invalid-return-type] Return type does not match returned value: expected `InstanceConfigDict`, found `(Unknown &amp; ~None) | dict[str, Any] | InstanceConfigDict`
+
+pytest (https://github.com/pytest-dev/pytest)
+- src/_pytest/python.py:1064:39: error[no-matching-overload] No overload of function `field` matches arguments
+- Found 489 diagnostics
++ Found 488 diagnostics
+
+boostedblob (https://github.com/hauntsaninja/boostedblob)
+- boostedblob/request.py:25:33: error[no-matching-overload] No overload of function `field` matches arguments
+- boostedblob/request.py:29:34: error[no-matching-overload] No overload of function `field` matches arguments
+- boostedblob/request.py:76:33: error[no-matching-overload] No overload of function `field` matches arguments
+- boostedblob/request.py:80:34: error[no-matching-overload] No overload of function `field` matches arguments
+- boostedblob/request.py:85:51: error[no-matching-overload] No overload of function `field` matches arguments
+- Found 76 diagnostics
++ Found 71 diagnostics
+
+pydantic (https://github.com/pydantic/pydantic)
+- pydantic/_internal/_validators.py:161:16: error[invalid-return-type] Return type does not match returned value: expected `Pattern[bytes]`, found `Pattern[bytes | str]`
++ pydantic/_internal/_validators.py:161:16: error[invalid-return-type] Return type does not match returned value: expected `Pattern[bytes]`, found `Pattern[str | bytes]`
+
+poetry (https://github.com/python-poetry/poetry)
++ tests/console/commands/test_show.py:42:12: warning[redundant-cast] Value is already of type `F@output_format_parametrize`
+- Found 990 diagnostics
++ Found 991 diagnostics
+
+Expression (https://github.com/cognitedata/Expression)
++ expression/extra/option/pipeline.py:91:19: error[invalid-argument-type] Argument to function `reduce` is incorrect: Expected `(def Some[_T1](value: _T1@Some) -&gt; Option[_T1@Some], (Any, /) -&gt; Option[Any], /) -&gt; def Some[_T1](value: _T1@Some) -&gt; Option[_T1@Some]`, found `def reducer(acc: (Any, /) -&gt; Option[Any], fn: (Any, /) -&gt; Option[Any]) -&gt; (Any, /) -&gt; Option[Any]`
++ expression/extra/result/pipeline.py:96:19: error[invalid-argument-type] Argument to function `reduce` is incorrect: Expected `(def Ok[_TSource](value: _TSource@Ok) -&gt; Result[_TSource@Ok, Any], (Any, /) -&gt; Result[Any, Any], /) -&gt; def Ok[_TSource](value: _TSource@Ok) -&gt; Result[_TSource@Ok, Any]`, found `def reducer(acc: (Any, /) -&gt; Result[Any, Any], fn: (Any, /) -&gt; Result[Any, Any]) -&gt; (Any, /) -&gt; Result[Any, Any]`
++ tests/test_array.py:307:38: error[invalid-argument-type] Argument to function `reduce` is incorrect: Expected `(Literal[0], int, /) -&gt; Literal[0]`, found `def folder(x: int, y: int) -&gt; int`
++ tests/test_block.py:274:38: error[invalid-argument-type] Argument to function `reduce` is incorrect: Expected `(Literal[0], int, /) -&gt; Literal[0]`, found `def folder(x: int, y: int) -&gt; int`
++ tests/test_result.py:491:21: error[invalid-argument-type] Argument to bound method `or_else` is incorrect: Expected `Result[Literal[42], Any]`, found `Result[Literal[0], Any]`
++ tests/test_result.py:509:21: error[invalid-argument-type] Argument to bound method `or_else` is incorrect: Expected `Result[Any, Literal[&quot;original error&quot;]]`, found `Result[Any, Literal[&quot;new error&quot;]]`
+- Found 207 diagnostics
++ Found 213 diagnostics
+
+pandera (https://github.com/pandera-dev/pandera)
+- tests/mypy/pandas_modules/pandas_dataframe.py:35:12: error[no-matching-overload] No overload of bound method `pipe` matches arguments
+- tests/mypy/pandas_modules/pandas_dataframe.py:41:12: error[invalid-return-type] Return type does not match returned value: expected `DataFrame[SchemaOut]`, found `DataFrame[SchemaOut] | DataFrame[Schema]`
++ tests/mypy/pandas_modules/pandas_dataframe.py:41:12: error[invalid-return-type] Return type does not match returned value: expected `DataFrame[SchemaOut]`, found `DataFrame[Schema] | DataFrame[SchemaOut]`
+- Found 1598 diagnostics
++ Found 1597 diagnostics
+
+mypy (https://github.com/python/mypy)
+- mypy/type_visitor.py:267:13: warning[redundant-cast] Value is already of type `Any`
+- mypy/type_visitor.py:282:13: warning[redundant-cast] Value is already of type `Any`
+- Found 1841 diagnostics
++ Found 1839 diagnostics
+
+pylox (https://github.com/sco1/pylox)
+- pylox/builtins/py_builtins.py:175:32: error[invalid-argument-type] Argument to function `mean` is incorrect: Expected `Iterable[int | float]`, found `dict[Unknown, Unknown] | Unknown | deque[Unknown | None]`
+- pylox/builtins/py_builtins.py:192:34: error[invalid-argument-type] Argument to function `median` is incorrect: Expected `Iterable[int | float]`, found `dict[Unknown, Unknown] | Unknown | deque[Unknown | None]`
+- pylox/builtins/py_builtins.py:216:32: error[invalid-argument-type] Argument to function `mode` is incorrect: Expected `Iterable[int | float]`, found `dict[Unknown, Unknown] | Unknown | deque[Unknown | None]`
+- pylox/builtins/py_builtins.py:326:33: error[invalid-argument-type] Argument to function `stdev` is incorrect: Expected `Iterable[int | float]`, found `dict[Unknown, Unknown] | Unknown | deque[Unknown | None]`
+- Found 26 diagnostics
++ Found 22 diagnostics
+
+meson (https://github.com/mesonbuild/meson)
++ unittests/cargotests.py:337:68: error[invalid-key] Invalid key access on TypedDict `FromWorkspace`: Unknown key &quot;optional&quot;
++ unittests/cargotests.py:345:62: error[invalid-key] Invalid key access on TypedDict `FromWorkspace`: Unknown key &quot;features&quot;
+- Found 885 diagnostics
++ Found 887 diagnostics
+
+sphinx (https://github.com/sphinx-doc/sphinx)
++ sphinx/domains/python/__init__.py:672:42: error[index-out-of-bounds] Index 0 is out of bounds for string `Literal[&quot;&quot;]` with length 0
+- Found 493 diagnostics
++ Found 494 diagnostics
+
+trio (https://github.com/python-trio/trio)
+- src/trio/_highlevel_open_unix_stream.py:63:28: error[no-matching-overload] No overload of function `fspath` matches arguments
+- Found 613 diagnostics
++ Found 612 diagnostics
+
+xarray (https://github.com/pydata/xarray)
+- xarray/backends/api.py:1701:26: warning[redundant-cast] Value is already of type `str`
+- xarray/backends/scipy_.py:326:16: error[invalid-return-type] Return type does not match returned value: expected `str | ReadBuffer[Unknown] | AbstractDataStore`, found `str | ReadBuffer[Unknown] | AbstractDataStore | ... omitted 3 union elements`
++ xarray/backends/scipy_.py:326:16: error[invalid-return-type] Return type does not match returned value: expected `str | ReadBuffer[Unknown] | AbstractDataStore`, found `str | PathLike[Any] | ReadBuffer[Unknown] | ... omitted 3 union elements`
+- Found 1615 diagnostics
++ Found 1614 diagnostics
+
+prefect (https://github.com/PrefectHQ/prefect)
+- src/prefect/tasks.py:1673:13: error[invalid-argument-type] Argument to function `emit_task_run_state_change_event` is incorrect: Expected `State[Any]`, found `State[Any] | None`
+- Found 3148 diagnostics
++ Found 3147 diagnostics
+
+scikit-learn (https://github.com/scikit-learn/scikit-learn)
++ sklearn/calibration.py:1093:17: error[invalid-key] Invalid key access on TypedDict `_MinimizeScalarOptionsBracketed`: Unknown key &quot;xatol&quot; - did you mean &quot;xtol&quot;?
+- Found 1993 diagnostics
++ Found 1994 diagnostics
+
+strawberry (https://github.com/strawberry-graphql/strawberry)
+- strawberry/federation/object_type.py:90:9: error[invalid-argument-type] Argument to function `type` is incorrect: Expected `T@_impl_type`, found `T@_impl_type | None`
+- strawberry/types/base.py:272:63: error[no-matching-overload] No overload of function `field` matches arguments
+- Found 382 diagnostics
++ Found 380 diagnostics
+
+hydra-zen (https://github.com/mit-ll-responsible-ai/hydra-zen)
+- src/hydra_zen/wrapper/_implementations.py:945:16: error[invalid-return-type] Return type does not match returned value: expected `DataClass_ | type[@Todo] | ListConfig | DictConfig`, found `@Todo | DataClass_ | type[@Todo] | ... omitted 6 union elements`
++ src/hydra_zen/wrapper/_implementations.py:945:16: error[invalid-return-type] Return type does not match returned value: expected `DataClass_ | type[@Todo] | ListConfig | DictConfig`, found `@Todo | (((...) -&gt; Any) &amp; Top[dict[Unknown, Unknown]]) | DataClass_ | ... omitted 6 union elements`
+- tests/annotations/declarations.py:1241:55: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- tests/annotations/declarations.py:1246:55: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- tests/annotations/declarations.py:1249:45: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 557 diagnostics
++ Found 554 diagnostics
+
+scikit-build-core (https://github.com/scikit-build/scikit-build-core)
+- src/scikit_build_core/build/_wheelfile.py:51:22: error[no-matching-overload] No overload of function `field` matches arguments
+- src/scikit_build_core/settings/skbuild_docs_sphinx.py:27:36: error[no-matching-overload] No overload of function `field` matches arguments
+- src/scikit_build_core/settings/skbuild_docs_sphinx.py:43:30: error[no-matching-overload] No overload of function `field` matches arguments
+- Found 52 diagnostics
++ Found 49 diagnostics
+
+altair (https://github.com/vega/altair)
++ altair/utils/core.py:356:10: warning[redundant-cast] Value is already of type `_PandasDataFrameT@sanitize_pandas_dataframe`
+- Found 1339 diagnostics
++ Found 1340 diagnostics
+
+hydpy (https://github.com/hydpy-dev/hydpy)
+- hydpy/core/hydpytools.py:2631:61: error[unresolved-attribute] Type `object` has no attribute `name`
+- Found 609 diagnostics
++ Found 608 diagnostics
+
+pandas-stubs (https://github.com/pandas-dev/pandas-stubs)
+- tests/indexes/arithmetic/timedeltaindex/test_mul.py:20:12: error[invalid-return-type] Return type does not match returned value: expected `TimedeltaIndex`, found `TimedeltaIndex | Index[Any]`
++ tests/indexes/arithmetic/timedeltaindex/test_mul.py:20:12: error[invalid-return-type] Return type does not match returned value: expected `TimedeltaIndex`, found `Index[Any] | TimedeltaIndex`
+
+jax (https://github.com/google/jax)
++ jax/_src/tree_util.py:440:29: error[invalid-argument-type] Argument to function `reduce` is incorrect: Expected `(T@tree_reduce &amp; ~Unspecified, Unknown, /) -&gt; T@tree_reduce &amp; ~Unspecified`, found `(T@tree_reduce, Any, /) -&gt; T@tree_reduce`
+- Found 2435 diagnostics
++ Found 2436 diagnostics
+
+sympy (https://github.com/sympy/sympy)
+- sympy/polys/densetools.py:292:36: error[invalid-argument-type] Argument to function `dup_TC` is incorrect: Expected `Domain[Es@convert | Expr | int | ... omitted 3 union elements]`, found `Domain[Er@dup_eval]`
+- Found 11058 diagnostics
++ Found 11057 diagnostics
+
+rotki (https://github.com/rotki/rotki)
+- rotkehlchen/assets/asset.py:172:16: error[invalid-return-type] Return type does not match returned value: expected `AssetWithSymbol`, found `AssetWithNameAndType`
+- rotkehlchen/assets/asset.py:184:16: error[invalid-return-type] Return type does not match returned value: expected `EvmToken`, found `CryptoAsset`
+- rotkehlchen/assets/asset.py:190:16: error[invalid-return-type] Return type does not match returned value: expected `SolanaToken`, found `CryptoAsset`
+- rotkehlchen/assets/asset.py:196:16: error[invalid-return-type] Return type does not match returned value: expected `AssetWithOracles`, found `AssetWithNameAndType`
+- Found 1717 diagnostics
++ Found 1713 diagnostics
+
+core (https://github.com/home-assistant/core)
+- homeassistant/helpers/service_info/ssdp.py:39:39: error[no-matching-overload] No overload of function `field` matches arguments
+- Found 13761 diagnostics
++ Found 13760 diagnostics
+
+</code></pre>
+</details>
+<details>
+<summary>Memory usage changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">prefect (https://github.com/PrefectHQ/prefect)
+-     struct metadata = ~31MB
++     struct metadata = ~30MB
+-     struct fields = ~36MB
++     struct fields = ~35MB
+-     memo metadata = ~103MB
++     memo metadata = ~98MB
+
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @ibraheemdev on 2025-10-15 00:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2025-10-15 00:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/ty_python_semantic/resources/mdtest/assignment/annotations.md</code>:425 on 2025-10-15 00:29</div>
+            <div class="timeline-body"><p>The churn here could be avoided if we performed a <em>third</em> specialization, inferring the call expression annotation first before the argument types, but I'm not sure it's worth it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-10-15 00:33</div>
+            <div class="timeline-body"><!-- generated-comment ty ecosystem-analyzer -->
+
+<h2><code>ecosystem-analyzer</code> results</h2>
+<p>| Lint rule | Added | Removed | Changed |
+|-----------|------:|--------:|--------:|
+| <code>invalid-argument-type</code> | 7 | 7 | 0 |
+| <code>no-matching-overload</code> | 0 | 14 | 0 |
+| <code>invalid-return-type</code> | 0 | 4 | 7 |
+| <code>redundant-cast</code> | 2 | 3 | 0 |
+| <code>invalid-key</code> | 3 | 0 | 0 |
+| <code>unused-ignore-comment</code> | 0 | 3 | 0 |
+| <code>unresolved-attribute</code> | 0 | 2 | 0 |
+| <code>index-out-of-bounds</code> | 1 | 0 | 0 |
+| <strong>Total</strong> | <strong>13</strong> | <strong>33</strong> | <strong>7</strong> |</p>
+<p><strong><a href="https://ibraheem-generic-call-infere.ecosystem-663.pages.dev/diff">Full report with detailed diff</a></strong> (<a href="https://ibraheem-generic-call-infere.ecosystem-663.pages.dev/timing">timing results</a>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2025-10-15 00:59</div>
+            <div class="timeline-body"><p>The ecosystem results look good. There are some regressions around <code>functools.reduce</code> because we aren't able to correctly infer the type variables in a <code>Callable</code>, so we choose the overly narrow type without widening based on the type context. However, those should be fixed by the new trait solver, we shouldn't need the type context for that to work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/call/bind.rs</code>:2563 on 2025-10-15 12:34</div>
+            <div class="timeline-body"><p>You can use <code>Type::is_type_var</code> here. Or alternatively, do we want to update this to skip the type context if it contains a typevar anywhere inside of it? In that case you'd use <code>Type::has_typevar</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/call/bind.rs</code>:2552 on 2025-10-15 12:36</div>
+            <div class="timeline-body"><p>Should this use <code>TypeContext::default</code>? The comment says &quot;without the type context&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types.rs</code>:1200 on 2025-10-15 12:40</div>
+            <div class="timeline-body"><p>nit: I would call this <code>filter_union</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types.rs</code>:1199 on 2025-10-15 12:40</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    /// If this type is a union, filters the union elements based on the provided predicate.
+    /// Otherwise returns the type unchanged.
+</code></pre>
+<p>(probably needs to be reflowed to satisfy pre-commit)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types.rs</code>:11203 on 2025-10-15 12:43</div>
+            <div class="timeline-body"><p>Can we make the callback take in <code>Type&lt;'db&gt;</code> instead of <code>&amp;Type&lt;'db&gt;</code>? I find that much more ergonomic, and I think it just requires a <code>.copied()</code> before the <code>filter</code>. (Ditto above in <code>Type::filter</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-10-15 12:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-10-15 12:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:11203 on 2025-10-15 12:53</div>
+            <div class="timeline-body"><p>Ibraheem's current signature matches the signature for <code>UnionType::map()</code>. I don't have a strong objection to changing <em>that</em> signature, but I think it's nice to keep the signature of <code>map()</code> consistent with the signature of <code>filter()</code>. (And IIRC, I made the callback passed to <code>UnionType::map()</code> take <code>&amp;Type&lt;'db&gt;</code> because it seemed generally to make most callsites more ergonomic than if it took <code>Type&lt;'db&gt;</code>. Due to the fact that <code>some_union.elements(db).iter()</code> calls return <code>Iterator&lt;Item = &amp;Type&lt;'db&gt;&gt;</code>s rather than <code>Iterator&lt;Item = Type&lt;'db&gt;&gt;</code>s)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types.rs</code>:11203 on 2025-10-15 12:57</div>
+            <div class="timeline-body"><p>:+1: I agree with keeping them consistent, but feel strongly enough about avoiding <code>&amp;Type</code> when we can that I might tackle that as a separate follow on. You know, in my copious spare time.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-10-15 12:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2025-10-15 21:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/ty_python_semantic/src/types/call/bind.rs</code>:2563 on 2025-10-15 21:05</div>
+            <div class="timeline-body"><p>I'll use <code>is_type_var</code> for now. We still want to use the type context as much as possible, we just want to avoid ever adding a type-mapping to a typevar, e.g. <code>dict[TypedDict(..), T]</code> is still useful. I'll address this in a follow up PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/call/bind.rs</code>:2501 on 2025-10-15 21:06</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    #[expect(clippy::too_many_arguments)]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-10-15 21:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2025-10-15 21:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/ty_python_semantic/src/types/call/bind.rs</code>:2552 on 2025-10-15 21:06</div>
+            <div class="timeline-body"><p>I updated the comment, this is specifically talking about inferring the return type using the type context. We still need the type context to avoid eager literal promotion (regardless of whether or not we choose the inference with or without the type context).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2025-10-15 21:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/ty_python_semantic/src/types.rs</code>:11203 on 2025-10-15 21:07</div>
+            <div class="timeline-body"><p>There are some <code>Type</code> methods that take <code>&amp;self</code>, so we should probably address them all at once. Only changing <code>filter</code> would mean <code>.filter(Type::is_typed_dict)</code> no longer works, for example.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-10-15 21:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:11203 on 2025-10-15 21:09</div>
+            <div class="timeline-body"><p>I think the last time we discussed it, we decided that it was pretty borderline but that it was <em>probably</em> slightly more efficient for methods like that to take <code>&amp;self</code> rather than <code>self</code>, despite the fact that <code>Type</code> is <code>Copy</code>, given how big <code>Type</code> is</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @ibraheemdev on 2025-10-15 23:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @ibraheemdev on 2025-10-15 23:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2025-10-16 00:31</div>
+            <div class="timeline-body"><p>I updated the heuristic to ignore the type context if the specialization is already assignable to the type context. This seems more consistent than the previous subtyping check, and also means we don't have to perform a second specialization if the first one is valid.</p>
+<p>This is somewhat related to https://github.com/astral-sh/ty/issues/136, but I think that is a decision we have to make separately and more related to preferring the declared type itself, not the inference that uses the declared type. For example, in https://github.com/astral-sh/ruff/pull/20796, we want re-assignments to be narrowed while still accounting for the type context. This seems to remove all the false positives that showed up in the ecosystem report as https://github.com/astral-sh/ruff/pull/20796, and removes a number of existing false positives as well.</p>
+<p>The regression with <code>functools.reduce</code> remains as mentioned before, and there seems to also be a regression with static method constructors, but I believe in that case we aren't able to perform literal promotion due to an unrelated issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2025-10-16 00:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/ty_python_semantic/src/types/call/bind.rs</code>:2563 on 2025-10-16 00:54</div>
+            <div class="timeline-body"><p>Actually, I'm not even sure we need this check anymore, given we'll prefer the first inference over the one unioned with a typevar. I suppose it might make for better diagnostics for invalid assignments?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/resources/mdtest/assignment/annotations.md</code>:425 on 2025-10-16 18:32</div>
+            <div class="timeline-body"><p>There is a TODO below indicating where we'd make the change if we wanted to fix this, so I'm 👍 to this. Though maybe add a TODO comment here, too, calling out that we realize that we reordered the union, and that we know how we'd fix it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> approved on 2025-10-16 18:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ibraheemdev on 2025-10-16 19:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ibraheemdev on 2025-10-16 19:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-10-16 19:17</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:35:00 UTC
+    </footer>
+</body>
+</html>

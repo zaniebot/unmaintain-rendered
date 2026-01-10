@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[syntax-errors] Name is parameter and global - astral-sh/ruff #20426</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[syntax-errors] Name is parameter and global</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/20426">#20426</a>
+        opened by <a href="https://github.com/11happy">@11happy</a>
+        on 2025-09-15 22:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/11happy">@11happy</a> on 2025-09-15 22:47</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title? (Please prefix with `[ty]` for ty pull
+  requests.)
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+<p>This PR implements a new semantic syntax error where name is parameter &amp; global.</p>
+<h2>Test Plan</h2>
+<!-- How was it tested? -->
+
+<p>I have written inline test as directed in #17412</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @11happy on 2025-09-15 22:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @11happy on 2025-09-15 22:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-09-15 23:06</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:93 on 2025-09-16 20:33</div>
+            <div class="timeline-body"><p>This kind of traversal isn't fully correct. It will only catch top-level <code>global</code> statements like the test case you included, but there are other ways of nesting <code>global</code> statements within other statements that are still syntax errors. A couple of simple examples are <code>if</code> and <code>try</code> statements:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; def f(a):
+...     if True:
+...         global a
+...
+  File &quot;&lt;python-input-3&gt;&quot;, line 3
+    global a
+    ^^^^^^^^
+SyntaxError: name 'a' is parameter and global
+&gt;&gt;&gt; def f(a):
+...     try:
+...         global a
+...     except:
+...         pass
+...
+  File &quot;&lt;python-input-8&gt;&quot;, line 3
+    global a
+    ^^^^^^^^
+SyntaxError: name 'a' is parameter and global
+</code></pre>
+<p>I added these examples on your branch locally, and they were not identified as errors.</p>
+<p>The way we handle this for <code>LoadBeforeGlobalDeclaration</code> is by using the <code>SemanticSyntaxContext::global</code> method, which checks whether a given binding has been declared <code>global</code>:</p>
+<p>https://github.com/astral-sh/ruff/blob/c3f2187fdae2f706488ec193db395800ec7a9b82/crates/ruff_python_parser/src/semantic_errors.rs#L717-L720</p>
+<p>Unfortunately that doesn't seem to work here either because we're not yet inside the function scope when traversing the function definition, and the <code>global</code> method checks the current scope in Ruff's semantic model.</p>
+<p>I think the approach I would try would be to perform this check when visiting a <code>Stmt::Global</code> instead of when visiting the <code>Stmt::FunctionDef</code> and check if any of the names in the <code>global</code> statement shadows a parameter. It looks like we track this kind of information in the <a href="https://github.com/astral-sh/ruff/blob/main/crates/ruff_python_semantic/src/binding.rs#L532-L537"><code>BindingKind::Argument</code></a> variant in Ruff and possibly <a href="https://github.com/astral-sh/ruff/blob/c3f2187fdae2f706488ec193db395800ec7a9b82/crates/ruff_python_semantic/src/scope.rs#L38"><code>Scope::shadowed_bindings</code></a>. Note that the shadowed check may be necessary because cases like this still emit the <code>parameter and global</code> syntax error (this would be a good test case to have too):</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; def f(a):
+...     a = 1
+...     global a
+...
+  File &quot;&lt;python-input-9&gt;&quot;, line 3
+    global a
+    ^^^^^^^^
+SyntaxError: name 'a' is parameter and global
+</code></pre>
+<p>I think we can do something similar with ty's <a href="https://github.com/astral-sh/ruff/blob/c3f2187fdae2f706488ec193db395800ec7a9b82/crates/ty_python_semantic/src/semantic_index/definition.rs#L671"><code>DefinitionKind::Parameter</code></a>, but I'm less sure about that.</p>
+<p>If we can't do something like that, we'd need a <code>Visitor</code> to traverse the full function definition looking for <code>global</code> statements. However, that could be quite expensive, so the approach I outlined above would be preferable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:1393 on 2025-09-16 20:34</div>
+            <div class="timeline-body"><p>I'd prefer not to reformat unrelated sections of code, as I mentioned on your other PR</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:1542 on 2025-09-16 20:34</div>
+            <div class="timeline-body"><p>We'll need some docs here too</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> requested changes on 2025-09-16 20:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @11happy on 2025-09-29 17:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @11happy on 2025-09-29 17:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @11happy on 2025-09-29 17:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @11happy on 2025-09-29 17:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/11happy">@11happy</a> reviewed on 2025-09-29 17:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/11happy">@11happy</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:1393 on 2025-09-29 17:14</div>
+            <div class="timeline-body"><p>sure , actually I am not changing these , these are automatically added by pre-commit jobs</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/11happy">@11happy</a> reviewed on 2025-09-29 17:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/11happy">@11happy</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:1542 on 2025-09-29 17:15</div>
+            <div class="timeline-body"><p>sure will add</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-09-29 17:15</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-09-29 17:16</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅
+No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/11happy">@11happy</a> reviewed on 2025-09-29 17:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/11happy">@11happy</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:93 on 2025-09-29 17:16</div>
+            <div class="timeline-body"><p>Hii @ntBre , I have tried implementation based on above pointers,  can you please take a look whenever you get a chance.</p>
+<p>Thank you : )</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @dcreager removed by @MichaReiser on 2025-09-30 07:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @carljm removed by @MichaReiser on 2025-09-30 07:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @sharkdp removed by @MichaReiser on 2025-09-30 07:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @AlexWaygood removed by @MichaReiser on 2025-09-30 07:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/11happy">@11happy</a> reviewed on 2025-09-30 17:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/11happy">@11happy</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:1542 on 2025-09-30 17:13</div>
+            <div class="timeline-body"><p>done, I have added docs</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/11happy">@11happy</a> reviewed on 2025-09-30 17:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/11happy">@11happy</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:93 on 2025-09-30 17:14</div>
+            <div class="timeline-body"><p>Have fixed the CI errors.
+: )</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/resources/test/fixtures/syntax_errors/global_parameter.py</code>:10 on 2025-09-30 21:19</div>
+            <div class="timeline-body"><p>This one is actually not an error in the REPL:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; def h(a):
+...     def inner():
+...         global a
+...
+&gt;&gt;&gt; h
+&lt;function h at 0x7f684173fd80&gt;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/ruff/rules/global_parameter.rs</code>:1 on 2025-09-30 21:26</div>
+            <div class="timeline-body"><p>We don't need to define a new Ruff <em>rule</em> in this case, we can just emit this as a syntax error. The only reason we've had rules/<code>Violation</code>s in your previous PRs is that those syntax errors were previously implemented as lint rules. New syntax errors that don't correspond to existing lint rules can just be standalone syntax errors like the ones here:</p>
+<p>https://github.com/astral-sh/ruff/blob/cacfb09a59eef3d7af8a6067d981c8e85ae5a104/crates/ruff_linter/src/checkers/ast/mod.rs#L713-L730</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:820 on 2025-09-30 21:33</div>
+            <div class="timeline-body"><p>nit: I think a name like <code>is_parameter</code> or <code>is_bound_parameter</code> would be a bit better.</p>
+<p>More importantly, and related to my comment on the test case above, I don't think this is quite right. We need to limit our parameter check to the nearest-enclosing function scope. In other words, we need to search through <code>self.semantic.current_scopes</code> more like we do in some of the other context methods:</p>
+<p>https://github.com/astral-sh/ruff/blob/bedfc6fd063e08f4d1e76ae8a780162404079298/crates/ruff_linter/src/checkers/ast/mod.rs#L737-L749</p>
+<p>until we find the first function scope, and then only check for shadowed bindings within that scope. We can also return early if we find a class scope, for example, because this is also valid, like the nested function case I showed above:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; def h(a):
+...     class C:
+...         global a
+...
+&gt;&gt;&gt;
+</code></pre>
+<p>I think the checks on the binding below look roughly correct, but we need to be more careful about identifying the scope holding the relevant binding.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ty_python_semantic/src/semantic_index/builder.rs</code>:2793 on 2025-09-30 21:34</div>
+            <div class="timeline-body"><p>Ideally we would implement this for ty too, but we can leave it for a follow-up if it looks complicated or if you aren't interested. That's totally fine :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-09-30 21:35</div>
+            <div class="timeline-body"><p>Thank you, this is looking good. We just need to be a bit more careful with our scope handling and revert the unnecessary <code>Violation</code> changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/11happy">@11happy</a> reviewed on 2025-10-02 15:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/11happy">@11happy</a> on <code>crates/ruff_linter/resources/test/fixtures/syntax_errors/global_parameter.py</code>:10 on 2025-10-02 15:25</div>
+            <div class="timeline-body"><p>yeah, now its working fine.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/11happy">@11happy</a> reviewed on 2025-10-02 15:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/11happy">@11happy</a> on <code>crates/ruff_linter/src/rules/ruff/rules/global_parameter.rs</code>:1 on 2025-10-02 15:25</div>
+            <div class="timeline-body"><p>done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/11happy">@11happy</a> reviewed on 2025-10-02 15:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/11happy">@11happy</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:820 on 2025-10-02 15:25</div>
+            <div class="timeline-body"><p>done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/11happy">@11happy</a> reviewed on 2025-10-02 15:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/11happy">@11happy</a> on <code>crates/ty_python_semantic/src/semantic_index/builder.rs</code>:2793 on 2025-10-02 15:26</div>
+            <div class="timeline-body"><p>Sure, I am interested to implement this for ty , I would prefer to keep it as a follow-up if that sounds fine ?.</p>
+<p>Thank you : )</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_parser/tests/fixtures.rs</code>:579 on 2025-10-06 18:55</div>
+            <div class="timeline-body"><p>nit:</p>
+<pre><code class="language-suggestion">
+    fn is_bound_parameter(&amp;self, _name: &amp;str) -&gt; bool {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ty_python_semantic/src/semantic_index/builder.rs</code>:2792 on 2025-10-06 18:57</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">
+    fn is_bound_parameter(&amp;self, _name: &amp;str) -&gt; bool {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ty_python_semantic/src/semantic_index/builder.rs</code>:2793 on 2025-10-06 18:57</div>
+            <div class="timeline-body"><p>That sounds fine!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-10-06 19:12</div>
+            <div class="timeline-body"><p>Thank you, this is looking good for the tests currently implemented. I think we should a few more test cases, for example:</p>
+<pre><code class="language-python">def f(a):
+    a = 1
+    global a  # error
+</code></pre>
+<p>This tests the shadowing code. I'm actually not sure I was correct to recommend checking <code>shadowed_bindings</code>. Rereading the docstring, it sounds like this only catches shadowing from different scopes. We might actually need to check for <code>rebinding_scopes</code>. In any case, a test like the one above, and possibly one with multiple rebindings, would be a good idea:</p>
+<pre><code class="language-python">def f(a):
+    a = 1
+    a = 2
+    global a  # error
+</code></pre>
+<p>I see that <code>is_bound_parameter</code> also has special handling for classes, so it seems worth including a test case with an intervening class scope, probably more than one case showing some of the interleavings like function-class-function, class-function-class, etc, or at least the interesting ones. I think something like this would be interesting at a minimum:</p>
+<pre><code class="language-python">def f(a):
+    class Inner:
+        global a
+</code></pre>
+<p>I also had a couple of minor nits about spaces between functions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/11happy">@11happy</a> on 2025-10-11 12:10</div>
+            <div class="timeline-body"><p>So the shadowed_bindings in <code>SemanticModel</code> and <code>Scope</code> are different, respectively. As per the example given in the docstring of <code>Scope</code></p>
+<pre><code>/// A map from binding ID to binding ID that it shadows.
+///
+/// For example:
+/// ```python
+/// def f():
+///     x = 1
+///     x = 2
+/// ```
+///
+/// In this case, the binding created by `x = 2` shadows the binding created by `x = 1`.
+shadowed_bindings: FxHashMap&lt;BindingId, BindingId&gt;,
+</code></pre>
+<p>We can utilize this to trace back whether a global declaration is originally an argument or not — and I’ve done that accordingly. I also think we don’t really need to interact with rebindings_scope here. I manually checked with an example, and it was coming out to be empty in the following case:</p>
+<pre><code>def f(a):
+    a = 1
+    a = 2
+    global a
+</code></pre>
+<p>Also, while trying to solve this issue, I read a lot about bindings, shadowed bindings, etc., and I’m genuinely thankful for the opportunity to work on this. The tests are working as expected now</p>
+<p>Thank you : )</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/11happy">@11happy</a> reviewed on 2025-10-11 12:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/11happy">@11happy</a> on <code>crates/ruff_python_parser/tests/fixtures.rs</code>:579 on 2025-10-11 12:14</div>
+            <div class="timeline-body"><p>done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/11happy">@11happy</a> on <code>crates/ty_python_semantic/src/semantic_index/builder.rs</code>:2792 on 2025-10-11 12:14</div>
+            <div class="timeline-body"><p>done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/11happy">@11happy</a> reviewed on 2025-10-11 12:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/11happy">@11happy</a> on 2025-10-12 09:13</div>
+            <div class="timeline-body"><p>is the <code>CI/fuzz parser</code> error related to this PR changes ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-10-13 19:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/snapshots/ruff_linter__linter__tests__semantic_syntax_error_GlobalParameter_global_parameter_3.10.snap</code>:64 on 2025-10-13 19:23</div>
+            <div class="timeline-body"><p>This is what the fuzzer seeds that are failing look like. This is not supposed to be an error:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; def f(a):
+...     class Inner:
+...         global a
+...
+&gt;&gt;&gt; f
+&lt;function f at 0x7fbec085be20&gt;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/11happy">@11happy</a> reviewed on 2025-10-14 16:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/11happy">@11happy</a> on <code>crates/ruff_linter/src/snapshots/ruff_linter__linter__tests__semantic_syntax_error_GlobalParameter_global_parameter_3.10.snap</code>:64 on 2025-10-14 16:52</div>
+            <div class="timeline-body"><p>done , have fixed it &amp; fixed the merge conflict as well (rebased)
+Thank you : )</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/11happy">@11happy</a> reviewed on 2025-10-14 16:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/11happy">@11happy</a> on <code>crates/ruff_linter/src/snapshots/ruff_linter__linter__tests__semantic_syntax_error_GlobalParameter_global_parameter_3.10.snap</code>:64 on 2025-10-14 16:53</div>
+            <div class="timeline-body"><p>Currently we are doing an early return for class scope , please let me know if there are any more edge cases you would like me to test , would be happy to add them.</p>
+<p>Thank you</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:850 on 2025-10-15 15:45</div>
+            <div class="timeline-body"><p>Ah, I overlooked this initially, but the <code>ScopeKind</code>s here actually contain these nodes' definitions. We should be able to extract the parameters from that and avoid this binding stuff entirely. I always get a little nervous when I see a <code>loop</code>, so I looked a bit harder at this today.</p>
+<pre><code class="language-rust">    fn is_bound_parameter(&amp;self, name: &amp;str) -&gt; bool {
+        for scope in self.semantic.current_scopes() {
+            match scope.kind {
+                ScopeKind::Class(_) =&gt; return false,
+                ScopeKind::Function(ast::StmtFunctionDef { parameters, .. })
+                | ScopeKind::Lambda(ast::ExprLambda {
+                    parameters: Some(parameters),
+                    ..
+                }) =&gt; return parameters.includes(name),
+                ScopeKind::Lambda(_)
+                | ScopeKind::Generator { .. }
+                | ScopeKind::Module
+                | ScopeKind::Type
+                | ScopeKind::DunderClassCell =&gt; {}
+            }
+        }
+
+        false
+    }
+</code></pre>
+<p>I believe it's actually impossible for a lambda to contain a <code>global</code> since it can only contain a single expression and not a statement, so we could probably eliminate the lambda branch here too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/linter.rs</code>:1043 on 2025-10-15 15:50</div>
+            <div class="timeline-body"><p>We shouldn't do this in this PR, but I think it would be nice to move these test cases out to separate test files. It's getting a bit unwieldy. Feel free to follow up on that if you're interested :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-10-15 15:52</div>
+            <div class="timeline-body"><p>Thanks, this is looking good. I had one idea to simplify <code>is_bound_parameter</code> and a suggestion for a follow-up.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/11happy">@11happy</a> reviewed on 2025-10-16 16:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/11happy">@11happy</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:850 on 2025-10-16 16:49</div>
+            <div class="timeline-body"><p>done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/11happy">@11happy</a> reviewed on 2025-10-16 16:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/11happy">@11happy</a> on <code>crates/ruff_linter/src/linter.rs</code>:1043 on 2025-10-16 16:50</div>
+            <div class="timeline-body"><p>Sure, would open a follow up PR.</p>
+<p>Thank you</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/11happy">@11happy</a> reviewed on 2025-10-16 16:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/11happy">@11happy</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:850 on 2025-10-16 16:53</div>
+            <div class="timeline-body"><p>Now that I’m looking at this and the previous iterations, I feel like if we’re starting to make the code more complex, something’s probably off with the approach. From now on, I’ll be more careful and focus on keeping things simpler.</p>
+<p>Thank you : )</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/11happy">@11happy</a> reviewed on 2025-10-16 18:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/11happy">@11happy</a> on <code>crates/ruff_linter/src/linter.rs</code>:1043 on 2025-10-16 18:37</div>
+            <div class="timeline-body"><p>I have created a PR here https://github.com/astral-sh/ruff/pull/20926</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> approved on 2025-10-21 16:44</div>
+            <div class="timeline-body"><p>Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[Syntax-errors] : Implement semantic syntax error where name is parameter and global" to "[syntax-errors] Name is parameter and global" by @ntBre on 2025-10-21 16:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2025-10-21 16:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ntBre on 2025-10-21 16:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-10-21 16:51</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:34:59 UTC
+    </footer>
+</body>
+</html>

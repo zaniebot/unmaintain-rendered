@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Implement safety checks for affix removal in slice_to_remove_prefix_or_suffix rule - astral-sh/ruff #20805</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Implement safety checks for affix removal in slice_to_remove_prefix_or_suffix rule</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/20805">#20805</a>
+        opened by <a href="https://github.com/tinkerer-shubh">@tinkerer-shubh</a>
+        on 2025-10-10 14:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/tinkerer-shubh">@tinkerer-shubh</a> on 2025-10-10 14:10</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff/ty! To help us with reviewing, please ensure the following:
+
+- Does this pull request include a clear summary of the change? (See below.)
+- Does this pull request include a descriptive title? (Please prefix with `[ty]` for ty pull requests.)
+- Does this pull request reference any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>closes: https://github.com/astral-sh/ruff/issues/20724</p>
+<p>This pull request implements <strong>safety checks for affix removal</strong> in the <code>slice_to_remove_prefix_or_suffix</code> rule.</p>
+<p>It introduces a new <code>FixSafety</code> enum to determine whether an affix removal is <em>safe</em> or <em>unsafe</em>. Diagnostic fixes now use these safety checks when applying replacements for prefix and suffix removals.<br />
+This prevents unsafe modifications that could alter runtime behavior — for instance, when dealing with custom sequence types that may not behave like built‑in <code>str</code> or <code>bytes</code>.</p>
+<p>Additionally, helper functions have been added to:</p>
+<ul>
+<li>Classify expression types</li>
+<li>Assess safety based on semantic analysis</li>
+</ul>
+<h2>Test Plan</h2>
+<p>The changes were tested by:</p>
+<ul>
+<li>Adding new test cases to <code>crates/ruff_linter/resources/test/fixtures/refurb/FURB188.py</code> to cover the new functionality and verify correct affix removal behavior.</li>
+<li>Updating snapshot tests in<br />
+<code>crates/ruff_linter/src/rules/refurb/snapshots/ruff_linter__rules__refurb__tests__FURB188_FURB188.py.snap</code><br />
+to reflect the new diagnostics and unsafe fix annotations.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/refurb/rules/slice_to_remove_prefix_or_suffix.rs</code>:545 on 2025-10-10 19:06</div>
+            <div class="timeline-body"><p>I don't think we need to re-implement a check like this. We have existing helpers for <code>str</code> and <code>bytes</code> here:</p>
+<p>https://github.com/astral-sh/ruff/blob/bbd3856de8f83c31db84ef8a104d67ae104732ee/crates/ruff_python_semantic/src/analyze/typing.rs#L1065-L1073</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/refurb/rules/slice_to_remove_prefix_or_suffix.rs</code>:521 on 2025-10-10 19:07</div>
+            <div class="timeline-body"><p>We can reuse our existing <code>Applicability</code> type for this:</p>
+<p>https://github.com/astral-sh/ruff/blob/bbd3856de8f83c31db84ef8a104d67ae104732ee/crates/ruff_diagnostics/src/fix.rs#L14</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/refurb/rules/slice_to_remove_prefix_or_suffix.rs</code>:141 on 2025-10-10 19:12</div>
+            <div class="timeline-body"><p>Once we use <code>Applicability</code> we can also use <code>Fix::applicable_edit</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/refurb/snapshots/ruff_linter__rules__refurb__tests__FURB188_FURB188.py.snap</code>:25 on 2025-10-10 19:16</div>
+            <div class="timeline-body"><p>We should double-check some of these. Hopefully using the <code>typing</code> helpers I mentioned below will help because this seems like a case where we could know that they are both strings. <code>filename</code> is annotated in the function signature, and the suffix is a string literal.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> requested changes on 2025-10-10 19:16</div>
+            <div class="timeline-body"><p>Thanks for working on this! I think we can reuse more existing code and hopefully improve the accuracy of our detection too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @ntBre on 2025-10-10 19:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dscorbett">@dscorbett</a> reviewed on 2025-10-10 19:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dscorbett">@dscorbett</a> on <code>crates/ruff_linter/src/rules/refurb/snapshots/ruff_linter__rules__refurb__tests__FURB188_FURB188.py.snap</code>:25 on 2025-10-10 19:58</div>
+            <div class="timeline-body"><p>Although the annotation says that <code>isinstance(filename, str)</code>, it is not guaranteed that <code>type(filename) is str</code>. <code>filename</code> could be an instance of a subclass of <code>str</code> for which FURB188’s assumptions don’t hold. Example:</p>
+<pre><code class="language-console">$ cat &gt;furb188.py &lt;&lt;'# EOF'
+class StringX(str):
+    def __getitem__(self, key, /):
+        return type(self)(super().__getitem__(key))
+
+    def parenthesize(self):
+        return type(self)(f&quot;({self})&quot;)
+
+def remove_extension_via_slice(filename: str) -&gt; str:
+    if filename.endswith(&quot;.txt&quot;):
+        filename = filename[:-4]
+    return filename
+
+print(remove_extension_via_slice(StringX(&quot;foo.txt&quot;)).parenthesize())
+# EOF
+
+$ python furb188.py
+(foo)
+
+$ ruff --isolated check furb188.py --select FURB188 --fix
+Found 1 error (1 fixed, 0 remaining).
+
+$ python furb188.py 2&gt;&amp;1 | tail -n 1
+AttributeError: 'str' object has no attribute 'parenthesize'
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/refurb/snapshots/ruff_linter__rules__refurb__tests__FURB188_FURB188.py.snap</code>:25 on 2025-10-10 20:30</div>
+            <div class="timeline-body"><p>I could be wrong, but my initial thought is that this is overly defensive. I think many of our checks that rely on type annotations, like the <code>typing</code> helpers, would be susceptible to this kind of thing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-10-10 20:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/tinkerer-shubh">@tinkerer-shubh</a> reviewed on 2025-10-11 08:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/tinkerer-shubh">@tinkerer-shubh</a> on <code>crates/ruff_linter/src/rules/refurb/rules/slice_to_remove_prefix_or_suffix.rs</code>:545 on 2025-10-11 08:48</div>
+            <div class="timeline-body"><p>ahh yess. thanks sm! addressed in https://github.com/astral-sh/ruff/pull/20805/commits/a5694f1ef0f794627090cbce94a479b1147ab210</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/tinkerer-shubh">@tinkerer-shubh</a> reviewed on 2025-10-11 08:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/tinkerer-shubh">@tinkerer-shubh</a> on <code>crates/ruff_linter/src/rules/refurb/rules/slice_to_remove_prefix_or_suffix.rs</code>:521 on 2025-10-11 08:49</div>
+            <div class="timeline-body"><p>addressed in https://github.com/astral-sh/ruff/commit/a5694f1ef0f794627090cbce94a479b1147ab210</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/tinkerer-shubh">@tinkerer-shubh</a> reviewed on 2025-10-11 08:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/tinkerer-shubh">@tinkerer-shubh</a> on <code>crates/ruff_linter/src/rules/refurb/rules/slice_to_remove_prefix_or_suffix.rs</code>:141 on 2025-10-11 08:49</div>
+            <div class="timeline-body"><p>addressed in https://github.com/astral-sh/ruff/commit/a5694f1ef0f794627090cbce94a479b1147ab210</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/tinkerer-shubh">@tinkerer-shubh</a> on <code>crates/ruff_linter/src/rules/refurb/snapshots/ruff_linter__rules__refurb__tests__FURB188_FURB188.py.snap</code>:25 on 2025-10-11 08:53</div>
+            <div class="timeline-body"><p>agreed. I did revisit the PR with this feedback in mind and it does make sense. thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/tinkerer-shubh">@tinkerer-shubh</a> reviewed on 2025-10-11 08:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ntBre by @MichaReiser on 2025-10-14 06:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/refurb/rules/slice_to_remove_prefix_or_suffix.rs</code>:556 on 2025-10-15 13:40</div>
+            <div class="timeline-body"><p>Did you try using the existing helpers I recommended in https://github.com/astral-sh/ruff/pull/20805#discussion_r2421775622? This is quite a bit different from what I had in mind, but  I'd be curious to know if you ran into problems with that route.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/refurb/rules/slice_to_remove_prefix_or_suffix.rs</code>:538 on 2025-10-15 13:48</div>
+            <div class="timeline-body"><p>I'm surprised that we need to special-case tuples. Shouldn't we treat any definite non-strings and non-bytes the same way?</p>
+<p>A small variant of your <code>tuple_affix_should_be_suppressed</code> test case doesn't get suppressed, as one example:</p>
+<pre><code class="language-py">def object_affix_should_be_suppressed(text: str) -&gt; str:
+    prefix = object()
+    if text.startswith(prefix):
+        text = text[len(prefix):]
+    return text
+</code></pre>
+<p>I don't think we have a good way to infer a static but non-specific type to handle  this part of the issue:</p>
+<blockquote>
+<p>If it is statically known that they are instances of unrelated classes, the rule should be suppressed.</p>
+</blockquote>
+<p>I think I'd be fine with checking that the affix and suffix are both bytes or str and then marking the fix  unsafe if that's not true. We could also suppress the rule entirely in that case. There's precedent for that in another rule:</p>
+<p>https://github.com/astral-sh/ruff/blob/b562fe030d61e65e595fbf393bd06299cab87cde/crates/ruff_linter/src/rules/pylint/rules/bad_str_strip_call.rs#L76-L96</p>
+<p>I think we need basically the same thing here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-10-15 14:15</div>
+            <div class="timeline-body"></div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:35:00 UTC
+    </footer>
+</body>
+</html>

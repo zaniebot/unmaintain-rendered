@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] improve base conda distinction from child conda - astral-sh/ruff #20675</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] improve base conda distinction from child conda</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/20675">#20675</a>
+        opened by <a href="https://github.com/Danielkonge">@Danielkonge</a>
+        on 2025-10-01 22:36
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/Danielkonge">@Danielkonge</a> on 2025-10-01 22:36</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title? (Please prefix with `[ty]` for ty pull
+  requests.)
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>#19990 didn't completely fix the base vs. child conda environment distinction, since it detected slightly different behavior than what I usually see in conda. E.g., I see something like the following:</p>
+<pre><code>(didn't yet activate conda, but base is active)
+➜ printenv | grep CONDA
+CONDA_PYTHON_EXE=/opt/anaconda3/bin/python
+CONDA_PREFIX=/opt/anaconda3
+CONDA_DEFAULT_ENV=base
+CONDA_EXE=/opt/anaconda3/bin/conda
+CONDA_SHLVL=1
+CONDA_PROMPT_MODIFIER=(base)
+
+(activating conda)
+➜ conda activate test
+
+(test is an active conda environment)
+❯ printenv | grep CONDA
+CONDA_PREFIX=/opt/anaconda3/envs/test
+CONDA_PYTHON_EXE=/opt/anaconda3/bin/python
+CONDA_SHLVL=2
+CONDA_PREFIX_1=/opt/anaconda3
+CONDA_DEFAULT_ENV=test
+CONDA_PROMPT_MODIFIER=(test)
+CONDA_EXE=/opt/anaconda3/bin/conda
+</code></pre>
+<p>But the current behavior looks for <code>CONDA_DEFAULT_ENV = basename(CONDA_PREFIX)</code> for the base environment instead of the child environment, where we actually see this equality.</p>
+<p>This pull request fixes that and updates the tests correspondingly.</p>
+<h2>Test Plan</h2>
+<p>I updated the existing tests with the new behavior. Let me know if you want more tests. Note: It shouldn't be necessary to test for the case where we have <code>conda/envs/base</code>, since one should not be able to create such an environment (one with the name of <code>CONDA_DEFAULT_ENV</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @Danielkonge on 2025-10-01 22:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @Danielkonge on 2025-10-01 22:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @Danielkonge on 2025-10-01 22:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @Danielkonge on 2025-10-01 22:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @Danielkonge on 2025-10-01 22:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[ty] improve base conda distinction  child conda" to "[ty] improve base conda distinction from child conda" by @Danielkonge on 2025-10-01 22:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @Gankra by @MichaReiser on 2025-10-02 06:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @MichaReiser on 2025-10-02 06:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-10-02 06:57</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-10-02 06:58</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅
+No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @sharkdp removed by @sharkdp on 2025-10-02 07:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-10-02 14:05</div>
+            <div class="timeline-body"><p>Hmm this implementation has seemingly been working fine for uv for quite a while?</p>
+<p>https://github.com/astral-sh/uv/blob/8da9df3654f255a2f2e8e83c51257c0699ece9f7/crates/uv-python/src/virtualenv.rs#L79</p>
+<p>Did I invert something in my implementation?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-10-02 14:33</div>
+            <div class="timeline-body"><p>Aha! uv just shipped this fix (and a bonus one) a couple weeks ago.</p>
+<p>https://github.com/astral-sh/uv/pull/15679/
+https://github.com/astral-sh/uv/pull/15680/</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> approved on 2025-10-02 14:37</div>
+            <div class="timeline-body"><p>Approving the basic idea, but some more comment/naming cleanups are in-order, ala the equivalent uv PRs. Would you be interested in doing those extra changes? If not I can.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Danielkonge">@Danielkonge</a> on 2025-10-02 15:28</div>
+            <div class="timeline-body"><blockquote>
+<p>Approving the basic idea, but some more comment/naming cleanups are in-order, ala the equivalent uv PRs. Would you be interested in doing those extra changes? If not I can.</p>
+</blockquote>
+<p>I can try to add these changes later today.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @AlexWaygood removed by @AlexWaygood on 2025-10-02 15:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Danielkonge">@Danielkonge</a> reviewed on 2025-10-02 20:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Danielkonge">@Danielkonge</a> on <code>crates/ty/docs/environment.md</code>:45 on 2025-10-02 20:31</div>
+            <div class="timeline-body"><p>uv writes <code>CONDA_ROOT</code> instead of <code>_CONDA_ROOT</code>, but the section is &quot;Externally-defined variables&quot;, and the actual environment variable is with the <code>_</code>, so I wrote it like this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Danielkonge">@Danielkonge</a> on 2025-10-02 20:33</div>
+            <div class="timeline-body"><p>@Gankra: I think I added what the mentioned uv PRs covered now. Let me know if you wanted more than this?</p>
+<p>Also: I left it is in a separate commit for now, but should I just rebase?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> approved on 2025-10-03 13:34</div>
+            <div class="timeline-body"><p>Rad, thanks so much!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @Gankra on 2025-10-03 13:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @Gankra on 2025-10-03 13:56</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:34:59 UTC
+    </footer>
+</body>
+</html>

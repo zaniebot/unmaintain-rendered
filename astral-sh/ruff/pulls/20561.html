@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`ruff`] improve handling of intermixed comments inside from-imports - astral-sh/ruff #20561</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>ruff</code>] improve handling of intermixed comments inside from-imports</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/20561">#20561</a>
+        opened by <a href="https://github.com/amyreese">@amyreese</a>
+        on 2025-09-24 20:51
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/amyreese">@amyreese</a> on 2025-09-24 20:51</div>
+            <div class="timeline-body"><p>Resolves the crash when attempting to format code like:</p>
+<pre><code>from x import (a as # whatever
+b)
+</code></pre>
+<p>And chooses to format it as:</p>
+<pre><code>from x import (
+    a as b,  # whatever
+)
+</code></pre>
+<p>Fixes issue #19138</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @amyreese on 2025-09-24 20:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-09-24 20:58</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2025-09-25 07:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @MichaReiser on 2025-09-25 07:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/other/alias.rs</code>:30 on 2025-09-25 07:57</div>
+            <div class="timeline-body"><p>Passing 0 for the width is incorrect here. The width is used to determine how much space the <code>Printer</code> needs to reserve for the comments. Zero means that they take zero width (or the width is ignored) and they always fit if the content before fits on the line.</p>
+<p>The reason <code>line_suffix</code> has a width is that Ruff excludes pragma comments from the width calculation, but all other comments need to fit into the 88-character limit, or the line is split over multiple lines.</p>
+<p>You can use <code>trailing_comments</code> if you want to format the comments as end-of-line comments</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> requested changes on 2025-09-25 07:59</div>
+            <div class="timeline-body"><p>Thanks for looking into this. We'll need to add tests (see <code>resources/fixtures</code>). I also suggest playing with different comment combinations. E.g. the following now flips the order of comments which is always undesired:</p>
+<pre><code class="language-py">from x import (a # more 
+ as # whatever
+b)
+</code></pre>
+<p>Gets formatted to</p>
+<pre><code class="language-py">from x import (
+    a as b,  # more
+    # whatever
+)
+</code></pre>
+<p>This one doesn't flip the comment order but it places the <code>other</code> comment that used to be before <code>b</code> after <code>b</code></p>
+<pre><code class="language-py">
+from x import (a
+ as # whatever
+ # other
+b)
+
+</code></pre>
+<p>Not suggesting that you should or that it makes your life easier in any way. But an alternative fix is to update <code>place_comment</code> so that it makes comments between <code>as</code> and the first alias leading comments of the first alias (as was done in https://github.com/astral-sh/ruff/pull/20589)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/amyreese">@amyreese</a> on 2025-09-30 18:02</div>
+            <div class="timeline-body"><p>Working on adding some test fixtures to validate results, and considering alternative approaches.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/amyreese">@amyreese</a> on 2025-09-30 19:19</div>
+            <div class="timeline-body"><p>In this given example putting comments in every possible position, Black will maintain placement of all the comments, rather than re-flowing any elements together and merging comments:</p>
+<pre><code># alpha
+from x import (
+    # bravo
+    a  # charlie
+    # delta
+    as  # echo
+    # foxtrot
+    b  # golf
+    # hotel
+    ,  # india
+    # juliet
+)  # kilo
+</code></pre>
+<p>Do we want to ensure that we follow Black's style and preserve all of these comments in their original positions? Or do we want to have an opinion and re-flow/merge various comments to ensure that <code>a as b,</code> is always on one line when possible?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[ruff] fix crash with dangling comments in importfrom alias" to "[ruff] fix crash with dangling comments in import from alias" by @MichaReiser on 2025-10-01 06:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-10-01 06:42</div>
+            <div class="timeline-body"><blockquote>
+<p>Do we want to ensure that we follow Black's style and preserve all of these comments in their original positions? Or do we want to have an opinion and re-flow/merge various comments to ensure that a as b, is always on one line when possible?</p>
+</blockquote>
+<p>We've used Black's comment formatting as inspiration and we try to match it for &quot;common&quot; comment placements but it's not a strict requirement that we have to match black precisely (I also found Black inconsistent about when it tries to be smart/opinionated and when it's strict about preserving comment placements).</p>
+<p>We do try to preserve own-line comments as own-line comments and end-of line comments should remain end-of-line comments. It's also important to preserve the ordering of comments.</p>
+<p>Trying your example with a few &quot;similar&quot; syntax elements (this is the formatted output):</p>
+<pre><code class="language-py"># alpha
+(
+    # bravo
+    a  # charlie
+    # delta
+    +  # echo
+    # foxtrot
+    b,  # golf
+    # hotel
+    # india
+    # juliet
+)  # kilo
+
+# scrambles own line and end of line comments
+
+# alpha
+with (
+    # bravo
+    a as (  # charlie
+    # delta  # echo
+        # foxtrot
+        b
+    ),  # golf
+    # hotel
+    # india
+    # juliet
+):  # kilo
+    ...
+
+match x:
+    # alpha
+    case (
+        # bravo
+        a  # charlie
+        # delta
+        as  # echo
+        # foxtrot
+        b,  # golf
+        # hotel
+        # india
+        # juliet
+    ):  # kilo
+        ...
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/amyreese">@amyreese</a> on 2025-10-01 20:17</div>
+            <div class="timeline-body"><p>Updated to use <code>trailing_comments</code>. It did not seem feasible to make it fully preserve all comment positions like black does, but I ensured that comment order is at least preserved, and this provides the &quot;opinion&quot; of keeping <code>a as b</code> on the same line. Updated fixtures/snapshots with the example from yesterday.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @amyreese on 2025-10-01 20:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-10-02 06:24</div>
+            <div class="timeline-body"><p>Does this change reflow comments of already formatted code?</p>
+<p>Could we do something similar to the <code>MatchAs</code> formatting</p>
+<p>https://github.com/astral-sh/ruff/blob/63b3f7adae7fcc8910baa902a2d20bfdc4a28ad9/crates/ruff_python_formatter/src/pattern/pattern_match_as.rs#L27-L44</p>
+<p>I'm asking because the formatting of</p>
+<pre><code class="language-py">from x import (a # more 
+ as # whatever
+b)
+
+
+from x import (a
+ as # whatever
+ # other
+b)
+</code></pre>
+<p>to</p>
+<pre><code class="language-py">from x import (
+    a as b,  # more
+    # whatever
+)
+
+
+from x import (
+    a as b,  # whatever
+    # other
+)
+</code></pre>
+<p>or</p>
+<pre><code class="language-py"># alpha
+from x import (
+    # bravo
+    a
+    
+    as  # echo
+    # foxtrot
+    b  # golf
+    # hotel
+)
+</code></pre>
+<p>where the <code>foxdrot</code> comment now comes after <code>b</code> (it was a leading comment but it now becomes a trailing comment and the indent for <code>golf</code> is off)</p>
+<pre><code class="language-py"># alpha
+from x import (
+    # bravo
+    a as b,  # echo
+    # foxtrot
+      # golf
+    # hotel
+)
+</code></pre>
+<p>The indent of <code># golf</code> is problematic because this is now a case where the formatter needs two passes to reach convergence. We need to fix this at least and add them as test cases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/amyreese">@amyreese</a> on 2025-10-02 14:58</div>
+            <div class="timeline-body"><p>Hmm, I'm seeing different results from you when I test this locally:</p>
+<pre><code>$ cargo run --bin ruff_python_formatter -- --emit stdout scratch.py
+...
+
+from x import (
+    a as b,  # more  # whatever
+)
+
+
+from x import (
+    a as b,  # whatever
+    # other
+)
+
+# alpha
+from x import (
+    # bravo
+    a as b,  # echo
+    # foxtrot  # golf
+    # hotel
+)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-10-02 15:23</div>
+            <div class="timeline-body"><p>Ah, sorry. I think pulling the changes this morning failed and I then tested against the previous revision. Adding those tests might still make sense because they demonstrate other issues that your PR fixes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/amyreese">@amyreese</a> on 2025-10-03 14:53</div>
+            <div class="timeline-body"><p>I'm revisiting the comment placement mechanisms, and attempting to better associate comments within an alias node to the identifiers they belong with.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/amyreese">@amyreese</a> on 2025-10-04 00:03</div>
+            <div class="timeline-body"><p>Reworked the ways comments are associated, specifically for the <code>Alias</code> and <code>StmtImportFrom</code> nodes, preserving comment placement at every position within a from-import and matching black's formatting:</p>
+<pre><code>$ cargo run --bin ruff_python_formatter -- --emit stdout crates/ruff_python_formatter/resources/test/fixtures/black/cases/import_comments.py
+   Compiling ruff_db v0.0.0 (/Users/amethyst/workspace/ruff/crates/ruff_db)
+   Compiling ruff_python_formatter v0.0.0 (/Users/amethyst/workspace/ruff/crates/ruff_python_formatter)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 3.18s
+     Running `target/debug/ruff_python_formatter --emit stdout crates/ruff_python_formatter/resources/test/fixtures/black/cases/import_comments.py`
+# ensure trailing comments are preserved
+import x  # comment
+from x import a  # comment
+from x import a, b  # comment
+from x import a as b  # comment
+from x import a as b, b as c  # comment
+
+# ensure intermixed end- and own-line comments are all preserved
+from x import (  # one
+    # two
+    a  # three
+    # four
+    ,  # five
+    # six
+)  # seven
+
+from x import (  # alpha
+    # bravo
+    a  # charlie
+    # delta
+    as  # echo
+    # foxtrot
+    b  # golf
+    # hotel
+    ,  # india
+    # juliet
+)  # kilo
+</code></pre>
+<p>Passing ruff's output black confirms no changes:</p>
+<pre><code>$ cargo run -p ruff -- format - &lt; crates/ruff_python_formatter/resources/test/fixtures/black/cases/import_comments.py | uvx black -
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.11s
+     Running `target/debug/ruff format -`
+# ensure trailing comments are preserved
+import x  # comment
+from x import a  # comment
+from x import a, b  # comment
+from x import a as b  # comment
+from x import a as b, b as c  # comment
+
+# ensure intermixed end- and own-line comments are all preserved
+from x import (  # one
+    # two
+    a  # three
+    # four
+    ,  # five
+    # six
+)  # seven
+
+from x import (  # alpha
+    # bravo
+    a  # charlie
+    # delta
+    as  # echo
+    # foxtrot
+    b  # golf
+    # hotel
+    ,  # india
+    # juliet
+)  # kilo
+All done! ✨ 🍰 ✨
+1 file left unchanged.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/comments/placement.rs</code>:2003 on 2025-10-06 06:31</div>
+            <div class="timeline-body"><p>Nit: The <code>place_comments</code> logic tends to be complicated and its often non obvious what cases each branch is handling. That's why we tend to add inline comments that show examples of the patterns they match on (see the comments above).</p>
+<p>Could you add such comments for this branch and to <code>handle_alias_comment</code> too?</p>
+<pre><code>// this should be a dangling comment but only if it comes before the `,`
+// ```python
+// from foo import (
+//      baz # comment     
+//      , 
+//      bar 
+// )
+// ```
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/other/alias.rs</code>:35 on 2025-10-06 06:32</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">            write!(f, [token(&quot;as&quot;)])?;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-10-06 06:36</div>
+            <div class="timeline-body"><p>Nice!</p>
+<p>Given that we now preserve the original placement in more cases, it should also mean that we don't reformat any existing code (and, thus, doesn't require any preview gating)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/amyreese">@amyreese</a> on 2025-10-06 19:34</div>
+            <div class="timeline-body"><p>Documented placement functions and changes, as well as in the alias formatter.  Also added more test cases and updated the logic to better match black style and merge lines/comments when no own-line comments are between the alias and the trailing comma:</p>
+<p>Eg,</p>
+<pre><code class="language-py">from foo import (
+    bar  # one
+    ,  # two
+</code></pre>
+<p>Becomes:</p>
+<pre><code class="language-py">from foo import (
+    bar,  # one  # two
+)
+</code></pre>
+<p>Edit: to be clear, this change is also closer to the existing behavior of Ruff, so even though it changes formatting, it's no different than what Ruff already does <em>today</em>:</p>
+<pre><code>main $ cargo run -p ruff --  format --diff -
+...
+
+from foo import (
+    bar  # comment
+    ,  # another
+    baz,
+)
+^D
+@@ -1,5 +1,4 @@
+ from foo import (
+-    bar  # comment
+-    ,  # another
++    bar,  # comment  # another
+     baz,
+ )
+
+&gt; [1]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @amyreese on 2025-10-07 15:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @amyreese on 2025-10-07 15:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-10-07 15:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">style</span> added by @amyreese on 2025-10-07 15:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[ruff] fix crash with dangling comments in import from alias" to "[ruff] improve handling of intermixed comments inside from-imports" by @amyreese on 2025-10-07 16:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[ruff] improve handling of intermixed comments inside from-imports" to "[`ruff`] improve handling of intermixed comments inside from-imports" by @amyreese on 2025-10-07 16:35</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:34:59 UTC
+    </footer>
+</body>
+</html>

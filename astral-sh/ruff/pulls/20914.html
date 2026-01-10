@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Do not assume that `field`s have a default value - astral-sh/ruff #20914</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Do not assume that <code>field</code>s have a default value</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/20914">#20914</a>
+        opened by <a href="https://github.com/sharkdp">@sharkdp</a>
+        on 2025-10-16 09:39
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-10-16 09:39</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>fixes https://github.com/astral-sh/ty/issues/1366</p>
+<h2>Test Plan</h2>
+<p>Added regression test</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @sharkdp on 2025-10-16 09:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @sharkdp on 2025-10-16 09:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @sharkdp on 2025-10-16 09:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @sharkdp on 2025-10-16 09:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @sharkdp on 2025-10-16 09:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-10-16 09:41</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-10-16 09:42</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅
+No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:1649 on 2025-10-16 10:27</div>
+            <div class="timeline-body"><p>is this correct? This seems to imply that a <code>Field</code> instance without a default is assignable to literally <em>anything</em>?</p>
+<p>Can we make the special case here slightly narrower, like this?</p>
+<pre><code class="language-diff">diff --git a/crates/ty_python_semantic/src/types.rs b/crates/ty_python_semantic/src/types.rs
+index 8fa72656e4..d538308d80 100644
+--- a/crates/ty_python_semantic/src/types.rs
++++ b/crates/ty_python_semantic/src/types.rs
+@@ -1634,10 +1634,12 @@ impl&lt;'db&gt; Type&lt;'db&gt; {
+             // This allows field definitions like `name: str = field(default=&quot;&quot;)` in dataclasses
+             // to pass the assignability check of the inferred type to the declared type.
+             (Type::KnownInstance(KnownInstanceType::Field(field)), right)
+-                if relation.is_assignability() =&gt;
++                if relation.is_assignability() &amp;&amp; field.default_type(db).is_some() =&gt;
+             {
+-                field.default_type(db).when_none_or(|default_type| {
+-                    default_type.has_relation_to_impl(
++                field
++                    .default_type(db)
++                    .expect(&quot;Checked in branch arm&quot;)
++                    .has_relation_to_impl(
+                         db,
+                         right,
+                         inferable,
+@@ -1645,7 +1647,6 @@ impl&lt;'db&gt; Type&lt;'db&gt; {
+                         relation_visitor,
+                         disjointness_visitor,
+                     )
+-                })
+             }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:7610 on 2025-10-16 10:27</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                            write!(f, &quot;[{}]&quot;, default_ty.display(self.db))?;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-10-16 10:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-10-16 10:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types.rs</code>:1649 on 2025-10-16 10:34</div>
+            <div class="timeline-body"><blockquote>
+<p>This seems to imply that a <code>Field</code> instance without a default is assignable to literally <em>anything</em>?</p>
+</blockquote>
+<p>Yes, I think we want that. Consider something like the following, where the <code>field</code> call is really only there to exclude the <code>id</code> field from the <code>__init__</code> signature. This field does not have a default value.</p>
+<pre><code class="language-py">id: int = field(init=False)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-10-16 10:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:1649 on 2025-10-16 10:37</div>
+            <div class="timeline-body"><p>Ah I see. Fair enough! Do we have tests that will fail if we made the bad refactor I proposed here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-10-16 10:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types.rs</code>:1649 on 2025-10-16 10:49</div>
+            <div class="timeline-body"><p>Yes, all kinds of tests fail if we do this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @sharkdp on 2025-10-16 10:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-10-16 10:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-10-16 10:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:1649 on 2025-10-16 10:50</div>
+            <div class="timeline-body"><p>thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-10-16 10:50</div>
+            <div class="timeline-body"></div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:35:00 UTC
+    </footer>
+</body>
+</html>

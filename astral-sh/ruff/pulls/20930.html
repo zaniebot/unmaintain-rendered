@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avoid reusing nested, interpolated quotes before Python 3.12 - astral-sh/ruff #20930</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Avoid reusing nested, interpolated quotes before Python 3.12</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/20930">#20930</a>
+        opened by <a href="https://github.com/ntBre">@ntBre</a>
+        on 2025-10-16 20:33
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ntBre">@ntBre</a> on 2025-10-16 20:33</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Fixes #20774 by tracking whether an <code>InterpolatedStringState</code> element is nested inside of another interpolated element. This feels like kind of a naive fix, so I'm welcome to other ideas. But it resolves the problem in the issue and clears up the syntax error in the black compatibility test, without affecting many other cases.</p>
+<p>The other affected case is actually interesting too because the <a href="https://github.com/astral-sh/ruff/blob/96b156303b81c5114e8375a6ffd467fb638c3963/crates/ruff_python_formatter/resources/test/fixtures/ruff/expression/fstring.py#L707">input</a> is invalid, but the previous quote selection fixed the invalid syntax:</p>
+<pre><code class="language-pycon">Python 3.11.13 (main, Sep  2 2025, 14:20:25) [Clang 20.1.4 ] on linux
+Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
+&gt;&gt;&gt; f'{1: abcd &quot;{'aa'}&quot; }'  # input
+  File &quot;&lt;stdin&gt;&quot;, line 1
+    f'{1: abcd &quot;{'aa'}&quot; }'
+                  ^^
+SyntaxError: f-string: expecting '}'
+&gt;&gt;&gt; f'{1: abcd &quot;{&quot;aa&quot;}&quot; }'  # old output
+Traceback (most recent call last):
+  File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
+ValueError: Invalid format specifier ' abcd &quot;aa&quot; ' for object of type 'int'
+&gt;&gt;&gt; f'{1: abcd &quot;{'aa'}&quot; }'  # new output
+  File &quot;&lt;stdin&gt;&quot;, line 1
+    f'{1: abcd &quot;{'aa'}&quot; }'
+                  ^^
+SyntaxError: f-string: expecting '}'
+</code></pre>
+<p>We now preserve the invalid syntax in the input.</p>
+<p>Unfortunately, this also seems to be another edge case I didn't consider in https://github.com/astral-sh/ruff/pull/20867 because we don't flag this as a syntax error after 0.14.1:</p>
+<details><summary>Shell output</summary>
+<p>
+
+<pre><code>&gt; uvx ruff@0.14.0 check --ignore ALL --target-version py311 - &lt;&lt;EOF
+f'{1: abcd &quot;{'aa'}&quot; }'
+EOF
+invalid-syntax: Cannot reuse outer quote character in f-strings on Python 3.11 (syntax was added in Python 3.12)
+ --&gt; -:1:14
+  |
+1 | f'{1: abcd &quot;{'aa'}&quot; }'
+  |              ^
+  |
+
+Found 1 error.
+&gt; uvx ruff@0.14.1 check --ignore ALL --target-version py311 - &lt;&lt;EOF
+f'{1: abcd &quot;{'aa'}&quot; }'
+EOF
+All checks passed!
+&gt; uvx python@3.11 -m ast &lt;&lt;EOF
+f'{1: abcd &quot;{'aa'}&quot; }'
+EOF
+Traceback (most recent call last):
+  File &quot;&lt;frozen runpy&gt;&quot;, line 198, in _run_module_as_main
+  File &quot;&lt;frozen runpy&gt;&quot;, line 88, in _run_code
+  File &quot;/home/brent/.local/share/uv/python/cpython-3.11.13-linux-x86_64-gnu/lib/python3.11/ast.py&quot;, line 1752, in &lt;module&gt;
+    main()
+  File &quot;/home/brent/.local/share/uv/python/cpython-3.11.13-linux-x86_64-gnu/lib/python3.11/ast.py&quot;, line 1748, in main
+    tree = parse(source, args.infile.name, args.mode, type_comments=args.no_type_comments)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File &quot;/home/brent/.local/share/uv/python/cpython-3.11.13-linux-x86_64-gnu/lib/python3.11/ast.py&quot;, line 50, in parse
+    return compile(source, filename, mode, flags,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File &quot;&lt;stdin&gt;&quot;, line 1
+    f'{1: abcd &quot;{'aa'}&quot; }'
+                  ^^
+SyntaxError: f-string: expecting '}'
+</code></pre>
+</p>
+</details> 
+
+<p>I assumed that was the same <code>ParseError</code> as the one caused by <code>f&quot;{1:&quot;&quot;}&quot;</code>, but this is a nested interpolation inside of the format spec.</p>
+<h2>Test Plan</h2>
+<p>New test copied from the black compatibility test. I guess this is a duplicate now, I started working on this branch before the new black tests were imported, so I could delete the separate test in our fixtures if that's preferable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-10-16 20:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @ntBre on 2025-10-16 20:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Brent/f string fix" to "Avoid reusing nested, interpolated quotes before Python 3.12" by @ntBre on 2025-10-16 20:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-10-16 20:43</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @ntBre on 2025-10-16 20:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @ntBre on 2025-10-16 20:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-10-17 07:42</div>
+            <div class="timeline-body"><p>I like the solution. It's very non-invasive, comes with little code and runtime complexity and it preserves the syntax error as is (which I think is better than trying to fixing syntax errors and than creating an even bigger mess)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-10-17 07:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ntBre on 2025-10-17 12:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-10-17 12:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-10-17 12:49</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:35:00 UTC
+    </footer>
+</body>
+</html>

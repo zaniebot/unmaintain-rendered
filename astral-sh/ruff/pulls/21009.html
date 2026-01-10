@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Some more simplifications when rendering constraint sets - astral-sh/ruff #21009</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Some more simplifications when rendering constraint sets</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21009">#21009</a>
+        opened by <a href="https://github.com/dcreager">@dcreager</a>
+        on 2025-10-21 01:52
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dcreager">@dcreager</a> on 2025-10-21 01:52</div>
+            <div class="timeline-body"><p>This PR adds another useful simplification when rendering constraint sets: <code>T = int</code> instead of <code>T = int ∧ T ≠ str</code>. (The &quot;smaller&quot; constraint <code>T = int</code> implies the &quot;larger&quot; constraint <code>T ≠ str</code>. Constraint set clauses are intersections, and if one constraint in a clause implies another, we can throw away the &quot;larger&quot; constraint.)</p>
+<p>While we're here, we also normalize the bounds of a constraint, so that we equate e.g. <code>T ≤ int | str</code> with <code>T ≤ str | int</code>, and change the ordering of BDD variables so that all constraints with the same typevar are ordered adjacent to each other.</p>
+<p>Lastly, we also add a new <code>display_graph</code> helper method that prints out the full graph structure of a BDD.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-10-21 01:52</div>
+            <div class="timeline-body"><p>Pushing this up for initial CI checks and to checkpoint my work. Will add some mdtests highlighting the rendering change tomorrow</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @dcreager on 2025-10-21 01:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @dcreager on 2025-10-21 01:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-10-21 01:54</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-10-21 01:55</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅
+No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/resources/mdtest/type_properties/constraints.md</code>:624 on 2025-10-21 13:57</div>
+            <div class="timeline-body"><p>Before this PR, this rendered as</p>
+<pre><code>((T@_ = bool) ∧ (U@_ = bool) ∧ (U@_ ≠ str)) ∨ ((T@_ = bool) ∧ (U@_ = str)) ∨ ((T@_ = str) ∧ (T@_ ≠ bool) ∧ (U@_ = bool) ∧ (U@_ ≠ str)) ∨ (T@_ = str)
+</code></pre>
+<p>and the <code>display_graph</code> rendering for this BDD is</p>
+<pre><code>  (T@_ = str)
+  ┡━₁ (U@_ = str)
+  │   ┡━₁ always
+  │   └─₀ (U@_ = bool)
+  │       ┡━₁ always
+  │       └─₀ never
+  └─₀ (T@_ = bool)
+      ┡━₁ (U@_ = str)
+      │   ┡━₁ always
+      │   └─₀ (U@_ = bool)
+      │       ┡━₁ always
+      │       └─₀ never
+      └─₀ never
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-10-21 13:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @dcreager on 2025-10-21 14:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @dcreager on 2025-10-21 14:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @dcreager on 2025-10-21 14:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @dcreager on 2025-10-21 14:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-10-21 14:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:1285 on 2025-10-21 14:56</div>
+            <div class="timeline-body"><p>This is the big one that lets us simplify <code>T = int ∧ T ≠ str</code> to <code>T = int</code> when displaying.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:1371 on 2025-10-21 15:35</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    /// want to remove the larger one and keep the smaller one.)
+    ///
+    /// Returns a boolean that indicates whether any simplifications were made.
+    fn simplify(&amp;mut self, db: &amp;'db dyn Db) -&gt; bool {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/type_properties/constraints.md</code>:615 on 2025-10-21 15:35</div>
+            <div class="timeline-body"><p>nit: I find all these functions being called <code>_</code> a bit odd for the tests in this file specifically, because my brain keeps parsing <code>@_</code> as a single glpyh -- the underscore looks like a continuation of the <code>@</code> to me 😆 would it be possible to call the function <code>f</code> (or really, anything that doesn't start with <code>_</code>)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:315 on 2025-10-21 15:39</div>
+            <div class="timeline-body"><p>Should this be a <code>std::cmp::Ord</code> impl? It feels unidiomatic to have a <code>cmp</code> function on a type but not implement <code>Ord</code>.</p>
+<p>Hmm, but maybe this doesn't produce results that are consistent with the <code>PartialEq</code> and <code>Eq</code> implementations that are automatically derived as a result of this being <code>salsa::interned</code>? It looks like it's possible for <code>t1.cmp(t2)</code> to return <code>Ordering::Equal</code> but not for them to compare equal using <code>==</code>. In which case this shouldn't be an <code>Ord</code> implementation, but it should probably be renamed to clearly indicate that it doesn't have anything to do with the <code>Ord</code> trait</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:342 on 2025-10-21 15:40</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    /// Return `true` if this constraint can be safely simplified out of a constraint set
+    /// due to the presence of `other` in the constraint set.
+    fn implies(self, db: &amp;'db dyn Db, other: Self) -&gt; bool {
+        other.contains(db, self)
+    }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:797 on 2025-10-21 15:41</div>
+            <div class="timeline-body"><p>Would you also be able to add a doc-comment that describes what this method does, for other readers (and future debuggers!) of the code?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:1254 on 2025-10-21 15:41</div>
+            <div class="timeline-body"><p>Could you possibly add a doc-comment to this method?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/semantic_index/definition.rs</code>:31 on 2025-10-21 15:43</div>
+            <div class="timeline-body"><p>For lots of other Salsa-tracked and Salsa-interned structs, we have these notes included in the doc-comment:</p>
+<p>https://github.com/astral-sh/ruff/blob/e1cada1ec30d289acb00390058fab8bce765836e/crates/ty_python_semantic/src/types.rs#L513-L521</p>
+<p>It might be worth doing similarly here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/type_properties/constraints.md</code>:607 on 2025-10-21 15:44</div>
+            <div class="timeline-body"><p>I think I might have stumbled across this terminology in one of your PRs before 😅</p>
+<p>When you say &quot;render&quot; here, are you just talking about &quot;display rendering&quot;? I.e., this &quot;rendering&quot; should have no impact on semantics?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-10-21 15:53</div>
+            <div class="timeline-body"><p>thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-10-21 16:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:315 on 2025-10-21 16:33</div>
+            <div class="timeline-body"><p>It originally was an <code>Ord</code> impl (via derive), but it now needs a <code>db</code> parameter since it has to pull out fields from the salsa-interned struct. That's also why there's churn replacing <code>a &gt; b</code> calls with <code>a.cmp(db, b) == Ordering::Greater</code>, which I don't love the spelling of.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/resources/mdtest/type_properties/constraints.md</code>:607 on 2025-10-21 16:40</div>
+            <div class="timeline-body"><p>Yeah, I mean &quot;render&quot; in the sense of &quot;create a visual representation of&quot;, like you'd render an image. It doesn't change the semantics at all, just how the constraint sets are displayed.  I can change this to &quot;display&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/resources/mdtest/type_properties/constraints.md</code>:615 on 2025-10-21 16:42</div>
+            <div class="timeline-body"><p>Done. I did this only locally in this section, since doing that to the rest of the file would be a noisy diff. I can tackle that as a follow-on.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/semantic_index/definition.rs</code>:31 on 2025-10-21 16:43</div>
+            <div class="timeline-body"><p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:342 on 2025-10-21 16:44</div>
+            <div class="timeline-body"><p>I went with a slightly different wording, to also describe what implies <em>means</em>, not just where it's used</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:797 on 2025-10-21 16:48</div>
+            <div class="timeline-body"><p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:1254 on 2025-10-21 16:48</div>
+            <div class="timeline-body"><p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:315 on 2025-10-21 17:03</div>
+            <div class="timeline-body"><p>I replaced this with a new <code>ConstraintOrdering</code> wrapper, which holds onto the <code>db</code>, and which I can implement <code>PartialOrd</code> for. That also gives us a nice place to document what ordering we chose and why. lmkwyt</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-10-21 17:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:319 on 2025-10-22 06:53</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    /// Returns whether this constraint contains another — i.e., whether every type that
+</code></pre>
+<p>Or</p>
+<pre><code class="language-suggestion">    /// Returns whether this constraint implies another — i.e., whether every type that
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:1272 on 2025-10-22 06:58</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    /// Returns whether this constraint contains another — i.e., whether every type that
+</code></pre>
+<p>Or</p>
+<pre><code class="language-suggestion">    /// Returns whether this constraint implies another — i.e., whether every type that
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ibraheemdev by @MichaReiser on 2025-10-22 13:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:974 on 2025-10-22 13:47</div>
+            <div class="timeline-body"><p>If that's the case, I recommend implementing <code>Ord</code> for <code>ConstraintOrdering</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:827 on 2025-10-22 13:48</div>
+            <div class="timeline-body"><p>Nit: Would it be difficult to make this a doctest or have a snapshot unit test for this very example (which would ensure it doesn't get outdated)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-10-22 13:48</div>
+            <div class="timeline-body"><p>I'm a bit out of my comfort zone here, so please forgive any dumb questions 😅</p>
+<blockquote>
+<p>This PR adds another useful simplification when rendering constraint sets: T = int instead of T = int ∧ T ≠ str. (The &quot;smaller&quot; constraint T = int implies the &quot;larger&quot; constraint T ≠ str. Constraint set clauses are intersections, and if one constraint in a clause implies another, we can throw away the &quot;larger&quot; constraint.)</p>
+</blockquote>
+<p>What's the reason why we only do this during rendering and don't apply this as a general simplification?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-10-22 13:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-10-22 14:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/type_properties/constraints.md</code>:607 on 2025-10-22 14:01</div>
+            <div class="timeline-body"><p>I sort of have the same question as Micha in https://github.com/astral-sh/ruff/pull/21009#pullrequestreview-3365893127 in that case. If we do this simplification only when displaying these constraints, isn't there a risk that we'll be seeing something different to what is &quot;actually happening behind the scenes&quot; when we try to debug these constraints? The simplification logic isn't trivial! It feels like it would be safer to always apply these simplifications, so that we can be sure that what we see when we debug these constraints is actually what's being used in our subtyping/assignability logic by ty in production</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-10-22 14:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:974 on 2025-10-22 14:17</div>
+            <div class="timeline-body"><p>yes -- something like this feels like it would express the invariants here a bit better?</p>
+<pre><code class="language-diff">diff --git a/crates/ty_python_semantic/src/types/constraints.rs b/crates/ty_python_semantic/src/types/constraints.rs
+index f736452116..18dc881657 100644
+--- a/crates/ty_python_semantic/src/types/constraints.rs
++++ b/crates/ty_python_semantic/src/types/constraints.rs
+@@ -405,27 +405,36 @@ impl&lt;'db&gt; ConstrainedTypeVar&lt;'db&gt; {
+ /// simplifications that we perform that operate on constraints with the same typevar, and this
+ /// ensures that we can find all candidate simplifications more easily.
+ #[derive(Clone, Copy)]
+-struct ConstraintOrdering&lt;'db&gt;(&amp;'db dyn Db, ConstrainedTypeVar&lt;'db&gt;);
++struct OrderedTypeVar&lt;'db&gt;(&amp;'db dyn Db, ConstrainedTypeVar&lt;'db&gt;);
+ 
+-impl&lt;'db&gt; PartialEq&lt;ConstrainedTypeVar&lt;'db&gt;&gt; for ConstraintOrdering&lt;'db&gt; {
+-    fn eq(&amp;self, other_constraint: &amp;ConstrainedTypeVar&lt;'db&gt;) -&gt; bool {
+-        let ConstraintOrdering(_, self_constraint) = *self;
+-        self_constraint == *other_constraint
++impl PartialEq for OrderedTypeVar&lt;'_&gt; {
++    fn eq(&amp;self, other: &amp;Self) -&gt; bool {
++        let OrderedTypeVar(_, self_constraint) = *self;
++        let OrderedTypeVar(_, other_constraint) = *other;
++        self_constraint == other_constraint
+     }
+ }
+ 
+-impl&lt;'db&gt; PartialOrd&lt;ConstrainedTypeVar&lt;'db&gt;&gt; for ConstraintOrdering&lt;'db&gt; {
+-    fn partial_cmp(&amp;self, other_constraint: &amp;ConstrainedTypeVar&lt;'db&gt;) -&gt; Option&lt;Ordering&gt; {
+-        let ConstraintOrdering(db, self_constraint) = *self;
+-        if self_constraint == *other_constraint {
+-            return Some(Ordering::Equal);
++impl Eq for OrderedTypeVar&lt;'_&gt; {}
++
++impl Ord for OrderedTypeVar&lt;'_&gt; {
++    fn cmp(&amp;self, other: &amp;Self) -&gt; Ordering {
++        let OrderedTypeVar(db, self_constraint) = *self;
++        let OrderedTypeVar(_, other_constraint) = *other;
++
++        if self_constraint == other_constraint {
++            return Ordering::Equal;
+         }
+-        Some(
+-            self_constraint
+-                .typevar(db)
+-                .cmp(&amp;other_constraint.typevar(db))
+-                .then_with(|| self_constraint.as_id().cmp(&amp;other_constraint.as_id())),
+-        )
++        self_constraint
++            .typevar(db)
++            .cmp(&amp;other_constraint.typevar(db))
++            .then_with(|| self_constraint.as_id().cmp(&amp;other_constraint.as_id()))
++    }
++}
++
++impl PartialOrd for OrderedTypeVar&lt;'_&gt; {
++    fn partial_cmp(&amp;self, other: &amp;Self) -&gt; Option&lt;Ordering&gt; {
++        Some(self.cmp(other))
+     }
+ }
+ 
+@@ -460,11 +469,11 @@ impl&lt;'db&gt; Node&lt;'db&gt; {
+         if_false: Node&lt;'db&gt;,
+     ) -&gt; Self {
+         debug_assert!((if_true.root_constraint(db)).is_none_or(|root_constraint| {
+-            ConstraintOrdering(db, root_constraint) &gt; constraint
++            OrderedTypeVar(db, root_constraint) &gt; OrderedTypeVar(db, constraint)
+         }));
+         debug_assert!(
+             (if_false.root_constraint(db)).is_none_or(|root_constraint| {
+-                ConstraintOrdering(db, root_constraint) &gt; constraint
++                OrderedTypeVar(db, root_constraint) &gt; OrderedTypeVar(db, constraint)
+             })
+         );
+         if if_true == if_false {
+@@ -925,26 +934,25 @@ impl&lt;'db&gt; InteriorNode&lt;'db&gt; {
+     fn or(self, db: &amp;'db dyn Db, other: Self) -&gt; Node&lt;'db&gt; {
+         let self_constraint = self.constraint(db);
+         let other_constraint = other.constraint(db);
+-        match ConstraintOrdering(db, self_constraint).partial_cmp(&amp;other_constraint) {
+-            Some(Ordering::Equal) =&gt; Node::new(
++        match OrderedTypeVar(db, self_constraint).cmp(&amp;OrderedTypeVar(db, other_constraint)) {
++            Ordering::Equal =&gt; Node::new(
+                 db,
+                 self_constraint,
+                 self.if_true(db).or(db, other.if_true(db)),
+                 self.if_false(db).or(db, other.if_false(db)),
+             ),
+-            Some(Ordering::Less) =&gt; Node::new(
++            Ordering::Less =&gt; Node::new(
+                 db,
+                 self_constraint,
+                 self.if_true(db).or(db, Node::Interior(other)),
+                 self.if_false(db).or(db, Node::Interior(other)),
+             ),
+-            Some(Ordering::Greater) =&gt; Node::new(
++            Ordering::Greater =&gt; Node::new(
+                 db,
+                 other_constraint,
+                 Node::Interior(self).or(db, other.if_true(db)),
+                 Node::Interior(self).or(db, other.if_false(db)),
+             ),
+-            None =&gt; unreachable!(&quot;constraints should always be comparable&quot;),
+         }
+     }
+ 
+@@ -952,26 +960,25 @@ impl&lt;'db&gt; InteriorNode&lt;'db&gt; {
+     fn and(self, db: &amp;'db dyn Db, other: Self) -&gt; Node&lt;'db&gt; {
+         let self_constraint = self.constraint(db);
+         let other_constraint = other.constraint(db);
+-        match ConstraintOrdering(db, self_constraint).partial_cmp(&amp;other_constraint) {
+-            Some(Ordering::Equal) =&gt; Node::new(
++        match OrderedTypeVar(db, self_constraint).cmp(&amp;OrderedTypeVar(db, other_constraint)) {
++            Ordering::Equal =&gt; Node::new(
+                 db,
+                 self_constraint,
+                 self.if_true(db).and(db, other.if_true(db)),
+                 self.if_false(db).and(db, other.if_false(db)),
+             ),
+-            Some(Ordering::Less) =&gt; Node::new(
++            Ordering::Less =&gt; Node::new(
+                 db,
+                 self_constraint,
+                 self.if_true(db).and(db, Node::Interior(other)),
+                 self.if_false(db).and(db, Node::Interior(other)),
+             ),
+-            Some(Ordering::Greater) =&gt; Node::new(
++            Ordering::Greater =&gt; Node::new(
+                 db,
+                 other_constraint,
+                 Node::Interior(self).and(db, other.if_true(db)),
+                 Node::Interior(self).and(db, other.if_false(db)),
+             ),
+-            None =&gt; unreachable!(&quot;constraints should always be comparable&quot;),
+         }
+     }
+ 
+@@ -979,26 +986,25 @@ impl&lt;'db&gt; InteriorNode&lt;'db&gt; {
+     fn iff(self, db: &amp;'db dyn Db, other: Self) -&gt; Node&lt;'db&gt; {
+         let self_constraint = self.constraint(db);
+         let other_constraint = other.constraint(db);
+-        match ConstraintOrdering(db, self_constraint).partial_cmp(&amp;other_constraint) {
+-            Some(Ordering::Equal) =&gt; Node::new(
++        match OrderedTypeVar(db, self_constraint).cmp(&amp;OrderedTypeVar(db, other_constraint)) {
++            Ordering::Equal =&gt; Node::new(
+                 db,
+                 self_constraint,
+                 self.if_true(db).iff(db, other.if_true(db)),
+                 self.if_false(db).iff(db, other.if_false(db)),
+             ),
+-            Some(Ordering::Less) =&gt; Node::new(
++            Ordering::Less =&gt; Node::new(
+                 db,
+                 self_constraint,
+                 self.if_true(db).iff(db, Node::Interior(other)),
+                 self.if_false(db).iff(db, Node::Interior(other)),
+             ),
+-            Some(Ordering::Greater) =&gt; Node::new(
++            Ordering::Greater =&gt; Node::new(
+                 db,
+                 other_constraint,
+                 Node::Interior(self).iff(db, other.if_true(db)),
+                 Node::Interior(self).iff(db, other.if_false(db)),
+             ),
+-            None =&gt; unreachable!(&quot;constraints should always be comparable&quot;),
+         }
+     }
+ 
+@@ -1012,7 +1018,7 @@ impl&lt;'db&gt; InteriorNode&lt;'db&gt; {
+         // point in the BDD where the assignment can no longer affect the result,
+         // and we can return early.
+         let self_constraint = self.constraint(db);
+-        if ConstraintOrdering(db, assignment.constraint()) &lt; self_constraint {
++        if OrderedTypeVar(db, assignment.constraint()) &lt; OrderedTypeVar(db, self_constraint) {
+             return (Node::Interior(self), false);
+         }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-10-22 14:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/type_properties/constraints.md</code>:615 on 2025-10-22 14:17</div>
+            <div class="timeline-body"><p>TYVM!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-10-22 14:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:974 on 2025-10-22 14:29</div>
+            <div class="timeline-body"><p>This is exactly what I had originally! https://github.com/astral-sh/ruff/pull/21009/commits/21f75eb6e02ba22b3c260fa27cbbedce68ed360d is where I moved it to the current representation. I didn't love how I had to wrap both arguments (and pass in <code>db</code> in both places) to get the right comparison behavior. Though I agree that I <em>also</em> don't love needing the <code>None</code> catch-all in those match statements...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-10-22 14:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:974 on 2025-10-22 14:36</div>
+            <div class="timeline-body"><blockquote>
+<p>I didn't love how I had to wrap both arguments (and pass in <code>db</code> in both places) to get the right comparison behavior</p>
+</blockquote>
+<p>I think it's worth it to have this kind of invariant checked by the compiler rather than having to have these <code>unreachable!()</code> branches everywhere :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-10-22 14:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:974 on 2025-10-22 14:37</div>
+            <div class="timeline-body"><p>it's also a similar pattern that we use for comparing AST nodes -- see https://github.com/astral-sh/ruff/blob/main/crates/ruff_python_ast/src/comparable.rs</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-10-22 15:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:974 on 2025-10-22 15:07</div>
+            <div class="timeline-body"><p>Oh, I see now what the problem is. It's because you can't implement <code>Ord</code> for <code>ConstraintOrdering</code>.</p>
+<p>A pattern we use else where is that a type has an <code>ordering</code> method, e.g. see here https://github.com/astral-sh/ruff/blob/61a49c89eb809a238b01616b0a50a0f785702891/crates/ruff_text_size/src/range.rs#L338-L346 or a <code>sort_key</code> method (see here https://github.com/astral-sh/ruff/blob/e64d77278830954a323d227e8f9f714c1d0e4c57/crates/ruff_db/src/diagnostic/mod.rs#L292-L297) where the returned type implements <code>Ord</code>.</p>
+<p>Which I think is what Alex suggests above except that we tend to have methods that return those types.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-10-22 15:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/resources/mdtest/type_properties/constraints.md</code>:607 on 2025-10-22 15:15</div>
+            <div class="timeline-body"><p>The issue is that we're talking about two completely different representations, that are used for different purposes.</p>
+<p>As an example, one of the display simplifications that this PR adds would simplify <code>T = int ∧ T ≠ str</code> into <code>T = int</code>. If you know that <code>T</code> is an <code>int</code>, it doesn't add any information to say that it is also not a <code>str</code>.</p>
+<p>We could create a BDD for <code>T = int ∧ T ≠ str</code>. Depending on what ordering Salsa assigns IDs, the BDD structure you get is either</p>
+<pre><code>(T = int)
+  ┡━₁ (T = str)
+  │   ┡━₁ never
+  │   └─₀ always
+  └─₀ never
+</code></pre>
+<p>or</p>
+<pre><code>(T = str)
+  ┡━₁ never
+  └─₀ (T = int)
+      ┡━₁ always
+      └─₀ never
+</code></pre>
+<p>The equivalent transformation that you'd perform on the BDD would be something like &quot;for any path through the BDD where <code>T = int</code> is true, you don't need to check <code>T = str</code>, because it must always be false&quot;.</p>
+<p>We actually do already <a href="https://github.com/astral-sh/ruff/blob/81c1d36088c1533282dae787e8ff3b470a18dbb4/crates/ty_python_semantic/src/types/constraints.rs#L1088-L1095">perform that transformation</a>! But it's not necessarily going to <em>simplify</em> the BDD. It might actually make it more complex! For instance, if the BDD is checking other stuff as well, there might be other reasons we need a node that checks <code>T = str</code>. Since every node must have two outgoing edges, it might not be possible to remove it even if we wanted to.</p>
+<p>(And going further into the weeds as an aside, in the BDD structure, we actually don't really ever want to throw information away, since it makes it easier to compare two BDDs without having to know in advance which particular constraints they check. The better analogue of the transformation we perform is &quot;it's impossible for <code>T = int</code> to be true and <code>T = str</code> to be false, so <em>when comparing two BDDs</em> ignore any path with those assignments&quot;.)</p>
+<p>So even though we have performed these transformations on the BDD already, we might still end up with constraints in the rendered formula that are redundant. And so I wanted to be able to print out the simplest formula that faithfully captures the BDD.</p>
+<blockquote>
+<p>that we can be sure that what we see when we debug these constraints is actually what's being used in our subtyping/assignability logic by ty in production</p>
+</blockquote>
+<p>The other possibility here is that we would avoid performing any display substitutions at all. Then the formula that we print out would be a more direct representation of the BDD structure. But I was finding that very confusing, because even simple cases end up looking more complex than they need to. (A prime example is that half of the time <code>x ∨ y</code> will display as <code>x ∨ y</code>, and half the time as <code>(x ∧ ¬y) ∨ y</code>.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-10-22 15:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:827 on 2025-10-22 15:16</div>
+            <div class="timeline-body"><p>Oh I like that! I'll give it a shot</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-10-22 15:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/type_properties/constraints.md</code>:607 on 2025-10-22 15:38</div>
+            <div class="timeline-body"><p>Thanks for the explanation. That makes sense to me :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-10-22 15:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-10-22 15:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:331 on 2025-10-22 15:40</div>
+            <div class="timeline-body"><p>Clever :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:974 on 2025-10-22 15:40</div>
+            <div class="timeline-body"><p>I like the <code>ordering</code> method suggestion best, went with that!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:827 on 2025-10-22 15:42</div>
+            <div class="timeline-body"><p>This looks doable, but doctests cannot access <code>pub(crate)</code> symbols, so it would require marking quite a lot of internals as <code>pub</code>. Do you still consider it worthwhile given that?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-10-22 15:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-10-22 15:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:827 on 2025-10-22 15:48</div>
+            <div class="timeline-body"><p>Ah I missed your &quot;snapshot unit test&quot; idea. That would not have the same vis problem. Will try</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-10-22 15:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:827 on 2025-10-22 15:57</div>
+            <div class="timeline-body"><p>Done!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-10-22 16:21</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dcreager on 2025-10-22 17:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dcreager on 2025-10-22 17:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-10-22 17:39</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:35:01 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fix(#19757)/isc003 autofix produces incorrect code - astral-sh/ruff #19778</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fix(#19757)/isc003 autofix produces incorrect code</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19778">#19778</a>
+        opened by <a href="https://github.com/mikeleppane">@mikeleppane</a>
+        on 2025-08-06 08:21
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/mikeleppane">@mikeleppane</a> on 2025-08-06 08:21</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<h3>Problem</h3>
+<p>The ISC003 rule was flagging explicit string concatenation (<code>&quot;a&quot; + &quot;b&quot;</code>) in all contexts, but it should only apply when the concatenation is inside brackets (parentheses or braces) where implicit concatenation is possible.</p>
+<h3>Solution</h3>
+<p>Added a new <code>is_inside_brackets()</code> helper function that:</p>
+<ul>
+<li>Locates the current statement containing the expression</li>
+<li>Searches for opening brackets (<code>(</code> or <code>{</code>) before the expression</li>
+<li>Searches for closing brackets (<code>)</code> or <code>}</code>) after the expression</li>
+<li>Only reports violations when both bracket types are present</li>
+</ul>
+<h3>Example</h3>
+<p>Input</p>
+<pre><code class="language-python"># input
+_ = &quot;Line1\n&quot; + (
+        &quot;Line2\n&quot;
+        + &quot;Line3&quot;
+)
+</code></pre>
+<p><code>ruff check --fix</code> =&gt;</p>
+<pre><code class="language-python">_ = &quot;Line1\n&quot; + (
+        &quot;Line2\n&quot;
+         &quot;Line3&quot;
+)
+</code></pre>
+<p><a href="https://github.com/astral-sh/ruff/issues/19757">ISSUE</a></p>
+<h2>Test Plan</h2>
+<pre><code class="language-bash">cargo test
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-06 08:32</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-08-06 15:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @ntBre on 2025-08-06 15:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_implicit_str_concat/rules/explicit.rs</code>:93 on 2025-08-06 16:00</div>
+            <div class="timeline-body"><p>This doesn't feel like the right fix to me, and processing characters individually like this seems very brittle. My understanding of the issue in the report was that we just need to check if either the left- or right-hand-side of the binary concatenation operator is parenthesized because the fix simply strips out the <code>+</code> between them.</p>
+<p>This is just a limitation in the <code>concatable</code> check because Ruff knows that <code>(&quot;1&quot; &quot;2&quot;)</code> resolves to a single <code>StringLiteral</code> node in the AST.</p>
+<p>I think we can probably just use this helper function to check if <code>left</code> and <code>right</code> are parenthesized and avoid the fix if either of them is:</p>
+<p>https://github.com/astral-sh/ruff/blob/4d57fcd5a488e628aa26aaacd0a61728609ff310/crates/ruff_python_ast/src/parenthesize.rs#L58-L62</p>
+<p>We can also still report a diagnostic in this case, we just can't autofix it. Another option would be to try to move one of the expressions into the existing parentheses from the other expression, but that might be too involved. I'd be happy with just offering a diagnostic but no fix if one of them is parenthesized to avoid causing the runtime error.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> requested changes on 2025-08-06 16:01</div>
+            <div class="timeline-body"><p>I think I'd prefer a different approach here, but thanks for working on it!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-09-18 13:23</div>
+            <div class="timeline-body"><p>@mikeleppane thanks for working on this. Do you plan to come back to this PR or should we close it (don't feel pressued that you have to, just checking in on the status of this PR is).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-10-21 07:25</div>
+            <div class="timeline-body"><p>Thanks for working on this fix. I'll close this PR due to inactivity. A new PR (from you or anyone else who wants to work on this fix) with Brent's feedback would be welcomed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-10-21 07:25</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:34:59 UTC
+    </footer>
+</body>
+</html>

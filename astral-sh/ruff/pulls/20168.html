@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>feat: 'ruff rule' provides more easily parsable JSON ouput - astral-sh/ruff #20168</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>feat: 'ruff rule' provides more easily parsable JSON ouput</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/20168">#20168</a>
+        opened by <a href="https://github.com/LoicRiegel">@LoicRiegel</a>
+        on 2025-08-30 16:01
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/LoicRiegel">@LoicRiegel</a> on 2025-08-30 16:01</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title? (Please prefix with `[ty]` for ty pull
+  requests.)
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>Not sure if it entirely closes #9891, but it's at least a step in the right direction</p>
+<p>This change improves the JSON output of the &quot;ruff rule&quot; command.</p>
+<ul>
+<li>the &quot;fix&quot; field is more easily parsable: possible values are now the values from the <code>FixAvailability</code> enum</li>
+<li>replaced the &quot;preview&quot; field with a &quot;group&quot; field with the possible values of the <code>RuleGroup</code> enum (stable, preview, deprecated, removed). It's more accurate and parsable that way</li>
+<li>everything else is the same</li>
+</ul>
+<h2>Test Plan</h2>
+<p>I saw no tests for the &quot;ruff rule&quot; command (maybe I missed them?)</p>
+<p>So I tested manually:</p>
+<pre><code># BEFORE
+~&gt; uvx ruff rule I001 --output-format json
+{
+  &quot;name&quot;: &quot;unsorted-imports&quot;,
+  &quot;code&quot;: &quot;I001&quot;,
+  &quot;linter&quot;: &quot;isort&quot;,
+  &quot;summary&quot;: &quot;Import block is un-sorted or un-formatted&quot;,
+  &quot;message_formats&quot;: [
+    &quot;Import block is un-sorted or un-formatted&quot;
+  ],
+  &quot;fix&quot;: &quot;Fix is sometimes available.&quot;,
+  &quot;explanation&quot;: &quot;## What it does\nDe-duplicates, groups, and sorts imports based on the provided `isort` settings.\n\n## Why is this bad?\nConsistency is good. Use a common convention for imports to make your code\nmore readable and idiomatic.\n\n## Example\n```python\nimport pandas\nimport numpy as np\n```\n\nUse instead:\n```python\nimport numpy as np\nimport pandas\n```\n\n## Preview\nWhen [`preview`](https://docs.astral.sh/ruff/preview/) mode is enabled, Ruff applies a stricter criterion\nfor determining whether an import should be classified as first-party.\nSpecifically, for an import of the form `import foo.bar.baz`, Ruff will\ncheck that `foo/bar`, relative to a [user-specified `src`](https://docs.astral.sh/ruff/settings/#src) directory, contains either\nthe directory `baz` or else a file with the name `baz.py` or `baz.pyi`.\n&quot;,
+  &quot;preview&quot;: false
+}
+
+# AFTER
+~&gt; target\debug\ruff.exe rule I001 --output-format json
+{
+  &quot;name&quot;: &quot;unsorted-imports&quot;,
+  &quot;code&quot;: &quot;I001&quot;,
+  &quot;linter&quot;: &quot;isort&quot;,
+  &quot;summary&quot;: &quot;Import block is un-sorted or un-formatted&quot;,
+  &quot;message_formats&quot;: [
+    &quot;Import block is un-sorted or un-formatted&quot;
+  ],
+  &quot;explanation&quot;: &quot;## What it does\nDe-duplicates, groups, and sorts imports based on the provided `isort` settings.\n\n## Why is this bad?\nConsistency is good. Use a common convention for imports to make your code\nmore readable and idiomatic.\n\n## Example\n```python\nimport pandas\nimport numpy as np\n```\n\nUse instead:\n```python\nimport numpy as np\nimport pandas\n```\n\n## Preview\nWhen [`preview`](https://docs.astral.sh/ruff/preview/) mode is enabled, Ruff applies a stricter criterion\nfor determining whether an import should be classified as first-party.\nSpecifically, for an import of the form `import foo.bar.baz`, Ruff will\ncheck that `foo/bar`, relative to a [user-specified `src`](https://docs.astral.sh/ruff/settings/#src) directory, contains either\nthe directory `baz` or else a file with the name `baz.py` or `baz.pyi`.\n&quot;,
+  &quot;fix&quot;: &quot;Sometimes&quot;,
+  &quot;group&quot;: &quot;Stable&quot;
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/codes.rs</code>:13 on 2025-09-09 18:00</div>
+            <div class="timeline-body"><p>tiny nit: I'd group these up above with the <code>serde</code> import. Unfortunately stable <code>rustfmt</code> still doesn't handle these groups automatically.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-09-09 18:08</div>
+            <div class="timeline-body"><p>Thanks! This looks good to me. I'm surprised we don't have any tests for this either, but we should add some. I found a couple of <code>ruff rule</code> tests here:</p>
+<p>https://github.com/astral-sh/ruff/blob/c3f1f0b9f1ed8e522a6d22c7d1670997c19183de/crates/ruff/tests/integration_test.rs#L949-L952</p>
+<p>but none for the JSON format. This could be a good place to add one.</p>
+<p>I also think this is a breaking change that we might need to gate behind <code>preview</code>. We could theoretically try to squeeze it into the minor release tomorrow, but I'd be interested in getting @MichaReiser's thoughts next week when he's back from PTO anyway, instead of trying to rush it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-09-09 18:10</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @ntBre on 2025-09-09 18:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/LoicRiegel">@LoicRiegel</a> on 2025-09-11 07:14</div>
+            <div class="timeline-body"><p>You're welcome. I'll add the tests, but I have no time until next week.
+What should I do to put this behind the --preview flag, as you suggested? That means that my changes should only apply when the --preview flag is provided, correct?
+How do you then track what features should be made stable when you do the next minor release, and who takes should take care of it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-09-11 13:16</div>
+            <div class="timeline-body"><p>Since <code>ruff rule</code> is a separate subcommand, I think we'd actually have to add a separate <code>--preview</code> flag to it. That might be a good thing to double-check with Micha too, so no worries at all about not working on it until next week :) But yes, my idea was to keep the old behavior on stable and enable the new behavior only when <code>--preview</code> is used.</p>
+<p>For stabilizing features, we can just open an issue and add it to the next Milestone on GitHub. We go through all of those before every minor release and handle the stabilizations. In the linter we collect helper functions for preview behaviors in <a href="https://github.com/astral-sh/ruff/blob/34ba738c19c557653567defc5cdaaa75445ad0d4/crates/ruff_linter/src/preview.rs#L10-L12"><code>preview.rs</code></a> in lieu of opening a stabilization issue immediately, but again we can't really reuse that here since <code>rule</code> is a separate subcommand.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/commands/rule.rs</code>:25 on 2025-09-17 07:48</div>
+            <div class="timeline-body"><p>I suggest renaming this to <code>status</code>. It might otherwise be mistaken for a rule category (something we want to introduce in the future).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/commands/rule.rs</code>:39 on 2025-09-17 07:50</div>
+            <div class="timeline-body"><p>I agree that this is an improvement, but I'm not sure if it's worth going through the complications of adding a preview flag (which might even be more annoying for upstream tools than an outright breaking change because they now need to handle both formats if the user set <code>preview = true</code> in their configuration).</p>
+<p>I'm inclined to just leave it as is OR introduce a new field <code>fix_availability</code> and deprecate the old field.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-09-17 07:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/LoicRiegel">@LoicRiegel</a> reviewed on 2025-09-17 08:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/LoicRiegel">@LoicRiegel</a> on <code>crates/ruff/src/commands/rule.rs</code>:39 on 2025-09-17 08:31</div>
+            <div class="timeline-body"><p>I'd prefer to go with the second option. So the old field should be deprecated in the next minor release, right?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-09-17 09:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/commands/rule.rs</code>:39 on 2025-09-17 09:20</div>
+            <div class="timeline-body"><p>Yes, we would deprecate or outright remove it in the next minor. But again, I'm not sure what the value of doing so is. It only breaks downstream users. So I expect the field to stick around for a long time :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/LoicRiegel">@LoicRiegel</a> reviewed on 2025-09-17 11:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/LoicRiegel">@LoicRiegel</a> on <code>crates/ruff/src/commands/rule.rs</code>:39 on 2025-09-17 11:47</div>
+            <div class="timeline-body"><p>I thought having the enum values instead of entire sentences like <code>&quot;Fix is sometimes available.&quot;</code> would allow users to parse the json more easily, which was the point raised by the issue
+We could also leave both fields, even if this would mean some duplication...</p>
+<p>Not sure what's best... Let me know what you prefer :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-09-17 15:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/commands/rule.rs</code>:39 on 2025-09-17 15:13</div>
+            <div class="timeline-body"><p>I'm fine with reverting the change or adding a second field</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-09-17 15:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff/src/commands/rule.rs</code>:39 on 2025-09-17 15:21</div>
+            <div class="timeline-body"><p>We probably need to restore the <code>preview</code> field in that case too right? I like the idea of leaving the existing fields untouched (restoring <code>preview</code> and the string <code>fix</code> field) and adding the <code>status</code> and <code>fix_availability</code> fields, which should be easier to match exhaustively.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-09-17 15:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/commands/rule.rs</code>:39 on 2025-09-17 15:23</div>
+            <div class="timeline-body"><p>Yes, we need to restore any breaking change.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/LoicRiegel">@LoicRiegel</a> reviewed on 2025-10-19 16:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/LoicRiegel">@LoicRiegel</a> on <code>crates/ruff/src/commands/rule.rs</code>:25 on 2025-10-19 16:52</div>
+            <div class="timeline-body"><p>done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/LoicRiegel">@LoicRiegel</a> reviewed on 2025-10-19 16:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/LoicRiegel">@LoicRiegel</a> on <code>crates/ruff_linter/src/codes.rs</code>:13 on 2025-10-19 16:52</div>
+            <div class="timeline-body"><p>done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/LoicRiegel">@LoicRiegel</a> on 2025-10-19 16:52</div>
+            <div class="timeline-body"><p>Hello everyone,
+First, sorry for leaving this PR open for so long. I had some days off, and since then I've only had access to pretty slow computers...</p>
+<p>But anyway, I've just updated the branch. So I left all the old fields untouched, I just added new ones.</p>
+<p>I added basic integration tests for the &quot;ruff rule&quot; with &quot;--output-json&quot; command, very simillar to the existing ones testing &quot;ruff rule&quot;.</p>
+<p>Since there's no breaking change anymore, it's fine to not put the new fields behind a &quot;--preview&quot; CLI flag, right?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-10-20 07:08</div>
+            <div class="timeline-body"><p>No worries. I sort of forgot about it too. I'll take a look now</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-10-20 07:09</div>
+            <div class="timeline-body"><p>Thank you</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2025-10-20 07:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-10-20 07:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-10-20 07:33</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:34:59 UTC
+    </footer>
+</body>
+</html>

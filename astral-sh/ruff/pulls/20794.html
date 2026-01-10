@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Black tests - astral-sh/ruff #20794</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Update Black tests</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/20794">#20794</a>
+        opened by <a href="https://github.com/ntBre">@ntBre</a>
+        on 2025-10-09 21:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ntBre">@ntBre</a> on 2025-10-09 21:54</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<pre><code class="language-shell">git clone git@github.com:psf/black.git ../other/black
+crates/ruff_python_formatter/resources/test/fixtures/import_black_tests.py ../other/black
+</code></pre>
+<p>Then ran our tests and accepted the snapshots</p>
+<p>I had to make a small fix to our tuple normalization logic for <code>del</code> statements
+in the second commit, otherwise the tests were panicking at a changed AST. I
+think the new implementation is closer to the intention described in the nearby
+comment anyway, though.</p>
+<p>The first commit adds the new Python, settings, and <code>.expect</code> files, the next three commits make some small
+fixes to help get the tests running, and then the fifth commit accepts all but one of the new snapshots. The last commit includes the new unsupported syntax error for one f-string example, tracked in #20774.</p>
+<h2>Test Plan</h2>
+<p>Newly imported tests. I went through all of the new snapshots and added review comments below. I think they're all expected, except a few cases I wasn't 100% sure about.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @ntBre on 2025-10-09 21:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @ntBre on 2025-10-09 21:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-10-09 22:03</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_formatter/tests/snapshots/black_compatibility@cases__remove_lone_list_item_parens.py.snap</code>:90 on 2025-10-13 16:58</div>
+            <div class="timeline-body"><p>These look like known deviations since we don't implement the <code>remove_lone_list_item_parens</code> style  yet.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_formatter/tests/snapshots/black_compatibility@cases__type_param_defaults.py.snap</code>:28 on 2025-10-13 17:03</div>
+            <div class="timeline-body"><p>This is the only new code in this file, I think we've gotten closer to black here, if I'm interpreting the diff correctly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_formatter/tests/snapshots/black_compatibility@cases__cantfit.py.snap</code>:68 on 2025-10-13 17:07</div>
+            <div class="timeline-body"><p>These all look like improvements to me, but I'm slightly confused about this case and the one above without comments. Maybe we have a slightly different line-length metric from black, I'm not sure why they wrap these.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_formatter/tests/snapshots/black_compatibility@cases__fmtskip10.py.snap</code>:26 on 2025-10-13 17:12</div>
+            <div class="timeline-body"><p>These are related to https://github.com/astral-sh/ruff/issues/11216 and https://github.com/astral-sh/ruff/pull/20633, Dylan's PR will probably clean them up!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_formatter/tests/snapshots/black_compatibility@cases__fmtskip10.py.snap</code>:43 on 2025-10-13 17:13</div>
+            <div class="timeline-body"><p>I'm less sure about this case and the <code>j =     1</code> case above. It looks like we're adding a space before the <code># fmt: skip</code>. It seems like we should probably skip that too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_formatter/tests/snapshots/black_compatibility@cases__fstring.py.snap</code>:78 on 2025-10-13 17:14</div>
+            <div class="timeline-body"><p>Bug tracked in https://github.com/astral-sh/ruff/issues/20774.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_formatter/tests/snapshots/black_compatibility@cases__fstring_quotations.py.snap</code>:54 on 2025-10-13 17:16</div>
+            <div class="timeline-body"><p>Seems intentional, we merge implicitly concatenated strings.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_formatter/tests/snapshots/black_compatibility@cases__generics_wrapping.py.snap</code>:212 on 2025-10-13 17:17</div>
+            <div class="timeline-body"><p>I think our formatting looks better for most of these, but this one looks a bit weird splitting the <code>Z:</code> and the <code>int</code> annotation. That's what the input looks like though, so we've preserved more of the original formatting.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_formatter/tests/snapshots/black_compatibility@cases__long_strings__type_annotations.py.snap</code>:51 on 2025-10-13 17:20</div>
+            <div class="timeline-body"><p>The implicit concatenation here seems nice, maybe a bit weird that we preserve the parens though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_formatter/tests/snapshots/black_compatibility@cases__pep604_union_types_line_breaks.py.snap</code>:1 on 2025-10-13 17:22</div>
+            <div class="timeline-body"><p>Should we revert this? We had a commit to fix the typos, but they get restored by our script. Maybe we should fix the typos upstream?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_formatter/tests/snapshots/black_compatibility@cases__pep_701.py.snap</code>:85 on 2025-10-13 17:24</div>
+            <div class="timeline-body"><p>This test case was changed in #18708, should we revert this too?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_formatter/tests/snapshots/black_compatibility@cases__prefer_rhs_split_reformatted.py.snap</code>:48 on 2025-10-13 17:33</div>
+            <div class="timeline-body"><p>As noted in the comment above, this test case was added as part of a fix for https://github.com/psf/black/issues/1187. Before that, black had the same style as ruff. I can't quite tell if this is a known/expected deviation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_formatter/tests/snapshots/black_compatibility@cases__preview_comments7.py.snap</code>:164 on 2025-10-13 17:45</div>
+            <div class="timeline-body"><p>I'm confused about this one. The .py file didn't change for this, and it looks like our diff output just changed a bit, or we're adding a blank line for some reason.</p>
+<p>If I actually run the formatter on this file, we're not adding a blank line, so this seems like some kind of diff artifact.</p>
+<p>And diffing 0.13.3 (my system ruff) against this PR's version shows nothing too:</p>
+<pre><code class="language-shell">&gt; diff \
+&lt;(cargo run -p ruff -- format --no-cache --check --preview  crates/ruff_python_formatter/resources/test/fixtures/black/cases/preview_comments7.py)  \
+&lt;(ruff format --no-cache --check --preview  crates/ruff_python_formatter/resources/test/fixtures/black/cases/preview_comments7.py)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.15s
+     Running `target/debug/ruff format --no-cache --check --preview crates/ruff_python_formatter/resources/test/fixtures/black/cases/preview_comments7.py`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_formatter/tests/snapshots/black_compatibility@cases__preview_import_line_collapse.py.snap</code>:1 on 2025-10-13 17:50</div>
+            <div class="timeline-body"><p>These are related to the <code>always_one_newline_after_import</code> preview style tracked in the style guide issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_formatter/tests/snapshots/black_compatibility@cases__preview_long_dict_values.py.snap</code>:1 on 2025-10-13 17:56</div>
+            <div class="timeline-body"><p>I <em>think</em> these are expected. The quoting changes are definitely expected, the .py file was modified upstream in https://github.com/psf/black/pull/4377, and this file is a test for <code>wrap_long_dict_values_in_parens</code>, which we intentionally don't support yet.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_formatter/tests/snapshots/black_compatibility@cases__preview_long_strings.py.snap</code>:1 on 2025-10-13 17:59</div>
+            <div class="timeline-body"><p>These also seem expected to me, I think the changes are just a shift from the extra &quot;very&quot; added to one of the strings.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_formatter/tests/snapshots/black_compatibility@cases__preview_long_strings__regression.py.snap</code>:1184 on 2025-10-13 18:06</div>
+            <div class="timeline-body"><p>I think this is expected and in line with the <code>string_processing</code> preview style.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_formatter/tests/snapshots/black_compatibility@cases__preview_multiline_strings.py.snap</code>:1 on 2025-10-13 18:07</div>
+            <div class="timeline-body"><p>These should be expected in line with <code>multiline_string_handling</code> being a non-goal.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_formatter/tests/snapshots/black_compatibility@cases__preview_remove_multiline_lone_list_item_parens.py.snap</code>:1 on 2025-10-13 18:08</div>
+            <div class="timeline-body"><p>These seem expected, more <code>lone_list_item</code> changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_formatter/tests/snapshots/black_compatibility@cases__preview_wrap_comprehension_in.py.snap</code>:1 on 2025-10-13 18:08</div>
+            <div class="timeline-body"><p>Expected, <code>wrap_comprehension_in</code> feature that we plan to implement.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_formatter/tests/snapshots/black_compatibility@cases__remove_except_types_parens.py.snap</code>:1 on 2025-10-13 18:09</div>
+            <div class="timeline-body"><p>These should be fixed in https://github.com/astral-sh/ruff/pull/20768.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-10-13 18:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_formatter/tests/snapshots/black_compatibility@cases__cantfit.py.snap</code>:68 on 2025-10-13 18:11</div>
+            <div class="timeline-body"><p>After looking around a bit more, I think this is related to https://github.com/astral-sh/ruff/issues/11820.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-10-13 18:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @ntBre on 2025-10-13 19:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @ntBre on 2025-10-13 19:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> removed by @MichaReiser on 2025-10-14 06:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">testing</span> added by @MichaReiser on 2025-10-14 06:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-10-14 06:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/tests/snapshots/black_compatibility@cases__fmtskip10.py.snap</code>:43 on 2025-10-14 06:10</div>
+            <div class="timeline-body"><p>Yes, we format the <code>fmt: skip</code> comment. I don't think this is something that we need to change.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-10-14 06:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/tests/snapshots/black_compatibility@cases__generics_wrapping.py.snap</code>:212 on 2025-10-14 06:12</div>
+            <div class="timeline-body"><p>I think it's okay. It's not like Ruff makes it worse. It's just that the user put the comment there.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/tests/snapshots/black_compatibility@cases__long_strings__type_annotations.py.snap</code>:51 on 2025-10-14 06:13</div>
+            <div class="timeline-body"><p>Removing parens would set a new precedence but we could</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-10-14 06:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-10-14 06:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/tests/snapshots/black_compatibility@cases__pep_701.py.snap</code>:85 on 2025-10-14 06:14</div>
+            <div class="timeline-body"><p>We can change it or leave it as is if the test framework can handle it just fine.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-10-14 06:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/tests/snapshots/black_compatibility@cases__prefer_rhs_split_reformatted.py.snap</code>:48 on 2025-10-14 06:15</div>
+            <div class="timeline-body"><p>I don't think this is intentional but I'm not sure it's worth fixing</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/tests/snapshots/black_compatibility@cases__preview_comments7.py.snap</code>:164 on 2025-10-14 06:18</div>
+            <div class="timeline-body"><p>The <code>.expect</code> file changed. I expect this to be because black changed the number of empty lines after imports.</p>
+<p>We'll have to be cautious about that change because I suspect it breaks isort compatibility.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-10-14 06:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-10-14 06:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/tests/snapshots/black_compatibility@cases__type_param_defaults.py.snap</code>:56 on 2025-10-14 06:21</div>
+            <div class="timeline-body"><p>Huh, we ignore the trailing comma</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-10-14 06:24</div>
+            <div class="timeline-body"><p>Thanks for the detailed analysis.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-10-14 14:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_formatter/tests/snapshots/black_compatibility@cases__type_param_defaults.py.snap</code>:56 on 2025-10-14 14:06</div>
+            <div class="timeline-body"><p>Oh, this might actually be okay. This is the input:</p>
+<pre><code class="language-py">def trailing_comma1[T=int,](a: str):
+    pass
+</code></pre>
+<p>So we respect the trailing comma in the type parameters, and there's no trailing comma in the function parameters.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ntBre on 2025-10-14 14:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-10-14 14:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-10-14 14:15</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:35:00 UTC
+    </footer>
+</body>
+</html>

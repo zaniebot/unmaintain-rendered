@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Fix accidental Liskov violation in protocol tests - astral-sh/ruff #20763</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Fix accidental Liskov violation in protocol tests</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/20763">#20763</a>
+        opened by <a href="https://github.com/sharkdp">@sharkdp</a>
+        on 2025-10-08 11:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-10-08 11:56</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>We have the following test in <code>protocols.md</code>:</p>
+<pre><code class="language-py">class HasX(Protocol):
+    x: int
+
+# […]
+
+class Foo:
+    x: int
+
+# […]
+
+class FooBool(Foo):
+    x: bool
+
+static_assert(not is_subtype_of(FooBool, HasX))
+static_assert(not is_assignable_to(FooBool, HasX))
+</code></pre>
+<p>If <code>Foo</code> was indeed intended to be a base class of <code>FooBool</code>, then <code>x: bool</code> should be reported as a Liskov violation. And then it's a matter of definition whether or not these assertions should hold true or not (should the incorrect override take precedence or not?). So it looks to me like this is just an oversight, probably a copy-paste error from another test right before it, where <code>FooSub</code> is indeed intended to be a subclass of <code>Foo</code>.</p>
+<p>I am fixing this because this test started to fail on a branch of mine that changes how attribute lookup in inheritance chains works.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @sharkdp on 2025-10-08 11:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @sharkdp on 2025-10-08 11:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">testing</span> added by @sharkdp on 2025-10-08 11:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @sharkdp on 2025-10-08 11:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @sharkdp on 2025-10-08 11:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-10-08 11:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @sharkdp on 2025-10-08 12:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-10-08 12:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-10-08 12:04</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:35:00 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Improved error recovery for unclosed strings (including f- and t-strings) - astral-sh/ruff #20848</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Improved error recovery for unclosed strings (including f- and t-strings)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/20848">#20848</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2025-10-13 17:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-10-13 17:15</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR improves our lexer to preserve <code>STRING</code> tokens instead of converting them to <code>Unknown</code> if a string literal misses its closing quotes.
+Instead of converting to <code>UNKNOWN</code>, it sets a flag on the string literal that allows upstream tools to check if it's an unclosed string literal.</p>
+<p>The benefit of preserving string literals is that it gives us much better error recovery because the parser now recognizes those literals.
+That means, ty will correctly infer the literal type for <code>a = &quot;unclosed</code> to be <code>Literal[&quot;unclosed&quot;]</code>.</p>
+<p>Unfortunately, preserving the kind for unclosed string literals regressed the f-string's and t-string's recovery mechanism. So, I went ahead and improved that too.</p>
+<p>There are a few improvements:</p>
+<ul>
+<li>Preserve the F-STRING middle even if it's unclosed (e.g. <code>f&quot;unclosed</code>) instead of parsing this as <code>f&quot;&quot;</code></li>
+<li>Better recovery for missing <code>}</code>. E.g., the parser now matches the quotes for <code>f&quot;{ab&quot;</code> instead of assuming that the closing quotes start a new string</li>
+<li>Better recovery for <code>r</code> format specifiers if the <code>}</code> is missing: <code>f&quot;{ab:r&quot;</code> now parses the <code>r</code> as the raw conversion flag rather than <code>r&quot;</code> the start of a raw string literal</li>
+</ul>
+<p>Fixes https://github.com/astral-sh/ruff/issues/19751
+Fixes https://github.com/astral-sh/ruff/issues/20849</p>
+<h2>Review</h2>
+<p>You probably want to skip the first commit :) It updates all snapshots to now include the <code>unclosed: &lt;UNCLOSED&gt;</code>  flag.</p>
+<h2>Test Plan</h2>
+<p>Reviewed and updated the snapshot tests. I also reviewed all usages of <code>TokenKind::String</code> to find cases where the missing closing quote could now cause issues.</p>
+<p>This change should have no impact on AST-based lint rules or the formatter because they both only run when there are no parse errors.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">parser</span> added by @MichaReiser on 2025-10-13 17:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-10-13 17:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/resources/test/fixtures/flake8_implicit_str_concat/ISC_syntax_error.py</code>:8 on 2025-10-13 17:15</div>
+            <div class="timeline-body"><p>I know this looks silly, but keeping the comment over two lines reduces the snapshot changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/token.rs</code>:732 on 2025-10-13 17:18</div>
+            <div class="timeline-body"><p>While this increases the size of <code>TokenFlags</code>, it doesn't increase the size of <code>Token</code>. Which is why I didn't bother with any fancy encoding (e.g. it's unclosed if <code>RAW_STRING_UPPERCASE</code> and <code>RAW_STRING_LOWERCASE</code> are set)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-10-13 17:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-10-13 17:26</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:2877 on 2025-10-13 18:01</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    fn lex_fstring_unclosed() {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-10-13 18:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-10-13 18:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:2877 on 2025-10-13 18:20</div>
+            <div class="timeline-body"><p>Ah come on, my spelling is obviously better</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-10-14 09:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:982 on 2025-10-14 09:16</div>
+            <div class="timeline-body"><p>This error was just wrong. <code>a = &quot;string&lt;EOF</code> reported an unexpected string error rather than unclosed string literal</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dylwil3 by @MichaReiser on 2025-10-14 09:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2025-10-14 09:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @MichaReiser on 2025-10-14 09:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Better error recovery for unclosed strings (including f- and t-strings)" to "Improved error recovery for unclosed strings (including f- and t-strings)" by @MichaReiser on 2025-10-14 09:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ntBre by @MichaReiser on 2025-10-14 16:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> approved on 2025-10-15 03:01</div>
+            <div class="timeline-body"><p>Nice! This looks great to me!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2025-10-15 07:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-10-15 07:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-10-15 07:50</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:35:00 UTC
+    </footer>
+</body>
+</html>

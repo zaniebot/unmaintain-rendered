@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Introduce `TypeRelation::Redundancy` - astral-sh/ruff #20602</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Introduce <code>TypeRelation::Redundancy</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/20602">#20602</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-09-27 15:16
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-09-27 15:16</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>The union <code>T | U</code> can be validly simplified to <code>U</code> iff:</p>
+<ol>
+<li><code>T</code> is a subtype of <code>U</code> OR</li>
+<li><code>T</code> is equivalent to <code>U</code> OR</li>
+<li><code>U</code> is a union and contains a type that is equivalent to <code>T</code> OR</li>
+<li><code>T</code> is an intersection and contains a type that is equivalent to <code>U</code></li>
+</ol>
+<p>(In practice, the only situation in which 2, 3 or 4 would be true when (1) was not true would be if <code>T</code> or <code>U</code> is a dynamic type.)</p>
+<p>Currently we achieve these simplifications in the union builder by doing something along the lines of <code>t.is_subtype_of(db, u) || t.is_equivalent_to_(db, u) || t.into_intersection().is_some_and(|intersection| intersection.positive(db).contains(&amp;u)) || u.into_union().is_some_and(|union| union.elements(db).contains(&amp;t))</code>. But this is both slow and misses some cases (it doesn't simplify the union <code>Any | (Unknown &amp; ~None)</code> to <code>Any</code>, for example). We can improve the consistency and performance of our union simplifications by adding a third type relation that sits in between <code>TypeRelation::Subtyping</code> and <code>TypeRelation::Assignability</code>: <code>TypeRelation::UnionSimplification</code>.</p>
+<p>This change leads to simpler, more user-friendly types due to the more consistent simplification. It also lead to a pretty huge performance improvement!</p>
+<h2>Test Plan</h2>
+<p>Existing tests, plus some new ones.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-09-27 15:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-09-27 15:17</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-09-27 15:18</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">paasta (https://github.com/yelp/paasta)
+- paasta_tools/setup_kubernetes_job.py:313:29: error[invalid-assignment] Method `__setitem__` of type `bound method dict[str, HpaOverride].__setitem__(key: str, value: HpaOverride, /) -&gt; None` cannot be called with a key of type `Unknown` and a value of type `dict[Unknown | str, Unknown | (Any &amp; ~AlwaysFalsy)]` on object of type `dict[str, HpaOverride]`
++ paasta_tools/setup_kubernetes_job.py:313:29: error[invalid-assignment] Method `__setitem__` of type `bound method dict[str, HpaOverride].__setitem__(key: str, value: HpaOverride, /) -&gt; None` cannot be called with a key of type `Unknown` and a value of type `dict[Unknown | str, Unknown]` on object of type `dict[str, HpaOverride]`
+
+alerta (https://github.com/alerta/alerta)
+- alerta/auth/oidc.py:177:33: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `str`, found `(Any &amp; ~AlwaysFalsy) | Unknown | None`
++ alerta/auth/oidc.py:177:33: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `str`, found `Unknown | None`
+- alerta/auth/oidc.py:177:70: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `str`, found `(Any &amp; ~AlwaysFalsy) | Unknown | None`
++ alerta/auth/oidc.py:177:70: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `str`, found `Unknown | None`
+- alerta/auth/oidc.py:203:43: error[invalid-argument-type] Argument to function `create_token` is incorrect: Expected `str`, found `(Any &amp; ~AlwaysFalsy) | Unknown | None`
++ alerta/auth/oidc.py:203:43: error[invalid-argument-type] Argument to function `create_token` is incorrect: Expected `str`, found `Unknown | None`
+- alerta/auth/oidc.py:205:26: error[invalid-argument-type] Argument to function `create_token` is incorrect: Expected `str`, found `(Any &amp; ~AlwaysFalsy) | Unknown | None`
++ alerta/auth/oidc.py:205:26: error[invalid-argument-type] Argument to function `create_token` is incorrect: Expected `str`, found `Unknown | None`
+- alerta/auth/oidc.py:205:70: error[invalid-argument-type] Argument to function `create_token` is incorrect: Expected `str`, found `(Any &amp; ~AlwaysFalsy) | Unknown | None`
++ alerta/auth/oidc.py:205:70: error[invalid-argument-type] Argument to function `create_token` is incorrect: Expected `str`, found `Unknown | None`
+
+pytest (https://github.com/pytest-dev/pytest)
+- src/_pytest/fixtures.py:1667:24: error[invalid-return-type] Return type does not match returned value: expected `Scope`, found `Scope | (@Todo &amp; ~None &amp; ~(() -&gt; object) &amp; ~str) | (((str, Config, /) -&gt; @Todo) &amp; ~(() -&gt; object) &amp; ~str) | (@Todo &amp; ~str)`
++ src/_pytest/fixtures.py:1667:24: error[invalid-return-type] Return type does not match returned value: expected `Scope`, found `Scope | (@Todo &amp; ~str) | (((str, Config, /) -&gt; @Todo) &amp; ~(() -&gt; object) &amp; ~str)`
+- testing/test_assertrewrite.py:140:28: error[unsupported-operator] Operator `&lt;=` is not supported for types `int` and `None`, in comparing `tuple[Literal[3], Literal[0]]` with `Unknown | tuple[Unknown | int, Unknown | int] | tuple[Unknown | int | None, Unknown | int | None]`
++ testing/test_assertrewrite.py:140:28: error[unsupported-operator] Operator `&lt;=` is not supported for types `int` and `None`, in comparing `tuple[Literal[3], Literal[0]]` with `Unknown | tuple[Unknown | int | None, Unknown | int | None]`
+- testing/test_assertrewrite.py:140:38: error[unsupported-operator] Operator `&lt;=` is not supported for types `None` and `int`, in comparing `Unknown | tuple[Unknown | int, Unknown | int] | tuple[Unknown | int | None, Unknown | int | None]` with `tuple[Literal[6], Literal[3]]`
++ testing/test_assertrewrite.py:140:38: error[unsupported-operator] Operator `&lt;=` is not supported for types `None` and `int`, in comparing `Unknown | tuple[Unknown | int | None, Unknown | int | None]` with `tuple[Literal[6], Literal[3]]`
+
+schemathesis (https://github.com/schemathesis/schemathesis)
++ src/schemathesis/generation/coverage.py:502:52: error[invalid-argument-type] Argument to function `_negative_enum` is incorrect: Expected `list[Unknown]`, found `Unknown | dict[Unknown, Unknown]`
++ src/schemathesis/generation/coverage.py:507:52: error[invalid-argument-type] Argument to function `_negative_type` is incorrect: Expected `str | list[str]`, found `Unknown | dict[Unknown, Unknown]`
++ src/schemathesis/generation/coverage.py:519:55: error[invalid-argument-type] Argument to function `_negative_pattern` is incorrect: Expected `str`, found `Unknown | dict[Unknown, Unknown]`
++ src/schemathesis/generation/coverage.py:521:62: error[invalid-argument-type] Argument to function `_negative_format` is incorrect: Expected `str`, found `Unknown | dict[Unknown, Unknown]`
++ src/schemathesis/generation/coverage.py:523:28: error[unsupported-operator] Operator `+` is unsupported between objects of type `Unknown | dict[Unknown, Unknown]` and `Literal[1]`
++ src/schemathesis/generation/coverage.py:527:28: error[unsupported-operator] Operator `-` is unsupported between objects of type `Unknown | dict[Unknown, Unknown]` and `Literal[1]`
++ src/schemathesis/generation/coverage.py:535:70: error[invalid-argument-type] Argument to function `_negative_multiple_of` is incorrect: Expected `int | float`, found `Unknown | dict[Unknown, Unknown]`
++ src/schemathesis/generation/coverage.py:538:45: error[unsupported-operator] Operator `&lt;` is not supported for types `int` and `dict[Unknown, Unknown]`, in comparing `Literal[0]` with `Unknown | dict[Unknown, Unknown]`
++ src/schemathesis/generation/coverage.py:538:49: error[unsupported-operator] Operator `&lt;` is not supported for types `dict[Unknown, Unknown]` and `int`, in comparing `Unknown | dict[Unknown, Unknown]` with `Literal[32768]`
++ src/schemathesis/generation/coverage.py:550:55: error[unsupported-operator] Operator `-` is unsupported between objects of type `(Unknown &amp; ~Literal[1]) | dict[Unknown, Unknown]` and `Literal[1]`
++ src/schemathesis/generation/coverage.py:550:55: error[unsupported-operator] Operator `-` is unsupported between objects of type `(Unknown &amp; ~Literal[1]) | dict[Unknown, Unknown]` and `Literal[1]`
++ src/schemathesis/generation/coverage.py:568:45: error[unsupported-operator] Operator `&lt;` is not supported for types `dict[Unknown, Unknown]` and `int`, in comparing `Unknown | dict[Unknown, Unknown]` with `Literal[32768]`
++ src/schemathesis/generation/coverage.py:570:51: error[unsupported-operator] Operator `+` is unsupported between objects of type `Unknown | dict[Unknown, Unknown]` and `Literal[1]`
++ src/schemathesis/generation/coverage.py:570:51: error[unsupported-operator] Operator `+` is unsupported between objects of type `Unknown | dict[Unknown, Unknown]` and `Literal[1]`
++ src/schemathesis/generation/coverage.py:574:32: error[unsupported-operator] Operator `&gt;` is not supported for types `dict[Unknown, Unknown]` and `int`, in comparing `Unknown | dict[Unknown, Unknown]` with `Literal[100]`
++ src/schemathesis/generation/coverage.py:599:66: error[invalid-argument-type] Argument to function `_negative_required` is incorrect: Expected `list[str]`, found `Unknown | dict[Unknown, Unknown]`
+- Found 296 diagnostics
++ Found 312 diagnostics
+
+discord.py (https://github.com/Rapptz/discord.py)
+- discord/audit_logs.py:550:56: error[invalid-argument-type] Argument to bound method `from_data` is incorrect: Expected `int`, found `None | Unknown | (@Todo &amp; ~None) | Literal[3, 4, 1, 5, -1]`
++ discord/audit_logs.py:550:56: error[invalid-argument-type] Argument to bound method `from_data` is incorrect: Expected `int`, found `None | Unknown | Literal[3, 4, 1, 5, -1]`
+- discord/audit_logs.py:551:55: error[invalid-argument-type] Argument to bound method `from_data` is incorrect: Expected `int`, found `None | Unknown | (@Todo &amp; ~None) | Literal[3, 4, 1, 5, -1]`
++ discord/audit_logs.py:551:55: error[invalid-argument-type] Argument to bound method `from_data` is incorrect: Expected `int`, found `None | Unknown | Literal[3, 4, 1, 5, -1]`
+- discord/ext/commands/cog.py:532:17: error[invalid-assignment] Object of type `list[Unknown | (Any &amp; ~AlwaysFalsy) | (str &amp; ~AlwaysFalsy)]` is not assignable to attribute `__cog_listener_names__` on type `(FuncT@listener &amp; ~staticmethod) | ((...) -&gt; Unknown)`
++ discord/ext/commands/cog.py:532:17: error[invalid-assignment] Object of type `list[Unknown | (str &amp; ~AlwaysFalsy)]` is not assignable to attribute `__cog_listener_names__` on type `(FuncT@listener &amp; ~staticmethod) | ((...) -&gt; Unknown)`
+
+vision (https://github.com/pytorch/vision)
+- references/depth/stereo/transforms.py:580:9: error[invalid-assignment] Object of type `tuple[None | Unknown, ...] | tuple[@Todo, @Todo]` is not assignable to `tuple[@Todo, @Todo]`
++ references/depth/stereo/transforms.py:580:9: error[invalid-assignment] Object of type `tuple[None | Unknown, ...]` is not assignable to `tuple[@Todo, @Todo]`
+- references/depth/stereo/transforms.py:601:16: error[invalid-return-type] Return type does not match returned value: expected `tuple[tuple[Unknown, Unknown], tuple[@Todo, @Todo], tuple[@Todo, @Todo]]`, found `tuple[tuple[Unknown, Unknown], tuple[(@Todo &amp; None) | Unknown, (@Todo &amp; None) | Unknown], tuple[(@Todo &amp; None) | Unknown, ...]]`
+- test/test_transforms_v2.py:6763:40: warning[possibly-missing-attribute] Attribute `__name__` on type `Unknown | ((inpt: Unknown) -&gt; Unknown) | ((inpt: Unknown) -&gt; int) | ((pic, mode=None) -&gt; Unknown) | ((inpt: Unknown, displacement: Unknown, interpolation: InterpolationMode | int = InterpolationMode, fill: @Todo = None) -&gt; Unknown) | ((inpt: Unknown, num_output_channels: int = int) -&gt; Unknown)` may be missing
++ test/test_transforms_v2.py:6763:40: warning[possibly-missing-attribute] Attribute `__name__` on type `Unknown | ((inpt: Unknown) -&gt; Unknown) | ((inpt: Unknown) -&gt; int) | ((pic, mode=None) -&gt; Unknown) | ((inpt: Unknown, displacement: Unknown, interpolation: InterpolationMode | int = InterpolationMode, fill: @Todo = None) -&gt; Unknown)` may be missing
+- Found 1490 diagnostics
++ Found 1489 diagnostics
+
+psycopg (https://github.com/psycopg/psycopg)
+- psycopg/psycopg/_server_cursor_base.py:217:16: error[unsupported-operator] Operator `+` is unsupported between objects of type `Template` and `(@Todo &amp; Composable &amp; ~Template &amp; ~bytes) | (@Todo &amp; Composable) | SQL`
++ psycopg/psycopg/_server_cursor_base.py:217:16: error[unsupported-operator] Operator `+` is unsupported between objects of type `Template` and `(@Todo &amp; Composable) | SQL`
+
+meson (https://github.com/mesonbuild/meson)
+- mesonbuild/interpreter/interpreter.py:3412:9: error[invalid-assignment] Method `__setitem__` of type `(Overload[(key: Literal[&quot;build_by_default&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;build_rpath&quot;], value: str, /) -&gt; None, (key: Literal[&quot;extra_files&quot;], value: list[@Todo], /) -&gt; None, (key: Literal[&quot;gnu_symbol_visibility&quot;], value: str, /) -&gt; None, (key: Literal[&quot;install&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;install_mode&quot;], value: FileMode, /) -&gt; None, (key: Literal[&quot;install_rpath&quot;], value: str, /) -&gt; None, (key: Literal[&quot;implicit_include_directories&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;link_depends&quot;], value: list[str | File | CustomTarget | CustomTargetIndex | BuildTarget], /) -&gt; None, (key: Literal[&quot;link_language&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;name_prefix&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;name_suffix&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;native&quot;], value: MachineChoice, /) -&gt; None, (key: Literal[&quot;objects&quot;], value: list[@Todo], /) -&gt; None, (key: Literal[&quot;override_options&quot;], value: dict[OptionKey, @Todo], /) -&gt; None, (key: Literal[&quot;depend_files&quot;], value: list[File], /) -&gt; None, (key: Literal[&quot;resources&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;d_debug&quot;], value: list[str | int], /) -&gt; None, (key: Literal[&quot;d_import_dirs&quot;], value: list[str | IncludeDirs], /) -&gt; None, (key: Literal[&quot;d_module_versions&quot;], value: list[str | int], /) -&gt; None, (key: Literal[&quot;d_unittest&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;rust_dependency_map&quot;], value: dict[str, str], /) -&gt; None, (key: Literal[&quot;swift_interoperability_mode&quot;], value: Literal[&quot;c&quot;, &quot;cpp&quot;], /) -&gt; None, (key: Literal[&quot;swift_module_name&quot;], value: str, /) -&gt; None, (key: Literal[&quot;sources&quot;], value: Any, /) -&gt; None, (key: Literal[&quot;c_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;cpp_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;cuda_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;fortran_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;d_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;objc_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;objcpp_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;rust_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;vala_args&quot;], value: list[str | File], /) -&gt; None, (key: Literal[&quot;cs_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;swift_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;cython_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;nasm_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;masm_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;export_dynamic&quot;], value: bool | None, /) -&gt; None, (key: Literal[&quot;gui_app&quot;], value: bool | None, /) -&gt; None, (key: Literal[&quot;implib&quot;], value: str | bool | None, /) -&gt; None, (key: Literal[&quot;pie&quot;], value: bool | None, /) -&gt; None, (key: Literal[&quot;vs_module_defs&quot;], value: str | File | CustomTarget | CustomTargetIndex | None, /) -&gt; None, (key: Literal[&quot;win_subsystem&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;android_exe_type&quot;], value: Literal[&quot;application&quot;, &quot;executable&quot;] | None, /) -&gt; None]) | (Overload[(key: Literal[&quot;rust_abi&quot;], value: Literal[&quot;c&quot;, &quot;rust&quot;] | None, /) -&gt; None, (key: Literal[&quot;prelink&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;pic&quot;], value: bool | None, /) -&gt; None, (key: Literal[&quot;build_by_default&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;build_rpath&quot;], value: str, /) -&gt; None, (key: Literal[&quot;extra_files&quot;], value: list[@Todo], /) -&gt; None, (key: Literal[&quot;gnu_symbol_visibility&quot;], value: str, /) -&gt; None, (key: Literal[&quot;install&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;install_mode&quot;], value: FileMode, /) -&gt; None, (key: Literal[&quot;install_rpath&quot;], value: str, /) -&gt; None, (key: Literal[&quot;implicit_include_directories&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;link_depends&quot;], value: list[str | File | CustomTarget | CustomTargetIndex | BuildTarget], /) -&gt; None, (key: Literal[&quot;link_language&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;name_prefix&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;name_suffix&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;native&quot;], value: MachineChoice, /) -&gt; None, (key: Literal[&quot;objects&quot;], value: list[@Todo], /) -&gt; None, (key: Literal[&quot;override_options&quot;], value: dict[OptionKey, @Todo], /) -&gt; None, (key: Literal[&quot;depend_files&quot;], value: list[File], /) -&gt; None, (key: Literal[&quot;resources&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;d_debug&quot;], value: list[str | int], /) -&gt; None, (key: Literal[&quot;d_import_dirs&quot;], value: list[str | IncludeDirs], /) -&gt; None, (key: Literal[&quot;d_module_versions&quot;], value: list[str | int], /) -&gt; None, (key: Literal[&quot;d_unittest&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;rust_dependency_map&quot;], value: dict[str, str], /) -&gt; None, (key: Literal[&quot;swift_interoperability_mode&quot;], value: Literal[&quot;c&quot;, &quot;cpp&quot;], /) -&gt; None, (key: Literal[&quot;swift_module_name&quot;], value: str, /) -&gt; None, (key: Literal[&quot;sources&quot;], value: Any, /) -&gt; None, (key: Literal[&quot;c_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;cpp_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;cuda_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;fortran_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;d_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;objc_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;objcpp_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;rust_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;vala_args&quot;], value: list[str | File], /) -&gt; None, (key: Literal[&quot;cs_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;swift_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;cython_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;nasm_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;masm_args&quot;], value: list[str], /) -&gt; None]) | (Overload[(key: Literal[&quot;rust_abi&quot;], value: Literal[&quot;c&quot;, &quot;rust&quot;] | None, /) -&gt; None, (key: Literal[&quot;darwin_versions&quot;], value: tuple[str, str] | None, /) -&gt; None, (key: Literal[&quot;soversion&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;version&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;vs_module_defs&quot;], value: str | File | CustomTarget | CustomTargetIndex | None, /) -&gt; None, (key: Literal[&quot;build_by_default&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;build_rpath&quot;], value: str, /) -&gt; None, (key: Literal[&quot;extra_files&quot;], value: list[@Todo], /) -&gt; None, (key: Literal[&quot;gnu_symbol_visibility&quot;], value: str, /) -&gt; None, (key: Literal[&quot;install&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;install_mode&quot;], value: FileMode, /) -&gt; None, (key: Literal[&quot;install_rpath&quot;], value: str, /) -&gt; None, (key: Literal[&quot;implicit_include_directories&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;link_depends&quot;], value: list[str | File | CustomTarget | CustomTargetIndex | BuildTarget], /) -&gt; None, (key: Literal[&quot;link_language&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;name_prefix&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;name_suffix&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;native&quot;], value: MachineChoice, /) -&gt; None, (key: Literal[&quot;objects&quot;], value: list[@Todo], /) -&gt; None, (key: Literal[&quot;override_options&quot;], value: dict[OptionKey, @Todo], /) -&gt; None, (key: Literal[&quot;depend_files&quot;], value: list[File], /) -&gt; None, (key: Literal[&quot;resources&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;d_debug&quot;], value: list[str | int], /) -&gt; None, (key: Literal[&quot;d_import_dirs&quot;], value: list[str | IncludeDirs], /) -&gt; None, (key: Literal[&quot;d_module_versions&quot;], value: list[str | int], /) -&gt; None, (key: Literal[&quot;d_unittest&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;rust_dependency_map&quot;], value: dict[str, str], /) -&gt; None, (key: Literal[&quot;swift_interoperability_mode&quot;], value: Literal[&quot;c&quot;, &quot;cpp&quot;], /) -&gt; None, (key: Literal[&quot;swift_module_name&quot;], value: str, /) -&gt; None, (key: Literal[&quot;sources&quot;], value: Any, /) -&gt; None, (key: Literal[&quot;c_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;cpp_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;cuda_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;fortran_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;d_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;objc_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;objcpp_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;rust_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;vala_args&quot;], value: list[str | File], /) -&gt; None, (key: Literal[&quot;cs_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;swift_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;cython_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;nasm_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;masm_args&quot;], value: list[str], /) -&gt; None]) | (Overload[(key: Literal[&quot;rust_abi&quot;], value: Literal[&quot;c&quot;, &quot;rust&quot;] | None, /) -&gt; None, (key: Literal[&quot;build_by_default&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;build_rpath&quot;], value: str, /) -&gt; None, (key: Literal[&quot;extra_files&quot;], value: list[@Todo], /) -&gt; None, (key: Literal[&quot;gnu_symbol_visibility&quot;], value: str, /) -&gt; None, (key: Literal[&quot;install&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;install_mode&quot;], value: FileMode, /) -&gt; None, (key: Literal[&quot;install_rpath&quot;], value: str, /) -&gt; None, (key: Literal[&quot;implicit_include_directories&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;link_depends&quot;], value: list[str | File | CustomTarget | CustomTargetIndex | BuildTarget], /) -&gt; None, (key: Literal[&quot;link_language&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;name_prefix&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;name_suffix&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;native&quot;], value: MachineChoice, /) -&gt; None, (key: Literal[&quot;objects&quot;], value: list[@Todo], /) -&gt; None, (key: Literal[&quot;override_options&quot;], value: dict[OptionKey, @Todo], /) -&gt; None, (key: Literal[&quot;depend_files&quot;], value: list[File], /) -&gt; None, (key: Literal[&quot;resources&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;d_debug&quot;], value: list[str | int], /) -&gt; None, (key: Literal[&quot;d_import_dirs&quot;], value: list[str | IncludeDirs], /) -&gt; None, (key: Literal[&quot;d_module_versions&quot;], value: list[str | int], /) -&gt; None, (key: Literal[&quot;d_unittest&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;rust_dependency_map&quot;], value: dict[str, str], /) -&gt; None, (key: Literal[&quot;swift_interoperability_mode&quot;], value: Literal[&quot;c&quot;, &quot;cpp&quot;], /) -&gt; None, (key: Literal[&quot;swift_module_name&quot;], value: str, /) -&gt; None, (key: Literal[&quot;sources&quot;], value: Any, /) -&gt; None, (key: Literal[&quot;c_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;cpp_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;cuda_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;fortran_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;d_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;objc_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;objcpp_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;rust_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;vala_args&quot;], value: list[str | File], /) -&gt; None, (key: Literal[&quot;cs_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;swift_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;cython_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;nasm_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;masm_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;vs_module_defs&quot;], value: str | File | CustomTarget | CustomTargetIndex | None, /) -&gt; None]) | (Overload[(key: Literal[&quot;build_by_default&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;build_rpath&quot;], value: str, /) -&gt; None, (key: Literal[&quot;extra_files&quot;], value: list[@Todo], /) -&gt; None, (key: Literal[&quot;gnu_symbol_visibility&quot;], value: str, /) -&gt; None, (key: Literal[&quot;install&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;install_mode&quot;], value: FileMode, /) -&gt; None, (key: Literal[&quot;install_rpath&quot;], value: str, /) -&gt; None, (key: Literal[&quot;implicit_include_directories&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;link_depends&quot;], value: list[str | File | CustomTarget | CustomTargetIndex | BuildTarget], /) -&gt; None, (key: Literal[&quot;link_language&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;name_prefix&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;name_suffix&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;native&quot;], value: MachineChoice, /) -&gt; None, (key: Literal[&quot;objects&quot;], value: list[@Todo], /) -&gt; None, (key: Literal[&quot;override_options&quot;], value: dict[OptionKey, @Todo], /) -&gt; None, (key: Literal[&quot;depend_files&quot;], value: list[File], /) -&gt; None, (key: Literal[&quot;resources&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;main_class&quot;], value: str, /) -&gt; None, (key: Literal[&quot;java_resources&quot;], value: StructuredSources | None, /) -&gt; None, (key: Literal[&quot;sources&quot;], value: str | File | CustomTarget | CustomTargetIndex | GeneratedList | ExtractedObjects | BuildTarget, /) -&gt; None, (key: Literal[&quot;java_args&quot;], value: list[str], /) -&gt; None])` cannot be called with a key of type `Literal[&quot;dependencies&quot;]` and a value of type `list[Unknown]` on object of type `Executable | StaticLibrary | SharedLibrary | SharedModule | Jar`
++ mesonbuild/interpreter/interpreter.py:3412:9: error[invalid-assignment] Method `__setitem__` of type `(Overload[(key: Literal[&quot;build_by_default&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;build_rpath&quot;], value: str, /) -&gt; None, (key: Literal[&quot;extra_files&quot;], value: list[@Todo], /) -&gt; None, (key: Literal[&quot;gnu_symbol_visibility&quot;], value: str, /) -&gt; None, (key: Literal[&quot;install&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;install_mode&quot;], value: FileMode, /) -&gt; None, (key: Literal[&quot;install_rpath&quot;], value: str, /) -&gt; None, (key: Literal[&quot;implicit_include_directories&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;link_depends&quot;], value: list[str | File | CustomTarget | CustomTargetIndex | BuildTarget], /) -&gt; None, (key: Literal[&quot;link_language&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;name_prefix&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;name_suffix&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;native&quot;], value: MachineChoice, /) -&gt; None, (key: Literal[&quot;objects&quot;], value: list[@Todo], /) -&gt; None, (key: Literal[&quot;override_options&quot;], value: dict[OptionKey, @Todo], /) -&gt; None, (key: Literal[&quot;depend_files&quot;], value: list[File], /) -&gt; None, (key: Literal[&quot;resources&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;d_debug&quot;], value: list[str | int], /) -&gt; None, (key: Literal[&quot;d_import_dirs&quot;], value: list[str | IncludeDirs], /) -&gt; None, (key: Literal[&quot;d_module_versions&quot;], value: list[str | int], /) -&gt; None, (key: Literal[&quot;d_unittest&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;rust_dependency_map&quot;], value: dict[str, str], /) -&gt; None, (key: Literal[&quot;swift_interoperability_mode&quot;], value: Literal[&quot;c&quot;, &quot;cpp&quot;], /) -&gt; None, (key: Literal[&quot;swift_module_name&quot;], value: str, /) -&gt; None, (key: Literal[&quot;sources&quot;], value: Any, /) -&gt; None, (key: Literal[&quot;c_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;cpp_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;cuda_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;fortran_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;d_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;objc_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;objcpp_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;rust_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;vala_args&quot;], value: list[str | File], /) -&gt; None, (key: Literal[&quot;cs_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;swift_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;cython_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;nasm_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;masm_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;export_dynamic&quot;], value: bool | None, /) -&gt; None, (key: Literal[&quot;gui_app&quot;], value: bool | None, /) -&gt; None, (key: Literal[&quot;implib&quot;], value: str | bool | None, /) -&gt; None, (key: Literal[&quot;pie&quot;], value: bool | None, /) -&gt; None, (key: Literal[&quot;vs_module_defs&quot;], value: str | File | CustomTarget | CustomTargetIndex | None, /) -&gt; None, (key: Literal[&quot;win_subsystem&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;android_exe_type&quot;], value: Literal[&quot;application&quot;, &quot;executable&quot;] | None, /) -&gt; None]) | (Overload[(key: Literal[&quot;rust_abi&quot;], value: Literal[&quot;c&quot;, &quot;rust&quot;] | None, /) -&gt; None, (key: Literal[&quot;prelink&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;pic&quot;], value: bool | None, /) -&gt; None, (key: Literal[&quot;build_by_default&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;build_rpath&quot;], value: str, /) -&gt; None, (key: Literal[&quot;extra_files&quot;], value: list[@Todo], /) -&gt; None, (key: Literal[&quot;gnu_symbol_visibility&quot;], value: str, /) -&gt; None, (key: Literal[&quot;install&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;install_mode&quot;], value: FileMode, /) -&gt; None, (key: Literal[&quot;install_rpath&quot;], value: str, /) -&gt; None, (key: Literal[&quot;implicit_include_directories&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;link_depends&quot;], value: list[str | File | CustomTarget | CustomTargetIndex | BuildTarget], /) -&gt; None, (key: Literal[&quot;link_language&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;name_prefix&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;name_suffix&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;native&quot;], value: MachineChoice, /) -&gt; None, (key: Literal[&quot;objects&quot;], value: list[@Todo], /) -&gt; None, (key: Literal[&quot;override_options&quot;], value: dict[OptionKey, @Todo], /) -&gt; None, (key: Literal[&quot;depend_files&quot;], value: list[File], /) -&gt; None, (key: Literal[&quot;resources&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;d_debug&quot;], value: list[str | int], /) -&gt; None, (key: Literal[&quot;d_import_dirs&quot;], value: list[str | IncludeDirs], /) -&gt; None, (key: Literal[&quot;d_module_versions&quot;], value: list[str | int], /) -&gt; None, (key: Literal[&quot;d_unittest&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;rust_dependency_map&quot;], value: dict[str, str], /) -&gt; None, (key: Literal[&quot;swift_interoperability_mode&quot;], value: Literal[&quot;c&quot;, &quot;cpp&quot;], /) -&gt; None, (key: Literal[&quot;swift_module_name&quot;], value: str, /) -&gt; None, (key: Literal[&quot;sources&quot;], value: Any, /) -&gt; None, (key: Literal[&quot;c_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;cpp_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;cuda_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;fortran_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;d_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;objc_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;objcpp_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;rust_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;vala_args&quot;], value: list[str | File], /) -&gt; None, (key: Literal[&quot;cs_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;swift_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;cython_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;nasm_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;masm_args&quot;], value: list[str], /) -&gt; None]) | (Overload[(key: Literal[&quot;rust_abi&quot;], value: Literal[&quot;c&quot;, &quot;rust&quot;] | None, /) -&gt; None, (key: Literal[&quot;build_by_default&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;build_rpath&quot;], value: str, /) -&gt; None, (key: Literal[&quot;extra_files&quot;], value: list[@Todo], /) -&gt; None, (key: Literal[&quot;gnu_symbol_visibility&quot;], value: str, /) -&gt; None, (key: Literal[&quot;install&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;install_mode&quot;], value: FileMode, /) -&gt; None, (key: Literal[&quot;install_rpath&quot;], value: str, /) -&gt; None, (key: Literal[&quot;implicit_include_directories&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;link_depends&quot;], value: list[str | File | CustomTarget | CustomTargetIndex | BuildTarget], /) -&gt; None, (key: Literal[&quot;link_language&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;name_prefix&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;name_suffix&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;native&quot;], value: MachineChoice, /) -&gt; None, (key: Literal[&quot;objects&quot;], value: list[@Todo], /) -&gt; None, (key: Literal[&quot;override_options&quot;], value: dict[OptionKey, @Todo], /) -&gt; None, (key: Literal[&quot;depend_files&quot;], value: list[File], /) -&gt; None, (key: Literal[&quot;resources&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;d_debug&quot;], value: list[str | int], /) -&gt; None, (key: Literal[&quot;d_import_dirs&quot;], value: list[str | IncludeDirs], /) -&gt; None, (key: Literal[&quot;d_module_versions&quot;], value: list[str | int], /) -&gt; None, (key: Literal[&quot;d_unittest&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;rust_dependency_map&quot;], value: dict[str, str], /) -&gt; None, (key: Literal[&quot;swift_interoperability_mode&quot;], value: Literal[&quot;c&quot;, &quot;cpp&quot;], /) -&gt; None, (key: Literal[&quot;swift_module_name&quot;], value: str, /) -&gt; None, (key: Literal[&quot;sources&quot;], value: Any, /) -&gt; None, (key: Literal[&quot;c_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;cpp_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;cuda_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;fortran_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;d_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;objc_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;objcpp_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;rust_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;vala_args&quot;], value: list[str | File], /) -&gt; None, (key: Literal[&quot;cs_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;swift_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;cython_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;nasm_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;masm_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;vs_module_defs&quot;], value: str | File | CustomTarget | CustomTargetIndex | None, /) -&gt; None]) | (Overload[(key: Literal[&quot;build_by_default&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;build_rpath&quot;], value: str, /) -&gt; None, (key: Literal[&quot;extra_files&quot;], value: list[@Todo], /) -&gt; None, (key: Literal[&quot;gnu_symbol_visibility&quot;], value: str, /) -&gt; None, (key: Literal[&quot;install&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;install_mode&quot;], value: FileMode, /) -&gt; None, (key: Literal[&quot;install_rpath&quot;], value: str, /) -&gt; None, (key: Literal[&quot;implicit_include_directories&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;link_depends&quot;], value: list[str | File | CustomTarget | CustomTargetIndex | BuildTarget], /) -&gt; None, (key: Literal[&quot;link_language&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;name_prefix&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;name_suffix&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;native&quot;], value: MachineChoice, /) -&gt; None, (key: Literal[&quot;objects&quot;], value: list[@Todo], /) -&gt; None, (key: Literal[&quot;override_options&quot;], value: dict[OptionKey, @Todo], /) -&gt; None, (key: Literal[&quot;depend_files&quot;], value: list[File], /) -&gt; None, (key: Literal[&quot;resources&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;main_class&quot;], value: str, /) -&gt; None, (key: Literal[&quot;java_resources&quot;], value: StructuredSources | None, /) -&gt; None, (key: Literal[&quot;sources&quot;], value: str | File | CustomTarget | CustomTargetIndex | GeneratedList | ExtractedObjects | BuildTarget, /) -&gt; None, (key: Literal[&quot;java_args&quot;], value: list[str], /) -&gt; None])` cannot be called with a key of type `Literal[&quot;dependencies&quot;]` and a value of type `list[Unknown]` on object of type `Executable | StaticLibrary | SharedLibrary | SharedModule | Jar`
+- mesonbuild/interpreter/interpreter.py:3431:13: error[invalid-assignment] Method `__setitem__` of type `(Overload[(key: Literal[&quot;build_by_default&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;build_rpath&quot;], value: str, /) -&gt; None, (key: Literal[&quot;extra_files&quot;], value: list[@Todo], /) -&gt; None, (key: Literal[&quot;gnu_symbol_visibility&quot;], value: str, /) -&gt; None, (key: Literal[&quot;install&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;install_mode&quot;], value: FileMode, /) -&gt; None, (key: Literal[&quot;install_rpath&quot;], value: str, /) -&gt; None, (key: Literal[&quot;implicit_include_directories&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;link_depends&quot;], value: list[str | File | CustomTarget | CustomTargetIndex | BuildTarget], /) -&gt; None, (key: Literal[&quot;link_language&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;name_prefix&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;name_suffix&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;native&quot;], value: MachineChoice, /) -&gt; None, (key: Literal[&quot;objects&quot;], value: list[@Todo], /) -&gt; None, (key: Literal[&quot;override_options&quot;], value: dict[OptionKey, @Todo], /) -&gt; None, (key: Literal[&quot;depend_files&quot;], value: list[File], /) -&gt; None, (key: Literal[&quot;resources&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;d_debug&quot;], value: list[str | int], /) -&gt; None, (key: Literal[&quot;d_import_dirs&quot;], value: list[str | IncludeDirs], /) -&gt; None, (key: Literal[&quot;d_module_versions&quot;], value: list[str | int], /) -&gt; None, (key: Literal[&quot;d_unittest&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;rust_dependency_map&quot;], value: dict[str, str], /) -&gt; None, (key: Literal[&quot;swift_interoperability_mode&quot;], value: Literal[&quot;c&quot;, &quot;cpp&quot;], /) -&gt; None, (key: Literal[&quot;swift_module_name&quot;], value: str, /) -&gt; None, (key: Literal[&quot;sources&quot;], value: Any, /) -&gt; None, (key: Literal[&quot;c_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;cpp_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;cuda_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;fortran_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;d_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;objc_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;objcpp_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;rust_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;vala_args&quot;], value: list[str | File], /) -&gt; None, (key: Literal[&quot;cs_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;swift_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;cython_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;nasm_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;masm_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;export_dynamic&quot;], value: bool | None, /) -&gt; None, (key: Literal[&quot;gui_app&quot;], value: bool | None, /) -&gt; None, (key: Literal[&quot;implib&quot;], value: str | bool | None, /) -&gt; None, (key: Literal[&quot;pie&quot;], value: bool | None, /) -&gt; None, (key: Literal[&quot;vs_module_defs&quot;], value: str | File | CustomTarget | CustomTargetIndex | None, /) -&gt; None, (key: Literal[&quot;win_subsystem&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;android_exe_type&quot;], value: Literal[&quot;application&quot;, &quot;executable&quot;] | None, /) -&gt; None]) | (Overload[(key: Literal[&quot;rust_abi&quot;], value: Literal[&quot;c&quot;, &quot;rust&quot;] | None, /) -&gt; None, (key: Literal[&quot;prelink&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;pic&quot;], value: bool | None, /) -&gt; None, (key: Literal[&quot;build_by_default&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;build_rpath&quot;], value: str, /) -&gt; None, (key: Literal[&quot;extra_files&quot;], value: list[@Todo], /) -&gt; None, (key: Literal[&quot;gnu_symbol_visibility&quot;], value: str, /) -&gt; None, (key: Literal[&quot;install&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;install_mode&quot;], value: FileMode, /) -&gt; None, (key: Literal[&quot;install_rpath&quot;], value: str, /) -&gt; None, (key: Literal[&quot;implicit_include_directories&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;link_depends&quot;], value: list[str | File | CustomTarget | CustomTargetIndex | BuildTarget], /) -&gt; None, (key: Literal[&quot;link_language&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;name_prefix&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;name_suffix&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;native&quot;], value: MachineChoice, /) -&gt; None, (key: Literal[&quot;objects&quot;], value: list[@Todo], /) -&gt; None, (key: Literal[&quot;override_options&quot;], value: dict[OptionKey, @Todo], /) -&gt; None, (key: Literal[&quot;depend_files&quot;], value: list[File], /) -&gt; None, (key: Literal[&quot;resources&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;d_debug&quot;], value: list[str | int], /) -&gt; None, (key: Literal[&quot;d_import_dirs&quot;], value: list[str | IncludeDirs], /) -&gt; None, (key: Literal[&quot;d_module_versions&quot;], value: list[str | int], /) -&gt; None, (key: Literal[&quot;d_unittest&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;rust_dependency_map&quot;], value: dict[str, str], /) -&gt; None, (key: Literal[&quot;swift_interoperability_mode&quot;], value: Literal[&quot;c&quot;, &quot;cpp&quot;], /) -&gt; None, (key: Literal[&quot;swift_module_name&quot;], value: str, /) -&gt; None, (key: Literal[&quot;sources&quot;], value: Any, /) -&gt; None, (key: Literal[&quot;c_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;cpp_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;cuda_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;fortran_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;d_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;objc_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;objcpp_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;rust_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;vala_args&quot;], value: list[str | File], /) -&gt; None, (key: Literal[&quot;cs_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;swift_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;cython_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;nasm_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;masm_args&quot;], value: list[str], /) -&gt; None]) | (Overload[(key: Literal[&quot;rust_abi&quot;], value: Literal[&quot;c&quot;, &quot;rust&quot;] | None, /) -&gt; None, (key: Literal[&quot;darwin_versions&quot;], value: tuple[str, str] | None, /) -&gt; None, (key: Literal[&quot;soversion&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;version&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;vs_module_defs&quot;], value: str | File | CustomTarget | CustomTargetIndex | None, /) -&gt; None, (key: Literal[&quot;build_by_default&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;build_rpath&quot;], value: str, /) -&gt; None, (key: Literal[&quot;extra_files&quot;], value: list[@Todo], /) -&gt; None, (key: Literal[&quot;gnu_symbol_visibility&quot;], value: str, /) -&gt; None, (key: Literal[&quot;install&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;install_mode&quot;], value: FileMode, /) -&gt; None, (key: Literal[&quot;install_rpath&quot;], value: str, /) -&gt; None, (key: Literal[&quot;implicit_include_directories&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;link_depends&quot;], value: list[str | File | CustomTarget | CustomTargetIndex | BuildTarget], /) -&gt; None, (key: Literal[&quot;link_language&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;name_prefix&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;name_suffix&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;native&quot;], value: MachineChoice, /) -&gt; None, (key: Literal[&quot;objects&quot;], value: list[@Todo], /) -&gt; None, (key: Literal[&quot;override_options&quot;], value: dict[OptionKey, @Todo], /) -&gt; None, (key: Literal[&quot;depend_files&quot;], value: list[File], /) -&gt; None, (key: Literal[&quot;resources&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;d_debug&quot;], value: list[str | int], /) -&gt; None, (key: Literal[&quot;d_import_dirs&quot;], value: list[str | IncludeDirs], /) -&gt; None, (key: Literal[&quot;d_module_versions&quot;], value: list[str | int], /) -&gt; None, (key: Literal[&quot;d_unittest&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;rust_dependency_map&quot;], value: dict[str, str], /) -&gt; None, (key: Literal[&quot;swift_interoperability_mode&quot;], value: Literal[&quot;c&quot;, &quot;cpp&quot;], /) -&gt; None, (key: Literal[&quot;swift_module_name&quot;], value: str, /) -&gt; None, (key: Literal[&quot;sources&quot;], value: Any, /) -&gt; None, (key: Literal[&quot;c_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;cpp_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;cuda_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;fortran_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;d_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;objc_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;objcpp_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;rust_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;vala_args&quot;], value: list[str | File], /) -&gt; None, (key: Literal[&quot;cs_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;swift_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;cython_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;nasm_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;masm_args&quot;], value: list[str], /) -&gt; None]) | (Overload[(key: Literal[&quot;rust_abi&quot;], value: Literal[&quot;c&quot;, &quot;rust&quot;] | None, /) -&gt; None, (key: Literal[&quot;build_by_default&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;build_rpath&quot;], value: str, /) -&gt; None, (key: Literal[&quot;extra_files&quot;], value: list[@Todo], /) -&gt; None, (key: Literal[&quot;gnu_symbol_visibility&quot;], value: str, /) -&gt; None, (key: Literal[&quot;install&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;install_mode&quot;], value: FileMode, /) -&gt; None, (key: Literal[&quot;install_rpath&quot;], value: str, /) -&gt; None, (key: Literal[&quot;implicit_include_directories&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;link_depends&quot;], value: list[str | File | CustomTarget | CustomTargetIndex | BuildTarget], /) -&gt; None, (key: Literal[&quot;link_language&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;name_prefix&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;name_suffix&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;native&quot;], value: MachineChoice, /) -&gt; None, (key: Literal[&quot;objects&quot;], value: list[@Todo], /) -&gt; None, (key: Literal[&quot;override_options&quot;], value: dict[OptionKey, @Todo], /) -&gt; None, (key: Literal[&quot;depend_files&quot;], value: list[File], /) -&gt; None, (key: Literal[&quot;resources&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;d_debug&quot;], value: list[str | int], /) -&gt; None, (key: Literal[&quot;d_import_dirs&quot;], value: list[str | IncludeDirs], /) -&gt; None, (key: Literal[&quot;d_module_versions&quot;], value: list[str | int], /) -&gt; None, (key: Literal[&quot;d_unittest&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;rust_dependency_map&quot;], value: dict[str, str], /) -&gt; None, (key: Literal[&quot;swift_interoperability_mode&quot;], value: Literal[&quot;c&quot;, &quot;cpp&quot;], /) -&gt; None, (key: Literal[&quot;swift_module_name&quot;], value: str, /) -&gt; None, (key: Literal[&quot;sources&quot;], value: Any, /) -&gt; None, (key: Literal[&quot;c_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;cpp_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;cuda_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;fortran_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;d_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;objc_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;objcpp_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;rust_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;vala_args&quot;], value: list[str | File], /) -&gt; None, (key: Literal[&quot;cs_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;swift_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;cython_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;nasm_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;masm_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;vs_module_defs&quot;], value: str | File | CustomTarget | CustomTargetIndex | None, /) -&gt; None]) | (Overload[(key: Literal[&quot;build_by_default&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;build_rpath&quot;], value: str, /) -&gt; None, (key: Literal[&quot;extra_files&quot;], value: list[@Todo], /) -&gt; None, (key: Literal[&quot;gnu_symbol_visibility&quot;], value: str, /) -&gt; None, (key: Literal[&quot;install&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;install_mode&quot;], value: FileMode, /) -&gt; None, (key: Literal[&quot;install_rpath&quot;], value: str, /) -&gt; None, (key: Literal[&quot;implicit_include_directories&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;link_depends&quot;], value: list[str | File | CustomTarget | CustomTargetIndex | BuildTarget], /) -&gt; None, (key: Literal[&quot;link_language&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;name_prefix&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;name_suffix&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;native&quot;], value: MachineChoice, /) -&gt; None, (key: Literal[&quot;objects&quot;], value: list[@Todo], /) -&gt; None, (key: Literal[&quot;override_options&quot;], value: dict[OptionKey, @Todo], /) -&gt; None, (key: Literal[&quot;depend_files&quot;], value: list[File], /) -&gt; None, (key: Literal[&quot;resources&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;main_class&quot;], value: str, /) -&gt; None, (key: Literal[&quot;java_resources&quot;], value: StructuredSources | None, /) -&gt; None, (key: Literal[&quot;sources&quot;], value: str | File | CustomTarget | CustomTargetIndex | GeneratedList | ExtractedObjects | BuildTarget, /) -&gt; None, (key: Literal[&quot;java_args&quot;], value: list[str], /) -&gt; None])` cannot be called with a key of type `Literal[&quot;d_import_dirs&quot;]` and a value of type `Unknown` on object of type `Executable | StaticLibrary | SharedLibrary | SharedModule | Jar`
++ mesonbuild/interpreter/interpreter.py:3431:13: error[invalid-assignment] Method `__setitem__` of type `(Overload[(key: Literal[&quot;build_by_default&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;build_rpath&quot;], value: str, /) -&gt; None, (key: Literal[&quot;extra_files&quot;], value: list[@Todo], /) -&gt; None, (key: Literal[&quot;gnu_symbol_visibility&quot;], value: str, /) -&gt; None, (key: Literal[&quot;install&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;install_mode&quot;], value: FileMode, /) -&gt; None, (key: Literal[&quot;install_rpath&quot;], value: str, /) -&gt; None, (key: Literal[&quot;implicit_include_directories&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;link_depends&quot;], value: list[str | File | CustomTarget | CustomTargetIndex | BuildTarget], /) -&gt; None, (key: Literal[&quot;link_language&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;name_prefix&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;name_suffix&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;native&quot;], value: MachineChoice, /) -&gt; None, (key: Literal[&quot;objects&quot;], value: list[@Todo], /) -&gt; None, (key: Literal[&quot;override_options&quot;], value: dict[OptionKey, @Todo], /) -&gt; None, (key: Literal[&quot;depend_files&quot;], value: list[File], /) -&gt; None, (key: Literal[&quot;resources&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;d_debug&quot;], value: list[str | int], /) -&gt; None, (key: Literal[&quot;d_import_dirs&quot;], value: list[str | IncludeDirs], /) -&gt; None, (key: Literal[&quot;d_module_versions&quot;], value: list[str | int], /) -&gt; None, (key: Literal[&quot;d_unittest&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;rust_dependency_map&quot;], value: dict[str, str], /) -&gt; None, (key: Literal[&quot;swift_interoperability_mode&quot;], value: Literal[&quot;c&quot;, &quot;cpp&quot;], /) -&gt; None, (key: Literal[&quot;swift_module_name&quot;], value: str, /) -&gt; None, (key: Literal[&quot;sources&quot;], value: Any, /) -&gt; None, (key: Literal[&quot;c_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;cpp_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;cuda_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;fortran_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;d_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;objc_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;objcpp_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;rust_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;vala_args&quot;], value: list[str | File], /) -&gt; None, (key: Literal[&quot;cs_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;swift_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;cython_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;nasm_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;masm_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;export_dynamic&quot;], value: bool | None, /) -&gt; None, (key: Literal[&quot;gui_app&quot;], value: bool | None, /) -&gt; None, (key: Literal[&quot;implib&quot;], value: str | bool | None, /) -&gt; None, (key: Literal[&quot;pie&quot;], value: bool | None, /) -&gt; None, (key: Literal[&quot;vs_module_defs&quot;], value: str | File | CustomTarget | CustomTargetIndex | None, /) -&gt; None, (key: Literal[&quot;win_subsystem&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;android_exe_type&quot;], value: Literal[&quot;application&quot;, &quot;executable&quot;] | None, /) -&gt; None]) | (Overload[(key: Literal[&quot;rust_abi&quot;], value: Literal[&quot;c&quot;, &quot;rust&quot;] | None, /) -&gt; None, (key: Literal[&quot;prelink&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;pic&quot;], value: bool | None, /) -&gt; None, (key: Literal[&quot;build_by_default&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;build_rpath&quot;], value: str, /) -&gt; None, (key: Literal[&quot;extra_files&quot;], value: list[@Todo], /) -&gt; None, (key: Literal[&quot;gnu_symbol_visibility&quot;], value: str, /) -&gt; None, (key: Literal[&quot;install&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;install_mode&quot;], value: FileMode, /) -&gt; None, (key: Literal[&quot;install_rpath&quot;], value: str, /) -&gt; None, (key: Literal[&quot;implicit_include_directories&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;link_depends&quot;], value: list[str | File | CustomTarget | CustomTargetIndex | BuildTarget], /) -&gt; None, (key: Literal[&quot;link_language&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;name_prefix&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;name_suffix&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;native&quot;], value: MachineChoice, /) -&gt; None, (key: Literal[&quot;objects&quot;], value: list[@Todo], /) -&gt; None, (key: Literal[&quot;override_options&quot;], value: dict[OptionKey, @Todo], /) -&gt; None, (key: Literal[&quot;depend_files&quot;], value: list[File], /) -&gt; None, (key: Literal[&quot;resources&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;d_debug&quot;], value: list[str | int], /) -&gt; None, (key: Literal[&quot;d_import_dirs&quot;], value: list[str | IncludeDirs], /) -&gt; None, (key: Literal[&quot;d_module_versions&quot;], value: list[str | int], /) -&gt; None, (key: Literal[&quot;d_unittest&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;rust_dependency_map&quot;], value: dict[str, str], /) -&gt; None, (key: Literal[&quot;swift_interoperability_mode&quot;], value: Literal[&quot;c&quot;, &quot;cpp&quot;], /) -&gt; None, (key: Literal[&quot;swift_module_name&quot;], value: str, /) -&gt; None, (key: Literal[&quot;sources&quot;], value: Any, /) -&gt; None, (key: Literal[&quot;c_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;cpp_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;cuda_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;fortran_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;d_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;objc_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;objcpp_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;rust_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;vala_args&quot;], value: list[str | File], /) -&gt; None, (key: Literal[&quot;cs_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;swift_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;cython_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;nasm_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;masm_args&quot;], value: list[str], /) -&gt; None]) | (Overload[(key: Literal[&quot;rust_abi&quot;], value: Literal[&quot;c&quot;, &quot;rust&quot;] | None, /) -&gt; None, (key: Literal[&quot;build_by_default&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;build_rpath&quot;], value: str, /) -&gt; None, (key: Literal[&quot;extra_files&quot;], value: list[@Todo], /) -&gt; None, (key: Literal[&quot;gnu_symbol_visibility&quot;], value: str, /) -&gt; None, (key: Literal[&quot;install&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;install_mode&quot;], value: FileMode, /) -&gt; None, (key: Literal[&quot;install_rpath&quot;], value: str, /) -&gt; None, (key: Literal[&quot;implicit_include_directories&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;link_depends&quot;], value: list[str | File | CustomTarget | CustomTargetIndex | BuildTarget], /) -&gt; None, (key: Literal[&quot;link_language&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;name_prefix&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;name_suffix&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;native&quot;], value: MachineChoice, /) -&gt; None, (key: Literal[&quot;objects&quot;], value: list[@Todo], /) -&gt; None, (key: Literal[&quot;override_options&quot;], value: dict[OptionKey, @Todo], /) -&gt; None, (key: Literal[&quot;depend_files&quot;], value: list[File], /) -&gt; None, (key: Literal[&quot;resources&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;d_debug&quot;], value: list[str | int], /) -&gt; None, (key: Literal[&quot;d_import_dirs&quot;], value: list[str | IncludeDirs], /) -&gt; None, (key: Literal[&quot;d_module_versions&quot;], value: list[str | int], /) -&gt; None, (key: Literal[&quot;d_unittest&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;rust_dependency_map&quot;], value: dict[str, str], /) -&gt; None, (key: Literal[&quot;swift_interoperability_mode&quot;], value: Literal[&quot;c&quot;, &quot;cpp&quot;], /) -&gt; None, (key: Literal[&quot;swift_module_name&quot;], value: str, /) -&gt; None, (key: Literal[&quot;sources&quot;], value: Any, /) -&gt; None, (key: Literal[&quot;c_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;cpp_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;cuda_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;fortran_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;d_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;objc_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;objcpp_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;rust_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;vala_args&quot;], value: list[str | File], /) -&gt; None, (key: Literal[&quot;cs_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;swift_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;cython_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;nasm_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;masm_args&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;vs_module_defs&quot;], value: str | File | CustomTarget | CustomTargetIndex | None, /) -&gt; None]) | (Overload[(key: Literal[&quot;build_by_default&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;build_rpath&quot;], value: str, /) -&gt; None, (key: Literal[&quot;extra_files&quot;], value: list[@Todo], /) -&gt; None, (key: Literal[&quot;gnu_symbol_visibility&quot;], value: str, /) -&gt; None, (key: Literal[&quot;install&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;install_mode&quot;], value: FileMode, /) -&gt; None, (key: Literal[&quot;install_rpath&quot;], value: str, /) -&gt; None, (key: Literal[&quot;implicit_include_directories&quot;], value: bool, /) -&gt; None, (key: Literal[&quot;link_depends&quot;], value: list[str | File | CustomTarget | CustomTargetIndex | BuildTarget], /) -&gt; None, (key: Literal[&quot;link_language&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;name_prefix&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;name_suffix&quot;], value: str | None, /) -&gt; None, (key: Literal[&quot;native&quot;], value: MachineChoice, /) -&gt; None, (key: Literal[&quot;objects&quot;], value: list[@Todo], /) -&gt; None, (key: Literal[&quot;override_options&quot;], value: dict[OptionKey, @Todo], /) -&gt; None, (key: Literal[&quot;depend_files&quot;], value: list[File], /) -&gt; None, (key: Literal[&quot;resources&quot;], value: list[str], /) -&gt; None, (key: Literal[&quot;main_class&quot;], value: str, /) -&gt; None, (key: Literal[&quot;java_resources&quot;], value: StructuredSources | None, /) -&gt; None, (key: Literal[&quot;sources&quot;], value: str | File | CustomTarget | CustomTargetIndex | GeneratedList | ExtractedObjects | BuildTarget, /) -&gt; None, (key: Literal[&quot;java_args&quot;], value: list[str], /) -&gt; None])` cannot be called with a key of type `Literal[&quot;d_import_dirs&quot;]` and a value of type `Unknown` on object of type `Executable | StaticLibrary | SharedLibrary | SharedModule | Jar`
+- mesonbuild/interpreterbase/decorators.py:526:45: error[invalid-argument-type] Argument to function `check_value_type` is incorrect: Expected `tuple[type | ContainerTypeInfo, ...]`, found `(Unknown &amp; tuple[object, ...]) | tuple[@Todo | ContainerTypeInfo, ...] | (ContainerTypeInfo &amp; tuple[object, ...]) | tuple[(Unknown &amp; ~tuple[object, ...]) | (ContainerTypeInfo &amp; ~tuple[object, ...])]`
++ mesonbuild/interpreterbase/decorators.py:526:45: error[invalid-argument-type] Argument to function `check_value_type` is incorrect: Expected `tuple[type | ContainerTypeInfo, ...]`, found `(Unknown &amp; tuple[object, ...]) | tuple[@Todo | ContainerTypeInfo, ...] | (ContainerTypeInfo &amp; tuple[object, ...])`
+- mesonbuild/interpreterbase/decorators.py:527:54: error[invalid-argument-type] Argument to function `types_description` is incorrect: Expected `tuple[type | ContainerTypeInfo, ...]`, found `(Unknown &amp; tuple[object, ...]) | tuple[@Todo | ContainerTypeInfo, ...] | (ContainerTypeInfo &amp; tuple[object, ...]) | tuple[(Unknown &amp; ~tuple[object, ...]) | (ContainerTypeInfo &amp; ~tuple[object, ...])]`
++ mesonbuild/interpreterbase/decorators.py:527:54: error[invalid-argument-type] Argument to function `types_description` is incorrect: Expected `tuple[type | ContainerTypeInfo, ...]`, found `(Unknown &amp; tuple[object, ...]) | tuple[@Todo | ContainerTypeInfo, ...] | (ContainerTypeInfo &amp; tuple[object, ...])`
+- mesonbuild/interpreterbase/decorators.py:546:45: error[invalid-argument-type] Argument to function `check_value_type` is incorrect: Expected `tuple[type | ContainerTypeInfo, ...]`, found `(Unknown &amp; tuple[object, ...]) | tuple[@Todo | ContainerTypeInfo, ...] | (ContainerTypeInfo &amp; tuple[object, ...]) | tuple[(Unknown &amp; ~tuple[object, ...]) | (ContainerTypeInfo &amp; ~tuple[object, ...])]`
++ mesonbuild/interpreterbase/decorators.py:546:45: error[invalid-argument-type] Argument to function `check_value_type` is incorrect: Expected `tuple[type | ContainerTypeInfo, ...]`, found `(Unknown &amp; tuple[object, ...]) | tuple[@Todo | ContainerTypeInfo, ...] | (ContainerTypeInfo &amp; tuple[object, ...])`
+- mesonbuild/interpreterbase/decorators.py:546:197: error[invalid-argument-type] Argument to function `types_description` is incorrect: Expected `tuple[type | ContainerTypeInfo, ...]`, found `(Unknown &amp; tuple[object, ...]) | tuple[@Todo | ContainerTypeInfo, ...] | (ContainerTypeInfo &amp; tuple[object, ...]) | tuple[(Unknown &amp; ~tuple[object, ...]) | (ContainerTypeInfo &amp; ~tuple[object, ...])]`
++ mesonbuild/interpreterbase/decorators.py:546:197: error[invalid-argument-type] Argument to function `types_description` is incorrect: Expected `tuple[type | ContainerTypeInfo, ...]`, found `(Unknown &amp; tuple[object, ...]) | tuple[@Todo | ContainerTypeInfo, ...] | (ContainerTypeInfo &amp; tuple[object, ...])`
+
+xarray (https://github.com/pydata/xarray)
+- xarray/backends/api.py:1624:27: error[invalid-argument-type] Argument to function `open_dataset` is incorrect: Expected `bool | None`, found `@Todo | None | (@Todo &amp; ~AlwaysFalsy) | dict[Unknown, Unknown]`
++ xarray/backends/api.py:1624:27: error[invalid-argument-type] Argument to function `open_dataset` is incorrect: Expected `bool | None`, found `@Todo | None | dict[Unknown, Unknown]`
+- xarray/backends/api.py:1624:27: error[invalid-argument-type] Argument to function `open_dataset` is incorrect: Expected `bool | None`, found `@Todo | None | (@Todo &amp; ~AlwaysFalsy) | dict[Unknown, Unknown]`
++ xarray/backends/api.py:1624:27: error[invalid-argument-type] Argument to function `open_dataset` is incorrect: Expected `bool | None`, found `@Todo | None | dict[Unknown, Unknown]`
+- xarray/backends/api.py:1624:27: error[invalid-argument-type] Argument to function `open_dataset` is incorrect: Expected `Literal[&quot;coordinates&quot;, &quot;all&quot;] | bool | None`, found `@Todo | None | (@Todo &amp; ~AlwaysFalsy) | dict[Unknown, Unknown]`
++ xarray/backends/api.py:1624:27: error[invalid-argument-type] Argument to function `open_dataset` is incorrect: Expected `Literal[&quot;coordinates&quot;, &quot;all&quot;] | bool | None`, found `@Todo | None | dict[Unknown, Unknown]`
+- xarray/backends/api.py:1624:27: error[invalid-argument-type] Argument to function `open_dataset` is incorrect: Expected `bool`, found `@Todo | None | (@Todo &amp; ~AlwaysFalsy) | dict[Unknown, Unknown]`
++ xarray/backends/api.py:1624:27: error[invalid-argument-type] Argument to function `open_dataset` is incorrect: Expected `bool`, found `@Todo | None | dict[Unknown, Unknown]`
+- xarray/backends/api.py:1624:27: error[invalid-argument-type] Argument to function `open_dataset` is incorrect: Expected `bool`, found `@Todo | None | (@Todo &amp; ~AlwaysFalsy) | dict[Unknown, Unknown]`
++ xarray/backends/api.py:1624:27: error[invalid-argument-type] Argument to function `open_dataset` is incorrect: Expected `bool`, found `@Todo | None | dict[Unknown, Unknown]`
+- xarray/backends/api.py:1624:27: error[invalid-argument-type] Argument to function `open_dataset` is incorrect: Expected `str | None`, found `@Todo | None | (@Todo &amp; ~AlwaysFalsy) | dict[Unknown, Unknown]`
++ xarray/backends/api.py:1624:27: error[invalid-argument-type] Argument to function `open_dataset` is incorrect: Expected `str | None`, found `@Todo | None | dict[Unknown, Unknown]`
+- xarray/core/dataarray.py:450:21: error[invalid-assignment] Object of type `list[Unknown | (Any &amp; ~DataArray &amp; ~Top[Series[Any]] &amp; ~DataFrame) | (ReprObject &amp; ~Top[Series[Any]] &amp; ~DataFrame)]` is not assignable to `Sequence[Sequence[Unknown] | Index[Any] | DataArray | Variable | ndarray[@Todo, Unknown]] | Mapping[Unknown, Unknown] | None`
++ xarray/core/dataarray.py:450:21: error[invalid-assignment] Object of type `list[Unknown | (ReprObject &amp; ~Top[Series[Any]] &amp; ~DataFrame)]` is not assignable to `Sequence[Sequence[Unknown] | Index[Any] | DataArray | Variable | ndarray[@Todo, Unknown]] | Mapping[Unknown, Unknown] | None`
+- xarray/plot/utils.py:301:49: error[unsupported-operator] Operator `-` is unsupported between objects of type `(Unknown &amp; ~Iterable[object] &amp; ~None &amp; ~Literal[1]) | list[Unknown] | (Unknown &amp; ~None &amp; ~Literal[1])` and `Literal[1]`
++ xarray/plot/utils.py:301:49: error[unsupported-operator] Operator `-` is unsupported between objects of type `(Unknown &amp; ~None &amp; ~Literal[1]) | list[Unknown]` and `Literal[1]`
+
+mongo-python-driver (https://github.com/mongodb/mongo-python-driver)
+- bson/json_util.py:1015:9: error[invalid-assignment] Method `__setitem__` of type `bound method dict[int, (Any, JSONOptions, /) -&gt; Any].__setitem__(key: int, value: (Any, JSONOptions, /) -&gt; Any, /) -&gt; None` cannot be called with a key of type `object` and a value of type `((Any, JSONOptions, /) -&gt; Any) | ((obj: Any, dummy0: Any) -&gt; Any) | ((obj: bytes, json_options: JSONOptions) -&gt; dict[Unknown, Unknown]) | ((obj: datetime, json_options: JSONOptions) -&gt; dict[Unknown, Unknown]) | ((obj: Any, json_options: JSONOptions) -&gt; dict[Unknown, Unknown]) | ((obj: int | float, json_options: JSONOptions) -&gt; Any) | ((obj: int, json_options: JSONOptions) -&gt; Any) | ((obj: UUID, json_options: JSONOptions) -&gt; dict[Unknown, Unknown]) | ((obj: Binary, json_options: JSONOptions) -&gt; dict[Unknown, Unknown]) | ((obj: Int64, json_options: JSONOptions) -&gt; Any) | ((obj: Code, json_options: JSONOptions) -&gt; dict[Unknown, Unknown]) | ((obj: DBRef, json_options: JSONOptions) -&gt; dict[Unknown, Unknown]) | ((dummy0: Any, dummy1: Any) -&gt; dict[Unknown, Unknown]) | ((obj: ObjectId, dummy0: Any) -&gt; dict[Unknown, Unknown]) | ((obj: Timestamp, dummy0: Any) -&gt; dict[Unknown, Unknown])` on object of type `dict[int, (Any, JSONOptions, /) -&gt; Any]`
++ bson/json_util.py:1015:9: error[invalid-assignment] Method `__setitem__` of type `bound method dict[int, (Any, JSONOptions, /) -&gt; Any].__setitem__(key: int, value: (Any, JSONOptions, /) -&gt; Any, /) -&gt; None` cannot be called with a key of type `object` and a value of type `((Any, JSONOptions, /) -&gt; Any) | ((obj: Any, dummy0: Any) -&gt; Any) | ((obj: Binary, json_options: JSONOptions) -&gt; dict[Unknown, Unknown]) | ((obj: datetime, json_options: JSONOptions) -&gt; dict[Unknown, Unknown]) | ((obj: Any, json_options: JSONOptions) -&gt; dict[Unknown, Unknown]) | ((obj: Int64, json_options: JSONOptions) -&gt; Any) | ((obj: UUID, json_options: JSONOptions) -&gt; dict[Unknown, Unknown]) | ((obj: Code, json_options: JSONOptions) -&gt; dict[Unknown, Unknown]) | ((obj: DBRef, json_options: JSONOptions) -&gt; dict[Unknown, Unknown]) | ((dummy0: Any, dummy1: Any) -&gt; dict[Unknown, Unknown]) | ((obj: ObjectId, dummy0: Any) -&gt; dict[Unknown, Unknown]) | ((obj: Timestamp, dummy0: Any) -&gt; dict[Unknown, Unknown])` on object of type `dict[int, (Any, JSONOptions, /) -&gt; Any]`
+
+prefect (https://github.com/PrefectHQ/prefect)
+- src/prefect/flows.py:288:34: warning[possibly-missing-attribute] Attribute `__name__` on type `(((...) -&gt; R@__init__) &amp; (() -&gt; object) &amp; ~classmethod &amp; ~staticmethod) | (@Todo &amp; (() -&gt; object) &amp; ~classmethod &amp; ~staticmethod) | (((...) -&gt; R@__init__) &amp; (() -&gt; object) &amp; ~staticmethod) | (((...) -&gt; R@__init__) &amp; (() -&gt; object))` may be missing
++ src/prefect/flows.py:288:34: warning[possibly-missing-attribute] Attribute `__name__` on type `(((...) -&gt; R@__init__) &amp; (() -&gt; object)) | (@Todo &amp; (() -&gt; object) &amp; ~classmethod &amp; ~staticmethod)` may be missing
+- src/prefect/flows.py:405:68: warning[possibly-missing-attribute] ...*[Comment body truncated]*
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @AlexWaygood on 2025-09-27 15:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-09-27 15:26</div>
+            <div class="timeline-body"><!-- generated-comment ty ecosystem-analyzer -->
+
+<h2><code>ecosystem-analyzer</code> results</h2>
+<p>| Lint rule | Added | Removed | Changed |
+|-----------|------:|--------:|--------:|
+| <code>invalid-argument-type</code> | 12 | 0 | 32 |
+| <code>unsupported-operator</code> | 10 | 0 | 7 |
+| <code>possibly-missing-attribute</code> | 0 | 0 | 14 |
+| <code>invalid-assignment</code> | 0 | 0 | 12 |
+| <code>invalid-return-type</code> | 0 | 1 | 5 |
+| <code>no-matching-overload</code> | 0 | 3 | 0 |
+| <code>possibly-missing-implicit-call</code> | 0 | 0 | 1 |
+| <strong>Total</strong> | <strong>22</strong> | <strong>4</strong> | <strong>71</strong> |</p>
+<p><strong><a href="https://alex-third-type-relation.ecosystem-663.pages.dev/diff">Full report with detailed diff</a></strong> (<a href="https://alex-third-type-relation.ecosystem-663.pages.dev/timing">timing results</a>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-09-27 15:28</div>
+            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+
+<!-- __CODSPEED_WALLTIME_PERFORMANCE_REPORT_COMMENT__ -->
+
+<h2><a href="https://codspeed.io/astral-sh/ruff/branches/alex%2Fthird-type-relation?runnerMode=WallTime">CodSpeed WallTime Performance Report</a></h2>
+<h3>Merging #20602 will <strong>improve performances by 18.36%</strong></h3>
+<p><sub>Comparing <code>alex/third-type-relation</code> (3f54ca7) with <code>main</code> (f9688bd)</sub></p>
+<h3>Summary</h3>
+<p><code>⚡ 2</code> improvements<br />
+<code>✅ 6</code> untouched</p>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Benchmark | <code>BASE</code> | <code>HEAD</code> | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| ⚡ | <code>medium[colour-science]</code> | 10.7 s | 9.1 s | +18.36% |
+| ⚡ | <code>small[freqtrade]</code> | 5.4 s | 4.8 s | +13.01% |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-09-27 15:29</div>
+            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+
+<!-- __CODSPEED_INSTRUMENTATION_PERFORMANCE_REPORT_COMMENT__ -->
+
+<h2><a href="https://codspeed.io/astral-sh/ruff/branches/alex%2Fthird-type-relation?runnerMode=Instrumentation">CodSpeed Instrumentation Performance Report</a></h2>
+<h3>Merging #20602 will <strong>improve performances by 25.82%</strong></h3>
+<p><sub>Comparing <code>alex/third-type-relation</code> (3f54ca7) with <code>main</code> (f9688bd)</sub></p>
+<h3>Summary</h3>
+<p><code>⚡ 3</code> improvements<br />
+<code>✅ 10</code> untouched<br />
+<code>⏩ 30</code> skipped[^skipped]</p>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Benchmark | <code>BASE</code> | <code>HEAD</code> | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| ⚡ | <code>attrs</code> | 430.1 ms | 387 ms | +11.14% |
+| ⚡ | <code>DateType</code> | 234.3 ms | 186.2 ms | +25.82% |
+| ⚡ | <code>hydra-zen</code> | 849.8 ms | 760.8 ms | +11.69% |
+[^skipped]: 30 benchmarks were skipped, so the baseline results were used instead. If they were deleted from the codebase, <a href="https://codspeed.io/astral-sh/ruff/branches/alex%2Fthird-type-relation?runnerMode=Instrumentation&amp;sectionId=benchmark-comparison-section-baseline-result-skipped">click here and archive them to remove them from the performance reports</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @AlexWaygood on 2025-09-27 15:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @AlexWaygood on 2025-09-27 15:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @AlexWaygood on 2025-09-27 15:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-09-27 16:33</div>
+            <div class="timeline-body"><h1>Ecosystem analysis</h1>
+<p>This all looks good to me.</p>
+<p>Here's a slightly more minimal example of what's going on with the new schemathesis diagnostics. On <code>main</code> we have this behaviour:</p>
+<pre><code class="language-py">from typing import Any
+
+def f(x: dict[Any, Any] | dict[Any | str, Any | dict[Any, Any]]):
+    reveal_type(x)            # dict[Any, Any] | dict[Any | str, Any | dict[Any, Any]]
+    reveal_type(x.items())    # dict_items[Any, Any] | dict_items[Any | str, Any | dict[Any, Any]]
+
+    for a, b in x.items():
+        reveal_type(a)        # Any
+        reveal_type(b)        # Any
+</code></pre>
+<p>And on this PR we have this behaviour:</p>
+<pre><code class="language-py">from typing import Any
+
+def f(x: dict[Any, Any] | dict[Any | str, Any | dict[Any, Any]]):
+    reveal_type(x)            # dict[Any, Any] | dict[Any | str, Any | dict[Any, Any]]
+    reveal_type(x.items())    # dict_items[Any | str, Any | dict[Any, Any]]
+
+    for a, b in x.items():
+        reveal_type(a)        # Any | str
+        reveal_type(b)        # Any | dict[Any, Any]
+</code></pre>
+<p><code>dict_items[Any, Any] | dict_items[Any | str, Any | dict[Any, Any]]</code> is recognised as being simplifiable to <code>dict_items[Any | str, Any | dict[Any, Any]]</code> on this PR branch because <code>dict_items</code> is covariant in both its type parameters. The simplification of the union to a non-union type means that we avoid a known bug when iterating over unions (https://github.com/astral-sh/ty/issues/1089, which will be fixed by https://github.com/astral-sh/ruff/pull/20368), so in this case actually means that we preserve a stricter type at the end of the day.</p>
+<p>The new diagnostics on <code>xarray</code> and <code>zulip</code> seem to have a similar cause.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @AlexWaygood on 2025-09-27 16:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @AlexWaygood on 2025-09-27 16:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @AlexWaygood on 2025-09-27 16:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @AlexWaygood on 2025-09-27 16:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @AlexWaygood on 2025-09-27 16:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @AlexWaygood on 2025-09-27 16:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types.rs</code>:1519 on 2025-09-29 14:58</div>
+            <div class="timeline-body"><p>Maybe this is the key bit? Can this be expressed in terms of the top/bottom materializations of the two types?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-09-29 14:58</div>
+            <div class="timeline-body"><p>The code simplification and performance wins are huge. My main holdup is from a type theoretic viewpoint. Right now we can define the two existing relations succinctly, both in English, and in terms of materializations:</p>
+<ul>
+<li><p>subtyping: Every materialization of <code>S</code> is a subtype of every materialization of <code>T</code>. To prove that, we only have to show that <code>S+ ≤ T-</code>, because of transitivity.</p>
+</li>
+<li><p>assignability: There is <em>some</em> materialization of <code>T</code> that <em>every</em> materialization of <code>S</code> is a subtype of. To prove that, we show that <code>S+ ≤ T+</code>.</p>
+</li>
+</ul>
+<p>Is there a similar definition that we can make for union simplification?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-09-29 17:21</div>
+            <div class="timeline-body"><p>I suspect that the relation implemented here isn't theoretically consistent, but it's nonetheless practically useful, and so we should probably document the theoretical inconsistency and do it anyway.</p>
+<p>I think this goes back to the discussion on https://github.com/astral-sh/ruff/pull/18799 (and specifically <a href="https://github.com/astral-sh/ruff/pull/18799#issuecomment-2993917848">this comment</a>). There is a more generalized definition of subtyping for gradual types (proposed by @JelleZijlstra in that PR discussion) where the rule is that <code>S &lt;: T iff S- &lt;: T- &amp;&amp; S+ &lt;: T+</code> -- in other words, every materialization of S must be a subtype of some materialization of T, and every materialization of T must be a supertype of some materialization of S.</p>
+<p>Unfortunately we can't fully use that definition, because it breaks down (and introduces non-transitivity) in the interaction between nominal and non-fully-static structural types. It introduces cases where a nominal type X is a (nominal) subtype of a nominal type Y, but overrides a gradual attribute of Y with a more precise type, in such a way that now Y is a subtype of some structural type P, but X is not. Which gives that <code>X &lt;: Y</code> and <code>Y &lt;: P</code>, but <code>X &lt;/: P</code>, breaking transitivity. (One theoretical solution to this is to treat all types as structural, with nominal subtyping becoming an additional structural &quot;tag&quot;, such that X subclassing Y doesn't necessarily imply <code>X &lt;: Y</code>, but that's probably too big a departure from the status quo to be workable for us.)</p>
+<p>If we <em>could</em> use that definition of subtyping, it would remove the need to check for both equivalence and subtyping in union simplification, because under that definition of gradual subtyping, any two equivalent types (even gradual ones) are subtypes of each other (that is, it generalizes reflexivity of subtyping.)</p>
+<p>I believe that the addition of the <code>t.into_intersection().is_some_and(|intersection| intersection.positive(db).contains(&amp;u)) || u.into_union().is_some_and(|union| union.elements(db).contains(&amp;t))</code> clauses to <code>UnionBuilder</code> simplification, and now the formalization of that into the new <code>UnionSimplification</code> relation, is implementing a partial / ad-hoc version of the more generalized definition of gradual subtyping, but by applying it only to unions and intersections (and not to subtyping of structural types) it avoids the non-transitivity problem.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-09-30 14:30</div>
+            <div class="timeline-body"><p>Okay -- I've had a go at thinking through and writing up some theoretical foundations for this! LMK what you think.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-09-30 14:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:1519 on 2025-09-30 14:33</div>
+            <div class="timeline-body"><p>I think so, yes: although <code>Any &amp; T</code> is not a subtype of <code>Any</code>, for any type <code>T</code> it is redundant to add <code>Any &amp; T</code> to a union that already contains <code>Any</code> as the bottom materialization of <code>(Any &amp; T) | Any</code> will always be equivalent to the bottom materialization of <code>Any</code>, and the top materialization of <code>(Any &amp; T) | Any</code> will always be equivalent to the top materialization of <code>Any</code>.</p>
+<p>I wrote this up in full as the doc-comment to <code>TypeRelation::UnionSimplification</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @AlexWaygood on 2025-09-30 14:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> reviewed on 2025-09-30 14:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> on <code>crates/ty_python_semantic/src/types.rs</code>:9038 on 2025-09-30 14:49</div>
+            <div class="timeline-body"><p>You can also express this as <code>Bottom[D] &lt;: Top[C]</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> reviewed on 2025-09-30 14:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> on <code>crates/ty_python_semantic/src/types.rs</code>:9068 on 2025-09-30 14:54</div>
+            <div class="timeline-body"><p>I think the name is a bit unfortunate because it's hard to formulate other terms from it. I'll say that <code>D</code> is union-simplifiable with regards to <code>C</code> if the relation holds between D and C.</p>
+<p>Then, I think the formal formulation can be that <code>D union-simplifiable C</code> if <code>C</code> is equivalent to <code>C | D</code>. Equivalence, as you probably discuss somewhere, for fully static types means that the sets of values described by both types are the same; for dynamic types it means that the top and bottom materializations of both types are equivalent.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> reviewed on 2025-09-30 14:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> on <code>crates/ty_python_semantic/src/types.rs</code>:9068 on 2025-09-30 14:55</div>
+            <div class="timeline-body"><p>I looked at the code a bit more and maybe &quot;redundant with&quot; is a good name. <code>C</code> is redundant with <code>D</code> if the union <code>C | D</code> can be safely simplified to <code>D</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-09-30 14:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:9068 on 2025-09-30 14:58</div>
+            <div class="timeline-body"><blockquote>
+<p>I think the name is a bit unfortunate because it's hard to formulate other terms from it</p>
+</blockquote>
+<p>Agreed... but I'm struggling to think of anything better!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:9065 on 2025-09-30 14:58</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    /// For a pair of [fully static] types `A` and `B`, the union simplification relation
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-09-30 14:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-09-30 14:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:9068 on 2025-09-30 14:59</div>
+            <div class="timeline-body"><blockquote>
+<p>I looked at the code a bit more and maybe &quot;redundant with&quot; is a good name. <code>C</code> is redundant with <code>D</code> if the union <code>C | D</code> can be safely simplified to <code>D</code>.</p>
+</blockquote>
+<p>Hmm, maybe <code>TypeRelation::UnionRedundancy</code>? And we can say <code>C</code> is union-redundant with <code>D</code> if the union <code>C | D</code> can be safely simplified to <code>D</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> reviewed on 2025-09-30 15:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> on <code>crates/ty_python_semantic/src/types.rs</code>:9068 on 2025-09-30 15:01</div>
+            <div class="timeline-body"><p>Doesn't it also apply to intersections? That's why I wanted to avoid using the term &quot;union&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-09-30 15:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:9068 on 2025-09-30 15:03</div>
+            <div class="timeline-body"><p>it does, yes, fair point</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> reviewed on 2025-09-30 15:10</div>
+            <div class="timeline-body"><p>This looks correct and useful to me, besides my suggestions about the name and phrasing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types.rs</code>:9038 on 2025-09-30 15:23</div>
+            <div class="timeline-body"><p>nit: I would use &quot;some&quot; here instead of &quot;any&quot; to minimize the chance of confusing it for &quot;all&quot;</p>
+<p>(also a spelling nit)</p>
+<pre><code class="language-suggestion">    /// can be said to be assignable to `C` if *some* possible fully static [materialization]
+    /// of `D` is a subtype of *some* possible fully static materialization of `C`.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types.rs</code>:9075 on 2025-09-30 15:29</div>
+            <div class="timeline-body"><p>I think (1) is redundant :drum: with (2), and you can simplify the whole thing to &quot;<code>C | D</code> is gradually equivalent to <code>D</code>, and <code>C &amp; D</code> is gradually equivalent to <code>C</code>&quot;. That even nicely maps with the intuitive English definition. (You might still keep (1) as a separate check in the implementation, as an optimization, but that's not needed here in the theoretical definition)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types.rs</code>:9068 on 2025-09-30 15:34</div>
+            <div class="timeline-body"><p>Though I think the relation is reversed for intersection, right? If we use <code>≤R</code> for the new redundancy relation, and <code>=G</code> for gradual equivalence, then its</p>
+<pre><code>C ≤U D &lt;=&gt; (C | D) =G D
+C ≤U D &lt;=&gt; (C &amp; D) =G C
+</code></pre>
+<p>Mnemonics: the smaller thing is on the left of the relation; union makes things bigger; intersection makes things smaller</p>
+<p>(That doesn't change Jelle's point that we don't need to include &quot;union&quot; in the name of the relation since it's relevant to intersections too)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-09-30 15:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-09-30 16:56</div>
+            <div class="timeline-body"><p>This is now stacked on top of https://github.com/astral-sh/ruff/pull/20650 and https://github.com/astral-sh/ruff/pull/20651, which I <em>think</em> are uncontroversial bugfixes that should probably be landed first</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-10-03 11:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:9068 on 2025-10-03 11:27</div>
+            <div class="timeline-body"><p>@dcreager, are you able to think of any test cases I could add for intersections (that don't already pass with the logic we have on <code>main</code>)? I'm struggling to come up with any, and I can't tell if this is because my head is going fuzzy with all the set theory or because our DNF representation of unions and intersections actually makes the question redundant (🥁) when it comes to intersections.</p>
+<p>If it's the latter, then <code>UnionRedundancy</code> might not be such a bad name after all, and it might make the concept easier to reason about if we stated that it only applied to union simplification (not intersection simplification)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-10-03 11:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:9075 on 2025-10-03 11:34</div>
+            <div class="timeline-body"><p>Oh, great point</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-10-03 11:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:9068 on 2025-10-03 11:47</div>
+            <div class="timeline-body"><p>but... just because we can't think of any new test cases doesn't mean that it's wrong to replace the existing <code>if x.is_subtype_of(y) || x.is_equivalent_to(y)</code> branches in our intersection simplification logic with the new <code>x.is_redundant_with(y)</code> method. So it does seem like it's useful (purely from a performance perspective, if nothing else) to apply it to both unions and intersections, even if (unlike with unions) this doesn't lead to any semantic improvement over what we have on <code>main</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-03 11:59</div>
+            <div class="timeline-body"><blockquote>
+<p>This is now stacked on top of #20650 and #20651, which I <em>think</em> are uncontroversial bugfixes that should probably be landed first</p>
+</blockquote>
+<p>Seems like #20651 wasn't so uncontroversial 😆 and my head is going fuzzy with all the type theory there.</p>
+<p>On further reflection, I <em>think</em> it should be okay to land this without #20651, so I've rebased this on top of <code>main</code> again as a standalone change.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[ty] Introduce `TypeRelation::UnionSimplification`" to "[ty] Introduce `TypeRelation::Redundancy`" by @AlexWaygood on 2025-10-03 12:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @AlexWaygood on 2025-10-03 12:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-03 12:02</div>
+            <div class="timeline-body"><p>I think I addressed all review comments. This should be ready for another round of review.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @AlexWaygood on 2025-10-03 12:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @AlexWaygood on 2025-10-03 12:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/resources/mdtest/union_types.md</code>:371 on 2025-10-03 17:17</div>
+            <div class="timeline-body"><p>Incidentally, it would be nice to have a version of <code>reveal_type</code> that takes in a type-form parameter, so that we don't have to jump through these hoops to get something we can pass in to <code>typing_extensions.reveal_type</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types.rs</code>:9068 on 2025-10-03 17:24</div>
+            <div class="timeline-body"><blockquote>
+<p>re you able to think of any test cases I could add for intersections (that don't already pass with the logic we have on <code>main</code>)?</p>
+</blockquote>
+<p>I can't think of any either. We can add those as a follow-on if we encounter any.</p>
+<blockquote>
+<p>So it does seem like it's useful (purely from a performance perspective, if nothing else) to apply it to both unions and intersections, even if (unlike with unions) this doesn't lead to any semantic improvement over what we have on <code>main</code>.</p>
+</blockquote>
+<p>Agreed</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> approved on 2025-10-03 17:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2025-10-03 17:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-10-03 17:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-10-03 17:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-10-06 09:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types.rs</code>:9077 on 2025-10-06 09:31</div>
+            <div class="timeline-body"><p>Another way of saying this would be: <code>D</code> can be said to be redundant in a union with <code>C</code> if <code>C | D</code> is gradually equivalent to <code>C</code>.</p>
+<p>The top and bottom materializations of two gradual types are the same if and only if they are gradually equivalent.</p>
+<p>And the two conditions in the end could also be reformulated as: <code>Top[D] &lt;: Top[C] AND Bottom[D] &lt;: Bottom[C]</code>, which would show that &quot;redundancy&quot; is equivalent to the &quot;other subtyping&quot; relation that @carljm experimented with in https://github.com/astral-sh/ruff/pull/18799 as well:</p>
+<p>| Relation      | Conditions                                    |
+|---------------|-----------------------------------------------|
+| Subtyping     | <code>Top[D] &lt;: Bottom[C]</code>                         |
+| Redundancy    | <code>Top[D] &lt;: Top[C] AND Bottom[D] &lt;: Bottom[C]</code> |
+| Assignability | <code>Bottom[D] &lt;: Top[C]</code>                         |</p>
+<p>This also shows that subtyping always implies redundancy, and redundancy implies assignability.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-10-06 09:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:9077 on 2025-10-06 09:43</div>
+            <div class="timeline-body"><blockquote>
+<p>Another way of saying this would be: <code>D</code> can be said to be redundant in a union with <code>C</code> if <code>C | D</code> is gradually equivalent to <code>C</code>.</p>
+</blockquote>
+<p>Correct (though gradual equivalence could, I think, be defined in terms of &quot;mutual redundancy&quot;, and if we defined redundancy using gradual equivalence, that would be a little cyclic 😆).</p>
+<blockquote>
+<p>This also shows that subtyping always implies redundancy, and redundancy implies assignability.</p>
+</blockquote>
+<p>Yes, I was plannning on adding property tests to this effect</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-10-06 09:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types.rs</code>:9077 on 2025-10-06 09:45</div>
+            <div class="timeline-body"><p>Reversing this logic also implies that gradual equivalence between <code>C</code> and <code>D</code> is equivalent to mutual redundancy between <code>C</code> and <code>D</code>. Which could hint at another strategy to re-implement gradual equivalence in ty.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-10-06 09:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types.rs</code>:9077 on 2025-10-06 09:46</div>
+            <div class="timeline-body"><p>Oh, I just now saw your comment. Glad we both came up with the term &quot;mutual redundancy&quot; :smile:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-10-06 11:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types.rs</code>:9077 on 2025-10-06 11:12</div>
+            <div class="timeline-body"><p>A quick summary of my post-merge review and discussion with Alex: Given that the redundancy operation <em>described</em> in this PR seems to be equivalent to the &quot;S+ &lt;: T+ &amp;&amp; S- &lt;: T-&quot; subtyping from https://github.com/astral-sh/ruff/pull/18799, we should probably try to document why the same problem mentioned in that PR with transitivity of subtyping is not relevant here (probably because what has been <em>implemented</em> here does not fully match the defined redundancy relation).</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:34:59 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`isort`] Fix inserting required imports before future imports (`I002`) - astral-sh/ruff #20676</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>isort</code>] Fix inserting required imports before future imports (<code>I002</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/20676">#20676</a>
+        opened by <a href="https://github.com/danparizher">@danparizher</a>
+        on 2025-10-02 00:00
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/danparizher">@danparizher</a> on 2025-10-02 00:00</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Fixes #20674</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-10-02 00:08</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/amyreese">@amyreese</a> on <code>crates/ruff_linter/src/importer/mod.rs</code>:542 on 2025-10-02 00:45</div>
+            <div class="timeline-body"><p>Since future imports can only be at the beginning, iterating over all statements is inefficient, particularly on large files with many statements. Instead, only look through statements until you've found something that's <em>not</em> a future import.</p>
+<p>Eg, something like:</p>
+<pre><code class="language-rust">fn find_last_future_import(&amp;self) -&gt; Option&lt;&amp;'a Stmt&gt; {
+  self.python_ast.iter().take_while(|stmt| {
+    if let Stmt::ImportFrom(import_from) = stmt {
+      import_from.module.as_deref() == Some(&quot;__future__&quot;)
+    } else {
+      false
+    }
+  }).last()
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/amyreese">@amyreese</a> on <code>crates/ruff_linter/src/rules/isort/snapshots/ruff_linter__rules__isort__tests__required_import_existing_import.py.snap</code>:8 on 2025-10-02 00:46</div>
+            <div class="timeline-body"><p>Do you know why these snapshots changed?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/amyreese">@amyreese</a> requested changes on 2025-10-02 00:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/danparizher">@danparizher</a> reviewed on 2025-10-02 01:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/danparizher">@danparizher</a> on <code>crates/ruff_linter/src/rules/isort/snapshots/ruff_linter__rules__isort__tests__required_import_existing_import.py.snap</code>:8 on 2025-10-02 01:08</div>
+            <div class="timeline-body"><p>Before the fix, the required import was being inserted at the very beginning of the file, which would cause a syntax error since future imports must come first.</p>
+<p>Now it's inserting the required import after the existing future import, which maintains the correct order and prevents the syntax error.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @amyreese by @danparizher on 2025-10-02 01:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/amyreese">@amyreese</a> approved on 2025-10-02 15:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @amyreese on 2025-10-02 15:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">isort</span> added by @amyreese on 2025-10-02 15:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @amyreese on 2025-10-02 15:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ntBre by @amyreese on 2025-10-02 15:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/importer/mod.rs</code>:545 on 2025-10-02 17:45</div>
+            <div class="timeline-body"><p>It looks like this won't properly account for docstrings:</p>
+<pre><code class="language-shell">&gt; ./target/debug/ruff check --select I --config 'lint.isort.required-imports=[&quot;import this&quot;]' try.py --preview --no-cache
+I002 [*] Missing required import: `import this`
+--&gt; try.py:1:1
+help: Insert required import: `import this`
+1 | &quot;a docstring&quot;
+2 + import this
+3 | from __future__ import annotations
+
+Found 1 error.
+[*] 1 fixable with the `--fix` option.
+</code></pre>
+<p>I also noticed by looking at the <code>Insertion::start_of_file</code> references that we have this <code>preceding_import</code> function, which accesses import information held on the <code>Importer</code>:</p>
+<p>https://github.com/astral-sh/ruff/blob/4e94b22815c7979003d07a4931c9174285617c90/crates/ruff_linter/src/importer/mod.rs#L509-L515</p>
+<p>Can we use the <code>runtime_imports</code> field referenced here instead of iterating over the statements directly? It seems functionally the same, but maybe a bit more clear what's going on.</p>
+<p>This preceded the PR, but it looks like the <code>add_import</code> docs are a bit out of date too. This part doesn't seem to be true:</p>
+<pre><code class="language-rust">    /// Otherwise, it will be added after the most recent top-level
+    /// import statement.
+</code></pre>
+<p>Rather, the import is added after the import preceding whatever you pass as the <code>at</code> argument. I think I002 would actually work fine if the docstring were accurate. So an alternative way to fix this would be to pass a more accurate <code>at</code> in the I002 rule code. That actually seems kind of tempting to me instead of modifying the general helper.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> requested changes on 2025-10-02 18:07</div>
+            <div class="timeline-body"><p>I think we need to handle docstrings, and I also had some ideas for other places to add this check.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/danparizher">@danparizher</a> reviewed on 2025-10-02 22:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/danparizher">@danparizher</a> on <code>crates/ruff_linter/src/importer/mod.rs</code>:545 on 2025-10-02 22:24</div>
+            <div class="timeline-body"><p>The <code>runtime_imports</code> approach would require populating it in the I002 rule, but since the rule doesn't call <code>visit_import()</code>, it would be empty. Modifying the general helper seemed cleaner since it fixes the issue for all users of <code>add_import</code>, not just I002.</p>
+<pre><code class="language-rust">.take_while(|stmt| {
+    match stmt {
+        Stmt::ImportFrom(import_from) =&gt; import_from.module.as_deref() == Some(&quot;__future__&quot;),
+        Stmt::Expr(stmt_expr) =&gt; matches!(stmt_expr.value.as_ref(), Expr::StringLiteral(_)),
+        _ =&gt; false,
+    }
+})
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ntBre by @danparizher on 2025-10-02 22:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/importer/mod.rs</code>:558 on 2025-10-03 14:14</div>
+            <div class="timeline-body"><p>I think we could take some inspiration from the <code>match_docstring_end</code> helper and just skip one statement. It's not a huge deal since something like this is a separate syntax error, but it still seems a bit more precise:</p>
+<pre><code class="language-py">&quot;docstring&quot;
+&quot;another string&quot;
+from __future__ import annotations  # SyntaxError: from __future__ imports must occur at the beginning of the file
+</code></pre>
+<p>What do you think about something like this?</p>
+<pre><code class="language-rust">    /// Find the last valid `from __future__` import statement in the AST.
+    fn find_last_future_import(&amp;self) -&gt; Option&lt;&amp;'a Stmt&gt; {
+        let mut body = self.python_ast.iter().peekable();
+        let _docstring = body.next_if(|stmt| is_docstring_stmt(stmt));
+
+        body.take_while(|stmt| {
+            stmt.as_import_from_stmt()
+                .is_some_and(|import_from| import_from.module.as_deref() == Some(&quot;__future__&quot;))
+        })
+        .last()
+    }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/isort/mod.rs</code>:1040 on 2025-10-03 14:15</div>
+            <div class="timeline-body"><p>Can we make these two <code>test_case</code>s on the same test function? The bodies of the functions look pretty much the same to me, besides the snapshot name. I think using the test case path is enough differentiation in the filename, though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-10-03 14:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/importer/mod.rs</code>:540 on 2025-10-06 13:35</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        let mut body = self.python_ast.iter().peekable();
+        let _docstring = body.next_if(|stmt| ast::helpers::is_docstring_stmt(stmt));
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> approved on 2025-10-06 13:36</div>
+            <div class="timeline-body"><p>Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ntBre on 2025-10-06 13:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-10-06 13:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-10-06 13:43</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:34:59 UTC
+    </footer>
+</body>
+</html>

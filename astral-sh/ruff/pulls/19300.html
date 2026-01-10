@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Move `node_reachability` from `UseDefMap` to `SemanticIndex` - astral-sh/ruff #19300</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Move <code>node_reachability</code> from <code>UseDefMap</code> to <code>SemanticIndex</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19300">#19300</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2025-07-12 17:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-12 17:02</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>ty builds <code>UseDefMaps</code> by scope because it allows Salsa to short-circuit cache validation for queries that
+only depend on a specific <code>use_def_map</code> (e.g. from function a) if the <code>use_def_map</code> for that scope hasn't changed.
+For this to work, it's important that a single <code>UseDefMap</code> only stores data that remains stable if its corresponding scope hasn't changed. This is the case for all the <code>Scoped*Id</code>s, but not for <code>NodeKey</code>.
+Inserting a new expression at the top of the file has the result that every single <code>NodeKey</code> changes, invalidating all <code>UseDefMap</code>s.</p>
+<p>This PR moves the <code>node_reachability</code> out of the scope specific <code>UseDefMap</code> and into the <code>SemanticIndex</code> (which is for the entire file)
+to allow Salsa to backdate <code>use_def_map</code> queries more often.</p>
+<h2>Test Plan</h2>
+<p><code>cargo test</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @MichaReiser on 2025-07-12 17:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @MichaReiser on 2025-07-12 17:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-12 17:06</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅</p>
+<details>
+<summary>Memory usage changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">flake8 (https://github.com/pycqa/flake8)
+-     memo fields = ~66MB
++     memo fields = ~63MB
+
+prefect (https://github.com/PrefectHQ/prefect)
+-     memo fields = ~568MB
++     memo fields = ~541MB
+
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2025-07-13 18:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @MichaReiser on 2025-07-13 18:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @MichaReiser on 2025-07-13 18:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @MichaReiser on 2025-07-13 18:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @MichaReiser on 2025-07-13 18:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @AlexWaygood removed by @AlexWaygood on 2025-07-13 21:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> approved on 2025-07-14 06:58</div>
+            <div class="timeline-body"><p>Thank you Micha!</p>
+<p>I assume it's not that easy to write a regression test for this? It might still be worth it, given that this went unnoticed for quite some time? I assume it was also not easy to find the root cause here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-10-13 17:51</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:34:59 UTC
+    </footer>
+</body>
+</html>

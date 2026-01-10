@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fix syntax error false positives for escapes and quotes in f-strings - astral-sh/ruff #20867</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fix syntax error false positives for escapes and quotes in f-strings</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/20867">#20867</a>
+        opened by <a href="https://github.com/ntBre">@ntBre</a>
+        on 2025-10-14 16:33
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ntBre">@ntBre</a> on 2025-10-14 16:33</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Fixes #20844 by refining the unsupported syntax error check for <a href="https://peps.python.org/pep-0701/">PEP 701</a>
+f-strings before Python 3.12 to allow backslash escapes and escaped outer quotes
+in the format spec part of f-strings. These are only disallowed within the
+f-string expression part on earlier versions. Using the examples from the PR:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; f&quot;{1:\x64}&quot;
+'1'
+&gt;&gt;&gt; f&quot;{1:\&quot;d\&quot;}&quot;
+Traceback (most recent call last):
+  File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
+ValueError: Invalid format specifier '&quot;d&quot;' for object of type 'int'
+</code></pre>
+<p>Note that the second case is a runtime error, but this is actually avoidable if
+you override <code>__format__</code>, so despite being pretty weird, this could actually be
+a valid use case.</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; class C:
+...     def __format__(*args, **kwargs): return &quot;&lt;C&gt;&quot;
+...
+&gt;&gt;&gt; f&quot;{C():\&quot;d\&quot;}&quot;
+'&lt;C&gt;'
+</code></pre>
+<p>At first I thought narrowing the range we check to exclude the format spec would
+only work for escapes, but it turns out that cases like <code>f&quot;{1:&quot;&quot;}&quot;</code> are already
+covered by an existing <code>ParseError</code>, so we can just narrow the range of both our
+escape and quote checks.</p>
+<p>Our comment check also seems to be working correctly because it's based on the
+actual tokens. A case like <a href="https://play.ruff.rs/9f1c2ff2-cd8e-4ad7-9f40-56c0a524209f">this</a>:</p>
+<pre><code class="language-python">f&quot;&quot;&quot;{1:# }&quot;&quot;&quot;
+</code></pre>
+<p>doesn't include a comment token, instead the <code>#</code> is part of an
+<code>InterpolatedStringLiteralElement</code>.</p>
+<h2>Test Plan</h2>
+<p>New inline parser tests</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-10-14 16:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">parser</span> added by @ntBre on 2025-10-14 16:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-10-14 16:55</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @ntBre on 2025-10-14 16:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @ntBre on 2025-10-14 16:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @ntBre on 2025-10-14 16:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/amyreese">@amyreese</a> approved on 2025-10-14 18:54</div>
+            <div class="timeline-body"><p>LGTM</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-10-15 09:47</div>
+            <div class="timeline-body"><p>Thank you</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ntBre on 2025-10-15 13:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-10-15 13:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-10-15 13:23</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:35:00 UTC
+    </footer>
+</body>
+</html>

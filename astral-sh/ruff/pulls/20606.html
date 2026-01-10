@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] `~T` should never be assignable to `T` - astral-sh/ruff #20606</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] <code>~T</code> should never be assignable to <code>T</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/20606">#20606</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-09-28 12:14
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-09-28 12:14</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Currently we do not emit an error on this code:</p>
+<pre><code class="language-py">from ty_extensions import Not
+
+def f[T](x: T, y: Not[T]) -&gt; T:
+    x = y
+    return x
+</code></pre>
+<p>But we should do! <code>~T</code> should never be assignable to <code>T</code>.</p>
+<p>This fixes a small regression introduced in https://github.com/astral-sh/ruff/commit/14fe1228e72dca90db6b3dbb7e07f973d175ea0e#diff-8049ab5af787dba29daa389bbe2b691560c15461ef536f122b1beab112a4b48aR1443-R1446, where a branch that previously returned <code>false</code> was replaced with a branch that returns <code>C::always_satisfiable</code> -- the opposite of what it used to be! The regression occurred because we didn't have any tests for this -- so I added some tests in this PR that fail on <code>main</code>. I only spotted the problem because I was going through the code of <code>has_relation_to_impl</code> with a fine toothcomb for https://github.com/astral-sh/ruff/pull/20602 😄</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-09-28 12:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-09-28 12:17</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-09-28 12:18</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅
+No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @AlexWaygood on 2025-09-28 12:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @AlexWaygood on 2025-09-28 12:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @AlexWaygood on 2025-09-28 12:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @AlexWaygood on 2025-09-28 12:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-09-29 08:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types.rs</code>:1565 on 2025-09-29 08:19</div>
+            <div class="timeline-body"><p>I'm slightly surprised that we need these branches at all. Shouldn't the union/intersection branches take care of this, if <code>T &lt;: T</code> is modeled correctly?</p>
+<p>Also, is the statement &quot;<code>~T</code> is never assignable to <code>T</code>&quot; correct if <code>T</code> could specialize to <code>Any</code>? Or do we not have to take this case into account, for some reason?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:1565 on 2025-09-29 11:03</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm slightly surprised that we need these branches at all. Shouldn't the union/intersection branches take care of this, if <code>T &lt;: T</code> is modeled correctly?</p>
+</blockquote>
+<p>Yes -- ideally we'd have the <code>NonInferrableTypeVar</code> branches below the <code>Union</code> and <code>Intersection</code> branches. Then we wouldn't need these branches at all, as you say. Unfortunately, however, value-constrained TypeVars make this quite hard, as they require special handling with regards to unions:</p>
+<p>https://github.com/astral-sh/ruff/blob/3f640dacd42666f83d1a36d29efc507d31116060/crates/ty_python_semantic/resources/mdtest/generics/pep695/variables.md?plain=1#L227-L257</p>
+<blockquote>
+<p>Also, is the statement &quot;<code>~T</code> is never assignable to <code>T</code>&quot; correct if <code>T</code> could specialize to <code>Any</code>? Or do we not have to take this case into account, for some reason?</p>
+</blockquote>
+<p>Hmm, interesting question. I think that also calls into doubt the validity of this pre-existing branch -- if the TypeVar could be solved to <code>Any</code>, it should not be considered a subtype of itself:</p>
+<p>https://github.com/astral-sh/ruff/blob/3f640dacd42666f83d1a36d29efc507d31116060/crates/ty_python_semantic/src/types.rs#L1568-L1576</p>
+<p>I wonder if this is something that @dcreager's work on constraint sets could help with? If the relation is <code>TypeRelation::Subtyping</code>, we could possibly return a constraint set from these branches that indicates that <code>self</code> is a subtype of <code>target</code> only if neither <code>self</code> nor <code>target</code> is solved to <code>Any</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-09-29 11:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-09-29 11:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:1565 on 2025-09-29 11:31</div>
+            <div class="timeline-body"><blockquote>
+<p>I wonder if this is something that @dcreager's work on constraint sets could help with? If the relation is <code>TypeRelation::Subtyping</code>, we could possibly return a constraint set from these branches that indicates that <code>self</code> is a subtype of <code>target</code> only if neither <code>self</code> nor <code>target</code> is solved to <code>Any</code>?</p>
+</blockquote>
+<p>But that doesn't really make sense, of course, because these are <em>non-inferable</em> type variables -- type variables from the perspective of inside a function or class body... I think this does lead to the conclusion that <code>T</code> cannot be a subtype of <code>T</code> (where <code>T</code> is a non-inferable type variable); it can only be assignable to <code>T</code>. No matter what the bounds or constraints on a type variable are, it could <em>always</em> be specialised to <code>Any</code>, so you can't really ever conclude that a non-inferable type variable is ever a subtype of (or disjoint from) anything, I don't think</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-09-29 13:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types.rs</code>:1565 on 2025-09-29 13:57</div>
+            <div class="timeline-body"><p>I don't think we need to account for the possibility that a typevar is specialized to Any here. The key is that it's the same typevar, so it would have to be specialized to the <em>same</em> Any in both usages -- which is really the same as saying it's specialized to some unknown type (which is already what we were accounting for). But since it's the <em>same</em> type for both occurrences of T, the conclusions here still apply.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-09-29 14:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:1565 on 2025-09-29 14:02</div>
+            <div class="timeline-body"><p>Right, I think that makes sense</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-10-01 17:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:1565 on 2025-10-01 17:22</div>
+            <div class="timeline-body"><p>so... the conclusion from Carl's comment is that the logic in this PR is correct?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types.rs</code>:1565 on 2025-10-02 01:11</div>
+            <div class="timeline-body"><blockquote>
+<p>I don't think we need to account for the possibility that a typevar is specialized to Any here. The key is that it's the same typevar, so it would have to be specialized to the <em>same</em> Any in both usages</p>
+</blockquote>
+<p>Right, I'd even reword this slightly to say that typevar <em>inference</em> will never infer a gradual type for a typevar. (A typevar can be specialized to <code>Unknown</code> if we don't infer <em>anything</em> for it, and it has no default, but I consider that different than explicitly infering a gradual type for it.)</p>
+<blockquote>
+<p>I'm slightly surprised that we need these branches at all. Shouldn't the union/intersection branches take care of this, if <code>T &lt;: T</code> is modeled correctly?</p>
+</blockquote>
+<p>The current way we're handling assignability of typevars is very brittle and dependent on these kinds of hacks, because of &quot;rounding error&quot; that's introduced by the early conversions of the assignability checks of union/intersection elements into a true/false value. https://github.com/astral-sh/ruff/pull/20093 is working on using constraint sets to model the assignability of a typevar, which will allow us to correctly model when e.g. each element of a union is assignable &quot;sometimes&quot;, but in a way that combines to &quot;always&quot; when you merge them together. That will hopefully remove the need for these match arms completely. But having the mdtest here will be good to avoid a regression when that lands.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> approved on 2025-10-02 01:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2025-10-02 06:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-10-02 06:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-10-02 06:52</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:34:59 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Better implementation of assignability for intersections with negated gradual elements - astral-sh/ruff #20773</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Better implementation of assignability for intersections with negated gradual elements</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/20773">#20773</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-10-08 19:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-08 19:03</div>
+            <div class="timeline-body"><p>Our implementation of assignability between a type <code>T</code> and another type <code>~U</code> is currently too strict. We currently only consider <code>T</code> assignable to <code>~U</code> if <code>Top[T]</code> is disjoint from <code>Top[U]</code>. That's correct for subtyping and redundancy, but not for assignability: for assignability, we should be more permissive, and allow <code>T</code> to be considered assignable to <code>~U</code> if <code>Bottom[T]</code> is disjoint from <code>Bottom[U]</code>.</p>
+<p>As part of this PR, I also improved the docstring of <code>Type::is_disjoint_from</code> to make it clear what it actually does (it tests for disjointness between the top materializations of the pair of types).</p>
+<p>Fixes https://github.com/astral-sh/ty/issues/767</p>
+<h2>Test plan</h2>
+<ul>
+<li>Added mdtests that fail on <code>main</code></li>
+<li>Ran <code>QUICKCHECK_TESTS=1000000 cargo test --release -p ty_python_semantic -- --ignored types::property_tests::stable</code> locally</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-10-08 19:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-10-08 19:05</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-10-08 19:06</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">arviz (https://github.com/arviz-devs/arviz)
+- arviz/tests/base_tests/test_stats_utils.py:226:29: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `Unknown &amp; ~str`, found `Unknown &amp; ~Literal[&quot;any&quot;]`
+- arviz/tests/base_tests/test_stats_utils.py:228:82: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `Unknown &amp; ~str`, found `Unknown &amp; ~Literal[&quot;any&quot;]`
+- Found 733 diagnostics
++ Found 731 diagnostics
+
+</code></pre>
+</details>
+No memory usage changes detected ✅
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @AlexWaygood on 2025-10-09 11:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @AlexWaygood on 2025-10-09 11:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @AlexWaygood on 2025-10-09 11:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @AlexWaygood on 2025-10-09 11:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-10-09 15:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types.rs</code>:2276 on 2025-10-09 15:29</div>
+            <div class="timeline-body"><p>It's true that it is enough to test disjointness by checking if the intersection between the two top-materializations is empty, but I think I would prefer a definition that is a bit clearer / more intuitive.</p>
+<p>Two gradual types A and B are disjoint if their intersection is empty: <code>A &amp; B = Never</code>.</p>
+<p>From this definition, you can arrive at your property:</p>
+<ul>
+<li><code>A &amp; B = Never</code> is true if and only if the bottom and the top materialization of the two types are the same, i.e. if <code>Top[A &amp; B] = Never</code> and <code>Bottom[A &amp; B] = Never</code>.</li>
+<li><code>Top[X] = Never</code> always implies <code>Bottom[X] = Never</code>, because <code>Bottom[X] &lt;: Top[X]</code>.</li>
+<li>This means that it is enough to test <code>Top[A &amp; B] = Never</code>.</li>
+<li>Since <code>Top[…]</code> distributes over intersections, we can also write this as <code>Top[A] &amp; Top[B] = Never</code>, which is equivalent to saying that the two fully-static types <code>Top[A]</code> and <code>Top[B]</code> must be disjoint.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-10-09 15:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:2276 on 2025-10-09 15:55</div>
+            <div class="timeline-body"><blockquote>
+<p>Two gradual types A and B are disjoint if their intersection is empty: <code>A &amp; B = Never</code>.</p>
+</blockquote>
+<p>Riiight, but with our current implementation, this is surely circular -- we call <code>is_disjoint_from</code> from our intersection simplification infrastructure to <em>determine</em> whether <code>A &amp; B</code> should simplify to <code>Never</code>!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-10-09 17:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types.rs</code>:2276 on 2025-10-09 17:31</div>
+            <div class="timeline-body"><p>Ok, I thought you wanted to clarify what the semantics of this function are, not how it's implemented (it's not implemented by comparing top-materializations either, as far as I can tell).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-10-09 17:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:2276 on 2025-10-09 17:40</div>
+            <div class="timeline-body"><blockquote>
+<p>it's not implemented by comparing top-materializations either</p>
+</blockquote>
+<p>yes, fair point. I'll try to reword it 👍</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-10-09 18:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types.rs</code>:2276 on 2025-10-09 18:10</div>
+            <div class="timeline-body"><p>I'm happy to review the rest of the PR as well, but that will have to wait until tomorrow :smile:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-10-10 07:38</div>
+            <div class="timeline-body"><blockquote>
+<p>Our implementation of assignability between a type <code>T</code> and another type <code>~U</code> is currently too strict. We currently only consider <code>T</code> assignable to <code>~U</code> if <code>Top[T]</code> is disjoint from <code>Top[U]</code>. That's correct for subtyping and redundancy, but not for assignability: for assignability, we should be more permissive, and allow <code>T</code> to be considered assignable to <code>~U</code> if <code>Bottom[T]</code> is disjoint from <code>Bottom[U]</code>.</p>
+</blockquote>
+<p>Let me see if I understand this:</p>
+<ul>
+<li><code>T</code> is a subtype of <code>~U</code> if <code>Top[T] &lt;: Bottom[~U]</code>. We have <code>Bottom[~U] = ~Top[U]</code>, so this is equivalent to <code>Top[T] &lt;: ~Top[U]</code>, which is equivalent to saying that <code>Top[T]</code> needs to be disjoint from <code>Top[U]</code> :heavy_check_mark:</li>
+<li><code>T</code> is assignable to <code>~U</code> if <code>Bottom[T] &lt;: Top[~U]</code>, i.e. <code>Bottom[T] &lt;: ~Bottom[U]</code>, which is equivalent to <code>Bottom[T]</code> being disjoint from <code>Bottom[U]</code> :heavy_check_mark:</li>
+<li><code>T</code> is redundant with <code>~U</code> if <code>Bottom[T] &lt;: Bottom[~U]</code> (i.e. <code>Bottom[T] &lt;: ~Top[U]</code>) and <code>Top[T] &lt;: Top[~U]</code> (i.e. <code>Top[T] &lt;: ~Bottom[T]</code>), which would mean that <code>Bottom[T]</code> needs to be disjoint from <code>Top[U]</code> and <code>Top[T]</code> needs to be disjoint from <code>Bottom[U]</code> :x:</li>
+</ul>
+<p>The check for redundancy implemented here is too strict. This is not too surprising, because we know that redundancy is a weaker relation than subtyping. A counterexample would be <code>T = Any</code> and <code>U = Any</code>. <code>T = Any</code> is not a subtype of <code>~U = ~Any = Any</code>, but the two types are redundant. And indeed, <code>Bottom[T] = Never</code> is disjoint from <code>Top[U] = object</code>, and <code>Top[T] = object</code> is disjoint from <code>Bottom[U] = Never</code> (the rules for redundancy above), but <code>Top[T] = object</code> is <em>not</em> disjoint from <code>Top[U] = object</code> (the rule for subtyping above).</p>
+<p>I don't know what this means for this PR. I think there is still the bigger question as to whether or not we can actually use the true redundancy relation for union simplification (given that it breaks transitivity), or if we actually need something that sits between redundancy and subtyping, the sorts of ad-hoc rules that we currently implement in order to simplify things like <code>Any | Any</code> to <code>Any</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-10 10:15</div>
+            <div class="timeline-body"><blockquote>
+<ul>
+<li><code>T</code> is redundant with <code>~U</code> if <code>Bottom[T] &lt;: Bottom[~U]</code> (i.e. <code>Bottom[T] &lt;: ~Top[U]</code>) and <code>Top[T] &lt;: Top[~U]</code> (i.e. <code>Top[T] &lt;: ~Bottom[T]</code>), which would mean that <code>Bottom[T]</code> needs to be disjoint from <code>Top[U]</code> and <code>Top[T]</code> needs to be disjoint from <code>Bottom[U]</code> ❌</li>
+</ul>
+<p>The check for redundancy implemented here is too strict. This is not too surprising, because we know that redundancy is a weaker relation than subtyping.</p>
+</blockquote>
+<p>That all seems correct to me. It's also unchanged from the redundancy implementation on <code>main</code>, however. This PR only touches the assignability relation for intersections with negated elements; it doesn't touch the subtyping or redundancy relations. So I would argue that this PR is a strict improvement on the semantics implemented on <code>main</code>, even if there are still further improvements that we might be able to make to the redundancy implementation (which would require more tests, and would require us to double-check that there aren't examples we can think of where implementing the redundancy relation more fully in this way would break transitivity).</p>
+<p>I could add a comment linking to this discussion, and noting that this is probably not a complete implementation of the redundancy relation, but that we always err on the side of strictness for redundancy?</p>
+<blockquote>
+<p>A counterexample would be <code>T = Any</code> and <code>U = Any</code>. <code>T = Any</code> is not a subtype of <code>~U = ~Any = Any</code>, but the two types are redundant. And indeed, <code>Bottom[T] = Never</code> is disjoint from <code>Top[U] = object</code>, and <code>Top[T] = object</code> is disjoint from <code>Bottom[U] = Never</code> (the rules for redundancy above), but <code>Top[T] = object</code> is <em>not</em> disjoint from <code>Top[U] = object</code> (the rule for subtyping above).</p>
+</blockquote>
+<p>Indeed. But pragmatically, we already recognise <code>Any</code> as being redundant from <code>~Any</code>, because of the fact that we eagerly simplify <code>~Any</code> to <code>Any</code> in our intersection builder: https://play.ty.dev/882fb732-dc66-4571-9898-ca51f0816cc0</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types.rs</code>:1734 on 2025-10-10 10:46</div>
+            <div class="timeline-body"><p>I would probably modify this comment to reflect the findings here, but otherwise, this seems like a strict improvement over the behavior on <code>main</code> — I agree. Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> approved on 2025-10-10 10:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[ty] Better implementation of type relations for intersections with negated gradual elements" to "[ty] Better implementation of assignability for intersections with negated gradual elements" by @AlexWaygood on 2025-10-10 11:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2025-10-10 11:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-10-10 11:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-10-10 11:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-10-10 16:18</div>
+            <div class="timeline-body"><p>I think it is a &quot;known issue&quot; that our implementation of redundancy is &quot;too strict&quot; compared to what it theoretically could/should be, but it must be too strict in order to avoid breaking transitivity (and transitivity is critical to the correct functioning of union simplification.)</p>
+<blockquote>
+<p>I think there is still the bigger question as to whether or not we can actually use the true redundancy relation for union simplification (given that it breaks transitivity), or if we actually need something that sits between redundancy and subtyping</p>
+</blockquote>
+<p>I think this is basically right, but I would frame it slightly differently. The reason we named the redundancy relation &quot;redundancy&quot; is in order to communicate &quot;this is the relation we use for determining redundancy in unions.&quot; So we don't &quot;need something that sits between redundancy and subtyping.&quot; We already have exactly that: we call it &quot;redundancy&quot;. It sits between &quot;S+ &lt;: T+ &amp;&amp; S- &lt;: T- subtyping&quot; (what you are I think here calling &quot;true redundancy&quot;, but we could also call &quot;true subtyping&quot;) and &quot;S+ &lt;: T- subtyping&quot; (which we currently call &quot;subtyping&quot;, but could also be called &quot;too-strict subtyping.&quot;)  Our redundancy relation is &quot;too-strict subtyping&quot;, but with some ad-hoc elements of &quot;true subtyping&quot;, (hopefully) carefully chosen to avoid breaking transitivity.</p>
+<p>I don't think there is an open question about whether we can use a relation that breaks transitivity for union simplification. We definitely cannot, or else the result of union simplification depends on the order elements are added; this is not tenable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-10 16:21</div>
+            <div class="timeline-body"><blockquote>
+<p>I think this is basically right, but I would frame it slightly differently. The reason we named the redundancy relation &quot;redundancy&quot; is in order to communicate &quot;this is the relation we use for determining redundancy in unions.&quot; So we don't &quot;need something that sits between redundancy and subtyping.&quot; We already have exactly that: we call it &quot;redundancy&quot;. It sits between &quot;S+ &lt;: T+ &amp;&amp; S- &lt;: T- subtyping&quot; (what you are I think here calling &quot;true redundancy&quot;, but we could also call &quot;true subtyping&quot;) and &quot;S+ &lt;: T- subtyping&quot; (which we currently call &quot;subtyping&quot;, but could also be called &quot;too-strict subtyping.&quot;) Our redundancy relation is &quot;too-strict subtyping&quot;, but with some ad-hoc elements of &quot;true subtyping&quot;, (hopefully) carefully chosen to avoid breaking transitivity.</p>
+</blockquote>
+<p>Yes, I think the disconnect is that the (&quot;pure&quot;? But nontransitive?) version of the redundancy relation described in the doc-comment above the <code>TypeRelation::Redundancy</code> variant currently is not the version that we've actually implemented, because, as you say, the version that we've actually implemented deliberately errs on the side of strictness to avoid non-transitivity</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-10-10 16:23</div>
+            <div class="timeline-body"><blockquote>
+<p>I think the disconnect is that the (&quot;pure&quot;? But nontransitive?) version of the redundancy relation described in the doc-comment above the <code>TypeRelation::Redundancy</code> variant currently is not the version that we've actually implemented, because, as you say, the version that we've actually implemented deliberately errs on the side of strictness to avoid non-transitivity</p>
+</blockquote>
+<p>Then we should reflect some of this discussion into that doc comment, to help us avoid continuing to have this same conversation on every PR related to redundancy 😆</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-10-10 19:19</div>
+            <div class="timeline-body"><p>I was genuinely confused by this, because there was an effort to formalize the new relation called redundancy in https://github.com/astral-sh/ruff/pull/20602, but then we ended up with a doc comment that essentially just describes &quot;S+ &lt;: T+ &amp;&amp; S- &lt;: T-&quot; subtyping in a different way, as pointed out <a href="https://github.com/astral-sh/ruff/pull/20602#discussion_r2405748633">here</a>. So I thought we actually aim to implement the &quot;S+ &lt;: T+ &amp;&amp; S- &lt;: T-&quot; subtyping relation under the name of &quot;redundancy&quot;. But this discussion here clarifies the situation: the doc comment is wrong, and what we call &quot;redundancy&quot; is &quot;too-strict subtyping, but with some ad-hoc elements of true subtyping&quot;.</p>
+<p>In that case, I'm just worried that we won't be able to succinctly define what that relation actually is. Basically what Doug said <a href="https://github.com/astral-sh/ruff/pull/20602#pullrequestreview-3280328751">here</a> (with what looks like a wrong definition of assignability :wink:).</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:35:00 UTC
+    </footer>
+</body>
+</html>

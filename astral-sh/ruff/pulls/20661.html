@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`ty`] Fix playground crashes when accessing vendored files with leading slashes - astral-sh/ruff #20661</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>ty</code>] Fix playground crashes when accessing vendored files with leading slashes</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/20661">#20661</a>
+        opened by <a href="https://github.com/danparizher">@danparizher</a>
+        on 2025-10-01 05:20
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/danparizher">@danparizher</a> on 2025-10-01 05:20</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Fixes https://github.com/astral-sh/ty/issues/1290</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @danparizher on 2025-10-01 05:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @danparizher on 2025-10-01 05:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @danparizher on 2025-10-01 05:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @danparizher on 2025-10-01 05:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-10-01 05:36</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a> on 2025-10-01 05:36</div>
+            <div class="timeline-body"><p>Thanks for putting up with my silly. A couple things:</p>
+<ol>
+<li>I think you linked the wrong issue for closing, it should be https://github.com/astral-sh/ty/issues/1290</li>
+<li>Looking at the <a href="https://docs.rs/camino/latest/camino/enum.Utf8Component.html">docs for <code>Utf8Component</code></a>, it looks like the only variant that can hit the <code>unsupported</code> match after this is <code>Prefix</code>. I tested a bunch of paths like <code>vendored:\\?\</code> and <code>vendored:C:\</code>, but could not trigger a crash with hitting it, so I guess it's fine? Though it may make since to not panic in there either just in-case it is reachable.</li>
+</ol>
+<p>Edit: Looking at the docs more, for <code>Prefix</code> it says:</p>
+<blockquote>
+<p>Does not occur on Unix.</p>
+</blockquote>
+<p>So if the playground is being hosted on a Unix machine (which I image it is), that branch would be unreachable, but it could still crash on windows.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-10-01 06:00</div>
+            <div class="timeline-body"><p>What's the code path where we call into <code>VendoredPath::from</code> that then crashes? I wonder if we should fix this at the API boundary instead.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">playground</span> added by @MichaReiser on 2025-10-01 06:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @sharkdp removed by @sharkdp on 2025-10-01 07:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danparizher">@danparizher</a> on 2025-10-01 19:02</div>
+            <div class="timeline-body"><blockquote>
+<p>What's the code path where we call into <code>VendoredPath::from</code> that then crashes? I wonder if we should fix this at the API boundary instead.</p>
+</blockquote>
+<p>The crash originated from the playground’s vendored URI flow. The path is:</p>
+<ol>
+<li>Frontend creates <code>vendored://...</code> URIs and extracts a path string (can start with “/”) for vendored files.</li>
+<li>That string crosses the WASM boundary via <code>getVendoredFile(path)</code> and is passed directly to <code>VendoredPath::new(path)</code>.</li>
+</ol>
+<p>https://github.com/astral-sh/ruff/blob/caf48f4bfc54bb587342bf794a4f5167d855f529/crates/ty_wasm/src/lib.rs#L605-L620</p>
+<ol start="3">
+<li>Inside vendored FS, we normalize via <code>NormalizedVendoredPath::from(&amp;VendoredPath)</code>. Previously, a leading “/” became a <code>RootDir</code> component and hit the “unsupported” arm, which panicked. We now ignore <code>RootDir</code> and Windows <code>Prefix</code> components so paths are treated as relative to the archive root instead of panicking.</li>
+</ol>
+<p>https://github.com/astral-sh/ruff/blob/1f1c59709da6af09bbd9c6b9030314945ca0603a/crates/ruff_db/src/vendored.rs#L393-L453</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-10-02 06:12</div>
+            <div class="timeline-body"><blockquote>
+<p>Frontend creates vendored://... URIs and extracts a path string (can start with “/”) for vendored files.</p>
+</blockquote>
+<p>Yes, I think we should prevent the UI from creating vendored file paths similar to https://github.com/astral-sh/ruff/pull/20666</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danparizher">@danparizher</a> on 2025-10-02 19:51</div>
+            <div class="timeline-body"><p>Would we like to remove the logic from <code>crates/ruff_db/src/vendored.rs</code> or keep it as a fallback?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-10-03 06:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>playground/ty/src/Editor/Editor.tsx</code>:210 on 2025-10-03 06:19</div>
+            <div class="timeline-body"><p>I don't think this is the right place. we need to prevent users from creating a file named <code>vendored://</code> , similar to what we've done in https://github.com/astral-sh/ruff/pull/20666</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @danparizher on 2025-10-03 20:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-10-04 11:38</div>
+            <div class="timeline-body"><p>Thanks. I don't think it's strictly necessary here as the implementation is very close to how we handle leading <code>/</code> but I very appreciate if playground changes have a short video as test plan. It helps me to understand what you've tested :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2025-10-04 11:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-10-04 11:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-10-04 13:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @amyreese on 2025-10-07 17:16</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:34:59 UTC
+    </footer>
+</body>
+</html>

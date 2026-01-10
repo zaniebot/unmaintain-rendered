@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Render unsupported syntax errors in formatter tests - astral-sh/ruff #20777</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Render unsupported syntax errors in formatter tests</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/20777">#20777</a>
+        opened by <a href="https://github.com/ntBre">@ntBre</a>
+        on 2025-10-08 22:00
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ntBre">@ntBre</a> on 2025-10-08 22:00</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Based on the suggestion in https://github.com/astral-sh/ruff/issues/20774#issuecomment-3383153511, I added rendering of unsupported syntax errors in our <code>format</code> test.</p>
+<p>In support of this, I added a <code>DummyFileResolver</code> type to <code>ruff_db</code> to pass to <code>DisplayDiagnostics::new</code> (first commit). Another option would obviously be implementing this directly in the fixtures, but we'd have to import a <code>NotebookIndex</code> somehow; either by depending directly on <code>ruff_notebook</code> or re-exporting it from <code>ruff_db</code>. I thought it might be convenient elsewhere to have a dummy resolver, for example in the parser, where we currently have a separate rendering pipeline <a href="https://github.com/astral-sh/ruff/blob/main/crates/ruff_python_parser/tests/fixtures.rs#L321">copied</a> from our old rendering code in <code>ruff_linter</code>. I also briefly tried implementing a <code>TestDb</code> in the formatter since I noticed the <code>ruff_python_formatter::db</code> module, but that was turning into a lot more code than the dummy resolver.</p>
+<p>We could also push this a bit further if we wanted. I didn't add the new snapshots to the black compatibility tests or to the preview snapshots, for example. I thought it was kind of noisy enough (and helpful enough) already, though. We could also use a shorter diagnostic format, but the full output seems most useful once we accept this initial large batch of changes.</p>
+<h2>Test Plan</h2>
+<p>I went through the baseline snapshots pretty quickly, but they all looked reasonable to me, with one exception I noted below. I also tested that the case from #20774 produces a new unsupported syntax error.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @ntBre on 2025-10-08 22:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">testing</span> added by @ntBre on 2025-10-08 22:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_formatter/tests/snapshots/format@expression__binary.py.snap</code>:982 on 2025-10-08 22:03</div>
+            <div class="timeline-body"><p>I think this might be an unrelated bug. I would expect this range/underline to look more like:</p>
+<pre><code>invalid-syntax: Cannot use t-strings on Python 3.13 (syntax was added in Python 3.14)
+ --&gt; try.py:1:15
+  |
+1 |   aaaaaaaaaaa = t&quot;hellooooooooooooooooooooooo \
+  |  _______________^
+2 | |         worlddddddddddddddddddddddddddddddddd&quot; + (aaaaaaaaaaaaaaaaaaaaaaaaaa + bbbbbbbbbbbbbbbbbbb)
+  | |______________________________________________^
+  |
+</code></pre>
+<p>which is what we produce for the unformatted file when I tried it separately.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-10-08 22:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-10-08 22:14</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @ntBre on 2025-10-08 22:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @ntBre on 2025-10-08 22:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @ntBre on 2025-10-08 22:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @ntBre on 2025-10-08 22:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @ntBre on 2025-10-08 22:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @dcreager removed by @ntBre on 2025-10-08 22:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @carljm removed by @ntBre on 2025-10-08 22:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @sharkdp removed by @ntBre on 2025-10-08 22:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/diagnostic/render.rs</code>:1196 on 2025-10-09 06:08</div>
+            <div class="timeline-body"><p>I don't think this is necessary. You can just return <code>Path::new(&quot;.&quot;)</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/tests/snapshots/format@expression__binary.py.snap</code>:965 on 2025-10-09 06:27</div>
+            <div class="timeline-body"><p>It took me a while to find the message and it seems to be different from what I see in the playground where the primary annotation message comes right after the [invalid-syntax].</p>
+<p>I haven't checked the CLI but ideally, the rendering would be the same.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/tests/snapshots/format@expression__binary.py.snap</code>:982 on 2025-10-09 06:31</div>
+            <div class="timeline-body"><p>This looks the same when using <code>ruff check</code>.</p>
+<pre><code>invalid-syntax: Cannot use t-strings on Python 3.10 (syntax was added in Python 3.14)
+   --&gt; scratch.py:496:5
+    |
+494 |   # wrapped in parentheses.
+495 |   (
+496 | /     t&quot;hellooooooooooooooooooooooo \
+497 | |         worlddddddddddddddddddddddddddddddddd&quot;
+    | |______________________________________________^
+498 |       + (aaaaaaaaaaaaaaaaaaaaaaaaaa + bbbbbbbbbbbbbbbbbbb)
+499 |   )
+    |
+</code></pre>
+<p>The ranges look correct in the playground. So this might be diagnostic rendering specific</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/tests/snapshots/format@statement__type_alias.py.snap</code>:408 on 2025-10-09 06:34</div>
+            <div class="timeline-body"><p>Let's bump the python version for this test to be at least 3.10.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/tests/snapshots/format@statement__with.py.snap</code>:811 on 2025-10-09 06:44</div>
+            <div class="timeline-body"><p>Hmm, this is somewhat annoying. What we really want here is to not have new syntax errors. Showing all makes it sort of difficult to spot any accidential syntax errors (when it introduced a new syntax error).</p>
+<p>That made me think about fingerprinting again and maybe there's a way to improve the fingerprint.</p>
+<p>The formatter shouldn't insert or remove statements. That means, we should be able to match diagnostics to their corresponding statement (include that in the fingerprint). Maybe something like this:</p>
+<ul>
+<li>If there are any syntax errors</li>
+<li>Traverse the entire AST and build a Vec that contains the range of every statement (in sorted order)</li>
+<li>For each syntax error, search for the statement (index) with the smallest range that fully contains the syntax error's range</li>
+<li>Use that index as part of the fingerprint</li>
+</ul>
+<p>We could also just traverse the AST for every syntax error instead of building a vec first</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-10-09 06:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-10-09 13:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_db/src/diagnostic/render.rs</code>:1196 on 2025-10-09 13:00</div>
+            <div class="timeline-body"><p>Ah wow 🤦 It looks like I can simplify the version in the linter too:</p>
+<p>https://github.com/astral-sh/ruff/blob/4917e080ef9bd13d4e72aec68d8f1c2d37088aa6/crates/ruff_linter/src/fs.rs#L12-L15</p>
+<p>I assumed <code>Path::new</code> returned a <code>Path</code> and not a <code>&amp;Path</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-10-09 13:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_formatter/tests/snapshots/format@expression__binary.py.snap</code>:965 on 2025-10-09 13:06</div>
+            <div class="timeline-body"><p>Oh right, that's the difference between <code>Diagnostic::invalid_syntax</code> and the linter's <code>create_syntax_error_diagnostic</code>. I can just copy the latter over here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_formatter/tests/snapshots/format@statement__with.py.snap</code>:811 on 2025-10-09 13:18</div>
+            <div class="timeline-body"><p>I guess my thinking was that this looks a lot more annoying here than it will in the future, unless we often add many new inputs with unsupported syntax at once. And we can avoid some of those by splitting up the test cases into version-specific groups as you mention above, but that might be bad for other reasons I haven't run into yet.</p>
+<p>I can definitely look more into the fingerprinting though, that was my first thought when running into this yesterday. I think I may have briefly explored something vaguely along these lines even. I was hoping that we could attach the <code>node_index</code> for the AST node to the syntax error when constructing it, at least in tests, but it looks like we just use <code>NONE</code> for the node index in the parser (and often emit syntax errors before we have an AST node anyway).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-10-09 13:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-10-09 13:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/tests/snapshots/format@statement__with.py.snap</code>:811 on 2025-10-09 13:24</div>
+            <div class="timeline-body"><p>Yeah, <code>node_index</code> is only initialized in ty. But it's roughly the same as just walking the tree in source order (<code>SourceOrderVisitor</code>) and assigning ids.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-10-09 14:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_formatter/tests/snapshots/format@statement__with.py.snap</code>:811 on 2025-10-09 14:59</div>
+            <div class="timeline-body"><p>The good news is that this seems to work quite well. I think we can probably revert the unsupported syntax error snapshots? It still seems useful to render the new syntax errors as full diagnostics in the <code>Formatted code introduced new unsupported syntax errors</code> message, though, so I think we can keep the resolver.</p>
+<p>The bad news is that this uncovered a few more issues in the f-string tests. Not sure about others since that panic aborts the test run.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-10-09 15:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_formatter/tests/snapshots/format@statement__with.py.snap</code>:811 on 2025-10-09 15:47</div>
+            <div class="timeline-body"><p>Actually I guess I looked at this too quickly right before standup. All but one of the new panics is kind of a false positive. In cases like this:</p>
+<pre><code class="language-py">f&quot;foo {'\'bar\''}&quot;
+</code></pre>
+<p>we know it's okay to reuse a quote since that's allowed on the same Python version as escapes. But the fingerprints are different: we lose a &quot;Cannot use an escape sequence&quot; error and gain a &quot;Cannot reuse outer quote character&quot; error.</p>
+<p>So I think we should keep the snapshots but restrict them to the new errors detected by the new fingerprinting scheme and remove this hard panic. Maybe that's what you had in mind initially.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-10-09 15:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_formatter/tests/snapshots/format@statement__with.py.snap</code>:831 on 2025-10-09 15:55</div>
+            <div class="timeline-body"><p>These also appear to be false positives. They seem somewhat related to our discussion <a href="https://github.com/astral-sh/ruff/pull/16523#discussion_r1984657793">here</a>, but I thought that only applied to tuples. These cases are fine on 3.8 besides the runtime errors:</p>
+<pre><code class="language-pycon">Python 3.8.20 (default, Oct  2 2024, 16:34:12)
+[Clang 18.1.8 ] on linux
+Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
+&gt;&gt;&gt; with (
+...   1 + 2
+... ): ...
+...
+Traceback (most recent call last):
+  File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
+AttributeError: __enter__
+&gt;&gt;&gt; if True:
+...   with (
+...     1
+...     if True
+...     else 2
+...   ):
+...     pass
+...
+Traceback (most recent call last):
+  File &quot;&lt;stdin&gt;&quot;, line 2, in &lt;module&gt;
+AttributeError: __enter__
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-10-09 17:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/tests/snapshots/format@statement__with.py.snap</code>:811 on 2025-10-09 17:01</div>
+            <div class="timeline-body"><p>Can you say why the fingerprints are different? I would have expected them to be the same because the syntax error belongs to the same statement.</p>
+<p>If the fingerprints are different, we could then consider a <code># invalid-syntax: allow</code> pragma comment to allowlist the few cases where we intentionally want to allow them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-10-09 17:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_formatter/tests/snapshots/format@statement__with.py.snap</code>:811 on 2025-10-09 17:25</div>
+            <div class="timeline-body"><p>We hash the syntax error kind, which has the same variant (<code>Pep701FString</code>) but a different inner variant (<code>Pep701FString(Backslash)</code> before vs <code>Pep701FString(NestedQuote)</code> after).</p>
+<p>I can try playing with the pragma comment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-10-09 18:54</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-10-09 18:55</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅
+No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-10-09 18:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_formatter/tests/snapshots/format@statement__with.py.snap</code>:811 on 2025-10-09 18:56</div>
+            <div class="timeline-body"><p>I feel like there may be a nicer approach here, but I got something working by checking the preceding line for a pragma comment. It works well for the f-string cases. The remaining syntax error snapshots look like bugs that I plan to follow up on.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/tests/fixtures.rs</code>:624 on 2025-10-10 05:58</div>
+            <div class="timeline-body"><p>You can use <code>CommentRanges::from(parsed.tokens())</code> instead of <code>Indexer</code> since you don't need any of the other <code>Indexer</code> metadata.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/tests/fixtures.rs</code>:637 on 2025-10-10 06:02</div>
+            <div class="timeline-body"><p>I don't think this is correct, or at least, it's not as narrow as it could be</p>
+<pre><code class="language-py">if True:
+	a = 10
+</code></pre>
+<p>The range of the <code>if</code> statement contains both the range of <code>True</code> but also of <code>a = 10</code>.</p>
+<p>What we want is to find the node with the narrowest range that fully encloses <code>range</code>. Roughly:</p>
+<ul>
+<li>Find the first range that contains <code>range.start</code> (you could even use a binary search)</li>
+<li>Now find the last range that still contains <code>range.end</code>, this is the most narrow range</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/tests/fixtures.rs</code>:664 on 2025-10-10 06:03</div>
+            <div class="timeline-body"><p>Let's only build this when <code>parsed.unsupported_syntax_errors</code> isn't empty</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/tests/fixtures.rs</code>:670 on 2025-10-10 06:04</div>
+            <div class="timeline-body"><p>I think we should panic here or at least use <code>None</code> as node id instead of omitting the syntax error.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/tests/fixtures.rs</code>:489 on 2025-10-10 06:07</div>
+            <div class="timeline-body"><p>Should we add a note saying that, if expected, they can be suppressed with <code>invalid-syntax: allow</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/tests/snapshots/format@expression__fstring.py.snap</code>:2421 on 2025-10-10 06:10</div>
+            <div class="timeline-body"><p>Are these only the syntax errors that weren't suppressed with <code>invalid-syntax</code> allowed? I'm asking because it's not entirely clear to me when I'm supposed to use <code>invalid-syntax</code> vs when it's okay to just tolerate the invalid syntax errors.</p>
+<p>I think I'd either keep panicking in the presence of an invalid syntax error that isn't explicitly suppressed with an <code>invalid-syntax</code> pragma comment or render them:</p>
+<p>The risk I see with the pragma comments is that it might unintentionally suppress more syntax errors than I intended (e.g. in the <code>with</code> test case, I might allow <code>invalid-syntax</code> errors to suppress the diagnostics for 3.8, but then introduce an error for 3.9). On the other hand, it makes it very clear that unsupported syntax errors need to be fixed before a PR is merged (or they need to be explicitly suppressed).</p>
+<p>If we go with rendering the errors, then I think we should add a short paragraph right below Unsupported syntax errors, saying that these need to be fixed unless they're pre-existing syntax errors already present in the source (and not introduced by the formatter).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-10-10 06:19</div>
+            <div class="timeline-body"><p>Nice, I like this a lot more. I think there's a question whether we want to render the unsupported syntax errors (I'm leaning towards that) or have the pragma comment. I do find having both a bit confusing because it's unclear when I'm supposed to use which.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_formatter/tests/snapshots/format@expression__fstring.py.snap</code>:2421 on 2025-10-10 13:20</div>
+            <div class="timeline-body"><p>Yes, we only render the leftover syntax errors that weren't present initially and weren't suppressed with the pragma comment. With the pragma comments, I was thinking we ideally wouldn't tolerate any snapshots, but I didn't want to fix these bugs in the same PR :sweat_smile: So I see what you mean, we should go back to panicking instead of snapshotting once these are resolved.</p>
+<p>I think we may also be able to print the fingerprint for new errors so that you could include that in the pragma comment, to make them a bit more specific. Or maybe part of the error message would be easier to use, like in mdtests.</p>
+<p>But I think I would still lean toward just rendering all of the new errors too and not having the pragma comments. That's a bit simpler and we didn't have many errors to render once we updated the fingerprint filtering anyway.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-10-10 13:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_formatter/tests/fixtures.rs</code>:670 on 2025-10-10 13:22</div>
+            <div class="timeline-body"><p>This one needs to be optional because <code>node_id</code> also filters out the pragma comments. Maybe that's a strange API in itself. But I can also restore the <code>unwrap</code> inside of <code>node_id</code> for finding the enclosing node. That's what I had before I added in the comment check.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-10-10 13:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_formatter/tests/fixtures.rs</code>:637 on 2025-10-10 14:10</div>
+            <div class="timeline-body"><p>I was having some trouble with the binary search, so I took a more literal approach:</p>
+<pre><code class="language-rust">        let (position, node_range) = self
+            .nodes
+            .iter()
+            .enumerate()
+            .filter(|(_, node)| node.contains_range(range))
+            .min_by_key(|(_, node)| node.len())
+            .unwrap();
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-10-10 14:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-10-10 14:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/tests/snapshots/format@expression__fstring.py.snap</code>:2421 on 2025-10-10 14:27</div>
+            <div class="timeline-body"><blockquote>
+<p>But I think I would still lean toward just rendering all of the new errors too and not having the pragma comments. That's a bit simpler and we didn't have many errors to render once we updated the fingerprint filtering anyway.</p>
+</blockquote>
+<p>Sounds good to me. Sorry for misdirecting you on the pragma comments</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-10-10 15:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_formatter/tests/snapshots/format@expression__fstring.py.snap</code>:2421 on 2025-10-10 15:33</div>
+            <div class="timeline-body"><p>No worries, it was interesting to try out! I'll keep my cleanup commits from this morning and then revert them all, just in case we ever want to resurrect them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-10-10 18:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_formatter/tests/snapshots/format@statement__with.py.snap</code>:831 on 2025-10-10 18:21</div>
+            <div class="timeline-body"><p>I've looked into this a bit, and I actually don't think we can fix this easily. As noted in the thread linked above, we decided to be a bit more aggressive here and flag tuple cases as syntax errors since they will always cause an error at runtime. But since we parse these two cases the same way:</p>
+<pre><code class="language-py">with (a): ...  # ok, even at runtime, if `a` implements the protocol
+with (a,): ... # runtime error on 3.8, tuple definitely doesn't implement the protocol
+</code></pre>
+<p>we can't differentiate between a single <code>WithItem</code> passed to the context manager, which is okay on 3.8, and a single-item tuple, which we intentionally wanted to flag.</p>
+<p>Since 3.8 is EOL and we haven't gotten any user reports, I think we should just accept these snapshots in line with our previous discussion.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/tests/fixtures.rs</code>:617 on 2025-10-12 05:49</div>
+            <div class="timeline-body"><p>I'm fine with this as I don't think it matters much. But if you're interested. Here's an example using <code>partition_point</code> to find the first node that starts at or before a given offset.</p>
+<p>https://github.com/astral-sh/ruff/blob/6ef72e71edab6436626bff527d2e69a022978c7b/crates/ruff_python_trivia/src/comment_ranges.rs#L39-L41</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/tests/snapshots/format@expression__fstring.py.snap</code>:2421 on 2025-10-12 05:51</div>
+            <div class="timeline-body"><p>I'm not sure if all those errors are now okay or if some of those are new errors introduced by the formatter. If any of them falls into the latter category, could you add a <code>FIXME</code> to the fixture file above the relevant line?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/tests/snapshots/format@statement__with.py.snap</code>:831 on 2025-10-12 05:56</div>
+            <div class="timeline-body"><p>I think we could fix it by tracking in <code>try_parse_parenthesized_with_items</code> whether there's a trailing comma (peek for a trailing comma inside the <code>parse_comma_separated_list</code> callback) and then return it as part of <code>try_parse_parenthesized_with_items</code>'s result?</p>
+<p>But I also agree, I don't think this is worth spending much time on.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-10-12 05:57</div>
+            <div class="timeline-body"><p>Very nice find and thanks for taking the time to make our formatter test suite more robust!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-10-13 13:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_formatter/tests/fixtures.rs</code>:617 on 2025-10-13 13:30</div>
+            <div class="timeline-body"><p>Ah okay, thank you! I found the examples above that using <code>binary_search_by</code>, but <code>partition_point</code>  is good to know about.</p>
+<p>I think I'll just leave it as-is for now if it doesn't matter too much.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-10-13 13:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_formatter/tests/snapshots/format@expression__fstring.py.snap</code>:2421 on 2025-10-13 13:40</div>
+            <div class="timeline-body"><p>I thought the errors for line 762 were related to https://github.com/astral-sh/ruff/issues/20774, but it turns out that they're false positives with our syntax error detection instead. I'll add the FIXME and open a separate issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ntBre on 2025-10-13 14:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-10-13 14:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-10-13 14:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-10-13 14:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_formatter/tests/snapshots/format@statement__with.py.snap</code>:831 on 2025-10-13 14:11</div>
+            <div class="timeline-body"><p>I'm looking at this quickly now. <code>parse_comma_separated_list</code> already returns whether there was a trailing comma, so this might be an easy fix.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:35:00 UTC
+    </footer>
+</body>
+</html>

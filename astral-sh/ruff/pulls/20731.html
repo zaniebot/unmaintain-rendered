@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add support for optional multi-line comprehensions (#11753) - astral-sh/ruff #20731</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add support for optional multi-line comprehensions (#11753)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/20731">#20731</a>
+        opened by <a href="https://github.com/kevind-kizen">@kevind-kizen</a>
+        on 2025-10-07 02:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/kevind-kizen">@kevind-kizen</a> on 2025-10-07 02:28</div>
+            <div class="timeline-body"><p>Issue reference: https://github.com/astral-sh/ruff/issues/11753</p>
+<p>This PR implements a new formatter option <code>comprehension-line-break</code> that allows users to preserve multi-line formatting in comprehensions, when they choose to do so, addressing #11753.</p>
+<h2>Motivation</h2>
+<p>Currently, the ruff formatter automatically collapses multi-line comprehensions to a single line when they fit within the configured line width. This can reduce readability for complex comprehensions that were intentionally formatted across multiple lines for clarity. This change gives users control over this behavior.</p>
+<h2>Implementation</h2>
+<h3>New Configuration Option</h3>
+<p>Added comprehension-line-break with two modes:</p>
+<ul>
+<li>&quot;auto&quot; (default): Current behavior - collapses comprehensions to single line if they fit</li>
+<li>&quot;preserve&quot;: Preserves multi-line formatting from source code</li>
+</ul>
+<p>Configuration in pyproject.toml:</p>
+<pre><code>[tool.ruff.format]
+comprehension-line-break = &quot;preserve&quot;
+</code></pre>
+<p>Example Behavior</p>
+<p>Input:</p>
+<pre><code>{
+    obj[&quot;key&quot;]: obj[&quot;value&quot;]
+    for obj
+    in get_fields()
+    if obj[&quot;key&quot;] != &quot;name&quot;
+}
+</code></pre>
+<p>Output with &quot;auto&quot; (default):</p>
+<pre><code>{obj[&quot;key&quot;]: obj[&quot;value&quot;] for obj in get_fields() if obj[&quot;key&quot;] != &quot;name&quot;}
+</code></pre>
+<p>Output with &quot;preserve&quot;:</p>
+<pre><code>{
+    obj[&quot;key&quot;]: obj[&quot;value&quot;]
+    for obj in get_fields()
+    if obj[&quot;key&quot;] != &quot;name&quot;
+}
+</code></pre>
+<h2>Changes Made</h2>
+<ol>
+<li>Added ComprehensionLineBreak enum in crates/ruff_python_formatter/src/options.rs
+- Implements Auto and Preserve modes
+- Includes serde serialization and JSON schema support</li>
+<li>Updated configuration system:
+- Added field to PyFormatOptions, FormatterSettings, and FormatConfiguration
+- Wired up configuration through workspace options
+- Updated JSON schema generation</li>
+<li>Modified all comprehension formatters to respect the new option:
+- Dictionary comprehensions (expr_dict_comp.rs)
+- List comprehensions (expr_list_comp.rs)
+- Set comprehensions (expr_set_comp.rs)
+- Generator expressions (expr_generator.rs)</li>
+<li>Implementation approach:
+- Added is_comprehension_multiline() helper to detect multi-line comprehensions in source
+- When preserve mode is active and source is multi-line, uses group().should_expand(true) to force expansion
+- Maintains backward compatibility with default auto mode</li>
+<li>Testing:
+- Added comprehensive test fixture covering all comprehension types
+- Tests both auto and preserve modes
+- All existing tests continue to pass</li>
+</ol>
+<p>Compatibility</p>
+<ul>
+<li>Backward compatible: Default behavior unchanged</li>
+<li>Black compatibility: auto mode maintains Black-compatible formatting</li>
+<li>Performance: Minimal overhead - only checks source formatting when preserve mode is enabled</li>
+</ul>
+<p>Test Plan</p>
+<ul>
+<li>Added test fixture: comprehension_line_break.py with corresponding snapshot tests</li>
+<li>Tested with various comprehension types: dict, list, set, and generator expressions</li>
+<li>Verified behavior with comments, nested comprehensions, and long expressions</li>
+<li>All existing formatter tests pass</li>
+<li>Ran ruff binary locally in my codebase</li>
+</ul>
+<p>I know that this issue has not reached consensus on the philosophy, but wanted to drop an implementation draft to get the ball rolling as I believe this is a major readability flaw to always collapse comprehensions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @kevind-kizen on 2025-10-07 02:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-10-07 05:59</div>
+            <div class="timeline-body"><p>Thanks for working on this but I'll close it as I consider presering line breaks as the absolute last resort because it defeats the purpose of a formatter -- to ensure code is consistently formatted.</p>
+<p>https://github.com/astral-sh/ruff/issues/11753#issuecomment-3015015216 suggests an alternative that I want to try first before going down the path of just preserving line breaks as is</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-10-07 05:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kevind-kizen">@kevind-kizen</a> on 2025-10-07 14:45</div>
+            <div class="timeline-body"><p>Fair enough -- not my project. I understand the philosophical goal of consistent formatting, but I also believe that if the consistent formatting is less readable, then that's suboptimal. I understand your formatter values standard opinionated formatting.</p>
+<p>A mutli-line comprehension makes it super easy to visually scan each component of the comprehension, IMO.</p>
+<p>I see the alternative proposed and something like that would certainly be more deterministic, which is valuable. I'll add some comments on the issue to re-open debate, but it's obviously your call -- I would really like to see some solution to this as my new organization uses the ruff formatter.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/aronhoff">@aronhoff</a> on 2025-10-07 15:26</div>
+            <div class="timeline-body"><p>@kevind-kizen I implemented an idea similar to the rustfmt solution linked in #16902, except I used fixed width values rather than percentages and I didn't know how I could decide on the numbers in the comprehension width policy, so I left it configurable. I couldn't continue on that PR without guidance on what would be acceptable. Might be useful background if you want to work on it further.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kevind-kizen">@kevind-kizen</a> on 2025-10-07 15:37</div>
+            <div class="timeline-body"><p>I can explore that direction, but the main criteria I typically use for
+deciding to use a multi-line comprehension has more to do with the logical
+complexity rather than simply line lengths.</p>
+<p>I find that there are many cases where single line comprehensions are
+appropriate, even with slightly longer line lengths, such as the case of
+descriptive variable names. And there are some short comprehensions that
+have a little extra complexity, for example function calls where I want
+clarity on what function is being called.</p>
+<p>I tend to prefer them in most cases.</p>
+<p>I can provide some examples.</p>
+<p>On Tue, Oct 7, 2025 at 8:26 AM Áron Hoffmann <em><strong>@</strong></em>.***&gt;
+wrote:</p>
+<blockquote>
+<p><em>aronhoff</em> left a comment (astral-sh/ruff#20731)
+<a href="https://github.com/astral-sh/ruff/pull/20731#issuecomment-3377436137">https://github.com/astral-sh/ruff/pull/20731#issuecomment-3377436137</a></p>
+<p>@kevind-kizen <a href="https://github.com/kevind-kizen">https://github.com/kevind-kizen</a> I implemented an idea
+similar to the rustfmt solution linked in #16902
+<a href="https://github.com/astral-sh/ruff/pull/16902">https://github.com/astral-sh/ruff/pull/16902</a>, except I used fixed width
+values rather than percentages and I didn't know how I could decide on the
+numbers in the comprehension width policy, so I left it configurable. I
+couldn't continue on that PR without guidance on what would be acceptable.
+Might be useful background if you want to work on it further.</p>
+<p>—
+Reply to this email directly, view it on GitHub
+<a href="https://github.com/astral-sh/ruff/pull/20731#issuecomment-3377436137">https://github.com/astral-sh/ruff/pull/20731#issuecomment-3377436137</a>,
+or unsubscribe
+<a href="https://github.com/notifications/unsubscribe-auth/BWQEJOWP3IDRUH5FQSYH6K33WPLTZAVCNFSM6AAAAACIO4WX2GVHI2DSMVQWIX3LMV43OSLTON2WKQ3PNVWWK3TUHMZTGNZXGQZTMMJTG4">https://github.com/notifications/unsubscribe-auth/BWQEJOWP3IDRUH5FQSYH6K33WPLTZAVCNFSM6AAAAACIO4WX2GVHI2DSMVQWIX3LMV43OSLTON2WKQ3PNVWWK3TUHMZTGNZXGQZTMMJTG4</a>
+.
+You are receiving this because you were mentioned.Message ID:
+<em><strong>@</strong></em>.***&gt;</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kevind-kizen">@kevind-kizen</a> on 2025-10-07 15:38</div>
+            <div class="timeline-body"><p>I think that simply allowing the preservation of line breaks when the
+developer makes the decision to break the lines along the comprehension
+keywords (which is what I did in the PR) is very similar in philosophy to
+the magic-trailing-commas configuration option.</p>
+<p>On Tue, Oct 7, 2025 at 8:37 AM Kevin Dolan <em><strong>@</strong></em>.***&gt; wrote:</p>
+<blockquote>
+<p>I can explore that direction, but the main criteria I typically use for
+deciding to use a multi-line comprehension has more to do with the logical
+complexity rather than simply line lengths.</p>
+<p>I find that there are many cases where single line comprehensions are
+appropriate, even with slightly longer line lengths, such as the case of
+descriptive variable names. And there are some short comprehensions that
+have a little extra complexity, for example function calls where I want
+clarity on what function is being called.</p>
+<p>I tend to prefer them in most cases.</p>
+<p>I can provide some examples.</p>
+<p>On Tue, Oct 7, 2025 at 8:26 AM Áron Hoffmann <em><strong>@</strong></em>.***&gt;
+wrote:</p>
+<blockquote>
+<p><em>aronhoff</em> left a comment (astral-sh/ruff#20731)
+<a href="https://github.com/astral-sh/ruff/pull/20731#issuecomment-3377436137">https://github.com/astral-sh/ruff/pull/20731#issuecomment-3377436137</a></p>
+<p>@kevind-kizen <a href="https://github.com/kevind-kizen">https://github.com/kevind-kizen</a> I implemented an idea
+similar to the rustfmt solution linked in #16902
+<a href="https://github.com/astral-sh/ruff/pull/16902">https://github.com/astral-sh/ruff/pull/16902</a>, except I used fixed
+width values rather than percentages and I didn't know how I could decide
+on the numbers in the comprehension width policy, so I left it
+configurable. I couldn't continue on that PR without guidance on what would
+be acceptable. Might be useful background if you want to work on it further.</p>
+<p>—
+Reply to this email directly, view it on GitHub
+<a href="https://github.com/astral-sh/ruff/pull/20731#issuecomment-3377436137">https://github.com/astral-sh/ruff/pull/20731#issuecomment-3377436137</a>,
+or unsubscribe
+<a href="https://github.com/notifications/unsubscribe-auth/BWQEJOWP3IDRUH5FQSYH6K33WPLTZAVCNFSM6AAAAACIO4WX2GVHI2DSMVQWIX3LMV43OSLTON2WKQ3PNVWWK3TUHMZTGNZXGQZTMMJTG4">https://github.com/notifications/unsubscribe-auth/BWQEJOWP3IDRUH5FQSYH6K33WPLTZAVCNFSM6AAAAACIO4WX2GVHI2DSMVQWIX3LMV43OSLTON2WKQ3PNVWWK3TUHMZTGNZXGQZTMMJTG4</a>
+.
+You are receiving this because you were mentioned.Message ID:
+<em><strong>@</strong></em>.***&gt;</p>
+</blockquote>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kevind-kizen">@kevind-kizen</a> on 2025-10-07 15:40</div>
+            <div class="timeline-body"><p>I am also curious about other developers choices — I might run an analysis
+of popular GitHub python projects to get you some stats and try to better
+understand the most common patterns.</p>
+<p>On Tue, Oct 7, 2025 at 8:38 AM Kevin Dolan <em><strong>@</strong></em>.***&gt; wrote:</p>
+<blockquote>
+<p>I think that simply allowing the preservation of line breaks when the
+developer makes the decision to break the lines along the comprehension
+keywords (which is what I did in the PR) is very similar in philosophy to
+the magic-trailing-commas configuration option.</p>
+<p>On Tue, Oct 7, 2025 at 8:37 AM Kevin Dolan <em><strong>@</strong></em>.***&gt; wrote:</p>
+<blockquote>
+<p>I can explore that direction, but the main criteria I typically use for
+deciding to use a multi-line comprehension has more to do with the logical
+complexity rather than simply line lengths.</p>
+<p>I find that there are many cases where single line comprehensions are
+appropriate, even with slightly longer line lengths, such as the case of
+descriptive variable names. And there are some short comprehensions that
+have a little extra complexity, for example function calls where I want
+clarity on what function is being called.</p>
+<p>I tend to prefer them in most cases.</p>
+<p>I can provide some examples.</p>
+<p>On Tue, Oct 7, 2025 at 8:26 AM Áron Hoffmann <em><strong>@</strong></em>.***&gt;
+wrote:</p>
+<blockquote>
+<p><em>aronhoff</em> left a comment (astral-sh/ruff#20731)
+<a href="https://github.com/astral-sh/ruff/pull/20731#issuecomment-3377436137">https://github.com/astral-sh/ruff/pull/20731#issuecomment-3377436137</a></p>
+<p>@kevind-kizen <a href="https://github.com/kevind-kizen">https://github.com/kevind-kizen</a> I implemented an idea
+similar to the rustfmt solution linked in #16902
+<a href="https://github.com/astral-sh/ruff/pull/16902">https://github.com/astral-sh/ruff/pull/16902</a>, except I used fixed
+width values rather than percentages and I didn't know how I could decide
+on the numbers in the comprehension width policy, so I left it
+configurable. I couldn't continue on that PR without guidance on what would
+be acceptable. Might be useful background if you want to work on it further.</p>
+<p>—
+Reply to this email directly, view it on GitHub
+<a href="https://github.com/astral-sh/ruff/pull/20731#issuecomment-3377436137">https://github.com/astral-sh/ruff/pull/20731#issuecomment-3377436137</a>,
+or unsubscribe
+<a href="https://github.com/notifications/unsubscribe-auth/BWQEJOWP3IDRUH5FQSYH6K33WPLTZAVCNFSM6AAAAACIO4WX2GVHI2DSMVQWIX3LMV43OSLTON2WKQ3PNVWWK3TUHMZTGNZXGQZTMMJTG4">https://github.com/notifications/unsubscribe-auth/BWQEJOWP3IDRUH5FQSYH6K33WPLTZAVCNFSM6AAAAACIO4WX2GVHI2DSMVQWIX3LMV43OSLTON2WKQ3PNVWWK3TUHMZTGNZXGQZTMMJTG4</a>
+.
+You are receiving this because you were mentioned.Message ID:
+<em><strong>@</strong></em>.***&gt;</p>
+</blockquote>
+</blockquote>
+</blockquote>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:35:00 UTC
+    </footer>
+</body>
+</html>

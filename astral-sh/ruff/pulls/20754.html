@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] fix implicit Self on generic class with typevar default - astral-sh/ruff #20754</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] fix implicit Self on generic class with typevar default</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/20754">#20754</a>
+        opened by <a href="https://github.com/carljm">@carljm</a>
+        on 2025-10-07 20:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/carljm">@carljm</a> on 2025-10-07 20:44</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Typevar attributes (bound/constraints/default) can be either lazily evaluated or eagerly evaluated. Currently they are lazily evaluated for PEP 695 typevars, and eager for legacy and synthetic typevars. https://github.com/astral-sh/ruff/pull/20598 will make them lazy also for legacy typevars, and the ecosystem report on that PR surfaced the issue fixed here (because legacy typevars are much more common in the ecosystem than PEP 695 typevars.)</p>
+<p>Applying a transform to a typevar (normalization, materialization, or mark-inferable) will reify all lazy attributes and create a new typevar with eager attributes. In terms of Salsa identity, this transformed typevar will be considered different from the original typevar, whether or not the attributes were actually transformed.</p>
+<p>In general, this is not a problem, since all typevars in a given generic context will be transformed, or not, together.</p>
+<p>The exception to this was implicit-self vs explicit Self annotations. The typevar we created for implicit self was created initially using inferable typevars, whereas an explicit Self annotation is initially non-inferable, then transformed via mark-inferable when accessed as part of a function signature. If the containing class (which becomes the upper bound of <code>Self</code>) is generic, and has e.g. a lazily-evaluated default, then the explicit-Self annotation will reify that default in the upper bound, and the implicit-self would not, leading them to be treated as different typevars, and causing us to fail to solve a call to a method such as <code>def method(self) -&gt; Self</code> correctly.</p>
+<p>The fix here is to treat implicit-self more like explicit-Self, initially creating it as non-inferable and then using the mark-inferable transform on it. This is less efficient, but restores the invariant that all typevars in a given generic context are transformed together, or not, fixing the bug.</p>
+<p>In the improved-constraint-solver work, the separation of typevars into &quot;inferable&quot; and &quot;non-inferable&quot; is expected to disappear, along with the mark-inferable transform, which would render both this bug and the fix moot. So this fix is really just temporary until that lands.</p>
+<p>There is a performance regression, but not a huge one: 1-2% on most projects, 5% on one outlier. This seems acceptable, given that it should be fully recovered by removing the mark-inferable transform.</p>
+<h2>Test Plan</h2>
+<p>Added mdtests that failed before this change.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-10-07 20:50</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-10-07 20:51</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅
+No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @carljm on 2025-10-07 20:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-10-07 20:58</div>
+            <div class="timeline-body"><!-- generated-comment ty ecosystem-analyzer -->
+
+<h2><code>ecosystem-analyzer</code> results</h2>
+<p>| Lint rule | Added | Removed | Changed |
+|-----------|------:|--------:|--------:|
+| <code>invalid-argument-type</code> | 3 | 0 | 0 |
+| <code>no-matching-overload</code> | 2 | 0 | 0 |
+| <strong>Total</strong> | <strong>5</strong> | <strong>0</strong> | <strong>0</strong> |</p>
+<p><strong><a href="https://cjm-self-lazy-default.ecosystem-663.pages.dev/diff">Full report with detailed diff</a></strong> (<a href="https://cjm-self-lazy-default.ecosystem-663.pages.dev/timing">timing results</a>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-10-07 21:01</div>
+            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+
+<h2><a href="https://codspeed.io/astral-sh/ruff/branches/cjm%2Fself-lazy-default">CodSpeed Performance Report</a></h2>
+<h3>Merging #20754 will <strong>degrade performances by 4.96%</strong></h3>
+<p><sub>Comparing <code>cjm/self-lazy-default</code> (a70eb5e) with <code>main</code> (ff386b4)</sub></p>
+<h3>Summary</h3>
+<p><code>❌ 1 (👁 1)</code> regression<br />
+<code>✅ 20</code> untouched<br />
+<code>⏩ 30</code> skipped[^skipped]</p>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Mode | Benchmark | <code>BASE</code> | <code>HEAD</code> | Change |
+| --- | ---- | --------- | ------ | ------ | ------ |
+| 👁 | WallTime | <a href="https://codspeed.io/astral-sh/ruff/branches/cjm%2Fself-lazy-default?uri=crates%2Fruff_benchmark%2Fbenches%2Fty_walltime.rs%3A%3Asmall%5Bfreqtrade%5D&amp;runnerMode=WallTime"><code>small[freqtrade]</code></a> | 4.9 s | 5.1 s | -4.96% |
+[^skipped]: 30 benchmarks were skipped, so the baseline results were used instead. If they were deleted from the codebase, <a href="https://codspeed.io/astral-sh/ruff/branches/cjm%2Fself-lazy-default?sectionId=benchmark-comparison-section-baseline-result-skipped">click here and archive them to remove them from the performance reports</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @carljm on 2025-10-08 00:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @carljm on 2025-10-08 00:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @carljm on 2025-10-08 00:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @carljm on 2025-10-08 00:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-10-08 00:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/resources/mdtest/annotations/self.md</code>:314 on 2025-10-08 00:39</div>
+            <div class="timeline-body"><p>Would it be helpful to add tests that fall back on the default specialization?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> approved on 2025-10-08 00:39</div>
+            <div class="timeline-body"><p>Agreed that the performance regression is acceptable seeing as how it's temporary. #20677 should land soon; I'm just tracking down some missing pieces in overload resolution.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-10-08 01:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/annotations/self.md</code>:314 on 2025-10-08 01:32</div>
+            <div class="timeline-body"><p>It's not really related to this bug at all, but maybe it makes the test a bit more comprehensive for general regression-catching? Sure, I can add that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @carljm on 2025-10-08 01:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-10-08 01:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-10-08 01:38</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:35:00 UTC
+    </footer>
+</body>
+</html>

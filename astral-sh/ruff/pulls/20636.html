@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Improved __slots__ support - astral-sh/ruff #20636</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Improved <strong>slots</strong> support</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/20636">#20636</a>
+        opened by <a href="https://github.com/BlairAllan">@BlairAllan</a>
+        on 2025-09-29 18:24
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/BlairAllan">@BlairAllan</a> on 2025-09-29 18:24</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title? (Please prefix with `[ty]` for ty pull
+  requests.)
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>Implements <code>__slots__</code> support as requested in astral-sh/ty#1268. These changes improves ty to properly analyse code that uses <code>__slots__</code> with specific support for attrs.</p>
+<p>Key changes:</p>
+<ul>
+<li>Attributes defined in <code>__slots__</code> are no longer unresolved</li>
+<li>Automatic removal of <code>__dict__</code> and <code>__weakref__</code> when not in <code>__slots__</code></li>
+<li>Improved error reporting for <code>__slots__</code> violations</li>
+</ul>
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+<h2>Test Plan</h2>
+<!-- How was it tested? -->
+
+<h3>Created slots.md</h3>
+<ul>
+<li>Tests slot types:<ul>
+<li>Tuple slots: <code>__slots__ </code>= (&quot;name&quot;, &quot;value&quot;)</li>
+<li>Single-char string: <code>__slots__</code> = &quot;x&quot;</li>
+<li>Multi-char string: <code>__slots__</code> = &quot;abcd&quot; (creates slots &quot;a&quot;, &quot;b&quot;, &quot;c&quot;, &quot;d&quot;)</li>
+<li>Empty slots: <code>__slots__</code> = ()</li>
+<li>Inheritance scenarios</li>
+<li>Attrs like testing</li>
+</ul>
+</li>
+</ul>
+<h3>Manual testing</h3>
+<ul>
+<li><p>Verified error messages match expectations:
+ts.invalid = 1    # &quot;Unresolved attribute <code>invalid</code> on type <code>TupleSlots</code>&quot;
+sc.y = 2          #  &quot;Unresolved attribute <code>y</code> on type <code>SingleChar</code>&quot;
+mc.abcd = 3       #  &quot;Unresolved attribute <code>abcd</code> on type <code>MultiChar</code>&quot;</p>
+</li>
+<li><p>Attrs Testing</p>
+<ul>
+<li>Attrs uses tuple-style <code>__slots__</code> = (&quot;field1&quot;, &quot;field2&quot;) which this implementation handles perfectly</li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @BlairAllan on 2025-09-29 18:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @BlairAllan on 2025-09-29 18:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @BlairAllan on 2025-09-29 18:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @BlairAllan on 2025-09-29 18:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[ty] Feature/improve slots support" to "[ty] Improved __slots__ support" by @BlairAllan on 2025-09-29 18:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-09-29 18:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-09-29 18:45</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a></h2>
+<details>
+<summary>Changes were detected when running ty on typing conformance tests</summary>
+
+<pre><code class="language-diff">--- old-output.txt	2025-10-04 19:12:45.815014136 +0000
++++ new-output.txt	2025-10-04 19:12:49.103038310 +0000
+@@ -216,6 +216,7 @@
+ dataclasses_order.py:50:4: error[unsupported-operator] Operator `&lt;` is not supported for types `DC1` and `DC2`
+ dataclasses_postinit.py:28:7: error[unresolved-attribute] Type `DC1` has no attribute `x`
+ dataclasses_postinit.py:29:7: error[unresolved-attribute] Type `DC1` has no attribute `y`
++dataclasses_slots.py:12:5: error[invalid-slots-annotation] Attribute `x` is not in __slots__
+ dataclasses_slots.py:66:1: error[unresolved-attribute] Type `&lt;class 'DC6'&gt;` has no attribute `__slots__`
+ dataclasses_slots.py:69:1: error[unresolved-attribute] Type `DC6` has no attribute `__slots__`
+ dataclasses_transform_class.py:60:8: error[missing-argument] No argument provided for required parameter `not_a_field` of bound method `__init__`
+@@ -856,5 +857,5 @@
+ typeddicts_usage.py:28:17: error[missing-typed-dict-key] Missing required key 'name' in TypedDict `Movie` constructor
+ typeddicts_usage.py:28:18: error[invalid-key] Invalid key access on TypedDict `Movie`: Unknown key &quot;title&quot;
+ typeddicts_usage.py:40:24: error[invalid-type-form] The special form `typing.TypedDict` is not allowed in type expressions. Did you mean to use a concrete TypedDict or `collections.abc.Mapping[str, object]` instead?
+-Found 857 diagnostics
++Found 858 diagnostics
+ WARN A fatal error occurred while checking some files. Not all project files were analyzed. See the diagnostics list above for details.
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-09-29 18:46</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">bidict (https://github.com/jab/bidict)
++ bidict/_orderedbase.py:145:9: error[unresolved-attribute] Unresolved attribute `_sntl` on type `OrderedBidictBase[VT@OrderedBidictBase, KT@OrderedBidictBase]`.
+- Found 13 diagnostics
++ Found 14 diagnostics
+
+attrs (https://github.com/python-attrs/attrs)
+- src/attr/_make.py:686:29: error[unresolved-attribute] Type `Attribute` has no attribute `name`
++ src/attr/_make.py:686:29: warning[possibly-missing-attribute] Attribute `name` on type `Attribute` may be missing
+- tests/test_slots.py:339:23: error[unresolved-attribute] Type `&lt;class 'HasXSlot'&gt;` has no attribute `x`
++ tests/test_slots.py:339:23: error[unresolved-attribute] Attribute `x` can only be accessed on instances, not on the class object `&lt;class 'HasXSlot'&gt;` itself.
+
+anyio (https://github.com/agronholm/anyio)
++ src/anyio/_core/_fileio.py:96:41: error[unresolved-attribute] Type `object` has no attribute `read1`
++ src/anyio/_core/_fileio.py:105:41: error[unresolved-attribute] Type `object` has no attribute `readinto`
++ src/anyio/_core/_fileio.py:108:41: error[unresolved-attribute] Type `object` has no attribute `readinto1`
++ src/anyio/_core/_tempfile.py:347:20: error[unresolved-attribute] Type `object` has no attribute `read1`
++ src/anyio/_core/_tempfile.py:368:13: error[unresolved-attribute] Type `object` has no attribute `readinto`
++ src/anyio/_core/_tempfile.py:375:13: error[unresolved-attribute] Type `object` has no attribute `readinto`
+- Found 226 diagnostics
++ Found 232 diagnostics
+
+parso (https://github.com/davidhalter/parso)
++ parso/tree.py:30:5: error[invalid-slots-annotation] Attribute `type` is not in __slots__
+- Found 75 diagnostics
++ Found 76 diagnostics
+
+python-chess (https://github.com/niklasf/python-chess)
++ chess/engine.py:1563:17: error[unresolved-attribute] Unresolved attribute `may_ponderhit` on type `UciProtocol`.
++ chess/engine.py:1563:64: error[unresolved-attribute] Type `UciProtocol` has no attribute `first_game`
++ chess/engine.py:1563:94: error[unresolved-attribute] Type `UciProtocol` has no attribute `game`
+- Found 12 diagnostics
++ Found 15 diagnostics
+
+bandersnatch (https://github.com/pypa/bandersnatch)
++ src/bandersnatch_storage_plugins/swift.py:231:5: error[invalid-slots-annotation] Attribute `BACKEND` is not in __slots__
+- Found 116 diagnostics
++ Found 117 diagnostics
+
+spack (https://github.com/spack/spack)
++ lib/spack/spack/vendor/ruamel/yaml/comments.py:519:17: error[invalid-slots] __slots__ items must be strings, not 'non-string'
++ lib/spack/spack/vendor/ruamel/yaml/comments.py:791:17: error[invalid-slots] __slots__ items must be strings, not 'non-string'
++ lib/spack/spack/vendor/ruamel/yaml/comments.py:1087:17: error[invalid-slots] __slots__ items must be strings, not 'non-string'
++ lib/spack/spack/vendor/ruamel/yaml/comments.py:1177:17: error[invalid-slots] __slots__ items must be strings, not 'non-string'
++ lib/spack/spack/vendor/ruamel/yaml/comments.py:1181:17: error[invalid-slots] __slots__ items must be strings, not 'non-string'
++ lib/spack/spack/vendor/ruamel/yaml/scalarstring.py:58:17: error[invalid-slots-on-builtin] nonempty __slots__ not supported for subtype of built-in type
++ lib/spack/spack/vendor/ruamel/yaml/scalarstring.py:71:17: error[invalid-slots-on-builtin] nonempty __slots__ not supported for subtype of built-in type
+- Found 7518 diagnostics
++ Found 7525 diagnostics
+
+websockets (https://github.com/aaugustin/websockets)
++ src/websockets/asyncio/connection.py:1205:12: error[unresolved-attribute] Type `Connection` has no attribute `protocol`
++ src/websockets/asyncio/connection.py:1208:12: error[unresolved-attribute] Type `Connection` has no attribute `fragmented_send_waiter`
++ src/websockets/asyncio/connection.py:1213:17: error[unresolved-attribute] Type `Connection` has no attribute `logger`
++ src/websockets/asyncio/connection.py:1221:21: error[unresolved-attribute] Type `Connection` has no attribute `protocol`
++ src/websockets/asyncio/connection.py:1229:17: error[unresolved-attribute] Type `Connection` has no attribute `logger`
++ src/websockets/asyncio/router.py:214:9: error[unresolved-attribute] Unresolved attribute `handler` on type `ServerConnection`.
++ src/websockets/asyncio/router.py:214:29: error[unresolved-attribute] Unresolved attribute `handler_kwargs` on type `ServerConnection`.
++ src/websockets/asyncio/router.py:219:22: error[unresolved-attribute] Type `ServerConnection` has no attribute `handler`
++ src/websockets/asyncio/router.py:219:55: error[unresolved-attribute] Type `ServerConnection` has no attribute `handler_kwargs`
++ src/websockets/asyncio/server.py:362:21: error[unresolved-attribute] Type `ServerConnection` has no attribute `transport`
++ src/websockets/asyncio/server.py:365:21: error[unresolved-attribute] Type `ServerConnection` has no attribute `logger`
++ src/websockets/asyncio/server.py:366:21: error[unresolved-attribute] Type `ServerConnection` has no attribute `transport`
++ src/websockets/asyncio/server.py:369:16: error[unresolved-attribute] Type `ServerConnection` has no attribute `protocol`
++ src/websockets/asyncio/server.py:371:17: error[unresolved-attribute] Type `ServerConnection` has no attribute `transport`
++ src/websockets/asyncio/server.py:378:17: error[unresolved-attribute] Type `ServerConnection` has no attribute `logger`
++ src/websockets/asyncio/server.py:389:13: error[unresolved-attribute] Type `ServerConnection` has no attribute `transport`
++ src/websockets/asyncio/server.py:795:40: error[unresolved-attribute] Type `ServerConnection` has no attribute `protocol`
++ src/websockets/asyncio/server.py:994:9: error[unresolved-attribute] Unresolved attribute `username` on type `ServerConnection`.
++ src/websockets/legacy/protocol.py:1607:12: error[unresolved-attribute] Type `WebSocketCommonProtocol` has no attribute `state`
++ src/websockets/legacy/protocol.py:1610:12: error[unresolved-attribute] Type `WebSocketCommonProtocol` has no attribute `_fragmented_message_waiter`
++ src/websockets/legacy/protocol.py:1615:17: error[unresolved-attribute] Type `WebSocketCommonProtocol` has no attribute `logger`
++ src/websockets/legacy/protocol.py:1628:17: error[unresolved-attribute] Type `WebSocketCommonProtocol` has no attribute `logger`
++ src/websockets/legacy/server.py:1184:30: error[unresolved-attribute] Type `WebSocketServerProtocol` has no attribute `path`
+- Found 42 diagnostics
++ Found 65 diagnostics
+
+yarl (https://github.com/aio-libs/yarl)
++ tests/test_quoting.py:18:16: error[unresolved-attribute] Type `FixtureRequest` has no attribute `param`
++ tests/test_quoting.py:22:16: error[unresolved-attribute] Type `FixtureRequest` has no attribute `param`
+- tests/test_quoting.py:32:31: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- tests/test_quoting.py:36:31: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+
+pip (https://github.com/pypa/pip)
++ src/pip/_vendor/rich/__main__.py:42:5: error[unresolved-attribute] Unresolved attribute `title` on type `Table`.
++ src/pip/_vendor/rich/__main__.py:73:5: error[unresolved-attribute] Unresolved attribute `pad_edge` on type `Table`.
++ src/pip/_vendor/rich/box.py:469:9: error[unresolved-attribute] Unresolved attribute `box` on type `Table`.
++ src/pip/_vendor/rich/box.py:470:9: error[unresolved-attribute] Unresolved attribute `title` on type `Table`.
++ src/pip/_vendor/rich/columns.py:121:9: error[unresolved-attribute] Unresolved attribute `title` on type `Table`.
++ src/pip/_vendor/rich/columns.py:183:5: error[unresolved-attribute] Unresolved attribute `column_first` on type `Columns`.
++ src/pip/_vendor/rich/columns.py:185:5: error[unresolved-attribute] Unresolved attribute `right_to_left` on type `Columns`.
++ src/pip/_vendor/rich/console.py:1454:13: error[unresolved-attribute] Unresolved attribute `justify` on type `Text`.
++ src/pip/_vendor/rich/console.py:1455:13: error[unresolved-attribute] Unresolved attribute `overflow` on type `Text`.
++ src/pip/_vendor/rich/panel.py:117:13: error[invalid-assignment] Object of type `Literal[&quot;&quot;]` is not assignable to attribute `end` on type `Text | Unknown`
++ src/pip/_vendor/rich/panel.py:119:13: error[invalid-assignment] Object of type `Literal[True]` is not assignable to attribute `no_wrap` on type `Text | Unknown`
++ src/pip/_vendor/rich/panel.py:133:13: error[invalid-assignment] Object of type `Literal[&quot;&quot;]` is not assignable to attribute `end` on type `Text | Unknown`
++ src/pip/_vendor/rich/panel.py:135:13: error[invalid-assignment] Object of type `Literal[True]` is not assignable to attribute `no_wrap` on type `Text | Unknown`
++ src/pip/_vendor/rich/panel.py:177:16: error[unresolved-attribute] Type `Text` has no attribute `style`
++ src/pip/_vendor/rich/panel.py:178:48: error[unresolved-attribute] Type `Text` has no attribute `style`
++ src/pip/_vendor/rich/progress.py:1715:17: error[unresolved-attribute] Type `Progress` has no attribute `log`
++ src/pip/_vendor/rich/syntax.py:234:16: error[unresolved-attribute] Type `Syntax` has no attribute `_padding`
++ src/pip/_vendor/rich/syntax.py:237:9: error[unresolved-attribute] Unresolved attribute `_padding` on type `Syntax`.
++ src/pip/_vendor/rich/table.py:981:9: error[unresolved-attribute] Unresolved attribute `width` on type `Table`.
++ src/pip/_vendor/rich/table.py:986:9: error[unresolved-attribute] Unresolved attribute `width` on type `Table`.
++ src/pip/_vendor/rich/table.py:988:9: error[unresolved-attribute] Unresolved attribute `row_styles` on type `Table`.
++ src/pip/_vendor/rich/table.py:993:9: error[unresolved-attribute] Unresolved attribute `width` on type `Table`.
++ src/pip/_vendor/rich/table.py:995:9: error[unresolved-attribute] Unresolved attribute `row_styles` on type `Table`.
++ src/pip/_vendor/rich/table.py:996:9: error[unresolved-attribute] Unresolved attribute `leading` on type `Table`.
++ src/pip/_vendor/rich/table.py:1000:9: error[unresolved-attribute] Unresolved attribute `width` on type `Table`.
++ src/pip/_vendor/rich/table.py:1002:9: error[unresolved-attribute] Unresolved attribute `row_styles` on type `Table`.
++ src/pip/_vendor/rich/table.py:1003:9: error[unresolved-attribute] Unresolved attribute `show_lines` on type `Table`.
++ src/pip/_vendor/rich/table.py:1004:9: error[unresolved-attribute] Unresolved attribute `leading` on type `Table`.
++ src/pip/_vendor/rich/text.py:288:9: error[unresolved-attribute] Unresolved attribute `justify` on type `Text`.
++ src/pip/_vendor/rich/text.py:289:9: error[unresolved-attribute] Unresolved attribute `overflow` on type `Text`.
++ src/pip/_vendor/rich/text.py:290:9: error[unresolved-attribute] Unresolved attribute `end` on type `Text`.
++ src/pip/_vendor/rich/text.py:807:25: error[unresolved-attribute] Type `Text` has no attribute `_text`
++ src/pip/_vendor/rich/text.py:808:16: error[unresolved-attribute] Type `Text` has no attribute `style`
++ src/pip/_vendor/rich/text.py:809:63: error[unresolved-attribute] Type `Text` has no attribute `style`
++ src/pip/_vendor/rich/text.py:997:20: error[unresolved-attribute] Type `Text &amp; ~str` has no attribute `style`
++ src/pip/_vendor/rich/text.py:999:69: error[unresolved-attribute] Type `Text &amp; ~str` has no attribute `style`
++ src/pip/_vendor/rich/text.py:1021:12: error[unresolved-attribute] Type `Text` has no attribute `style`
++ src/pip/_vendor/rich/text.py:1022:76: error[unresolved-attribute] Type `Text` has no attribute `style`
++ src/pip/_vendor/rich/traceback.py:719:9: error[unresolved-attribute] Unresolved attribute `no_wrap` on type `Text`.
++ src/pip/_vendor/rich/tree.py:249:5: error[unresolved-attribute] Unresolved attribute `expanded` on type `Tree`.
+- Found 467 diagnostics
++ Found 507 diagnostics
+
+graphql-core (https://github.com/graphql-python/graphql-core)
++ src/graphql/language/ast.py:552:5: error[invalid-slots-annotation] Attribute `name` is not in __slots__
++ src/graphql/language/ast.py:722:5: error[invalid-slots-annotation] Attribute `directives` is not in __slots__
++ src/graphql/language/ast.py:729:5: error[invalid-slots-annotation] Attribute `directives` is not in __slots__
++ src/graphql/language/ast.py:757:5: error[invalid-slots-annotation] Attribute `directives` is not in __slots__
++ src/graphql/language/ast.py:764:5: error[invalid-slots-annotation] Attribute `directives` is not in __slots__
++ src/graphql/language/ast.py:771:5: error[invalid-slots-annotation] Attribute `directives` is not in __slots__
++ src/graphql/language/ast.py:786:5: error[invalid-slots-annotation] Attribute `directives` is not in __slots__
+- src/graphql/validation/rules/known_type_names.py:47:38: error[unresolved-attribute] Type `DefinitionNode` has no attribute `name`
+- src/graphql/validation/rules/unique_directives_per_location.py:68:25: error[unresolved-attribute] Type `Node &amp; ~SchemaDefinitionNode &amp; ~SchemaExtensionNode` has no attribute `name`
++ tests/language/test_ast.py:232:33: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- tests/language/test_parser.py:655:16: warning[possibly-missing-attribute] Attribute `kind` on type `(Location &amp; ~AlwaysTruthy &amp; ~AlwaysFalsy) | (Token &amp; ~AlwaysFalsy)` may be missing
++ tests/language/test_parser.py:655:16: warning[possibly-missing-attribute] Attribute `kind` on type `(Location &amp; ~AlwaysTruthy &amp; ~AlwaysFalsy) | (Unknown &amp; ~AlwaysFalsy) | (Token &amp; ~AlwaysFalsy)` may be missing
+- tests/language/test_parser.py:656:16: warning[possibly-missing-attribute] Attribute `value` on type `(Location &amp; ~AlwaysTruthy &amp; ~AlwaysFalsy) | (Token &amp; ~AlwaysFalsy)` may be missing
++ tests/language/test_parser.py:656:16: warning[possibly-missing-attribute] Attribute `value` on type `(Location &amp; ~AlwaysTruthy &amp; ~AlwaysFalsy) | (Unknown &amp; ~AlwaysFalsy) | (Token &amp; ~AlwaysFalsy)` may be missing
++ tests/language/test_source.py:85:30: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ tests/language/test_source.py:86:38: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 424 diagnostics
++ Found 432 diagnostics
+
+scrapy (https://github.com/scrapy/scrapy)
++ scrapy/cmdline.py:201:5: error[unresolved-attribute] Unresolved attribute `settings` on type `ScrapyCommand`.
++ scrapy/commands/fetch.py:58:20: error[unresolved-attribute] Type `Response` has no attribute `request`
++ scrapy/commands/fetch.py:59:33: error[unresolved-attribute] Type `Response` has no attribute `request`
++ scrapy/commands/fetch.py:61:33: error[unresolved-attribute] Type `Response` has no attribute `headers`
++ scrapy/commands/parse.py:300:41: error[unresolved-attribute] Type `Request` has no attribute `callback`
++ scrapy/commands/parse.py:301:17: error[unresolved-attribute] Unresolved attribute `callback` on type `Request`.
++ scrapy/commands/parse.py:368:37: error[unresolved-attribute] Type `Request` has no attribute `callback`
++ scrapy/commands/parse.py:369:16: error[unresolved-attribute] Type `Request` has no attribute `callback`
++ scrapy/commands/parse.py:372:9: error[unresolved-attribute] Unresolved attribute `callback` on type `Request`.
++ scrapy/contracts/__init__.py:37:18: error[unresolved-attribute] Type `Request` has no attribute `callback`
++ scrapy/contracts/__init__.py:57:13: error[unresolved-attribute] Unresolved attribute `callback` on type `Request`.
++ scrapy/contracts/__init__.py:63:18: error[unresolved-attribute] Type `Request` has no attribute `callback`
++ scrapy/contracts/__init__.py:84:13: error[unresolved-attribute] Unresolved attribute `callback` on type `Request`.
++ scrapy/contracts/__init__.py:177:14: error[unresolved-attribute] Type `Request` has no attribute `callback`
++ scrapy/contracts/__init__.py:194:9: error[unresolved-attribute] Unresolved attribute `callback` on type `Request`.
++ scrapy/contracts/__init__.py:195:9: error[unresolved-attribute] Unresolved attribute `errback` on type `Request`.
++ scrapy/core/downloader/handlers/http11.py:390:29: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ scrapy/core/downloader/handlers/http11.py:424:27: error[unresolved-attribute] Type `Request` has no attribute `method`
++ scrapy/core/downloader/handlers/http11.py:425:29: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ scrapy/core/downloader/handlers/s3.py:93:24: error[unresolved-attribute] Type `Request` has no attribute `method`
++ scrapy/core/downloader/handlers/s3.py:95:25: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ scrapy/core/downloader/webclient.py:150:39: error[unresolved-attribute] Type `Request` has no attribute `method`
++ scrapy/core/downloader/webclient.py:152:41: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ scrapy/core/scheduler.py:345:16: error[unresolved-attribute] Type `Request` has no attribute `dont_filter`
++ scrapy/core/scraper.py:316:17: error[unresolved-attribute] Unresolved attribute `request` on type `Response`.
++ scrapy/core/scraper.py:317:20: error[unresolved-attribute] Type `Response` has no attribute `request`
++ scrapy/core/scraper.py:318:24: error[unresolved-attribute] Type `Response` has no attribute `request`
++ scrapy/core/scraper.py:320:41: error[unresolved-attribute] Type `Response` has no attribute `request`
+- scrapy/core/scraper.py:326:70: error[invalid-argument-type] Argument to function `warn_on_generator_with_return_value` is incorrect: Expected `(...) -&gt; Any`, found `((Unknown, /) -&gt; Any) | None`
+- scrapy/core/scraper.py:327:22: error[call-non-callable] Object of type `None` is not callable
++ scrapy/core/scraper.py:324:20: error[unresolved-attribute] Type `Request` has no attribute `errback`
++ scrapy/core/scraper.py:326:70: error[unresolved-attribute] Type `Request` has no attribute `errback`
++ scrapy/core/scraper.py:327:22: error[unresolved-attribute] Type `Request` has no attribute `errback`
++ scrapy/downloadermiddlewares/ajaxcrawl.py:55:54: error[unresolved-attribute] Type `HtmlResponse` has no attribute `status`
++ scrapy/downloadermiddlewares/ajaxcrawl.py:58:12: error[unresolved-attribute] Type `Request` has no attribute `method`
++ scrapy/downloadermiddlewares/cookies.py:88:9: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ scrapy/downloadermiddlewares/cookies.py:114:26: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ scrapy/downloadermiddlewares/cookies.py:125:26: error[unresolved-attribute] Type `Response` has no attribute `headers`
++ scrapy/downloadermiddlewares/cookies.py:178:16: error[unresolved-attribute] Type `Request` has no attribute `cookies`
++ scrapy/downloadermiddlewares/cookies.py:181:23: error[unresolved-attribute] Type `Request` has no attribute `cookies`
++ scrapy/downloadermiddlewares/cookies.py:182:65: error[unresolved-attribute] Type `Request` has no attribute `cookies`
++ scrapy/downloadermiddlewares/cookies.py:184:23: error[unresolved-attribute] Type `Request` has no attribute `cookies`
++ scrapy/downloadermiddlewares/defaultheaders.py:39:13: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ scrapy/downloadermiddlewares/httpauth.py:49:41: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ scrapy/downloadermiddlewares/httpauth.py:52:13: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ scrapy/downloadermiddlewares/httpcache.py:117:24: error[unresolved-attribute] Type `Response` has no attribute `flags`
++ scrapy/downloadermiddlewares/httpcache.py:123:26: error[unresolved-attribute] Type `Response` has no attribute `headers`
++ scrapy/downloadermiddlewares/httpcache.py:124:13: error[unresolved-attribute] Type `Response` has no attribute `headers`
++ scrapy/downloadermiddlewares/httpcompression.py:101:9: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ scrapy/downloadermiddlewares/httpcompression.py:108:12: error[unresolved-attribute] Type `Request` has no attribute `method`
++ scrapy/downloadermiddlewares/httpcompression.py:111:32: error[unresolved-attribute] Type `Response` has no attribute `headers`
++ scrapy/downloadermiddlewares/httpcompression.py:134:17: error[unresolved-attribute] Type `Response` has no attribute `headers`
++ scrapy/downloadermiddlewares/httpcompression.py:142:29: error[unresolved-attribute] Type `Response` has no attribute `headers`
++ scrapy/downloadermiddlewares/httpproxy.py:95:13: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ scrapy/downloadermiddlewares/httpproxy.py:99:46: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ scrapy/downloadermiddlewares/httpproxy.py:100:25: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ scrapy/downloadermiddlewares/httpproxy.py:102:40: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ scrapy/downloadermiddlewares/httpproxy.py:106:21: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ scrapy/downloadermiddlewares/offsite.py:50:13: error[unresolved-attribute] Type `Request` has no attribute `dont_filter`
++ scrapy/downloadermiddlewares/redirect.py:114:13: error[unresolved-attribute] Unresolved attribute `dont_filter` on type `Request`.
++ scrapy/downloadermiddlewares/redirect.py:114:38: error[unresolved-attribute] Type `Request` has no attribute `dont_filter`
++ scrapy/downloadermiddlewares/redirect.py:115:13: error[unresolved-attribute] Unresolved attribute `priority` on type `Request`.
++ scrapy/downloadermiddlewares/redirect.py:115:35: error[unresolved-attribute] Type `Request` has no attribute `priority`
++ scrapy/downloadermiddlewares/redirect.py:138:9: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ scrapy/downloadermiddlewares/redirect.py:139:9: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ scrapy/downloadermiddlewares/redirect.py:155:16: error[unresolved-attribute] Type `Response` has no attribute `status`
++ scrapy/downloadermiddlewares/redirect.py:157:16: error[unresolved-attribute] Type `Response` has no attribute `status`
++ scrapy/downloadermiddlewares/redirect.py:163:30: error[unresolved-attribute] Type `Response` has no attribute `headers`
++ scrapy/downloadermiddlewares/redirect.py:163:50: error[unresolved-attribute] Type `Response` has no attribute `status`
++ scrapy/downloadermiddlewares/redirect.py:166:16: error[unresolved-attribute] Type `Response` has no attribute `headers`
++ scrapy/downloadermiddlewares/redirect.py:167:36: error[unresolved-attribute] Type `Response` has no attribute `headers`
++ scrapy/downloadermiddlewares/redirect.py:168:12: error[unresolved-attribute] Type `Response` has no attribute `headers`
++ scrapy/downloadermiddlewares/redirect.py:177:12: error[unresolved-attribute] Type `Response` has no attribute `status`
++ scrapy/downloadermiddlewares/redirect.py:177:50: error[unresolved-attribute] Type `Request` has no attribute `method`
++ scrapy/downloadermiddlewares/redirect.py:178:56: error[unresolved-attribute] Type `Response` has no attribute `status`
++ scrapy/downloadermiddlewares/redirect.py:181:52: error[unresolved-attribute] Type `Response` has no attribute `status`
++ scrapy/downloadermiddlewares/redirect.py:198:16: error[unresolved-attribute] Type `Request` has no attribute `method`
++ scrapy/downloadermiddlewares/retry.py:88:16: error[unresolved-attribute] Type `Spider` has no attribute `crawler`
++ scrapy/downloadermiddlewares/retry.py:89:12: error[unresolved-attribute] Type `Spider` has no attribute `crawler`
++ scrapy/downloadermiddlewares/retry.py:90:13: error[unresolved-attribute] Type `Spider` has no attribute `crawler`
++ scrapy/downloadermiddlewares/retry.py:104:9: error[unresolved-attribute] Unresolved attribute `dont_filter` on type `Request`.
++ scrapy/downloadermiddlewares/retry.py:107:9: error[unresolved-attribute] Unresolved attribute `priority` on type `Request`.
++ scrapy/downloadermiddlewares/retry.py:107:32: error[unresolved-attribute] Type `Request` has no attribute `priority`
++ scrapy/downloadermiddlewares/retry.py:152:12: error[unresolved-attribute] Type `Response` has no attribute `status`
++ scrapy/downloadermiddlewares/retry.py:153:46: error[unresolved-attribute] Type `Response` has no attribute `status`
++ scrapy/downloadermiddlewares/robotstxt.py:72:25: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ scrapy/downloadermiddlewares/robotstxt.py:122:48: error[unresolved-attribute] Type `Response` has no attribute `status`
++ scrapy/downloadermiddlewares/stats.py:54:65: error[unresolved-attribute] Type `Request` has no attribute `method`
++ scrapy/downloadermiddlewares/stats.py:64:66: error[unresolved-attribute] Type `Response` has no attribute `status`
++ scrapy/downloadermiddlewares/stats.py:67:31: error[unresolved-attribute] Type `Response` has no attribute `headers`
++ scrapy/downloadermiddlewares/stats.py:68:31: error[unresolved-attribute] Type `Response` has no attribute `status`
++ scrapy/downloadermiddlewares/useragent.py:38:13: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ scrapy/dupefilters.py:154:16: error[unresolved-attribute] Type `Spider` has no attribute `crawler`
++ scrapy/dupefilters.py:155:9: error[unresolved-attribute] Type `Spider` has no attribute `crawler`
++ scrapy/extensions/feedexport.py:146:16: error[unresolved-attribute] Type `Spider` has no attribute `crawler`
++ scrapy/extensions/httpcache.py:49:16: error[unresolved-attribute] Type `Response` has no attribute `status`
++ scrapy/extensions/httpcache.py:78:19: error[unresolved-attribute] Type `Request | Response` has no attribute `headers`
++ scrapy/extensions/httpcache.py:103:12: error[unresolved-attribute] Type `Response` has no attribute `status`
++ scrapy/extensions/httpcache.py:109:46: error[unresolved-attribute] Type `Response` has no attribute `headers`
++ scrapy/extensions/httpcache.py:112:12: error[unresolved-attribute] Type `Response` has no attribute `status`
++ scrapy/extensions/httpcache.py:115:12: error[unresolved-attribute] Type `Response` has no attribute `status`
++ scrapy/extensions/httpcache.py:116:40: error[unresolved-attribute] Type `Response` has no attribute `headers`
++ scrapy/extensions/httpcache.py:116:71: error[unresolved-attribute] Type `Response` has no attribute `headers`
++ scrapy/extensions/httpcache.py:170:12: error[unresolved-attribute] Type `Response` has no attribute `status`
++ scrapy/extensions/httpcache.py:176:16: error[unresolved-attribute] Type `Response` has no attribute `status`
++ scrapy/extensions/httpcache.py:181:32: error[unresolved-attribute] Type `Response` has no attribute `headers`
++ scrapy/extensions/httpcache.py:182:13: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ scrapy/extensions/httpcache.py:182:53: error[unresolved-attribute] Type `Response` has no attribute `headers`
++ scrapy/extensions/httpcache.py:186:23: error[unresolved-attribute] Type `Response` has no attribute `headers`
++ scrapy/extensions/httpcache.py:187:13: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ scrapy/extensions/httpcache.py:187:49: error[unresolved-attribute] Type `Response` has no attribute `headers`
+- scrapy/extensions/httpcache.py:242:54: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ scrapy/extensions/httpcache.py:206:33: error[unresolved-attribute] Type `Response` has no attribute `headers`
++ scrapy/extensions/httpcache.py:209:26: error[unresolved-attribute] Type `Response` has no attribute `headers`
++ scrapy/extensions/httpcache.py:210:40: error[unresolved-attribute] Type `Response` has no attribute `headers`
++ scrapy/extensions/httpcache.py:217:41: error[unresolved-attribute] Type `Response` has no attribute `headers`
++ scrapy/extensions/httpcache.py:222:12: error[unresolved-attribute] Type `Response` has no attribute `status`
++ scrapy/extensions/httpcache.py:236:33: error[unresolved-attribute] Type `Response` has no attribute `headers`
++ scrapy/extensions/httpcache.py:240:22: error[unresolved-attribute] Type `Response` has no attribute `headers`
++ scrapy/extensions/httpcache.py:267:16: error[unresolved-attribute] Type `Spider` has no attribute `crawler`
++ scrapy/extensions/httpcache.py:269:13: error[unresolved-attribute] Type `Spider` has no attribute `crawler`
++ scrapy/extensions/httpcache.py:291:23: error[unresolved-attribute] Type `Response` has no attribute `status`
++ scrapy/extensions/httpcache.py:293:29: error[unresolved-attribute] Type `Response` has no attribute `headers`
++ scrapy/extensions/httpcache.py:330:16: error[unresolved-attribute] Type `Spider` has no attribute `crawler`
++ scrapy/extensions/httpcache.py:331:31: error[unresolved-attribute] Type `Spider` has no attribute `crawler`
++ scrapy/extensions/httpcache.py:361:23: error[unresolved-attribute] Type `Request` has no attribute `method`
++ scrapy/extensions/httpcache.py:362:23: error[unresolved-attribute] Type `Response` has no attribute `status`
++ scrapy/extensions/httpcache.py:371:41: error[unresolved-attribute] Type `Response` has no attribute `headers`
++ scrapy/extensions/httpcache.py:375:41: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ scrapy/extensions/throttle.py:126:12: error[unresolved-attribute] Type `Response` has no attribute `status`
++ scrapy/logformatter.py:79:29: error[unresolved-attribute] Type `Request` has no attribute `flags`
++ scrapy/logformatter.py:79:50: error[unresolved-attribute] Type `Request` has no attribute `flags`
++ scrapy/logformatter.py:80:30: error[unresolved-attribute] Type `Response` has no attribute `flags`
++ scrapy/logformatter.py:80:52: error[unresolved-attribute] Type `Response` has no attribute `flags`
++ scrapy/logformatter.py:85:27: error[unresolved-attribute] Type `Response` has no attribute `status`
++ scrapy/logformatter.py:124:21: error[unresolved-attribute] Type `Spider` has no attribute `crawler`
++ scrapy/pipelines/files.py:648:12: error[unresolved-attribute] Type `Response` has no attribute `status`
++ scrapy/pipelines/files.py:652:28: error[unresolved-attribute] Type `Response` has no attribute `status`
++ scrapy/pipelines/files.py:666:42: error[unresolved-attribute] Type `Response` has no attribute `flags`
++ scrapy/pipelines/media.py:192:14: error[unresolved-attribute] Type `Request` has no attribute `errback`
++ scrapy/pipelines/media.py:193:9: error[unresolved-attribute] Unresolved attribute `callback` on type `Request`.
++ scrapy/pipelines/media.py:194:9: error[unresolved-attribute] Unresolved attribute `errback` on type `Request`.
++ scrapy/pqueues.py:144:17: error[unresolved-attribute] Type `Request` has no attribute `priority`
++ scrapy/shell.py:71:23: error[unresolved-attribute] Type `Response &amp; ~AlwaysFalsy` has no attribute `request`
++ scrapy/shell.py:217:11: error[unresolved-attribute] Type `Spider` has no attribute `crawler`
++ scrapy/shell.py:232:24: error[unresolved-attribute] Type `Request` has no attribute `callback`
++ scrapy/shell.py:233:23: error[unresolved-attribute] Type `Request` has no attribute `errback`
++ scrapy/shell.py:236:9: error[unresolved-attribute] Unresolved attribute `callback` on type `Request`.
++ scrapy/shell.py:237:9: error[unresolved-attribute] Unresolved attribute `errback` on type `Request`.
++ scrapy/shell.py:242:8: error[unresolved-attribute] Type `Request` has no attribute `callback`
++ scrapy/shell.py:243:23: error[unresolved-attribute] Type `Request` has no attribute `callback`
++ scrapy/shell.py:244:8: error[unresolved-attribute] Type `Request` has no attribute `errback`
++ scrapy/shell.py:245:22: error[unresolved-attribute] Type `Request` has no attribute `errback`
++ scrapy/shell.py:247:5: error[unresolved-attribute] Unresolved attribute `callback` on type `Request`.
++ scrapy/shell.py:247:23: error[unresolved-attribute] Unresolved attribute `errback` on type `Request`.
++ scrapy/spidermiddlewares/depth.py:90:13: error[unresolved-attribute] Type `Request` has no attribute `priority`
++ scrapy/spidermiddlewares/httperror.py:57:19: error[unresolved-attribute] Type `Response` has no attribute `status`
++ scrapy/spidermiddlewares/httperror.py:72:12: error[unresolved-attribute] Type `Response` has no attribute `status`
++ scrapy/spidermiddlewares/httperror.py:84:60: error[unresolved-attribute] Type `Response` has no attribute `status`
++ scrapy/spidermiddlewares/referer.py:367:29: error[unresolved-attribute] Type `Response` has no attribute `headers`
++ scrapy/spidermiddlewares/referer.py:384:13: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ scrapy/spidermiddlewares/referer.py:391:32: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ scrapy/spidermiddlewares/referer.py:405:25: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ scrapy/spidermiddlewares/referer.py:407:25: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ scrapy/utils/misc.py:289:12: error[unresolved-attribute] Type `Spider` has no attribute `settings`
++ scrapy/utils/request.py:85:30: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ scrapy/utils/request.py:88:45: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ scrapy/utils/request.py:91:34: error[unresolved-attribute] Type `Request` has no attribute `method`
++ scrapy/utils/request.py:155:5: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ scrapy/utils/request.py:166:18: error[unresolved-attribute] Type `Request` has no attribute `method`
++ scrapy/utils/request.py:168:8: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ scrapy/utils/request.py:169:14: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ scrapy/utils/request.py:177:16: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ scrapy/utils/request.py:214:14: error[unresolved-attribute] Type `Request` has no attribute `method`
++ scrapy/utils/request.py:219:59: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ scrapy/utils/request.py:219:59: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ scrapy/utils/request.py:219:59: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ scrapy/utils/request.py:224:8: error[unresolved-attribute] Type `Request` has no attribute `cookies`
++ scrapy/utils/request.py:225:23: error[unresolved-attribute] Type `Request` has no attribute `cookies`
++ scrapy/utils/request.py:226:55: error[unresolved-attribute] Type `Request` has no attribute `cookies`
++ scrapy/utils/request.py:226:55: error[unresolved-attribute] Type `Request` has no attribute `cookies`
++ scrapy/utils/request.py:226:55: error[unresolved-attribute] Type `Request` has no attribute `cookies`
++ scrapy/utils/request.py:228:25: error[unresolved-attribute] Type `Request` has no attribute `cookies`
++ scrapy/utils/request.py:231:26: error[unresolved-attribute] Type `Request` has no attribute `cookies`
++ scrapy/utils/request.py:231:26: error[unresolved-attribute] Type `Request` has no attribute `cookies`
++ scrapy/utils/request.py:231:26: error[unresolved-attribute] Type `Request` has no attribute `cookies`
++ tests/test_command_check.py:155:9: error[unresolved-attribute] Unresolved attribute `settings` on type `Command`.
++ tests/test_command_check.py:180:9: error[unresolved-attribute] Unresolved attribute `settings` on type `Command`.
++ tests/test_command_parse.py:427:9: error[unresolved-attribute] Unresolved attribute `settings` on type `Command`.
++ tests/test_commands.py:378:9: error[unresolved-attribute] Unresolved attribute `settings` on type `Command`.
+- tests/test_contracts.py:576:13: error[call-non-callable] Object of type `None` is not callable
++ tests/test_contracts.py:576:13: error[unresolved-attribute] Type `Request | None` has no attribute `callback`
+- tests/test_contracts.py:576:13: warning[possibly-missing-attribute] Attribute `callback` on type `Request | None` may be missing
+- tests/test_contracts.py:590:13: error[call-non-callable] Object of type `None` is not callable
++ tests/test_contracts.py:590:13: error[unresolved-attribute] Type `Request | None` has no attribute `callback`
+- tests/test_contracts.py:590:13: warning[possibly-missing-attribute] Attribute `callback` on type `Request | None` may be missing
+- tests/test_crawler.py:503:46: warning[possibly-missing-attribute] Attribute `middlewares` on type `ExtensionManager | None` may be missing
++ tests/test_crawler.py:503:46: error[unresolved-attribute] Type `ExtensionManager | None` has no attribute `middlewares`
++ tests/test_crawler.py:602:16: error[unresolved-attribute] Type `CrawlerRunner` has no attribute `settings`
++ tests/test_crawler.py:603:36: error[unresolved-attribute] Type `CrawlerRunner` has no attribute `settings`
++ tests/test_crawler.py:607:36: error[unresolved-attribute] Type `CrawlerRunner` has no attribute `settings`
++ tests/test_crawler.py:622:16: error[unresolved-attribute] Type `AsyncCrawlerRunner` has no attribute `settings`
++ tests/test_crawler.py:623:36: error[unresolved-attribute] Type `AsyncCrawlerRunner` has no attribute `settings`
++ tests/test_crawler.py:627:36: error[unresolved-attribute] Type `AsyncCrawlerRunner` has no attribute `settings`
++ tests/test_crawler.py:633:16: error[unresolved-attribute] Type `CrawlerProcess` has no attribute `settings`
++ tests/test_crawler.py:634:36: error[unresolved-attribute] Type `CrawlerProcess` has no attribute `settings`
++ tests/test_crawler.py:638:36: error[unresolved-attribute] Type `CrawlerProcess` has no attribute `settings`
++ tests/test_crawler.py:645:16: error[unresolved-attribute] Type `AsyncCrawlerProcess` has no attribute `settings`
++ tests/test_crawler.py:646:36: error[unresolved-attribute] Type `AsyncCrawlerProcess` has no attribute `settings`
++ tests/test_crawler.py:650:36: error[unresolved-attribute] Type `AsyncCrawlerProcess` has no attribute `settings`
++ tests/test_downloader_handler_twisted_http10.py:41:16: error[unresolved-attribute] Type `Response` has no attribute `protocol`
++ tests/test_downloader_handler_twisted_http2.py:62:16: error[unresolved-attribute] Type `Response` has no attribute `protocol`
++ tests/test_downloader_handler_twisted_http2.py:120:16: error[unresolved-attribute] Type `Response` has no attribute `headers`
++ tests/test_downloader_handler_twisted_http2.py:139:9: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloader_handler_twisted_http2.py:150:9: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloader_handler_twisted_http2.py:170:9: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloader_handler_twisted_http2.py:171:9: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloader_handlers_http_base.py:102:16: error[unresolved-attribute] Type `Response` has no attribute `status`
++ tests/test_downloader_handlers_http_base.py:112:16: error[unresolved-attribute] Type `Response` has no attribute `status`
++ tests/test_downloader_handlers_http_base.py:163:24: error[unresolved-attribute] Type `MockServer` has no attribute `host`
++ tests/test_downloader_handlers_http_base.py:171:20: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloader_handlers_http_base.py:173:24: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloader_handlers_http_base.py:229:16: error[unresolved-attribute] Type `Response` has no attribute `headers`
++ tests/test_downloader_handlers_http_base.py:259:16: error[unresolved-attribute] Type `Response` has no attribute `headers`
++ tests/test_downloader_handlers_http_base.py:395:16: error[unresolved-attribute] Type `Response` has no attribute `flags`
++ tests/test_downloader_handlers_http_base.py:423:16: error[unresolved-attribute] Type `Response` has no attribute `protocol`
++ tests/test_downloader_handlers_http_base.py:601:16: error[unresolved-attribute] Type `Response` has no attribute `status`
++ tests/test_downloader_handlers_http_base.py:615:16: error[unresolved-attribute] Type `Response` has no attribute `status`
++ tests/test_downloader_handlers_http_base.py:640:25: error[unresolved-attribute] Type `ProxyEchoMockServer` has no attribute `host`
++ tests/test_downloader_handlers_http_base.py:643:16: error[unresolved-attribute] Type `Response` has no attribute `status`
++ tests/test_downloadermiddleware.py:99:37: error[unresolved-attribute] Type `Response` has no attribute `headers`
++ tests/test_downloadermiddleware_cookies.py:74:32: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloadermiddleware_cookies.py:82:16: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloadermiddleware_cookies.py:155:32: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloadermiddleware_cookies.py:163:28: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloadermiddleware_cookies.py:175:32: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloadermiddleware_cookies.py:187:16: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloadermiddleware_cookies.py:192:16: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloadermiddleware_cookies.py:224:16: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloadermiddleware_cookies.py:232:16: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloadermiddleware_cookies.py:237:32: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloadermiddleware_cookies.py:242:16: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloadermiddleware_cookies.py:252:13: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloadermiddleware_cookies.py:262:16: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloadermiddleware_cookies.py:271:13: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloadermiddleware_cookies.py:280:16: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloadermiddleware_cookies.py:289:13: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloadermiddleware_cookies.py:304:16: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloadermiddleware_cookies.py:308:16: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloadermiddleware_cookies.py:313:16: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloadermiddleware_cookies.py:318:28: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloadermiddleware_cookies.py:319:16: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloadermiddleware_cookies.py:330:13: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloadermiddleware_cookies.py:337:13: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloadermiddleware_cookies.py:345:35: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloadermiddleware_cookies.py:351:35: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloadermiddleware_cookies.py:359:35: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloadermiddleware_cookies.py:365:35: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloadermiddleware_cookies.py:370:35: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloadermiddleware_cookies.py:375:35: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloadermiddleware_cookies.py:382:35: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloadermiddleware_cookies.py:387:35: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloadermiddleware_cookies.py:392:35: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloadermiddleware_cookies.py:432:35: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloadermiddleware_cookies.py:433:35: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloadermiddleware_cookies.py:434:35: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloadermiddleware_cookies.py:440:35: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloadermiddleware_cookies.py:445:35: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloadermiddleware_cookies.py:450:35: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloadermiddleware_cookies.py:455:35: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloadermiddleware_cookies.py:475:19: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloadermiddleware_cookies.py:616:19: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloadermiddleware_cookies.py:621:19: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloadermiddleware_cookies.py:687:26: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloadermiddleware_cookies.py:739:19: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloadermiddleware_defaultheaders.py:21:16: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloadermiddleware_defaultheaders.py:28:16: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloadermiddleware_defaultheaders.py:32:16: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloadermiddleware_httpauth.py:48:39: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloadermiddleware_httpauth.py:53:16: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloadermiddleware_httpauth.py:58:16: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloadermiddleware_httpauth.py:63:16: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloadermiddleware_httpauth.py:78:16: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloadermiddleware_httpauth.py:83:16: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloadermiddleware_httpcompression.py:93:9: error[unresolved-attribute] Unresolved attribute `request` on type `Response`.
++ tests/test_downloadermiddleware_httpcompression.py:125:41: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloadermiddleware_httpcompression.py:127:16: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloadermiddleware_httpcompression.py:266:20: error[unresolved-attribute] Type `Response` has no attribute `headers`
++ tests/test_downloadermiddleware_httpproxy.py:65:16: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloadermiddleware_httpproxy.py:74:13: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloadermiddleware_httpproxy.py:83:16: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloadermiddleware_httpproxy.py:90:16: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloadermiddleware_httpproxy.py:99:16: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloadermiddleware_httpproxy.py:107:16: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloadermiddleware_httpproxy.py:114:16: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloadermiddleware_httpproxy.py:122:16: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloadermiddleware_httpproxy.py:171:46: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloadermiddleware_httpproxy.py:196:46: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloadermiddleware_httpproxy.py:208:46: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloadermiddleware_httpproxy.py:270:16: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloadermiddleware_httpproxy.py:273:13: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloadermiddleware_httpproxy.py:276:46: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloadermiddleware_httpproxy.py:347:46: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloadermiddleware_httpproxy.py:363:13: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloadermiddleware_httpproxy.py:366:46: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloadermiddleware_httpproxy.py:376:46: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloadermiddleware_httpproxy.py:387:46: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloadermiddleware_httpproxy.py:401:16: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloadermiddleware_httpproxy.py:405:16: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloadermiddleware_httpproxy.py:407:9: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloadermiddleware_httpproxy.py:410:16: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloadermiddleware_httpproxy.py:425:16: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloadermiddleware_httpproxy.py:445:13: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloadermiddleware_redirect.py:24:36: error[unresolved-attribute] Type `Request` has no attribute `priority`
++ tests/test_downloadermiddleware_redirect.py:131:20: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloadermiddleware_redirect.py:144:20: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloadermiddleware_redirect.py:155:20: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloadermiddleware_redirect.py:166:20: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloadermiddleware_redirect.py:233:20: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloadermiddleware_redirect.py:274:20: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloadermiddleware_redirect.py:315:20: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloadermiddleware_redirect.py:356:20: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloadermiddleware_redirect.py:397:20: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloadermiddleware_redirect.py:438:20: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloadermiddleware_redirect.py:482:20: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloadermiddleware_redirect.py:526:20: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloadermiddleware_redirect.py:570:20: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloadermiddleware_redirect.py:614:20: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloadermiddleware_redirect.py:659:20: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloadermiddleware_redirect.py:703:20: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloadermiddleware_redirect.py:747:49: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloadermiddleware_redirect.py:787:49: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloadermiddleware_redirect.py:832:20: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloadermiddleware_redirect.py:876:20: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloadermiddleware_redirect.py:920:49: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloadermiddleware_redirect.py:960:49: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloadermiddleware_redirect.py:1019:17: error[unresolved-attribute] Type `Response` has no attribute `headers`
++ tests/test_downloadermiddleware_retry.py:37:32: error[unresolved-attribute] Type `Request` has no attribute `priority`
++ tests/test_downloadermiddleware_retry.py:285:16: error[unresolved-attribute] Type `Request` has no attribute `dont_filter`
++ tests/test_downloadermiddleware_retry.py:288:16: error[unresolved-attribute] Type `Request` has no attribute `priority`
++ tests/test_downloadermiddleware_retry.py:335:16: error[unresolved-attribute] Type `Request` has no attribute `dont_filter`
++ tests/test_downloadermiddleware_retry.py:338:16: error[unresolved-attribute] Type `Request` has no attribute `priority`
++ tests/test_downloadermiddleware_retry.py:365:20: error[unresolved-attribute] Type `Request` has no attribute `dont_filter`
++ tests/test_downloadermiddleware_retry.py:368:20: error[unresolved-attribute] Type `Request` has no attribute `priority`
+- tests/test_downloadermiddleware_retry.py:447:16: warning[possibly-missing-attribute] Attribute `priority` on type `Request | None` may be missing
++ tests/test_downloadermiddleware_retry.py:447:16: error[unresolved-attribute] Type `Request | None` has no attribute `priority`
+- tests/test_downloadermiddleware_retry.py:458:16: warning[possibly-missing-attribute] Attribute `priority` on type `Request | None` may be missing
++ tests/test_downloadermiddleware_retry.py:458:16: error[unresolved-attribute] Type `Request | None` has no attribute `priority`
++ tests/test_downloadermiddleware_useragent.py:17:16: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloadermiddleware_useragent.py:26:16: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloadermiddleware_useragent.py:34:16: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloadermiddleware_useragent.py:44:16: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_downloadermiddleware_useragent.py:52:36: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_feedexport.py:239:16: error[unresolved-attribute] Type `FTPFeedStorage` has no attribute `password`
++ tests/test_feedexport.py:304:16: error[unresolved-attribute] Type `S3FeedStorage` has no attribute `access_key`
++ tests/test_feedexport.py:305:16: error[unresolved-attribute] Type `S3FeedStorage` has no attribute `secret_key`
++ tests/test_feedexport.py:306:16: error[unresolved-attribute] Type `S3FeedStorage` has no attribute `session_token`
++ tests/test_feedexport.py:313:16: error[unresolved-attribute] Type `S3FeedStorage` has no attribute `access_key`
++ tests/test_feedexport.py:314:16: error[unresolved-attribute] Type `S3FeedStorage` has no attribute `secret_key`
++ tests/test_feedexport.py:338:16: error[unresolved-attribute] Type `S3FeedStorage` has no attribute `access_key`
++ tests/test_feedexport.py:339:16: error[unresolved-attribute] Type `S3FeedStorage` has no attribute `secret_key`
++ tests/test_feedexport.py:340:16: error[unresolved-attribute] Type `S3FeedStorage` has no attribute `acl`
++ tests/test_feedexport.py:346:16: error[unresolved-attribute] Type `S3FeedStorage` has no attribute `access_key`
++ tests/test_feedexport.py:347:16: error[unresolved-attribute] Type `S3FeedStorage` has no attribute `secret_key`
++ tests/test_feedexport.py:348:16: error[unresolved-attribute] Type `S3FeedStorage` has no attribute `acl`
++ tests/test_feedexport.py:357:16: error[unresolved-attribute] Type `S3FeedStorage` has no attribute `access_key`
++ tests/test_feedexport.py:358:16: error[unresolved-attribute] Type `S3FeedStorage` has no attribute `secret_key`
++ tests/test_feedexport.py:359:16: error[unresolved-attribute] Type `S3FeedStorage` has no attribute `endpoint_url`
++ tests/test_feedexport.py:369:16: error[unresolved-attribute] Type `S3FeedStorage` has no attribute `access_key`
++ tests/test_feedexport.py:370:16: error[unresolved-attribute] Type `S3FeedStorage` has no attribute `secret_key`
++ tests/test_feedexport.py:371:16: error[unresolved-attribute] Type `S3FeedStorage` has no attribute `region_name`
++ tests/test_feedexport.py:372:16: error[unresolved-attribute] Type `S3FeedStorage` has no attribute `s3_client`
++ tests/test_feedexport.py:464:16: error[unresolved-attribute] Type `S3FeedStorage` has no attribute `access_key`
++ tests/test_feedexport.py:465:16: error[unresolved-attribute] Type `S3FeedStorage` has no attribute `secret_key`
++ tests/test_feedexport.py:466:16: error[unresolved-attribute] Type `S3FeedStorage` has no attribute `acl`
++ tests/test_feedexport.py:468:9: error[unresolved-attribute] Unresolved attribute `s3_client` on type `S3FeedStorage`.
++ tests/test_feedexport.py:471:13: error[unresolved-attribute] Type `S3FeedStorage` has no attribute `s3_client`
++ tests/test_feedexport.py:482:16: error[unresolved-attribute] Type `S3FeedStorage` has no attribute `access_key`
++ tests/test_feedexport.py:483:16: error[unresolved-attribute] Type `S3FeedStorage` has no attribute `secret_key`
++ tests/test_feedexport.py:484:16: error[unresolved-attribute] Type `S3FeedStorage` has no attribute `acl`
++ tests/test_feedexport.py:486:9: error[unresolved-attribute] Unresolved attribute `s3_client` on type `S3FeedStorage`.
++ tests/test_feedexport.py:488:15: error[unresolved-attribute] Type `S3FeedStorage` has no attribute `s3_client`
++ tests/test_feedexport.py:2810:9: error[unresolved-attribute] Unresolved attribute `crawler` on type `Spider`.
++ tests/test_feedexport.py:2921:9: error[unresolved-attribute] Unresolved attribute `crawler` on type `Spider`.
++ tests/test_feedexport.py:2939:9: error[unresolved-attribute] Unresolved attribute `crawler` on type `Spider`.
++ tests/test_feedexport.py:2955:9: error[unresolved-attribute] Unresolved attribute `crawler` on type `Spider`.
++ tests/test_feedexport.py:2972:9: error[unresolved-attribute] Unresolved attribute `crawler` on type `Spider`.
++ tests/test_feedexport.py:2989:9: error[unresolved-attribute] Unresolved attribute `crawler` on type `Spider`.
++ tests/test_http2_client_protocol.py:295:16: error[unresolved-attribute] Type `Response` has no attribute `status`
++ tests/test_http2_client_protocol.py:297:16: error[unresolved-attribute] Type `Response` has no attribute `request`
++ tests/test_http2_client_protocol.py:299:33: error[unresolved-attribute] Type `Response` has no attribute `headers`
++ tests/test_http2_client_protocol.py:362:16: error[unresolved-attribute] Type `Response` has no attribute `status`
++ tests/test_http2_client_protocol.py:363:16: error[unresolved-attribute] Type `Response` has no attribute `request`
++ tests/test_http2_client_protocol.py:365:33: error[unresolved-attribute] Type `Response` has no attribute `headers`
++ tests/test_http2_client_protocol.py:371:35: error[unresolved-attribute] Type `Response` has no attribute `headers`
++ tests/test_http2_client_protocol.py:387:21: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_http2_client_protocol.py:469:16: error[unresolved-attribute] Type `Response` has no attribute `status`
++ tests/test_http2_client_protocol.py:470:16: error[unresolved-attribute] Type `Response` has no attribute `request`
++ tests/test_http2_client_protocol.py:511:16: error[unresolved-attribute] Type `Response` has no attribute `status`
++ tests/test_http2_client_protocol.py:513:16: error[unresolved-attribute] Type `Response` has no attribute `request`
++ tests/test_http2_client_protocol.py:514:40: error[unresolved-attribute] Type `Response` has no attribute `headers`
++ tests/test_http2_client_protocol.py:526:16: error[unresolved-attribute] Type `Response` has no attribute `status`
++ tests/test_http2_client_protocol.py:527:16: error[unresolved-attribute] Type `Response` has no attribute `request`
++ tests/test_http2_client_protocol.py:652:35: error[unresolved-attribute] Type `Response` has no attribute `headers`
++ tests/test_http2_client_protocol.py:665:20: error[unresolved-attribute] Type `Response` has no attribute `status`
++ tests/test_http2_client_protocol.py:676:16: error[unresolved-attribute] Type `Response` has no attribute `request`
++ tests/test_http2_client_protocol.py:677:27: error[unresolved-attribute] Type `Response` has no attribute `certificate`
++ tests/test_http2_client_protocol.py:678:16: error[unresolved-attribute] Type `Response` has no attribute `certificate`
++ tests/test_http2_client_protocol.py:679:16: error[unresolved-attribute] Type `Response` has no attribute `certificate`
++ tests/test_http2_client_protocol.py:680:16: error[unresolved-attribute] Type `Response` has no attribute `certificate`
++ tests/test_http2_client_protocol.py:683:27: error[unresolved-attribute] Type `Response` has no attribute `ip_address`
++ tests/test_http2_client_protocol.py:684:20: error[unresolved-attribute] Type `Response` has no attribute `ip_address`
++ tests/test_http2_client_protocol.py:753:16: error[unresolved-attribute] Type `Response` has no attribute `status`
++ tests/test_http2_client_protocol.py:754:16: error[unresolved-attribute] Type `Response` has no attribute `request`
++ tests/test_http2_client_protocol.py:758:21: error[unresolved-attribute] Type `Request` has no attribute `headers`
++ tests/test_logformatter.py:75:9: error[unresolved-attribute] Unresolved attribute `crawler` on type `Spider`.
++ tests/test_logformatter.py:80:9: error[unresolved-attribute] Type `Spider` has no attribute `crawler`
++ tests/test_logformatter.py:81:9: error[unresolved-attribute] Type `Spider` has no attribute `crawler`
++ tests/test_logformatter.py:82:9: error[unresolved-attribute] Type `Spider` has no attribute `crawler`
++ tests/test_logformatter.py:86:9: error[unresolved-attribute] Type `Spider` has no attribute `crawler`
++ tests/test_logformatter.py:87:9: error[unresolved-attribute] Type `Spider` has no attribute `crawler`
++ tests/test_logformatter.py:88:9: error[unresolved-attribute] Type `Spider` has no attribute `crawler`
++ tests/test_logformatter.py:92:9: error[unresolved-attribute] Type `Spider` has no attribute `crawler`
++ tests/test_logformatter.py:93:9: error[unresolved-attribute] Type `Spider` has no attribute `crawler`
++ tests/test_logformatter.py:94:9: error[unresolved-attribute] Type `Spider` has no attribute `crawler`
++ tests/test_logformatter.py:98:9: error[unresolved-attribute] Type `Spider` has no attribute `crawler`
++ tests/test_logformatter.py:99:9: error[unresolved-attribute] Type `Spider` has no attribute `crawler`
++ tests/test_logformatter.py:100:9: error[unresolved-attribute] Type `Spider` has no attribute `crawler`
++ tests/test_logformatter.py:105:9: error[unresolved-attribute] Type `Spider` has no attribute `crawler`
++ tests/test_logformatter.py:106:9: error[unresolved-attribute] Type `Spider` has no attribute `crawler`
++ tests/test_logformatter.py:107:9: error[unresolved-attribute] Type `Spider` has no attribute `crawler`
++ tests/test_middleware.py:75:17: error[unresolved-attribute] Type `MyMiddlewareManager` has no attribute `methods`
++ tests/test_middleware.py:76:17: error[unresolved-attribute] Type `MyMiddlewareManager` has no attribute `methods`
++ tests/test_middleware.py:77:17: error[unresolved-attribute] Type `MyMiddlewareManager` has no attribute `methods`
++ tests/test_middleware.py:78:12: error[unresolved-attribute] Type `MyMiddlewareManager` has no attribute `crawler`
++ tests/test_middleware.py:91:12: error[unresolved-attribute] Type `MyMiddlewareManager` has no attribute `middlewares`
++ tests/test_middleware.py:108:12: error[unresolved-attribute] Type `MyMiddlewareManager` has no attribute `middlewares`
++ tests/test_middleware.py:109:12: error[unresolved-attribute] Type `MyMiddlewareManager` has no attribute `crawler`
++ tests/test_pqueues.py:33:37: error[unresolved-attribute] Type `Request` has no attribute `priority`
++ tests/test_pque...*[Comment body truncated]*
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-09-30 07:43</div>
+            <div class="timeline-body"><p>Thank you for your contribution.</p>
+<p>You recently opened (and then closed) <a href="https://github.com/astral-sh/ruff/pull/20607">a similar PR</a> that explicitly contained @Claude authored commits. The changes in this PR look very similar, but the usage of AI tools is not mentioned anywhere. We are not opposed to the usage of these tools, but we are <em>not</em> interested in agent-generated PRs that no human has reviewed. We could easily generate those ourselves, if we wanted to.</p>
+<p>Can you please clarify the current state of this PR? Are most of the changes here AI generated? If so, what kind of work did you put in as a developer to verify those changes?</p>
+<p>Also, the current version seems to break multiple tests. Have you looked into this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @BlairAllan on 2025-10-04 13:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BlairAllan">@BlairAllan</a> on 2025-10-04 16:18</div>
+            <div class="timeline-body"><p>Thanks for the follow-up.</p>
+<p>I used Claude while debugging the type inference issues around how slots interacts with dict and weakref was fairly tricky and left TODOS around them because theres still some unwanted behaviour.</p>
+<p>In the latest commit, I rechecked all changes refactored, added, rewrote the tests to confirm the expected behavior and corrected my previous commits.</p>
+<p>Now this should all be working and ready for review wit the changes matching all the usual mypy slots checks and further by catching non-string items, slot defaults, builtin subclass issues, and multiple inheritance conflicts.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-10-04 19:25</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-10-04 19:25</div>
+            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+
+<h2><a href="https://codspeed.io/astral-sh/ruff/branches/BlairAllan%3Afeature%2Fimprove-slots-support">CodSpeed Performance Report</a></h2>
+<h3>Merging #20636 will <strong>degrade performances by 4.93%</strong></h3>
+<p><sub>Comparing <code>BlairAllan:feature/improve-slots-support</code> (c474491) with <code>main</code> (2d44ad2)</sub></p>
+<h3>Summary</h3>
+<p><code>❌ 1</code> regression<br />
+<code>✅ 7</code> untouched<br />
+<code>⏩ 43</code> skipped[^skipped]</p>
+<blockquote>
+<p>:warning: <em>Please fix the performance issues or <a href="https://codspeed.io/astral-sh/ruff/branches/BlairAllan%3Afeature%2Fimprove-slots-support">acknowledge them on CodSpeed</a>.</em></p>
+</blockquote>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Mode | Benchmark | <code>BASE</code> | <code>HEAD</code> | Change |
+| --- | ---- | --------- | ------ | ------ | ------ |
+| ❌ | WallTime | <a href="https://codspeed.io/astral-sh/ruff/branches/BlairAllan%3Afeature%2Fimprove-slots-support?uri=crates%2Fruff_benchmark%2Fbenches%2Fty_walltime.rs%3A%3Asmall%5Bfreqtrade%5D&amp;runnerMode=WallTime"><code>small[freqtrade]</code></a> | 5 s | 5.2 s | -4.93% |
+[^skipped]: 43 benchmarks were skipped, so the baseline results were used instead. If they were deleted from the codebase, <a href="https://codspeed.io/astral-sh/ruff/branches/BlairAllan%3Afeature%2Fimprove-slots-support?sectionId=benchmark-comparison-section-baseline-result-skipped">click here and archive them to remove them from the performance reports</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-10-06 07:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-10-07 14:17</div>
+            <div class="timeline-body"><blockquote>
+<p>I used Claude while debugging the type inference issues</p>
+</blockquote>
+<p>Okay, but did you (or did you not) generate the bulk of this code using Claude? If the answer is yes, did you carefully review all of the code?</p>
+<p>I'm asking because this is a big change (surprisingly big, in fact) and we don't want to invest time reviewing this if it's mostly-unreviewed LLM-generated code.</p>
+<p>From a quick skim, we noticed that the code doesn't seem to interact with the existing <code>__slots__</code> support. Could you please comment on why that is the case?</p>
+<p>Also, it seems that this could be split into multiple smaller PRs (do the core type inference feature first, then incrementally add more checks). If that seems reasonable to you, this would certainly help us review the changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BlairAllan">@BlairAllan</a> on 2025-10-20 19:04</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>I used Claude while debugging the type inference issues</p>
+</blockquote>
+<p>Okay, but did you (or did you not) generate the bulk of this code using Claude? If the answer is yes, did you carefully review all of the code?</p>
+<p>I'm asking because this is a big change (surprisingly big, in fact) and we don't want to invest time reviewing this if it's mostly-unreviewed LLM-generated code.</p>
+<p>From a quick skim, we noticed that the code doesn't seem to interact with the existing <code>__slots__</code> support. Could you please comment on why that is the case?</p>
+<p>Also, it seems that this could be split into multiple smaller PRs (do the core type inference feature first, then incrementally add more checks). If that seems reasonable to you, this would certainly help us review the changes.</p>
+</blockquote>
+<p>Hi @sharkdp thank you for the feedback and sorry for the delay I've gone and split out this PR into a much smaller one ~150 lines #20996 . It could be smaller if this is still too large but I wanted to make it easier to add further constraints in the future. The initial PR just covers basic inference with several tests.</p>
+<p>To be transparent I use Claude to double check my code generally, but I wrote the core inference logic. Specifically when it came to adding the diagnostics I did use Claude to assist in debugging/helping me code as it required a better understanding of how ty raises these errors, which I lacked. I knew what I wanted to add to ty to improve <code>__slots__</code>  so I followed the flow of write what I know -&gt; use Claude to find where I needed to extend/debug/add -&gt; extensively test and read changes and verify they're correct. Just to assure you all changes, if any, made by Claude were actively reviewed and checked by myself, I wouldn't want to waste your time or the teams.</p>
+<p>Regarding why didn't I use the existing <code>__slots__</code> support, I added an explanation to the new PR but effectively the existing code identifies if theres something in <code>__slots__</code> but it doesn't enable us to know what the actual attribute names are, which is needed to test if a specific attribute is allowed or not.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BlairAllan on 2025-10-20 19:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-10-20 19:23</div>
+            <div class="timeline-body"><p>Thank you for the clarifications.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:34:59 UTC
+    </footer>
+</body>
+</html>

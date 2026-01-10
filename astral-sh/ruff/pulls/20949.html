@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catch syntax errors in nested interpolations before Python 3.12 - astral-sh/ruff #20949</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Catch syntax errors in nested interpolations before Python 3.12</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/20949">#20949</a>
+        opened by <a href="https://github.com/ntBre">@ntBre</a>
+        on 2025-10-17 19:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ntBre">@ntBre</a> on 2025-10-17 19:26</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR fixes the issue I added in #20867 and noticed in #20930. Cases like this
+cause an error on any Python version:</p>
+<pre><code class="language-py">f&quot;{1:&quot;&quot;}&quot;
+</code></pre>
+<p>which gave me a false sense of security before. Cases like this are still
+invalid only before 3.12 and weren't flagged after the changes in #20867:</p>
+<pre><code class="language-py">f'{1: abcd &quot;{'aa'}&quot; }'
+           # ^  reused quote
+f'{1: abcd &quot;{&quot;\n&quot;}&quot; }'
+            # ^  backslash
+</code></pre>
+<p>I didn't recognize these as nested interpolations that also need to be checked
+for invalid expressions, so filtering out the whole format spec wasn't quite
+right. And <code>elements.interpolations()</code> only iterates over the outermost
+interpolations, not the nested ones.</p>
+<p>There's basically no code change in this PR, I just moved the existing check
+from <code>parse_interpolated_string</code>, which parses the entire string, to
+<code>parse_interpolated_element</code>. This kind of seems more natural anyway and avoids
+having to try to recursively visit nested elements after the fact in
+<code>parse_interpolated_string</code>. So viewing the diff with something like</p>
+<pre><code>git diff --color-moved --ignore-space-change --color-moved-ws=allow-indentation-change main
+</code></pre>
+<p>should make this more clear.</p>
+<h2>Test Plan</h2>
+<p>New tests</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-10-17 19:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">parser</span> added by @ntBre on 2025-10-17 19:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-10-17 19:43</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @ntBre on 2025-10-17 19:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @ntBre on 2025-10-17 19:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @ntBre on 2025-10-17 19:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-10-20 07:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ntBre on 2025-10-20 13:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-10-20 13:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-10-20 13:03</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:35:00 UTC
+    </footer>
+</body>
+</html>

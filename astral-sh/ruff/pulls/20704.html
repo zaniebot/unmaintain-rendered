@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fix false negatives in `Truthiness::from_expr` for lambdas, generators, and f-strings - astral-sh/ruff #20704</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fix false negatives in <code>Truthiness::from_expr</code> for lambdas, generators, and f-strings</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/20704">#20704</a>
+        opened by <a href="https://github.com/danparizher">@danparizher</a>
+        on 2025-10-05 22:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/danparizher">@danparizher</a> on 2025-10-05 22:27</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Fixes #20703</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-10-05 22:41</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dylwil3">@dylwil3</a> on <code>crates/ruff_python_ast/src/helpers.rs</code>:1 on 2025-10-06 13:06</div>
+            <div class="timeline-body"><p>Thank you! This looks good. Instead of these unit tests, could you pick some of the affected rules and add snapshot tests?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dylwil3">@dylwil3</a> requested changes on 2025-10-06 13:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dylwil3 by @danparizher on 2025-10-06 20:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dylwil3">@dylwil3</a> on <code>crates/ruff_python_ast/src/helpers.rs</code>:1406 on 2025-10-10 19:22</div>
+            <div class="timeline-body"><p>I'm not sure I understand this line. Which of the deductions in <code>inner</code> is incorrect for string, ascii, or <code>repr</code> conversion flags?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dylwil3">@dylwil3</a> requested changes on 2025-10-10 19:22</div>
+            <div class="timeline-body"><p>Sorry for the delay - I have one question that I didn't notice the first time around.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/danparizher">@danparizher</a> reviewed on 2025-10-12 23:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/danparizher">@danparizher</a> on <code>crates/ruff_python_ast/src/helpers.rs</code>:1406 on 2025-10-12 23:15</div>
+            <div class="timeline-body"><p>When an f-string interpolation has a conversion flag like <code>!s</code>, <code>!a</code>, or <code>!r</code>, Python's <code>str()</code>, <code>ascii()</code>, and <code>repr()</code> functions always produce a non-empty string representation of the object.</p>
+<p>This means that all the complex expressions in the <code>inner</code> function (like <code>BoolOp</code>, <code>BinOp</code>, <code>Call</code>, <code>Attribute</code>, etc.) that normally return <code>false</code> because we can't determine if they're empty become guaranteed to be non-empty when conversion flags are applied.</p>
+<p>The conversion flags essentially override the uncertainty by ensuring the result is always a meaningful string representation, which is why the condition correctly returns <code>true</code> whenever any conversion flag is present.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dscorbett">@dscorbett</a> reviewed on 2025-10-13 00:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dscorbett">@dscorbett</a> on <code>crates/ruff_python_ast/src/helpers.rs</code>:1406 on 2025-10-13 00:31</div>
+            <div class="timeline-body"><p>All three conversions can produce empty strings.</p>
+<pre><code class="language-console">$ cat &gt;counterexamples.py &lt;&lt;'# EOF'
+from configparser import Error
+error = Error()
+print(len(f&quot;{error!s}&quot;))
+print(len(f&quot;{error!a}&quot;))
+print(len(f&quot;{error!r}&quot;))
+# EOF
+
+$ python counterexamples.py
+0
+0
+0
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/danparizher">@danparizher</a> reviewed on 2025-10-13 01:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/danparizher">@danparizher</a> on <code>crates/ruff_python_ast/src/helpers.rs</code>:1406 on 2025-10-13 01:01</div>
+            <div class="timeline-body"><p>Thanks for this; I was wrong about that then. In that case, we should have the condition removed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dylwil3">@dylwil3</a> reviewed on 2025-10-13 18:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dylwil3">@dylwil3</a> on <code>crates/ruff_python_ast/src/helpers.rs</code>:1406 on 2025-10-13 18:14</div>
+            <div class="timeline-body"><p>I don't think those counterexamples are relevant here, as far as I can tell. The function in question returns <code>true</code> when we can be <em>certain</em> that the f-string is nonempty, and <code>false</code> otherwise. It already returns false for <code>Name</code> expressions, so it would already be okay for <code>counterexamples.py</code> with or without worrying about conversion flags.</p>
+<p>My claim is that the expressions for which we return <code>true</code> would be unaffected by the presence of these flags (insofar as their boolean value).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dylwil3">@dylwil3</a> approved on 2025-10-13 18:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dylwil3 on 2025-10-14 08:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dylwil3 on 2025-10-14 08:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @dylwil3 on 2025-10-14 08:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-10-14 11:45</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:35:00 UTC
+    </footer>
+</body>
+</html>

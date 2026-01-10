@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Enforce that `typing_extensions` must come from a stdlib search path - astral-sh/ruff #20715</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Enforce that <code>typing_extensions</code> must come from a stdlib search path</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/20715">#20715</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-10-06 10:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-06 10:03</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This fixes the panic in https://github.com/astral-sh/ty/issues/1289. It's also what mypy does, and it seems like reasonable behaviour. (I don't want to close that issue, though, because I think we should do other things as well, such as improve our documentation around these options.)</p>
+<h2>Test Plan</h2>
+<p>The following steps reproduce the panic on <code>main</code>:</p>
+<ol>
+<li><code>git clone https://github.com/copdips/ty-issues-1289</code></li>
+<li><code>uv venv -p3.12</code></li>
+<li><code>uv sync</code></li>
+<li><code>cd backend</code></li>
+<li><code>cargo run --manifest-path path/to/ruff/clone -p ty check</code></li>
+</ol>
+<p>If I then checkout this branch on my Ruff clone, the panic then no longer manifests when executing the final command.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @AlexWaygood on 2025-10-06 10:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @AlexWaygood on 2025-10-06 10:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2025-10-06 10:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @AlexWaygood on 2025-10-06 10:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-10-06 10:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-10-06 10:05</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-10-06 10:06</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅
+No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-06 10:08</div>
+            <div class="timeline-body"><p>We <em>could</em> consider just copying mypy completely here, and making all these modules non-shadowable: https://github.com/python/mypy/blob/3807423e9d98e678bf16b13ec8b4f909fe181908/mypy/build.py#L104-L117.</p>
+<p>The underlying issue here is really one of documentation, though: the docs for the <code>extra-paths</code> option should mention the <code>python</code> option; possibly we should add aliases for the <code>python</code> option to make it clear that you should use it to point to your virtual environment; possibly we should rename <code>extra-paths</code> to something like <code>non-environment-paths</code> so that it sounds less &quot;inviting&quot; to users. Given that I think we'll need to make at least some of those changes anyway, I think it probably makes sense to add modules to the non-shadowable denylist as and when issues like this come up, rather than overly hastily assuming that they'll all cause issues for us just because they cause issues for (some) other type checkers.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @sharkdp removed by @sharkdp on 2025-10-06 10:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-10-06 11:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-10-06 11:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/module_resolver/resolver.rs</code>:673 on 2025-10-06 11:39</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">/// unable to resolve builtin symbols. This is similar behaviour to other type checkers such
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2025-10-06 11:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-10-06 11:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-10-06 11:43</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:35:00 UTC
+    </footer>
+</body>
+</html>

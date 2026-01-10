@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[syntax-errors] Reimplement `break-outside-loop` (`F701`) as a semantic syntax error - astral-sh/ruff #20556</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[syntax-errors] Reimplement <code>break-outside-loop</code> (<code>F701</code>) as a semantic syntax error</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/20556">#20556</a>
+        opened by <a href="https://github.com/11happy">@11happy</a>
+        on 2025-09-24 16:52
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/11happy">@11happy</a> on 2025-09-24 16:52</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title? (Please prefix with `[ty]` for ty pull
+  requests.)
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+<p>This PR implements https://docs.astral.sh/ruff/rules/break-outside-loop/ (F701) as a semantic syntax error.</p>
+<h2>Test Plan</h2>
+<!-- How was it tested? -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-09-24 17:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:656 on 2025-09-24 17:15</div>
+            <div class="timeline-body"><p>We shouldn't be recursing here. The <code>SemanticSyntaxChecker</code> isn't a full <code>Visitor</code>, it only checks the single <code>Stmt</code> it's given and relies on the parent visitor (either <code>Checker</code> in Ruff or <code>SemanticIndexBuilder</code> in ty) to drive the AST traversal.</p>
+<p>I think this also means that managing the loop state isn't really feasible in the <code>SemanticSyntaxChecker</code> itself. Instead, we'll probably need to add <code>in_loop_context</code> as a method on the <code>SemanticSyntaxContext</code> trait and implement it for Ruff and ty (and the test visitor if we want to write inline tests).</p>
+<p>You could also consider trying to add a <code>SemanticSyntaxContext::current_statements()</code> method, which would be more general and match how Ruff currently implements this check:</p>
+<p>https://github.com/astral-sh/ruff/blob/83f80effecf682a487abfcd101ea6bbab3471740/crates/ruff_linter/src/checkers/ast/analyze/statement.rs#L54-L61</p>
+<p>Those are just some ideas based on a quick look, hope that helps!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/11happy">@11happy</a> reviewed on 2025-09-24 17:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/11happy">@11happy</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:656 on 2025-09-24 17:25</div>
+            <div class="timeline-body"><p>Sure, Thank you for these pointers, I will try them out &amp; keep you updated : )</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-10-05 13:07</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-10-05 13:08</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅
+No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/11happy">@11happy</a> reviewed on 2025-10-05 13:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/11happy">@11happy</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:656 on 2025-10-05 13:20</div>
+            <div class="timeline-body"><p>done, I have added a new <code>current_statements</code> .</p>
+<p>Thank you : )</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @11happy on 2025-10-05 13:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @11happy on 2025-10-05 13:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @11happy on 2025-10-05 13:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @11happy on 2025-10-05 13:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @11happy on 2025-10-05 13:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @11happy on 2025-10-05 13:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @11happy on 2025-10-05 13:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-10-05 13:28</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/pyflakes/mod.rs</code>:1 on 2025-10-06 19:26</div>
+            <div class="timeline-body"><p>I don't think we should delete this test case. We still need to emit F701, even if the main implementation is as a syntax error.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ty_python_semantic/src/semantic_index/builder.rs</code>:2781 on 2025-10-06 19:27</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    
+    fn in_loop_context(&amp;self) -&gt; bool {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:676 on 2025-10-06 19:27</div>
+            <div class="timeline-body"><pre><code class="language-suggestion"></code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:823 on 2025-10-06 19:30</div>
+            <div class="timeline-body"><p>I don't think we need to track a separate <code>Vec</code> of current statements on the <code>Checker</code>. This should already be available on the <code>SemanticModel</code> field, as in the code I linked earlier.</p>
+<pre><code class="language-suggestion">        let statements = self.semantic.current_statements();
+</code></pre>
+<p>My earlier suggestion about adding a <code>current_statements</code> method was not for <code>Checker</code>, I meant that instead of <code>SemanticSyntaxContext::in_loop_context</code>, we could consider adding <code>SemanticSyntaxContext::current_statements</code>, which would return an iterator over <code>Stmt</code> nodes:</p>
+<pre><code class="language-rust">fn current_statements(&amp;self) -&gt; impl Iterator&lt;Item = &amp;Stmt&gt; {
+    self.semantic.current_statements()
+}
+</code></pre>
+<p>This should be easier to implement for both Ruff and ty, and then the actual <code>in_loop_context</code> check could be shared between the two. But I think <code>SemanticSyntaxContext::in_loop_context</code> is also okay, especially if you tried this already.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:830 on 2025-10-06 19:32</div>
+            <div class="timeline-body"><p>I think we should just pass the current statement in, like in the original F701 implementation, to avoid needing to <code>unwrap</code> here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> requested changes on 2025-10-06 19:38</div>
+            <div class="timeline-body"><p>Thanks! But I think we can make a few improvements here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/11happy">@11happy</a> reviewed on 2025-10-11 15:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/11happy">@11happy</a> on <code>crates/ruff_linter/src/rules/pyflakes/mod.rs</code>:1 on 2025-10-11 15:56</div>
+            <div class="timeline-body"><p>done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/11happy">@11happy</a> reviewed on 2025-10-11 15:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/11happy">@11happy</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:830 on 2025-10-11 15:56</div>
+            <div class="timeline-body"><p>done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/11happy">@11happy</a> reviewed on 2025-10-11 15:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/11happy">@11happy</a> on <code>crates/ty_python_semantic/src/semantic_index/builder.rs</code>:2781 on 2025-10-11 15:56</div>
+            <div class="timeline-body"><p>done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/11happy">@11happy</a> reviewed on 2025-10-11 15:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/11happy">@11happy</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:676 on 2025-10-11 15:56</div>
+            <div class="timeline-body"><p>done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> approved on 2025-10-13 19:56</div>
+            <div class="timeline-body"><p>Thank you! I pushed a couple of very small cleanups, but this looks good to me now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @ntBre on 2025-10-13 19:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[syntax-errors]: break outside loop F701" to "[syntax-errors]: Reimplement `break-outside-loop` (`F701`) as a semantic syntax error" by @ntBre on 2025-10-13 19:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[syntax-errors]: Reimplement `break-outside-loop` (`F701`) as a semantic syntax error" to "[syntax-errors] Reimplement `break-outside-loop` (`F701`) as a semantic syntax error" by @ntBre on 2025-10-13 19:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ntBre on 2025-10-13 20:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-10-13 20:01</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:34:59 UTC
+    </footer>
+</body>
+</html>

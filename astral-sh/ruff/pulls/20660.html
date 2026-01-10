@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`pyupgrade`] Fix false negative for `TypeVar` with default argument in `non-pep695-generic-class` (`UP046`) - astral-sh/ruff #20660</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>pyupgrade</code>] Fix false negative for <code>TypeVar</code> with default argument in <code>non-pep695-generic-class</code> (<code>UP046</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/20660">#20660</a>
+        opened by <a href="https://github.com/danparizher">@danparizher</a>
+        on 2025-10-01 03:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/danparizher">@danparizher</a> on 2025-10-01 03:49</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Fixes #20656</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-10-01 03:57</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/pyupgrade/rules/pep695/mod.rs</code>:183 on 2025-10-09 20:42</div>
+            <div class="timeline-body"><p>tiny nit: Is this shared by all the match arms? If so we could factor it out into a shared <code>default</code> variable. I also think we can do without the explicit deref but maybe clippy complains.</p>
+<pre><code class="language-suggestion">                default: default.map(|expr| Box::new(expr.clone())),
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/pyupgrade/rules/pep695/mod.rs</code>:387 on 2025-10-09 20:43</div>
+            <div class="timeline-body"><p>We need to preview gate this as I mentioned on the issue. I think this might be the easiest place to do that, assuming every usage goes through this code path.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/pyupgrade/snapshots/ruff_linter__rules__pyupgrade__tests__UP047.py.snap</code>:1 on 2025-10-09 20:43</div>
+            <div class="timeline-body"><p>As demonstrated here, this change also affects UP047. I think it should also affect UP040, so we should make sure we have test coverage for that as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-10-09 20:47</div>
+            <div class="timeline-body"><p>Thank you, this is looking good. I guess I expected this to be more complicated to have left the TODO around for so long 😆 I thought we would need an explicit Python 3.13 check somewhere, but it looks like the <code>default</code> argument to the <code>typing.TypeVar</code> constructors was only added in 3.13 too. So it seems safe to assume we're on 3.13+ if we find one.</p>
+<p>As I noted in the inline comments, I think we need to make this a preview change and also check on UP040 test cases. I think all three of UP040, UP046, and UP047 share this same infrastructure.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2025-10-09 20:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @ntBre on 2025-10-09 20:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-10-13 20:43</div>
+            <div class="timeline-body"><p>The code changes look good, but now that this is a preview change, we also need to run the  test cases in preview mode.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ntBre by @danparizher on 2025-10-15 00:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> approved on 2025-10-15 14:48</div>
+            <div class="timeline-body"><p>Thanks!</p>
+<p>I just pushed a few commits adding more of the test cases to the preview tests and using  the new <code>assert_diagnostics_diff</code> macro. I also cleaned  up some of the resolved  TODOs in the tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ntBre on 2025-10-15 14:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-10-15 14:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-10-15 14:57</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:34:59 UTC
+    </footer>
+</body>
+</html>

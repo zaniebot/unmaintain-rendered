@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Evaluate reachability of non-definitely-bound to Ambiguous - astral-sh/ruff #19579</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Evaluate reachability of non-definitely-bound to Ambiguous</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19579">#19579</a>
+        opened by <a href="https://github.com/Glyphack">@Glyphack</a>
+        on 2025-07-27 21:06
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/Glyphack">@Glyphack</a> on 2025-07-27 21:06</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>closes https://github.com/astral-sh/ty/issues/692</p>
+<p>If the expression (or any child expressions) is not definitely bound the reachability constraint evaluation is determined as ambiguous.</p>
+<p>This fixes the infinite cycles panic in the following code:</p>
+<pre><code class="language-py">from typing import Literal
+
+class Toggle:
+    def __init__(self: &quot;Toggle&quot;):
+        if not self.x:
+            self.x: Literal[True] = True
+</code></pre>
+<p>Credit of this solution is for David.</p>
+<h2>Test Plan</h2>
+<ul>
+<li>Added a test case with too many cycle iterations panic.</li>
+<li>Previous tests.</li>
+</ul>
+<!-- How was it tested? -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-07-27 21:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Evaluate reachability of non-definitely-bound to Ambiguous" to "[ty] Evaluate reachability of non-definitely-bound to Ambiguous" by @AlexWaygood on 2025-07-27 21:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-27 21:10</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">trio (https://github.com/python-trio/trio)
++ src/trio/_tests/test_util.py:255:12: error[unresolved-attribute] Type `ModuleType` has no attribute `some_func`
++ src/trio/_tests/test_util.py:256:12: error[unresolved-attribute] Type `ModuleType` has no attribute `some_func`
++ src/trio/_tests/test_util.py:258:12: error[unresolved-attribute] Type `ModuleType` has no attribute `not_funclike`
++ src/trio/_tests/test_util.py:259:12: error[unresolved-attribute] Type `ModuleType` has no attribute `_private`
++ src/trio/_tests/test_util.py:260:12: error[unresolved-attribute] Type `ModuleType` has no attribute `_private`
++ src/trio/_tests/test_util.py:261:12: error[unresolved-attribute] Type `ModuleType` has no attribute `_private`
++ src/trio/_tests/test_util.py:263:12: error[unresolved-attribute] Type `ModuleType` has no attribute `only_has_name`
++ src/trio/_tests/test_util.py:264:12: error[unresolved-attribute] Type `ModuleType` has no attribute `only_has_name`
++ src/trio/_tests/test_util.py:265:24: error[unresolved-attribute] Type `ModuleType` has no attribute `only_has_name`
++ src/trio/_tests/test_util.py:267:12: error[unresolved-attribute] Type `ModuleType` has no attribute `SomeClass`
++ src/trio/_tests/test_util.py:267:12: error[unresolved-attribute] Type `type` has no attribute `method`
++ src/trio/_tests/test_util.py:268:12: error[unresolved-attribute] Type `ModuleType` has no attribute `SomeClass`
++ src/trio/_tests/test_util.py:268:12: error[unresolved-attribute] Type `type` has no attribute `method`
++ src/trio/_tests/test_util.py:269:12: error[unresolved-attribute] Type `ModuleType` has no attribute `SomeClass`
++ src/trio/_tests/test_util.py:269:12: error[unresolved-attribute] Type `type` has no attribute `method`
++ src/trio/_tests/test_util.py:271:5: error[unresolved-attribute] Type `ModuleType` has no attribute `some_func`
++ src/trio/_tests/test_util.py:272:5: error[unresolved-attribute] Type `ModuleType` has no attribute `some_func`
++ src/trio/_tests/test_util.py:273:5: error[unresolved-attribute] Type `ModuleType` has no attribute `_private`
++ src/trio/_tests/test_util.py:274:5: error[unresolved-attribute] Type `ModuleType` has no attribute `SomeClass`
+- Found 656 diagnostics
++ Found 675 diagnostics
+
+static-frame (https://github.com/static-frame/static-frame)
++ static_frame/core/util.py:1386:32: warning[possibly-unresolved-reference] Name `rows` used when possibly not defined
+- Found 1788 diagnostics
++ Found 1789 diagnostics
+
+dd-trace-py (https://github.com/DataDog/dd-trace-py)
++ tests/appsec/iast/taint_sinks/test_vulnerability_detection.py:65:12: warning[possibly-unbound-attribute] Attribute `vulnerability_budget` on type `IASTEnvironment | None` is possibly unbound
++ tests/appsec/iast/taint_sinks/test_vulnerability_detection.py:66:12: warning[possibly-unbound-attribute] Attribute `vulnerabilities_request_limit` on type `IASTEnvironment | None` is possibly unbound
++ tests/appsec/iast/taint_sinks/test_vulnerability_detection.py:80:12: warning[possibly-unbound-attribute] Attribute `is_first_vulnerability` on type `IASTEnvironment | None` is possibly unbound
++ tests/appsec/iast/taint_sinks/test_vulnerability_detection.py:81:12: warning[possibly-unbound-attribute] Attribute `vulnerability_budget` on type `IASTEnvironment | None` is possibly unbound
++ tests/appsec/iast/taint_sinks/test_vulnerability_detection.py:82:12: warning[possibly-unbound-attribute] Attribute `vulnerabilities_request_limit` on type `IASTEnvironment | None` is possibly unbound
++ tests/appsec/iast/taint_sinks/test_vulnerability_detection.py:83:12: warning[possibly-unbound-attribute] Attribute `vulnerabilities_request_limit` on type `IASTEnvironment | None` is possibly unbound
++ tests/appsec/iast/taint_sinks/test_vulnerability_detection.py:84:12: warning[possibly-unbound-attribute] Attribute `vulnerabilities_request_limit` on type `IASTEnvironment | None` is possibly unbound
+- Found 6595 diagnostics
++ Found 6602 diagnostics
+
+sympy (https://github.com/sympy/sympy)
++ sympy/polys/numberfields/galoisgroups.py:126:21: warning[possibly-unresolved-reference] Name `current_degree` used when possibly not defined
+- Found 13401 diagnostics
++ Found 13402 diagnostics
+
+scipy (https://github.com/scipy/scipy)
++ scipy/optimize/tests/test_bracket.py:318:9: error[unresolved-attribute] Unresolved attribute `count` on type `def f(x) -&gt; Unknown`.
+- Found 6420 diagnostics
++ Found 6421 diagnostics
+
+</code></pre>
+</details>
+No memory usage changes detected ✅
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-07-27 21:19</div>
+            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+
+<!-- __CODSPEED_WALLTIME_PERFORMANCE_REPORT_COMMENT__ -->
+
+<h2><a href="https://codspeed.io/astral-sh/ruff/branches/Glyphack%3Areachability-ambiguous-not-definitely-bound?runnerMode=WallTime">CodSpeed WallTime Performance Report</a></h2>
+<h3>Merging #19579 will <strong>not alter performance</strong></h3>
+<p><sub>Comparing <code>Glyphack:reachability-ambiguous-not-definitely-bound</code> (c4ce73a) with <code>main</code> (18eaa65)</sub></p>
+<h3>Summary</h3>
+<p><code>✅ 8</code> untouched benchmarks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-07-27 21:19</div>
+            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+
+<!-- __CODSPEED_INSTRUMENTATION_PERFORMANCE_REPORT_COMMENT__ -->
+
+<h2><a href="https://codspeed.io/astral-sh/ruff/branches/Glyphack%3Areachability-ambiguous-not-definitely-bound?runnerMode=Instrumentation">CodSpeed Instrumentation Performance Report</a></h2>
+<h3>Merging #19579 will <strong>not alter performance</strong></h3>
+<p><sub>Comparing <code>Glyphack:reachability-ambiguous-not-definitely-bound</code> (c4ce73a) with <code>main</code> (18eaa65)</sub></p>
+<h3>Summary</h3>
+<p><code>✅ 42</code> untouched benchmarks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-07-29 08:27</div>
+            <div class="timeline-body"><p>@Glyphack This is in draft and tests are still failing, but please let me know if I should take a look / give initial feedback.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Glyphack">@Glyphack</a> on 2025-07-29 15:18</div>
+            <div class="timeline-body"><p>@sharkdp please take a look. I appreciate some guidance. I left some notes in the code.
+Just keep in mind the code does not work. I was trying out two ways of passing the is definitely bound information to <code>evaluate</code>:</p>
+<ul>
+<li>Record the boundness from any calls to <code>infer_place_load</code></li>
+<li>Have a visitor to check boundness of the expression</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-07-29 15:19</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Glyphack">@Glyphack</a> on 2025-08-18 22:48</div>
+            <div class="timeline-body"><p>David pointed out that the way I was checking if an expression is fully bound was not correct for attributes because I was not checking for the result of fallback mechanism.
+Here: https://github.com/astral-sh/ruff/blob/main/crates/ty_python_semantic/src/types/infer.rs#L7082</p>
+<p>I added the check for result of fallback mechanism. Now the issue is that fallback mechanism is actually not reporting unbound for <code>self.x</code> in the description. It reports bound:</p>
+<p>Result of the fallback mechanism:</p>
+<pre><code>infer_attribute_load called on attribute x
+value_type.member: PlaceAndQualifiers {
+    place: Type(
+        BooleanLiteral(
+            true,
+        ),
+        Bound,
+    ),
+    qualifiers: TypeQualifiers(
+        0x0,
+    ),
+}
+infer_attribute_load called on attribute x
+value_type.member: PlaceAndQualifiers {
+    place: Unbound,
+    qualifiers: TypeQualifiers(
+        0x0,
+    ),
+}
+</code></pre>
+<p>Now I'm checking the fallback and <code>own_instance_member</code> method to see how we end up with a Bound place here. I don't think we should say this value is bound. In the example the attribute is not bound.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-08-20 15:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:2532 on 2025-08-20 15:49</div>
+            <div class="timeline-body"><p>The lines here only handle <em>declared</em> instance attributes (like <code>self.x: Literal[True] = True</code> in the <code>Toggle</code> example). We should do the same for non-declared instance attributes (e.g. <code>self.x = True</code>). This modified <code>Toggle</code> example shows that this is currently still problematic on this branch:</p>
+<pre><code class="language-py">from typing import Literal
+
+def check(x) -&gt; Literal[False]:
+    return False
+
+class Toggle:
+    def __init__(self: &quot;Toggle&quot;):
+        if check(self.x):
+            self.x = True
+</code></pre>
+<p>I had to use a little trick here: <code>if not self.x</code> wouldn't work anymore when <code>self.x</code> is not declared. For undeclared symbols, we infer <code>Unknown | True</code>, and the <code>Unknown</code> will not lead to a definitive Boolean answer. So I added this <code>check(…)</code> function that always returns <code>Literal[False]</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @Glyphack on 2025-08-20 19:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @Glyphack on 2025-08-20 19:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @Glyphack on 2025-08-20 19:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @Glyphack on 2025-08-20 19:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Glyphack">@Glyphack</a> reviewed on 2025-08-20 19:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Glyphack">@Glyphack</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:2532 on 2025-08-20 19:36</div>
+            <div class="timeline-body"><p>Thanks, addressed it here:
+https://github.com/astral-sh/ruff/pull/19579/commits/f8626ce9ae7c74e86d76c8a55e17c921a0a1380e</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Glyphack">@Glyphack</a> on 2025-08-20 19:49</div>
+            <div class="timeline-body"><p>I feel this is ready for review, beside this part that I changed to make the idea work:
+https://github.com/astral-sh/ruff/pull/19579/files#diff-8049ab5af787dba29daa389bbe2b691560c15461ef536f122b1beab112a4b48aR6585</p>
+<p>The challenge there was that we are getting a possibly bound place back in the lookup in implicit_attribute_inner, and return a <code>Place::Bound</code>. This is okay for implicit attributes. But in this PR I wanted to know if something is definitely bound or not. Hence I added this.</p>
+<p>Other things came to mind was return more information from this function to indicate this. I was not sure what is the correct way to model this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-08-22 15:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types.rs</code>:6585 on 2025-08-22 15:35</div>
+            <div class="timeline-body"><p>Thank you for pushing this PR further forward! Now that we know that this approach works in general, I think we should invest a bit of time to see if there are less-hacky solutions here. I'm happy to do that part myself, but if you have additional ideas, or want to keep working on this, please let me know.</p>
+<p>Tracking <code>NOT_BOUND</code> as a <code>TypeQualifier</code> really <em>does</em> feel like a hack. If I understand this correctly, the problem is the following: we do want to keep track of the fact that we found an implicit instance attribute binding/declaration that is possibly unbound (according to control-flow analysis inside the body of the class method it is defined in; <em>all</em> instance attributes that are defined in non-<code>__init__</code> methods are sort of possibly-unbound anyway, because we don't know if a method has been called on an object or not). Since it is so common that implicit instance attributes have this state, we do not want to emit diagnostics for each of these possibly-unbound attributes.</p>
+<p>We can't simply report <code>Boundness::PossiblyUnbound</code> for these implicit instance attributes, because we mix them with other attributes like class-level attributes higher up in the call chain (for which we <em>do</em> want to track boundness). So when type inference code accesses <code>.member</code> on a given type, we wouldn't know whether it's a possibly-unbound class attribute or a possibly-unbound implicit instance attribute.</p>
+<p>What's especially weird about tracking this as <code>TypeQualifier::NOT_BOUND</code> is that this contradicts the <code>Boundness</code> information. I wonder if we could return the actual boundness state in the <code>Boundness</code> field, and only add the additional information about the source of this attribute in the return type of <code>.member</code> and related methods. So instead of returning <code>PlaceAndQualifiers</code>, we would maybe return a <code>Member</code> struct that additionally contains some sort of <code>AttributeSource { ClassBody, ImplicitInstanceAttribute }</code> enum (which might also become valuable for other use cases, I think). We could then ignore <code>AttributeSource::ImplicitInstanceAttribute</code> for purposes of emitting diagnostics, but still use the proper boundness information for purposes of evaluating reachability constraints.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-08-22 15:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types/infer.rs</code>:344 on 2025-08-22 15:36</div>
+            <div class="timeline-body"><p>Can we remove this, or make it more concise to mention only what's relevant for posterity?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Glyphack">@Glyphack</a> on 2025-08-22 15:49</div>
+            <div class="timeline-body"><p>Thank you for the feedback. I'm drafting the PR to apply the suggestion.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @Glyphack on 2025-08-22 15:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-08-27 13:11</div>
+            <div class="timeline-body"><p>I'm looking into making the changes described above.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-08-27 14:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types/infer.rs</code>:8728 on 2025-08-27 14:23</div>
+            <div class="timeline-body"><p>Yeah, this fails because this first <code>infer_place_load</code> returns <code>Unbound</code>. We would have to check the fallback solutions as well. I don't know how a subscript expression could return <code>PossiblyUnbound</code>, so I think it's fine to just remove this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-08-27 15:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-27 15:45</div>
+            <div class="timeline-body"><!-- generated-comment ty ecosystem-analyzer -->
+
+<h2><code>ecosystem-analyzer</code> results</h2>
+<p>| Lint rule | Added | Removed | Changed |
+|-----------|------:|--------:|--------:|
+| <code>unresolved-attribute</code> | 20 | 0 | 0 |
+| <code>possibly-unbound-attribute</code> | 7 | 0 | 0 |
+| <code>possibly-unresolved-reference</code> | 2 | 0 | 0 |
+| <strong>Total</strong> | <strong>29</strong> | <strong>0</strong> | <strong>0</strong> |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @sharkdp on 2025-08-28 07:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-08-28 07:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @sharkdp on 2025-08-28 11:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-08-28 11:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-08-28 11:59</div>
+            <div class="timeline-body"><p>I tried various other solutions here, and non of them worked as well as what @Glyphack implemented in the first place. The main problem is that we can only build unions/intersections of types. We can't build unions/intersections of <code>TypeQualifier</code>s and boundness information, which requires us to merge them somehow when we operate on unions/intersections (for example, when we access an attribute on a union/intersection). With this representation, it is impossible to distinguish between a case where we have <code>C | None</code> (where an attribute access should definitely yield possibly-unbound, due to the <code>None</code> in the union), and something like <code>C | Unknown</code> (where we would like to silence the possibly-unbound-attribute diagnostic if the attribute is only possibly bound inside a method of <code>C</code>).</p>
+<p>I also tried various completely different approaches of solving this problem, and none of them hit the right granularity. Either they are not able to solve the <code>Toggle</code> problem, or they are too big of a hammer, and lead to insufficient reachability analysis in real world use cases.</p>
+<p>So I am returning this PR to a previous state (with a couple of smaller cleanups, renamings, and additional tests). I am still not very satisfied with the fact that we track boundness information in a <code>TypeQualifier</code>, but I'm out of ideas. And we would very much like to proceed with type-of-<code>self</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @sharkdp on 2025-08-28 12:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> approved on 2025-08-28 12:03</div>
+            <div class="timeline-body"><p>Thank you again, @Glyphack!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/statically_known_branches.md</code>:1570 on 2025-08-28 12:08</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">truthiness. If we didn't do that, `x` would be considered definitely bound in the following
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/place.rs</code>:139 on 2025-08-28 12:08</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    pub(crate) const fn is_definitely_bound(&amp;self) -&gt; bool {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:8637 on 2025-08-28 12:09</div>
+            <div class="timeline-body"><p>Can this not be <code>#[derive()]</code>d?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/infer.rs</code>:342 on 2025-08-28 12:10</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">/// Returns [`Truthiness::Ambiguous`] in case any non-definitely bound places
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-08-28 12:13</div>
+            <div class="timeline-body"><p>Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @sharkdp on 2025-08-28 12:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-08-28 12:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-10-22 15:47</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:34:59 UTC
+    </footer>
+</body>
+</html>

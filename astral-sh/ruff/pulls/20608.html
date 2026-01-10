@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Consolidate fields on `SemanticIndex` - astral-sh/ruff #20608</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Consolidate fields on <code>SemanticIndex</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/20608">#20608</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-09-28 15:21
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-09-28 15:21</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR consolidates various fields on the <code>SemanticIndex</code> struct so that instead of having five <code>IndexVec</code> fields that are indexed by <code>FileScopeId</code>, we only have one.</p>
+<p>The original motivation behind this PR was to see if this change would reduce memory usage at all. I'm unable to find any evidence that this makes any significant difference to ty's memory usage -- and this probably makes sense, because we only create one <code>SemanticIndex</code> struct for each file. However, I think this PR is probably worth doing anyway, as it looks like it leads to a 3% speedup on our <code>colour</code> benchmark, and speedups of 1-2% on all our other walltime benchmarks: https://codspeed.io/astral-sh/ruff/branches/alex%2Fsemantic-index-memory?runnerMode=WallTime. These reported speedups have been consistent across multiple runs on this PR, so I think they're real. I assume this PR speeds things up because we're now doing less work in <code>SemanticIndexBuilder::new()</code> (rather than having to allocate five <code>IndexVec</code>s, we now only need three for each builder), and <code>SemanticIndexBuilder::build()</code> (rather than having five different <code>.shrink_to_fit()</code> calls and three different <code>.collect()</code> calls, we now only need one of each). Conceptually, it's also quite nice to have all per-scope information consolidated in the <code>Scope</code> struct as well.</p>
+<p>Best reviewed commit by commit.</p>
+<h2>Test Plan</h2>
+<p>Existing tests</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-09-28 15:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[ty] Reduce memory usage of `SemanticIndex`'" to "[ty] Reduce memory usage of `SemanticIndex`" by @AlexWaygood on 2025-09-28 15:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-09-28 15:23</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-09-28 15:24</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">scikit-build-core (https://github.com/scikit-build/scikit-build-core)
++ src/scikit_build_core/build/_wheelfile.py:51:22: error[no-matching-overload] No overload of function `field` matches arguments
+- Found 52 diagnostics
++ Found 53 diagnostics
+
+</code></pre>
+</details>
+No memory usage changes detected ✅
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[ty] Reduce memory usage of `SemanticIndex`" to "[ty] Consolidate fields on `SemanticIndex`" by @AlexWaygood on 2025-09-28 15:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @AlexWaygood on 2025-09-28 17:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @AlexWaygood on 2025-09-28 17:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @AlexWaygood on 2025-09-28 17:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @AlexWaygood on 2025-09-28 17:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @AlexWaygood on 2025-09-28 17:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/semantic_index/builder.rs</code>:117 on 2025-09-29 14:26</div>
+            <div class="timeline-body"><p>Is there something that prevents us from moving <code>place_tables</code> and <code>use_def_maps</code> into the new <code>ScopeBuilder</code> as well? (If there is, that deserves a comment here calling out why)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/semantic_index/scope.rs</code>:138 on 2025-09-29 14:38</div>
+            <div class="timeline-body"><p>optional nit: I think it's a minor code smell that callers now have to import <code>ScopeLike</code> to get access to some of the methods of <code>Scope</code>. You can get around that by keeping the definitions of <code>kind</code> and <code>parent</code> here in addition to the new definitions down in <code>ScopeLike</code>.</p>
+<p>And you can change the definitions below to</p>
+<pre><code class="language-rust">fn kind(&amp;self) -&gt; ScopeKind {
+    Scope::kind(self)
+}
+</code></pre>
+<p>to avoid duplicating the method body and without introducing an infinite loop</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> approved on 2025-09-29 14:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-09-29 14:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/semantic_index/builder.rs</code>:117 on 2025-09-29 14:41</div>
+            <div class="timeline-body"><p>It's <em>basically</em> just that the borrow checker gets quite angry if you try to borrow the <code>scopes</code> <code>IndexVec</code> mutably and immutably at the same time -- having separate <code>IndexVec</code>s for <code>place_tables</code> and <code>use_def_maps</code> works around this, because both <code>place_tables</code> and <code>use_def_maps</code> frequently need to be borrowed mutably from <code>builder.rs</code>. There are ways of working around the borrow checker complaints if we store the use-def and place-table state on <code>ScopeBuilder</code> too, but from what I could tell they all undid the performance benefits of this change.</p>
+<p>And yes, this is <em>definitely</em> worth a comment -- thank you! I'll add one.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/semantic_index/scope.rs</code>:138 on 2025-09-29 14:43</div>
+            <div class="timeline-body"><p>Yes, I was in two minds about this! I guess <code>ScopeLike</code> is really an implementation detail of the <code>semantic_index</code> submodule, so it's probably better to make it private and expose these methods publicly on <code>Scope</code>, as you suggest</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-09-29 14:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-09-29 16:52</div>
+            <div class="timeline-body"><p>Hmm, well, after the latest rebase Codspeed is no longer claiming any speedup as a result of this, even though it pretty consistently said that there was one previously. So this PR now just seems to produce more code, for maybe not that much benefit :/ There is still this as a motivation for the change:</p>
+<blockquote>
+<p>Conceptually, it's also quite nice to have all per-scope information consolidated in the <code>Scope</code> struct as well.</p>
+</blockquote>
+<p>But I don't know if it's a worthwhile change just on that basis.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-09-29 17:51</div>
+            <div class="timeline-body"><p>My only worry with this is that it might get more challenging to satisfy the borrow checker in the future (similar to place table). But I don't feel stronlgy about this</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2025-09-30 21:10</div>
+            <div class="timeline-body"><p>Did you run the detailed memory report (<code>TY_MEMORY_REPORT=full</code>) locally to see the diff? I'd be interested if this is a net-positive or net-negative to memory usage (even if minimal), because the struct of arrays representation should theoretically minimize padding, though I'm not sure if it's affected in this case because we already have an array of <code>Scope</code>s.</p>
+<p>It can also be more cache-efficient when iterating over a single array, but the opposite can also be true if zipping over multiple.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-09-30 21:15</div>
+            <div class="timeline-body"><blockquote>
+<p>Did you run the detailed memory report (<code>TY_MEMORY_REPORT=full</code>) locally to see the diff?</p>
+</blockquote>
+<p>I ran with <code>TY_MEMORY_REPORT=mypy_primer</code> on a large project locally and couldn't see any difference in the topline numbers relative to <code>main</code>. I can run again with <code>TY_MEMORY_REPORT=full</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2025-09-30 21:20</div>
+            <div class="timeline-body"><p>The mypy-primer rounds the numbers to avoid excessive diffs (though maybe we should change that). Also make sure to run with <code>TY_MAX_PARALLELISM=1</code> for deterministic numbers locally.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-10-02 00:34</div>
+            <div class="timeline-body"><p>If we're not seeing clear evidence of memory or CPU improvements, I would lean towards tabling this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-10-02 06:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-02 06:54</div>
+            <div class="timeline-body"><p>Yeah, I think we've probably spent enough time looking at this now given our priorities and deadlines :-)</p>
+<p>Thanks all!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-10-02 06:54</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:34:59 UTC
+    </footer>
+</body>
+</html>
