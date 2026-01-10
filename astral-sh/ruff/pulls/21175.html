@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Support for notebooks in VS Code - astral-sh/ruff #21175</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Support for notebooks in VS Code</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21175">#21175</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2025-10-31 20:21
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-10-31 20:21</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR adds support for notebook synchronization to ty's LSP.
+ty now supports LSP operations across LSP cell boundaries and no longer incorrectly
+reports diagnostics when using variables that were defined in earlier cells.</p>
+<p>Most of the changes are integrating notebooks into ty's LSP range to text-range conversion. However, this PR also introduces a new <code>system.source_type</code> method to ensure the editor and ty agree on what's considered a notebook.</p>
+<p>Fixes https://github.com/astral-sh/ty/issues/173</p>
+<h2>Known limitations</h2>
+<p>The LSP doesn't support cross-cell edits for completions. This is a problem for auto-imports because the importer will try to insert the import in the first cell, rather than the current cell. Given that auto import is still experimental, I suggest tackling this in a follow up PR.</p>
+<p>Another limitation is that we can't show diagnostics for notebooks or references within notebooks unless they're open in the editor. This is because ty can't know the URI for a cell unless the notebook is open, which prevents us from mapping the diagnostic to a meaningful location. The best we could do is to map the location to the start of the notebook but this also seems bad (and notebooks don't support pull or workspace diagnostics...). For now, we match what pylance does and only handle open notebooks.</p>
+<h2>Test Plan</h2>
+<p>Added E2E tests</p>
+<p>https://github.com/user-attachments/assets/cbd9b873-a840-4e86-b280-d5d0d5a7d739</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @AlexWaygood on 2025-10-31 20:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-10-31 20:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-10-31 20:41</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-10-31 20:42</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">scikit-build-core (https://github.com/scikit-build/scikit-build-core)
++ src/scikit_build_core/build/wheel.py:98:20: error[no-matching-overload] No overload of bound method `__init__` matches arguments
+- Found 44 diagnostics
++ Found 45 diagnostics
+
+
+</code></pre>
+</details>
+
+<p>No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-10-31 20:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_ide/src/semantic_tokens.rs</code>:241 on 2025-10-31 20:44</div>
+            <div class="timeline-body"><p>This fixes a bug where ty highlighted a token that started right at the end of the provided range. This resulted in a panic for notebooks because ty tried to highlight a token from the next cell, which isn't allowed</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-10-31 20:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/document/notebook.rs</code>:254 on 2025-10-31 20:45</div>
+            <div class="timeline-body"><p>TODO, delete</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-10-31 20:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/document/range.rs</code>:84 on 2025-10-31 20:45</div>
+            <div class="timeline-body"><p>TODO: Handle more gracefully</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/server/api/notifications/did_change_watched_files.rs</code>:99 on 2025-10-31 20:47</div>
+            <div class="timeline-body"><p>We can't publish diagnostics for notebooks that aren't open because we don't know the URLs of the cells. But VS code uses <code>didChangeNotebook</code> for open notebooks and not <code>didChangeWatchedFiles</code>. That's why this comment isn't relevant.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-10-31 20:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/server/api/requests/diagnostic.rs</code>:46 on 2025-10-31 20:48</div>
+            <div class="timeline-body"><p>Delete</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-10-31 20:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">notebook</span> added by @MichaReiser on 2025-11-06 20:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-11-07 17:09</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2025-11-07 17:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @MichaReiser on 2025-11-07 17:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @MichaReiser on 2025-11-07 17:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @MichaReiser on 2025-11-07 17:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @MichaReiser on 2025-11-07 17:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @sharkdp removed by @sharkdp on 2025-11-11 08:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @carljm removed by @MichaReiser on 2025-11-11 11:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @dcreager removed by @MichaReiser on 2025-11-11 11:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @Gankra by @MichaReiser on 2025-11-11 11:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/ruff_db/src/source.rs</code>:48 on 2025-11-11 14:19</div>
+            <div class="timeline-body"><p>wow not very forward thinking, micha, what if typeshed adds stubs for the most popular notebooks in the python ecosystem!!!! /silly</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/ruff_db/src/system.rs</code>:81 on 2025-11-11 14:22</div>
+            <div class="timeline-body"><p>It's probably worth adding a comment to these two functions explaining that we're defaulting to &quot;system has no additional info&quot; (and so the caller will defer to e.g. the file extension)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/ruff_notebook/src/notebook.rs</code>:401 on 2025-11-11 14:27</div>
+            <div class="timeline-body"><p>Checking that this actually handles the last cell properly? We store a trailing offset?
+(I assume this will be elucidated elsewhere...)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/ty_server/src/document/notebook.rs</code>:13 on 2025-11-11 14:37</div>
+            <div class="timeline-body"><p>I can't understand what this is saying</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/ty_server/src/document/notebook.rs</code>:142 on 2025-11-11 14:46</div>
+            <div class="timeline-body"><p>Obscure collections API being useful!!! 🎊</p>
+<p>(Had to actually check that <code>1..1</code> works the way you want, it does)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/ty_server/src/document/notebook.rs</code>:152 on 2025-11-11 14:50</div>
+            <div class="timeline-body"><p>Slightly unfortunate that this logic is duplicated but it's so trivial it's whatever</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/ty_server/src/document/notebook.rs</code>:150 on 2025-11-11 14:53</div>
+            <div class="timeline-body"><p>This code profoundly confused me (the key here is that <code>cells</code> isn't <code>self.cells</code> or <code>new_cells</code>). Either it should have a comment or some of these cells need more descriptive names.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/ty_server/src/document/notebook.rs</code>:281 on 2025-11-11 14:58</div>
+            <div class="timeline-body"><p>I wonder if I'll ever find the new home for these tests... (or are they meaningless?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/ty_server/src/server/api/diagnostics.rs</code>:22 on 2025-11-11 15:02</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">// The real challenge here is that `to_lsp_range` now needs to
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/ty_server/src/server/api/diagnostics.rs</code>:25 on 2025-11-11 15:04</div>
+            <div class="timeline-body"><p>...also this is a really weird comment outside of the context of reviewing this PR. Was this a note to yourself during hacking?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/ty_server/src/server/api/diagnostics.rs</code>:162 on 2025-11-11 15:06</div>
+            <div class="timeline-body"><p>Might be good to add a comment explaining why notebooks need to bypass this</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/ty_server/src/server/api/notifications/did_change_notebook.rs</code>:7 on 2025-11-11 15:10</div>
+            <div class="timeline-body"><p>Slightly odd for notifications to yoink code from eachother like this</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/ty_server/src/server/api/notifications/did_close.rs</code>:40 on 2025-11-11 15:12</div>
+            <div class="timeline-body"><p>Compute is_cell earlier so you can use it in the check above</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/ty_server/src/server/api/notifications/did_close.rs</code>:47 on 2025-11-11 15:14</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">            // Notebooks only support push diagnostics.
+</code></pre>
+<p>(Genuinely forget, but I am very sad if the terminology is really &quot;publish&quot; and &quot;pull&quot; and not &quot;push&quot; and &quot;pull&quot;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/ty_server/src/server/api/notifications/did_open.rs</code>:48 on 2025-11-11 15:15</div>
+            <div class="timeline-body"><p><code>open_document</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/ty_server/src/server/api/requests/semantic_tokens.rs</code>:53 on 2025-11-11 15:19</div>
+            <div class="timeline-body"><p>This can be one big &amp;&amp; chain instead of nested ifs</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> approved on 2025-11-11 15:23</div>
+            <div class="timeline-body"><p>Incredible work!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/document/notebook.rs</code>:36 on 2025-11-12 04:29</div>
+            <div class="timeline-body"><p>Can you update the documentation for <code>NotebookCell</code> now that it doesn't contain the <code>TextDocument</code> in it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/document/notebook.rs</code>:39 on 2025-11-12 04:29</div>
+            <div class="timeline-body"><p>I'm curious to know why is this being added?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/document/notebook.rs</code>:80 on 2025-11-12 04:31</div>
+            <div class="timeline-body"><p>Would it be useful to add a debug log if the index doesn't contain the text document representing the cell?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/document/text_document.rs</code>:22 on 2025-11-12 05:01</div>
+            <div class="timeline-body"><p>IIUC, this is removed because the server will always need to re-compute the index whenever the content in a text document changes so there's no benefit of computing this ahead of time?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/server/api/diagnostics.rs</code>:162 on 2025-11-12 05:14</div>
+            <div class="timeline-body"><p>Agree, I think we should update the function documentation where &quot;This function is a no-op...&quot; is mentioned.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/server/api/diagnostics.rs</code>:144 on 2025-11-12 05:16</div>
+            <div class="timeline-body"><p>Is there a specific reason this has been moved down after the document snapshotting? This seems like a small optimization to avoid taking the snapshot if the client uses pull diagnostics.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/server/api/diagnostics.rs</code>:116 on 2025-11-12 05:19</div>
+            <div class="timeline-body"><p>Why is this (<code>*_if_needed</code> variant of <code>clear_diagnostics</code>) required when a single <code>publish_diagnostics</code> is sufficient?</p>
+<p>It might be worth adding a brief documentation for what does &quot;if needed&quot; mean here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/server/api/diagnostics.rs</code>:23 on 2025-11-12 05:21</div>
+            <div class="timeline-body"><p>Is this a leftover comment? Or, which part of the code is this referring to?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/server/api/diagnostics.rs</code>:149 on 2025-11-12 05:27</div>
+            <div class="timeline-body"><p>I think we could rename this to <code>publish_diagnostics_if_needed</code> to be consistent with the <code>clear_diagnostics_*</code> version.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/server/api/diagnostics.rs</code>:116 on 2025-11-12 05:43</div>
+            <div class="timeline-body"><p>Oh, is the reason that a document representing the cell doesn't really exists on the ty side and it only exists in the LSP index which means that when closing a document representing a notebook cell, it needs to take a different logic (as is done using the <code>document.is_cell</code> check)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/server/api/notifications/did_close.rs</code>:37 on 2025-11-12 05:45</div>
+            <div class="timeline-body"><p>It might be worth adding a comment for posterity to explain why this is not being done for a document representing a notebook cell. Refer to my other comment in <code>diagnostics.rs</code> as I got confused why cell document needs to be handled uniquely but I understand it now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/server/api/notifications/did_change_watched_files.rs</code>:99 on 2025-11-12 05:52</div>
+            <div class="timeline-body"><p>We have the logic for the Ruff language server to do this, is that not relevant here? The Ruff server will update the diagnostics for all the <em>open</em> notebooks.</p>
+<p>Edit: Ok, I just tested this out and VS Code does send the <code>didChangeNotebook</code> notification but it is also sending the <code>didChangeWatchedFiles</code> notification which I guess is irrelevant here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/session/index.rs</code>:76 on 2025-11-12 05:59</div>
+            <div class="timeline-body"><p>Is there a specific reason for using <code>unwrap_or_default</code> here instead of <code>if let ...</code> ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/document/notebook.rs</code>:151 on 2025-11-12 06:07</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                    .map(|(index, cell)| (cell.url.clone(), index)),
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/document/notebook.rs</code>:144 on 2025-11-12 06:09</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        // Re-build the cell-index if new cells were added or deleted
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/document/notebook.rs</code>:124 on 2025-11-12 06:12</div>
+            <div class="timeline-body"><p>💯 I really like how the <code>update</code> method is simplified given that it has been the source of multiple hard to find bugs in the Ruff server !!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/document/range.rs</code>:151 on 2025-11-12 06:20</div>
+            <div class="timeline-body"><p>This seems more like an <code>absolute_position</code> instead of the absolute start?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/document/range.rs</code>:193 on 2025-11-12 06:22</div>
+            <div class="timeline-body"><p>Unrelated to this PR, but there seems to be a some typo in the documentation for <code>TextSizeExt::to_lsp_position</code> and <code>ToRangeExt::to_lsp_range</code>:</p>
+<pre><code class="language-rs">    /// Converts self into a position into an LSP text document (can be a cell or regular document).
+</code></pre>
+<p>Should it be &quot;Converts self into a position for an LSP text ...&quot;?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/document/range.rs</code>:303 on 2025-11-12 06:26</div>
+            <div class="timeline-body"><p>I think it might be useful to expand this comment with a reason on why this is necessary (I'm not exactly sure why).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/server/api/requests/semantic_tokens.rs</code>:43 on 2025-11-12 06:32</div>
+            <div class="timeline-body"><p>It might be worth renaming this to <code>cell_range</code> instead with a comment stating that this is required to limit the semantic token generation for the cell as <code>file</code> would represent an entire notebook.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/tests/e2e/main.rs</code>:444 on 2025-11-12 06:41</div>
+            <div class="timeline-body"><p>At first, I thought this was collecting <code>N</code> number of diagnostics but that's not true, maybe we can rename this to <code>send_publish_diagnostics_requests</code> with documentation as &quot;Send <code>N</code> publish diagnostics requests and collect the diagnostics into ...&quot;?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/document/notebook.rs</code>:281 on 2025-11-12 06:44</div>
+            <div class="timeline-body"><p>I think this has been ported over to use the E2E test framework, is that correct @MichaReiser ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> approved on 2025-11-12 06:45</div>
+            <div class="timeline-body"><p>This is really great!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-11-12 07:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/document/notebook.rs</code>:281 on 2025-11-12 07:48</div>
+            <div class="timeline-body"><p>Yes, I ported this to an E2E test (which I'm very glad that I did because I made the same mistake as we had in ruff's first notebook implementation 😆)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/document/text_document.rs</code>:22 on 2025-11-12 07:52</div>
+            <div class="timeline-body"><p>The main reason we stored the <code>index</code> in Ruff is because we use <code>document.index</code> to map positions from text ranges to LSP ranges (and vice versa). However, this isn't the case for ty. In ty, we use <code>line_index</code> which has its own caching.</p>
+<p>The only remaining place where <code>index</code> was used was in the <code>document.update</code>, which we only need to compute when a document changes and the index is outdated immediately after. I didn't bother trying to use <code>line_index</code> in <code>document.update</code>. We could, but it's probably not worth the complexity.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-11-12 07:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-11-12 08:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/document/text_document.rs</code>:22 on 2025-11-12 08:53</div>
+            <div class="timeline-body"><p>That makes sense, thanks for the explanation!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-11-12 16:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/server/api/notifications/did_change_watched_files.rs</code>:99 on 2025-11-12 16:37</div>
+            <div class="timeline-body"><p>I'm surprised that it sends both. That seemms like bug in VS Code. For non-notebooks, VS Code sends a <code>didChange</code> event when the file is open and a <code>didChangeWatchedFiles</code> event otherwise.</p>
+<p><code>didChangeWatchedFiles</code> isn't relevant for notebooks because we can't do anything useful with them when they're closed. That's why we skip them here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-11-12 16:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/source.rs</code>:48 on 2025-11-12 16:38</div>
+            <div class="timeline-body"><p>Lol. I'll update it when you change our module resolver to work with notebooks ;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-11-12 16:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_notebook/src/notebook.rs</code>:401 on 2025-11-12 16:44</div>
+            <div class="timeline-body"><p><code>CellOffset</code> contains:</p>
+<ul>
+<li>the offset <code>0</code> (even if the notebook has no cells)</li>
+<li>the end offset of every cell</li>
+</ul>
+<p>Let's assume the notebook has one cell where the cell's length is 20 bytes. The build cell offsets then contains <code>[0, 20]</code>. Retrieving the range for cell 0 returns <code>0..20</code>.</p>
+<p>The function returns <code>None</code> if called with an out-of-bounds cell. E.g. <code>cell_range(1)</code> succeeds to look up the start offset (20), but it fails to retrieve the end offset and returns <code>None</code> instead</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-11-12 16:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/document/notebook.rs</code>:142 on 2025-11-12 16:47</div>
+            <div class="timeline-body"><p>Yes, I was very pleased when I found it. I first did some obscure reverse insertion in combination with <code>insert</code>. Not only did I get it wrong in the first place, it also would have had horrible performance.</p>
+<p>However, it took me a surprising long time to find it. Surprising because this is/was the main array manipulation API in JavaScript. So I should have tried this first.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-11-12 16:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/server/api/diagnostics.rs</code>:25 on 2025-11-12 16:51</div>
+            <div class="timeline-body"><p>Oops, sorry. Yes, this is just me taking notes and forgetting to clean up.... Am I an AI?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-11-12 16:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/server/api/notifications/did_close.rs</code>:47 on 2025-11-12 16:52</div>
+            <div class="timeline-body"><p>I'm sorry that I have to break this to you but...</p>
+<p><code>textDocument/publishDiagnostics</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-11-12 16:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/server/api/notifications/did_open.rs</code>:48 on 2025-11-12 16:55</div>
+            <div class="timeline-body"><p>Hmm, maybe. I used <code>opened</code> to indicate that it should be called <strong>after</strong> the document was opened. Similar to the Reacts callbacks <code>onClicked</code> or <code>onChanged</code>. But let me think if there's a better name</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-11-12 17:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/server/api/requests/semantic_tokens.rs</code>:53 on 2025-11-12 17:01</div>
+            <div class="timeline-body"><p>It will take me forever to get used to let-chains... But you can see, I tried.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-11-12 17:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/document/notebook.rs</code>:39 on 2025-11-12 17:04</div>
+            <div class="timeline-body"><p>It's so that we can map it to <code>ruff_notebook::CodeCell::execution_count</code> (the naming here is a bit weird but I'm 99% sure it's the same)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-11-12 17:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/server/api/diagnostics.rs</code>:144 on 2025-11-12 17:11</div>
+            <div class="timeline-body"><p>We can't use pull diagnostics if the document is a cell or notebook and we need to snapshot the document to make this decision.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-11-12 17:35</div>
+            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+
+<h2><a href="https://codspeed.io/astral-sh/ruff/branches/micha%2Flsp-notebooks-phase2?utm_source=github&amp;utm_medium=comment&amp;utm_content=header">CodSpeed Performance Report</a></h2>
+<h3>Merging #21175 will <strong>not alter performance</strong></h3>
+<p><sub>Comparing <code>micha/lsp-notebooks-phase2</code> (163d419) with <code>main</code> (cd183c5)</sub></p>
+<h3>Summary</h3>
+<p><code>✅ 52</code> untouched</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-11-13 08:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/server/api/diagnostics.rs</code>:144 on 2025-11-13 08:36</div>
+            <div class="timeline-body"><p>Right, but we can still make the decision about whether to even take the snapshot if the client doesn't support pull diagnostics at all.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-11-13 09:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/server/api/diagnostics.rs</code>:144 on 2025-11-13 09:24</div>
+            <div class="timeline-body"><p>I'm not sure I follow. We only early exit if the client supports pull diagnostics <strong>and</strong> it's not a notebook cell and we need the document to make this decision.</p>
+<p>Also, taking a snapshot is fairly cheap (a few clones and bumping a few <code>Arc</code> counters)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-11-13 09:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/session/index.rs</code>:76 on 2025-11-13 09:37</div>
+            <div class="timeline-body"><p>It avoids very deeply nested <code>if let</code> chains because there are so many fields that can be <code>None</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-11-13 09:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/tests/e2e/main.rs</code>:444 on 2025-11-13 09:45</div>
+            <div class="timeline-body"><p>I can rename it to <code>collect_publish_diagnostic_notifications</code>. Renaming it to <code>send</code> seems incorrect to me as it isn't sending any messages.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2025-11-13 12:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-11-13 12:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-11-13 12:23</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:54:19 UTC
+    </footer>
+</body>
+</html>

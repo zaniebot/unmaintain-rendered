@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Type inference for comprehensions - astral-sh/ruff #20962</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Type inference for comprehensions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/20962">#20962</a>
+        opened by <a href="https://github.com/sharkdp">@sharkdp</a>
+        on 2025-10-18 18:31
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-10-18 18:31</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Adds type inference for list/dict/set comprehensions, including bidirectional inference:</p>
+<pre><code class="language-py">reveal_type({k: v for k, v in [(&quot;a&quot;, 1), (&quot;b&quot;, 2)]})  # dict[Unknown | str, Unknown | int]
+
+squares: list[int | None] = [x for x in range(10)]
+reveal_type(squares)  # list[int | None]
+</code></pre>
+<h2>Ecosystem impact</h2>
+<p>I did spot check the changes and most of them seem like known limitations or true positives. Without proper bidirectional inference, we saw a lot of false positives.</p>
+<h2>Test Plan</h2>
+<p>New Markdown tests</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @sharkdp on 2025-10-18 18:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-10-18 18:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-10-18 18:33</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a></h2>
+<details>
+<summary>Changes were detected when running ty on typing conformance tests</summary>
+
+<pre><code class="language-diff">--- old-output.txt	2025-11-02 13:20:06.790597551 +0000
++++ new-output.txt	2025-11-02 13:20:09.990614823 +0000
+@@ -36,7 +36,7 @@
+ aliases_implicit.py:72:5: error[type-assertion-failure] Argument does not have asserted type `(...) -&gt; None`
+ aliases_implicit.py:107:9: error[invalid-type-form] Variable of type `list[Unknown | &lt;class 'int'&gt; | &lt;class 'str'&gt;]` is not allowed in a type expression
+ aliases_implicit.py:108:9: error[invalid-type-form] Variable of type `tuple[tuple[&lt;class 'int'&gt;, &lt;class 'str'&gt;]]` is not allowed in a type expression
+-aliases_implicit.py:109:9: error[invalid-type-form] Variable of type `list[@Todo(list comprehension element type)]` is not allowed in a type expression
++aliases_implicit.py:109:9: error[invalid-type-form] Variable of type `list[&lt;class 'int'&gt; | Unknown]` is not allowed in a type expression
+ aliases_implicit.py:110:9: error[invalid-type-form] Variable of type `dict[Unknown | str, Unknown | str]` is not allowed in a type expression
+ aliases_implicit.py:114:9: error[invalid-type-form] Variable of type `Literal[3]` is not allowed in a type expression
+ aliases_implicit.py:115:10: error[invalid-type-form] Variable of type `Literal[True]` is not allowed in a type expression
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-10-18 18:37</div>
+            <div class="timeline-body"><!-- generated-comment ty ecosystem-analyzer -->
+
+<h2><code>ecosystem-analyzer</code> results</h2>
+<p>| Lint rule | Added | Removed | Changed |
+|-----------|------:|--------:|--------:|
+| <code>invalid-argument-type</code> | 91 | 0 | 89 |
+| <code>possibly-missing-attribute</code> | 80 | 1 | 36 |
+| <code>unsupported-operator</code> | 10 | 0 | 39 |
+| <code>invalid-return-type</code> | 28 | 0 | 11 |
+| <code>unused-ignore-comment</code> | 0 | 35 | 0 |
+| <code>invalid-assignment</code> | 10 | 0 | 20 |
+| <code>not-iterable</code> | 3 | 0 | 11 |
+| <code>index-out-of-bounds</code> | 13 | 0 | 0 |
+| <code>non-subscriptable</code> | 3 | 0 | 6 |
+| <code>unresolved-attribute</code> | 6 | 0 | 2 |
+| <code>no-matching-overload</code> | 4 | 0 | 0 |
+| <code>possibly-missing-implicit-call</code> | 1 | 0 | 3 |
+| <code>type-assertion-failure</code> | 0 | 2 | 0 |
+| <code>call-non-callable</code> | 1 | 0 | 0 |
+| <code>missing-argument</code> | 1 | 0 | 0 |
+| <strong>Total</strong> | <strong>251</strong> | <strong>38</strong> | <strong>217</strong> |</p>
+<p><strong><a href="https://david-fix-1388.ecosystem-663.pages.dev/diff">Full report with detailed diff</a></strong> (<a href="https://david-fix-1388.ecosystem-663.pages.dev/timing">timing results</a>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-10-21 07:55</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">attrs (https://github.com/python-attrs/attrs)
++ src/attr/_make.py:2644:33: warning[possibly-missing-attribute] Attribute `name` may be missing on object of type `Attribute | Unknown`
++ src/attr/_make.py:2646:29: warning[possibly-missing-attribute] Attribute `hash` may be missing on object of type `Attribute | Unknown`
++ src/attr/_make.py:2646:40: warning[possibly-missing-attribute] Attribute `name` may be missing on object of type `Attribute | Unknown`
+- Found 584 diagnostics
++ Found 587 diagnostics
+
+anyio (https://github.com/agronholm/anyio)
+- src/anyio/_core/_sockets.py:385:56: error[invalid-argument-type] Argument to function `setup_raw_socket` is incorrect: Expected `tuple[str, int] | tuple[str, int, int, int]`, found `tuple[@Todo, int, @Todo]`
++ src/anyio/_core/_sockets.py:385:56: error[invalid-argument-type] Argument to function `setup_raw_socket` is incorrect: Expected `tuple[str, int] | tuple[str, int, int, int]`, found `tuple[str | Unknown, int, @Todo]`
+
+kornia (https://github.com/kornia/kornia)
+- kornia/contrib/models/efficient_vit/utils/network.py:30:69: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 793 diagnostics
++ Found 792 diagnostics
+
+stone (https://github.com/dropbox/stone)
+- test/test_backend.py:373:29: warning[possibly-missing-attribute] Attribute `fields` may be missing on object of type `@Todo | None`
++ test/test_backend.py:373:29: warning[possibly-missing-attribute] Attribute `fields` may be missing on object of type `Unknown | None`
+- test/test_backend.py:374:29: warning[possibly-missing-attribute] Attribute `fields` may be missing on object of type `@Todo | None`
++ test/test_backend.py:374:29: warning[possibly-missing-attribute] Attribute `fields` may be missing on object of type `Unknown | None`
+- test/test_backend.py:376:17: warning[possibly-missing-attribute] Attribute `fields` may be missing on object of type `@Todo | None`
++ test/test_backend.py:376:17: warning[possibly-missing-attribute] Attribute `fields` may be missing on object of type `Unknown | None`
+- test/test_backend.py:380:17: warning[possibly-missing-attribute] Attribute `fields` may be missing on object of type `@Todo | None`
++ test/test_backend.py:380:17: warning[possibly-missing-attribute] Attribute `fields` may be missing on object of type `Unknown | None`
+- test/test_backend.py:469:30: warning[possibly-missing-attribute] Attribute `fields` may be missing on object of type `@Todo | None`
++ test/test_backend.py:469:30: warning[possibly-missing-attribute] Attribute `fields` may be missing on object of type `Unknown | None`
+- test/test_backend.py:471:22: warning[possibly-missing-attribute] Attribute `fields` may be missing on object of type `@Todo | None`
++ test/test_backend.py:471:22: warning[possibly-missing-attribute] Attribute `fields` may be missing on object of type `Unknown | None`
+- test/test_backend.py:495:30: warning[possibly-missing-attribute] Attribute `fields` may be missing on object of type `@Todo | None`
++ test/test_backend.py:495:30: warning[possibly-missing-attribute] Attribute `fields` may be missing on object of type `Unknown | None`
+- test/test_backend.py:497:17: warning[possibly-missing-attribute] Attribute `fields` may be missing on object of type `@Todo | None`
++ test/test_backend.py:497:17: warning[possibly-missing-attribute] Attribute `fields` may be missing on object of type `Unknown | None`
+
+pip (https://github.com/pypa/pip)
++ src/pip/_internal/operations/prepare.py:552:50: warning[possibly-missing-attribute] Attribute `is_wheel` may be missing on object of type `Unknown | Link | None`
++ src/pip/_internal/operations/prepare.py:554:49: error[invalid-argument-type] Argument to function `_check_download_dir` is incorrect: Expected `Link`, found `Unknown | Link | None`
++ src/pip/_internal/operations/prepare.py:556:38: warning[possibly-missing-attribute] Attribute `url` may be missing on object of type `Unknown | Link | None`
++ src/pip/_vendor/urllib3/util/url.py:373:26: warning[possibly-missing-attribute] Attribute `groups` may be missing on object of type `Match[str] | None`
+- Found 577 diagnostics
++ Found 581 diagnostics
+
+spack (https://github.com/spack/spack)
+- lib/spack/spack/binary_distribution.py:484:17: error[invalid-assignment] Method `__setitem__` of type `bound method dict[MirrorURLAndVersion, int | float].__setitem__(key: MirrorURLAndVersion, value: int | float, /) -&gt; None` cannot be called with a key of type `@Todo` and a value of type `tuple[int | float, Literal[True]]` on object of type `dict[MirrorURLAndVersion, int | float]`
++ lib/spack/spack/binary_distribution.py:484:17: error[invalid-assignment] Method `__setitem__` of type `bound method dict[MirrorURLAndVersion, int | float].__setitem__(key: MirrorURLAndVersion, value: int | float, /) -&gt; None` cannot be called with a key of type `MirrorURLAndVersion | Unknown` and a value of type `tuple[int | float, Literal[True]]` on object of type `dict[MirrorURLAndVersion, int | float]`
+- lib/spack/spack/binary_distribution.py:489:17: error[invalid-assignment] Method `__setitem__` of type `bound method dict[MirrorURLAndVersion, int | float].__setitem__(key: MirrorURLAndVersion, value: int | float, /) -&gt; None` cannot be called with a key of type `@Todo` and a value of type `tuple[int | float, Literal[False]]` on object of type `dict[MirrorURLAndVersion, int | float]`
++ lib/spack/spack/binary_distribution.py:489:17: error[invalid-assignment] Method `__setitem__` of type `bound method dict[MirrorURLAndVersion, int | float].__setitem__(key: MirrorURLAndVersion, value: int | float, /) -&gt; None` cannot be called with a key of type `MirrorURLAndVersion | Unknown` and a value of type `tuple[int | float, Literal[False]]` on object of type `dict[MirrorURLAndVersion, int | float]`
++ lib/spack/spack/detection/path.py:399:9: error[invalid-assignment] Object of type `list[Pattern[str] | Unknown]` is not assignable to `list[str]`
++ lib/spack/spack/detection/path.py:403:20: error[unresolved-attribute] Object of type `str` has no attribute `search`
++ lib/spack/spack/solver/asp.py:4006:69: error[invalid-assignment] Not enough values to unpack: Expected 3
++ lib/spack/spack/variant.py:562:55: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `tuple[str, ...]`, found `Unknown | set[Unknown]`
++ lib/spack/spack/variant.py:574:47: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `tuple[str, ...]`, found `Unknown | set[Unknown]`
++ lib/spack/spack/vendor/attr/_make.py:2653:33: warning[possibly-missing-attribute] Attribute `name` may be missing on object of type `Attribute | Unknown`
++ lib/spack/spack/vendor/attr/_make.py:2655:29: warning[possibly-missing-attribute] Attribute `hash` may be missing on object of type `Attribute | Unknown`
++ lib/spack/spack/vendor/attr/_make.py:2655:40: warning[possibly-missing-attribute] Attribute `name` may be missing on object of type `Attribute | Unknown`
+- Found 7861 diagnostics
++ Found 7869 diagnostics
+
+black (https://github.com/psf/black)
++ src/black/cache.py:144:17: error[invalid-assignment] Object of type `dict[str | Unknown, tuple[@Todo] | Unknown]` is not assignable to `dict[str, tuple[int | float, int, str]]`
+- Found 66 diagnostics
++ Found 67 diagnostics
+
+werkzeug (https://github.com/pallets/werkzeug)
+- tests/test_routing.py:601:5: warning[possibly-missing-attribute] Attribute `add` may be missing on object of type `Unknown | None | set[@Todo]`
++ tests/test_routing.py:601:5: warning[possibly-missing-attribute] Attribute `add` may be missing on object of type `Unknown | None | set[str | Unknown]`
+- tests/test_routing.py:603:5: warning[possibly-missing-attribute] Attribute `discard` may be missing on object of type `Unknown | None | set[@Todo]`
++ tests/test_routing.py:603:5: warning[possibly-missing-attribute] Attribute `discard` may be missing on object of type `Unknown | None | set[str | Unknown]`
+
+scrapy (https://github.com/scrapy/scrapy)
++ scrapy/utils/python.py:266:16: error[invalid-return-type] Return type does not match returned value: expected `Iterable[_KT@without_none_values]`, found `dict[object, ~None | Unknown]`
+- Found 1688 diagnostics
++ Found 1689 diagnostics
+
+paasta (https://github.com/yelp/paasta)
+- paasta_tools/instance/kubernetes.py:1146:12: error[invalid-return-type] Return type does not match returned value: expected `KubernetesVersionDict`, found `dict[Unknown | str, Unknown | str | int | list[@Todo] | None]`
++ paasta_tools/instance/kubernetes.py:1146:12: error[invalid-return-type] Return type does not match returned value: expected `KubernetesVersionDict`, found `dict[Unknown | str, Unknown | str | int | list[Mapping[str, Any] | Unknown] | None]`
++ paasta_tools/mesos_tools.py:893:16: error[non-subscriptable] Cannot subscript object of type `int` with no `__getitem__` method
++ paasta_tools/setup_kubernetes_job.py:440:24: warning[possibly-missing-attribute] Attribute `get_bounce_method` may be missing on object of type `Unknown | None | KubernetesDeploymentConfig`
+- Found 980 diagnostics
++ Found 982 diagnostics
+
+pytest (https://github.com/pytest-dev/pytest)
++ src/_pytest/python.py:1569:16: error[invalid-return-type] Return type does not match returned value: expected `Scope`, found `Scope | Unknown | (((str, Config, /) -&gt; @Todo) &amp; ~(() -&gt; object) &amp; ~str)`
+- Found 483 diagnostics
++ Found 484 diagnostics
+
+dulwich (https://github.com/dulwich/dulwich)
+- dulwich/diff_tree.py:403:26: error[invalid-argument-type] Argument to function `_all_eq` is incorrect: Expected `(@Todo, /) -&gt; Literal[&quot;delete&quot;]`, found `def change_type(c: TreeChange) -&gt; str`
++ dulwich/diff_tree.py:403:26: error[invalid-argument-type] Argument to function `_all_eq` is incorrect: Expected `(Unknown, /) -&gt; Literal[&quot;delete&quot;]`, found `def change_type(c: TreeChange) -&gt; str`
++ dulwich/refs.py:1585:12: error[invalid-return-type] Return type does not match returned value: expected `T@strip_peeled_refs`, found `dict[bytes | Unknown, bytes | None | Unknown]`
++ dulwich/refs.py:1601:12: error[invalid-return-type] Return type does not match returned value: expected `tuple[T@split_peeled_refs, dict[bytes, bytes]]`, found `tuple[dict[bytes | Unknown, bytes | None | Unknown], dict[bytes, bytes]]`
++ dulwich/refs.py:2047:12: error[invalid-return-type] Return type does not match returned value: expected `T@filter_ref_prefix`, found `dict[bytes | Unknown, bytes | None | Unknown]`
+- Found 172 diagnostics
++ Found 175 diagnostics
+
+sockeye (https://github.com/awslabs/sockeye)
+- sockeye/data_io.py:506:28: error[invalid-argument-type] Method `__getitem__` of type `Overload[(i: SupportsIndex, /) -&gt; @Todo, (s: slice[Any, Any, Any], /) -&gt; list[@Todo]]` cannot be called with key of type `int | None` on object of type `list[@Todo]`
++ sockeye/data_io.py:506:28: error[invalid-argument-type] Method `__getitem__` of type `Overload[(i: SupportsIndex, /) -&gt; int | Unknown, (s: slice[Any, Any, Any], /) -&gt; list[int | Unknown]]` cannot be called with key of type `int | None` on object of type `list[int | Unknown]`
+- sockeye/data_io.py:508:17: error[invalid-argument-type] Method `__getitem__` of type `Overload[(i: SupportsIndex, /) -&gt; @Todo, (s: slice[Any, Any, Any], /) -&gt; list[@Todo]]` cannot be called with key of type `int | None` on object of type `list[@Todo]`
++ sockeye/data_io.py:508:17: error[invalid-argument-type] Method `__getitem__` of type `Overload[(i: SupportsIndex, /) -&gt; Unknown, (s: slice[Any, Any, Any], /) -&gt; list[Unknown]]` cannot be called with key of type `int | None` on object of type `list[Unknown]`
+- sockeye/data_io.py:513:21: error[invalid-argument-type] Method `__getitem__` of type `Overload[(i: SupportsIndex, /) -&gt; @Todo, (s: slice[Any, Any, Any], /) -&gt; list[@Todo]]` cannot be called with key of type `int | None` on object of type `list[@Todo]`
++ sockeye/data_io.py:513:21: error[invalid-argument-type] Method `__getitem__` of type `Overload[(i: SupportsIndex, /) -&gt; Unknown, (s: slice[Any, Any, Any], /) -&gt; list[Unknown]]` cannot be called with key of type `int | None` on object of type `list[Unknown]`
+- sockeye/data_io.py:517:21: error[invalid-argument-type] Method `__getitem__` of type `Overload[(i: SupportsIndex, /) -&gt; @Todo, (s: slice[Any, Any, Any], /) -&gt; list[@Todo]]` cannot be called with key of type `int | None` on object of type `list[@Todo]`
++ sockeye/data_io.py:517:21: error[invalid-argument-type] Method `__getitem__` of type `Overload[(i: SupportsIndex, /) -&gt; Unknown, (s: slice[Any, Any, Any], /) -&gt; list[Unknown]]` cannot be called with key of type `int | None` on object of type `list[Unknown]`
+- sockeye/data_io.py:519:17: error[invalid-argument-type] Method `__getitem__` of type `Overload[(i: SupportsIndex, /) -&gt; @Todo, (s: slice[Any, Any, Any], /) -&gt; list[@Todo]]` cannot be called with key of type `int | None` on object of type `list[@Todo]`
++ sockeye/data_io.py:519:17: error[invalid-argument-type] Method `__getitem__` of type `Overload[(i: SupportsIndex, /) -&gt; Unknown, (s: slice[Any, Any, Any], /) -&gt; list[Unknown]]` cannot be called with key of type `int | None` on object of type `list[Unknown]`
+- sockeye/data_io.py:522:13: error[invalid-argument-type] Method `__getitem__` of type `Overload[(i: SupportsIndex, /) -&gt; @Todo, (s: slice[Any, Any, Any], /) -&gt; list[@Todo]]` cannot be called with key of type `int | None` on object of type `list[@Todo]`
++ sockeye/data_io.py:522:13: error[invalid-argument-type] Method `__getitem__` of type `Overload[(i: SupportsIndex, /) -&gt; int | Unknown, (s: slice[Any, Any, Any], /) -&gt; list[int | Unknown]]` cannot be called with key of type `int | None` on object of type `list[int | Unknown]`
+- sockeye/inference.py:350:50: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `(Unknown &amp; ~Top[list[Unknown]]) | None | list[@Todo]`
++ sockeye/inference.py:350:50: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `(Unknown &amp; ~Top[list[Unknown]]) | None | list[list[Unknown] | Unknown]`
+- sockeye/inference.py:352:34: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `(Unknown &amp; ~Top[list[Unknown]]) | None | list[@Todo]`
++ sockeye/inference.py:352:34: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `(Unknown &amp; ~Top[list[Unknown]]) | None | list[list[Unknown] | Unknown]`
+- sockeye/test_utils.py:105:101: error[not-iterable] Object of type `None | list[@Todo]` may not be iterable
++ sockeye/test_utils.py:105:101: error[not-iterable] Object of type `None | list[list[str | Unknown] | Unknown]` may not be iterable
+- test/unit/test_data_io.py:313:12: error[invalid-return-type] Return type does not match returned value: expected `tuple[list[Unknown], list[Unknown], list[Unknown]]`, found `tuple[list[@Todo], list[@Todo], list[@Todo] | None]`
++ test/unit/test_data_io.py:313:12: error[invalid-return-type] Return type does not match returned value: expected `tuple[list[Unknown], list[Unknown], list[Unknown]]`, found `tuple[list[Unknown], list[Unknown], list[Unknown] | None]`
+
+dedupe (https://github.com/dedupeio/dedupe)
++ dedupe/datamodel.py:65:32: error[invalid-argument-type] Argument to bound method `extend` is incorrect: Expected `Iterable[Variable]`, found `object`
+- Found 58 diagnostics
++ Found 59 diagnostics
+
+pydantic (https://github.com/pydantic/pydantic)
+- pydantic/v1/datetime_parse.py:170:29: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- pydantic/v1/datetime_parse.py:208:33: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 777 diagnostics
++ Found 775 diagnostics
+
+mkosi (https://github.com/systemd/mkosi)
++ mkosi/config.py:4838:30: error[call-non-callable] Object of type `None` is not callable
+- Found 99 diagnostics
++ Found 100 diagnostics
+
+nox (https://github.com/wntrblm/nox)
+- nox/_option_set.py:307:56: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- nox/_option_set.py:367:16: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 29 diagnostics
++ Found 27 diagnostics
+
+tornado (https://github.com/tornadoweb/tornado)
+- tornado/curl_httpclient.py:229:32: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- tornado/curl_httpclient.py:242:47: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- tornado/curl_httpclient.py:243:48: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 334 diagnostics
++ Found 331 diagnostics
+
+urllib3 (https://github.com/urllib3/urllib3)
+- src/urllib3/util/url.py:423:67: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 363 diagnostics
++ Found 362 diagnostics
+
+cki-lib (https://gitlab.com/cki-project/cki-lib)
++ cki_lib/owners.py:242:16: error[invalid-return-type] Return type does not match returned value: expected `None`, found `str`
+- Found 186 diagnostics
++ Found 187 diagnostics
+
+artigraph (https://github.com/artigraph/artigraph)
++ src/arti/types/pydantic.py:51:16: error[no-matching-overload] No overload of function `create_model` matches arguments
+- Found 169 diagnostics
++ Found 170 diagnostics
+
+optuna (https://github.com/optuna/optuna)
++ optuna/storages/_rdb/storage.py:366:16: error[invalid-return-type] Return type does not match returned value: expected `dict[str, Any]`, found `dict[Unknown | Column[Unknown], Any]`
++ optuna/storages/_rdb/storage.py:375:16: error[invalid-return-type] Return type does not match returned value: expected `dict[str, Any]`, found `dict[Unknown | Column[Unknown], Any]`
++ optuna/storages/_rdb/storage.py:385:16: error[invalid-return-type] Return type does not match returned value: expected `dict[str, Any]`, found `dict[Unknown | Column[Unknown], Any]`
++ optuna/storages/_rdb/storage.py:395:16: error[invalid-return-type] Return type does not match returned value: expected `dict[str, Any]`, found `dict[Unknown | Column[Unknown], Any]`
+- optuna/study/_multi_objective.py:27:16: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `@Todo | list[int | float] | None`
++ optuna/study/_multi_objective.py:27:16: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `Unknown | list[int | float] | None`
+- optuna/study/_multi_objective.py:33:50: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `Iterable[Unknown]`, found `@Todo | list[int | float] | None`
++ optuna/study/_multi_objective.py:33:50: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `Iterable[Unknown]`, found `Unknown | list[int | float] | None`
+- Found 581 diagnostics
++ Found 585 diagnostics
+
+freqtrade (https://github.com/freqtrade/freqtrade)
++ freqtrade/commands/data_commands.py:172:21: error[invalid-assignment] Not enough values to unpack: Expected 6
++ freqtrade/commands/data_commands.py:226:21: error[invalid-assignment] Not enough values to unpack: Expected 4
+- Found 460 diagnostics
++ Found 462 diagnostics
+
+sphinx (https://github.com/sphinx-doc/sphinx)
+- sphinx/builders/latex/__init__.py:171:47: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- sphinx/builders/texinfo.py:91:47: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ sphinx/domains/c/_symbol.py:253:26: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `Sequence[tuple[ASTIdentifier, str]]`, found `list[tuple[Unknown, None | Unknown] | Unknown]`
+- sphinx/domains/cpp/_parser.py:2106:38: error[invalid-argument-type] Argument to bound method `extend` is incorrect: Expected `Iterable[@Todo]`, found `Unknown | list[ASTTemplateParams | ASTTemplateIntroduction] | None`
++ sphinx/domains/cpp/_parser.py:2106:38: error[invalid-argument-type] Argument to bound method `extend` is incorrect: Expected `Iterable[ASTTemplateParams | ASTTemplateIntroduction]`, found `Unknown | list[ASTTemplateParams | ASTTemplateIntroduction] | None`
+- sphinx/writers/latex.py:1311:59: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- sphinx/writers/latex.py:1322:67: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- sphinx/writers/latex.py:1332:67: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 530 diagnostics
++ Found 526 diagnostics
+
+discord.py (https://github.com/Rapptz/discord.py)
+- discord/embeds.py:594:71: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 518 diagnostics
++ Found 517 diagnostics
+
+pandera (https://github.com/pandera-dev/pandera)
++ pandera/api/dataframe/container.py:1273:31: warning[possibly-missing-attribute] Attribute `dtype` may be missing on object of type `Any | None`
++ pandera/api/dataframe/container.py:1274:33: warning[possibly-missing-attribute] Attribute `parsers` may be missing on object of type `Any | None`
++ pandera/api/dataframe/container.py:1275:32: warning[possibly-missing-attribute] Attribute `checks` may be missing on object of type `Any | None`
++ pandera/api/dataframe/container.py:1276:34: warning[possibly-missing-attribute] Attribute `nullable` may be missing on object of type `Any | None`
++ pandera/api/dataframe/container.py:1277:32: warning[possibly-missing-attribute] Attribute `unique` may be missing on object of type `Any | None`
++ pandera/api/dataframe/container.py:1278:32: warning[possibly-missing-attribute] Attribute `coerce` may be missing on object of type `Any | None`
++ pandera/api/dataframe/container.py:1279:30: warning[possibly-missing-attribute] Attribute `name` may be missing on object of type `Any | None`
++ pandera/api/pandas/components.py:387:16: error[invalid-return-type] Return type does not match returned value: expected `dict[str, Any]`, found `dict[Unknown | None, Unknown | Index]`
+- pandera/backends/pyspark/container.py:603:34: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ pandera/strategies/pandas_strategies.py:1222:49: error[invalid-argument-type] Argument expression after ** must be a mapping with `str` key type: Found `Unknown | int`
+- Found 1630 diagnostics
++ Found 1638 diagnostics
+
+vision (https://github.com/pytorch/vision)
++ references/optical_flow/train.py:91:26: warning[possibly-missing-attribute] Attribute `to` may be missing on object of type `Unknown | None`
++ references/optical_flow/train.py:91:45: warning[possibly-missing-attribute] Attribute `to` may be missing on object of type `Unknown | None`
++ test/test_transforms_v2.py:2105:39: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[int | float] | None`, found `Unknown | int | tuple[int, int]`
++ test/test_transforms_v2.py:2105:39: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `Number | Sequence[Unknown]`, found `Unknown | int | tuple[int, int]`
++ test/test_transforms_v2.py:2105:39: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `bool`, found `Unknown | int | tuple[int, int]`
++ test/test_transforms_v2.py:2105:39: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `InterpolationMode | int`, found `Unknown | int | tuple[int, int]`
++ test/test_transforms_v2.py:2143:13: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `Number | Sequence[Unknown]`, found `Unknown | int | tuple[int, int]`
++ test/test_transforms_v2.py:2252:47: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `Number | Sequence[Unknown]`, found `Unknown | int | tuple[int, int]`
++ test/test_transforms_v2.py:2252:47: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `InterpolationMode | int`, found `Unknown | int | tuple[int, int]`
++ test/test_transforms_v2.py:2316:47: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `Number | Sequence[Unknown]`, found `Unknown | int | tuple[int, int]`
++ test/test_transforms_v2.py:2316:47: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `InterpolationMode | int`, found `Unknown | int | tuple[int, int]`
+- test/test_transforms_v2.py:3512:35: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `Literal[&quot;constant&quot;, &quot;edge&quot;, &quot;reflect&quot;, &quot;symmetric&quot;]`, found `list[@Todo] | Unknown`
++ test/test_transforms_v2.py:3512:35: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `Literal[&quot;constant&quot;, &quot;edge&quot;, &quot;reflect&quot;, &quot;symmetric&quot;]`, found `list[Unknown | int] | Unknown`
+- torchvision/utils.py:765:71: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- torchvision/utils.py:766:20: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 1491 diagnostics
++ Found 1500 diagnostics
+
+xarray (https://github.com/pydata/xarray)
++ properties/test_properties.py:59:39: error[invalid-argument-type] Argument to function `find_independent_seasons` is incorrect: Expected `Sequence[str]`, found `list[list[Unknown] | Unknown]`
++ xarray/computation/rolling.py:243:24: error[invalid-return-type] Return type does not match returned value: expected `list[_T@_mapping_to_list]`, found `list[_T@_mapping_to_list | None | Unknown]`
++ xarray/core/common.py:518:16: error[invalid-return-type] Return type does not match returned value: expected `dict[Hashable, T@_calc_assign_results]`, found `dict[Any, @Todo | (T@_calc_assign_results &amp; ~(() -&gt; object)) | (((C@_calc_assign_results, /) -&gt; T@_calc_assign_results) &amp; ~(() -&gt; object))]`
+- Found 1733 diagnostics
++ Found 1736 diagnostics
+
+cloud-init (https://github.com/canonical/cloud-init)
++ tests/unittests/test_ds_identify.py:950:9: warning[possibly-missing-implicit-call] Method `__setitem__` of type `Unknown | str | dict[Unknown | str, Unknown | str | int]` may be missing
+- Found 1139 diagnostics
++ Found 1140 diagnostics
+
+apprise (https://github.com/caronc/apprise)
++ apprise/config/base.py:1386:13: error[unresolved-attribute] Object of type `object` has no attribute `update`
+- apprise/plugins/email/base.py:1047:17: error[invalid-assignment] Object of type `list[@Todo]` is not assignable to `set[Unknown] | None`
++ apprise/plugins/email/base.py:1047:17: error[invalid-assignment] Object of type `list[str | Unknown]` is not assignable to `set[Unknown] | None`
+- Found 2451 diagnostics
++ Found 2452 diagnostics
+
+meson (https://github.com/mesonbuild/meson)
++ mesonbuild/backend/backends.py:1272:16: error[invalid-return-type] Return type does not match returned value: expected `list[str]`, found `list[Unknown] | list[bytes | Unknown]`
++ mesonbuild/build.py:2087:29: warning[possibly-missing-attribute] Attribute `absolute_path` may be missing on object of type `Unknown | FileInTargetPrivateDir | (File &amp; ~CustomTarget &amp; ~CustomTargetIndex &amp; ~GeneratedList &amp; ~str)`
++ mesonbuild/cmake/toolchain.py:232:31: error[no-matching-overload] No overload of bound method `join` matches arguments
++ mesonbuild/dependencies/boost.py:624:51: error[invalid-argument-type] Argument to bound method `arch_matches` is incorrect: Expected `str`, found `Unknown | str | None`
+- mesonbuild/dependencies/pkgconfig.py:215:16: error[invalid-return-type] Return type does not match returned value: expected `ImmutableListProtocol[str]`, found `list[@Todo]`
++ mesonbuild/dependencies/pkgconfig.py:215:16: error[invalid-return-type] Return type does not match returned value: expected `ImmutableListProtocol[str]`, found `list[str | Unknown]`
+- mesonbuild/interpreter/interpreter.py:3279:13: error[invalid-assignment] Object of type `dict[@Todo, @Todo]` is not assignable to attribute `compilers` of type `OrderedDict[str, Compiler]`
++ mesonbuild/interpreter/interpreter.py:3279:13: error[invalid-assignment] Object of type `dict[str | Unknown, Compiler | Unknown]` is not assignable to attribute `compilers` of type `OrderedDict[str, Compiler]`
+- mesonbuild/interpreterbase/interpreterbase.py:618:16: error[invalid-return-type] Return type does not match returned value: expected `tuple[list[InterpreterObject], dict[str, InterpreterObject]]`, found `tuple[list[@Todo], dict[str, InterpreterObject | None]]`
++ mesonbuild/interpreterbase/interpreterbase.py:618:16: error[invalid-return-type] Return type does not match returned value: expected `tuple[list[InterpreterObject], dict[str, InterpreterObject]]`, found `tuple[list[InterpreterObject | None | Unknown], dict[str, InterpreterObject | None]]`
+- mesonbuild/mintro.py:452:5: error[invalid-assignment] Object of type `dict[Unknown | str, Unknown | str | None | list[str] | list[@Todo]]` is not assignable to `dict[str, str | list[str] | list[dict[str, str]]]`
++ mesonbuild/mintro.py:452:5: error[invalid-assignment] Object of type `dict[Unknown | str, Unknown | str | None | list[str] | list[Unknown | str]]` is not assignable to `dict[str, str | list[str] | list[dict[str, str]]]`
+- mesonbuild/utils/universal.py:715:12: error[invalid-return-type] Return type does not match returned value: expected `ImmutableListProtocol[str]`, found `list[@Todo]`
++ mesonbuild/utils/universal.py:715:12: error[invalid-return-type] Return type does not match returned value: expected `ImmutableListProtocol[str]`, found `list[Unknown | str]`
+- test cases/common/22 object extraction/check-obj.py:19:35: error[unsupported-operator] Operator `not in` is not supported for types `str` and `None`, in comparing `str` with `None | set[@Todo]`
++ test cases/common/22 object extraction/check-obj.py:19:35: error[unsupported-operator] Operator `not in` is not supported for types `str` and `None`, in comparing `str` with `None | set[Any]`
+- unittests/allplatformstests.py:3117:13: warning[possibly-missing-implicit-call] Method `__setitem__` of type `Unknown | str | dict[Unknown | str, Unknown | str | dict[@Todo, @Todo]] | ... omitted 5 union elements` may be missing
++ unittests/allplatformstests.py:3117:13: warning[possibly-missing-implicit-call] Method `__setitem__` of type `Unknown | str | dict[Unknown | str, Unknown | str | dict[str | Unknown, Any]] | ... omitted 5 union elements` may be missing
+- unittests/allplatformstests.py:3143:21: warning[possibly-missing-implicit-call] Method `__setitem__` of type `Unknown | str | dict[Unknown | str, Unknown | str | dict[@Todo, @Todo]] | ... omitted 5 union elements` may be missing
++ unittests/allplatformstests.py:3143:21: warning[possibly-missing-implicit-call] Method `__setitem__` of type `Unknown | str | dict[Unknown | str, Unknown | str | dict[str | Unknown, Any]] | ... omitted 5 union elements` may be missing
+- Found 1655 diagnostics
++ Found 1659 diagnostics
+
+mkdocs (https://github.com/mkdocs/mkdocs)
+- mkdocs/structure/toc.py:24:31: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 221 diagnostics
++ Found 220 diagnostics
+
+setuptools (https://github.com/pypa/setuptools)
+- setuptools/_distutils/command/build_ext.py:270:23: warning[possibly-missing-attribute] Attribute `split` may be missing on object of type `(Unknown &amp; ~AlwaysFalsy) | (list[@Todo] &amp; ~AlwaysFalsy)`
++ setuptools/_distutils/command/build_ext.py:270:23: warning[possibly-missing-attribute] Attribute `split` may be missing on object of type `(Unknown &amp; ~AlwaysFalsy) | (list[tuple[Unknown, str] | Unknown] &amp; ~AlwaysFalsy)`
++ setuptools/_distutils/sysconfig.py:568:12: error[invalid-return-type] Return type does not match returned value: expected `list[str | int] | dict[str, str | int]`, found `list[Any | None] | dict[str, Any]`
++ setuptools/command/build_py.py:121:16: error[invalid-return-type] Return type does not match returned value: expected `tuple[str, str, str, list[str]]`, found `tuple[str, str, Unknown, list[bytes | Unknown]]`
+- setuptools/command/rotate.py:50:24: error[not-iterable] Object of type `Unknown | None | list[@Todo]` may not be iterable
++ setuptools/command/rotate.py:50:24: error[not-iterable] Object of type `Unknown | None | list[str | Unknown]` may not be iterable
++ setuptools/tests/test_wheel.py:552:5: error[invalid-argument-type] Argument to bound method `__call__` is incorrect: Expected `Iterable[None | str | int | float] | ((Any, /) -&gt; object) | None`, found `list[str | dict[Unknown | str, Unknown | dict[Unknown | str, Unknown | str]] | dict[str, list[Unknown | str]] | ... omitted 9 union elements]`
+- Found 1173 diagnostics
++ Found 1176 diagnostics
+
+arviz (https://github.com/arviz-devs/arviz)
+- arviz/data/io_pystan.py:151:28: warning[possibly-missing-attribute] Attribute `values` may be missing on object of type `(Unknown &amp; ~str &amp; ~Top[list[Unknown]] &amp; ~tuple[object, ...]) | None | dict[@Todo, @Todo]`
++ arviz/data/io_pystan.py:151:28: warning[possibly-missing-attribute] Attribute `values` may be missing on object of type `(Unknown &amp; ~str &amp; ~Top[list[Unknown]] &amp; ~tuple[object, ...]) | None | dict[@Todo | str, @Todo | str]`
+- arviz/data/io_pystan.py:157:48: warning[possibly-missing-attribute] Attribute `items` may be missing on object of type `(Unknown &amp; ~str &amp; ~Top[list[Unknown]] &amp; ~tuple[object, ...]) | None | dict[@Todo, @Todo]`
++ arviz/data/io_pystan.py:157:48: warning[possibly-missing-attribute] Attribute `items` may be missing on object of type `(Unknown &amp; ~str &amp; ~Top[list[Unknown]] &amp; ~tuple[object, ...]) | None | dict[@Todo | str, @Todo | str]`
+- arviz/data/io_pystan.py:163:48: warning[possibly-missing-attribute] Attribute `items` may be missing on object of type `(Unknown &amp; ~str &amp; ~Top[list[Unknown]] &amp; ~tuple[object, ...]) | None | dict[@Todo, @Todo]`
++ arviz/data/io_pystan.py:163:48: warning[possibly-missing-attribute] Attribute `items` may be missing on object of type `(Unknown &amp; ~str &amp; ~Top[list[Unknown]] &amp; ~tuple[object, ...]) | None | dict[@Todo | str, @Todo | str]`
+- arviz/data/io_pystan.py:437:28: warning[possibly-missing-attribute] Attribute `values` may be missing on object of type `(Unknown &amp; ~str &amp; ~Top[list[Unknown]] &amp; ~tuple[object, ...]) | None | dict[@Todo, @Todo]`
++ arviz/data/io_pystan.py:437:28: warning[possibly-missing-attribute] Attribute `values` may be missing on object of type `(Unknown &amp; ~str &amp; ~Top[list[Unknown]] &amp; ~tuple[object, ...]) | None | dict[@Todo | str, @Todo | str]`
+- arviz/data/io_pystan.py:443:48: warning[possibly-missing-attribute] Attribute `items` may be missing on object of type `(Unknown &amp; ~str &amp; ~Top[list[Unknown]] &amp; ~tuple[object, ...]) | None | dict[@Todo, @Todo]`
++ arviz/data/io_pystan.py:443:48: warning[possibly-missing-attribute] Attribute `items` may be missing on object of type `(Unknown &amp; ~str &amp; ~Top[list[Unknown]] &amp; ~tuple[object, ...]) | None | dict[@Todo | str, @Todo | str]`
+- arviz/data/io_pystan.py:448:48: warning[possibly-missing-attribute] Attribute `items` may be missing on object of type `(Unknown &amp; ~str &amp; ~Top[list[Unknown]] &amp; ~tuple[object, ...]) | None | dict[@Todo, @Todo]`
++ arviz/data/io_pystan.py:448:48: warning[possibly-missing-attribute] Attribute `items` may be missing on object of type `(Unknown &amp; ~str &amp; ~Top[list[Unknown]] &amp; ~tuple[object, ...]) | None | dict[@Todo | str, @Todo | str]`
+- arviz/tests/base_tests/test_stats.py:399:9: error[invalid-argument-type] Method `__getitem__` of type `bound method _LocIndexer[Unknown].__getitem__(key: Mapping[Any, Any]) -&gt; Unknown` cannot be called with key of type `list[@Todo]` on object of type `_LocIndexer[Unknown]`
++ arviz/tests/base_tests/test_stats.py:399:9: error[invalid-argument-type] Method `__getitem__` of type `bound method _LocIndexer[Unknown].__getitem__(key: Mapping[Any, Any]) -&gt; Unknown` cannot be called with key of type `list[Unknown]` on object of type `_LocIndexer[Unknown]`
++ arviz/tests/helpers.py:203:9: error[invalid-argument-type] Argument to function `from_dict` is incorrect: Expected `int | None`, found `dict[Unknown | str, Unknown] | Unknown`
+- doc/sphinxext/gallery_generator.py:386:17: warning[possibly-missing-attribute] Attribute `get` may be missing on object of type `Unknown | dict[@Todo, @Todo] | None`
++ doc/sphinxext/gallery_generator.py:386:17: warning[possibly-missing-attribute] Attribute `get` may be missing on object of type `Unknown | dict[Unknown | str, list[Unknown] | Unknown] | None`
+- doc/sphinxext/gallery_generator.py:386:17: warning[possibly-missing-attribute] Attribute `append` may be missing on object of type `Unknown | None`
++ doc/sphinxext/gallery_generator.py:386:17: warning[possibly-missing-attribute] Attribute `append` may be missing on object of type `Unknown | list[Unknown] | None`
+- doc/sphinxext/gallery_generator.py:389:17: warning[possibly-missing-attribute] Attribute `get` may be missing on object of type `Unknown | dict[@Todo, @Todo] | None`
++ doc/sphinxext/gallery_generator.py:389:17: warning[possibly-missing-attribute] Attribute `get` may be missing on object of type `Unknown | dict[Unknown | str, list[Unknown] | Unknown] | None`
+- doc/sphinxext/gallery_generator.py:389:17: warning[possibly-missing-attribute] Attribute `append` may be missing on object of type `Unknown | None`
++ doc/sphinxext/gallery_generator.py:389:17: warning[possibly-missing-attribute] Attribute `append` may be missing on object of type `Unknown | list[Unknown] | None`
+- doc/sphinxext/gallery_generator.py:401:30: warning[possibly-missing-attribute] Attribute `items` may be missing on object of type `Unknown | dict[@Todo, @Todo] | None`
++ doc/sphinxext/gallery_generator.py:401:30: warning[possibly-missing-attribute] Attribute `items` may be missing on object of type `Unknown | dict[Unknown | str, list[Unknown] | Unknown] | None`
+- doc/sphinxext/gallery_generator.py:408:30: warning[possibly-missing-attribute] Attribute `items` may be missing on object of type `Unknown | dict[@Todo, @Todo] | None`
++ doc/sphinxext/gallery_generator.py:408:30: warning[possibly-missing-attribute] Attribute `items` may be missing on object of type `Unknown | dict[Unknown | str, list[Unknown] | Unknown] | None`
+- Found 821 diagnostics
++ Found 822 diagnostics
+
+scikit-learn (https://github.com/scikit-learn/scikit-learn)
++ sklearn/externals/array_api_extra/_lib/_lazy.py:243:31: warning[possibly-missing-attribute] Attribute `_meta` may be missing on object of type `(Array &amp; ~int &amp; ~float &amp; ~complex) | Unknown`
++ sklearn/preprocessing/_encoders.py:1541:25: error[unsupported-operator] Operator `&lt;` is not supported for types `None` and `int`, in comparing `Unknown | None` with `int | Unknown`
+- Found 2535 diagnostics
++ Found 2537 diagnostics
+
+hydra-zen (https://github.com/mit-ll-responsible-ai/hydra-zen)
+- src/hydra_zen/structured_configs/_implementations.py:1325:20: error[invalid-return-type] Return type does not match returned value: expected `_T@_sanitize_collection`, found `dict[@Todo, @Todo]`
++ src/hydra_zen/structured_configs/_implementations.py:1325:20: error[invalid-return-type] Return type does not match returned value: expected `_T@_sanitize_collection`, found `dict[Unknown, Unknown]`
+
+strawberry (https://github.com/strawberry-graphql/strawberry)
++ strawberry/experimental/pydantic/error_type.py:106:9: error[invalid-assignment] Object of type `list[tuple[Any, @Todo | type[list[Unknown]], dataclasses.Field[None]] | Unknown]` is not assignable to `list[tuple[str, Any, Field[Unknown]]]`
++ strawberry/permission.py:163:35: error[not-iterable] Object of type `list[~AlwaysFalsy | Unknown]` is not iterable
+- strawberry/schema/validation_rules/one_of.py:70:47: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 378 diagnostics
++ Found 379 diagnostics
+
+prefect (https://github.com/PrefectHQ/prefect)
++ src/integrations/prefect-sqlalchemy/prefect_sqlalchemy/credentials.py:150:13: error[invalid-argument-type] Argument to bound method `create` is incorrect: Expected `str`, found `Unknown | str | int | dict[str, str]`
++ src/integrations/prefect-sqlalchemy/prefect_sqlalchemy/credentials.py:150:13: error[invalid-argument-type] Argument to bound method `create` is incorrect: Expected `str | None`, found `Unknown | str | int | dict[str, str]`
++ src/integrations/prefect-sqlalchemy/prefect_sqlalchemy/credentials.py:150:13: error[invalid-argument-type] Argument to bound method `create` is incorrect: Expected `str | None`, found `Unknown | str | int | dict[str, str]`
++ src/integrations/prefect-sqlalchemy/prefect_sqlalchemy/credentials.py:150:13: error[invalid-argument-type] Argument to bound method `create` is incorrect: Expected `str | None`, found `Unknown | str | int | dict[str, str]`
++ src/integrations/prefect-sqlalchemy/prefect_sqlalchemy/credentials.py:150:13: error[invalid-argument-type] Argument to bound method `create` is incorrect: Expected `int | None`, found `Unknown | str | int | dict[str, str]`
++ src/integrations/prefect-sqlalchemy/prefect_sqlalchemy/credentials.py:150:13: error[invalid-argument-type] Argument to bound method `create` is incorrect: Expected `str | None`, found `Unknown | str | int | dict[str, str]`
++ src/integrations/prefect-sqlalchemy/prefect_sqlalchemy/credentials.py:150:13: error[invalid-argument-type] Argument to bound method `create` is incorrect: Expected `Mapping[str, Sequence[str]]`, found `Unknown | str | int | dict[str, str]`
++ src/prefect/_vendor/croniter/croniter.py:1080:21: error[unsupported-operator] Operator `+=` is unsupported between objects of type `list[LiteralString]` and `list[str | Unknown | int]`
++ src/prefect/cli/deploy/_schedules.py:61:13: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `timedelta`, found `Unknown | timedelta | datetime`
++ src/prefect/cli/deploy/_schedules.py:61:13: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `str | None`, found `Unknown | timedelta | datetime`
+- src/prefect/cli/flow_run.py:191:40: error[invalid-argument-type] Argument is incorrect: Expected `FlowFilterId | None`, found `dict[Unknown | str, Unknown | list[@Todo]]`
++ src/prefect/cli/flow_run.py:191:40: error[invalid-argument-type] Argument is incorrect: Expected `FlowFilterId | None`, found `dict[Unknown | str, Unknown | list[UUID | Unknown]]`
++ src/prefect/cli/work_queue.py:403:60: error[invalid-argument-type] Argument is incorrect: Expected `list[UUID] | None`, found `list[UUID | None | Unknown]`
+- src/prefect/client/orchestration/_deployments/client.py:600:13: error[invalid-assignment] Method `__setitem__` of type `bound method dict[str, list[@Todo]].__setitem__(key: str, value: list[@Todo], /) -&gt; None` cannot be called with a key of type `Literal[&quot;scheduled_before&quot;]` and a value of type `str` on object of type `dict[str, list[@Todo]]`
++ src/prefect/client/orchestration/_deployments/client.py:600:13: error[invalid-assignment] Method `__setitem__` of type `bound method dict[str, list[str | Unknown]].__setitem__(key: str, value: list[str | Unknown], /) -&gt; None` cannot be called with a key of type `Literal[&quot;scheduled_before&quot;]` and a value of type `str` on object of type `dict[str, list[str | Unknown]]`
+- src/prefect/client/orchestration/_deployments/client.py:602:13: error[invalid-assignment] Method `__setitem__` of type `bound method dict[str, list[@Todo]].__setitem__(key: str, value: list[@Todo], /) -&gt; None` cannot be called with a key of type `Literal[&quot;limit&quot;]` and a value of type `int &amp; ~AlwaysFalsy` on object of type `dict[str, list[@Todo]]`
++ src/prefect/client/orchestration/_deployments/client.py:602:13: error[invalid-assignment] Method `__setitem__` of type `bound method dict[str, list[str | Unknown]].__setitem__(key: str, value: list[str | Unknown], /) -&gt; None` cannot be called with a key of type `Literal[&quot;limit&quot;]` and a value of type `int &amp; ~AlwaysFalsy` on object of type `dict[str, list[str | Unknown]]`
+- src/prefect/client/orchestration/_deployments/client.py:1273:13: error[invalid-assignment] Method `__setitem__` of type `bound method dict[str, list[@Todo]].__setitem__(key: str, value: list[@Todo], /) -&gt; None` cannot be called with a key of type `Literal[&quot;scheduled_before&quot;]` and a value of type `str` on object of type `dict[str, list[@Todo]]`
++ src/prefect/client/orchestration/_deployments/client.py:1273:13: error[invalid-assignment] Method `__setitem__` of type `bound method dict[str, list[str | Unknown]].__setitem__(key: str, value: list[str | Unknown], /) -&gt; None` cannot be called with a key of type `Literal[&quot;scheduled_before&quot;]` and a value of type `str` on object of type `dict[str, list[str | Unknown]]`
+- src/prefect/client/orchestration/_deployments/client.py:1275:13: error[invalid-assignment] Method `__setitem__` of type `bound method dict[str, list[@Todo]].__setitem__(key: str, value: list[@Todo], /) -&gt; None` cannot be called with a key of type `Literal[&quot;limit&quot;]` and a value of type `int &amp; ~AlwaysFalsy` on object of type `dict[str, list[@Todo]]`
++ src/prefect/client/orchestration/_deployments/client.py:1275:13: error[invalid-assignment] Method `__setitem__` of type `bound method dict[str, list[str | Unknown]].__setitem__(key: str, value: list[str | Unknown], /) -&gt; None` cannot be called with a key of type `Literal[&quot;limit&quot;]` and a value of type `int &amp; ~AlwaysFalsy` on object of type `dict[str, list[str | Unknown]]`
++ src/prefect/deployments/flow_runs.py:167:13: error[invalid-argument-type] Argument to bound method `create_task_run` is incorrect: Expected `dict[str, list[TaskRunResult | FlowRunResult | Parameter | Constant]] | None`, found `dict[str | Unknown, set[TaskRunResult | FlowRunResult] | Unknown]`
+- src/prefect/deployments/runner.py:619:25: error[invalid-argument-type] Argument to function `construct_schedule` is incorrect: Expected `int | float | timedelta | None`, found `Unknown | str | None | datetime`
++ src/prefect/deployments/runner.py:619:25: error[invalid-argument-type] Argument to function `construct_schedule` is incorrect: Expected `int | float | timedelta | None`, found `Unknown | Iterable[int | float | timedelta] | int | ... omitted 5 union elements`
++ src/prefect/deployments/runner.py:619:25: error[invalid-argument-type] Argument to function `construct_schedule` is incorrect: Expected `datetime | str | None`, found `Unknown | Iterable[int | float | timedelta] | int | ... omitted 5 union elements`
+- src/prefect/deployments/runner.py:619:25: error[invalid-argument-type] Argument to function `construct_schedule` is incorrect: Expected `str | None`, found `Unknown | str | None | datetime`
++ src/prefect/deployments/runner.py:619:25: error[invalid-argument-type] Argument to function `construct_schedule` is incorrect: Expected `str | None`, found `Unknown | Iterable[int | float | timedelta] | int | ... omitted 5 union elements`
+- src/prefect/deployments/runner.py:619:25: error[invalid-argument-type] Argument to function `construct_schedule` is incorrect: Expected `str | None`, found `Unknown | str | None | datetime`
++ src/prefect/deployments/runner.py:619:25: error[invalid-argument-type] Argument to function `construct_schedule` is incorrect: Expected `str | None`, found `Unknown | Iterable[int | float | timedelta] | int | ... omitted 5 union elements`
+- src/prefect/deployments/runner.py:619:25: error[invalid-argument-type] Argument to function `construct_schedule` is incorrect: Expected `str | None`, found `Unknown | str | None | datetime`
++ src/prefect/deployments/runner.py:619:25: error[invalid-argument-type] Argument to function `construct_schedule` is incorrect: Expected `str | None`, found `Unknown | Iterable[int | float | timedelta] | int | ... omitted 5 union elements`
++ src/prefect/deployments/runner.py:626:26: error[not-iterable] Object of type `Unknown | Iterable[int | float | timedelta] | int | ... omitted 5 union elements` may not be iterable
+- src/prefect/server/models/block_documents.py:427:47: error[invalid-argument-type] Argument is incorrect: Expected `BlockSchemaFilterId | None`, found `dict[str, list[@Todo]]`
++ src/prefect/server/models/block_documents.py:427:47: error[invalid-argument-type] Argument is incorrect: Expected `BlockSchemaFilterId | None`, found `dict[str, list[UUID | Unknown]]`
++ src/prefect/task_runners.py:211:17: error[no-matching-overload] No overload of bound method `submit` matches arguments
++ src/prefect/tasks.py:946:17: error[invalid-argument-type] Argument to bound method `create_task_run` is incorrect: Expected `dict[str, list[TaskRunResult | FlowRunResult | Parameter | Constant]] | None`, found `dict[str | Unknown, set[TaskRunResult | FlowRunResult] | Unknown]`
++ src/prefect/tasks.py:1065:17: error[invalid-argument-type] Argument is incorrect: Expected `dict[str, list[TaskRunResult | FlowRunResult | Parameter | Constant]]`, found `(dict[str | Unknown, set[TaskRunResult | FlowRunResult] | Unknown] &amp; ~AlwaysFalsy) | dict[Unknown, Unknown]`
++ src/prefect/tasks.py:1573:20: error[invalid-return-type] Return type does not match returned value: expected `list[State[R@map]] | PrefectFutureList[R@map]`, found `list[PrefectDistributedFuture[Unknown] | @Todo] | @Todo`
+- src/prefect/utilities/templating.py:323:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_block_document_references | dict[str, Any]`, found `list[@Todo]`
++ src/prefect/utilities/templating.py:323:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_block_document_references | dict[str, Any]`, found `list[Unknown]`
+- src/prefect/utilities/templating.py:437:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `dict[@Todo, @Todo]`
++ src/prefect/utilities/templating.py:437:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `dict[object, Unknown]`
+- src/prefect/utilities/templating.py:442:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `list[@Todo]`
++ src/prefect/utilities/templating.py:442:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `list[Unknown]`
+- Found 3301 diagnostics
++ Found 3319 diagnostics
+
+openlibrary (https://github.com/internetarchive/openlibrary)
+- openlibrary/book_providers.py:747:9: error[invalid-argument-type] Argument to function `multisort_best` is incorrect: Expected `list[tuple[Literal[&quot;min&quot;, &quot;max&quot;], (@Todo, /) -&gt; int | float]]`, found `list[Unknown | tuple[str, (rec) -&gt; Unknown]]`
++ openlibrary/book_providers.py:747:9: error[invalid-argument-type] Argument to function `multisort_best` is incorrect: Expected `list[tuple[Literal[&quot;min&quot;, &quot;max&quot;], (tuple[Edition, AbstractBookProvider[Unknown] | None] | Unknown, /) -&gt; int | float]]`, found `list[Unknown | tuple[str, (rec) -&gt; Unknown]]`
++ openlibrary/core/models.py:702:20: warning[possibly-missing-attribute] Attribute `split` may be missing on object of type `Unknown | dict[Unknown, Unknown]`
+- openlibrary/plugins/books/dynlinks.py:355:17: warning[possibly-missing-attribute] Attribute `insert` may be missing on object of type `Unknown | str | list[@Todo] | None`
++ openlibrary/plugins/books/dynlinks.py:355:17: warning[possibly-missing-attribute] Attribute `insert` may be missing on object of type `Unknown | str | list[dict[Unknown | str, Unknown | str] | Unknown] | ... omitted 3 union elements`
+- openlibrary/plugins/books/dynlinks.py:399:33: error[invalid-argument-type] Argument to function `trim` is incorrect: Expected `dict[Unknown, Unknown]`, found `Unknown | str | list[@Todo] | None`
++ openlibrary/plugins/books/dynlinks.py:399:33: error[invalid-argument-type] Argument to function `trim` is incorrect: Expected `dict[Unknown, Unknown]`, found `Unknown | str | list[dict[Unknown | str, Unknown | str] | Unknown] | ... omitted 3 union elements`
+- openlibrary/plugins/books/dynlinks.py:400:37: error[invalid-argument-type] Argument to function `trim` is incorrect: Expected `dict[Unknown, Unknown]`, found `Unknown | str | list[@Todo] | None`
++ openlibrary/plugins/books/dynlinks.py:400:37: error[invalid-argument-type] Argument to function `trim` is incorrect: Expected `dict[Unknown, Unknown]`, found `Unknown | str | list[dict[Unknown | str, Unknown | str] | Unknown] | ... omitted 3 union elements`
+- openlibrary/plugins/books/readlinks.py:135:16: warning[possibly-missing-attribute] Attribute `get` may be missing on object of type `Unknown | None`
++ openlibrary/plugins/books/readlinks.py:135:16: warning[possibly-missing-attribute] Attribute `get` may be missing on object of type `Unknown | OpenLibraryEdition | None`
+- openlibrary/plugins/books/readlinks.py:142:39: warning[possibly-missing-attribute] Attribute `get` may be missing on object of type `Unknown | None`
++ openlibrary/plugins/books/readlinks.py:142:39: warning[possibly-missing-attribute] Attribute `get` may be missing on object of type `Unknown | OpenLibraryEdition | None`
+- openlibrary/plugins/books/readlinks.py:157:12: warning[possibly-missing-attribute] Attribute `get` may be missing on object of type `Unknown | None`
++ openlibrary/plugins/books/readlinks.py:157:12: warning[possibly-missing-attribute] Attribute `get` may be missing on object of type `Unknown | OpenLibraryEdition | None`
+- openlibrary/plugins/books/tests/test_dynlinks.py:245:88: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- openlibrary/plugins/openlibrary/lists.py:439:13: error[invalid-assignment] Method `__setitem__` of type `Unknown | (bound method dict[Unknown | str, Unknown].__setitem__(key: Unknown | str, value: Unknown, /) -&gt; None) | (Overload[(key: SupportsIndex, value: @Todo, /) -&gt; None, (key: slice[Any, Any, Any], value: Iterable[@Todo], /) -&gt; None])` cannot be called with a key of type `Literal[&quot;next&quot;]` and a value of type `Unknown` on object of type `Unknown | dict[Unknown | str, Unknown] | int | list[@Todo]`
++ openlibrary/plugins/openlibrary/lists.py:439:13: error[invalid-assignment] Method `__setitem__` of type `Unknown | (bound method dict[Unknown | str, Unknown].__setitem__(key: Unknown | str, value: Unknown, /) -&gt; None) | (Overload[(key: SupportsIndex, value: Unknown, /) -&gt; None, (key: slice[Any, Any, Any], value: Iterable[Unknown], /) -&gt; None])` cannot be called with a key of type `Literal[&quot;next&quot;]` and a value of type `Unknown` on object of type `Unknown | dict[Unknown | str, Unknown] | int | list[Unknown]`
+- openlibrary/plugins/openlibrary/lists.py:443:13: error[invalid-assignment] Method `__setitem__` of type `Unknown | (bound method dict[Unknown | str, Unknown].__setitem__(key: Unknown | str, value: Unknown, /) -&gt; None) | (Overload[(key: SupportsIndex, value: @Todo, /) -&gt; None, (key: slice[Any, Any, Any], value: Iterable[@Todo], /) -&gt; None])` cannot be called with a key of type `Literal[&quot;prev&quot;]` and a value of type `Unknown` on object of type `Unknown | dict[Unknown | str, Unknown] | int | list[@Todo]`
++ openlibrary/plugins/openlibrary/lists.py:443:13: error[invalid-assignment] Method `__setitem__` of type `Unknown | (bound method dict[Unknown | str, Unknown].__setitem__(key: Unknown | str, value: Unknown, /) -&gt; None) | (Overload[(key: SupportsIndex, value: Unknown, /) -&gt; None, (key: slice[Any, Any, Any], value: Iterable[Unknown], /) -&gt; None])` cannot be called with a key of type `Literal[&quot;prev&quot;]` and a value of type `Unknown` on object of type `Unknown | dict[Unknown | str, Unknown] | int | list[Unknown]`
++ openlibrary/plugins/upstream/mybooks.py:193:58: error[not-iterable] Object of type `Unknown | list[Unknown] | None` may not be iterable
+- openlibrary/tests/solr/test_update.py:78:9: error[invalid-assignment] Object of type `dict[@Todo, @Todo]` is not assignable to attribute `docs_by_key` of type `MappingProxyType[Unknown, Unknown]`
++ openlibrary/tests/solr/test_update.py:78:9: error[invalid-assignment] Object of type `dict[Unknown, Unknown]` is not assignable to attribute `docs_by_key` of type `MappingProxyType[Unknown, Unknown]`
+- Found 915 diagnostics
++ Found 916 diagnostics
+
+pwndbg (https://github.com/pwndbg/pwndbg)
+- pwndbg/commands/killthreads.py:59:26: error[not-iterable] Object of type `list[int] | None | list[@Todo]` may not be iterable
++ pwndbg/commands/killthreads.py:59:26: error[not-iterable] Object of type `list[int] | None | list[int | Unknown]` may not be iterable
+- pwndbg/commands/killthreads.py:72:62: error[not-iterable] Object of type `list[int] | None | list[@Todo]` may not be iterable
++ pwndbg/commands/killthreads.py:72:62: error[not-iterable] Object of type `list[int] | None | list[int | Unknown]` may not be iterable
++ pwndbg/commands/ptmalloc2.py:505:40: error[invalid-argument-type] Argument to bound method `contains_chunk` is incorrect: Expected `int`, found `int | None`
++ pwndbg/dbg/__init__.py:822:16: error[invalid-return-type] Return type does not match returned value: expected `list[str]`, found `list[Unknown | str | None]`
+- Found 2739 diagnostics
++ Found 2741 diagnostics
+
+pycryptodome (https://github.com/Legrandin/pycryptodome)
++ lib/Crypto/Cipher/_mode_kw.py:25:12: error[invalid-return-type] Return type does not match returned value: expected `bytes`, found `bytes | bytearray | Unknown`
++ lib/Crypto/Cipher/_mode_kw.py:43:12: error[invalid-return-type] Return type does not match returned value: expected `bytes`, found `bytes | bytearray | Unknown`
+- Found 1774 diagnostics
++ Found 1776 diagnostics
+
+altair (https://github.com/vega/altair)
++ altair/vegalite/v6/schema/channels.py:183:20: error[invalid-return-type] Return type does not match returned value: expected `dict[Unknown, Unknown] | list[dict[Unknown, Unknown]]`, found `list[dict[Unknown, Unknown] | list[dict[Unknown, Unknown]] | Unknown]`
+- Found 1049 diagnostics
++ Found 1050 diagnostics
+
+colour (https://github.com/colour-science/colour)
++ colour/plotting/colorimetry.py:394:36: error[invalid-argument-type] Argument to function `filter_cmfs` is incorrect: Expected `MultiSpectralDistributions | Sequence[MultiSpectralDistributions | str]`, found `Unknown | str | bool`
++ colour/plotting/colorimetry.py:398:43: error[invalid-argument-type] Argument to function `filter_illuminants` is incorrect: Expected `SpectralDistribution | Sequence[SpectralDistribution | str]`, found `Unknown | str | bool`
++ colour/plotting/colorimetry.py:420:40: error[invalid-argument-type] Argument to bound method `plot` is incorrect: Expected `bool`, found `Unknown | str | bool`
++ colour/plotting/colorimetry.py:420:40: error[invalid-argument-type] Argument to bound method `plot` is incorrect: Expected `bool`, found `Unknown | str | bool`
++ colour/plotting/common.py:1608:55: error[invalid-argument-type] Argument to bound method `plot` is incorrect: Expected `bool`, found `Unknown | str`
++ colour/plotting/common.py:1608:55: error[invalid-argument-type] Argument to bound method `plot` is incorrect: Expected `bool`, found `Unknown | str`
++ colour/plotting/diagrams.py:1092:36: error[invalid-argument-type] Argument to function `filter_cmfs` is incorrect: Expected `MultiSpectralDistributions | Sequence[MultiSpectralDistributions | str]`, found `Unknown | Sequence[MultiSpectralDistributions | str] | MultiSpectralDistributions | bool`
++ colour/plotting/diagrams.py:1096:43: error[invalid-argument-type] Argument to function `filter_illuminants` is incorrect: Expected `SpectralDistribution | Sequence[SpectralDistribution | str]`, found `Unknown | Sequence[MultiSpectralDistributions | str] | MultiSpectralDistributions | bool`
++ colour/plotting/diagrams.py:1112:33: error[invalid-argument-type] Argument to bound method `plot` is incorrect: Expected `bool`, found `Unknown | Sequence[MultiSpectralDistributions | str] | MultiSpectralDistributions | bool`
++ colour/plotting/diagrams.py:1112:33: error[invalid-argument-type] Argument to bound method `plot` is incorrect: Expected `bool`, found `Unknown | Sequence[MultiSpectralDistributions | str] | MultiSpectralDistributions | bool`
++ colour/plotting/diagrams.py:1118:43: error[invalid-argument-type] Argument to bound method `annotate` is incorrect: Expected `tuple[int | float, int | float] | None`, found `Unknown | bool | tuple[int, int] | str | Structure`
++ colour/plotting/diagrams.py:1118:43: error[invalid-argument-type] Argument to bound method `annotate` is incorrect: Expected `dict[str, Any] | None`, found `Unknown | bool | tuple[int, int] | str | Structure`
++ colour/plotting/diagrams.py:1118:43: error[invalid-argument-type] Argument to bound method `annotate` is incorrect: Expected `bool | None`, found `Unknown | bool | tuple[int, int] | str | Structure`
++ colour/plotting/models.py:629:45: error[invalid-argument-type] Argument to bound method `plot` is incorrect: Expected `bool`, found `Unknown | str`
++ colour/plotting/models.py:629:45: error[invalid-argument-type] Argument to bound method `plot` is incorrect: Expected `bool`, found `Unknown | str`
++ colour/plotting/models.py:636:49: error[invalid-argument-type] Argument to bound method `plot` is incorrect: Expected `bool`, found `Unknown | str`
++ colour/plotting/models.py:636:49: error[invalid-argument-type] Argument to bound method `plot` is incorrect: Expected `bool`, found `Unknown | str`
++ colour/plotting/temperature.py:695:33: error[invalid-argument-type] Argument to bound method `plot` is incorrect: Expected `bool`, found `Unknown | str`
++ colour/plotting/temperature.py:695:33: error[invalid-argument-type] Argument to bound method `plot` is incorrect: Expected `bool`, found `Unknown | str`
++ colour/plotting/temperature.py:701:46: error[invalid-argument-type] Argument to bound method `annotate` is incorrect: Expected `tuple[int | float, int | float] | None`, found `Unknown | bool | tuple[int, int] | str | Structure`
++ colour/plotting/temperature.py:701:46: error[invalid-argument-type] Argument to bound method `annotate` is incorrect: Expected `dict[str, Any] | None`, found `Unknown | bool | tuple[int, int] | str | Structure`
++ colour/plotting/temperature.py:701:46: error[invalid-argument-type] Argument to bound method `annotate` is incorrect: Expected `bool | None`, found `Unknown | bool | tuple[int, int] | str | Structure`
+- Found 529 diagnostics
++ Found 551 diagnostics
+
+bokeh (https://github.com/bokeh/bokeh)
++ src/bokeh/core/has_props.py:790:5: error[invalid-assignment] Object of type `list[(type[Model] &amp; ~&lt;class 'DataModel'&gt;) | Unknown]` is not assignable to `list[type[HasProps]]`
+- src/bokeh/layouts.py:384:9: error[invalid-argument-type] Argument is incorrect: Expected `Literal[&quot;normal&quot;, &quot;grey&quot;] | None`, found `@Todo | UndefinedType`
++ src/bokeh/layouts.py:384:9: error[invalid-argument-type] Argument is incorrect: Expected `Literal[&quot;normal&quot;, &quot;grey&quot;] | None`, found `str | None | Unknown | UndefinedType`
+- src/bokeh/layouts.py:385:9: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `@Todo | UndefinedType`
++ src/bokeh/layouts.py:385:9: error[invalid-argument-type] Argument is incorrect: Expected `bool`, found `bool | Unknown | UndefinedType`
+- Found 612 diagnostics
++ Found 613 diagnostics
+
+pywin32 (https://github.com/mhammond/pywin32)
+- com/win32com/demos/dump_clipboard.py:31:33: error[invalid-argument-type] Argument to bound method `QueryGetData` is incorrect: Expected `PyFORMATETC`, found `tuple[Unknown, Unknown, Unknown, Unknown, @Todo]`
++ com/win32com/demos/dump_clipboard.py:31:33: error[invalid-argument-type] Argument to bound method `QueryGetData` is incorrect: Expected `PyFORMATETC`, found `tuple[Unknown, Unknown, Unknown, Unknown, Any]`
+- com/win32com/demos/dump_clipboard.py:36:37: error[invalid-argument-type] Argument to bound method `GetData` is incorrect: Expected `PyFORMATETC`, found `tuple[Unknown, Unknown, Unknown, Unknown, @Todo]`
++ com/win32com/demos/dump_clipboard.py:36:37: error[invalid-argument-type] Argument to bound method `GetData` is incorrect: Expected `PyFORMATETC`, found `tuple[Unknown, Unknown, Unknown, Unknown, Any]`
+- com/win32comext/shell/test/testSHFileOperation.py:21:9: error[invalid-argument-type] Argument to function `SHFileOperation` is incorrect: Expected `SHFILEOPSTRUCT`, found `tuple[Literal[0], int, Unknown, Unknown, int]`
++ com/win32comext/shell/test/testSHFileOperation.py:21:9: error[invalid-argument-type] Argument to function `SHFileOperation` is incorrect: Expected `SHFILEOPSTRUCT`, found `tuple[Literal[0], int, str, str, int]`
+- com/win32comext/shell/test/testSHFileOperation.py:35:13: error[invalid-argument-type] Argument to function `SHFileOperation` is incorrect: Expected `SHFILEOPSTRUCT`, found `tuple[Literal[0], int, @Todo, None, int]`
++ com/win32comext/shell/test/testSHFileOperation.py:35:13: error[invalid-argument-type] Argument to function `SHFileOperation` is incorrect: Expected `SHFILEOPSTRUCT`, found `tuple[Literal[0], int, str | Unknown, None, int]`
+- com/win32comext/shell/test/testSHFileOperation.py:56:9: error[invalid-argument-type] Argument to function `SHFileOperation` is incorrect: Expected `SHFILEOPSTRUCT`, found `tuple[Literal[0], int, Unknown, Unknown, int]`
++ com/win32comext/shell/test/testSHFileOperation.py:56:9: error[invalid-argument-type] Argument to function `SHFileOperation` is incorrect: Expected `SHFILEOPSTRUCT`, found `tuple[Literal[0], int, str, str, int]`
+
+pandas-stubs (https://github.com/pandas-dev/pandas-stubs)
+- tests/series/test_series.py:1008:5: error[type-assertion-failure] Argument does not have asserted type `IntervalIndex[Interval[Timestamp]]`
+- tests/test_frame.py:3497:5: error[type-asserti...*[Comment body truncated]*
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @sharkdp on 2025-10-30 19:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-10-30 19:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @sharkdp on 2025-10-30 21:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-10-30 21:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @sharkdp on 2025-10-31 13:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-10-31 13:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @sharkdp on 2025-10-31 15:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-10-31 15:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-10-31 19:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/resources/mdtest/comprehensions/basic.md</code>:155 on 2025-10-31 19:11</div>
+            <div class="timeline-body"><p>As discussed with @ibraheemdev, solving this will require pushing down the type context into <code>infer_scope_types</code> in order to infer the <code>None</code> in <code>(x, y, None)</code> as <code>str | None</code> inside the comprehension. Similar for the <code>TypedDict</code> test below. This change is a bit more invasive, as it requires us to skip comprehension scopes in <code>check_types</code>, because we would not have the required type context available when simply looping over all scopes. This change would be fine because with this PR, we're now calling <code>infer_scope_types</code> for comprehension scopes when we check the <em>outer</em> scope. A similar change would probably be required for lambdas as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @sharkdp on 2025-10-31 19:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @sharkdp on 2025-10-31 19:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @sharkdp on 2025-10-31 19:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @sharkdp on 2025-10-31 19:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @sharkdp on 2025-10-31 21:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-10-31 21:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-10-31 21:08</div>
+            <div class="timeline-body"><p>LGTM!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-02 01:26</div>
+            <div class="timeline-body"><p>Looks like the remaining fuzzer panics are seed 20, which minimize to this:</p>
+<pre><code class="language-py">name_5(name_3)
+[0 for unique_name_0 in unique_name_1 for unique_name_2 in name_3]
+
+@{name_3 for unique_name_3 in unique_name_4}
+class name_4[**name_3](0, name_2=name_5):
+    pass
+try:
+    name_0 = name_4
+except* 0:
+    pass
+else:
+    match unique_name_12:
+        case 0:
+            from name_2 import name_3
+        case name_0():
+
+            @name_4
+            def name_3():
+                pass
+(name_3 := 0)
+
+@name_3
+async def name_5():
+    pass
+</code></pre>
+<p>with this stacktrace:</p>
+<pre><code>error[panic]: Panicked at /Users/alexw/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/cdd0b85/src/function/execute.rs:419:17 when checking `/Users/alexw/dev/ruff/foo.py`: `place_by_id(Id(3002)): execute: too many cycle iterations`
+info: This indicates a bug in ty.
+info: If you could open an issue at https://github.com/astral-sh/ty/issues/new?title=%5Bpanic%5D, we'd be very appreciative!
+info: Platform: macos aarch64
+info: Version: ruff/0.14.3+22 (8f293eaf3 2025-10-31)
+info: Args: [&quot;target/debug/ty&quot;, &quot;check&quot;, &quot;foo.py&quot;, &quot;--python-version=3.13&quot;]
+info: run with `RUST_BACKTRACE=1` environment variable to show the full backtrace information
+info: query stacktrace:
+   0: infer_expression_types_impl(Id(1401))
+             at crates/ty_python_semantic/src/types/infer.rs:184
+   1: infer_definition_types(Id(1801))
+             at crates/ty_python_semantic/src/types/infer.rs:94
+   2: infer_scope_types(Id(1001))
+             at crates/ty_python_semantic/src/types/infer.rs:70
+   3: infer_scope_types(Id(1000))
+             at crates/ty_python_semantic/src/types/infer.rs:70
+   4: check_file_impl(Id(c00))
+             at crates/ty_project/src/lib.rs:535
+</code></pre>
+<p>and seed 486, which minimizes to this:</p>
+<pre><code class="language-py">for name_1 in {{{0: name_4 for unique_name_0 in unique_name_1}: 0 for unique_name_2 in unique_name_3 if name_4}: 0 for unique_name_4 in name_1 for name_4 in name_1}:
+    pass
+</code></pre>
+<p>with this stacktrace:</p>
+<pre><code>error[panic]: Panicked at /Users/alexw/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/cdd0b85/src/function/execute.rs:419:17 when checking `/Users/alexw/dev/ruff/bar.py`: `infer_definition_types(Id(1804)): execute: too many cycle iterations`
+info: This indicates a bug in ty.
+info: If you could open an issue at https://github.com/astral-sh/ty/issues/new?title=%5Bpanic%5D, we'd be very appreciative!
+info: Platform: macos aarch64
+info: Version: ruff/0.14.3+22 (8f293eaf3 2025-10-31)
+info: Args: [&quot;target/debug/ty&quot;, &quot;check&quot;, &quot;bar.py&quot;, &quot;--python-version=3.13&quot;]
+info: run with `RUST_BACKTRACE=1` environment variable to show the full backtrace information
+info: query stacktrace:
+   0: infer_scope_types(Id(1000))
+             at crates/ty_python_semantic/src/types/infer.rs:70
+   1: check_file_impl(Id(c00))
+             at crates/ty_project/src/lib.rs:535
+</code></pre>
+<p>ISTM that neither should block this being merged, but we could possibly add expect-panicking mdtests so we get notified when they get fixed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-11-02 01:59</div>
+            <div class="timeline-body"><p>Yes, thank you. I was also looking into these earlier today and came to the same conclusion. Will panics in the baseline
+cause longer CI times? Or does the costly minimization only kick in for the new panics?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-02 03:01</div>
+            <div class="timeline-body"><blockquote>
+<p>Will panics in the baseline cause longer CI times? Or does the costly minimization only kick in for the new panics?</p>
+</blockquote>
+<p>The costly minimization only kicks in for the new panics that don't exist in the baseline executable -- this should be fine!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-02 13:35</div>
+            <div class="timeline-body"><p>Okay, in CI it does seem like this makes us a fair bit slower to execute on seed 742 (a seed which we're not panicking on). But I assume that this is another instance where our performance is much slower on a debug build than on a release build; the fuzzer script still completes in a very reasonable time locally when I use a release build.</p>
+<p>If it feels like the fuzzer CI job is now taking an annoying amount of time, we could experiment with using <code>--profile=profiling</code> like we do for mypy_primer jobs in CI.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @sharkdp on 2025-11-02 13:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-11-02 13:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-11-02 13:35</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:54:19 UTC
+    </footer>
+</body>
+</html>

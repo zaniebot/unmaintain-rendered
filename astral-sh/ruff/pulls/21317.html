@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] fix global symbol lookup from eager scopes - astral-sh/ruff #21317</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] fix global symbol lookup from eager scopes</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21317">#21317</a>
+        opened by <a href="https://github.com/mtshiba">@mtshiba</a>
+        on 2025-11-07 15:37
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/mtshiba">@mtshiba</a> on 2025-11-07 15:37</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>cf. https://github.com/astral-sh/ruff/pull/20962</p>
+<p>In the following code, <code>foo</code> in the comprehension was not reported as unresolved:</p>
+<pre><code class="language-python"># error: [unresolved-reference] &quot;Name `foo` used when not defined&quot;
+foo
+foo = [
+    # no error!
+    # revealed: Divergent
+    reveal_type(x) for _ in () for x in [foo]
+]
+
+baz = [
+    # error: [unresolved-reference] &quot;Name `baz` used when not defined&quot;
+    # revealed: Unknown
+    reveal_type(x) for _ in () for x in [baz]
+]
+</code></pre>
+<p>In fact, this is a more serious bug than it looks: for <code>foo</code>, <a href="https://github.com/astral-sh/ruff/blob/6cc3393ccd9059439d9c1325e0e041db1d7481af/crates/ty_python_semantic/src/types/infer/builder.rs#L8052"><code>explicit_global_symbol</code> is called</a>, causing a symbol that should actually be <code>Undefined</code> to be reported as being of type <code>Divergent</code>.</p>
+<p>This PR fixes this bug. As a result, the code in <code>mdtest/regression/pr_20962_comprehension_panics.md</code> no longer panics.</p>
+<h2>Test Plan</h2>
+<p><code>corpus\cyclic_symbol_in_comprehension.py</code> is added.
+New tests are added in <code>mdtest/comprehensions/basic.md</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-11-07 15:41</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-11-07 15:41</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">pandera (https://github.com/pandera-dev/pandera)
+- pandera/api/dataframe/container.py:1273:31: warning[possibly-missing-attribute] Attribute `dtype` may be missing on object of type `Any | None`
+- pandera/api/dataframe/container.py:1274:33: warning[possibly-missing-attribute] Attribute `parsers` may be missing on object of type `Any | None`
+- pandera/api/dataframe/container.py:1275:32: warning[possibly-missing-attribute] Attribute `checks` may be missing on object of type `Any | None`
+- pandera/api/dataframe/container.py:1276:34: warning[possibly-missing-attribute] Attribute `nullable` may be missing on object of type `Any | None`
+- pandera/api/dataframe/container.py:1277:32: warning[possibly-missing-attribute] Attribute `unique` may be missing on object of type `Any | None`
+- pandera/api/dataframe/container.py:1278:32: warning[possibly-missing-attribute] Attribute `coerce` may be missing on object of type `Any | None`
+- pandera/api/dataframe/container.py:1279:30: warning[possibly-missing-attribute] Attribute `name` may be missing on object of type `Any | None`
+- Found 1636 diagnostics
++ Found 1629 diagnostics
+
+scikit-build-core (https://github.com/scikit-build/scikit-build-core)
+- src/scikit_build_core/build/wheel.py:98:20: error[no-matching-overload] No overload of bound method `__init__` matches arguments
+- Found 45 diagnostics
++ Found 44 diagnostics
+
+
+</code></pre>
+</details>
+
+<p>No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mtshiba">@mtshiba</a> on 2025-11-07 16:19</div>
+            <div class="timeline-body"><p><code>ty_server::e2e pull_diagnostics::document_diagnostic_caching_changed</code> seems to hang non-deterministically.</p>
+<p>https://github.com/astral-sh/ruff/actions/runs/19173434027/job/54811898939?pr=21317</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @mtshiba on 2025-11-07 16:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @mtshiba on 2025-11-07 16:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @mtshiba on 2025-11-07 16:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @mtshiba on 2025-11-07 16:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @mtshiba on 2025-11-07 16:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2025-11-07 16:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-11-07 16:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/infer/builder.rs</code>:8494 on 2025-11-07 21:16</div>
+            <div class="timeline-body"><p>If returning here is correct, then pushing the constraint into <code>constraint_keys</code> immediately above this cannot have any effect, so should we remove that as well? (Removing it doesn't seem to fail any test.)</p>
+<p>Why do we hit the <code>FoundConstraint</code> case in this situation in the first place? It's not clear to me where the &quot;constraint&quot; comes from.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-11-07 21:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/mtshiba">@mtshiba</a> on <code>crates/ty_python_semantic/src/types/infer/builder.rs</code>:8494 on 2025-11-08 11:17</div>
+            <div class="timeline-body"><p>Since place includes member as well as symbol, narrowing constraints must still be tracked even if there are no bindings, for example:</p>
+<pre><code class="language-python">from typing import Literal
+
+class Foo:
+    bar: Literal[1, 2]
+
+foo = Foo()
+if foo.bar == 1:
+    # `foo.bar` has no explicit binding, but the constraint is `foo.bar == 1`
+    [reveal_type(foo.bar) for _ in ()]  # Literal[1]
+</code></pre>
+<p>But as you pointed out, there was no need to add the constraint to <code>constraint_keys</code> here, because we already added it when iterating over <code>ancestor_scopes</code> above. Fixed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mtshiba">@mtshiba</a> reviewed on 2025-11-08 11:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mtshiba">@mtshiba</a> on 2025-11-09 08:01</div>
+            <div class="timeline-body"><p>I found another example of a too-many-cycle-iteration panic.</p>
+<pre><code class="language-python">if C:
+    class C[_T](C): ...
+</code></pre>
+<p>The panic occurred because <code>C</code> in the base class list was being resolved circularly.
+It should evaluate to <code>Undefined</code> rather than throwing a cyclic-class-definition error.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mtshiba">@mtshiba</a> on 2025-11-09 08:08</div>
+            <div class="timeline-body"><p>I don't have time right now (I originally found this bug while working on #20566), but I think the logic in <code>infer_place_load</code> is clearly too complicated and could be a breeding ground for bugs like this one.
+I think it should be refactored at some point.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mtshiba">@mtshiba</a> reviewed on 2025-11-09 08:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/mtshiba">@mtshiba</a> on <code>crates/ty_python_semantic/src/types/infer/builder.rs</code>:8494 on 2025-11-09 08:24</div>
+            <div class="timeline-body"><p>A more fundamental issue is that the global scope should be excluded from the scopes of enclosing scope lookup.
+See the comments below.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-11-10 08:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/resources/corpus/cyclic_symbol_in_comprehension.py</code>:1 on 2025-11-10 08:36</div>
+            <div class="timeline-body"><p>Can you say more about why you converted this file to a corpus test? It's not clear to me why that would be preferred or required.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types/infer/builder.rs</code>:7871 on 2025-11-10 08:38</div>
+            <div class="timeline-body"><p>Nit</p>
+<pre><code class="language-suggestion">                if enclosing_scope_file_id.is_global() {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-11-10 08:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-11-10 08:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/corpus/cyclic_symbol_in_comprehension.py</code>:1 on 2025-11-10 08:42</div>
+            <div class="timeline-body"><p>The previous test asserted that we panicked; the new test asserts that the snippet does not cause us to panic</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/corpus/cyclic_symbol_in_comprehension.py</code>:1 on 2025-11-10 08:44</div>
+            <div class="timeline-body"><p>I guess it could have stayed as an mdtest, but corpus tests are what we usually use when all we care about is checking that we didn't panic; it makes sense to me</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-11-10 08:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-11-10 23:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/infer/builder.rs</code>:8494 on 2025-11-10 23:12</div>
+            <div class="timeline-body"><blockquote>
+<p>Fixed.</p>
+</blockquote>
+<p>It looks like the push to <code>constraint_keys</code> is still there?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mtshiba">@mtshiba</a> reviewed on 2025-11-11 02:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/mtshiba">@mtshiba</a> on <code>crates/ty_python_semantic/src/types/infer/builder.rs</code>:8494 on 2025-11-11 02:12</div>
+            <div class="timeline-body"><p>Pushing to <code>constraint_keys</code> is now necessary because iteration over <code>ancestor_scopes</code> now skips the global scope lookup.
+For example in the following case:</p>
+<pre><code class="language-python">class C:
+    x: int | None = None
+
+c = C()
+
+if c.x is not None:
+    class _:
+        reveal_type(c.x)  # revealed: int
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-11-11 19:59</div>
+            <div class="timeline-body"><p>The new diagnostic on the conformance suite looks incorrect. We are now throwing an error on the reference to <code>Private</code> at https://github.com/python/typing/blob/main/conformance/tests/generics_syntax_scoping.py#L74 but we should not.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-11-12 15:48</div>
+            <div class="timeline-body"><p>This is looking great, thanks! Just as a heads-up: I am making some (minor: code organization and naming) changes to this PR and then I will merge it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @carljm on 2025-11-12 18:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-11-12 18:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-11-13 15:51</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:54:20 UTC
+    </footer>
+</body>
+</html>

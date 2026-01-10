@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`configuration`] Fix unclear error messages for line-length values exceeding `u16::MAX` - astral-sh/ruff #21329</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>configuration</code>] Fix unclear error messages for line-length values exceeding <code>u16::MAX</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21329">#21329</a>
+        opened by <a href="https://github.com/danparizher">@danparizher</a>
+        on 2025-11-07 23:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/danparizher">@danparizher</a> on 2025-11-07 23:15</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Fixed unclear error messages when <code>line-length</code> configuration values exceed <code>u16::MAX</code> (65535). Previously, values &gt; 65535 would produce a cryptic TOML parsing error &quot;expected u16&quot; instead of a clear validation message. Now all invalid values produce consistent, user-friendly error messages.</p>
+<p>Fixes #21328</p>
+<h2>Problem Analysis</h2>
+<p>The <code>LineLength</code> type's <code>Deserialize</code> implementation attempted to deserialize directly as <code>u16</code>. When TOML contained values exceeding <code>u16::MAX</code> (65535), the TOML deserializer would fail before reaching the validation logic, resulting in unclear error messages:</p>
+<ul>
+<li>Values &gt; 65535: <code>&quot;invalid value: integer </code>65536<code>, expected u16&quot;</code> (unclear)</li>
+<li>Values 321-65535: <code>&quot;line-length must be between 1 and 320 (got 500)&quot;</code> (clear)</li>
+</ul>
+<p>This inconsistency violated the TOML spec's requirement to accept arbitrary 64-bit signed integers and handle validation errors gracefully.</p>
+<h2>Approach</h2>
+<p>Modified the <code>Deserialize</code> implementation for <code>LineLength</code> in <code>crates/ruff_linter/src/line_width.rs</code> to:</p>
+<ol>
+<li><strong>Deserialize as <code>u64</code> first</strong>: Accept any valid TOML integer value</li>
+<li><strong>Validate u16 bounds</strong>: Check if the value exceeds <code>u16::MAX</code> before conversion</li>
+<li><strong>Provide consistent errors</strong>: All out-of-range values now produce the same clear error message format: <code>&quot;line-length must be between 1 and 320 (got {value})&quot;</code></li>
+</ol>
+<p>Added test cases covering:</p>
+<ul>
+<li>Boundary case: <code>line-length = 65535</code> (at u16::MAX)</li>
+<li>Exceeds u16::MAX: <code>line-length = 65536</code></li>
+<li>Far exceeds u16::MAX: <code>line-length = 99_999</code></li>
+</ul>
+<p>All tests verify that the error messages are clear and consistent regardless of whether the value exceeds u16::MAX or just exceeds the valid range (1-320).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[`configuration`] Fix unclear error messages for line-length values exceeding u16::MAX" to "[`configuration`] Fix unclear error messages for line-length values exceeding `u16::MAX`" by @danparizher on 2025-11-07 23:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/line_width.rs</code>:66 on 2025-11-10 09:44</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        // Convert to u16 and validate range
+        // Safe to unwrap since we've already checked value &lt;= u16::MAX
+        let value = u16::try_from(value).map_err(|_| serde::de::Error::custom(format!(
+            &quot;line-length must be between 1 and {} (got {value})&quot;,
+            Self::MAX,
+        )))?;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/line_width.rs</code>:66 on 2025-11-10 09:46</div>
+            <div class="timeline-body"><p>But I suspect we can even merge this with the next branch by doing something like this</p>
+<pre><code class="language-suggestion">				u16::try_from(value)
+					.and_then(|value| Self::try_from(value))
+					.map_err(|_| serde::de::Error::custom(format!(
+                &quot;line-length must be between 1 and {} (got {value})&quot;,
+                Self::MAX,
+          )))
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/line_width.rs</code>:54 on 2025-11-10 09:46</div>
+            <div class="timeline-body"><p>Should we use an <code>i64</code> here to also handle <code>-5</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> requested changes on 2025-11-10 09:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-11-10 18:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-10 18:27</div>
+            <div class="timeline-body"><p>Thank you.</p>
+<p>For us reviewers, it's very helpful to get feedback when suggestions don't work (I obviously didn't realize that Rust won't like <code>and_then</code> over different error types) and/or resolve suggestions. It helps us understand which comments were addressed and, if not, why not (without having to clone the PR and applying the changes manually).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2025-11-10 18:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-11-10 18:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-11-10 18:45</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:54:20 UTC
+    </footer>
+</body>
+</html>

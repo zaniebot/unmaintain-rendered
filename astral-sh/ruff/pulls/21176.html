@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avoid extra parentheses for long `match` patterns with `as` captures - astral-sh/ruff #21176</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Avoid extra parentheses for long <code>match</code> patterns with <code>as</code> captures</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21176">#21176</a>
+        opened by <a href="https://github.com/ntBre">@ntBre</a>
+        on 2025-10-31 20:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ntBre">@ntBre</a> on 2025-10-31 20:54</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR fixes #17796 by taking the approach mentioned in https://github.com/astral-sh/ruff/issues/17796#issuecomment-2847943862 of simply recursing into the <code>MatchAs</code> patterns when checking if we need parentheses. This allows us to reuse the parentheses in the inner pattern before also breaking the <code>MatchAs</code> pattern itself:</p>
+<pre><code class="language-diff"> match class_pattern:
+     case Class(xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx) as capture:
+         pass
+-    case (
+-        Class(xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx) as capture
+-    ):
++    case Class(
++        xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
++    ) as capture:
+         pass
+-    case (
+-        Class(
+-            xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+-        ) as capture
+-    ):
++    case Class(
++        xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
++    ) as capture:
+         pass
+     case (
+         Class(
+@@ -685,13 +683,11 @@
+ match sequence_pattern_brackets:
+     case [xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx] as capture:
+         pass
+-    case (
+-        [xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx] as capture
+-    ):
++    case [
++        xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
++    ] as capture:
+         pass
+-    case (
+-        [
+-            xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+-        ] as capture
+-    ):
++    case [
++        xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
++    ] as capture:
+         pass
+</code></pre>
+<p>I haven't really resolved the question of whether or not it's okay always to recurse, but I'm hoping the ecosystem check on this PR might shed some light on that.</p>
+<h2>Test Plan</h2>
+<p>New tests based on the issue and then reviewing the ecosystem check here</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-10-31 21:03</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @ntBre on 2025-10-31 22:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @ntBre on 2025-10-31 22:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-01 00:39</div>
+            <div class="timeline-body"><blockquote>
+<p>I haven't really resolved the question of whether or not it's okay always to recurse, but I'm hoping the ecosystem check on this PR might shed some light on that.</p>
+</blockquote>
+<p>😆</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-11-01 12:13</div>
+            <div class="timeline-body"><p>To save you future pain, or rather to bring future pain into the present, I recommend adding some fixtures with absurd comment placement 😄</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-11-03 19:37</div>
+            <div class="timeline-body"><blockquote>
+<p>To save you future pain, or rather to bring future pain into the present, I recommend adding some fixtures with absurd comment placement 😄</p>
+</blockquote>
+<p>Thanks for the suggestion! I added some more test cases, but I'm definitely open to additional suggestions. I'm not sure I captured the full absurdity available here.</p>
+<p>I guess I'll tentatively call it okay always to recurse since nothing showed up in the ecosystem check. From what I remember with the syntax errors, many projects still support 3.9 and don't use much pattern matching in general, so I guess this isn't too surprising. The main case I though to worry about was this test case:</p>
+<pre><code class="language-py">match class_pattern:
+    case Class(
+        xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+    ) as really_really_really_really_really_really_really_really_really_really_really_really_long_capture:
+        pass
+</code></pre>
+<p>but it both wraps the <code>Class</code> and the whole <code>MatchAs</code> pattern, as I hoped.</p>
+<p>Open to suggestions there as well!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @ntBre on 2025-11-03 19:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @ntBre on 2025-11-03 19:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-11-03 21:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ntBre on 2025-11-03 22:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-11-03 22:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-11-03 22:06</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:54:19 UTC
+    </footer>
+</body>
+</html>

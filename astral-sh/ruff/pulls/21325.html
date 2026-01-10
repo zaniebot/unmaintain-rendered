@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Handle annotated `self` parameter in constructor of non-invariant generic classes - astral-sh/ruff #21325</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Handle annotated <code>self</code> parameter in constructor of non-invariant generic classes</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21325">#21325</a>
+        opened by <a href="https://github.com/dcreager">@dcreager</a>
+        on 2025-11-07 19:17
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dcreager">@dcreager</a> on 2025-11-07 19:17</div>
+            <div class="timeline-body"><p>This manifested as an error when inferring the type of a PEP-695 generic class via its constructor parameters:</p>
+<pre><code class="language-py">class D[T, U]:
+    @overload
+    def __init__(self: &quot;D[str, U]&quot;, u: U) -&gt; None: ...
+    @overload
+    def __init__(self, t: T, u: U) -&gt; None: ...
+    def __init__(self, *args) -&gt; None: ...
+
+# revealed: D[Unknown, str]
+# SHOULD BE: D[str, str]
+reveal_type(D(&quot;string&quot;))
+</code></pre>
+<p>This manifested because <code>D</code> is inferred to be bivariant in both <code>T</code> and <code>U</code>. We weren't seeing this in the equivalent example for legacy typevars, since those default to invariant. (This issue also showed up for <em>covariant</em> typevars, so this issue was not limited to bivariance.)</p>
+<p>The underlying cause was because of a heuristic that we have in our current constraint solver, which attempts to handle situations like this:</p>
+<pre><code class="language-py">def f[T](t: T | None): ...
+f(None)
+</code></pre>
+<p>Here, the <code>None</code> argument matches the non-typevar union element, so this argument should not add any constraints on what <code>T</code> can specialize to. Our previous heuristic would check for this by seeing if the argument type is a subtype of the parameter annotation as a whole — even if it isn't a union! That would cause us to erroneously ignore the <code>self</code> parameter in our constructor call, since bivariant classes are equivalent to each other, regardless of their specializations.</p>
+<p>The quick fix is to move this heuristic &quot;down a level&quot;, so that we only apply it when the parameter annotation is a union. This heuristic should go away completely :crossed_fingers: with the new constraint solver.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @dcreager on 2025-11-07 19:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @dcreager on 2025-11-07 19:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @dcreager on 2025-11-07 19:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @dcreager on 2025-11-07 19:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-11-07 19:20</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance">typing conformance tests</a></h2>
+<details>
+<summary>Changes were detected when running ty on typing conformance tests</summary>
+
+<pre><code class="language-diff">--- old-output.txt	2025-11-11 00:35:18.990083765 +0000
++++ new-output.txt	2025-11-11 00:35:22.335106572 +0000
+@@ -937,7 +937,6 @@
+ tuples_type_compat.py:127:13: error[type-assertion-failure] Argument does not have asserted type `@Todo(Support for `typing.TypeAlias`)`
+ tuples_type_compat.py:129:13: error[type-assertion-failure] Argument does not have asserted type `tuple[int | str, int]`
+ tuples_type_compat.py:130:13: error[type-assertion-failure] Argument does not have asserted type `@Todo(Support for `typing.TypeAlias`)`
+-tuples_type_compat.py:153:5: error[type-assertion-failure] Argument does not have asserted type `Sequence[Never]`
+ tuples_type_compat.py:157:1: error[invalid-assignment] Object of type `tuple[Literal[1], Literal[&quot;&quot;], Literal[&quot;&quot;]]` is not assignable to `tuple[int, str]`
+ tuples_type_compat.py:162:1: error[invalid-assignment] Object of type `tuple[Literal[1], Literal[1], Literal[&quot;&quot;]]` is not assignable to `tuple[int, *tuple[str, ...]]`
+ tuples_type_compat.py:163:1: error[invalid-assignment] Object of type `tuple[Literal[1], Literal[&quot;&quot;], Literal[1]]` is not assignable to `tuple[int, *tuple[str, ...]]`
+@@ -1007,5 +1006,5 @@
+ typeddicts_usage.py:28:17: error[missing-typed-dict-key] Missing required key 'name' in TypedDict `Movie` constructor
+ typeddicts_usage.py:28:18: error[invalid-key] Invalid key for TypedDict `Movie`: Unknown key &quot;title&quot;
+ typeddicts_usage.py:40:24: error[invalid-type-form] The special form `typing.TypedDict` is not allowed in type expressions. Did you mean to use a concrete TypedDict or `collections.abc.Mapping[str, object]` instead?
+-Found 1009 diagnostics
++Found 1008 diagnostics
+ WARN A fatal error occurred while checking some files. Not all project files were analyzed. See the diagnostics list above for details.
+
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-11-07 19:21</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅</p>
+<p>No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @dcreager on 2025-11-07 20:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-11-07 20:49</div>
+            <div class="timeline-body"><!-- generated-comment ty ecosystem-analyzer -->
+
+<h2><code>ecosystem-analyzer</code> results</h2>
+<p>No diagnostic changes detected ✅
+<strong><a href="https://dcreager-pep-self.ecosystem-663.pages.dev/diff">Full report with detailed diff</a></strong> (<a href="https://dcreager-pep-self.ecosystem-663.pages.dev/timing">timing results</a>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-11-10 21:16</div>
+            <div class="timeline-body"><p>LGTM</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dcreager on 2025-11-11 00:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dcreager on 2025-11-11 00:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-11-11 00:46</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:54:20 UTC
+    </footer>
+</body>
+</html>

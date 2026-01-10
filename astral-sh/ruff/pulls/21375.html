@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`pyupgrade`] Skip UP007 for dynamic Union creation (`UP007`) - astral-sh/ruff #21375</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>pyupgrade</code>] Skip UP007 for dynamic Union creation (<code>UP007</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21375">#21375</a>
+        opened by <a href="https://github.com/danparizher">@danparizher</a>
+        on 2025-11-11 04:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/danparizher">@danparizher</a> on 2025-11-11 04:47</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Fix UP007 to skip dynamic <code>Union</code> creation where the slice is a runtime variable (fixes #21347).</p>
+<p>The rule was incorrectly emitting &quot;Use <code>X | Y</code> for type annotations&quot; for cases like <code>Union[types]</code> where <code>types</code> is a variable, which cannot be converted to PEP 604 syntax since the types are determined at runtime.</p>
+<h2>Problem Analysis</h2>
+<p>UP007 checks for <code>Union[...]</code> annotations that can be rewritten using PEP 604's <code>|</code> operator syntax. However, the rule was triggering even when the slice argument was a variable (e.g., <code>Union[types]</code>), which represents dynamic Union creation at runtime. This is invalid because:</p>
+<ol>
+<li>The types are not known statically</li>
+<li>PEP 604 syntax (<code>X | Y</code>) requires compile-time type literals</li>
+<li>The suggested fix cannot be applied</li>
+</ol>
+<p>The rule should only apply to static type annotations with literal tuples or type literals that can be statically analyzed.</p>
+<h2>Approach</h2>
+<p>Added an early return check in <code>non_pep604_annotation</code> for the <code>Union</code> operator branch to skip emitting diagnostics when the slice is an <code>Expr::Name</code> (variable). This prevents false positives for dynamic Union creation while preserving correct behavior for static type annotations.</p>
+<p>The fix is minimal and targeted - it only adds a guard clause before the diagnostic is emitted, ensuring that dynamic Union creation cases are filtered out early.</p>
+<h2>Test Plan</h2>
+<p>Added a regression test case in <code>UP007.py</code> that demonstrates dynamic Union creation (<code>Union[types]</code> where <code>types</code> is a variable) should not trigger UP007. All existing pyupgrade tests pass (151 tests), confirming the fix doesn't break existing functionality.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-11-11 04:58</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+6 -0 violations, +0 -0 fixes in 4 projects; 51 projects unchanged)</p>
+<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+1 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --no-fix --output-format concise --no-preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/apache/airflow/blob/4bde26ffb54928821176b8412a823b46ae2bcc16/providers/amazon/src/airflow/providers/amazon/aws/hooks/base_aws.py#L1049'>providers/amazon/src/airflow/providers/amazon/aws/hooks/base_aws.py:1049:74:</a> RUF100 [*] Unused `noqa` directive (unused: `UP007`)
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/langchain-ai/langchain">langchain-ai/langchain</a> (+1 -0 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/langchain-ai/langchain/blob/637bb1cbbc93d3191ed5d91ae48c1038c637662f/libs/langchain_v1/langchain/agents/middleware/tool_selection.py#L64'>libs/langchain_v1/langchain/agents/middleware/tool_selection.py:64:78:</a> RUF100 [*] Unused `noqa` directive (unused: `UP007`)
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/mlflow/mlflow">mlflow/mlflow</a> (+3 -0 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/mlflow/mlflow/blob/b50e8aeab49cada9e1a92a7d885b252f572ea940/tests/types/test_type_hints.py#L368'>tests/types/test_type_hints.py:368:32:</a> RUF100 [*] Unused `noqa` directive (unused: `UP007`)
++ <a href='https://github.com/mlflow/mlflow/blob/b50e8aeab49cada9e1a92a7d885b252f572ea940/tests/types/test_type_hints.py#L369'>tests/types/test_type_hints.py:369:34:</a> RUF100 [*] Unused `noqa` directive (unused: `UP007`)
++ <a href='https://github.com/mlflow/mlflow/blob/b50e8aeab49cada9e1a92a7d885b252f572ea940/tests/types/test_type_hints.py#L373'>tests/types/test_type_hints.py:373:34:</a> RUF100 [*] Unused `noqa` directive (unused: `UP007`)
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/reflex-dev/reflex">reflex-dev/reflex</a> (+1 -0 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/reflex-dev/reflex/blob/3c3ddc2a19f2385176c86d6feda14ecbe9abc790/reflex/utils/types.py#L240'>reflex/utils/types.py:240:32:</a> RUF100 [*] Unused `noqa` directive (unused: `UP007`)
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (1 rules affected)</summary>
+<p>
+
+<p>| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| RUF100 | 6 | 6 | 0 | 0 | 0 |</p>
+</p>
+</details>
+
+<h3>Linter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+6 -0 violations, +0 -0 fixes in 4 projects; 51 projects unchanged)</p>
+<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+1 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --no-fix --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/apache/airflow/blob/4bde26ffb54928821176b8412a823b46ae2bcc16/providers/amazon/src/airflow/providers/amazon/aws/hooks/base_aws.py#L1049'>providers/amazon/src/airflow/providers/amazon/aws/hooks/base_aws.py:1049:74:</a> RUF100 [*] Unused `noqa` directive (unused: `UP007`)
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/langchain-ai/langchain">langchain-ai/langchain</a> (+1 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --no-fix --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/langchain-ai/langchain/blob/637bb1cbbc93d3191ed5d91ae48c1038c637662f/libs/langchain_v1/langchain/agents/middleware/tool_selection.py#L64'>libs/langchain_v1/langchain/agents/middleware/tool_selection.py:64:78:</a> RUF100 [*] Unused `noqa` directive (unused: `UP007`)
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/mlflow/mlflow">mlflow/mlflow</a> (+3 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --no-fix --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/mlflow/mlflow/blob/b50e8aeab49cada9e1a92a7d885b252f572ea940/tests/types/test_type_hints.py#L368'>tests/types/test_type_hints.py:368:32:</a> RUF100 [*] Unused `noqa` directive (unused: `UP007`)
++ <a href='https://github.com/mlflow/mlflow/blob/b50e8aeab49cada9e1a92a7d885b252f572ea940/tests/types/test_type_hints.py#L369'>tests/types/test_type_hints.py:369:34:</a> RUF100 [*] Unused `noqa` directive (unused: `UP007`)
++ <a href='https://github.com/mlflow/mlflow/blob/b50e8aeab49cada9e1a92a7d885b252f572ea940/tests/types/test_type_hints.py#L373'>tests/types/test_type_hints.py:373:34:</a> RUF100 [*] Unused `noqa` directive (unused: `UP007`)
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/reflex-dev/reflex">reflex-dev/reflex</a> (+1 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --no-fix --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/reflex-dev/reflex/blob/3c3ddc2a19f2385176c86d6feda14ecbe9abc790/reflex/utils/types.py#L240'>reflex/utils/types.py:240:32:</a> RUF100 [*] Unused `noqa` directive (unused: `UP007`)
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (1 rules affected)</summary>
+<p>
+
+<p>| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| RUF100 | 6 | 6 | 0 | 0 | 0 |</p>
+</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-11-11 15:12</div>
+            <div class="timeline-body"><p>Thanks for working on this! I'm not sure that this is fixing the root of the problem - for example it wouldn't catch <code>Union[foo()]</code> where <code>foo</code> returns a tuple of types. Instead, I think we should only be applying this lint in type annotation positions, as @ntBre suggested in the linked issue.</p>
+<p>On an unrelated note: I personally do not find the AI-generated summaries in your PRs to be helpful. First, they are unnecessarily verbose and often include overly-confident or misleading statements. Second, they do not give me much confidence that a human being has reviewed the code changes. I would much prefer to read a concise summary that you wrote yourself.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danparizher">@danparizher</a> on 2025-11-11 22:26</div>
+            <div class="timeline-body"><p>Thanks for the feedback @dylwil3, I'll write the PR descriptions myself going forward and be more attentive to the code changes that AI generates.</p>
+<p>Regarding this PR, I caught myself up in the linked issue and made a few changes following the discussion. Let me know if this revision is on the right track!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:54:20 UTC
+    </footer>
+</body>
+</html>

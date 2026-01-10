@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Fix panic for unmatched trailing revealed assertions in mdtests - astral-sh/ruff #21416</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Fix panic for unmatched trailing revealed assertions in mdtests</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21416">#21416</a>
+        opened by <a href="https://github.com/Hugo-Polloli">@Hugo-Polloli</a>
+        on 2025-11-12 23:14
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/Hugo-Polloli">@Hugo-Polloli</a> on 2025-11-12 23:14</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<ul>
+<li>Prevent mdtest from panicking when an inline assertion refers to a non-existent line (e.g., a trailing <code># revealed: ...</code> with no matching <code>reveal_type</code>)</li>
+<li><code>EmbeddedFileSourceMap::to_absolute_line_number</code> now returns <code>Result</code> with a clear diagnostic, plus a helper to report the last valid embedded code line</li>
+<li>Mdtest CLI/GitHub output surfaces both the original assertion failure and the new explanation, and parser unit tests cover both the success and error paths</li>
+</ul>
+<p>Fixes <a href="https://github.com/astral-sh/ty/issues/1512">ty#1512</a>.</p>
+<h2>Test Plan</h2>
+<pre><code class="language-shell">cargo clippy --workspace --all-targets --all-features -- -D warnings  # Rust linting
+cargo test  # Rust testing
+uvx pre-commit run --all-files --show-diff-on-failure  # Rust and Python formatting, Markdown and Python linting, etc...
+</code></pre>
+<p>Everything ok except the 2 mentioned in #10084 but on WSL so no issue here</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @Hugo-Polloli on 2025-11-12 23:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @Hugo-Polloli on 2025-11-12 23:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @Hugo-Polloli on 2025-11-12 23:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @Hugo-Polloli on 2025-11-12 23:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @Hugo-Polloli on 2025-11-12 23:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">testing</span> added by @AlexWaygood on 2025-11-12 23:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-11-12 23:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_test/src/lib.rs</code>:112 on 2025-11-13 08:21</div>
+            <div class="timeline-body"><p>Nit: to reduce code duplication, I suggest adding a method to <code>OutputFormat</code> to print an error</p>
+<pre><code class="language-rust">impl OutputFormat {
+	fn print_error(self, file: &amp;str, line: Option&lt;OneIndexed&gt;, failure: impl Display) {
+		match self {
+			Self::Cli =&gt; {
+				let cli_line_info = match absolute_line_number_value {
+		        Some(line) =&gt; format!(&quot;{relative_fixture_path}:{line}&quot;),
+		        None =&gt; format!(&quot;{relative_fixture_path}:?&quot;),
+		    };
+				println!(&quot; {} {failure}&quot;, cli_line_info.as_str().cyan());
+			}
+			Self::GitHub =&gt; {
+				if let Some(line) = absolute_line_number_value {
+					println!(&quot;::error file={absolute_fixture_path},line={line}::{err}&quot;);
+				} else {
+					println!(&quot;::error file={absolute_fixture_path}::{err}&quot;);
+				}
+			}
+		}
+	}
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_test/src/parser.rs</code>:279 on 2025-11-13 08:25</div>
+            <div class="timeline-body"><p>I think I would change this to be an <code>std::result::Result&lt;OneIndexed, OneIndexed&gt;</code> where
+the error case returns the last line number (<code>last_absolute_line_number</code>).</p>
+<p>This leaves deciding on what error message to use up to the caller</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_test/src/lib.rs</code>:122 on 2025-11-13 08:26</div>
+            <div class="timeline-body"><p>I'm slightly leaning towards skipping the <code>failures</code> if the line number can't be mapped because I suspect it leads to slightly simpler code but I'm curious to hear why you decide to emit them even if the file mapping failed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-11-13 08:26</div>
+            <div class="timeline-body"><p>Thank you.</p>
+<p>this overall looks great. I've a few smaller comments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-11-13 08:28</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-11-13 08:29</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅</p>
+<p>No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-11-13 14:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_test/src/lib.rs</code>:97 on 2025-11-13 14:30</div>
+            <div class="timeline-body"><p>Can you help me understand how <code>total_relative_line_count</code> is different from <code>last_absolute_line_number</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Hugo-Polloli">@Hugo-Polloli</a> on <code>crates/ty_test/src/lib.rs</code>:112 on 2025-11-13 23:27</div>
+            <div class="timeline-body"><p>Thanks for the implementation, I used it as is</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Hugo-Polloli">@Hugo-Polloli</a> reviewed on 2025-11-13 23:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Hugo-Polloli">@Hugo-Polloli</a> reviewed on 2025-11-13 23:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Hugo-Polloli">@Hugo-Polloli</a> on <code>crates/ty_test/src/parser.rs</code>:279 on 2025-11-13 23:27</div>
+            <div class="timeline-body"><p>Oh yes, much cleaner, done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Hugo-Polloli">@Hugo-Polloli</a> reviewed on 2025-11-13 23:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Hugo-Polloli">@Hugo-Polloli</a> on <code>crates/ty_test/src/lib.rs</code>:122 on 2025-11-13 23:29</div>
+            <div class="timeline-body"><p>No real reason haha, to be honest I kinda emitted them &quot;by default&quot; and did not think about just not skipping them, done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Hugo-Polloli">@Hugo-Polloli</a> on <code>crates/ty_test/src/lib.rs</code>:97 on 2025-11-13 23:43</div>
+            <div class="timeline-body"><p>This was supposed to be complementary information, <code>total_relative_line_count</code> showing the number of lines in the embedded snippet, <code>relative_line_number</code> being in our case equal to <code>total_relative_line_count + 1</code>, showing that the assertion engine tried to find a line that just does not exist due to the trailing assertion comment.
+Decided to discard it because <code>last_absolute_line_number</code> and the error message are plenty enough information for the user to find what's happening</p>
+<p>(Separate process question: when I’m still iterating on feedback and not ready for another review yet, is it preferable to convert the PR to a draft?)</p>
+<p>btw the changes in <a href="https://github.com/astral-sh/ruff/pull/21416/commits/4170fa988fbc3a7c9f9a0cc3074d7a7b05b3a4d1">suggestions follow-up</a> commit are, this time, ready for review, I changed the error message to be more generic than just about revealed, because this happens for any type of assertion comment</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Hugo-Polloli">@Hugo-Polloli</a> reviewed on 2025-11-13 23:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-11-16 08:29</div>
+            <div class="timeline-body"><p>Thank you</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[ty] Provide proper error on dangling revealed" to "[ty] Fix panic for unmatched trailing revealed assertions in mdtests" by @MichaReiser on 2025-11-16 08:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2025-11-16 08:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-11-16 08:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-11-16 08:42</div>
+            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+
+<h2><a href="https://codspeed.io/astral-sh/ruff/branches/Hugo-Polloli%3Afix-mdtest-revealed-line?utm_source=github&amp;utm_medium=comment&amp;utm_content=header">CodSpeed Performance Report</a></h2>
+<h3>Merging #21416 will <strong>improve performances by 4.39%</strong></h3>
+<p><sub>Comparing <code>Hugo-Polloli:fix-mdtest-revealed-line</code> (8330a21) with <code>main</code> (3065f8d)</sub></p>
+<h3>Summary</h3>
+<p><code>⚡ 1</code> improvement<br />
+<code>✅ 21</code> untouched<br />
+<code>⏩ 30</code> skipped[^skipped]</p>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Mode | Benchmark | <code>BASE</code> | <code>HEAD</code> | Change |
+| --- | ---- | --------- | ------ | ------ | ------ |
+| ⚡ | WallTime | <a href="https://codspeed.io/astral-sh/ruff/branches/Hugo-Polloli%3Afix-mdtest-revealed-line?uri=crates%2Fruff_benchmark%2Fbenches%2Fty_walltime.rs%3A%3Alarge%5Bpydantic%5D&amp;runnerMode=WallTime&amp;utm_source=github&amp;utm_medium=comment&amp;utm_content=benchmark"><code>large[pydantic]</code></a> | 21.6 s | 20.6 s | +4.39% |
+[^skipped]: 30 benchmarks were skipped, so the baseline results were used instead. If they were deleted from the codebase, <a href="https://codspeed.io/astral-sh/ruff/branches/Hugo-Polloli%3Afix-mdtest-revealed-line?sectionId=benchmark-comparison-section-baseline-result-skipped&amp;utm_source=github&amp;utm_medium=comment&amp;utm_content=archive">click here and archive them to remove them from the performance reports</a>.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:54:20 UTC
+    </footer>
+</body>
+</html>

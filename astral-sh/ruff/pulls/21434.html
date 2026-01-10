@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] fix panic with direct recursive type alias - astral-sh/ruff #21434</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] fix panic with direct recursive type alias</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21434">#21434</a>
+        opened by <a href="https://github.com/mtshiba">@mtshiba</a>
+        on 2025-11-13 19:18
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/mtshiba">@mtshiba</a> on 2025-11-13 19:18</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>I found that trying to use a directly recursive type alias like this would result in a stack overflow:</p>
+<pre><code class="language-python">type Itself = Itself
+
+def foo(Itself: Itself):
+    x: Itself
+</code></pre>
+<p>This should be reported as an invalid type alias, but a stack overflow should be fixed immediately anyway. We now consider the value type to be <code>Unknown</code> in such cases.</p>
+<h2>Test Plan</h2>
+<p>New test case in <code>mdtest\pep695_type_aliases.md</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-11-13 19:20</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-11-13 19:22</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅</p>
+<p>No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @mtshiba on 2025-11-13 19:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @mtshiba on 2025-11-13 19:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @mtshiba on 2025-11-13 19:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @mtshiba on 2025-11-13 19:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @mtshiba on 2025-11-13 19:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-11-13 19:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2025-11-13 19:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/resources/mdtest/pep695_type_aliases.md</code>:249 on 2025-11-13 21:54</div>
+            <div class="timeline-body"><p>Does this fix also work for compound types like list[Itself]?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-11-13 21:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-11-13 23:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/pep695_type_aliases.md</code>:249 on 2025-11-13 23:18</div>
+            <div class="timeline-body"><p>Those generally already work, without this PR: https://play.ty.dev/a65c2d75-e9c1-4a74-85e3-f96db2dd9c60</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/pep695_type_aliases.md</code>:252 on 2025-11-13 23:21</div>
+            <div class="timeline-body"><p>IMO it's a bit odd to test that you can annotate a parameter as <code>Itself</code>, and then use that parameter again as an annotation. It may work due to how we treat <code>Unknown</code> in a type annotation, but I don't think this is something we want to commit to in a test.</p>
+<p>I would probably just have done this instead:</p>
+<pre><code class="language-suggestion">def foo(x: Itself):
+    reveal_type(x)  # Unknown
+</code></pre>
+<p>Is there a particular reason why you think it's important to test this &quot;annotated value as annotation&quot; behavior?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-11-13 23:23</div>
+            <div class="timeline-body"><p>Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-11-13 23:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/pep695_type_aliases.md</code>:249 on 2025-11-13 23:25</div>
+            <div class="timeline-body"><p>Another case that may be worth testing is multi-step direct recursion:</p>
+<pre><code>type A = B
+type B = A
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mtshiba">@mtshiba</a> reviewed on 2025-11-14 09:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/mtshiba">@mtshiba</a> on <code>crates/ty_python_semantic/resources/mdtest/pep695_type_aliases.md</code>:252 on 2025-11-14 09:08</div>
+            <div class="timeline-body"><p>In fact, in that example, no panic occurs, and the revealed type is <code>Never</code>.</p>
+<p>https://play.ty.dev/4732e30a-301c-4753-b95f-aed34cf08585</p>
+<p>Should the original code be placed in the corpus as a regression test?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @mtshiba on 2025-11-14 10:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mtshiba">@mtshiba</a> reviewed on 2025-11-14 10:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/mtshiba">@mtshiba</a> on <code>crates/ty_python_semantic/resources/mdtest/pep695_type_aliases.md</code>:249 on 2025-11-14 10:10</div>
+            <div class="timeline-body"><p>Hmm, unfortunately, it seems the panic still persists in the case of mutually recursive aliases:</p>
+<pre><code class="language-python">type A = B
+type B = A
+
+def bar(a: B):
+    x: a
+</code></pre>
+<p>Therefore, the measure is insufficient, and we should check the consequences of eagerly expanding a type alias value type before we first use of it.
+This may be an issue that needs to be resolved in #20566.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mtshiba">@mtshiba</a> on 2025-11-14 13:49</div>
+            <div class="timeline-body"><p>Detecting mutually recursive invalid type aliases was harder than expected, and I decided to address it in #20566.</p>
+<p>Related commits:
+https://github.com/astral-sh/ruff/pull/20566/commits/ac44afa7390034422bb521393095cc02394eff6d
+https://github.com/astral-sh/ruff/pull/20566/commits/2a9b9a26db73c058994f3c58d8de324ae3366005</p>
+<p>I will close this PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @mtshiba on 2025-11-14 14:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-11-14 14:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/pep695_type_aliases.md</code>:252 on 2025-11-14 16:33</div>
+            <div class="timeline-body"><p>Ah, I wondered if this part was necessary to reproduce the panic. That explains why I didn't catch this case in my previous work on recursive type aliases. Makes it much less likely people will run into this, but of course it should still be fixed.</p>
+<p>I think it's OK for a test like this to be in mdtests, I would just expect some commentary (specifically about annotating with a value type) that &quot;this is a very strange thing to do, but this is a regression test to ensure it doesn't panic&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-11-14 16:33</div>
+            <div class="timeline-body"></div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:54:20 UTC
+    </footer>
+</body>
+</html>

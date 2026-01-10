@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Refactor `Range` to/from `TextRange` conversion as prep for notebook support - astral-sh/ruff #21230</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Refactor <code>Range</code> to/from <code>TextRange</code> conversion as prep for notebook support</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21230">#21230</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2025-11-03 01:58
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-03 01:58</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR changes the signature of the <code>TextSize</code> &lt;-&gt; <code>Position</code> and <code>TextRange</code> &lt;-&gt; <code>Range</code> conversion methods in preparation for notebook support.</p>
+<p>According to the LSP specification, each Notebook consists of many <code>TextDocument</code>s. However, ty internally concatenates all cells to a single text document. That means, offsets coming from ty need to be mapped back to their corresponding cell, and then to the offset within the cell. The same applies for LSP offsets: The cell-relative offset needs to be converted to an absolute offset into the concatenated notebook document.</p>
+<p>This PR doesn't implement the logic itself for mapping between the different offsets but it refactors the call-sites and the methods used for those conversions to add the required logic in a follow-up PR.</p>
+<p>The most important change is that we now pass <code>db</code> and <code>File</code> to the conversion methods. This will allow us to query the notebook to resolve the cell metadata (offset per cell, etc).</p>
+<h2>Test Plan</h2>
+<p>Existing tests. I tested different LSP features and they seem to work fine</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @MichaReiser on 2025-11-03 01:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @MichaReiser on 2025-11-03 01:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-11-03 02:00</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-11-03 02:02</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅
+No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-11-03 02:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/server/api/requests/completion.rs</code>:54 on 2025-11-03 02:08</div>
+            <div class="timeline-body"><p>It's a bit unfortunate that we need the <code>url</code> here but the file isn't unique enough (the file maps to the entire notebook). We need the <code>url</code> to lookup the corresponding cell within the notebook.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-11-03 02:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/server/api/requests/completion.rs</code>:77 on 2025-11-03 02:10</div>
+            <div class="timeline-body"><p>Using <code>to_local_range</code> here is technically incorrect. In fact, it's very likely that the importer adds the import to the very first cell within the notebook, in which case the edit is not local to a single cell.</p>
+<p>However, fixing this requires changes to the importer and they're substantial enough to justify a separate PR</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-11-03 02:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/server/api/requests/doc_highlights.rs</code>:60 on 2025-11-03 02:27</div>
+            <div class="timeline-body"><p>We'll need to limit the <code>document_highlights</code> to the current cell. This seems very unfortunate as the highlights are very likely to be cross cell but the LSP protocol doesn't allow us to specify a URI. Again, I think this is best done in a separate PR</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-11-03 02:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/server/api/requests/document_symbols.rs</code>:108 on 2025-11-03 02:29</div>
+            <div class="timeline-body"><p>Same here: We need to limit the document symbol request to the current cell. But I'd prefer doing that in a separate PR</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-11-03 02:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/server/api/semantic_tokens.rs</code>:27 on 2025-11-03 02:31</div>
+            <div class="timeline-body"><p>We'll need to limit the semantic tokens to a single range but I'll do this in a separate PR</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2025-11-03 02:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @MichaReiser on 2025-11-03 02:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @MichaReiser on 2025-11-03 02:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @MichaReiser on 2025-11-03 02:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @MichaReiser on 2025-11-03 02:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-11-03 15:35</div>
+            <div class="timeline-body"><p>Seems like something that maybe @dhruvmanila would be a good candidate to review?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-11-04 20:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/server/api/requests/doc_highlights.rs</code>:60 on 2025-11-04 20:48</div>
+            <div class="timeline-body"><p>This isn't something that requires to be investigated right now but I tested Pylance and it seems to be able to highlight a symbol across multiple cells in a notebook.</p>
+<p>https://github.com/user-attachments/assets/ef8dd35d-9898-40a5-8c22-edf2374c030b</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> approved on 2025-11-04 20:49</div>
+            <div class="timeline-body"><p>Looks good!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-11-04 20:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/server/api/requests/doc_highlights.rs</code>:60 on 2025-11-04 20:58</div>
+            <div class="timeline-body"><p>I'm not sure this is something Pylance does (although it could because it isn't an LSP).</p>
+<p>But I don't see a highlight request for cells at all and the highlighting is also incorrect, suggesting it's just a simple name matching:</p>
+<p>https://github.com/user-attachments/assets/1b323d9f-bfa3-4f4b-bc3d-6e2095d649b8</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-11-04 20:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/server/api/requests/doc_highlights.rs</code>:60 on 2025-11-04 20:59</div>
+            <div class="timeline-body"><p>It could mean that we should return <code>Option</code> from <code>to_location</code> but I've to revisit this when being further along with the notebook integration</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-11-04 21:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/server/api/requests/doc_highlights.rs</code>:60 on 2025-11-04 21:17</div>
+            <div class="timeline-body"><p>That makes sense.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[ty] Refactor Range<->TextRange conversion as prep for notebook support" to "[ty] Refactor `Range` to/from `TextRange` conversion as prep for notebook support" by @MichaReiser on 2025-11-05 13:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @dcreager removed by @MichaReiser on 2025-11-05 13:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @sharkdp removed by @MichaReiser on 2025-11-05 13:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @carljm removed by @MichaReiser on 2025-11-05 13:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2025-11-05 13:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-11-05 13:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-11-05 13:24</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:54:19 UTC
+    </footer>
+</body>
+</html>

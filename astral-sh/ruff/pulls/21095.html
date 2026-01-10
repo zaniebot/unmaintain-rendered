@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Smaller refactors to server API in prep for notebook support - astral-sh/ruff #21095</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Smaller refactors to server API in prep for notebook support</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21095">#21095</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2025-10-27 12:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-10-27 12:28</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>While prototyping notebook support in ty's LSP, I realized that I'm having a hard time understanding <code>DocumentKey</code>, <code>DocumentQuery</code>, <code>Document</code> (which is referred to as controller?). I then decided to take a closer look at those types and ended with a few refactors that I think are worthwhile, getting in independently of notebook support.</p>
+<ul>
+<li>Make <code>AnySystemPath::key_from_url</code> non-failable (and in turn, <code>key_from_url</code>) by using a virtual path for file URLs that don't represent a valid path.</li>
+<li>Make <code>snapshot_document</code> return a <code>Result</code> that <code>Err</code>s when the document wasn't found (instead of storing the document as <code>Result</code>). This was introduced in https://github.com/astral-sh/ruff/pull/19277 but I don't see how it is necessary to ensure we always send a response. The fix added in https://github.com/astral-sh/ruff/pull/19277, which sends a response if the URL isn't valid, can also be applied when the document wasn't found.</li>
+<li>Delete <code>DocumentQuery</code>: ty uses salsa to access the file content (e.g. <code>source_text</code>) which then reads the latest document version using the <code>LSPSystem</code>. That eliminates the need to snapshot most document fields. The only exception to this is the notebook metadata which we now expose directly in <code>DocumentSnapshot</code>. I added new <code>document</code> methods that return a <code>&amp;Document</code> for the <code>LSPSystem</code>.</li>
+<li>I reduced <code>DocumentKey</code> to two variants roughly resembling <code>AnySystemPath</code>. Its purpose is to uniquely identify a document within <code>Index</code>. We could probably use <code>AnySystemPath</code> for that for now, but I wanted a distinct type to make it clear that a cell doesn't map to a ty-path (there's no corresponding file). Instead, cells should use the notebook file.</li>
+<li>I introduced a new <code>DocumentHandle</code> type, which is a read-only handle to a document in <code>Index</code>. It takes <code>DocumentKey</code>'s place in notification handlers because it now exposes the <code>to_file_path</code> and <code>url</code> methods that were previously on <code>DocumentKey</code>. The motivation for the new type were:<ul>
+<li>I wanted <code>DocumentKey</code> to only be used to identify a document within <code>Index</code>, nothing more</li>
+<li>I wanted a more object-oriented API for document, so that we can add <code>document.close</code> and <code>document.update_text_document</code> to it (rather than having to deal with keys everywhere).</li>
+</ul>
+</li>
+<li>Most <code>Session</code> operations now take <code>&amp;Url</code> as an argument, hiding <code>DocumentKey</code>.</li>
+</ul>
+<p>My plan for notebooks is to store the cells as regular text documents. This is different from Ruff where the notebook cells are stored as part of the <code>Notebook</code>. We'll see how well this goes but my thinking is that a model closer to how notebooks are handled within VS Code/the LSP specification, the less likely it is that we run into weird edge cases (e.g. where the notebook gets removed before the cells and we then can't find the cell anymore).</p>
+<h2>Test plan</h2>
+<p>Tried different LSP operations</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @MichaReiser on 2025-10-27 12:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-10-27 12:30</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-10-27 12:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/system/path.rs</code>:860 on 2025-10-27 12:30</div>
+            <div class="timeline-body"><p>This is so that we can use <code>SystemVirtualPath</code> as key when calling <code>dict.get</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-10-27 12:34</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅
+No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-10-27 12:49</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2025-10-27 12:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @MichaReiser on 2025-10-27 12:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @MichaReiser on 2025-10-27 12:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @MichaReiser on 2025-10-27 12:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[ty] Smaller refactors to server in prep for notebook support" to "[ty] Smaller refactors to server API in prep for notebook support" by @MichaReiser on 2025-10-27 13:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @MichaReiser on 2025-10-27 13:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-10-27 14:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_server/src/document/notebook.rs</code>:1 on 2025-10-29 19:06</div>
+            <div class="timeline-body"><p>super nit: I don't know how strict we are with our <code>use</code> sections, but I don't think we want <code>crate</code> imports in the same section as external-but-not-stdlib imports. (If anything, the <code>crate</code> and <code>super</code> sections below should be merged)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_server/src/server/api/notifications/did_open_notebook.rs</code>:36 on 2025-10-29 19:11</div>
+            <div class="timeline-body"><p>nit: Can you pull out <code>uri</code> above too to be consistent with the other fields? Or is there an ownership issue?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> approved on 2025-10-29 19:18</div>
+            <div class="timeline-body"><p>This looks good to me, and lets me learn more about the LSP internals. Though it probably deserves at least a cursory look from someone who's already more familiar with the LSP!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2025-10-31 20:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-10-31 20:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-10-31 20:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-10-31 20:38</div>
+            <div class="timeline-body"><blockquote>
+<p>My plan for notebooks is to store the cells as regular text documents. This is different from Ruff where the notebook cells are stored as part of the <code>Notebook</code>. We'll see how well this goes but my thinking is that a model closer to how notebooks are handled within VS Code/the LSP specification, the less likely it is that we run into weird edge cases (e.g. where the notebook gets removed before the cells and we then can't find the cell anymore).</p>
+</blockquote>
+<p>I agree that this is great!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:54:19 UTC
+    </footer>
+</body>
+</html>

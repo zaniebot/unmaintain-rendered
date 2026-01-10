@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Add Django ORM type checking test coverage and comparison analysis - astral-sh/ruff #21308</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Add Django ORM type checking test coverage and comparison analysis</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21308">#21308</a>
+        opened by <a href="https://github.com/saada">@saada</a>
+        on 2025-11-06 22:38
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/saada">@saada</a> on 2025-11-06 22:38</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR lays the <strong>foundational test coverage</strong> for Django ORM type checking in ty. It's intentionally ambitious and early-stage - documenting where ty stands today and establishing clear targets for future Django support.</p>
+<p><strong>Note</strong>: If the team feels this is too early or premature, happy to close it! The main goal is to at least get comprehensive test coverage down that documents the baseline and provides a roadmap for Django support.</p>
+<h2>What's in this PR</h2>
+<h3>MDTest Coverage (6 test files)</h3>
+<ul>
+<li><strong>basic_model.md</strong> - Basic Model class detection and instance creation</li>
+<li><strong>queryset_manager.md</strong> - QuerySet and Manager generic typing</li>
+<li><strong>field_descriptors.md</strong> - Django Field descriptor protocol tests</li>
+<li><strong>manager_synthesis.md</strong> - Manager auto-synthesis and Self type tests</li>
+<li><strong>issue_1018.md</strong> - Specific test for astral-sh/ty#1018 (id, objects, field access)</li>
+<li><strong>README.md</strong> - Overview of Django support implementation phases</li>
+</ul>
+<h3>Comparison Documentation</h3>
+<p>New <code>django_testing/</code> directory containing:</p>
+<ul>
+<li><strong>README.md</strong> - Comprehensive comparison vs mypy/pyright with test results</li>
+<li><strong>django_comparison_test.py</strong> - Real Django code for testing type checkers</li>
+<li><strong>mypy.ini &amp; test_settings.py</strong> - Configuration for running comparisons</li>
+</ul>
+<h2>Test Format</h2>
+<p>Every test case includes a 4-point comparison showing:</p>
+<ol>
+<li><strong>Current ty (no changes)</strong>: What ty outputs today without any Rust changes</li>
+<li><strong>Future ty (after fix)</strong>: What ty should output after implementing fixes</li>
+<li><strong>mypy + django-stubs</strong>: What mypy reports with django-stubs plugin</li>
+<li><strong>pyright + django-types</strong>: What pyright reports with django-types</li>
+</ol>
+<p>Example:</p>
+<pre><code class="language-python">reveal_type(article.title)  # revealed: Unknown | str
+# 1. Current ty (no changes): Unknown | str
+# 2. Future ty (after fix): str
+# 3. mypy + django-stubs: str
+# 4. pyright + django-types: str
+</code></pre>
+<p>This format makes it crystal clear what the baseline is, what the target should be, and how ty compares to the competition.</p>
+<h2>Key Discoveries Documented</h2>
+<ol>
+<li><p><strong>Descriptor Protocol Partially Works!</strong> - ty's descriptor protocol implementation returns <code>Unknown | str</code> instead of just <code>str</code>. This shows partial success - the descriptor protocol is working, but needs better type narrowing.</p>
+</li>
+<li><p><strong>Self Type Not Supported</strong> - <code>Manager[Self]</code> fails with error &quot;Expected <code>Model</code>, found <code>typing.Self</code>&quot;. This requires implementing PEP 673 Self type support.</p>
+</li>
+<li><p><strong>Two Distinct Issues</strong>:</p>
+<ul>
+<li>Unknown unions in field access (type narrowing problem)</li>
+<li>Self type resolution (requires PEP 673 implementation)</li>
+</ul>
+</li>
+</ol>
+<h2>Why This Matters</h2>
+<p>Django is one of the most popular Python web frameworks. Having comprehensive test coverage:</p>
+<ul>
+<li>Establishes a baseline for measuring progress</li>
+<li>Documents exactly what needs to be implemented</li>
+<li>Provides a comparison benchmark against mypy and pyright</li>
+<li>Makes it easier for future contributors to pick up Django support work</li>
+</ul>
+<h2>Test Status</h2>
+<p>✅ All 6 Django mdtest tests pass<br />
+✅ Pre-commit checks pass (cargo fmt, clippy)<br />
+✅ Tests accurately document current ty behavior<br />
+✅ No Rust code changes - purely documentation/tests</p>
+<h2>Implementation Phases (Future Work)</h2>
+<p>This PR establishes the test foundation for a phased Django support implementation:</p>
+<ul>
+<li><strong>Phase 0</strong> (✅ Current): Basic Model class detection</li>
+<li><strong>Phase 1</strong> (✅ Current): Generic QuerySet/Manager with manual annotations</li>
+<li><strong>Phase 2</strong> (🔜 Next): Self type support, Manager auto-synthesis</li>
+<li><strong>Phase 3</strong> (🔜 Future): Field descriptor improvements, nullable fields</li>
+<li><strong>Phase 4</strong> (🔜 Future): QuerySet annotations, aggregations</li>
+</ul>
+<h2>Related Issues</h2>
+<ul>
+<li>Addresses https://github.com/astral-sh/ty/issues/291 (Django ORM type checking support)</li>
+<li>Addresses https://github.com/astral-sh/ty/issues/1018 (Django model attributes not recognized)</li>
+</ul>
+<p>Both issues describe the same core problem: ty doesn't recognize Django's dynamically synthesized attributes (<code>.objects</code>, <code>.id</code>, field access). This PR documents the current state and establishes a path forward.</p>
+<h2>Open Questions for Maintainers</h2>
+<ol>
+<li><p><strong>Timing</strong>: Is it too early to add comprehensive Django test coverage? Happy to close if so, but wanted to at least get the foundation down.</p>
+</li>
+<li><p><strong>Test format</strong>: Does the 4-point comparison format make sense? It's meant to show baseline → target → competition comparison clearly.</p>
+</li>
+<li><p><strong>Scope</strong>: Should we split this into multiple PRs (e.g., tests-only first, then comparison docs)?</p>
+</li>
+<li><p><strong>Priority</strong>: Where does Django support fit in ty's roadmap? This helps us prioritize which phases to tackle first.</p>
+</li>
+</ol>
+<p>Really excited about the potential here - Django support could be a major differentiator for ty! 🚀</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @saada on 2025-11-06 22:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @saada on 2025-11-06 22:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @saada on 2025-11-06 22:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @saada on 2025-11-06 22:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Add Django ORM type checking test coverage and comparison analysis" to "[ty] Add Django ORM type checking test coverage and comparison analysis" by @AlexWaygood on 2025-11-06 22:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-11-06 22:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-11-07 14:53</div>
+            <div class="timeline-body"><p>Thank you for your contribution. We are planning to add dedicated Django support at some point, but it's not on our short-term roadmap, so having extended tests in this area is probably just going to increase maintenance burden. We can always come back to this later, but I'd like to close this for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-11-07 14:53</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:54:20 UTC
+    </footer>
+</body>
+</html>

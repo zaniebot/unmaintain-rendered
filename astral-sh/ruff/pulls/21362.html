@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fix syntax error false positive on alternative `match` patterns - astral-sh/ruff #21362</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fix syntax error false positive on alternative <code>match</code> patterns</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21362">#21362</a>
+        opened by <a href="https://github.com/ntBre">@ntBre</a>
+        on 2025-11-10 13:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ntBre">@ntBre</a> on 2025-11-10 13:28</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Fixes #21360 by using the union of names instead of overwriting them, as Micha suggested originally on #21104.</p>
+<p>This avoids overwriting the <code>n</code> name in the <code>Subscript</code> by the empty set of names visited in the nested OR pattern before visiting the other arm of the outer OR pattern.</p>
+<h2>Test Plan</h2>
+<p>A new inline test case taken from the issue</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-11-10 13:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-11-10 13:39</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @ntBre on 2025-11-10 13:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @ntBre on 2025-11-10 13:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @ntBre on 2025-11-10 13:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:1880 on 2025-11-10 13:46</div>
+            <div class="timeline-body"><p>Can you say a bit more about the fix. My understanding (and why I recommended it) was that using union or intersection would only matter for the error recovery case. But it seems that using union over intersection is important for valid cases too or are we only fixing a symptom here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-11-10 13:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:1880 on 2025-11-10 14:05</div>
+            <div class="timeline-body"><p>I think the union is correct because there can be existing patterns in <code>self.names</code> before visiting nested alternative patterns. We need to compare all of the names we visit in that arm to all of the names we visit in the next arm, not just the set of names visited in the last, innermost alternative pattern.</p>
+<p>That's what's happening in this case because we first visit the outer class pattern, which captures <code>n</code>, then we were overwriting that <code>n</code> with the empty set when visiting the <code>Constant | Slice</code> part of the pattern. Instead we need the union of <code>n</code> and the empty set to compare to the <code>Attribute(n)</code> branch.</p>
+<pre><code class="language-py">match 42:
+    case ast.Subscript(n, ast.Constant() | ast.Slice()) 
+       | ast.Attribute(n): ...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-11-10 14:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-11-10 15:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ntBre on 2025-11-10 15:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-11-10 15:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-11-10 15:51</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:54:20 UTC
+    </footer>
+</body>
+</html>

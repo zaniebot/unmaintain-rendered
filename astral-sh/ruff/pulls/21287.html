@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Clarify behavior of constraint sets for gradual upper bounds and constraints - astral-sh/ruff #21287</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Clarify behavior of constraint sets for gradual upper bounds and constraints</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21287">#21287</a>
+        opened by <a href="https://github.com/dcreager">@dcreager</a>
+        on 2025-11-05 19:51
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dcreager">@dcreager</a> on 2025-11-05 19:51</div>
+            <div class="timeline-body"><p>When checking whether a constraint set is satisfied, if a typevar has a non-fully-static upper bound or constraint, we are free to choose any materialization that makes the check succeed.</p>
+<p>In non-inferable positions, we have to show that the constraint set is satisfied for all valid specializations, so it's best to choose the most restrictive materialization, since that minimizes the set of valid specializations that have to pass.</p>
+<p>In inferable positions, we only have to show that the constraint set is satisfied for <em>some</em> valid specializations, so it's best to choose the most permissive materialization, since that maximizes our chances of finding a specialization that passes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @dcreager on 2025-11-05 19:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @dcreager on 2025-11-05 19:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @dcreager on 2025-11-05 19:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @dcreager on 2025-11-05 19:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @dcreager on 2025-11-05 19:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-11-05 19:53</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/type_properties/satisfied_by_all_typevars.md</code>:148 on 2025-11-05 19:54</div>
+            <div class="timeline-body"><p>I think that only holds true if the upper bound of a typevar is a gradual specialization of an <em>invariant</em> type? The bottom materialization of <code>list[Any]</code> is <code>Never</code>, but the bottom materialization of <code>Sequence[Any]</code> is <code>Sequence[Never]</code>, since <code>Sequence[Never]</code> is a subtype of <code>Sequence[int]</code> and <code>Sequence[str]</code>, and is still an inhabited type (<code>[]</code>, <code>()</code> can both inhabit <code>Sequence[Never]</code>, for example). Similarly for contravariance, the bottom materialization of <code>Callable[[Any], int]</code> is <code>Callable[[object], int]</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-11-05 19:54</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅
+No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-11-05 19:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-11-05 20:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/resources/mdtest/type_properties/satisfied_by_all_typevars.md</code>:148 on 2025-11-05 20:08</div>
+            <div class="timeline-body"><p>Which part doesn't hold true? This might be poor wording on my part — I am not trying to claim that the bottom materialization is always <code>Never</code>. I am (attempting to) say that for <code>T: Any</code>, we pick <code>T: Never</code>, but it's more precise to say that we pick the bottom specialization, because for <code>T: list[Any]</code>, we pick <code>T: Bottom[list[Any]]</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-11-05 20:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/resources/mdtest/type_properties/satisfied_by_all_typevars.md</code>:148 on 2025-11-05 20:13</div>
+            <div class="timeline-body"><blockquote>
+<p>might be poor wording on my part</p>
+</blockquote>
+<p>I think I understood it the way you explained in your comment now, but I also stumbled over it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-11-05 20:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/type_properties/satisfied_by_all_typevars.md</code>:148 on 2025-11-05 20:13</div>
+            <div class="timeline-body"><blockquote>
+<p>This might be poor wording on my part — I am not trying to claim that the bottom materialization is always <code>Never</code>.</p>
+</blockquote>
+<p>Ah, okay -- yes, I think the wording can be improved there a little!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-11-05 20:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/resources/mdtest/type_properties/satisfied_by_all_typevars.md</code>:148 on 2025-11-05 20:55</div>
+            <div class="timeline-body"><p>Reworded this, lmkwyt</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/resources/mdtest/type_properties/satisfied_by_all_typevars.md</code>:163 on 2025-11-06 13:07</div>
+            <div class="timeline-body"><p>Maybe just for the first of these: &quot;If we choose Super as the materialization <em>for the upper bound on T</em> …&quot;?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/resources/mdtest/type_properties/satisfied_by_all_typevars.md</code>:166 on 2025-11-06 13:14</div>
+            <div class="timeline-body"><p>I was slightly confused by the description here and above, because it sounded like there would be any proof here for the statement that <code>T = Never</code> is the only valid specialization. I think I would have expected something like:</p>
+<p>A non-inferable <code>T: Any</code> satisfies the constraint set <code>Never ≤ T ≤ Super</code>, because we are free to assume any materialization for the upper bound and can therefore chose <code>T: Never</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/resources/mdtest/type_properties/satisfied_by_all_typevars.md</code>:188 on 2025-11-06 13:18</div>
+            <div class="timeline-body"><p>Would it be worth demonstrating that this is only true for <code>UnrelatedFinal</code>, but not for a general <code>Unrelated</code> class? I would find that more useful compared to checking <code>Super</code>, <code>Sub</code> and <code>Base</code> above, which do not change anything?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/resources/mdtest/type_properties/satisfied_by_all_typevars.md</code>:216 on 2025-11-06 13:20</div>
+            <div class="timeline-body"><p>Minor: I think it should either say &quot;if we choose <code>Super</code> as the materialization of the <code>Any</code> in <code>list[Any]</code>&quot;, or just &quot;if we choose <code>list[Super]</code> as the materialization of the upper bound&quot;?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> approved on 2025-11-06 13:22</div>
+            <div class="timeline-body"><p>Very nice, thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/resources/mdtest/type_properties/satisfied_by_all_typevars.md</code>:163 on 2025-11-07 18:13</div>
+            <div class="timeline-body"><p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/resources/mdtest/type_properties/satisfied_by_all_typevars.md</code>:216 on 2025-11-07 18:17</div>
+            <div class="timeline-body"><p>I was trying to be careful to use &quot;materialization&quot; to only refer to what the <code>Any</code> turns into, even when it's part of a larger type. But <code>list[Any]</code> is a type that can be materialized, so maybe that is more confusing than helpful. Updated to line up with the changes suggested above</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/resources/mdtest/type_properties/satisfied_by_all_typevars.md</code>:188 on 2025-11-07 18:22</div>
+            <div class="timeline-body"><p>I think this will hold for <code>UnrelatedButNotFinal</code> as well — and for any type at all, actually. It's the <code>∧ T ≠ Never</code> part in the constraint set that causes this to fail — <code>T = Never</code> is a valid specialization no matter what materialization we choose, and the extra clause in the constraint set prohibits that specialization no matter what else appears in the constraint set.</p>
+<p>(That said, I did follow your suggestion to remove the redundant checks above for <code>Super</code> and <code>Base</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/resources/mdtest/type_properties/satisfied_by_all_typevars.md</code>:166 on 2025-11-07 18:25</div>
+            <div class="timeline-body"><p>Reworded</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-11-07 18:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dcreager on 2025-11-07 19:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dcreager on 2025-11-07 19:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-11-07 19:01</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:54:19 UTC
+    </footer>
+</body>
+</html>

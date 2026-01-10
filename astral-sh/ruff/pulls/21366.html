@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Implement constraint implication for compound types - astral-sh/ruff #21366</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Implement constraint implication for compound types</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21366">#21366</a>
+        opened by <a href="https://github.com/dcreager">@dcreager</a>
+        on 2025-11-10 17:20
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dcreager">@dcreager</a> on 2025-11-10 17:20</div>
+            <div class="timeline-body"><p>This PR updates the constraint implication type relationship to work on compound types as well. (A compound type is a non-atomic type, like <code>list[T]</code>.)</p>
+<p>The goal of constraint implication is to check whether the requirements of a constraint imply that a particular subtyping relationship holds. Before, we were only checking atomic typevars. That would let us verify that the constraint set <code>T ≤ bool</code> implies that <code>T</code> is always a subtype of <code>int</code>. (In this case, the lhs of the subtyping check, <code>T</code>, is an atomic typevar.)</p>
+<p>But we weren't recursing into compound types, to look for nested occurrences of typevars. That means that we weren't able to see that <code>T ≤ bool</code> implies that <code>Covariant[T]</code> is always a subtype of <code>Covariant[int]</code>.</p>
+<p>Doing this recursion means that we have to carry the constraint set along with us as we recurse into types as part of <code>has_relation_to</code>, by adding constraint implication as a new <code>TypeRelation</code> variant. (Before it was just a method on <code>ConstraintSet</code>.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @dcreager on 2025-11-10 17:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @dcreager on 2025-11-10 17:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @dcreager on 2025-11-10 17:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @dcreager on 2025-11-10 17:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @dcreager on 2025-11-10 17:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-11-10 17:23</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-11-10 17:23</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅</p>
+<p>No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-10 21:20</div>
+            <div class="timeline-body"><p>Are the primer hits here expected?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @dcreager on 2025-11-11 00:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-11-11 00:39</div>
+            <div class="timeline-body"><!-- generated-comment ty ecosystem-analyzer -->
+
+<h2><code>ecosystem-analyzer</code> results</h2>
+<p>No diagnostic changes detected ✅
+<strong><a href="https://dcreager-deep-comparison.ecosystem-663.pages.dev/diff">Full report with detailed diff</a></strong> (<a href="https://dcreager-deep-comparison.ecosystem-663.pages.dev/timing">timing results</a>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @dcreager on 2025-11-11 01:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @dcreager on 2025-11-11 01:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-11-11 01:08</div>
+            <div class="timeline-body"><blockquote>
+<p>Are the primer hits here expected?</p>
+</blockquote>
+<p>They were not! Latest patch disappears them</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @sharkdp by @sharkdp on 2025-11-11 08:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-11-11 14:26</div>
+            <div class="timeline-body"><p>I am planning to review this, but postponing to tomorrow, since Doug is out today anyway.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @carljm removed by @carljm on 2025-11-11 19:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-11-11 20:26</div>
+            <div class="timeline-body"><blockquote>
+<p>I am planning to review this, but postponing to tomorrow, since Doug is out today anyway.</p>
+</blockquote>
+<p>Thank you! No rush</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types.rs</code>:10356 on 2025-11-12 16:21</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    /// whether `T ≤ int`, then the answer will depend on what constraint set you are considering:
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types.rs</code>:10379 on 2025-11-12 16:24</div>
+            <div class="timeline-body"><p>Is &quot;constraint implication&quot; the name in the literature? I think I would prefer something like</p>
+<pre><code class="language-suggestion">    SubtypingGivenPremises(ConstraintSet&lt;'db&gt;),
+</code></pre>
+<p>or</p>
+<pre><code class="language-suggestion">    SubtypingUnderAssumptions(ConstraintSet&lt;'db&gt;),
+</code></pre>
+<p>or</p>
+<pre><code class="language-suggestion">    SubtypingAssuming(ConstraintSet&lt;'db&gt;),
+</code></pre>
+<p>but I'm obviously also fine with what you have.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/resources/mdtest/type_properties/implies_subtype_of.md</code>:224 on 2025-11-13 11:34</div>
+            <div class="timeline-body"><p>Would it be useful to add tests with the typevar on the right hand side? For example</p>
+<pre><code class="language-suggestion">    static_assert(not given_bool.implies_subtype_of(Covariant[T], Covariant[str]))
+
+    given_bool_le_t_le_int = ConstraintSet.range(bool, T, int)
+    static_assert(not given_bool_le_t_le_int.implies_subtype_of(Covariant[int], Covariant[T]))
+    static_assert(given_bool_le_t_le_int.implies_subtype_of(Covariant[bool], Covariant[T]))
+    static_assert(not given_bool_le_t_le_int.implies_subtype_of(Covariant[str], Covariant[T]))
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/resources/mdtest/type_properties/implies_subtype_of.md</code>:348 on 2025-11-13 11:37</div>
+            <div class="timeline-body"><p>Maybe test the reverse direction too?</p>
+<pre><code class="language-suggestion">    static_assert(given_int.implies_subtype_of(Invariant[T], Invariant[int]))
+    static_assert(given_int.implies_subtype_of(Invariant[int], Invariant[T]))
+    static_assert(not given_int.implies_subtype_of(Invariant[T], Invariant[bool]))
+    static_assert(not given_int.implies_subtype_of(Invariant[bool], Invariant[T]))
+    static_assert(not given_int.implies_subtype_of(Invariant[T], Invariant[str]))
+    static_assert(not given_int.implies_subtype_of(Invariant[str], Invariant[T]))
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types.rs</code>:1629 on 2025-11-13 11:39</div>
+            <div class="timeline-body"><p>Maybe</p>
+<pre><code class="language-suggestion">        premises: ConstraintSet&lt;'db&gt;,
+</code></pre>
+<p>or</p>
+<pre><code class="language-suggestion">        assumptions: ConstraintSet&lt;'db&gt;,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types.rs</code>:1706 on 2025-11-13 11:42</div>
+            <div class="timeline-body"><p>I think I missed a few of your PRs, so I'm not sure if this came up before, but the naming here is a bit confusing to me. I think I would prefer something like below, but certainly no need to change anything here if this has been discussed before and/or if you prefer the current naming</p>
+<pre><code class="language-suggestion">            return premises.imply_subtype_of(db, self, target);
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:1460 on 2025-11-13 11:57</div>
+            <div class="timeline-body"><p>This sounds like an optimization, but seems to be required for correctness?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> approved on 2025-11-13 12:01</div>
+            <div class="timeline-body"><p>Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:1460 on 2025-11-14 23:14</div>
+            <div class="timeline-body"><p>Yep, as described (and clarified/fixed) in much more detail in https://github.com/astral-sh/ruff/pull/21463</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types.rs</code>:1706 on 2025-11-14 23:16</div>
+            <div class="timeline-body"><p>Yes that also lines up more nicely with the name of the mdtest function. (That would change the tense slightly to <code>implies_subtype_of</code> which <em>technically</em> doesn't agree with a plural <code>premises</code>, but I am going to choose not to worry about that.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types.rs</code>:10379 on 2025-11-14 23:16</div>
+            <div class="timeline-body"><blockquote>
+<p>Is &quot;constraint implication&quot; the name in the literature?</p>
+</blockquote>
+<p>Nope! I do like <code>SubtypingAssuming</code>, that also calls out the relationship to <code>TypeRelation::Subtyping</code> more clearly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-11-14 23:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types.rs</code>:1629 on 2025-11-14 23:22</div>
+            <div class="timeline-body"><p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types.rs</code>:1706 on 2025-11-14 23:22</div>
+            <div class="timeline-body"><p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types.rs</code>:10379 on 2025-11-14 23:22</div>
+            <div class="timeline-body"><p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-11-14 23:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dcreager on 2025-11-14 23:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dcreager on 2025-11-14 23:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-11-14 23:43</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:54:20 UTC
+    </footer>
+</body>
+</html>

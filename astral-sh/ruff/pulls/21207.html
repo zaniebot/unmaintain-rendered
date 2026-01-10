@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] support subscripting typing.Literal with a type alias - astral-sh/ruff #21207</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] support subscripting typing.Literal with a type alias</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21207">#21207</a>
+        opened by <a href="https://github.com/carljm">@carljm</a>
+        on 2025-11-02 16:35
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/carljm">@carljm</a> on 2025-11-02 16:35</div>
+            <div class="timeline-body"><p>Fixes https://github.com/astral-sh/ty/issues/1368</p>
+<h2>Summary</h2>
+<p>Add support for patterns like this, where a type alias to a literal type (or union of literal types) is used to subscript <code>typing.Literal</code>:</p>
+<pre><code class="language-py">type MyAlias = Literal[1]
+def _(x: Literal[MyAlias]): ...
+</code></pre>
+<p>This shows up in the ecosystem report for PEP 613 type alias support.</p>
+<p>One interesting case is an alias to <code>bool</code> or an enum type. <code>bool</code> is an equivalent type to <code>Literal[True, False]</code>, which is a union of literal types. Similarly an enum type <code>E</code> is also equivalent to a union of its member literal types. Since (for explicit type aliases) we infer the RHS directly as a type expression, this makes it difficult for us to distinguish between <code>bool</code> and <code>Literal[True, False]</code>, so we allow either one to (or an alias to either one) to appear inside <code>Literal</code>, where other type checkers allow only the latter.</p>
+<p>I think for implicit type aliases it may be simpler to support only types derived from actually subscripting <code>typing.Literal</code>, though, so I didn't make a TODO-comment commitment here.</p>
+<h2>Test Plan</h2>
+<p>Added mdtests, including TODO-filled tests for PEP 613 and implicit type aliases.</p>
+<h3>Conformance suite</h3>
+<p>All changes here are positive -- we now emit errors on lines that should be errors. This is a side effect of the new implementation, not the primary purpose of this PR, but it's still a positive change.</p>
+<h3>Ecosystem</h3>
+<p>Eliminates one ecosystem false positive, where a PEP 695 type alias for a union of literal types is used to subscript <code>typing.Literal</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @carljm on 2025-11-02 16:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-11-02 16:37</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance">typing conformance tests</a></h2>
+<details>
+<summary>Changes were detected when running ty on typing conformance tests</summary>
+
+<pre><code class="language-diff">--- old-output.txt	2025-11-02 16:36:40.976309065 +0000
++++ new-output.txt	2025-11-02 16:36:44.203343406 +0000
+@@ -387,6 +387,16 @@
+ enums_member_values.py:54:1: error[type-assertion-failure] Argument does not have asserted type `Literal[1]`
+ enums_member_values.py:85:9: error[invalid-assignment] Object of type `int` is not assignable to attribute `_value_` of type `str`
+ enums_member_values.py:96:1: error[type-assertion-failure] Argument does not have asserted type `int`
++enums_members.py:82:1: error[type-assertion-failure] Argument does not have asserted type `Unknown`
++enums_members.py:82:37: error[invalid-type-form] Type arguments for `Literal` must be `None`, a literal value (int, bool, str, or bytes), or an enum member
++enums_members.py:83:1: error[type-assertion-failure] Argument does not have asserted type `Unknown`
++enums_members.py:83:37: error[invalid-type-form] Type arguments for `Literal` must be `None`, a literal value (int, bool, str, or bytes), or an enum member
++enums_members.py:84:1: error[type-assertion-failure] Argument does not have asserted type `Unknown`
++enums_members.py:84:35: error[invalid-type-form] Type arguments for `Literal` must be `None`, a literal value (int, bool, str, or bytes), or an enum member
++enums_members.py:85:1: error[type-assertion-failure] Argument does not have asserted type `Unknown`
++enums_members.py:85:33: error[invalid-type-form] Type arguments for `Literal` must be `None`, a literal value (int, bool, str, or bytes), or an enum member
++enums_members.py:116:1: error[type-assertion-failure] Argument does not have asserted type `Unknown`
++enums_members.py:116:32: error[invalid-type-form] Type arguments for `Literal` must be `None`, a literal value (int, bool, str, or bytes), or an enum member
+ enums_members.py:128:21: info[revealed-type] Revealed type: `Unknown | Literal[2]`
+ enums_members.py:129:9: error[type-assertion-failure] Argument does not have asserted type `Unknown`
+ enums_members.py:129:43: error[invalid-type-form] Type arguments for `Literal` must be `None`, a literal value (int, bool, str, or bytes), or an enum member
+@@ -978,5 +988,5 @@
+ typeddicts_usage.py:28:17: error[missing-typed-dict-key] Missing required key 'name' in TypedDict `Movie` constructor
+ typeddicts_usage.py:28:18: error[invalid-key] Invalid key for TypedDict `Movie`: Unknown key &quot;title&quot;
+ typeddicts_usage.py:40:24: error[invalid-type-form] The special form `typing.TypedDict` is not allowed in type expressions. Did you mean to use a concrete TypedDict or `collections.abc.Mapping[str, object]` instead?
+-Found 980 diagnostics
++Found 990 diagnostics
+ WARN A fatal error occurred while checking some files. Not all project files were analyzed. See the diagnostics list above for details.
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-11-02 16:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/assignment/annotations.md</code>:262 on 2025-11-02 16:38</div>
+            <div class="timeline-body"><p>Our previous support for enum member literals in <code>typing.Literal</code> did not implement the simplification of a single-member enum literal type to the overall enum type. Since we do implement this simplification otherwise, I thought it more consistent to do it in this case also. (And it falls out from the implementation, which now simply uses general type inference rather than special handling for enum members.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-11-02 16:38</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">hydpy (https://github.com/hydpy-dev/hydpy)
+- hydpy/core/netcdftools.py:1878:35: error[invalid-type-form] Type arguments for `Literal` must be `None`, a literal value (int, bool, str, or bytes), or an enum member
+- Found 678 diagnostics
++ Found 677 diagnostics
+
+</code></pre>
+</details>
+No memory usage changes detected ✅
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @carljm on 2025-11-02 16:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @carljm on 2025-11-02 16:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @carljm on 2025-11-02 16:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @carljm on 2025-11-02 16:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-11-02 17:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @carljm on 2025-11-02 17:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-11-02 17:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-11-02 17:39</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:54:19 UTC
+    </footer>
+</body>
+</html>

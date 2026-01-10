@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Cache dynamic callable type - astral-sh/ruff #19862</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Cache dynamic callable type</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19862">#19862</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2025-08-11 11:33
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-08-11 11:33</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Cache the <code>CallableType</code> for <code>Type::dynamic</code> to reduce the congestion around salsa's <code>intern_id</code> lock.</p>
+<p>https://github.com/astral-sh/ty/issues/968</p>
+<p>This reduces check time on a large project from 25s to 18s on my mac mini. The memory increase should be proportional to the amount of dynamic types (which should be fixed once we eliminated all Todo types)</p>
+<h2>Test Plan</h2>
+<p><code>cargo test</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @MichaReiser on 2025-08-11 11:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @MichaReiser on 2025-08-11 11:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @MichaReiser on 2025-08-11 11:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @MichaReiser on 2025-08-11 11:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @MichaReiser on 2025-08-11 11:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @MichaReiser on 2025-08-11 11:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-11 11:35</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-11 11:40</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅
+No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:6415 on 2025-08-11 11:41</div>
+            <div class="timeline-body"><p>Caching the method definitely makes sense if it improves performance this much, but I think I'd prefer for this to be a method on <code>CallableType</code> rather than a method on <code>DynamicType</code>. I'm not sure it makes sense to think of this as transforming a <code>DynamicType</code> &quot;into a <code>CallableType</code>&quot;: what we're really doing is creating a <code>CallableType</code> that returns a certain <code>DynamicType</code>.</p>
+<p>Also, could we add a comment saying why we specifically cache the constructor if we're constructing a <code>CallableType</code> that returns a <code>DynamicType</code>, rather than generally caching the <code>CallableType::single()</code> method?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-08-11 11:41</div>
+            <div class="timeline-body"><p>Nice!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-08-11 12:17</div>
+            <div class="timeline-body"><p>Okay, my latest version undos the entire performance improvement because calling the cached query requires interning on its own, lol</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-08-11 12:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:6413 on 2025-08-11 12:32</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">impl DynamicType {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-08-11 12:59</div>
+            <div class="timeline-body"><p>This does help performance but there's still a congested lock because non-argument queries in salsa also require interning (it's just that the lock is now sharded by dynamic type which improves performance somewhat). Addressing the todo's will also mean that the locks become more congested again. So maybe this is just not worth it (But the perf improvement is massive, ~40 -&gt; 30s or even less on my linux machine)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:8056 on 2025-08-11 13:06</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    /// Each variant uses its own query to achieve an extra degree of sharding (Salsa
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:8051 on 2025-08-11 13:07</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    /// Create a callable type with ``*args: Any, **kwargs: Any`` as the parameter spec
+    /// and a dynamic return type.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:8148 on 2025-08-11 13:14</div>
+            <div class="timeline-body"><p>I think these should all use <code>Parameters::gradual_form()</code> rather than <code>Parameters::unknown()</code>, if we want to keep the semantics exactly as they are on <code>main</code>. The former creates a <code>*args: Any, **kwargs: Any</code> parameter spec, the second creates a <code>*args: Unknown, **kwargs: Unknown</code> parameter spec. Practically speaking these are usually treated the same by ty, but <code>Unknown</code> normalizes to <code>Any</code>, and it could also have an effect on diagnostics messages.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-08-11 13:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-08-11 13:16</div>
+            <div class="timeline-body"><p>Starring more at this. The sharding in Salsa isn't working because all threads look up the same few <code>CallableType</code>,s which, because they're the same, are all stored in the same shard.</p>
+<p>It might be worth to use an <code>RwLock</code> in the interning table. But I don't know how easily this is possible, due to the LRU</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-08-11 16:17</div>
+            <div class="timeline-body"><p>@carljm had a much better idea. I'll open a new PR</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-08-11 17:07</div>
+            <div class="timeline-body"><p>I assume this won't show much if any perf impact after the PR that special-cases Dynamic in reachability constraint evaluation?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-08-11 18:11</div>
+            <div class="timeline-body"><blockquote>
+<p>I assume this won't show much if any perf impact after the PR that special-cases Dynamic in reachability constraint evaluation?</p>
+</blockquote>
+<p>No, I wanted to close this PR (I thought I did)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-08-11 18:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-11-16 11:47</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:54:19 UTC
+    </footer>
+</body>
+</html>

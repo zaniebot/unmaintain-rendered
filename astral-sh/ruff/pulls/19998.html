@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>non-building draft PR for early feedback - astral-sh/ruff #19998</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>non-building draft PR for early feedback</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19998">#19998</a>
+        opened by <a href="https://github.com/oconnor663">@oconnor663</a>
+        on 2025-08-20 04:01
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/oconnor663">@oconnor663</a> on 2025-08-20 04:01</div>
+            <div class="timeline-body"><p>This is my trial-and-error attempt to introduce a <code>ClassSingletonType</code> enum to <code>crates/ty_python_semantic/src/types/class.rs</code>, as @carljm and @AlexWaygood and I discussed. This fixes all the immediate type errors in that file, but there are still many in other files. I wanted to check in with you guys to see if I can get some early feedback about whether I'm moving in the right direction. In particular, a lot of <code>ClassLiteral</code> methods end up getting wrapped by <code>ClassSingletonType</code> and <code>NewTypeClass</code> <em>and</em> <code>ClassType</code>, which doesn't seem ideal.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-08-20 09:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/call/bind.rs</code>:1072 on 2025-08-20 10:32</div>
+            <div class="timeline-body"><p>I think this is where you need to actually create the &quot;synthetic NewType class&quot; -- so you'll want something like this? (Haven't checked that this actually compiles!)</p>
+<pre><code class="language-suggestion">                            [Some(Type::StringLiteral(name)), Some(supertype)] =&gt; {
+                                if let Some(supertype) = supertype.to_class_type(db) {
+	                                let synthesized_class = NewTypeClass::new(
+	                                    db,
+	                                    &amp;name.value(db),
+	                                    supertype
+	                                );
+	                                overload.set_return_type(Type::ClassSingleton(
+	                                    ClassSingletonType::NewType(synthesized_class)
+	                                ));  
+                                }
+                            }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:1294 on 2025-08-20 13:00</div>
+            <div class="timeline-body"><p>The definition of the <code>NewType</code> synthesized class is the <code>N = NewType(&quot;N&quot;, int)</code> function call, so we need to return a <code>Definition</code> instance that can point back to that original <code>ast::Expr::Call</code> node in the AST.</p>
+<p>I think you probably just want to store the <code>Definition</code> directly on the <code>NewTypeClass</code> struct, similarly to how we do for <code>TypeVarInstance</code>?</p>
+<p>https://github.com/astral-sh/ruff/blob/276405b44eefd70e212abe1d37a11ce419ec6813/crates/ty_python_semantic/src/types.rs#L7088</p>
+<p>You can figure out what the <code>Definition</code> for the NewType is by looking it up in the semantic index using this method:</p>
+<p>https://github.com/astral-sh/ruff/blob/49942f656cf881619f8cab6ad75fd99a8d8d3935/crates/ty_python_semantic/src/semantic_index.rs#L417-L436</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-08-20 14:11</div>
+            <div class="timeline-body"><p>Some answers to a couple of questions I saw you posing in the diff!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/oconnor663">@oconnor663</a> reviewed on 2025-08-20 15:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/oconnor663">@oconnor663</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:1294 on 2025-08-20 15:37</div>
+            <div class="timeline-body"><p>I didn't realize how melodramatic some of my todo comments are. I probably should've scrubbed the branch...</p>
+<p>One side topic I wanted to ask about is whether we can assume that a <code>Definition</code> exists for a <code>NewType</code>. For example Pyright allows this (clearly a definition, just with multiple parts):</p>
+<pre><code class="language-py">Foo, Bar = NewType(&quot;Foo&quot;, int), NewType(&quot;Bar&quot;, float)
+</code></pre>
+<p>But not this:</p>
+<pre><code class="language-py">Foo, Bar = [NewType(&quot;Foo&quot;, int), NewType(&quot;Bar&quot;, float)]
+</code></pre>
+<p>And certainly not this:</p>
+<pre><code class="language-py">types = [NewType(&quot;Foo&quot;, int), NewType(&quot;Bar&quot;, float)]
+Foo, Bar = types
+</code></pre>
+<p>Do we want to impose a rule like &quot;for <code>NewType</code> to actually work, it must be at the top level of an assignment statement&quot;?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:1294 on 2025-08-20 16:12</div>
+            <div class="timeline-body"><blockquote>
+<p>Do we want to impose a rule like &quot;for <code>NewType</code> to actually work, it must be at the top level of an assignment statement&quot;?</p>
+</blockquote>
+<p>It sort-of feels like a &quot;garbage-in, garbage out&quot; situation, but all of pyright's behaviour here makes intuitive sense to me: https://pyright-play.net/?pythonVersion=3.13&amp;strict=true&amp;enableExperimentalFeatures=true&amp;code=GYJw9gtgBALgngBwJYDsDmUkQWEMoByApgO4AqiRAUFQIIA0UAQlALxQAUx5lHARLT6NUMAJSNuFBEX5MhUYABswAQzGiqIIgDciKxQH140jrQ4AWAEyiNVAGJgwjJipBsoAbUm8%2BDsPJFxQlIpGT4XEHklVTEAXU0dPUNjGT8La1sUgGd3LxCfMgCUMQl8kz4AZSjlNVF4gGFGABF3bITdfSNeevSbKiA. And I think the same behaviour should naturally fall out of our implementation.</p>
+<p>I wouldn't object to having a lint that fires if you have a <code>NewType</code> call that isn't at the top-level of an assignment, though. I can see what you mean that it could have confusing results in some cases (e.g. the unpacking from a list example), and there doesn't seem much of a use case for anything except the direct <code>X = NewType(&quot;X&quot;, int)</code> way to define a <code>NewType</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-08-20 16:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-08-20 16:21</div>
+            <div class="timeline-body"><p>Thank you for opening this PR for early feedback!! I found it very clarifying. In particular, I chatted with @carljm and I'm afraid we think we might have led you astray, which is totally our fault :-(</p>
+<p>In our meeting the other day, we chatted about how <code>NewType</code>, the functional namedtuple syntax, the functional enum syntax, the functional TypedDict syntax, and the builtin <code>type()</code> function are all similar: we said that they all create class objects via function calls. But... one of those is not like the others, and, unfortunately, it's specifically <code>NewType</code> that's not like the others. Calling <code>NewType</code> doesn't actually return a class object; it returns a dummy object that, when called, acts like an identity function:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; from typing import NewType
+&gt;&gt;&gt; N = NewType(&quot;N&quot;, int)
+&gt;&gt;&gt; N
+__main__.N
+&gt;&gt;&gt; type(N)
+&lt;class 'typing.NewType'&gt;
+&gt;&gt;&gt; hasattr(N, &quot;__mro__&quot;)
+False
+&gt;&gt;&gt; isinstance(N, type)
+False
+</code></pre>
+<p>That means that it probably honestly <em>isn't</em> a great idea to represent the object returned by <code>NewType()</code> as a subvariant of <code>Type::ClassLiteral</code> afterall. Having it as a subvariant of <code>Type::ClassLiteral</code> would imply that all attributes available on instances of type are available on objects returned by <code>NewType()</code>, that <code>N</code> in the example above would inhabit the type <code>type[int]</code>, that <code>N</code> would be a valid object to pass as the second argument to <code>issubclass()</code> or <code>isinstance()</code>, and that <code>type[N]</code> would be a valid type annotation for a function parameter... but none of these are actually true. We could workaround all these implications by doing <code>match</code>es on the inner enum wrapped by <code>Type::ClassLiteral</code>, but it might be a better fit to represent the object returned by a call to <code>NewType()</code> as a subvariant of <code>Type::KnownInstance()</code>, and add a new variant to the <code>NominalInstanceInner</code> enum in <code>instance.rs</code> enum specifically for objects that inhabit <code>NewType</code> types.</p>
+<p>However! I don't think all the work you've done on this big refactor was necessarily wasted. Although this might not actually be the right approach for implementing <code>NewType</code>, it <em>is</em> probably the right approach for the function-call namedtuple syntax, the functional enum syntax or the functional TypedDict syntax (all of which actually do create class objects at runtime). You could possibly repurpose this branch into a PR adding support for the functional namedtuple syntax...? (https://github.com/astral-sh/ty/issues/1049)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/oconnor663">@oconnor663</a> on 2025-08-21 14:02</div>
+            <div class="timeline-body"><blockquote>
+<p>Having it as a subvariant of <code>Type::ClassLiteral</code> would imply...that <code>type[N]</code> would be a valid type annotation for a function parameter</p>
+</blockquote>
+<p>Indeed this doesn't seem to work, but it's not clear to me why it doesn't:</p>
+<pre><code class="language-py">from typing import NewType
+Foo = NewType(&quot;Foo&quot;, int)
+def f(x: type[Foo]): ...
+f(Foo)  # pyright: error: Argument of type &quot;type[Foo]&quot; cannot be assigned to parameter &quot;x&quot; of type &quot;type[Foo]&quot;
+</code></pre>
+<p>Do you know why Pyright doesn't allow that?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-21 16:30</div>
+            <div class="timeline-body"><blockquote>
+<p>Indeed this doesn't seem to work, but it's not clear to me why it doesn't:</p>
+<pre><code class="language-python">from typing import NewType
+Foo = NewType(&quot;Foo&quot;, int)
+def f(x: type[Foo]): ...
+f(Foo)  # pyright: error: Argument of type &quot;type[Foo]&quot; cannot be assigned to parameter &quot;x&quot; of type &quot;type[Foo]&quot;
+</code></pre>
+<p>Do you know why Pyright doesn't allow that?</p>
+</blockquote>
+<p>It's a somewhat confusing diagnostic from pyright in my opinion; I think it would be better for pyright to emit the diagnostic on the <code>f</code> function that tries to use the type annotation <code>type[Foo]</code> rather than allowing the annotation but then essentially considering it an &quot;uninhabited type&quot;.</p>
+<p><code>type[Foo]</code> here doesn't really make sense as a concept because <code>type[Foo]</code> means &quot;the class object <code>Foo</code> or any subclass of <code>Foo</code>&quot;. But <code>Foo</code> isn't a class object at runtime, and cannot be subclassed. Many of the properties that you would expect any inhabitant of a <code>type[]</code> type to have do not hold true for the runtime object <code>Foo</code>, as well: it doesn't have an <code>__mro__</code> attribute, a <code>__base__</code> attribute or a <code>__bases__</code> attribute (these are attributes that all class objects have, and any inhabitant of a <code>type[]</code> type must be a class object).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-10 17:44</div>
+            <div class="timeline-body"><p>Should we close this now that your other PR is about to land?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @oconnor663 on 2025-11-10 19:56</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:54:19 UTC
+    </footer>
+</body>
+</html>

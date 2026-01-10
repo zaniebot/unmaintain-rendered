@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Support stringified annotations in value-position `Annotated` instances - astral-sh/ruff #21447</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Support stringified annotations in value-position <code>Annotated</code> instances</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21447">#21447</a>
+        opened by <a href="https://github.com/sharkdp">@sharkdp</a>
+        on 2025-11-14 11:14
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-11-14 11:14</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Infer the first argument <code>type</code> inside <code>Annotated[type, …]</code> as a type expression. This allows us to support stringified annotations inside <code>Annotated</code>.</p>
+<h2>Ecosystem</h2>
+<ul>
+<li>The removed diagnostic on <code>prefect</code> shows that we now understand the <code>State.data</code> type annotation in <code>src/prefect/client/schemas/objects.py:230</code>, which uses a stringified annotation in <code>Annoated</code>. The other diagnostics are downstream changes that result from this, it seems to be a commonly used data type.</li>
+<li><code>artigraph</code> does something like <code>Annotated[cast(Any, field_info.annotation), *field_info.metadata]</code> which I'm not sure we need to allow? It's unfortunate since this is probably supported at runtime, but it seems reasonable that they need to add a <code># type: ignore</code> for that.</li>
+<li><code>pydantic</code> uses something like <code>Annotated[(self.annotation, *self.metadata)]</code> but adds a <code># type: ignore</code></li>
+</ul>
+<h2>Test Plan</h2>
+<p>New Markdown test</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @sharkdp on 2025-11-14 11:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-11-14 11:16</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-11-14 11:18</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">beartype (https://github.com/beartype/beartype)
++ beartype/bite/collection/infercollectionsabc.py:200:26: error[invalid-type-form] Variable of type `object` is not allowed in a type expression
+- Found 498 diagnostics
++ Found 499 diagnostics
+
+artigraph (https://github.com/artigraph/artigraph)
++ src/arti/internal/models.py:101:31: error[invalid-type-form] Function calls are not allowed in type expressions
+- Found 174 diagnostics
++ Found 175 diagnostics
+
+prefect (https://github.com/PrefectHQ/prefect)
+- src/prefect/client/schemas/objects.py:230:13: error[invalid-type-form] Variable of type `Literal[&quot;ResultRecordMetadata&quot;]` is not allowed in a type expression
++ src/prefect/states.py:515:22: error[not-iterable] Object of type `~None &amp; ~BaseException &amp; ~str &amp; ~Top[State[Any]]` is not iterable
++ src/prefect/states.py:616:22: error[not-iterable] Object of type `~None &amp; ~BaseException &amp; ~str &amp; ~Top[State[Any]]` is not iterable
++ src/prefect/testing/utilities.py:241:9: error[invalid-argument-type] Argument to bound method `aread` is incorrect: Expected `str`, found `str | None`
++ src/prefect/testing/utilities.py:258:50: error[invalid-argument-type] Argument to bound method `read_block_document` is incorrect: Expected `UUID`, found `UUID | None`
++ src/prefect/testing/utilities.py:269:50: error[invalid-argument-type] Argument to bound method `read_block_document` is incorrect: Expected `UUID`, found `UUID | None`
+- Found 3233 diagnostics
++ Found 3237 diagnostics
+
+pydantic (https://github.com/pydantic/pydantic)
+- pydantic/fields.py:780:66: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 4818 diagnostics
++ Found 4817 diagnostics
+
+
+</code></pre>
+</details>
+
+<p>No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @sharkdp on 2025-11-14 11:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @sharkdp on 2025-11-14 11:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @sharkdp on 2025-11-14 11:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @sharkdp on 2025-11-14 11:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/annotations/annotated.md</code>:85 on 2025-11-14 11:56</div>
+            <div class="timeline-body"><p>Is it worth also adding a test for a variant of this:</p>
+<pre><code class="language-py">class E(Annotated[list[&quot;E&quot;], &quot;metadata&quot;]): ...
+</code></pre>
+<p>(which works fine at runtime, I think)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/class_base.rs</code>:195 on 2025-11-14 12:00</div>
+            <div class="timeline-body"><p>hmmmm I feel like there's probably going to be some edge case someone will come up with at some point where this lossy conversion will come back to bite us... but I'm not sure what they are, and this seems fine for now 😆</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-11-14 12:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @sharkdp on 2025-11-14 13:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-11-14 13:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-11-14 13:09</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:54:20 UTC
+    </footer>
+</body>
+</html>

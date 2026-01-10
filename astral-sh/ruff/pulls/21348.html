@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`refurb`] Detect empty f-strings (`FURB105`) - astral-sh/ruff #21348</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>refurb</code>] Detect empty f-strings (<code>FURB105</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21348">#21348</a>
+        opened by <a href="https://github.com/danparizher">@danparizher</a>
+        on 2025-11-09 20:25
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/danparizher">@danparizher</a> on 2025-11-09 20:25</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Fixes FURB105 (<code>print-empty-string</code>) to detect empty f-strings in addition to regular empty strings. Previously, the rule only flagged <code>print(&quot;&quot;)</code> but missed <code>print(f&quot;&quot;)</code>. This fix ensures both cases are detected and can be automatically fixed.</p>
+<p>Fixes #21346</p>
+<h2>Problem Analysis</h2>
+<p>The FURB105 rule checks for unnecessary empty strings passed to <code>print()</code> calls. The <code>is_empty_string</code> helper function was only checking for <code>Expr::StringLiteral</code> with empty values, but did not handle <code>Expr::FString</code> (f-strings). As a result, <code>print(f&quot;&quot;)</code> was not being flagged as a violation, even though it's semantically equivalent to <code>print(&quot;&quot;)</code> and should be simplified to <code>print()</code>.</p>
+<p>The issue occurred because the function used a <code>matches!</code> macro that only checked for string literals:</p>
+<pre><code class="language-rust">fn is_empty_string(expr: &amp;Expr) -&gt; bool {
+    matches!(
+        expr,
+        Expr::StringLiteral(ast::ExprStringLiteral { value, .. }) if value.is_empty()
+    )
+}
+</code></pre>
+<h2>Approach</h2>
+<ol>
+<li><p><strong>Import the helper function</strong>: Added <code>is_empty_f_string</code> to the imports from <code>ruff_python_ast::helpers</code>, which already provides logic to detect empty f-strings.</p>
+</li>
+<li><p><strong>Update <code>is_empty_string</code> function</strong>: Changed the implementation from a <code>matches!</code> macro to a <code>match</code> expression that handles both string literals and f-strings:</p>
+<pre><code class="language-rust">fn is_empty_string(expr: &amp;Expr) -&gt; bool {
+    match expr {
+        Expr::StringLiteral(ast::ExprStringLiteral { value, .. }) =&gt; value.is_empty(),
+        Expr::FString(f_string) =&gt; is_empty_f_string(f_string),
+        _ =&gt; false,
+    }
+}
+</code></pre>
+</li>
+</ol>
+<p>The fix leverages the existing <code>is_empty_f_string</code> helper function which properly handles the complexity of f-strings, including nested f-strings and interpolated expressions. This ensures the detection is accurate and consistent with how empty strings are detected elsewhere in the codebase.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> approved on 2025-11-10 17:21</div>
+            <div class="timeline-body"><p>Thank you!</p>
+<p>I'm just going to close and reopen to try to trigger the ecosystem comment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-11-10 17:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @ntBre on 2025-11-10 17:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2025-11-10 17:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-11-10 17:41</div>
+            <div class="timeline-body"><p>Still no comment, but I downloaded the artifact:</p>
+<blockquote>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ntBre on 2025-11-10 17:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-11-10 17:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-11-10 17:51</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:54:20 UTC
+    </footer>
+</body>
+</html>

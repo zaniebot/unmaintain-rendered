@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Support `type[…]` and `Type[…]` in implicit type aliases - astral-sh/ruff #21421</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Support <code>type[…]</code> and <code>Type[…]</code> in implicit type aliases</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21421">#21421</a>
+        opened by <a href="https://github.com/sharkdp">@sharkdp</a>
+        on 2025-11-13 09:45
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-11-13 09:45</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Support <code>type[…]</code> in implicit type aliases, for example:</p>
+<pre><code class="language-py">SubclassOfInt = type[int]
+
+reveal_type(SubclassOfInt)  # GenericAlias
+
+def _(subclass_of_int: SubclassOfInt):
+    reveal_type(subclass_of_int)  # type[int]
+</code></pre>
+<p>part of https://github.com/astral-sh/ty/issues/221</p>
+<h2>Typing conformance</h2>
+<pre><code class="language-diff">-specialtypes_type.py:138:5: error[type-assertion-failure] Argument does not have asserted type `type[Any]`
+-specialtypes_type.py:140:5: error[type-assertion-failure] Argument does not have asserted type `type[Any]`
+</code></pre>
+<p>Two new tests passing :heavy_check_mark:</p>
+<pre><code class="language-diff">-specialtypes_type.py:146:1: error[unresolved-attribute] Object of type `GenericAlias` has no attribute `unknown`
+</code></pre>
+<p>An <code>TA4.unknown</code> attribute on a PEP 613 alias (<code>TA4: TypeAlias = type[Any]</code>) is being accessed, and the conformance suite expects this to be an error. Since we currently use the inferred type for these type aliases (and possibly in the future as well), we treat this as a direct access of the attribute on <code>type[Any]</code>, which falls back to an access on <code>Any</code> itself, which succeeds. :red_circle:</p>
+<pre><code>+specialtypes_type.py:152:16: error[invalid-type-form] `typing.TypeVar` is not a generic class
++specialtypes_type.py:156:16: error[invalid-type-form] `typing.TypeVar` is not a generic class
+</code></pre>
+<p>New errors because we don't handle <code>T = TypeVar(&quot;T&quot;); MyType = type[T]; MyType[T]</code> yet. Support for this is being tracked in https://github.com/astral-sh/ty/issues/221 :red_circle:</p>
+<h2>Ecosystem impact</h2>
+<p>Looks mostly good, a few known problems.</p>
+<h2>Test Plan</h2>
+<p>New Markdown tests</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @sharkdp on 2025-11-13 09:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-11-13 09:47</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance">typing conformance tests</a></h2>
+<details>
+<summary>Changes were detected when running ty on typing conformance tests</summary>
+
+<pre><code class="language-diff">--- old-output.txt	2025-11-13 15:34:17.020867210 +0000
++++ new-output.txt	2025-11-13 15:34:20.477879574 +0000
+@@ -900,12 +900,11 @@
+ specialtypes_type.py:120:5: error[unresolved-attribute] Object of type `type` has no attribute `unknown`
+ specialtypes_type.py:127:5: error[type-assertion-failure] Argument does not have asserted type `ProUser`
+ specialtypes_type.py:137:5: error[type-assertion-failure] Argument does not have asserted type `type[Any]`
+-specialtypes_type.py:138:5: error[type-assertion-failure] Argument does not have asserted type `type[Any]`
+ specialtypes_type.py:139:5: error[type-assertion-failure] Argument does not have asserted type `type[Any]`
+-specialtypes_type.py:140:5: error[type-assertion-failure] Argument does not have asserted type `type[Any]`
+ specialtypes_type.py:143:1: error[unresolved-attribute] Object of type `typing.Type` has no attribute `unknown`
+ specialtypes_type.py:145:1: error[unresolved-attribute] Class `type` has no attribute `unknown`
+-specialtypes_type.py:146:1: error[unresolved-attribute] Object of type `GenericAlias` has no attribute `unknown`
++specialtypes_type.py:152:16: error[invalid-type-form] `typing.TypeVar` is not a generic class
++specialtypes_type.py:156:16: error[invalid-type-form] `typing.TypeVar` is not a generic class
+ specialtypes_type.py:160:1: error[type-assertion-failure] Argument does not have asserted type `int`
+ specialtypes_type.py:161:1: error[type-assertion-failure] Argument does not have asserted type `int`
+ specialtypes_type.py:169:5: error[invalid-assignment] Object of type `type` is not assignable to `type[int]`
+@@ -1001,5 +1000,5 @@
+ typeddicts_usage.py:28:17: error[missing-typed-dict-key] Missing required key 'name' in TypedDict `Movie` constructor
+ typeddicts_usage.py:28:18: error[invalid-key] Invalid key for TypedDict `Movie`: Unknown key &quot;title&quot;
+ typeddicts_usage.py:40:24: error[invalid-type-form] The special form `typing.TypedDict` is not allowed in type expressions. Did you mean to use a concrete TypedDict or `collections.abc.Mapping[str, object]` instead?
+-Found 1003 diagnostics
++Found 1002 diagnostics
+ WARN A fatal error occurred while checking some files. Not all project files were analyzed. See the diagnostics list above for details.
+
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-11-13 09:47</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">more-itertools (https://github.com/more-itertools/more-itertools)
+- more_itertools/more.pyi:219:16: error[invalid-type-form] Variable of type `UnionType` is not allowed in a type expression
+- more_itertools/more.pyi:220:15: error[invalid-type-form] Variable of type `UnionType` is not allowed in a type expression
+- more_itertools/more.pyi:222:23: error[invalid-type-form] Variable of type `UnionType` is not allowed in a type expression
+- more_itertools/more.pyi:642:42: error[invalid-type-form] Variable of type `UnionType` is not allowed in a type expression
+- more_itertools/more.pyi:646:52: error[invalid-type-form] Variable of type `UnionType` is not allowed in a type expression
+- Found 34 diagnostics
++ Found 29 diagnostics
+
+pytest (https://github.com/pytest-dev/pytest)
+- src/_pytest/_code/code.py:676:34: error[invalid-type-form] Variable of type `UnionType` is not allowed in a type expression
+- src/_pytest/_code/code.py:789:29: error[invalid-type-form] Variable of type `UnionType` is not allowed in a type expression
+- src/_pytest/_code/code.py:818:29: error[invalid-type-form] Variable of type `UnionType` is not allowed in a type expression
+- Found 474 diagnostics
++ Found 471 diagnostics
+
+beartype (https://github.com/beartype/beartype)
+- beartype/_check/error/errmain.py:399:42: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ beartype/_check/error/errmain.py:591:13: error[unknown-argument] Argument `message` does not match any known parameter of bound method `__init__`
++ beartype/_check/error/errmain.py:592:13: error[unknown-argument] Argument `culprits` does not match any known parameter of bound method `__init__`
++ beartype/_data/typing/datatyping.py:671:6: error[unresolved-attribute] Object of type `object` has no attribute `forward`
+- beartype/_decor/decorcore.py:216:82: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ beartype/bite/_infermain.py:238:21: error[invalid-type-form] Variable of type `Never` is not allowed in a type expression
+- Found 505 diagnostics
++ Found 507 diagnostics
+
+mypy (https://github.com/python/mypy)
+- mypy/typeshed/stdlib/contextlib.pyi:41:34: error[unsupported-operator] Operator `|` is unsupported between objects of type `GenericAlias` and `None`
+- mypy/typeshed/stdlib/contextlib.pyi:178:6: error[unsupported-operator] Operator `|` is unsupported between objects of type `GenericAlias` and `None`
+- mypy/typeshed/stdlib/inspect.pyi:282:5: error[unsupported-operator] Operator `|` is unsupported between objects of type `&lt;class 'ModuleType'&gt;` and `GenericAlias`
+- mypy/typeshed/stdlib/marshal.pyi:12:5: error[unsupported-operator] Operator `|` is unsupported between objects of type `None` and `GenericAlias`
+- Found 1704 diagnostics
++ Found 1700 diagnostics
+
+Tanjun (https://github.com/FasterSpeeding/Tanjun)
+- tanjun/annotations.py:389:42: error[invalid-type-form] Variable of type `UnionType` is not allowed in a type expression
+- tanjun/annotations.py:414:45: error[invalid-type-form] Variable of type `UnionType` is not allowed in a type expression
+- tanjun/annotations.py:600:41: error[invalid-type-form] Variable of type `UnionType` is not allowed in a type expression
+- tanjun/annotations.py:615:41: error[invalid-type-form] Variable of type `UnionType` is not allowed in a type expression
+- tanjun/annotations.py:629:41: error[invalid-type-form] Variable of type `UnionType` is not allowed in a type expression
+- tanjun/annotations.py:2263:21: error[invalid-type-form] Variable of type `UnionType` is not allowed in a type expression
+- tanjun/annotations.py:2263:62: error[invalid-type-form] Variable of type `UnionType` is not allowed in a type expression
++ tanjun/annotations.py:2268:56: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `type[PartialChannel] | int`, found `object`
++ tanjun/annotations.py:2268:56: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `type[PartialChannel] | int`, found `object`
+- tanjun/annotations.py:2276:38: error[invalid-type-form] Variable of type `UnionType` is not allowed in a type expression
+- tanjun/annotations.py:2276:72: error[invalid-type-form] Variable of type `UnionType` is not allowed in a type expression
+- tanjun/annotations.py:2289:53: error[invalid-type-form] Variable of type `UnionType` is not allowed in a type expression
+- tanjun/annotations.py:2371:50: error[invalid-type-form] Variable of type `UnionType` is not allowed in a type expression
+- Found 154 diagnostics
++ Found 145 diagnostics
+
+trio (https://github.com/python-trio/trio)
+- src/trio/_core/_traps.py:67:10: error[invalid-type-form] Variable of type `UnionType` is not allowed in a type expression
+- src/trio/_core/_traps.py:68:16: error[invalid-type-form] Variable of type `UnionType` is not allowed in a type expression
+- src/trio/_core/_traps.py:75:16: error[invalid-type-form] Variable of type `UnionType` is not allowed in a type expression
+- src/trio/_tests/test_path.py:56:23: error[invalid-type-form] Variable of type `UnionType` is not allowed in a type expression
+- src/trio/_tests/test_path.py:56:39: error[invalid-type-form] Variable of type `UnionType` is not allowed in a type expression
+- src/trio/_tests/test_path.py:64:27: error[invalid-type-form] Variable of type `UnionType` is not allowed in a type expression
+- src/trio/_tests/test_path.py:64:50: error[invalid-type-form] Variable of type `UnionType` is not allowed in a type expression
+- src/trio/_tests/test_path.py:82:27: error[invalid-type-form] Variable of type `UnionType` is not allowed in a type expression
+- src/trio/_tests/test_path.py:82:42: error[invalid-type-form] Variable of type `UnionType` is not allowed in a type expression
+- src/trio/_tests/test_path.py:91:27: error[invalid-type-form] Variable of type `UnionType` is not allowed in a type expression
+- src/trio/_tests/test_path.py:91:49: error[invalid-type-form] Variable of type `UnionType` is not allowed in a type expression
+- src/trio/_tests/test_path.py:94:21: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- src/trio/_tests/test_path.py:106:12: error[invalid-type-form] Variable of type `UnionType` is not allowed in a type expression
+- src/trio/_tests/test_path.py:107:12: error[invalid-type-form] Variable of type `UnionType` is not allowed in a type expression
+- Found 575 diagnostics
++ Found 561 diagnostics
+
+django-stubs (https://github.com/typeddjango/django-stubs)
+- django-stubs/test/utils.pyi:23:28: error[invalid-type-form] Variable of type `_SpecialForm` is not allowed in a type expression
+- Found 475 diagnostics
++ Found 474 diagnostics
+
+bokeh (https://github.com/bokeh/bokeh)
+- src/bokeh/embed/standalone.py:137:49: error[invalid-type-form] Variable of type `UnionType` is not allowed in a type expression
+- src/bokeh/embed/standalone.py:140:12: error[invalid-type-form] Variable of type `UnionType` is not allowed in a type expression
+- src/bokeh/embed/standalone.py:144:49: error[invalid-type-form] Variable of type `UnionType` is not allowed in a type expression
+- src/bokeh/embed/standalone.py:147:12: error[invalid-type-form] Variable of type `UnionType` is not allowed in a type expression
+- src/bokeh/embed/standalone.py:151:49: error[invalid-type-form] Variable of type `UnionType` is not allowed in a type expression
+- src/bokeh/embed/standalone.py:154:12: error[invalid-type-form] Variable of type `UnionType` is not allowed in a type expression
+- src/bokeh/embed/standalone.py:157:52: error[invalid-type-form] Variable of type `UnionType` is not allowed in a type expression
+- src/bokeh/embed/standalone.py:299:22: error[invalid-type-form] Variable of type `UnionType` is not allowed in a type expression
+- src/bokeh/embed/standalone.py:370:62: error[invalid-type-form] Variable of type `UnionType` is not allowed in a type expression
+- Found 655 diagnostics
++ Found 646 diagnostics
+
+pandas-stubs (https://github.com/pandas-dev/pandas-stubs)
+- pandas-stubs/_typing.pyi:507:49: error[invalid-type-form] Variable of type `UnionType` is not allowed in a type expression
+- pandas-stubs/_typing.pyi:527:56: error[invalid-type-form] Variable of type `UnionType` is not allowed in a type expression
+- pandas-stubs/_typing.pyi:527:64: error[invalid-type-form] Variable of type `UnionType` is not allowed in a type expression
+- pandas-stubs/_typing.pyi:927:26: error[invalid-type-form] Variable of type `UnionType` is not allowed in a type expression
+- pandas-stubs/_typing.pyi:929:26: error[invalid-type-form] Variable of type `UnionType` is not allowed in a type expression
+- pandas-stubs/_typing.pyi:930:40: error[invalid-type-form] Variable of type `UnionType` is not allowed in a type expression
+- pandas-stubs/_typing.pyi:932:28: error[invalid-type-form] Variable of type `UnionType` is not allowed in a type expression
+- pandas-stubs/_typing.pyi:934:36: error[invalid-type-form] Variable of type `UnionType` is not allowed in a type expression
+- pandas-stubs/_typing.pyi:935:26: error[invalid-type-form] Variable of type `UnionType` is not allowed in a type expression
+- pandas-stubs/_typing.pyi:948:5: error[invalid-type-form] Variable of type `UnionType` is not allowed in a type expression
++ pandas-stubs/core/series.pyi:338:57: error[invalid-argument-type] Argument to class `IndexOpsMixin` is incorrect: Expected `str | bytes | int | ... omitted 12 union elements`, found `typing.TypeVar`
+- Found 5973 diagnostics
++ Found 5964 diagnostics
+
+pandas (https://github.com/pandas-dev/pandas)
+- pandas/_typing.py:208:44: error[invalid-type-form] Variable of type `UnionType` is not allowed in a type expression
+- Found 3357 diagnostics
++ Found 3356 diagnostics
+
+static-frame (https://github.com/static-frame/static-frame)
+- static_frame/core/container_util.py:502:17: error[invalid-argument-type] Argument to function `to_index` is incorrect: Expected `Iterable[Hashable]`, found `(Iterable[Hashable] &amp; ~IndexAutoFactory) | (@Todo &amp; ~IndexAutoFactory) | None`
++ static_frame/core/container_util.py:502:17: error[invalid-argument-type] Argument to function `to_index` is incorrect: Expected `Iterable[Hashable]`, found `(Iterable[Hashable] &amp; ~IndexAutoFactory) | type[IndexAutoFactory] | None`
+- static_frame/core/container_util.py:538:77: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ static_frame/core/index.py:995:32: error[unsupported-operator] Operator `in` is not supported for types `Any` and `type[IndexAutoFactory]`, in comparing `Any` with `(@Todo &amp; ~(() -&gt; object)) | (Iterable[Hashable] &amp; ~(() -&gt; object)) | (type[IndexAutoFactory] &amp; ~(() -&gt; object))`
+- static_frame/core/index_hierarchy.py:1879:77: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- static_frame/core/index_hierarchy.py:1901:49: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- static_frame/core/series.py:1240:33: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 1913 diagnostics
++ Found 1910 diagnostics
+
+zulip (https://github.com/zulip/zulip)
+- analytics/views/stats.py:349:30: error[invalid-type-form] Variable of type `UnionType` is not allowed in a type expression
+- analytics/views/stats.py:363:15: error[invalid-type-form] Variable of type `UnionType` is not allowed in a type expression
+- analytics/views/stats.py:363:34: error[invalid-type-form] Variable of type `UnionType` is not allowed in a type expression
+- analytics/views/stats.py:363:70: error[invalid-type-form] Variable of type `UnionType` is not allowed in a type expression
+- Found 3320 diagnostics
++ Found 3316 diagnostics
+
+pydantic (https://github.com/pydantic/pydantic)
+- pydantic/v1/class_validators.py:356:74: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ pydantic/v1/config.py:183:12: error[invalid-return-type] Return type does not match returned value: expected `type[BaseConfig]`, found `type`
+- pydantic/v1/error_wrappers.py:61:49: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- pydantic/v1/error_wrappers.py:63:68: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ pydantic/v1/main.py:1037:55: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `type[BaseModel] | type[Dataclass]`
+- Found 4820 diagnostics
++ Found 4819 diagnostics
+
+
+</code></pre>
+</details>
+
+<p>No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-11-13 09:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-11-13 09:54</div>
+            <div class="timeline-body"><!-- generated-comment ty ecosystem-analyzer -->
+
+<h2><code>ecosystem-analyzer</code> results</h2>
+<p>| Lint rule | Added | Removed | Changed |
+|-----------|------:|--------:|--------:|
+| <code>invalid-type-form</code> | 1 | 57 | 0 |
+| <code>unused-ignore-comment</code> | 0 | 10 | 0 |
+| <code>unsupported-operator</code> | 1 | 4 | 0 |
+| <code>invalid-argument-type</code> | 3 | 0 | 1 |
+| <code>unknown-argument</code> | 2 | 0 | 0 |
+| <code>invalid-parameter-default</code> | 1 | 0 | 0 |
+| <code>invalid-return-type</code> | 1 | 0 | 0 |
+| <code>unresolved-attribute</code> | 1 | 0 | 0 |
+| <strong>Total</strong> | <strong>10</strong> | <strong>71</strong> | <strong>1</strong> |</p>
+<p><strong><a href="https://david-implicit-type-aliases-etn5.ecosystem-663.pages.dev/diff">Full report with detailed diff</a></strong> (<a href="https://david-implicit-type-aliases-etn5.ecosystem-663.pages.dev/timing">timing results</a>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @sharkdp on 2025-11-13 15:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-11-13 15:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @sharkdp on 2025-11-13 15:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-11-13 15:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[ty] Support `type[…]` in implicit type aliases" to "[ty] Support `type[…]` and `Type[…]` in implicit type aliases" by @sharkdp on 2025-11-13 15:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-11-13 15:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types/class_base.rs</code>:184 on 2025-11-13 15:50</div>
+            <div class="timeline-body"><p>This is mostly based on the TODO comment in <code>mdtest/type_of/basic.md</code>. Do we need to preserve more information here? I don't really understand what <code>class Foo(type[int]): ...</code> tries to achieve.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @sharkdp on 2025-11-13 15:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @sharkdp on 2025-11-13 15:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @sharkdp on 2025-11-13 15:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @sharkdp on 2025-11-13 15:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-11-13 15:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/class_base.rs</code>:184 on 2025-11-13 15:57</div>
+            <div class="timeline-body"><blockquote>
+<p>I don't really understand what <code>class Foo(type[int]): ...</code> tries to achieve.</p>
+</blockquote>
+<p>Nor do I. I think this is fine.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/infer/builder.rs</code>:10632 on 2025-11-13 16:15</div>
+            <div class="timeline-body"><p>this is fine for now, but note that it results in us being too permissive when parsing the argument to <code>type[]</code>. For example, on your branch:</p>
+<pre><code class="language-py">from typing import Literal
+
+X = type[Literal[42]]  # no error here, but there should be?
+
+def f(
+    x: type[Literal[42]],  # error: [invalid-type-form]
+    y: X  # no error here either...
+):
+    reveal_type(x)  # revealed: @Todo(unsupported nested subscript in type[X])
+    reveal_type(y)  # revealed: `&lt;class 'int'&gt;`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-11-13 16:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-11-13 18:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types/infer/builder.rs</code>:10632 on 2025-11-13 18:02</div>
+            <div class="timeline-body"><p>Thanks. I'll add a test with a TODO in my next PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @sharkdp on 2025-11-13 18:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-11-13 18:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-11-13 18:02</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:54:20 UTC
+    </footer>
+</body>
+</html>

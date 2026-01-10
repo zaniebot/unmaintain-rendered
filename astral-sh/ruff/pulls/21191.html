@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FURB142: Parenthesize generator expression arguments in fixer to preserve scoping - astral-sh/ruff #21191</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>FURB142: Parenthesize generator expression arguments in fixer to preserve scoping</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21191">#21191</a>
+        opened by <a href="https://github.com/sohamukute">@sohamukute</a>
+        on 2025-11-01 20:12
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/sohamukute">@sohamukute</a> on 2025-11-01 20:12</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Fixes a bug in the FURB142 (for-loop-set-mutations) fixer where an unparenthesized generator expression used as the <code>.add(...)</code> argument would be inlined into the rewritten comprehension without parentheses, changing variable scoping and causing a runtime NameError.</p>
+<p>Before (problematic after fix):</p>
+<pre><code class="language-python">s = set()
+for x in (&quot;abc&quot;, &quot;def&quot;):
+    s.add(c for c in x)
+# fixed to:
+s.update(c for c in x for x in (&quot;abc&quot;, &quot;def&quot;))  # NameError: x
+</code></pre>
+<p>After (correct, parenthesized):</p>
+<pre><code class="language-python">s = set()
+for x in (&quot;abc&quot;, &quot;def&quot;):
+    s.add(c for c in x)
+# fixed to:
+s.update((c for c in x) for x in (&quot;abc&quot;, &quot;def&quot;))
+</code></pre>
+<p>Implementation details:</p>
+<ul>
+<li>In the “comprehension” rewrite path of FURB142, detect <code>Expr::Generator</code> arguments that are not already parenthesized and wrap them with parentheses in the generated replacement string.</li>
+<li>Leaves already-parenthesized generator expressions unchanged.</li>
+<li>Leaves non-generator arguments unchanged.</li>
+<li>Maintains existing applicability handling and comment-safety behavior.</li>
+</ul>
+<p>References:</p>
+<ul>
+<li>Fixes #21098</li>
+<li>Rule docs: FURB142 (for-loop-set-mutations)</li>
+</ul>
+<h2>Test Plan</h2>
+<ul>
+<li><p>Repro the original failing case and confirm the new fix:</p>
+<ol>
+<li><p>Create the file:</p>
+<pre><code class="language-python">s = set()
+for x in (&quot;abc&quot;, &quot;def&quot;):
+    s.add(c for c in x)
+</code></pre>
+</li>
+<li><p>Verify Ruff flags it:</p>
+<pre><code>cargo run -p ruff_cli -- check --isolated --select FURB142 --preview furb142.py
+</code></pre>
+</li>
+<li><p>Apply the fix:</p>
+<pre><code>cargo run -p ruff_cli -- check --isolated --select FURB142 --preview --fix furb142.py
+</code></pre>
+</li>
+<li><p>Inspect output (should contain parentheses):</p>
+<pre><code>s.update((c for c in x) for x in (&quot;abc&quot;, &quot;def&quot;))
+</code></pre>
+</li>
+<li><p>Run the file:</p>
+<pre><code>python furb142.py
+</code></pre>
+<p>Expect no NameError.</p>
+</li>
+</ol>
+</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-11-06 15:47</div>
+            <div class="timeline-body"><p>Thanks! Could you add some <a href="https://github.com/astral-sh/ruff/blob/main/CONTRIBUTING.md#rule-testing-fixtures-and-snapshots">snapshot tests</a> too? Basically just including your manual tests in the repo to avoid future regressions.</p>
+<p>The code looks good to me otherwise.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-11-06 15:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @ntBre on 2025-11-06 15:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-11-06 15:58</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sohamukute">@sohamukute</a> on 2025-11-07 19:48</div>
+            <div class="timeline-body"><blockquote>
+<p>Thanks! Could you add some <a href="https://github.com/astral-sh/ruff/blob/main/CONTRIBUTING.md#rule-testing-fixtures-and-snapshots">snapshot tests</a> too? Basically just including your manual tests in the repo to avoid future regressions.</p>
+<p>The code looks good to me otherwise.</p>
+</blockquote>
+<p>okay will add them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> requested changes on 2025-11-10 12:10</div>
+            <div class="timeline-body"><p>Requesting changes to make it clear that this PR has unaddressed feedback and isn't waiting for a review.</p>
+<p>Once you've updated the PR, please re-request review.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:54:19 UTC
+    </footer>
+</body>
+</html>

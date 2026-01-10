@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Support legacy `typing` special forms in implicit type aliases - astral-sh/ruff #21433</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Support legacy <code>typing</code> special forms in implicit type aliases</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21433">#21433</a>
+        opened by <a href="https://github.com/sharkdp">@sharkdp</a>
+        on 2025-11-13 18:50
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-11-13 18:50</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Support various legacy <code>typing</code> special forms (<code>List</code>, <code>Dict</code>, …) in implicit type aliases.</p>
+<h2>Ecosystem impact</h2>
+<p>A lot of true positives (e.g. on <code>alerta</code>)!</p>
+<h2>Test Plan</h2>
+<p>New Markdown tests</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @sharkdp on 2025-11-13 18:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-11-13 18:52</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance">typing conformance tests</a></h2>
+<details>
+<summary>Changes were detected when running ty on typing conformance tests</summary>
+
+<pre><code class="language-diff">--- old-output.txt	2025-11-13 18:52:28.399550432 +0000
++++ new-output.txt	2025-11-13 18:52:31.878582783 +0000
+@@ -576,7 +576,6 @@
+ generics_syntax_scoping.py:124:13: error[type-assertion-failure] Argument does not have asserted type `int | float | complex`
+ generics_type_erasure.py:38:16: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `int | None`, found `Literal[&quot;&quot;]`
+ generics_type_erasure.py:40:16: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `str | None`, found `Literal[0]`
+-generics_type_erasure.py:56:1: error[type-assertion-failure] Argument does not have asserted type `bytes`
+ generics_typevartuple_args.py:16:34: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `tuple[@Todo(PEP 646), ...]`
+ generics_typevartuple_args.py:20:1: error[type-assertion-failure] Argument does not have asserted type `tuple[int, str]`
+ generics_typevartuple_args.py:27:77: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `tuple[@Todo(PEP 646), ...]`
+@@ -1000,5 +999,5 @@
+ typeddicts_usage.py:28:17: error[missing-typed-dict-key] Missing required key 'name' in TypedDict `Movie` constructor
+ typeddicts_usage.py:28:18: error[invalid-key] Invalid key for TypedDict `Movie`: Unknown key &quot;title&quot;
+ typeddicts_usage.py:40:24: error[invalid-type-form] The special form `typing.TypedDict` is not allowed in type expressions. Did you mean to use a concrete TypedDict or `collections.abc.Mapping[str, object]` instead?
+-Found 1002 diagnostics
++Found 1001 diagnostics
+ WARN A fatal error occurred while checking some files. Not all project files were analyzed. See the diagnostics list above for details.
+
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-11-13 18:53</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">paroxython (https://github.com/laowantong/paroxython)
++ paroxython/make_db.py:91:13: error[invalid-assignment] Invalid subscript assignment with key of type `ProgramPath` and value of type `dict[Unknown | str, Unknown | Source | dict[LabelName, list[tuple[int, int]]] | dict[TaxonName, list[tuple[int, int]]]]` on object of type `dict[ProgramPath, ProgramRecord]`
++ paroxython/recommend_programs.py:263:35: error[invalid-argument-type] Argument to function `cost_bucket` is incorrect: Expected `int`, found `Unknown | int | float`
+- Found 6 diagnostics
++ Found 8 diagnostics
+
+kornia (https://github.com/kornia/kornia)
++ kornia/nerf/data_utils.py:100:23: warning[possibly-missing-attribute] Attribute `to` may be missing on object of type `Unknown | str`
+- Found 763 diagnostics
++ Found 764 diagnostics
+
+spack (https://github.com/spack/spack)
++ lib/spack/spack/config.py:1651:18: error[invalid-argument-type] Argument to function `validate` is incorrect: Expected `dict[str, Any]`, found `None | dict[Unknown | str, Unknown | None]`
+- lib/spack/spack/vendor/attr/__init__.pyi:55:17: error[unresolved-reference] Name `Attribute` used when not defined
+- lib/spack/spack/vendor/attr/__init__.pyi:55:40: error[unresolved-reference] Name `Attribute` used when not defined
+- Found 7921 diagnostics
++ Found 7920 diagnostics
+
+pip (https://github.com/pypa/pip)
++ src/pip/_vendor/pkg_resources/__init__.py:1120:33: error[invalid-argument-type] Argument to bound method `evaluate` is incorrect: Expected `dict[str, str] | None`, found `dict[Unknown | str, Unknown | str | None]`
+- Found 584 diagnostics
++ Found 585 diagnostics
+
+pyjwt (https://github.com/jpadilla/pyjwt)
++ jwt/algorithms.py:695:34: error[invalid-argument-type] Argument to function `base64url_decode` is incorrect: Expected `bytes | str`, found `Any | None`
++ jwt/algorithms.py:696:34: error[invalid-argument-type] Argument to function `base64url_decode` is incorrect: Expected `bytes | str`, found `Any | None`
++ jwt/algorithms.py:741:34: error[invalid-argument-type] Argument to function `base64url_decode` is incorrect: Expected `bytes | str`, found `Any | None`
++ jwt/algorithms.py:934:34: error[invalid-argument-type] Argument to function `base64url_decode` is incorrect: Expected `bytes | str`, found `Any | None`
++ jwt/algorithms.py:941:38: error[invalid-argument-type] Argument to function `base64url_decode` is incorrect: Expected `bytes | str`, found `Any | None`
+- Found 39 diagnostics
++ Found 44 diagnostics
+
+paasta (https://github.com/yelp/paasta)
++ paasta_tools/utils.py:3588:16: error[invalid-return-type] Return type does not match returned value: expected `BranchDictV1`, found `Unknown | BranchDictV1 | dict[Unknown, Unknown]`
+- Found 990 diagnostics
++ Found 991 diagnostics
+
+graphql-core (https://github.com/graphql-python/graphql-core)
++ src/graphql/type/schema.py:237:30: error[unresolved-attribute] Object of type `GraphQLNamedType &amp; ~AlwaysFalsy` has no attribute `interfaces`
++ src/graphql/type/schema.py:246:59: error[invalid-argument-type] Argument to bound method `append` is incorrect: Expected `GraphQLInterfaceType`, found `GraphQLNamedType &amp; ~AlwaysFalsy`
++ src/graphql/type/schema.py:249:30: error[unresolved-attribute] Object of type `GraphQLNamedType &amp; ~AlwaysFalsy` has no attribute `interfaces`
++ src/graphql/type/schema.py:258:56: error[invalid-argument-type] Argument to bound method `append` is incorrect: Expected `GraphQLObjectType`, found `GraphQLNamedType &amp; ~AlwaysFalsy`
++ src/graphql/type/validate.py:214:38: error[invalid-argument-type] Argument to bound method `validate_fields` is incorrect: Expected `GraphQLObjectType | GraphQLInterfaceType`, found `GraphQLNamedType | Unknown`
++ src/graphql/type/validate.py:217:42: error[invalid-argument-type] Argument to bound method `validate_interfaces` is incorrect: Expected `GraphQLObjectType | GraphQLInterfaceType`, found `GraphQLNamedType | Unknown`
++ src/graphql/type/validate.py:220:38: error[invalid-argument-type] Argument to bound method `validate_fields` is incorrect: Expected `GraphQLObjectType | GraphQLInterfaceType`, found `GraphQLNamedType | Unknown`
++ src/graphql/type/validate.py:223:42: error[invalid-argument-type] Argument to bound method `validate_interfaces` is incorrect: Expected `GraphQLObjectType | GraphQLInterfaceType`, found `GraphQLNamedType | Unknown`
++ src/graphql/type/validate.py:226:45: error[invalid-argument-type] Argument to bound method `validate_union_members` is incorrect: Expected `GraphQLUnionType`, found `GraphQLNamedType | Unknown`
++ src/graphql/type/validate.py:229:43: error[invalid-argument-type] Argument to bound method `validate_enum_values` is incorrect: Expected `GraphQLEnumType`, found `GraphQLNamedType | Unknown`
++ src/graphql/type/validate.py:232:44: error[invalid-argument-type] Argument to bound method `validate_input_fields` is incorrect: Expected `GraphQLInputObjectType`, found `GraphQLNamedType | Unknown`
++ src/graphql/type/validate.py:235:53: error[invalid-argument-type] Argument to bound method `__call__` is incorrect: Expected `GraphQLInputObjectType`, found `GraphQLNamedType | Unknown`
+- src/graphql/validation/rules/unique_enum_value_names.py:39:62: warning[possibly-missing-attribute] Attribute `values` may be missing on object of type `Unknown | None`
++ src/graphql/validation/rules/unique_enum_value_names.py:39:62: warning[possibly-missing-attribute] Attribute `values` may be missing on object of type `Unknown | GraphQLNamedType | None`
+- Found 394 diagnostics
++ Found 406 diagnostics
+
+alerta (https://github.com/alerta/alerta)
++ alerta/models/alert.py:98:13: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `str`, found `Any | None`
++ alerta/models/alert.py:99:13: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `str`, found `Any | None`
++ alerta/models/customer.py:23:13: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `str`, found `Any | None`
++ alerta/models/customer.py:24:13: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `str`, found `Any | None`
++ alerta/models/group.py:84:13: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `str`, found `Any | None`
++ alerta/models/group.py:85:13: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `str`, found `Any | None`
++ alerta/models/heartbeat.py:85:13: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `str`, found `Any | None`
++ alerta/models/heartbeat.py:89:13: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `int`, found `Any | None`
++ alerta/models/heartbeat.py:90:13: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `str`, found `Any | None`
++ alerta/models/key.py:51:13: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `str`, found `Any | None`
++ alerta/models/key.py:53:13: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `str`, found `Any | None`
++ alerta/models/key.py:55:13: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `str`, found `Any | None`
++ alerta/models/note.py:34:13: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `str`, found `Any | None`
++ alerta/models/note.py:35:13: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `str`, found `Any | None`
++ alerta/models/note.py:37:13: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `str`, found `Any | None`
++ alerta/models/permission.py:29:13: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `str`, found `Any | None`
++ alerta/models/user.py:66:13: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `str`, found `Any | None`
++ alerta/models/user.py:68:13: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `str`, found `Any | None`
++ alerta/models/user.py:72:13: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `str`, found `Any | None`
+- Found 526 diagnostics
++ Found 545 diagnostics
+
+sockeye (https://github.com/awslabs/sockeye)
+- sockeye/output_handler.py:254:80: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `Iterable[Unknown]`, found `list[Any] | None`
++ sockeye/output_handler.py:254:80: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `Iterable[Unknown | list[str]]`, found `list[list[str]] | None`
+- sockeye/train.py:445:16: error[invalid-return-type] Return type does not match returned value: expected `tuple[BaseParallelSampleIter, BaseParallelSampleIter, DataConfig, list[Any], list[Any]]`, found `tuple[BaseParallelSampleIter, BaseParallelSampleIter | None, DataConfig, list[Any], list[Any]]`
++ sockeye/train.py:445:16: error[invalid-return-type] Return type does not match returned value: expected `tuple[BaseParallelSampleIter, BaseParallelSampleIter, DataConfig, list[dict[str, int]], list[dict[str, int]]]`, found `tuple[BaseParallelSampleIter, BaseParallelSampleIter | None, DataConfig, list[dict[str, int]], list[dict[str, int]]]`
+- test/unit/test_inference.py:53:51: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[Any]`, found `None`
++ test/unit/test_inference.py:53:51: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[dict[str, int]]`, found `None`
+- test/unit/test_inference.py:54:51: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[Any]`, found `None`
++ test/unit/test_inference.py:54:51: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[dict[str, int]]`, found `None`
+- test/unit/test_inference.py:128:23: error[not-iterable] Object of type `list[Any] | None` may not be iterable
++ test/unit/test_inference.py:128:23: error[not-iterable] Object of type `list[list[str]] | None` may not be iterable
+- test/unit/test_inference.py:163:23: error[not-iterable] Object of type `list[Any] | None` may not be iterable
++ test/unit/test_inference.py:163:23: error[not-iterable] Object of type `list[list[str]] | None` may not be iterable
+- test/unit/test_inference.py:177:114: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `Iterable[Any]`, found `list[Any] | None`
++ test/unit/test_inference.py:177:114: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `Iterable[list[str]]`, found `list[list[str]] | None`
+- test/unit/test_inference.py:244:20: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `list[Any] | None`
++ test/unit/test_inference.py:244:20: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `list[list[str]] | None`
+- test/unit/test_inference.py:310:20: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `list[Any] | None`
++ test/unit/test_inference.py:310:20: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `list[list[str]] | None`
+- test/unit/test_inference.py:367:20: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `list[Any] | None`
++ test/unit/test_inference.py:367:20: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `list[list[str]] | None`
++ test/unit/test_output_handler.py:23:82: error[invalid-argument-type] Argument is incorrect: Expected `list[str]`, found `None`
++ test/unit/test_output_handler.py:29:74: error[invalid-argument-type] Argument is incorrect: Expected `list[str]`, found `None`
+- Found 407 diagnostics
++ Found 409 diagnostics
+
+beartype (https://github.com/beartype/beartype)
+- beartype/_check/convert/_reduce/redmain.py:544:75: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- beartype/_check/convert/_reduce/redmain.py:620:79: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- beartype/_check/forward/fwdresolve.py:573:5: warning[possibly-missing-attribute] Attribute `update` may be missing on object of type `Any | None | BeartypeForwardScope`
+- beartype/_check/forward/fwdresolve.py:574:5: warning[possibly-missing-attribute] Attribute `update` may be missing on object of type `Any | None | BeartypeForwardScope`
+- beartype/_check/forward/reference/fwdrefabc.py:172:47: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ beartype/_check/metadata/hint/hintsane.py:65:28: error[invalid-type-form] Variable of type `_SpecialForm` is not allowed in a type expression
+- beartype/_check/metadata/metadecor.py:333:37: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- beartype/_data/cls/datacls.py:111:50: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- beartype/_data/cls/datacls.py:120:39: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- beartype/_data/hint/datahintrepr.py:241:61: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- beartype/_data/hint/datahintrepr.py:345:55: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ beartype/_data/typing/datatypingport.py:200:28: error[invalid-type-form] Variable of type `_SpecialForm` is not allowed in a type expression
++ beartype/_data/typing/datatypingport.py:214:18: error[invalid-type-form] Variable of type `_SpecialForm` is not allowed in a type expression
++ beartype/_data/typing/datatypingport.py:228:16: error[invalid-type-form] Variable of type `_SpecialForm` is not allowed in a type expression
++ beartype/_data/typing/datatypingport.py:235:27: error[invalid-type-form] Variable of type `_SpecialForm` is not allowed in a type expression
++ beartype/_data/typing/datatypingport.py:256:37: error[invalid-type-form] Variable of type `_SpecialForm` is not allowed in a type expression
++ beartype/_data/typing/datatypingport.py:284:71: error[invalid-type-form] Variable of type `_SpecialForm` is not allowed in a type expression
+- beartype/_decor/_nontype/_wrap/_wrapargs.py:122:38: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- beartype/_decor/_nontype/_wrap/_wrapreturn.py:112:38: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- beartype/_util/cls/utilclsget.py:167:26: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- beartype/_util/hint/pep/proposal/pep484585/generic/pep484585genget.py:677:39: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- beartype/bite/collection/infercollectionitems.py:317:38: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- beartype/vale/_core/_valecorebinary.py:96:57: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 507 diagnostics
++ Found 498 diagnostics
+
+dedupe (https://github.com/dedupeio/dedupe)
+- dedupe/labeler.py:451:41: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- dedupe/labeler.py:452:29: error[invalid-argument-type] Argument to bound method `mark` is incorrect: Expected `Iterable[Literal[0, 1]]`, found `list[Unknown | int]`
+- dedupe/labeler.py:487:41: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- dedupe/labeler.py:488:29: error[invalid-argument-type] Argument to bound method `mark` is incorrect: Expected `Iterable[Literal[0, 1]]`, found `list[Unknown | int]`
+- Found 56 diagnostics
++ Found 52 diagnostics
+
+aiohttp-devtools (https://github.com/aio-libs/aiohttp-devtools)
+- tests/test_runserver_serve.py:143:35: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- tests/test_runserver_serve.py:157:35: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- tests/test_runserver_serve.py:169:35: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 43 diagnostics
++ Found 40 diagnostics
+
+meson (https://github.com/mesonbuild/meson)
++ mesonbuild/backend/ninjabackend.py:2476:47: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[NinjaCommandArg | str]`, found `list[str]`
++ mesonbuild/backend/ninjabackend.py:2483:47: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[NinjaCommandArg | str]`, found `list[str]`
++ mesonbuild/backend/ninjabackend.py:2509:39: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[NinjaCommandArg | str]`, found `list[str]`
++ mesonbuild/backend/ninjabackend.py:2628:39: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[NinjaCommandArg | str]`, found `list[str]`
++ mesonbuild/backend/ninjabackend.py:2638:39: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[NinjaCommandArg | str]`, found `list[str]`
++ mesonbuild/backend/ninjabackend.py:2683:39: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[NinjaCommandArg | str]`, found `list[str]`
++ mesonbuild/interpreter/interpreter.py:398:9: error[no-matching-overload] No overload of bound method `update` matches arguments
++ mesonbuild/interpreter/interpreter.py:450:9: error[no-matching-overload] No overload of bound method `update` matches arguments
+- mesonbuild/interpreter/interpreter.py:666:16: error[invalid-return-type] Return type does not match returned value: expected `list[File]`, found `list[File | @Todo | BuildTarget | ExtractedObjects | StructuredSources]`
++ mesonbuild/interpreter/interpreter.py:666:16: error[no-matching-overload] No overload of bound method `source_strings_to_files` matches arguments
+- mesonbuild/interpreter/interpreter.py:1246:22: warning[possibly-missing-attribute] Attribute `absolute_path` may be missing on object of type `File | @Todo | BuildTarget | ExtractedObjects | StructuredSources`
++ mesonbuild/interpreter/interpreter.py:1245:18: error[no-matching-overload] No overload of bound method `source_strings_to_files` matches arguments
++ mesonbuild/interpreter/interpreter.py:3433:19: error[unsupported-operator] Operator `+` is unsupported between objects of type `list[str | File | @Todo | ... omitted 3 union elements]` and `list[str | File | @Todo | ... omitted 3 union elements] | str | File | ... omitted 3 union elements`
+- mesonbuild/interpreter/interpreter.py:3456:23: error[invalid-assignment] Object of type `tuple[list[File], list[str]]` is not assignable to `tuple[str, Any]`
++ mesonbuild/interpreter/interpreter.py:3456:23: error[invalid-assignment] Object of type `tuple[list[File], list[str]]` is not assignable to `tuple[str, list[str | File | @Todo | ... omitted 3 union elements]]`
+- mesonbuild/interpreter/interpreter.py:3465:23: error[invalid-assignment] Object of type `tuple[list[File], list[str]]` is not assignable to `tuple[str, Any]`
++ mesonbuild/interpreter/interpreter.py:3465:23: error[invalid-assignment] Object of type `tuple[list[File], list[str]]` is not assignable to `tuple[str, list[str | File | @Todo | ... omitted 3 union elements]]`
++ mesonbuild/interpreter/type_checking.py:252:37: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `dict[str, str | list[str]] | None`, found `(EnvironmentVariables &amp; Top[dict[Unknown, Unknown]]) | dict[str, str | list[str]]`
+- mesonbuild/interpreterbase/decorators.py:45:12: error[invalid-return-type] Return type does not match returned value: expected `tuple[BaseNode, list[@Todo], Any, SubProject]`, found `tuple[Any, None | Any, None | Any, Any]`
++ mesonbuild/interpreterbase/decorators.py:45:12: error[invalid-return-type] Return type does not match returned value: expected `tuple[BaseNode, list[@Todo], Divergent, SubProject]`, found `tuple[Any, None | Any, None | Any, Any]`
++ mesonbuild/interpreterbase/interpreterbase.py:569:28: error[invalid-argument-type] Argument is incorrect: Expected `typing.TypeVar`, found `(@Todo &amp; HoldableObject) | (InterpreterObject &amp; HoldableObject) | (@Todo &amp; int) | ... omitted 7 union elements`
++ mesonbuild/interpreterbase/interpreterbase.py:573:32: error[invalid-argument-type] Argument is incorrect: Expected `typing.TypeVar`, found `(@Todo &amp; HoldableObject) | (InterpreterObject &amp; HoldableObject) | (@Todo &amp; int) | ... omitted 7 union elements`
+- Found 1726 diagnostics
++ Found 1738 diagnostics
+
+strawberry (https://github.com/strawberry-graphql/strawberry)
+- strawberry/permission.py:103:13: warning[possibly-missing-attribute] Attribute `update` may be missing on object of type `Any | None`
+- strawberry/schema/schema.py:974:79: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- strawberry/schema/schema.py:975:77: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 384 diagnostics
++ Found 381 diagnostics
+
+scikit-build-core (https://github.com/scikit-build/scikit-build-core)
++ src/scikit_build_core/build/wheel.py:98:20: error[no-matching-overload] No overload of bound method `__init__` matches arguments
+- Found 44 diagnostics
++ Found 45 diagnostics
+
+dd-trace-py (https://github.com/DataDog/dd-trace-py)
+- ddtrace/appsec/_iast/sampling/vulnerability_detection.py:97:59: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- ddtrace/llmobs/_experiment.py:399:53: warning[possibly-missing-attribute] Attribute `__name__` may be missing on object of type `Unknown | ((Any, Any | None, /) -&gt; str | int | float | ... omitted 3 union elements)`
++ ddtrace/llmobs/_experiment.py:399:53: warning[possibly-missing-attribute] Attribute `__name__` may be missing on object of type `Unknown | ((dict[str, Divergent], dict[str, Divergent] | None, /) -&gt; str | int | float | ... omitted 3 union elements)`
+- ddtrace/llmobs/utils.py:162:38: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ tests/ci_visibility/api_client/test_ci_visibility_api_client.py:653:50: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `dict[str, str | dict[str, str]]`, found `Unknown | str | ITR_SKIPPING_LEVEL | None | float`
++ tests/debugging/probe/test_remoteconfig.py:242:13: error[invalid-argument-type] Argument to bound method `append_and_publish` is incorrect: Expected `dict[str, Any] | None`, found `Literal[False]`
++ tests/llmobs/test_utils.py:218:19: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[dict[str, str | int | float]] | dict[str, str | int | float] | str`, found `Literal[123]`
++ tests/llmobs/test_utils.py:220:19: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[dict[str, str | int | float]] | dict[str, str | int | float] | str`, found `object`
++ tests/llmobs/test_utils.py:222:19: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[dict[str, str | int | float]] | dict[str, str | int | float] | str`, found `None`
++ tests/llmobs/test_utils.py:227:19: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[dict[str, str | int | float]] | dict[str, str | int | float] | str`, found `list[Unknown | dict[Unknown | str, Unknown | None]]`
++ tests/llmobs/test_utils.py:236:19: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[dict[str, str | int | float]] | dict[str, str | int | float] | str`, found `list[Unknown | dict[Unknown | str, Unknown | list[Unknown | int]]]`
++ tests/llmobs/test_utils.py:240:19: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[dict[str, str | int | float]] | dict[str, str | int | float] | str`, found `dict[Unknown | str, Unknown | str | dict[Unknown | str, Unknown | str]]`
++ tests/tracer/utils_botocore/test_span_pointers.py:153:17: error[invalid-argument-type] Argument to function `_aws_dynamodb_item_span_pointer_hash` is incorrect: Expected `dict[str, dict[str, str]]`, found `dict[str, dict[str, str] | str | Decimal | bytes]`
+- Found 8148 diagnostics
++ Found 8155 diagnostics
+
+prefect (https://github.com/PrefectHQ/prefect)
++ src/prefect/events/related.py:182:25: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `Iterable[Unknown]`, found `object`
++ src/prefect/flow_runs.py:273:9: error[invalid-assignment] Object of type `dict[Literal[&quot;description&quot;, &quot;response&quot;, &quot;schema&quot;], str]` is not assignable to attribute `run_input_keyset` of type `dict[str, str] | None`
++ src/prefect/flow_runs.py:428:9: error[invalid-assignment] Object of type `dict[Literal[&quot;description&quot;, &quot;response&quot;, &quot;schema&quot;], str]` is not assignable to attribute `run_input_keyset` of type `dict[str, str] | None`
++ src/prefect/server/models/events.py:69:9: error[invalid-argument-type] Argument is incorrect: Expected `list[RelatedResource]`, found `list[dict[str, str]]`
+- src/prefect/settings/models/_defaults.py:106:24: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 3246 diagnostics
++ Found 3249 diagnostics
+
+arviz (https://github.com/arviz-devs/arviz)
++ arviz/tests/base_tests/test_plots_matplotlib.py:320:41: error[invalid-argument-type] Argument to function `plot_trace` is incorrect: Expected `dict[str, list[Any]] | None`, found `Unknown | tuple[str, tuple[str, str]]`
+- arviz/tests/base_tests/test_plots_matplotlib.py:320:41: error[invalid-argument-type] Argument to function `plot_trace` is incorrect: Expected `list[tuple[str, Any, Any]] | None`, found `Unknown | tuple[str, tuple[str, str]]`
++ arviz/tests/base_tests/test_plots_matplotlib.py:320:41: error[invalid-argument-type] Argument to function `plot_trace` is incorrect: Expected `list[tuple[str, dict[str, list[Any]], Any]] | None`, found `Unknown | tuple[str, tuple[str, str]]`
++ arviz/tests/base_tests/test_plots_matplotlib.py:320:41: error[invalid-argument-type] Argument to function `plot_trace` is incorrect: Expected `dict[str, Any] | None`, found `Unknown | tuple[str, tuple[str, str]]`
++ arviz/tests/base_tests/test_plots_matplotlib.py:320:41: error[invalid-argument-type] Argument to function `plot_trace` is incorrect: Expected `dict[str, Any] | None`, found `Unknown | tuple[str, tuple[str, str]]`
++ arviz/tests/base_tests/test_plots_matplotlib.py:320:41: error[invalid-argument-type] Argument to function `plot_trace` is incorrect: Expected `dict[str, Any] | None`, found `Unknown | tuple[str, tuple[str, str]]`
++ arviz/tests/base_tests/test_plots_matplotlib.py:320:41: error[invalid-argument-type] Argument to function `plot_trace` is incorrect: Expected `dict[str, Any] | None`, found `Unknown | tuple[str, tuple[str, str]]`
++ arviz/tests/base_tests/test_plots_matplotlib.py:320:41: error[invalid-argument-type] Argument to function `plot_trace` is incorrect: Expected `dict[str, Any] | None`, found `Unknown | tuple[str, tuple[str, str]]`
++ arviz/tests/base_tests/test_plots_matplotlib.py:320:41: error[invalid-argument-type] Argument to function `plot_trace` is incorrect: Expected `dict[str, Any] | None`, found `Unknown | tuple[str, tuple[str, str]]`
++ arviz/tests/base_tests/test_plots_matplotlib.py:320:41: error[invalid-argument-type] Argument to function `plot_trace` is incorrect: Expected `dict[str, Any] | None`, found `Unknown | tuple[str, tuple[str, str]]`
++ arviz/tests/base_tests/test_plots_matplotlib.py:320:41: error[invalid-argument-type] Argument to function `plot_trace` is incorrect: Expected `dict[str, Any] | None`, found `Unknown | tuple[str, tuple[str, str]]`
++ doc/source/getting_started/ConversionGuideEmcee.ipynb:cell 20:1:44: error[invalid-argument-type] Argument to function `plot_trace` is incorrect: Expected `dict[str, list[Any]] | None`, found `dict[Unknown | str, Unknown | int]`
+- Found 822 diagnostics
++ Found 832 diagnostics
+
+colour (https://github.com/colour-science/colour)
++ colour/io/fichet2021.py:839:13: error[invalid-argument-type] Argument to function `sds_and_msds_to_components_Fichet2021` is incorrect: Expected `Sequence[SpectralDistribution | MultiSpectralDistributions] | SpectralDistribution | MultiSpectralDistributions | ValuesView[Unknown]`, found `Sequence[SpectralDistribution | MultiSpectralDistributions] | SpectralDistribution | MultiSpectralDistributions | (dict[str | int | float, tuple[@Todo, @Todo]] &amp; Sequence[object]) | ValuesView[Unknown]`
+- Found 368 diagnostics
++ Found 369 diagnostics
+
+static-frame (https://github.com/static-frame/static-frame)
+- static_frame/core/archive_zip.py:392:39: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- static_frame/core/archive_zip.py:393:43: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- static_frame/core/archive_zip.py:394:48: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- static_frame/core/frame.py:6672:67: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- static_frame/core/index_hierarchy.py:3106:22: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ static_frame/core/reduce.py:505:21: error[invalid-argument-type] Method `__getitem__` of type `Overload[(key: int | integer[Any]) -&gt; Any, (key: ndarray[Any, Any] | list[int] | slice[Any, Any, Any] | None) -&gt; IndexBase]` cannot be called with key of type `list[Unknown | int | integer[Any]]` on object of type `IndexBase`
+- static_frame/core/util.py:1417:31: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- static_frame/core/util.py:1426:32: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- static_frame/core/util.py:1438:32: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ static_frame/test/unit/test_axis_map.py:35:34: error[invalid-argument-type] Argument to bound method `assertSequenceEqual` is incorrect: Expected `Sequence[Any]`, found `dict_keys[Hashable, Divergent]`
++ static_frame/test/unit/test_axis_map.py:35:48: error[invalid-argument-type] Argument to bound method `assertSequenceEqual` is incorrect: Expected `Sequence[Any]`, found `dict_keys[Hashable, Divergent]`
++ static_frame/test/unit/test_axis_map.py:73:53: error[invalid-argument-type] Argument to bound method `compare_trees` is incorrect: Expected `dict[Hashable, Divergent]`, found `dict[str, Index[Any]] | dict[Unknown | str, Unknown | Index[Any]]`
++ static_frame/test/unit/test_axis_map.py:87:43: error[invalid-argument-type] Argument to bound method `from_tree` is incorrect: Expected `dict[Hashable, Divergent]`, found `dict[str, Index[Any]]`
++ static_frame/test/unit/test_axis_map.py:88:43: error[invalid-argument-type] Argument to bound method `from_tree` is incorrect: Expected `dict[Hashable, Divergent]`, found `dict[str, Index[Any]]`
++ static_frame/test/unit/test_axis_map.py:89:43: error[invalid-argument-type] Argument to bound method `from_tree` is incorrect: Expected `dict[Hashable, Divergent]`, found `dict[str, Index[Any]]`
++ static_frame/test/unit/test_axis_map.py:100:53: error[invalid-argument-type] Argument to bound method `compare_trees` is incorrect: Expected `dict[Hashable, Divergent]`, found `dict[str, dict[str, Index[Any]]]`
++ static_frame/test/unit/test_index_hierarchy.py:1938:47: error[invalid-argument-type] Argument to bound method `from_tree` is incorrect: Expected `dict[Hashable, Divergent]`, found `dict[str, tuple[int, int, int]]`
++ static_frame/test/unit/test_index_hierarchy.py:1939:45: error[invalid-argument-type] Argument to bound method `from_tree` is incorrect: Expected `dict[Hashable, Divergent]`, found `dict[str, tuple[int, int, int]]`
++ static_frame/test/unit/test_reduce.py:862:76: error[invalid-argument-type] Argument to function `_derive_row_dtype_array` is incorrect: Expected `list[tuple[int | integer[Any], @Todo]]`, found `tuple[tuple[Literal[0], Overload[(a: @Todo, axis: None = EllipsisType, dtype: None = EllipsisType, out: None = EllipsisType, keepdims: Literal[False] = EllipsisType, initial: @Todo = EllipsisType, where: @Todo = EllipsisType) -&gt; _ScalarT@sum, (a: @Todo, axis: None = EllipsisType, dtype: None = EllipsisType, out: None = EllipsisType, keepdims: bool = EllipsisType, initial: @Todo = EllipsisType, where: @Todo = EllipsisType) -&gt; _ScalarT@sum | @Todo, (a: @Todo, axis: None, dtype: @Todo, out: None = EllipsisType, keepdims: Literal[False] = EllipsisType, initial: @Todo = EllipsisType, where: @Todo = EllipsisType) -&gt; _ScalarT@sum, (a: @Todo, axis: None = EllipsisType, *, dtype: @Todo, out: None = EllipsisType, keepdims: Literal[False] = EllipsisType, initial: @Todo = EllipsisType, where: @Todo = EllipsisType) -&gt; _ScalarT@sum, (a: @Todo, axis: @Todo | None, dtype: @Todo, out: None = EllipsisType, keepdims: bool = EllipsisType, initial: @Todo = EllipsisType, where: @Todo = EllipsisType) -&gt; _ScalarT@sum | @Todo, (a: @Todo, axis: @Todo | None = EllipsisType, *, dtype: @Todo, out: None = EllipsisType, keepdims: bool = EllipsisType, initial: @Todo = EllipsisType, where: @Todo = EllipsisType) -&gt; _ScalarT@sum | @Todo, (a: @Todo, axis: @Todo | None = EllipsisType, dtype: @Todo = EllipsisType, out: None = EllipsisType, keepdims: bool = EllipsisType, initial: @Todo = EllipsisType, where: @Todo = EllipsisType) -&gt; Any, (a: @Todo, axis: @Todo | None, dtype: @Todo, out: _ArrayT@sum, keepdims: bool = EllipsisType, initial: @Todo = EllipsisType, where: @Todo = EllipsisType) -&gt; _ArrayT@sum, (a: @Todo, axis: @Todo | None = EllipsisType, dtype: @Todo = EllipsisType, *, out: _ArrayT@sum, keepdims: bool = EllipsisType, initial: @Todo = EllipsisType, where: @Todo = EllipsisType) -&gt; _ArrayT@sum]]]`
++ static_frame/test/unit/test_reduce.py:869:43: error[invalid-argument-type] Argument to function `_derive_row_dtype_array` is incorrect: Expected `list[tuple[int | integer[Any], @Todo]]`, found `tuple[tuple[Literal[0], Overload[(a: @Todo, axis: None = EllipsisType, dtype: None = EllipsisType, out: None = EllipsisType, keepdims: Literal[False] = EllipsisType, initial: @Todo = EllipsisType, where: @Todo = EllipsisType) -&gt; _ScalarT@sum, (a: @Todo, axis: None = EllipsisType, dtype: None = EllipsisType, out: None = EllipsisType, keepdims: bool = EllipsisType, initial: @Todo = EllipsisType, where: @Todo = EllipsisType) -&gt; _ScalarT@sum | @Todo, (a: @Todo, axis: None, dtype: @Todo, out: None = EllipsisType, keepdims: Literal[False] = EllipsisType, initial: @Todo = EllipsisType, where: @Todo = EllipsisType) -&gt; _ScalarT@sum, (a: @Todo, axis: None = EllipsisType, *, dtype: @Todo, out: None = EllipsisType, keepdims: Literal[False] = EllipsisType, initial: @Todo = EllipsisType, where: @Todo = EllipsisType) -&gt; _ScalarT@sum, (a: @Todo, axis: @Todo | None, dtype: @Todo, out: None = EllipsisType, keepdims: bool = EllipsisType, initial: @Todo = EllipsisType, where: @Todo = EllipsisType) -&gt; _ScalarT@sum | @Todo, (a: @Todo, axis: @Todo | None = EllipsisType, *, dtype: @Todo, out: None = EllipsisType, keepdims: bool = EllipsisType, initial: @Todo = EllipsisType, where: @Todo = EllipsisType) -&gt; _ScalarT@sum | @Todo, (a: @Todo, axis: @Todo | None = EllipsisType, dtype: @Todo = EllipsisType, out: None = EllipsisType, keepdims: bool = EllipsisType, initial: @Todo = EllipsisType, where: @Todo = EllipsisType) -&gt; Any, (a: @Todo, axis: @Todo | None, dtype: @Todo, out: _ArrayT@sum, keepdims: bool = EllipsisType, initial: @Todo = EllipsisType, where: @Todo = EllipsisType) -&gt; _ArrayT@sum, (a: @Todo, axis: @Todo | None = EllipsisType, dtype: @Todo = EllipsisType, *, out: _ArrayT@sum, keepdims: bool = EllipsisType, initial: @Todo = EllipsisType, where: @Todo = EllipsisType) -&gt; _ArrayT@sum]], tuple[Literal[1], Overload[(a: @Todo | None, axis: None = None, out: None = None, keepdims: Literal[False, 0] | _NoValueType = EllipsisType, *, where: @Todo | _NoValueType = EllipsisType) -&gt; bool[bool], (a: @Todo | None, axis: int | tuple[int, ...] | None = None, out: None = None, keepdims: @Todo | _NoValueType = EllipsisType, *, where: @Todo | _NoValueType = EllipsisType) -&gt; @Todo, (a: @Todo | None, axis: int | tuple[int, ...] | None, out: _ArrayT@all, keepdims: @Todo | _NoValueType = EllipsisType, *, where: @Todo | _NoValueType = EllipsisType) -&gt; _ArrayT@all, (a: @Todo | None, axis: int | tuple[int, ...] | None = None, *, out: _ArrayT@all, keepdims: @Todo | _NoValueType = EllipsisType, where: @Todo | _NoValueType = EllipsisType) -&gt; _ArrayT@all]]]`
+- Found 1908 diagnostics
++ Found 1912 diagnostics
+
+pydantic (https://github.com/pydantic/pydantic)
+- pydantic/v1/schema.py:1085:52: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 4819 diagnostics
++ Found 4818 diagnostics
+
+
+</code></pre>
+</details>
+
+<details>
+<summary>Memory usage changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">prefect (https://github.com/PrefectHQ/prefect)
+-     memo metadata = ~125MB
++     memo metadata = ~131MB
+
+
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-11-13 18:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-11-13 19:00</div>
+            <div class="timeline-body"><!-- generated-comment ty ecosystem-analyzer -->
+
+<h2><code>ecosystem-analyzer</code> results</h2>
+<p>| Lint rule | Added | Removed | Changed |
+|-----------|------:|--------:|--------:|
+| <code>invalid-argument-type</code> | 75 | 2 | 8 |
+| <code>unused-ignore-comment</code> | 0 | 33 | 0 |
+| <code>invalid-type-form</code> | 7 | 0 | 0 |
+| <code>possibly-missing-attribute</code> | 1 | 4 | 2 |
+| <code>invalid-assignment</code> | 3 | 0 | 2 |
+| <code>invalid-return-type</code> | 1 | 1 | 2 |
+| <code>no-matching-overload</code> | 4 | 0 | 0 |
+| <code>not-iterable</code> | 0 | 0 | 2 |
+| <code>unresolved-attribute</code> | 2 | 0 | 0 |
+| <code>unresolved-reference</code> | 0 | 2 | 0 |
+| <code>unsupported-operator</code> | 1 | 0 | 0 |
+| <strong>Total</strong> | <strong>94</strong> | <strong>42</strong> | <strong>16</strong> |</p>
+<p><strong><a href="https://david-implicit-type-aliases-pyp3.ecosystem-663.pages.dev/diff">Full report with detailed diff</a></strong> (<a href="https://david-implicit-type-aliases-pyp3.ecosystem-663.pages.dev/timing">timing results</a>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @sharkdp on 2025-11-13 20:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @sharkdp on 2025-11-13 20:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @sharkdp on 2025-11-13 20:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @sharkdp on 2025-11-13 20:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-11-13 20:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/resources/mdtest/implicit_type_aliases.md</code>:697 on 2025-11-13 20:02</div>
+            <div class="timeline-body"><p>This is just a follow-up from a previous PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-11-14 00:26</div>
+            <div class="timeline-body"><p>Very nice!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @sharkdp on 2025-11-14 08:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-11-14 08:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-11-14 08:08</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:54:20 UTC
+    </footer>
+</body>
+</html>

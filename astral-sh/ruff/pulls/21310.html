@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`flake8-logging-format`] Fix G004 preview mode breaking on f-strings with control characters (`G004`) - astral-sh/ruff #21310</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>flake8-logging-format</code>] Fix G004 preview mode breaking on f-strings with control characters (<code>G004</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21310">#21310</a>
+        opened by <a href="https://github.com/danparizher">@danparizher</a>
+        on 2025-11-07 04:35
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/danparizher">@danparizher</a> on 2025-11-07 04:35</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Fixes #21295. The G004 rule's preview mode fix was generating invalid Python syntax when converting f-strings containing control characters (newlines, tabs, carriage returns) to <code>%</code> formatting in logging calls. This fix adds proper escaping of control characters and quotes when building the replacement string literal.</p>
+<h2>Problem Analysis</h2>
+<p>When G004's preview mode converts f-strings to <code>%</code> formatting, it directly appends literal text from the f-string parts to the format string without escaping control characters. This causes syntax errors when the generated code contains unescaped newlines, tabs, or other control characters in string literals.</p>
+<p>The root cause was in the <code>logging_f_string</code> function in <code>crates/ruff_linter/src/rules/flake8_logging_format/rules/logging_call.rs</code>, where literal text from f-string parts was appended directly to the format string without escaping control characters (lines 60 and 72 in the original code).</p>
+<h2>Approach</h2>
+<ol>
+<li><p><strong>Added escape helper function</strong>: Created <code>escape_string_for_literal()</code> that properly escapes control characters (<code>\n</code>, <code>\t</code>, <code>\r</code>), backslashes (<code>\</code>), and quotes matching the quote style for use in Python string literals.</p>
+</li>
+<li><p><strong>Updated literal handling</strong>: Modified the <code>logging_f_string</code> function to use the escape function when appending literal text from both:</p>
+<ul>
+<li><code>FStringPart::Literal</code> parts (line 83)</li>
+<li><code>InterpolatedStringElement::Literal</code> elements (lines 95-98)</li>
+</ul>
+</li>
+<li><p><strong>Added test cases</strong>: Added test cases covering newlines, tabs, and carriage returns to ensure the fix works correctly and prevents regressions.</p>
+</li>
+</ol>
+<p>The fix ensures that all control characters are properly escaped in the generated Python code, making it syntactically valid while preserving the intended behavior of the original f-string.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-11-07 04:45</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-11-10 22:25</div>
+            <div class="timeline-body"><p>Hmm, I'm not sure this is the right approach. There's another open PR and issue related to this rule in https://github.com/astral-sh/ruff/pull/20224 and https://github.com/astral-sh/ruff/issues/20151, respectively. Many of the issues here seem to be that we're performing unnecessary string manipulations on the contents of the f-string when it would be better only to very narrowly replace the interpolations with <code>%s</code>.</p>
+<p>Actually now that I look at it again, I think #21295 is a duplicate of #20151 too. If @TaKO8Ki plans to get back to the other PR, it might be better to close this in favor of that one (or vice versa if not). Sorry for the confusion!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:54:20 UTC
+    </footer>
+</body>
+</html>

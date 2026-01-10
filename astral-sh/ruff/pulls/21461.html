@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Improve diagnostic range for `non-subscriptable` diagnostics - astral-sh/ruff #21461</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Improve diagnostic range for <code>non-subscriptable</code> diagnostics</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21461">#21461</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-11-14 18:14
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-14 18:14</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Currently our diagnostic only covers the range of the thing being subscripted:</p>
+<p><img width="1702" height="312" alt="image" src="https://github.com/user-attachments/assets/7e630431-e846-46ca-93c1-139f11aaba11" /></p>
+<p>But it should probably cover the <em>whole</em> subscript expression (arguably the more &quot;incorrect&quot; bit is the <code>[&quot;foo&quot;]</code> part of this expression, not the <code>x</code> part of this expression!)</p>
+<h2>Test Plan</h2>
+<p>Added a snapshot</p>
+<p>Co-authored-by: Brent Westbrook <a href="mailto:36778786+ntBre@users.noreply.github.com">36778786+ntBre@users.noreply.github.com</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @AlexWaygood on 2025-11-14 18:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @AlexWaygood on 2025-11-14 18:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-11-14 18:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @AlexWaygood on 2025-11-14 18:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">diagnostics</span> added by @AlexWaygood on 2025-11-14 18:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-11-14 18:17</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-11-14 18:18</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">pandas (https://github.com/pandas-dev/pandas)
+- pandas/tests/series/test_arithmetic.py:646:17: error[non-subscriptable] Cannot subscript object of type `bool` with no `__getitem__` method
++ pandas/tests/series/test_arithmetic.py:646:16: error[non-subscriptable] Cannot subscript object of type `bool` with no `__getitem__` method
+- pandas/tests/series/test_arithmetic.py:647:21: error[non-subscriptable] Cannot subscript object of type `bool` with no `__getitem__` method
++ pandas/tests/series/test_arithmetic.py:647:20: error[non-subscriptable] Cannot subscript object of type `bool` with no `__getitem__` method
+
+sympy (https://github.com/sympy/sympy)
+- sympy/parsing/autolev/test-examples/ruletest6.py:31:6: error[non-subscriptable] Cannot subscript object of type `&lt;module 'math'&gt;` with no `__getitem__` method
++ sympy/parsing/autolev/test-examples/ruletest6.py:31:5: error[non-subscriptable] Cannot subscript object of type `&lt;module 'math'&gt;` with no `__getitem__` method
+
+
+</code></pre>
+</details>
+
+<p>No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @AlexWaygood on 2025-11-14 18:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-11-14 21:01</div>
+            <div class="timeline-body"><p>I think highlighting the whole expression (as you do here) is best. It is both the type of the base object (which is the type that is not subscriptable), and the fact that you are subscripting it, that's &quot;at fault&quot; for the error. (In the case of not-subscriptable, the actual key is arguably not involved at all! But it still makes sense to highlight the entire expression IMO.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-11-14 21:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-14 21:06</div>
+            <div class="timeline-body"><p>Similar to attribute expressions, I think it's undesired to highlight the entire object because it can get very noisy if that expression is long (think a call expression)</p>
+<p>I think the ideal is to highlight .attribute or [value].</p>
+<p>Related discussion https://github.com/astral-sh/ty/issues/169</p>
+<p>I don't think this should block this PR because it at least makes it consistent but we should update said issue to also mention subscript</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-14 21:15</div>
+            <div class="timeline-body"><p>Heh, well, I disagree for the same reasons I gave in https://github.com/astral-sh/ty/issues/169 ;) but I'll add a note in that issue to mention that the same discussion also applies to subscript diagnostics!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2025-11-14 21:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-11-14 21:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-11-14 21:15</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:54:20 UTC
+    </footer>
+</body>
+</html>

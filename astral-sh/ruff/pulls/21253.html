@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Fix panic due to simplifying `Divergent` types out of intersections types - astral-sh/ruff #21253</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Fix panic due to simplifying <code>Divergent</code> types out of intersections types</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21253">#21253</a>
+        opened by <a href="https://github.com/mtshiba">@mtshiba</a>
+        on 2025-11-03 14:37
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/mtshiba">@mtshiba</a> on 2025-11-03 14:37</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>While investigating the cause of the panics seen since #20962, I found that intersection types containing <code>Divergent</code> types were incorrectly reduced by unioning them with another dynamic types.
+This prevents tracking of <code>Divergent</code> types in fixed-point iteration.</p>
+<p>This PR fixes the logic of <code>Type::is_redundant_with</code> to prevent the panic from occurring.</p>
+<p>(BTW, another panic in <code>pr_20962_comprehension_panics.md</code> has been confirmed to disappear by #20566)</p>
+<h2>Test Plan</h2>
+<p><code>corpus/cyclic_comprehensions.py</code> is added.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-11-03 14:40</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-11-03 14:41</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅
+No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-11-03 14:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @mtshiba on 2025-11-03 15:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @mtshiba on 2025-11-03 15:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-03 15:28</div>
+            <div class="timeline-body"><p>Nice, thank you!</p>
+<p>I was initially confused about why we didn't need this for the branch above this, but I see that it should be handled by an earlier branch. We could possibly add a <code>debug_assert!()</code> for the benefit of future readers:</p>
+<pre><code class="language-diff">diff --git a/crates/ty_python_semantic/src/types.rs b/crates/ty_python_semantic/src/types.rs
+index 6efa8950f2..45a4b2aad5 100644
+--- a/crates/ty_python_semantic/src/types.rs
++++ b/crates/ty_python_semantic/src/types.rs
+@@ -1699,15 +1699,22 @@ impl&lt;'db&gt; Type&lt;'db&gt; {
+             // holds true if `T` is also a dynamic type or a union that contains a dynamic type.
+             // Similarly, `T &lt;: Any` only holds true if `T` is a dynamic type or an intersection
+             // that contains a dynamic type.
+-            (Type::Dynamic(_), _) =&gt; ConstraintSet::from(match relation {
+-                TypeRelation::Subtyping =&gt; false,
+-                TypeRelation::Assignability =&gt; true,
+-                TypeRelation::Redundancy =&gt; match target {
+-                    Type::Dynamic(_) =&gt; true,
+-                    Type::Union(union) =&gt; union.elements(db).iter().any(Type::is_dynamic),
+-                    _ =&gt; false,
+-                },
+-            }),
++            (Type::Dynamic(dynamic), _) =&gt; {
++                // If a `Divergent` type is involved, it must not be eliminated.
++                debug_assert!(
++                    !matches!(dynamic, DynamicType::Divergent(_)),
++                    &quot;DynamicType::Divergent should have been handled in an earlier branch&quot;
++                );
++                ConstraintSet::from(match relation {
++                    TypeRelation::Subtyping =&gt; false,
++                    TypeRelation::Assignability =&gt; true,
++                    TypeRelation::Redundancy =&gt; match target {
++                        Type::Dynamic(_) =&gt; true,
++                        Type::Union(union) =&gt; union.elements(db).iter().any(Type::is_dynamic),
++                        _ =&gt; false,
++                    },
++                })
++            }
+             (_, Type::Dynamic(_)) =&gt; ConstraintSet::from(match relation {
+                 TypeRelation::Subtyping =&gt; false,
+                 TypeRelation::Assignability =&gt; true,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @mtshiba on 2025-11-03 15:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @mtshiba on 2025-11-03 15:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @mtshiba on 2025-11-03 15:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @mtshiba on 2025-11-03 15:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @mtshiba on 2025-11-03 15:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-11-03 15:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[ty] Do not simplify intersection types with `Divergent` types within a union type" to "[ty] Fix panic due to simplifying `Divergent` types out of intersections types" by @AlexWaygood on 2025-11-03 15:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2025-11-03 15:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2025-11-03 15:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-11-03 15:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-11-03 15:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-11-03 18:18</div>
+            <div class="timeline-body"><p>Especially with the changes in #20566, I start to wonder if <code>Divergent</code> should perhaps not be a variant of <code>Dynamic</code> at all, or if it would be less error-prone to make it a distinct top-level <code>Type</code> so we have to consider its behavior separately.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:54:19 UTC
+    </footer>
+</body>
+</html>

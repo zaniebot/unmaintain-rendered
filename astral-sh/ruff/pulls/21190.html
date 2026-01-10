@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`refurb`] Fix false negative for underscores before sign in `Decimal` constructor (`FURB157`) - astral-sh/ruff #21190</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>refurb</code>] Fix false negative for underscores before sign in <code>Decimal</code> constructor (<code>FURB157</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21190">#21190</a>
+        opened by <a href="https://github.com/danparizher">@danparizher</a>
+        on 2025-11-01 19:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/danparizher">@danparizher</a> on 2025-11-01 19:26</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Fixes FURB157 false negative where <code>Decimal(&quot;_-1&quot;)</code> was not flagged as verbose when underscores precede the sign character. This fixes #21186.</p>
+<h2>Problem Analysis</h2>
+<p>The <code>verbose-decimal-constructor</code> (FURB157) rule failed to detect verbose <code>Decimal</code> constructors when the sign character (<code>+</code> or <code>-</code>) was preceded by underscores. For example, <code>Decimal(&quot;_-1&quot;)</code> was not flagged, even though it can be simplified to <code>Decimal(-1)</code>.</p>
+<p>The bug occurred because the rule checked for the sign character at the start of the string before stripping leading underscores. According to Python's <code>Decimal</code> parser behavior (as documented in CPython's <code>_pydecimal.py</code>), underscores are removed before parsing the sign. The rule's logic didn't match this behavior, causing a false negative for cases like <code>&quot;_-1&quot;</code> where the underscore came before the sign.</p>
+<p>This was a regression introduced in version 0.14.3, as these cases were correctly flagged in version 0.14.2.</p>
+<h2>Approach</h2>
+<p>The fix updates the sign extraction logic to:</p>
+<ol>
+<li>Strip leading underscores first (matching Python's Decimal parser behavior)</li>
+<li>Extract the sign from the underscore-stripped string</li>
+<li>Preserve the string after the sign for normalization purposes</li>
+</ol>
+<p>This ensures that cases like <code>Decimal(&quot;_-1&quot;)</code>, <code>Decimal(&quot;_+1&quot;)</code>, and <code>Decimal(&quot;_-1_000&quot;)</code> are correctly detected and flagged. The normalization logic was also updated to use the string after the sign (without underscores) to avoid double signs in the replacement output.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-11-01 19:36</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-11-03 21:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2025-11-03 21:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> approved on 2025-11-04 16:01</div>
+            <div class="timeline-body"><p>Thanks, this makes sense to me!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ntBre on 2025-11-04 16:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-11-04 16:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-11-04 16:13</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:54:19 UTC
+    </footer>
+</body>
+</html>

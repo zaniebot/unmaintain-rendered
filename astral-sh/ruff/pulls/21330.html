@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`ruff`] Ignore `str()` when not used for simple conversion (`RUF065`) - astral-sh/ruff #21330</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>ruff</code>] Ignore <code>str()</code> when not used for simple conversion (<code>RUF065</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21330">#21330</a>
+        opened by <a href="https://github.com/danparizher">@danparizher</a>
+        on 2025-11-07 23:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/danparizher">@danparizher</a> on 2025-11-07 23:27</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Fixed RUF065 (<code>logging-eager-conversion</code>) to only flag <code>str()</code> calls when they perform a simple conversion that can be safely removed. The rule now ignores <code>str()</code> calls with no arguments, multiple arguments, starred arguments, or keyword unpacking, preventing false positives.</p>
+<p>Fixes #21315</p>
+<h2>Problem Analysis</h2>
+<p>The RUF065 rule was incorrectly flagging all <code>str()</code> calls in logging statements, even when <code>str()</code> was performing actual conversion work beyond simple type coercion. Specifically, the rule flagged:</p>
+<ul>
+<li><code>str()</code> with no arguments - which returns an empty string</li>
+<li><code>str(b&quot;data&quot;, &quot;utf-8&quot;)</code> with multiple arguments - which performs encoding conversion</li>
+<li><code>str(*args)</code> with starred arguments - which unpacks arguments</li>
+<li><code>str(**kwargs)</code> with keyword unpacking - which passes keyword arguments</li>
+</ul>
+<p>These cases cannot be safely removed because <code>str()</code> is doing meaningful work (encoding conversion, argument unpacking, etc.), not just redundant type conversion.</p>
+<p>The root cause was that the rule only checked if the function was <code>str()</code> without validating the call signature. It didn't distinguish between simple <code>str(value)</code> conversions (which can be removed) and more complex <code>str()</code> calls that perform actual work.</p>
+<h2>Approach</h2>
+<p>The fix adds validation to the <code>str()</code> detection logic in <code>logging_eager_conversion.rs</code>:</p>
+<ol>
+<li><strong>Check argument count</strong>: Only flag <code>str()</code> calls with exactly one positional argument (<code>str_call_args.args.len() == 1</code>)</li>
+<li><strong>Check for starred arguments</strong>: Ensure the single argument is not starred (<code>!str_call_args.args[0].is_starred_expr()</code>)</li>
+<li><strong>Check for keyword arguments</strong>: Ensure there are no keyword arguments (<code>str_call_args.keywords.is_empty()</code>)</li>
+</ol>
+<p>This ensures the rule only flags cases like <code>str(value)</code> where <code>str()</code> is truly redundant and can be removed, while ignoring cases where <code>str()</code> performs actual conversion work.</p>
+<p>The fix maintains backward compatibility - all existing valid test cases continue to be flagged correctly, while the new edge cases are properly ignored.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dscorbett">@dscorbett</a> on <code>crates/ruff_linter/src/rules/ruff/rules/logging_eager_conversion.rs</code>:159 on 2025-11-08 02:42</div>
+            <div class="timeline-body"><p><code>logging.warning(&quot;%s&quot;, str(object=&quot;!&quot;))</code>, with one keyword argument, should still be flagged.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dscorbett">@dscorbett</a> reviewed on 2025-11-08 02:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danparizher">@danparizher</a> on 2025-11-08 04:43</div>
+            <div class="timeline-body"><p>I added a test case for <code>str(object=&quot;!&quot;)</code>, and the new logic seems to work in isolation, but for some reason isn't being detected in the test file. I would appreciate it if someone could help me diagnose the issue!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-11-10 17:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2025-11-10 17:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @ntBre on 2025-11-10 17:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/ruff/rules/logging_eager_conversion.rs</code>:162 on 2025-11-10 17:31</div>
+            <div class="timeline-body"><p>This looks pretty complicated. Can we just use <code>find_argument</code> and a check that <code>str_call_args.len() == 1</code>?</p>
+<pre><code class="language-suggestion">                    if checker.semantic().match_builtin_expr(func.as_ref(), &quot;str&quot;)
+                        &amp;&amp; str_call_args.len() == 1
+                        &amp;&amp; str_call_args.find_argument(&quot;object&quot;, 0).is_some_and(|arg| !arg.is_variadic()) =&gt; 
+</code></pre>
+<p>with</p>
+<pre><code class="language-rust">impl&lt;'a&gt; ArgOrKeyword&lt;'a&gt; {
+    pub const fn is_variadic(self) -&gt; bool {
+        match self {
+            ArgOrKeyword::Arg(expr) =&gt; expr.is_starred_expr(),
+            ArgOrKeyword::Keyword(keyword) =&gt; keyword.arg.is_none(),
+        }
+    }
+}
+</code></pre>
+<p>This comes up a lot, so that might be a nice helper to have around.</p>
+<p>Hopefully this will help with the <code>object</code> case, but I'm not sure.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> requested changes on 2025-11-10 17:38</div>
+            <div class="timeline-body"><p>Thanks! I had a suggestion for simplification, which will hopefully help with the test case too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danparizher">@danparizher</a> on 2025-11-10 21:35</div>
+            <div class="timeline-body"><p>Thanks! I pushed those changes, but it looks like we're running into the same issue as before. The fix works in isolation but not within the test.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-11-10 21:45</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-11-10 21:46</div>
+            <div class="timeline-body"><p>Oh, <code>str</code> is shadowed on line 37 of the test file, so none of the new tests are actually exercising the new logic. I think we should add the new tests to a separate file.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> approved on 2025-11-10 22:55</div>
+            <div class="timeline-body"><p>Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ntBre on 2025-11-10 23:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-11-10 23:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-11-10 23:18</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:54:20 UTC
+    </footer>
+</body>
+</html>

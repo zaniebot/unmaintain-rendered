@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`flake8-simplify`] Apply `SIM113` when index variable is of type `int` - astral-sh/ruff #21395</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>flake8-simplify</code>] Apply <code>SIM113</code> when index variable is of type <code>int</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21395">#21395</a>
+        opened by <a href="https://github.com/njhearp">@njhearp</a>
+        on 2025-11-12 03:57
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/njhearp">@njhearp</a> on 2025-11-12 03:57</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Fixes #21393</p>
+<p>Now the rule checks if the index variable is initialized as an <code>int</code> type rather than only flagging if the index variable is initialized to <code>0</code>. I used <code>ResolvedPythonType</code> to check if the index variable is an <code>int</code> type.</p>
+<h2>Test Plan</h2>
+<p>Updated snapshot test for <code>SIM113</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2025-11-12 04:08</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+3 -0 violations, +0 -0 fixes in 2 projects; 53 projects unchanged)</p>
+<details><summary><a href="https://github.com/rotki/rotki">rotki/rotki</a> (+1 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --no-fix --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/rotki/rotki/blob/d3afc02b022c19c4a85984d758e28a9f0dfa1fea/rotkehlchen/tests/unit/decoders/test_dripsv1.py#L79'>rotkehlchen/tests/unit/decoders/test_dripsv1.py:79:9:</a> SIM113 Use `enumerate()` for index variable `idx` in `for` loop
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/zulip/zulip">zulip/zulip</a> (+2 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --no-fix --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/zulip/zulip/blob/62f4fc501cb5ecf1a9e99d2bb74ce60ba219b059/zerver/lib/export.py#L1962'>zerver/lib/export.py:1962:9:</a> SIM113 Use `enumerate()` for index variable `dump_file_id` in `for` loop
++ <a href='https://github.com/zulip/zulip/blob/62f4fc501cb5ecf1a9e99d2bb74ce60ba219b059/zerver/lib/export.py#L2892'>zerver/lib/export.py:2892:9:</a> SIM113 Use `enumerate()` for index variable `dump_file_id` in `for` loop
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (1 rules affected)</summary>
+<p>
+
+<p>| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| SIM113 | 3 | 3 | 0 | 0 | 0 |</p>
+</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-11-12 14:07</div>
+            <div class="timeline-body"><p>Thank you!</p>
+<p>Would you mind making this a <a href="https://github.com/astral-sh/ruff/blob/c0fb235a703684bca1cc1767015bb7e19ab1c22f/crates/ruff_linter/src/preview.rs#L16-L19"><code>preview</code></a> change? It seems to be in the spirit of the rule and also matches the upstream linter for this test case, but I see there are some ecosystem hits.</p>
+<p>Preview will also be nice in case we want to iterate further by inferring the type of the argument, for example with <a href="https://github.com/astral-sh/ruff/blob/19326a7b5e953041cee0ed184ff991b21d2df359/crates/ruff_python_semantic/src/analyze/typing.rs#L1056"><code>is_int</code></a>. I think <code>ResolvedPythonType</code> only handles literals and simple operations on them like <code>1 + 2</code> rather than using type annotations. (I'm not saying we need to or should do that, just an idea)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dscorbett">@dscorbett</a> on 2025-11-12 14:41</div>
+            <div class="timeline-body"><p>SIM113’s recommendation is only safe when the index variable’s initial value is a strict instance of <code>int</code>, whereas something annotated <code>int</code> could be an instance of e.g. <code>bool</code> or a custom subclass, which would make the recommendation unsafe because the program’s behavior could change.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-11-12 15:01</div>
+            <div class="timeline-body"><p>Ah, thanks for the clarification! Disregard my last paragraph then, but I'd still lean toward making it a preview change.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/njhearp">@njhearp</a> on 2025-11-12 16:14</div>
+            <div class="timeline-body"><p>Thanks for the feedback! I updated the rule to be gated behind preview for strict instances of <code>int</code>. I also updated the documentation and comments. It looks like some actions failed due to timeouts, so I suspect some GitHub services are temporarily down and they will pass later.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_simplify/rules/enumerate_for_loop.rs</code>:16 on 2025-11-12 17:48</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">/// In [preview], this rule checks for index variables initialized with any integer rather than only
+/// a literal zero.
+</code></pre>
+<p>Having to say this is making me rethink the preview suggestion 😅 But I guess it's better to be safe. Thanks for updating the docs!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> approved on 2025-11-12 17:49</div>
+            <div class="timeline-body"><p>Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2025-11-12 17:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @ntBre on 2025-11-12 17:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[`flake8-simplify`] Apply `SIM113` when index variable is type `int`" to "[`flake8-simplify`] Apply `SIM113` when index variable is of type `int`" by @ntBre on 2025-11-12 17:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ntBre on 2025-11-12 17:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-11-12 17:54</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:54:20 UTC
+    </footer>
+</body>
+</html>

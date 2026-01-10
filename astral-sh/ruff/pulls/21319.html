@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reduce notebook memory footprint - astral-sh/ruff #21319</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Reduce notebook memory footprint</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21319">#21319</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2025-11-07 16:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-07 16:26</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Reduce the memory footprint of <code>NotebookIndex</code> from <code>O(lines)</code> to <code>O(cells)</code>.</p>
+<p>The <code>NotebookIndex</code> stores a mapping from rows in the concatenated notebook document
+to the relative row numbers within each cell and from absolute line number to the corresponding cell.</p>
+<p>The way this is implemented today is by having a vector with one entry for every absolute row number
+where the value is the index of the cell. While this allows <code>O(1)</code> lookup, it does require an entry for every single line.</p>
+<p>This PR rewrites our representation (and uses one <code>Vec</code> instead of two) to only store the
+start line number per cell and use a binary search to find to which cell a line number belongs.
+This makes lookups slightly slower (from <code>O(1)</code> to <code>O(log(n))</code> but reduces memory usage
+from <code>O(rows)</code> to <code>O(cells)</code>.</p>
+<p>I noticed this improvement when working on ty's notebook support but decided to extract it into its own PR to make reviewing easier.</p>
+<h2>Test Plan</h2>
+<p>Existing tests</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @MichaReiser on 2025-11-07 16:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Reduce memory footprint of notebooks" to "Reduce notebook memory footprint" by @MichaReiser on 2025-11-07 16:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2025-11-07 16:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @MichaReiser on 2025-11-07 16:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @MichaReiser on 2025-11-07 16:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @MichaReiser on 2025-11-07 16:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @MichaReiser on 2025-11-07 16:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @dcreager removed by @MichaReiser on 2025-11-07 16:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @carljm removed by @MichaReiser on 2025-11-07 16:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @sharkdp removed by @MichaReiser on 2025-11-07 16:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-11-07 16:42</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> approved on 2025-11-10 17:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_notebook/src/index.rs</code>:42 on 2025-11-11 09:34</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    /// This yields one entry per Python cell (skipping over Markdown cell).
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2025-11-11 09:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-11-11 09:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-11-11 09:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> approved on 2025-11-11 09:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-11-11 11:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_notebook/src/index.rs</code>:42 on 2025-11-11 11:13</div>
+            <div class="timeline-body"><p>Thanks. I pushed the fix to https://github.com/astral-sh/ruff/pull/21175</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:54:20 UTC
+    </footer>
+</body>
+</html>

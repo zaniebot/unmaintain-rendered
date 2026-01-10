@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Discover site-packages from the environment that ty is installed in - astral-sh/ruff #21286</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Discover site-packages from the environment that ty is installed in</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21286">#21286</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2025-11-05 19:25
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/zanieb">@zanieb</a> on 2025-11-05 19:25</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title? (Please prefix with `[ty]` for ty pull
+  requests.)
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+<p>Closes https://github.com/astral-sh/ty/issues/989</p>
+<p>There are various situations where users expect the Python packages installed in the same environment as ty itself to be considered during type checking. A minimal example would look like:</p>
+<pre><code>uv venv my-env
+uv pip install my-env ty httpx
+echo &quot;import httpx&quot; &gt; foo.py
+./my-env/bin/ty check foo.py
+</code></pre>
+<p>or</p>
+<pre><code>uv tool install ty --with httpx
+echo &quot;import httpx&quot; &gt; foo.py
+ty check foo.py
+</code></pre>
+<p>While these are a bit contrived, there are real-world situations where a user would expect a similar behavior to work. Notably, all of the other type checkers consider their own environment when determining search paths (though I'll admit that I have not verified when they choose not to do this).</p>
+<p>One common situation where users are encountering this today is with <code>uvx --with-requirements script.py ty check script.py</code> — which is currently our &quot;best&quot; recommendation for type checking a PEP 723 script, but it doesn't work.</p>
+<p>Of the options discussed in https://github.com/astral-sh/ty/issues/989#issuecomment-3307417985, I've chosen (2) as our criteria for including ty's environment in the search paths.</p>
+<ul>
+<li>If no virtual environment is discovered, we will always include ty's environment.</li>
+<li>If a <code>.venv</code> is discovered in the working directory, we will <em>prepend</em> ty's environment to the search paths. The dependencies in ty's environment (e.g., from <code>uvx --with</code>) will take precedence.</li>
+<li>If a virtual environment is active, e.g., <code>VIRTUAL_ENV</code> (i.e., including conda prefixes) is set, we will not include ty's environment.</li>
+</ul>
+<p>The reason we need to special case the <code>.venv</code> case is that we both</p>
+<ol>
+<li>Recommend <code>uvx ty</code> today as a way to check your project</li>
+<li>Want to enable <code>uvx --with &lt;...&gt; ty</code></li>
+</ol>
+<p>And I don't want (2) to break when you <em>happen</em> to be in a project (i.e., if we only included ty's environment when <em>no</em> environment is found) and don't want to remove support for (1).</p>
+<p>I think long-term, I want to make <code>uvx &lt;cmd&gt;</code> layer the environment on <em>top</em> of the project environment (in uv), which would obviate the need for this change when you're using uv. However, that change is breaking and I think users will expect this behavior in contexts where they're not using uv, so I think we should handle it in ty regardless.</p>
+<p>I've opted not to include the environment if it's non-virtual (i.e., a system environment) for now. It seems better to start by being more restrictive. I left a comment in the code.</p>
+<h2>Test Plan</h2>
+<p>I did some manual testing with the initial commit, then subsequently added some unit tests.</p>
+<pre><code>❯ echo &quot;import httpx&quot; &gt; example.py
+❯ uvx --with httpx ty check example.py
+Installed 8 packages in 19ms
+error[unresolved-import]: Cannot resolve imported module `httpx`
+ --&gt; foo/example.py:1:8
+  |
+1 | import httpx
+  |        ^^^^^
+  |
+info: Searched in the following paths during module resolution:
+info:   1. /Users/zb/workspace/ty/python (first-party code)
+info:   2. /Users/zb/workspace/ty (first-party code)
+info:   3. vendored://stdlib (stdlib typeshed stubs vendored by ty)
+info: make sure your Python environment is properly configured: https://docs.astral.sh/ty/modules/#python-environment
+info: rule `unresolved-import` is enabled by default
+
+Found 1 diagnostic
+❯ uvx --from . --with httpx ty check example.py
+All checks passed!
+</code></pre>
+<pre><code>❯ uv init --script foo.py
+Initialized script at `foo.py`
+❯ uv add --script foo.py httpx
+warning: The Python request from `.python-version` resolved to Python 3.13.8, which is incompatible with the script's Python requirement: `&gt;=3.14`
+Updated `foo.py`
+❯ echo &quot;import httpx&quot; &gt;&gt; foo.py
+❯ uvx --with-requirements foo.py ty check foo.py
+error[unresolved-import]: Cannot resolve imported module `httpx`
+  --&gt; foo.py:15:8
+   |
+13 | if __name__ == &quot;__main__&quot;:
+14 |     main()
+15 | import httpx
+   |        ^^^^^
+   |
+info: Searched in the following paths during module resolution:
+info:   1. /Users/zb/workspace/ty/python (first-party code)
+info:   2. /Users/zb/workspace/ty (first-party code)
+info:   3. vendored://stdlib (stdlib typeshed stubs vendored by ty)
+info: make sure your Python environment is properly configured: https://docs.astral.sh/ty/modules/#python-environment
+info: rule `unresolved-import` is enabled by default
+
+Found 1 diagnostic
+❯ uvx --from . --with-requirements foo.py ty check foo.py
+All checks passed!
+</code></pre>
+<p>Notice we do not include ty's environment if <code>VIRTUAL_ENV</code> is set</p>
+<pre><code>❯ VIRTUAL_ENV=.venv uvx --with httpx ty check foo/example.py
+error[unresolved-import]: Cannot resolve imported module `httpx`
+ --&gt; foo/example.py:1:8
+  |
+1 | import httpx
+  |        ^^^^^
+  |
+info: Searched in the following paths during module resolution:
+info:   1. /Users/zb/workspace/ty/python (first-party code)
+info:   2. /Users/zb/workspace/ty (first-party code)
+info:   3. vendored://stdlib (stdlib typeshed stubs vendored by ty)
+info:   4. /Users/zb/workspace/ty/.venv/lib/python3.13/site-packages (site-packages)
+info: make sure your Python environment is properly configured: https://docs.astral.sh/ty/modules/#python-environment
+info: rule `unresolved-import` is enabled by default
+
+Found 1 diagnostic
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-11-05 19:28</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-11-05 19:29</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅
+No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "ty: Discover site-packages from the environment that ty is installed in" to "[ty] Discover site-packages from the environment that ty is installed in" by @AlexWaygood on 2025-11-05 19:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-11-05 19:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @Gankra by @Gankra on 2025-11-05 20:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/ty_project/src/metadata/options.rs</code>:499 on 2025-11-05 20:38</div>
+            <div class="timeline-body"><p>This should probably be <code>debug!</code> based on how we use the log levels. Also should probably only fire if the site_packages_paths call that follows succeeds.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> approved on 2025-11-05 20:42</div>
+            <div class="timeline-body"><p>Approach seems reasonable!</p>
+<p>In terms of testing I would probably add a new test to <code>crates/ty/tests/cli/python_environment.rs</code> by adding an API to <code>CliTest</code> that lets you specify &quot;copy the ty binary to this other dir before executing it&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-11-05 20:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ty_project/src/metadata/options.rs</code>:499 on 2025-11-05 20:47</div>
+            <div class="timeline-body"><p>If we do it after that call it's pretty confusing, I had it there first but moved it. I can look into this more though...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-11-05 20:48</div>
+            <div class="timeline-body"><blockquote>
+<p>&quot;copy the ty binary to this other dir before executing it&quot;.</p>
+</blockquote>
+<p>Probably not a blocker, but as a brief note, I think this can be slow, e.g., in uv my experience was that the uv binary is pretty big and moving it around during tests is expensive.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-11-06 02:56</div>
+            <div class="timeline-body"><blockquote>
+<p>in uv my experience was that the uv binary is pretty big and moving it around during tests is expensive.</p>
+</blockquote>
+<p>Is the mitigation as simple as hardlinking or maybe even symlinking here, or are we liable to run into temp-is-a-different-fs issues?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-11-06 03:45</div>
+            <div class="timeline-body"><p>It doesn't seem horribly slow so let's just not worry about it.</p>
+<p>What's the best practice for filtering here...?</p>
+<pre><code>        FAIL [   0.433s] (3977/5273) ty::cli python_environment::ty_environment_and_active_environment
+  stdout ───
+
+    running 1 test
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Snapshot Summary ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    Snapshot: ty_environment_and_active_environment
+    Source: C:\actions-runner\ruff\ruff:1844
+    ───────────────────────────────────────────────────────────────────────────────
+    program: ty
+    args:
+      - check
+    env:
+      VIRTUAL_ENV: &quot;C:\\Users\\Administrator\\AppData\\Local\\Temp\\.tmp1pBqh5\\active-venv&quot;
+    ───────────────────────────────────────────────────────────────────────────────
+    -old snapshot
+    +new results
+    ────────────┬──────────────────────────────────────────────────────────────────
+       10    10 │   |
+       11    11 │ info: Searched in the following paths during module resolution:
+       12    12 │ info:   1. &lt;temp_dir&gt;/ (first-party code)
+       13    13 │ info:   2. vendored://stdlib (stdlib typeshed stubs vendored by ty)
+       14       │-info:   3. &lt;temp_dir&gt;/active-venv/lib/python3.13/site-packages (site-packages)
+             14 │+info:   3. &lt;temp_dir&gt;/active-venv/Lib/site-packages (site-packages)
+       15    15 │ info: make sure your Python environment is properly configured: https://docs.astral.sh/ty/modules/#python-environment
+       16    16 │ info: rule `unresolved-import` is enabled by default
+       17    17 │ 
+       18    18 │ Found 1 diagnostic
+</code></pre>
+<p>Of course, this snapshot is broken on Windows.</p>
+<p>I see there's some <code>add_filter</code> stuff going on in <code>CliTest::new</code> but this doesn't seem like it belongs there unconditionally?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-11-06 04:28</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/ruff/pull/21286/commits/1dd2848d2b85c2cdb06019e36d83e96492f1a197 seems sufficient / fine</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @zanieb on 2025-11-06 04:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @zanieb on 2025-11-06 04:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @zanieb on 2025-11-06 04:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @zanieb on 2025-11-06 04:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @zanieb on 2025-11-06 04:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @zanieb on 2025-11-06 04:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> approved on 2025-11-06 14:27</div>
+            <div class="timeline-body"><p>rad!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @Gankra on 2025-11-06 14:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @Gankra on 2025-11-06 14:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-11-06 14:27</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:54:19 UTC
+    </footer>
+</body>
+</html>

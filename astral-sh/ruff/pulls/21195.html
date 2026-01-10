@@ -1,0 +1,1047 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Implicit type aliases: Support for PEP 604 unions - astral-sh/ruff #21195</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Implicit type aliases: Support for PEP 604 unions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/21195">#21195</a>
+        opened by <a href="https://github.com/sharkdp">@sharkdp</a>
+        on 2025-11-01 23:25
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-11-01 23:25</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Add support for implicit type aliases that use PEP 604 unions:</p>
+<pre><code class="language-py">IntOrStr = int | str
+
+reveal_type(IntOrStr)  # UnionType
+
+def _(int_or_str: IntOrStr):
+    reveal_type(int_or_str)  # int | str
+</code></pre>
+<h2>Typing conformance</h2>
+<p>The changes are either removed false positives, or new diagnostics due to known limitations unrelated to this PR.</p>
+<h2>Ecosystem impact</h2>
+<p>Spot checked, a mix of true positives and known limitations.</p>
+<h2>Test Plan</h2>
+<p>New Markdown tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @sharkdp on 2025-11-01 23:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-11-01 23:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-11-01 23:27</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance">typing conformance tests</a></h2>
+<details>
+<summary>Changes were detected when running ty on typing conformance tests</summary>
+
+<pre><code class="language-diff">--- old-output.txt	2025-11-03 19:01:57.863028190 +0000
++++ new-output.txt	2025-11-03 19:02:01.085061379 +0000
+@@ -1,4 +1,4 @@
+-fatal[panic] Panicked at /home/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/cdd0b85/src/function/execute.rs:419:17 when checking `/home/runner/work/ruff/ruff/typing/conformance/tests/aliases_typealiastype.py`: `infer_definition_types(Id(182f5)): execute: too many cycle iterations`
++fatal[panic] Panicked at /home/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/cdd0b85/src/function/execute.rs:419:17 when checking `/home/runner/work/ruff/ruff/typing/conformance/tests/aliases_typealiastype.py`: `infer_definition_types(Id(18af5)): execute: too many cycle iterations`
+ _directives_deprecated_library.py:15:31: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `int`
+ _directives_deprecated_library.py:30:26: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `str`
+ _directives_deprecated_library.py:36:41: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `Self@__add__`
+@@ -7,8 +7,6 @@
+ aliases_explicit.py:41:24: error[invalid-type-form] List literals are not allowed in this context in a type expression: Did you mean `tuple[str, str]`?
+ aliases_explicit.py:45:10: error[invalid-type-form] Variable of type `Literal[&quot;int | str&quot;]` is not allowed in a type expression
+ aliases_explicit.py:49:5: error[type-assertion-failure] Argument does not have asserted type `int | str`
+-aliases_explicit.py:50:5: error[type-assertion-failure] Argument does not have asserted type `int | None`
+-aliases_explicit.py:51:5: error[type-assertion-failure] Argument does not have asserted type `list[int | None]`
+ aliases_explicit.py:52:5: error[type-assertion-failure] Argument does not have asserted type `list[int]`
+ aliases_explicit.py:53:5: error[type-assertion-failure] Argument does not have asserted type `tuple[str, ...] | list[str]`
+ aliases_explicit.py:54:5: error[type-assertion-failure] Argument does not have asserted type `tuple[int, int, int, str]`
+@@ -23,8 +21,6 @@
+ aliases_explicit.py:101:6: error[call-non-callable] Object of type `UnionType` is not callable
+ aliases_implicit.py:54:24: error[invalid-type-form] List literals are not allowed in this context in a type expression: Did you mean `tuple[str, str]`?
+ aliases_implicit.py:60:5: error[type-assertion-failure] Argument does not have asserted type `int | str`
+-aliases_implicit.py:61:5: error[type-assertion-failure] Argument does not have asserted type `int | None`
+-aliases_implicit.py:62:5: error[type-assertion-failure] Argument does not have asserted type `list[int | None]`
+ aliases_implicit.py:63:5: error[type-assertion-failure] Argument does not have asserted type `list[int]`
+ aliases_implicit.py:64:5: error[type-assertion-failure] Argument does not have asserted type `tuple[str, ...] | list[str]`
+ aliases_implicit.py:65:5: error[type-assertion-failure] Argument does not have asserted type `tuple[int, int, int, str]`
+@@ -47,6 +43,7 @@
+ aliases_implicit.py:133:6: error[call-non-callable] Object of type `UnionType` is not callable
+ aliases_newtype.py:15:1: error[type-assertion-failure] Argument does not have asserted type `int`
+ aliases_newtype.py:18:1: error[invalid-assignment] Object of type `NewType` is not assignable to `type`
++aliases_newtype.py:23:16: error[invalid-argument-type] Argument to function `isinstance` is incorrect: Expected `type | UnionType | tuple[Unknown, ...]`, found `NewType`
+ aliases_newtype.py:26:21: error[invalid-base] Invalid class base with type `NewType`
+ aliases_newtype.py:63:43: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 3, got 4
+ aliases_type_statement.py:10:19: error[too-many-positional-arguments] Too many positional arguments: expected 1, got 3
+@@ -54,6 +51,7 @@
+ aliases_type_statement.py:19:1: error[call-non-callable] Object of type `TypeAliasType` is not callable
+ aliases_type_statement.py:23:7: error[unresolved-attribute] Object of type `typing.TypeAliasType` has no attribute `other_attrib`
+ aliases_type_statement.py:26:18: error[invalid-base] Invalid class base with type `typing.TypeAliasType`
++aliases_type_statement.py:31:22: error[invalid-argument-type] Argument to function `isinstance` is incorrect: Expected `type | UnionType | tuple[Unknown, ...]`, found `typing.TypeAliasType`
+ aliases_type_statement.py:37:22: error[invalid-type-form] Function calls are not allowed in type expressions
+ aliases_type_statement.py:38:22: error[invalid-type-form] List literals are not allowed in this context in a type expression: Did you mean `tuple[int, str]`?
+ aliases_type_statement.py:39:22: error[invalid-type-form] Tuple literals are not allowed in this context in a type expression
+@@ -912,11 +910,17 @@
+ tuples_type_compat.py:47:5: error[invalid-assignment] Object of type `tuple[Any, ...]` is not assignable to `tuple[int, *tuple[str, ...]]`
+ tuples_type_compat.py:62:5: error[invalid-assignment] Object of type `tuple[int, ...]` is not assignable to `tuple[int, int]`
+ tuples_type_compat.py:75:9: error[type-assertion-failure] Argument does not have asserted type `tuple[int]`
++tuples_type_compat.py:76:9: error[type-assertion-failure] Argument does not have asserted type `@Todo(Support for `typing.TypeAlias`)`
+ tuples_type_compat.py:80:9: error[type-assertion-failure] Argument does not have asserted type `tuple[str, str] | tuple[int, int]`
++tuples_type_compat.py:81:9: error[type-assertion-failure] Argument does not have asserted type `@Todo(Support for `typing.TypeAlias`)`
+ tuples_type_compat.py:85:9: error[type-assertion-failure] Argument does not have asserted type `tuple[int, str, int]`
++tuples_type_compat.py:86:9: error[type-assertion-failure] Argument does not have asserted type `@Todo(Support for `typing.TypeAlias`)`
+ tuples_type_compat.py:101:13: error[type-assertion-failure] Argument does not have asserted type `tuple[int]`
++tuples_type_compat.py:102:13: error[type-assertion-failure] Argument does not have asserted type `@Todo(Support for `typing.TypeAlias`)`
+ tuples_type_compat.py:106:13: error[type-assertion-failure] Argument does not have asserted type `tuple[str, str] | tuple[int, int]`
++tuples_type_compat.py:107:13: error[type-assertion-failure] Argument does not have asserted type `@Todo(Support for `typing.TypeAlias`)`
+ tuples_type_compat.py:111:13: error[type-assertion-failure] Argument does not have asserted type `tuple[int, str, int]`
++tuples_type_compat.py:112:13: error[type-assertion-failure] Argument does not have asserted type `@Todo(Support for `typing.TypeAlias`)`
+ tuples_type_compat.py:126:13: error[type-assertion-failure] Argument does not have asserted type `tuple[int | str, str]`
+ tuples_type_compat.py:127:13: error[type-assertion-failure] Argument does not have asserted type `@Todo(Support for `typing.TypeAlias`)`
+ tuples_type_compat.py:129:13: error[type-assertion-failure] Argument does not have asserted type `tuple[int | str, int]`
+@@ -988,5 +992,5 @@
+ typeddicts_usage.py:28:17: error[missing-typed-dict-key] Missing required key 'name' in TypedDict `Movie` constructor
+ typeddicts_usage.py:28:18: error[invalid-key] Invalid key for TypedDict `Movie`: Unknown key &quot;title&quot;
+ typeddicts_usage.py:40:24: error[invalid-type-form] The special form `typing.TypedDict` is not allowed in type expressions. Did you mean to use a concrete TypedDict or `collections.abc.Mapping[str, object]` instead?
+-Found 990 diagnostics
++Found 994 diagnostics
+ WARN A fatal error occurred while checking some files. Not all project files were analyzed. See the diagnostics list above for details.
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @sharkdp on 2025-11-01 23:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-11-01 23:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-11-01 23:38</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">janus (https://github.com/aio-libs/janus)
+- All checks passed!
++ janus/__init__.py:714:18: error[invalid-argument-type] Argument to function `heappush` is incorrect: Argument type `T@PriorityQueue` does not satisfy upper bound `SupportsDunderLT[Any] | SupportsDunderGT[Any]` of type variable `SupportsRichComparisonT`
++ janus/__init__.py:714:36: error[invalid-argument-type] Argument to function `heappush` is incorrect: Argument type `T@PriorityQueue` does not satisfy upper bound `SupportsDunderLT[Any] | SupportsDunderGT[Any]` of type variable `SupportsRichComparisonT`
++ janus/__init__.py:717:24: error[invalid-argument-type] Argument to function `heappop` is incorrect: Argument type `T@PriorityQueue` does not satisfy upper bound `SupportsDunderLT[Any] | SupportsDunderGT[Any]` of type variable `SupportsRichComparisonT`
++ Found 3 diagnostics
+
+dacite (https://github.com/konradhalas/dacite)
+- dacite/types.py:180:54: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 23 diagnostics
++ Found 22 diagnostics
+
+bandersnatch (https://github.com/pypa/bandersnatch)
+- src/bandersnatch/mirror.py:263:16: error[invalid-return-type] Return type does not match returned value: expected `int`, found `Unknown | int | None`
++ src/bandersnatch/mirror.py:264:13: error[invalid-argument-type] Argument to function `max` is incorrect: Argument type `Unknown | int | None` does not satisfy upper bound `SupportsDunderLT[Any] | SupportsDunderGT[Any]` of type variable `SupportsRichComparisonT`
+
+websockets (https://github.com/aaugustin/websockets)
++ src/websockets/asyncio/connection.py:487:45: error[invalid-argument-type] Argument to bound method `send_text` is incorrect: Expected `bytes | bytearray | memoryview[Unknown]`, found `(Iterable[str | bytes | bytearray | memoryview[Unknown]] &amp; ~str) | bytes | bytearray | memoryview[Unknown] | (AsyncIterable[str | bytes | bytearray | memoryview[Unknown]] &amp; ~str)`
++ src/websockets/asyncio/connection.py:489:47: error[invalid-argument-type] Argument to bound method `send_binary` is incorrect: Expected `bytes | bytearray | memoryview[Unknown]`, found `(Iterable[str | bytes | bytearray | memoryview[Unknown]] &amp; ~str) | bytes | bytearray | memoryview[Unknown] | (AsyncIterable[str | bytes | bytearray | memoryview[Unknown]] &amp; ~str)`
+- src/websockets/legacy/protocol.py:548:34: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ src/websockets/sync/connection.py:486:45: error[invalid-argument-type] Argument to bound method `send_text` is incorrect: Expected `bytes | bytearray | memoryview[Unknown]`, found `(Iterable[str | bytes | bytearray | memoryview[Unknown]] &amp; ~str) | bytes | bytearray | memoryview[Unknown]`
++ src/websockets/sync/connection.py:488:47: error[invalid-argument-type] Argument to bound method `send_binary` is incorrect: Expected `bytes | bytearray | memoryview[Unknown]`, found `(Iterable[str | bytes | bytearray | memoryview[Unknown]] &amp; ~str) | bytes | bytearray | memoryview[Unknown]`
+- Found 39 diagnostics
++ Found 42 diagnostics
+
+paasta (https://github.com/yelp/paasta)
+- paasta_tools/long_running_service_tools.py:357:16: error[invalid-return-type] Return type does not match returned value: expected `int`, found `int | None`
++ paasta_tools/long_running_service_tools.py:357:50: error[invalid-argument-type] Argument to function `min` is incorrect: Argument type `int | None` does not satisfy upper bound `SupportsDunderLT[Any] | SupportsDunderGT[Any]` of type variable `SupportsRichComparisonT`
++ paasta_tools/long_running_service_tools.py:357:50: error[invalid-argument-type] Argument to function `min` is incorrect: Expected `int`, found `int | None`
+- Found 982 diagnostics
++ Found 983 diagnostics
+
+pylint (https://github.com/pycqa/pylint)
++ pylint/checkers/base_checker.py:191:13: error[invalid-assignment] Not enough values to unpack: Expected 4
++ pylint/checkers/base_checker.py:194:13: error[invalid-assignment] Too many values to unpack: Expected 3
+- Found 195 diagnostics
++ Found 197 diagnostics
+
+starlette (https://github.com/encode/starlette)
++ starlette/responses.py:255:25: warning[possibly-missing-attribute] Attribute `encode` may be missing on object of type `str | bytes | memoryview[Unknown]`
+- Found 142 diagnostics
++ Found 143 diagnostics
+
+alerta (https://github.com/alerta/alerta)
++ alerta/views/alerts.py:332:26: error[invalid-argument-type] Argument to function `max` is incorrect: Argument type `Unknown | None` does not satisfy upper bound `SupportsDunderLT[Any] | SupportsDunderGT[Any]` of type variable `SupportsRichComparisonT`
+- Found 525 diagnostics
++ Found 526 diagnostics
+
+pytest (https://github.com/pytest-dev/pytest)
+- src/_pytest/python.py:1569:16: error[invalid-return-type] Return type does not match returned value: expected `Scope`, found `Scope | Unknown | (((str, Config, /) -&gt; @Todo) &amp; ~(() -&gt; object) &amp; ~str)`
++ src/_pytest/python.py:1569:20: error[invalid-argument-type] Argument to function `min` is incorrect: Argument type `Scope | Unknown | (((str, Config, /) -&gt; @Todo) &amp; ~(() -&gt; object) &amp; ~str)` does not satisfy upper bound `SupportsDunderLT[Any] | SupportsDunderGT[Any]` of type variable `SupportsRichComparisonT`
++ src/_pytest/skipping.py:294:56: error[invalid-argument-type] Argument to function `isinstance` is incorrect: Expected `type | UnionType | tuple[Unknown, ...]`, found `type[BaseException] | tuple[type[BaseException], ...] | AbstractRaises[BaseException]`
+- src/_pytest/unittest.py:244:29: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- src/_pytest/unittest.py:581:28: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- src/_pytest/unittest.py:591:28: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- src/_pytest/unittest.py:602:28: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 484 diagnostics
++ Found 481 diagnostics
+
+scrapy (https://github.com/scrapy/scrapy)
++ scrapy/http/request/form.py:109:19: warning[redundant-cast] Value is already of type `Iterable[str]`
++ tests/test_linkextractors.py:642:63: error[invalid-argument-type] Argument to function `isinstance` is incorrect: Expected `type | UnionType | tuple[Unknown, ...]`, found `type | None`
++ tests/test_loader.py:100:40: error[invalid-argument-type] Argument to function `isinstance` is incorrect: Expected `type | UnionType | tuple[Unknown, ...]`, found `type | None`
++ tests/test_loader.py:108:40: error[invalid-argument-type] Argument to function `isinstance` is incorrect: Expected `type | UnionType | tuple[Unknown, ...]`, found `type | None`
++ tests/test_loader.py:117:40: error[invalid-argument-type] Argument to function `isinstance` is incorrect: Expected `type | UnionType | tuple[Unknown, ...]`, found `type | None`
++ tests/test_loader.py:126:40: error[invalid-argument-type] Argument to function `isinstance` is incorrect: Expected `type | UnionType | tuple[Unknown, ...]`, found `type | None`
++ tests/test_loader.py:135:40: error[invalid-argument-type] Argument to function `isinstance` is incorrect: Expected `type | UnionType | tuple[Unknown, ...]`, found `type | None`
++ tests/test_loader.py:144:40: error[invalid-argument-type] Argument to function `isinstance` is incorrect: Expected `type | UnionType | tuple[Unknown, ...]`, found `type | None`
++ tests/test_loader.py:155:40: error[invalid-argument-type] Argument to function `isinstance` is incorrect: Expected `type | UnionType | tuple[Unknown, ...]`, found `type | None`
++ tests/test_loader.py:164:40: error[invalid-argument-type] Argument to function `isinstance` is incorrect: Expected `type | UnionType | tuple[Unknown, ...]`, found `type | None`
+- Found 1689 diagnostics
++ Found 1699 diagnostics
+
+dulwich (https://github.com/dulwich/dulwich)
++ dulwich/porcelain.py:3710:63: error[invalid-argument-type] Argument to bound method `changes_from_tree` is incorrect: Expected `bytes`, found `Unknown | None`
+- Found 175 diagnostics
++ Found 176 diagnostics
+
+beartype (https://github.com/beartype/beartype)
+- beartype/_check/convert/_reduce/_pep/redpep484612646.py:736:36: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- beartype/_check/metadata/hint/hintsmeta.py:632:35: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- beartype/_util/cls/pep/clspep3119.py:766:32: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- beartype/_util/func/arg/utilfuncargget.py:224:11: error[invalid-type-form] Variable of type `_SpecialForm` is not allowed in a type expression
+- beartype/_util/func/arg/utilfuncarglen.py:159:11: error[invalid-type-form] Variable of type `_SpecialForm` is not allowed in a type expression
+- beartype/_util/func/arg/utilfuncarglen.py:210:50: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- beartype/_util/func/arg/utilfuncarglen.py:288:11: error[invalid-type-form] Variable of type `_SpecialForm` is not allowed in a type expression
+- beartype/_util/func/arg/utilfuncargtest.py:35:11: error[invalid-type-form] Variable of type `_SpecialForm` is not allowed in a type expression
+- beartype/_util/func/arg/utilfuncargtest.py:165:11: error[invalid-type-form] Variable of type `_SpecialForm` is not allowed in a type expression
+- beartype/_util/func/utilfunccodeobj.py:36:11: error[invalid-type-form] Variable of type `_SpecialForm` is not allowed in a type expression
+- beartype/_util/func/utilfunccodeobj.py:272:37: error[invalid-type-form] Variable of type `_SpecialForm` is not allowed in a type expression
+- beartype/_util/func/utilfuncfile.py:44:24: error[invalid-type-form] Variable of type `_SpecialForm` is not allowed in a type expression
+- beartype/_util/func/utilfuncfile.py:69:37: error[invalid-type-form] Variable of type `_SpecialForm` is not allowed in a type expression
+- beartype/_util/func/utilfunctest.py:74:11: error[invalid-type-form] Variable of type `_SpecialForm` is not allowed in a type expression
+- beartype/_util/hint/pep/proposal/pep484612646.py:248:27: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- beartype/_util/hint/pep/utilpepget.py:285:27: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 517 diagnostics
++ Found 501 diagnostics
+
+tornado (https://github.com/tornadoweb/tornado)
+- tornado/queues.py:382:24: error[invalid-argument-type] Argument to function `heappush` is incorrect: Expected `list[_T@_put]`, found `Unknown | None | list[Unknown] | deque[Unknown]`
++ tornado/queues.py:382:24: error[invalid-argument-type] Argument to function `heappush` is incorrect: Expected `list[Unknown]`, found `Unknown | None | list[Unknown] | deque[Unknown]`
++ tornado/queues.py:382:37: error[invalid-argument-type] Argument to function `heappush` is incorrect: Argument type `_T@_put` does not satisfy upper bound `SupportsDunderLT[Any] | SupportsDunderGT[Any]` of type variable `SupportsRichComparisonT`
+- Found 331 diagnostics
++ Found 332 diagnostics
+
+schema_salad (https://github.com/common-workflow-language/schema_salad)
++ schema_salad/metaschema.py:351:9: error[invalid-assignment] Object of type `(MutableMapping[str, Any] &amp; ~Top[MutableSequence[Unknown]]) | (int &amp; Top[MutableMapping[Unknown, Unknown]] &amp; ~Top[MutableSequence[Unknown]]) | (float &amp; Top[MutableMapping[Unknown, Unknown]] &amp; ~Top[MutableSequence[Unknown]]) | (str &amp; Top[MutableMapping[Unknown, Unknown]] &amp; ~Top[MutableSequence[Unknown]])` is not assignable to `MutableMapping[str, Any]`
++ schema_salad/python_codegen_support.py:348:9: error[invalid-assignment] Object of type `(MutableMapping[str, Any] &amp; ~Top[MutableSequence[Unknown]]) | (int &amp; Top[MutableMapping[Unknown, Unknown]] &amp; ~Top[MutableSequence[Unknown]]) | (float &amp; Top[MutableMapping[Unknown, Unknown]] &amp; ~Top[MutableSequence[Unknown]]) | (str &amp; Top[MutableMapping[Unknown, Unknown]] &amp; ~Top[MutableSequence[Unknown]])` is not assignable to `MutableMapping[str, Any]`
++ schema_salad/schema.py:539:21: error[invalid-argument-type] Argument to bound method `get` is incorrect: Expected `Never`, found `Literal[&quot;name&quot;]`
++ schema_salad/schema.py:541:17: error[invalid-assignment] Method `__setitem__` of type `(bound method MutableMapping[str, Any].__setitem__(key: str, value: Any, /) -&gt; None) | (bound method Top[MutableMapping[Unknown, Unknown]].__setitem__(key: Never, value: Never, /) -&gt; None)` cannot be called with a key of type `Literal[&quot;name&quot;]` and a value of type `str` on object of type `MutableMapping[str, Any] | (MutableSequence[Any] &amp; Top[MutableMapping[Unknown, Unknown]]) | (str &amp; Top[MutableMapping[Unknown, Unknown]])`
++ schema_salad/schema.py:543:17: error[invalid-assignment] Method `__setitem__` of type `(bound method MutableMapping[str, Any].__setitem__(key: str, value: Any, /) -&gt; None) | (bound method Top[MutableMapping[Unknown, Unknown]].__setitem__(key: Never, value: Never, /) -&gt; None)` cannot be called with a key of type `Literal[&quot;name&quot;]` and a value of type `str` on object of type `MutableMapping[str, Any] | (MutableSequence[Any] &amp; Top[MutableMapping[Unknown, Unknown]]) | (str &amp; Top[MutableMapping[Unknown, Unknown]])`
++ schema_salad/schema.py:555:51: error[invalid-argument-type] Argument to bound method `get` is incorrect: Expected `Never`, found `Literal[&quot;abstract&quot;]`
++ schema_salad/schema.py:563:17: error[invalid-assignment] Method `__setitem__` of type `(bound method MutableMapping[str, Any].__setitem__(key: str, value: Any, /) -&gt; None) | (bound method Top[MutableMapping[Unknown, Unknown]].__setitem__(key: Never, value: Never, /) -&gt; None)` cannot be called with a key of type `Literal[&quot;type&quot;, &quot;items&quot;, &quot;names&quot;, &quot;values&quot;, &quot;fields&quot;]` and a value of type `MutableMapping[str, Any] | MutableSequence[Any] | str | MutableMapping[str, str] | list[Any | MutableMapping[str, str] | str]` on object of type `MutableMapping[str, Any] | (MutableSequence[Any] &amp; Top[MutableMapping[Unknown, Unknown]]) | (str &amp; Top[MutableMapping[Unknown, Unknown]])`
++ schema_salad/schema.py:572:13: error[invalid-assignment] Method `__setitem__` of type `(bound method MutableMapping[str, Any].__setitem__(key: str, value: Any, /) -&gt; None) | (bound method Top[MutableMapping[Unknown, Unknown]].__setitem__(key: Never, value: Never, /) -&gt; None)` cannot be called with a key of type `Literal[&quot;symbols&quot;]` and a value of type `list[str | Unknown]` on object of type `MutableMapping[str, Any] | (MutableSequence[Any] &amp; Top[MutableMapping[Unknown, Unknown]]) | (str &amp; Top[MutableMapping[Unknown, Unknown]])`
++ schema_salad/sourceline.py:203:25: error[invalid-argument-type] Argument to function `sorted` is incorrect: Argument type `object` does not satisfy upper bound `SupportsDunderLT[Any] | SupportsDunderGT[Any]` of type variable `SupportsRichComparisonT`
+- Found 188 diagnostics
++ Found 197 diagnostics
+
+cki-lib (https://gitlab.com/cki-project/cki-lib)
++ cki_lib/footer.py:52:45: error[invalid-argument-type] Argument to function `files` is incorrect: Expected `str | ModuleType`, found `str | None`
+- Found 187 diagnostics
++ Found 188 diagnostics
+
+psycopg (https://github.com/psycopg/psycopg)
++ psycopg/psycopg/errors.py:537:20: warning[possibly-missing-attribute] Attribute `error_field` may be missing on object of type `PGresult | dict[int, bytes | None] | None`
+- Found 684 diagnostics
++ Found 685 diagnostics
+
+koda-validate (https://github.com/keithasaurus/koda-validate)
++ koda_validate/serialization/errors.py:66:42: error[invalid-argument-type] Argument to function `sorted` is incorrect: Argument type `object` does not satisfy upper bound `SupportsDunderLT[Any] | SupportsDunderGT[Any]` of type variable `SupportsRichComparisonT`
++ koda_validate/serialization/json_schema.py:313:38: error[invalid-argument-type] Argument to function `sorted` is incorrect: Argument type `object` does not satisfy upper bound `SupportsDunderLT[Any] | SupportsDunderGT[Any]` of type variable `SupportsRichComparisonT`
+- Found 70 diagnostics
++ Found 72 diagnostics
+
+xarray (https://github.com/pydata/xarray)
++ asv_bench/benchmarks/dataset_io.py:755:25: error[invalid-argument-type] Argument to function `open_dataset` is incorrect: Expected `str | PathLike[Any] | ReadBuffer[Unknown] | ... omitted 3 union elements`, found `None`
++ xarray/backends/h5netcdf_.py:465:16: error[invalid-return-type] Return type does not match returned value: expected `str | ReadBuffer[Unknown] | AbstractDataStore`, found `str | PathLike[Any] | ReadBuffer[Unknown] | ... omitted 3 union elements`
++ xarray/backends/netCDF4_.py:729:36: error[invalid-argument-type] Argument to function `_has_netcdf_ext` is incorrect: Expected `str | PathLike[Unknown]`, found `str | PathLike[Any] | ReadBuffer[Unknown] | ... omitted 3 union elements`
++ xarray/backends/netCDF4_.py:732:43: error[non-subscriptable] Cannot subscript object of type `PathLike[Any]` with no `__getitem__` method
++ xarray/backends/netCDF4_.py:732:43: error[non-subscriptable] Cannot subscript object of type `ReadBuffer[Unknown]` with no `__getitem__` method
++ xarray/backends/netCDF4_.py:732:43: error[non-subscriptable] Cannot subscript object of type `AbstractDataStore` with no `__getitem__` method
++ xarray/compat/npcompat.py:73:38: error[invalid-argument-type] Argument to function `isinstance` is incorrect: Expected `type | UnionType | tuple[Unknown, ...]`, found `set[Unknown | &lt;class 'bool'&gt; | &lt;class 'signedinteger'&gt; | ... omitted 5 union elements]`
+- xarray/core/dataset.py:9104:32: warning[possibly-missing-attribute] Attribute `keys` may be missing on object of type `@Todo | None`
++ xarray/core/dataset.py:9104:32: warning[possibly-missing-attribute] Attribute `keys` may be missing on object of type `int | float | tuple[int | float, int | float] | Mapping[Any, int | float | tuple[int | float, int | float] | Mapping[Any, int | float | tuple[int | float, int | float]]] | None`
++ xarray/core/dataset.py:9105:52: error[invalid-argument-type] Method `__getitem__` of type `Overload[(index: SupportsIndex, /) -&gt; int | float, (index: slice[Any, Any, Any], /) -&gt; tuple[int | float, ...]]` cannot be called with key of type `Hashable` on object of type `tuple[int | float, int | float]`
++ xarray/core/dataset.py:9105:52: error[non-subscriptable] Cannot subscript object of type `int` with no `__getitem__` method
++ xarray/core/dataset.py:9105:52: error[non-subscriptable] Cannot subscript object of type `float` with no `__getitem__` method
+- xarray/core/dataset.py:9106:55: warning[possibly-missing-attribute] Attribute `keys` may be missing on object of type `@Todo | None`
+- xarray/core/dataset.py:9108:46: warning[possibly-missing-attribute] Attribute `items` may be missing on object of type `@Todo | None`
+- xarray/core/dataset.py:9128:43: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ xarray/core/dataset.py:9106:55: warning[possibly-missing-attribute] Attribute `keys` may be missing on object of type `int | float | tuple[int | float, int | float] | Mapping[Any, int | float | tuple[int | float, int | float] | Mapping[Any, int | float | tuple[int | float, int | float]]] | None`
++ xarray/core/dataset.py:9108:46: warning[possibly-missing-attribute] Attribute `items` may be missing on object of type `int | float | tuple[int | float, int | float] | Mapping[Any, int | float | tuple[int | float, int | float] | Mapping[Any, int | float | tuple[int | float, int | float]]] | None`
++ xarray/core/dataset.py:9118:21: error[invalid-argument-type] Argument to bound method `pad` is incorrect: Expected `int | float | tuple[int | float, int | float] | Mapping[Any, int | float | tuple[int | float, int | float]] | None`, found `Unknown | int | float | ... omitted 4 union elements`
+- xarray/core/indexing.py:508:33: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ xarray/core/indexing.py:504:38: warning[possibly-missing-attribute] Attribute `dtype` may be missing on object of type `(ndarray[Any, dtype[generic[Any]]] &amp; ~int &amp; ~Top[integer[Any]]) | bool`
++ xarray/core/variable.py:2224:49: error[invalid-argument-type] Argument to bound method `pad` is incorrect: Expected `int | float | tuple[int | float, int | float] | Mapping[Any, int | float | tuple[int | float, int | float]] | None`, found `Unknown | ReprObject`
+- xarray/tests/test_backends.py:719:54: error[non-subscriptable] Cannot subscript object of type `Timestamp` with no `__getitem__` method
+- xarray/tests/test_backends.py:5816:54: error[non-subscriptable] Cannot subscript object of type `Timestamp` with no `__getitem__` method
++ xarray/tests/test_backends_api.py:299:17: error[invalid-argument-type] Argument to function `open_dataset` is incorrect: Expected `str | PathLike[Any] | ReadBuffer[Unknown] | ... omitted 3 union elements`, found `Dataset`
+- xarray/tests/test_coding_times.py:486:55: error[unknown-argument] Argument `dtype` does not match any known parameter of bound method `to_numpy`
+- Found 1735 diagnostics
++ Found 1744 diagnostics
+
+Tanjun (https://github.com/FasterSpeeding/Tanjun)
++ tanjun/annotations.py:1521:13: error[invalid-assignment] Object of type `dict[str, _ChoiceT@__init__]` is not assignable to attribute `_choices` of type `dict[str, int | float | str]`
++ tanjun/annotations.py:2724:26: error[invalid-argument-type] Argument to function `parse_annotated_args` is incorrect: Expected `SlashCommand[Any] | MessageCommand[Any]`, found `_CommandUnionT@with_annotated_args &amp; ~AlwaysFalsy`
+- Found 143 diagnostics
++ Found 145 diagnostics
+
+freqtrade (https://github.com/freqtrade/freqtrade)
++ freqtrade/data/history/datahandlers/idatahandler.py:209:13: error[call-non-callable] Object of type `Timestamp` is not callable
++ freqtrade/data/history/datahandlers/idatahandler.py:210:13: error[call-non-callable] Object of type `Timestamp` is not callable
++ freqtrade/main.py:81:18: error[invalid-argument-type] Argument to function `exit` is incorrect: Expected `str | int | None`, found `Literal[1, 0, 2] | Any | SystemExit`
++ freqtrade/rpc/telegram.py:555:49: error[invalid-key] Invalid key for TypedDict `RPCStatusMsg`: Unknown key &quot;pair&quot;
++ freqtrade/rpc/telegram.py:555:49: error[invalid-key] Invalid key for TypedDict `RPCStrategyMsg`: Unknown key &quot;pair&quot;
++ freqtrade/rpc/telegram.py:555:49: error[invalid-key] Invalid key for TypedDict `RPCWhitelistMsg`: Unknown key &quot;pair&quot; - did you mean &quot;data&quot;?
++ freqtrade/rpc/telegram.py:555:49: error[invalid-key] Invalid key for TypedDict `RPCAnalyzedDFMsg`: Unknown key &quot;pair&quot; - did you mean &quot;data&quot;?
++ freqtrade/rpc/telegram.py:555:49: error[invalid-key] Invalid key for TypedDict `RPCNewCandleMsg`: Unknown key &quot;pair&quot; - did you mean &quot;data&quot;?
++ freqtrade/rpc/telegram.py:556:26: error[invalid-key] Invalid key for TypedDict `RPCStatusMsg`: Unknown key &quot;trade_id&quot;
++ freqtrade/rpc/telegram.py:556:26: error[invalid-key] Invalid key for TypedDict `RPCStrategyMsg`: Unknown key &quot;trade_id&quot;
++ freqtrade/rpc/telegram.py:556:26: error[invalid-key] Invalid key for TypedDict `RPCProtectionMsg`: Unknown key &quot;trade_id&quot;
++ freqtrade/rpc/telegram.py:556:26: error[invalid-key] Invalid key for TypedDict `RPCWhitelistMsg`: Unknown key &quot;trade_id&quot;
++ freqtrade/rpc/telegram.py:556:26: error[invalid-key] Invalid key for TypedDict `RPCAnalyzedDFMsg`: Unknown key &quot;trade_id&quot;
++ freqtrade/rpc/telegram.py:556:26: error[invalid-key] Invalid key for TypedDict `RPCNewCandleMsg`: Unknown key &quot;trade_id&quot;
++ freqtrade/rpc/telegram.py:556:54: error[invalid-key] Invalid key for TypedDict `RPCNewCandleMsg`: Unknown key &quot;reason&quot;
++ freqtrade/rpc/telegram.py:556:54: error[invalid-key] Invalid key for TypedDict `RPCExitMsg`: Unknown key &quot;reason&quot;
++ freqtrade/rpc/telegram.py:556:54: error[invalid-key] Invalid key for TypedDict `RPCAnalyzedDFMsg`: Unknown key &quot;reason&quot;
++ freqtrade/rpc/telegram.py:556:54: error[invalid-key] Invalid key for TypedDict `RPCStatusMsg`: Unknown key &quot;reason&quot;
++ freqtrade/rpc/telegram.py:556:54: error[invalid-key] Invalid key for TypedDict `RPCEntryMsg`: Unknown key &quot;reason&quot;
++ freqtrade/rpc/telegram.py:556:54: error[invalid-key] Invalid key for TypedDict `RPCStrategyMsg`: Unknown key &quot;reason&quot;
++ freqtrade/rpc/telegram.py:556:54: error[invalid-key] Invalid key for TypedDict `RPCWhitelistMsg`: Unknown key &quot;reason&quot;
++ freqtrade/rpc/telegram.py:561:54: error[invalid-key] Invalid key for TypedDict `RPCStatusMsg`: Unknown key &quot;reason&quot;
++ freqtrade/rpc/telegram.py:561:54: error[invalid-key] Invalid key for TypedDict `RPCStrategyMsg`: Unknown key &quot;reason&quot;
++ freqtrade/rpc/telegram.py:561:54: error[invalid-key] Invalid key for TypedDict `RPCWhitelistMsg`: Unknown key &quot;reason&quot;
++ freqtrade/rpc/telegram.py:561:54: error[invalid-key] Invalid key for TypedDict `RPCEntryMsg`: Unknown key &quot;reason&quot;
++ freqtrade/rpc/telegram.py:561:54: error[invalid-key] Invalid key for TypedDict `RPCExitMsg`: Unknown key &quot;reason&quot;
++ freqtrade/rpc/telegram.py:561:54: error[invalid-key] Invalid key for TypedDict `RPCAnalyzedDFMsg`: Unknown key &quot;reason&quot;
++ freqtrade/rpc/telegram.py:561:54: error[invalid-key] Invalid key for TypedDict `RPCNewCandleMsg`: Unknown key &quot;reason&quot;
++ freqtrade/rpc/telegram.py:562:25: error[invalid-key] Invalid key for TypedDict `RPCStatusMsg`: Unknown key &quot;pair&quot;
++ freqtrade/rpc/telegram.py:562:25: error[invalid-key] Invalid key for TypedDict `RPCStrategyMsg`: Unknown key &quot;pair&quot;
++ freqtrade/rpc/telegram.py:562:25: error[invalid-key] Invalid key for TypedDict `RPCWhitelistMsg`: Unknown key &quot;pair&quot; - did you mean &quot;data&quot;?
++ freqtrade/rpc/telegram.py:562:25: error[invalid-key] Invalid key for TypedDict `RPCAnalyzedDFMsg`: Unknown key &quot;pair&quot; - did you mean &quot;data&quot;?
++ freqtrade/rpc/telegram.py:562:25: error[invalid-key] Invalid key for TypedDict `RPCNewCandleMsg`: Unknown key &quot;pair&quot; - did you mean &quot;data&quot;?
++ freqtrade/rpc/telegram.py:562:62: error[invalid-key] Invalid key for TypedDict `RPCStatusMsg`: Unknown key &quot;lock_end_time&quot;
++ freqtrade/rpc/telegram.py:562:62: error[invalid-key] Invalid key for TypedDict `RPCEntryMsg`: Unknown key &quot;lock_end_time&quot;
++ freqtrade/rpc/telegram.py:562:62: error[invalid-key] Invalid key for TypedDict `RPCCancelMsg`: Unknown key &quot;lock_end_time&quot;
++ freqtrade/rpc/telegram.py:562:62: error[invalid-key] Invalid key for TypedDict `RPCExitMsg`: Unknown key &quot;lock_end_time&quot;
++ freqtrade/rpc/telegram.py:562:62: error[invalid-key] Invalid key for TypedDict `RPCExitCancelMsg`: Unknown key &quot;lock_end_time&quot;
++ freqtrade/rpc/telegram.py:562:62: error[invalid-key] Invalid key for TypedDict `RPCAnalyzedDFMsg`: Unknown key &quot;lock_end_time&quot;
++ freqtrade/rpc/telegram.py:562:62: error[invalid-key] Invalid key for TypedDict `RPCNewCandleMsg`: Unknown key &quot;lock_end_time&quot;
++ freqtrade/rpc/telegram.py:562:62: error[invalid-key] Invalid key for TypedDict `RPCStrategyMsg`: Unknown key &quot;lock_end_time&quot;
++ freqtrade/rpc/telegram.py:562:62: error[invalid-key] Invalid key for TypedDict `RPCWhitelistMsg`: Unknown key &quot;lock_end_time&quot;
++ freqtrade/rpc/telegram.py:567:54: error[invalid-key] Invalid key for TypedDict `RPCStatusMsg`: Unknown key &quot;reason&quot;
++ freqtrade/rpc/telegram.py:567:54: error[invalid-key] Invalid key for TypedDict `RPCStrategyMsg`: Unknown key &quot;reason&quot;
++ freqtrade/rpc/telegram.py:567:54: error[invalid-key] Invalid key for TypedDict `RPCWhitelistMsg`: Unknown key &quot;reason&quot;
++ freqtrade/rpc/telegram.py:567:54: error[invalid-key] Invalid key for TypedDict `RPCEntryMsg`: Unknown key &quot;reason&quot;
++ freqtrade/rpc/telegram.py:567:54: error[invalid-key] Invalid key for TypedDict `RPCExitMsg`: Unknown key &quot;reason&quot;
++ freqtrade/rpc/telegram.py:567:54: error[invalid-key] Invalid key for TypedDict `RPCAnalyzedDFMsg`: Unknown key &quot;reason&quot;
++ freqtrade/rpc/telegram.py:567:54: error[invalid-key] Invalid key for TypedDict `RPCNewCandleMsg`: Unknown key &quot;reason&quot;
++ freqtrade/rpc/telegram.py:568:58: error[invalid-key] Invalid key for TypedDict `RPCWhitelistMsg`: Unknown key &quot;lock_end_time&quot;
++ freqtrade/rpc/telegram.py:568:58: error[invalid-key] Invalid key for TypedDict `RPCEntryMsg`: Unknown key &quot;lock_end_time&quot;
++ freqtrade/rpc/telegram.py:568:58: error[invalid-key] Invalid key for TypedDict `RPCCancelMsg`: Unknown key &quot;lock_end_time&quot;
++ freqtrade/rpc/telegram.py:568:58: error[invalid-key] Invalid key for TypedDict `RPCExitMsg`: Unknown key &quot;lock_end_time&quot;
++ freqtrade/rpc/telegram.py:568:58: error[invalid-key] Invalid key for TypedDict `RPCExitCancelMsg`: Unknown key &quot;lock_end_time&quot;
++ freqtrade/rpc/telegram.py:568:58: error[invalid-key] Invalid key for TypedDict `RPCAnalyzedDFMsg`: Unknown key &quot;lock_end_time&quot;
++ freqtrade/rpc/telegram.py:568:58: error[invalid-key] Invalid key for TypedDict `RPCNewCandleMsg`: Unknown key &quot;lock_end_time&quot;
++ freqtrade/rpc/telegram.py:568:58: error[invalid-key] Invalid key for TypedDict `RPCStatusMsg`: Unknown key &quot;lock_end_time&quot;
++ freqtrade/rpc/telegram.py:568:58: error[invalid-key] Invalid key for TypedDict `RPCStrategyMsg`: Unknown key &quot;lock_end_time&quot;
++ freqtrade/rpc/telegram.py:572:41: error[invalid-key] Invalid key for TypedDict `RPCStrategyMsg`: Unknown key &quot;status&quot;
++ freqtrade/rpc/telegram.py:572:41: error[invalid-key] Invalid key for TypedDict `RPCProtectionMsg`: Unknown key &quot;status&quot;
++ freqtrade/rpc/telegram.py:572:41: error[invalid-key] Invalid key for TypedDict `RPCWhitelistMsg`: Unknown key &quot;status&quot;
++ freqtrade/rpc/telegram.py:572:41: error[invalid-key] Invalid key for TypedDict `RPCEntryMsg`: Unknown key &quot;status&quot;
++ freqtrade/rpc/telegram.py:572:41: error[invalid-key] Invalid key for TypedDict `RPCCancelMsg`: Unknown key &quot;status&quot;
++ freqtrade/rpc/telegram.py:572:41: error[invalid-key] Invalid key for TypedDict `RPCExitMsg`: Unknown key &quot;status&quot;
++ freqtrade/rpc/telegram.py:572:41: error[invalid-key] Invalid key for TypedDict `RPCExitCancelMsg`: Unknown key &quot;status&quot;
++ freqtrade/rpc/telegram.py:572:41: error[invalid-key] Invalid key for TypedDict `RPCAnalyzedDFMsg`: Unknown key &quot;status&quot;
++ freqtrade/rpc/telegram.py:572:41: error[invalid-key] Invalid key for TypedDict `RPCNewCandleMsg`: Unknown key &quot;status&quot;
++ freqtrade/rpc/telegram.py:575:59: error[invalid-key] Invalid key for TypedDict `RPCStrategyMsg`: Unknown key &quot;status&quot;
++ freqtrade/rpc/telegram.py:575:59: error[invalid-key] Invalid key for TypedDict `RPCProtectionMsg`: Unknown key &quot;status&quot;
++ freqtrade/rpc/telegram.py:575:59: error[invalid-key] Invalid key for TypedDict `RPCWhitelistMsg`: Unknown key &quot;status&quot;
++ freqtrade/rpc/telegram.py:575:59: error[invalid-key] Invalid key for TypedDict `RPCEntryMsg`: Unknown key &quot;status&quot;
++ freqtrade/rpc/telegram.py:575:59: error[invalid-key] Invalid key for TypedDict `RPCCancelMsg`: Unknown key &quot;status&quot;
++ freqtrade/rpc/telegram.py:575:59: error[invalid-key] Invalid key for TypedDict `RPCExitMsg`: Unknown key &quot;status&quot;
++ freqtrade/rpc/telegram.py:575:59: error[invalid-key] Invalid key for TypedDict `RPCExitCancelMsg`: Unknown key &quot;status&quot;
++ freqtrade/rpc/telegram.py:575:59: error[invalid-key] Invalid key for TypedDict `RPCAnalyzedDFMsg`: Unknown key &quot;status&quot;
++ freqtrade/rpc/telegram.py:575:59: error[invalid-key] Invalid key for TypedDict `RPCNewCandleMsg`: Unknown key &quot;status&quot;
++ freqtrade/rpc/telegram.py:578:59: error[invalid-key] Invalid key for TypedDict `RPCEntryMsg`: Unknown key &quot;status&quot;
++ freqtrade/rpc/telegram.py:578:59: error[invalid-key] Invalid key for TypedDict `RPCStrategyMsg`: Unknown key &quot;status&quot;
++ freqtrade/rpc/telegram.py:578:59: error[invalid-key] Invalid key for TypedDict `RPCCancelMsg`: Unknown key &quot;status&quot;
++ freqtrade/rpc/telegram.py:578:59: error[invalid-key] Invalid key for TypedDict `RPCExitMsg`: Unknown key &quot;status&quot;
++ freqtrade/rpc/telegram.py:578:59: error[invalid-key] Invalid key for TypedDict `RPCExitCancelMsg`: Unknown key &quot;status&quot;
++ freqtrade/rpc/telegram.py:578:59: error[invalid-key] Invalid key for TypedDict `RPCAnalyzedDFMsg`: Unknown key &quot;status&quot;
++ freqtrade/rpc/telegram.py:578:59: error[invalid-key] Invalid key for TypedDict `RPCNewCandleMsg`: Unknown key &quot;status&quot;
++ freqtrade/rpc/telegram.py:578:59: error[invalid-key] Invalid key for TypedDict `RPCWhitelistMsg`: Unknown key &quot;status&quot;
++ freqtrade/rpc/telegram.py:578:59: error[invalid-key] Invalid key for TypedDict `RPCProtectionMsg`: Unknown key &quot;status&quot;
++ freqtrade/rpc/telegram.py:581:30: error[invalid-key] Invalid key for TypedDict `RPCStrategyMsg`: Unknown key &quot;status&quot;
++ freqtrade/rpc/telegram.py:581:30: error[invalid-key] Invalid key for TypedDict `RPCProtectionMsg`: Unknown key &quot;status&quot;
++ freqtrade/rpc/telegram.py:581:30: error[invalid-key] Invalid key for TypedDict `RPCWhitelistMsg`: Unknown key &quot;status&quot;
++ freqtrade/rpc/telegram.py:581:30: error[invalid-key] Invalid key for TypedDict `RPCEntryMsg`: Unknown key &quot;status&quot;
++ freqtrade/rpc/telegram.py:581:30: error[invalid-key] Invalid key for TypedDict `RPCCancelMsg`: Unknown key &quot;status&quot;
++ freqtrade/rpc/telegram.py:581:30: error[invalid-key] Invalid key for TypedDict `RPCExitMsg`: Unknown key &quot;status&quot;
++ freqtrade/rpc/telegram.py:581:30: error[invalid-key] Invalid key for TypedDict `RPCExitCancelMsg`: Unknown key &quot;status&quot;
++ freqtrade/rpc/telegram.py:581:30: error[invalid-key] Invalid key for TypedDict `RPCAnalyzedDFMsg`: Unknown key &quot;status&quot;
++ freqtrade/rpc/telegram.py:581:30: error[invalid-key] Invalid key for TypedDict `RPCNewCandleMsg`: Unknown key &quot;status&quot;
++ freqtrade/rpc/telegram.py:583:30: error[invalid-key] Invalid key for TypedDict `RPCStatusMsg`: Unknown key &quot;msg&quot;
++ freqtrade/rpc/telegram.py:583:30: error[invalid-key] Invalid key for TypedDict `RPCWhitelistMsg`: Unknown key &quot;msg&quot;
++ freqtrade/rpc/telegram.py:583:30: error[invalid-key] Invalid key for TypedDict `RPCEntryMsg`: Unknown key &quot;msg&quot;
++ freqtrade/rpc/telegram.py:583:30: error[invalid-key] Invalid key for TypedDict `RPCCancelMsg`: Unknown key &quot;msg&quot;
++ freqtrade/rpc/telegram.py:583:30: error[invalid-key] Invalid key for TypedDict `RPCExitMsg`: Unknown key &quot;msg&quot;
++ freqtrade/rpc/telegram.py:583:30: error[invalid-key] Invalid key for TypedDict `RPCExitCancelMsg`: Unknown key &quot;msg&quot;
++ freqtrade/rpc/telegram.py:583:30: error[invalid-key] Invalid key for TypedDict `RPCAnalyzedDFMsg`: Unknown key &quot;msg&quot;
++ freqtrade/rpc/telegram.py:583:30: error[invalid-key] Invalid key for TypedDict `RPCNewCandleMsg`: Unknown key &quot;msg&quot;
++ freqtrade/rpc/telegram.py:583:30: error[invalid-key] Invalid key for TypedDict `RPCProtectionMsg`: Unknown key &quot;msg&quot; - did you mean &quot;id&quot;?
++ freqtrade/rpc/telegram.py:605:46: error[invalid-key] Invalid key for TypedDict `RPCStatusMsg`: Unknown key &quot;exit_reason&quot;
++ freqtrade/rpc/telegram.py:605:46: error[invalid-key] Invalid key for TypedDict `RPCStrategyMsg`: Unknown key &quot;exit_reason&quot;
++ freqtrade/rpc/telegram.py:605:46: error[invalid-key] Invalid key for TypedDict `RPCProtectionMsg`: Unknown key &quot;exit_reason&quot;
++ freqtrade/rpc/telegram.py:605:46: error[invalid-key] Invalid key for TypedDict `RPCWhitelistMsg`: Unknown key &quot;exit_reason&quot;
++ freqtrade/rpc/telegram.py:605:46: error[invalid-key] Invalid key for TypedDict `RPCEntryMsg`: Unknown key &quot;exit_reason&quot;
++ freqtrade/rpc/telegram.py:605:46: error[invalid-key] Invalid key for TypedDict `RPCCancelMsg`: Unknown key &quot;exit_reason&quot;
++ freqtrade/rpc/telegram.py:605:46: error[invalid-key] Invalid key for TypedDict `RPCAnalyzedDFMsg`: Unknown key &quot;exit_reason&quot;
++ freqtrade/rpc/telegram.py:605:46: error[invalid-key] Invalid key for TypedDict `RPCNewCandleMsg`: Unknown key &quot;exit_reason&quot;
++ freqtrade/strategy/parameters.py:223:21: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `int | float`, found `object`
++ freqtrade/strategy/parameters.py:223:35: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `int | float`, found `object`
++ freqtrade/strategy/parameters.py:275:13: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `int | float`, found `object`
++ freqtrade/strategy/parameters.py:275:27: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `int | float`, found `object`
++ freqtrade/strategy/parameters.py:287:23: error[unsupported-operator] Operator `*` is unsupported between objects of type `object` and `int`
++ freqtrade/strategy/parameters.py:288:24: error[unsupported-operator] Operator `*` is unsupported between objects of type `object` and `int`
+- Found 460 diagnostics
++ Found 577 diagnostics
+
+zope.interface (https://github.com/zopefoundation/zope.interface)
++ src/zope/interface/tests/test_sorting.py:50:9: error[invalid-argument-type] Argument to bound method `sort` is incorrect: Argument type `Unknown | &lt;class 'I1'&gt; | &lt;class 'I3'&gt; | ... omitted 4 union elements` does not satisfy upper bound `SupportsDunderLT[Any] | SupportsDunderGT[Any]` of type variable `SupportsRichComparisonT`
++ src/zope/interface/tests/test_sorting.py:55:9: error[invalid-argument-type] Argument to bound method `sort` is incorrect: Argument type `Unknown | &lt;class 'I1'&gt; | None | ... omitted 5 union elements` does not satisfy upper bound `SupportsDunderLT[Any] | SupportsDunderGT[Any]` of type variable `SupportsRichComparisonT`
++ src/zope/interface/tests/test_sorting.py:66:9: error[invalid-argument-type] Argument to bound method `sort` is incorrect: Argument type `Unknown | &lt;class 'I1'&gt;` does not satisfy upper bound `SupportsDunderLT[Any] | SupportsDunderGT[Any]` of type variable `SupportsRichComparisonT`
+- Found 410 diagnostics
++ Found 413 diagnostics
+
+trio (https://github.com/python-trio/trio)
++ src/trio/_tests/test_path.py:56:23: error[invalid-type-form] Variable of type `UnionType` is not allowed in a type expression
++ src/trio/_tests/test_path.py:56:39: error[invalid-type-form] Variable of type `UnionType` is not allowed in a type expression
++ src/trio/_tests/test_path.py:64:27: error[invalid-type-form] Variable of type `UnionType` is not allowed in a type expression
++ src/trio/_tests/test_path.py:64:50: error[invalid-type-form] Variable of type `UnionType` is not allowed in a type expression
++ src/trio/_tests/test_path.py:82:27: error[invalid-type-form] Variable of type `UnionType` is not allowed in a type expression
++ src/trio/_tests/test_path.py:82:42: error[invalid-type-form] Variable of type `UnionType` is not allowed in a type expression
++ src/trio/_tests/test_path.py:91:27: error[invalid-type-form] Variable of type `UnionType` is not allowed in a type expression
++ src/trio/_tests/test_path.py:91:49: error[invalid-type-form] Variable of type `UnionType` is not allowed in a type expression
++ src/trio/_tests/test_path.py:106:12: error[invalid-type-form] Variable of type `UnionType` is not allowed in a type expression
++ src/trio/_tests/test_path.py:107:12: error[invalid-type-form] Variable of type `UnionType` is not allowed in a type expression
+- Found 582 diagnostics
++ Found 592 diagnostics
+
+strawberry (https://github.com/strawberry-graphql/strawberry)
++ strawberry/experimental/pydantic/conversion.py:39:33: error[invalid-argument-type] Argument to function `isinstance` is incorrect: Expected `type | UnionType | tuple[Unknown, ...]`, found `object`
+- Found 379 diagnostics
++ Found 380 diagnostics
+
+cloud-init (https://github.com/canonical/cloud-init)
++ cloudinit/config/cc_mounts.py:189:25: error[invalid-argument-type] Argument to function `min` is incorrect: Argument type `Unknown | None | int` does not satisfy upper bound `SupportsDunderLT[Any] | SupportsDunderGT[Any]` of type variable `SupportsRichComparisonT`
+- Found 1140 diagnostics
++ Found 1141 diagnostics
+
+vision (https://github.com/pytorch/vision)
++ references/classification/utils.py:449:73: error[invalid-argument-type] Argument to function `isinstance` is incorrect: Expected `type | UnionType | tuple[Unknown, ...]`, found `list[type] | None`
++ test/datasets_utils.py:591:56: error[invalid-argument-type] Argument to function `isinstance` is incorrect: Expected `type | UnionType | tuple[Unknown, ...]`, found `Unknown | None`
+- test/datasets_utils.py:651:58: warning[possibly-missing-attribute] Attribute `__qualname__` may be missing on object of type `(((str, /) -&gt; Any) &amp; ~AlwaysFalsy) | (def open(fp: @Todo | IO[bytes], mode: Literal[&quot;r&quot;] = Literal[&quot;r&quot;], formats: list[str] | tuple[str, ...] | None = None) -&gt; ImageFile)`
++ test/datasets_utils.py:651:58: warning[possibly-missing-attribute] Attribute `__qualname__` may be missing on object of type `(((str, /) -&gt; Any) &amp; ~AlwaysFalsy) | (def open(fp: str | bytes | PathLike[str] | PathLike[bytes] | IO[bytes], mode: Literal[&quot;r&quot;] = Literal[&quot;r&quot;], formats: list[str] | tuple[str, ...] | None = None) -&gt; ImageFile)`
++ torchvision/prototype/datasets/utils/_encoded.py:54:33: error[invalid-argument-type] Argument to function `open` is incorrect: Expected `str | bytes | PathLike[str] | PathLike[bytes] | IO[bytes]`, found `ReadOnlyTensorBuffer`
+- Found 1500 diagnostics
++ Found 1503 diagnostics
+
+prefect (https://github.com/PrefectHQ/prefect)
++ src/integrations/prefect-dask/prefect_dask/task_runners.py:242:44: error[invalid-argument-type] Argument to function `isinstance` is incorrect: Expected `type | UnionType | tuple[Unknown, ...]`, found `typing.Callable`
++ src/integrations/prefect-databricks/prefect_databricks/rest.py:46:26: error[invalid-argument-type] Argument to function `isinstance` is incorrect: Expected `type | UnionType | tuple[Unknown, ...]`, found `typing.Dict`
++ src/integrations/prefect-email/prefect_email/credentials.py:54:24: error[invalid-argument-type] Argument to function `isinstance` is incorrect: Expected `type | UnionType | tuple[Unknown, ...]`, found `Enum`
++ src/integrations/prefect-gcp/prefect_gcp/models/cloud_run_v2.py:339:40: error[invalid-argument-type] Argument to function `isinstance` is incorrect: Expected `type | UnionType | tuple[Unknown, ...]`, found `typing.List`
++ src/integrations/prefect-kubernetes/tests/test_credentials.py:172:50: error[invalid-argument-type] Argument to function `isinstance` is incorrect: Expected `type | UnionType | tuple[Unknown, ...]`, found `typing.Dict`
++ src/integrations/prefect-kubernetes/tests/test_credentials.py:185:50: error[invalid-argument-type] Argument to function `isinstance` is incorrect: Expected `type | UnionType | tuple[Unknown, ...]`, found `typing.Dict`
++ src/integrations/prefect-kubernetes/tests/test_credentials.py:197:50: error[invalid-argument-type] Argument to function `isinstance` is incorrect: Expected `type | UnionType | tuple[Unknown, ...]`, found `typing.Dict`
+- Found 3301 diagnostics
++ Found 3308 diagnostics
+
+scikit-learn (https://github.com/scikit-learn/scikit-learn)
++ sklearn/datasets/_openml.py:71:26: error[invalid-argument-type] Argument to function `isinstance` is incorrect: Expected `type | UnionType | tuple[Unknown, ...]`, found `Exception`
++ sklearn/externals/_numpydoc/docscrape.py:687:38: error[invalid-argument-type] Argument to function `isinstance` is incorrect: Expected `type | UnionType | tuple[Unknown, ...]`, found `typing.Callable`
++ sklearn/externals/_numpydoc/docscrape.py:745:30: error[invalid-argument-type] Argument to function `isinstance` is incorrect: Expected `type | UnionType | tuple[Unknown, ...]`, found `typing.Callable`
++ sklearn/impute/_base.py:516:47: error[invalid-argument-type] Argument to function `isinstance` is incorrect: Expected `type | UnionType | tuple[Unknown, ...]`, found `typing.Callable`
++ sklearn/impute/_base.py:589:35: error[invalid-argument-type] Argument to function `isinstance` is incorrect: Expected `type | UnionType | tuple[Unknown, ...]`, found `typing.Callable`
++ sklearn/linear_model/_glm/glm.py:212:53: error[invalid-argument-type] Argument to function `min` is incorrect: Argument type `&lt;class 'float64'&gt;` does not satisfy upper bound `SupportsDunderLT[Any] | SupportsDunderGT[Any]` of type variable `SupportsRichComparisonT`
+- sklearn/neighbors/_lof.py:514:60: error[unsupported-operator] Operator `-` is unsupported between objects of type `Unknown | Literal[1] | None` and `Literal[1]`
++ sklearn/neighbors/_lof.py:288:40: error[invalid-argument-type] Argument to function `min` is incorrect: Argument type `Unknown | None` does not satisfy upper bound `SupportsDunderLT[Any] | SupportsDunderGT[Any]` of type variable `SupportsRichComparisonT`
+- Found 2538 diagnostics
++ Found 2544 diagnostics
+
+arviz (https://github.com/arviz-devs/arviz)
++ arviz/plots/backends/bokeh/kdeplot.py:192:33: error[invalid-argument-type] Argument to function `isinstance` is incorrect: Expected `type | UnionType | tuple[Unknown, ...]`, found `typing.Callable`
++ arviz/plots/backends/bokeh/kdeplot.py:229:33: error[invalid-argument-type] Argument to function `isinstance` is incorrect: Expected `type | UnionType | tuple[Unknown, ...]`, found `typing.Callable`
+- Found 822 diagnostics
++ Found 824 diagnostics
+
+pycryptodome (https://github.com/Legrandin/pycryptodome)
++ lib/Crypto/Util/_raw_api.py:125:47: error[invalid-argument-type] Argument to function `max` is incorrect: Argument type `Unknown | None` does not satisfy upper bound `SupportsDunderLT[Any] | SupportsDunderGT[Any]` of type variable `SupportsRichComparisonT`
++ lib/Crypto/Util/_raw_api.py:125:47: error[invalid-argument-type] Argument to function `max` is incorrect: Expected `int`, found `Unknown | None`
+- Found 1776 diagnostics
++ Found 1778 diagnostics
+
+aiohttp (https://github.com/aio-libs/aiohttp)
+- aiohttp/cookiejar.py:235:37: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ aiohttp/cookiejar.py:230:13: error[invalid-assignment] Object of type `ItemsView[object, object]` is not assignable to `Mapping[str, str | BaseCookie[str] | Morsel[Any]] | Iterable[tuple[str, str | BaseCookie[str] | Morsel[Any]]] | BaseCookie[str]`
++ aiohttp/cookiejar.py:290:17: error[invalid-assignment] Method `__setitem__` of type `bound method SimpleCookie.__setitem__(key: str, value: str | Morsel[str]) -&gt; None` cannot be called with a key of type `str` and a value of type `(BaseCookie[str] &amp; Top[Morsel[Unknown]]) | Morsel[Any] | Morsel[str]` on object of type `SimpleCookie`
++ aiohttp/web.py:340:25: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `str | PathLike[str]`, found `str | (Iterable[str | PathLike[str]] &amp; PathLike[object]) | PathLike[str]`
+- Found 181 diagnostics
++ Found 183 diagnostics
+
+egglog-python (https://github.com/egraphs-good/egglog-python)
++ python/egglog/examples/jointree.py:50:16: error[invalid-argument-type] Argument to function `rule` is incorrect: Expected `Fact | BaseExpr`, found `bool`
++ python/egglog/examples/jointree.py:52:27: error[invalid-argument-type] Argument to function `rule` is incorrect: Expected `Fact | BaseExpr`, found `bool`
++ python/egglog/examples/jointree.py:52:44: error[invalid-argument-type] Argument to function `rule` is incorrect: Expected `Fact | BaseExpr`, found `bool`
+- Found 1376 diagnostics
++ Found 1379 diagnostics
+
+django-stubs (https://github.com/typeddjango/django-stubs)
+- django-stubs/test/utils.pyi:23:28: error[invalid-type-form] Variable of type `_SpecialForm` is not allowed in a type expression
+- Found 481 diagnostics
++ Found 480 diagnostics
+
+hydpy (https://github.com/hydpy-dev/hydpy)
++ hydpy/auxs/calibtools.py:982:25: error[invalid-argument-type] Argument to function `log` is incorrect: Expected `SupportsFloat | SupportsIndex`, found `Unknown | int | float | property`
+- hydpy/cythons/modelutils.py:382:38: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+
+pandas-stubs (https://github.com/pandas-dev/pandas-stubs)
+- tests/indexes/test_indexes.py:436:9: error[type-assertion-failure] Argument does not have asserted type `IntervalIndex[Interval[Timedelta]]`
+- tests/indexes/test_indexes.py:444:9: error[type-assertion-failure] Argument does not have asserted type `IntervalIndex[Interval[Timedelta]]`
+- tests/indexes/test_indexes.py:454:9: error[type-assertion-failure] Argument does not have asserted type `IntervalIndex[Interval[Timedelta]]`
+- tests/indexes/test_indexes.py:464:9: error[type-assertion-failure] Argument does not have asserted type `IntervalIndex[Interval[Timedelta]]`
+- tests/indexes/test_indexes.py:472:9: error[type-assertion-failure] Argument does not have asserted type `IntervalIndex[Interval[Timedelta]]`
+- tests/indexes/test_indexes.py:973:9: error[type-assertion-failure] Argument does not have asserted type `IntervalIndex[Interval[Timedelta]]`
+- tests/indexes/test_indexes.py:982:9: error[type-assertion-failure] Argument does not have asserted type `IntervalIndex[Interval[Timedelta]]`
+- tests/indexes/test_indexes.py:1467:11: error[unresolved-attribute] Object of type `Timestamp` has no attribute `array`
+- tests/indexes/test_indexes.py:1468:11: error[type-assertion-failure] Argument does not have asserted type `DatetimeArray`
+- tests/scalars/test_scalars.py:1353:20: error[type-assertion-failure] Argument does not have asserted type `@Todo`
+- tests/scalars/test_scalars.py:1354:20: error[type-assertion-failure] Argument does not have asserted type `@Todo`
+- tests/scalars/test_scalars.py:1355:12: warning[possibly-missing-attribute] Attribute `all` may be missing on object of type `bool | @Todo`
+- tests/scalars/test_scalars.py:1365:20: error[type-assertion-failure] Argument does not have asserted type `@Todo`
+- tests/scalars/test_scalars.py:1366:20: error[type-assertion-failure] Argument does not have asserted type `@Todo`
+- tests/scalars/test_scalars.py:1367:12: error[unresolved-attribute] Object of type `bool` has no attribute `all`
+- tests/scalars/test_scalars.py:1373:20: error[type-assertion-failure] Argument does not have asserted type `@Todo`
+- tests/scalars/test_scalars.py:1374:20: error[type-assertion-failure] Argument does not have asserted type `@Todo`
+- tests/scalars/test_scalars.py:1375:12: warning[possibly-missing-attribute] Attribute `all` may be missing on object of type `bool | @Todo`
+- tests/scalars/test_scalars.py:1385:20: error[type-assertion-failure] Argument does not have asserted type `@Todo`
+- tests/scalars/test_scalars.py:1386:20: error[type-assertion-failure] Argument does not have asserted type `@Todo`
+- tests/scalars/test_scalars.py:1387:12: error[unresolved-attribute] Object of type `bool` has no attribute `all`
+- tests/scalars/test_scalars.py:1393:20: error[type-assertion-failure] Argument does not have asserted type `@Todo`
+- tests/scalars/test_scalars.py:1394:20: error[type-assertion-failure] Argument does not have asserted type `@Todo`
+- tests/scalars/test_scalars.py:1395:12: warning[possibly-missing-attribute] Attribute `all` may be missing on object of type `bool | @Todo`
+- tests/scalars/test_scalars.py:1399:20: error[type-assertion-failure] Argument does not have asserted type `@Todo`
+- tests/scalars/test_scalars.py:1400:20: error[type-assertion-failure] Argument does not have asserted type `@Todo`
+- tests/scalars/test_scalars.py:1401:12: error[unresolved-attribute] Object of type `bool` has no attribute `all`
+- tests/scalars/test_scalars.py:1669:11: error[type-assertion-failure] Argument does not have asserted type `Series[bool]`
+- tests/scalars/test_scalars.py:1670:11: error[type-assertion-failure] Argument does not have asserted type `Series[bool]`
+- tests/scalars/test_scalars.py:1671:11: error[type-assertion-failure] Argument does not have asserted type `Series[bool]`
+- tests/series/test_series.py:129:5: error[invalid-assignment] Object of type `Timestamp` is not assignable to `DatetimeIndex`
++ tests/series/test_series.py:129:5: error[invalid-assignment] Object of type `Series[Timestamp]` is not assignable to `DatetimeIndex`
+- tests/test_pandas.py:45:9: error[type-assertion-failure] Argument does not have asserted type `Series[Timestamp]`
+- tests/test_pandas.py:51:9: error[type-assertion-failure] Argument does not have asserted type `Series[Timestamp]`
+- tests/test_pandas.py:58:9: error[type-assertion-failure] Argument does not have asserted type `Series[Timestamp]`
+- tests/test_pandas.py:96:9: error[type-assertion-failure] Argument does not have asserted type `Series[Timestamp]`
+- tests/test_resampler.py:330:15: error[type-assertion-failure] Argument does not have asserted type `@Todo`
+- tests/test_resampler.py:331:15: error[type-assertion-failure] Argument does not have asserted type `@Todo`
+- tests/test_resampler.py:332:15: error[type-assertion-failure] Argument does not have asserted type `@Todo`
+- tests/test_resampler.py:334:13: error[type-assertion-failure] Argument does not have asserted type `@Todo`
+- tests/test_resampler.py:338:13: error[type-assertion-failure] Argument does not have asserted type `@Todo`
+- tests/test_resampler.py:342:13: error[type-assertion-failure] Argument does not have asserted type `@Todo`
+- tests/test_resampler.py:352:11: error[type-assertion-failure] Argument does not have asserted type `@Todo`
+- tests/test_timefuncs.py:115:11: error[type-assertion-failure] Argument does not have asserted type `Series[bool]`
+- tests/test_timefuncs.py:116:11: error[type-assertion-failure] Argument does not have asserted type `Series[bool]`
+- tests/test_timefuncs.py:117:11: error[type-assertion-failure] Argument does not have asserted type `Series[bool]`
+- tests/test_timefuncs.py:177:11: error[type-assertion-failure] Argument does not have asserted type `Timestamp`
+- tests/test_timefuncs.py:177:23: error[unresolved-attribute] Object of type `Timestamp` has no attribute `iloc`
++ tests/test_timefuncs.py:202:11: error[type-assertion-failure] Argument does not have asserted type `DatetimeIndex`
++ tests/test_timefuncs.py:222:11: error[type-assertion-failure] Argument does not have asserted type `DatetimeIndex`
+- tests/test_timefuncs.py:908:9: error[type-assertion-failure] Argument does not have asserted type `@Todo`
+- tests/test_timefuncs.py:913:9: error[type-assertion-failure] Argument does not have asserted type `@Todo`
+- tests/test_timefuncs.py:913:35: error[unknown-argument] Argument `na_value` does not match any known parameter of bound method `to_numpy`
+- tests/test_timefuncs.py:959:9: error[type-assertion-failure] Argument does not have asserted type `@Todo`
+- tests/test_timefuncs.py:959:35: error[unknown-argument] Argument `dtype` does not match any known parameter of bound method `to_numpy`
+- tests/test_timefuncs.py:959:48: error[unknown-argument] Argument `copy` does not match any known parameter of bound method `to_numpy`
+- tests/test_timefuncs.py:991:9: error[type-assertion-failure] Argument does not have asserted type `@Todo`
+- tests/test_timefuncs.py:991:35: error[unknown-argument] Argument `dtype` does not match any known parameter of bound method `to_numpy`
+- tests/test_timefuncs.py:996:9: error[type-assertion-failure] Argument does not have asserted type `@Todo`
+- tests/test_timefuncs.py:996:35: error[unknown-argument] Argument `dtype` does not match any known parameter of bound method `to_numpy`
+- tests/test_timefuncs.py:1364:11: error[type-assertion-failure] Argument does not have asserted type `Series[Timestamp]`
+- tests/test_timefuncs.py:1385:11: error[type-assertion-failure] Argument does not have asserted type `Series[Timestamp]`
+- tests/test_timefuncs.py:1392:9: error[type-assertion-failure] Argument does not have asserted type `Series[Timestamp]`
+- tests/test_timefuncs.py:1406:9: error[type-assertion-failure] Argument does not have asserted type `Series[Timestamp]`
+- tests/test_timefuncs.py:1876:14: error[unresolved-attribute] Object of type `Timestamp` has no attribute `iloc`
+- tests/test_timefuncs.py:1877:11: error[type-assertion-failure] Argument does not have asserted type `Timestamp`
+- tests/test_timefuncs.py:1877:23: error[unresolved-attribute] Object of type `Timestamp` has no attribute `iloc`
+- tests/test_timefuncs.py:1899:19: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `Iterable[Unknown]`, found `Timestamp`
+- Found 5476 diagnostics
++ Found 5414 diagnostics
+
+streamlit (https://github.com/streamlit/streamlit)
++ lib/streamlit/elements/lib/color_util.py:222:33: error[index-out-of-bounds] Index 3 is out of bounds for tuple `tuple[int | float, int | float, int | float]` with length 3
+- Found 168 diagnostics
++ Found 169 diagnostics
+
+bokeh (https://github.com/bokeh/bokeh)
++ src/bokeh/colors/color.py:297:13: error[invalid-assignment] Too many values to unpack: Expected 3
++ src/bokeh/colors/color.py:300:13: error[invalid-assignment] Not enough values to unpack: Expected 4
+- src/bokeh/embed/standalone.py:254:44: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ src/bokeh/embed/notebook.py:53:78: error[invalid-parameter-default] Default value of type `&lt;class 'FromCurdoc'&gt;` is not assignable to annotated parameter type `Theme | FromCurdoc | None`
++ src/bokeh/embed/standalone.py:262:9: error[invalid-assignment] Object of type `list[object]` is not assignable to `Model | Sequence[Model] | dict[str, Model]`
++ src/bokeh/embed/standalone.py:266:76: error[invalid-argument-type] Argument to function `standalone_docs_json_and_render_items` is incorrect: Expected `Model | Document | Sequence[Model | Document]`, found `Model | Sequence[Model] | dict[str, Model]`
+- Found 612 diagnostics
++ Found 616 diagnostics
+
+pywin32 (https://github.com/mhammond/pywin32)
++ com/win32com/test/testvb.py:172:26: error[invalid-argument-type] Argument to function `isinstance` is incorrect: Expected `type | UnionType | tuple[Unknown, ...]`, found `typing.Callable`
++ com/win32comext/adsi/demos/test.py:235:27: error[invalid-argument-type] Argument to function `isinstance` is incorrect: Expected `type | UnionType | tuple[Unknown, ...]`, found `typing.Callable`
++ win32/Demos/win32netdemo.py:231:64: error[invalid-argument-type] Argument to function `isinstance` is incorrect: Expected `type | UnionType | tuple[Unknown, ...]`, found `typing.Callable`
+- Found 2607 diagnostics
++ Found 2610 diagnostics
+
+jax (https://github.com/google/jax)
++ jax/_src/custom_partitioning.py:487:60: error[invalid-argument-type] Argument to function `isinstance` is incorrect: Expected `type | UnionType | tuple[Unknown, ...]`, found `typing.Callable`
++ jax/_src/ffi.py:492:34: error[invalid-argument-type] Argument to function `_result_avals` is incorrect: Expected `Sequence[DuckTypedArray | AbstractToken]`, found `(DuckTypedArray &amp; Sequence[object]) | (AbstractToken &amp; Sequence[object]) | Sequence[DuckTypedArray | AbstractToken]`
+- jax/_src/ffi.py:490:39: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- jax/_src/ffi.py:496:42: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ jax/_src/numpy/lax_numpy.py:1039:87: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ jax/_src/pallas/mosaic/sc_core.py:369:13: error[invalid-argument-type] Argument expression after ** must be a mapping with `str` key type: Found `object`
++ jax/_src/pallas/mosaic_gpu/core.py:285:13: error[invalid-argument-type] Argument expression after ** must be a mapping with `str` key type: Found `object`
++ jax/_src/pallas/mosaic_gpu/lowering.py:908:9: error[invalid-argument-type] Argument to function `sorted` is incorrect: Argument type `Sequence[Hashable]` does not satisfy upper bound `SupportsDunderLT[Any] | SupportsDunderGT[Any]` of type variable `SupportsRichComparisonT`
++ jax/_src/pallas/mosaic_gpu/lowering.py:1022:33: error[invalid-argument-type] Argument to function `sorted` is incorrect: Argument type `Sequence[Hashable]` does not satisfy upper bound `SupportsDunderLT[Any] | SupportsDunderGT[Any]` of type variable `SupportsRichComparisonT`
++ jax/_src/pallas/mosaic_gpu/lowering.py:1592:15: error[invalid-argument-type] Argument to bound method `load_untiled` is incorrect: Expected `TiledLayout`, found `(WGSplatFragLayout &amp; ~WGStridedFragLayout) | (TiledLayout &amp; ~WGStridedFragLayout)`
++ jax/example_libraries/stax.py:137:24: error[invalid-argument-type] Argument to function `standardize` is incorrect: Expected `int | Sequence[int] | None`, found `tuple[Unknown | tuple[Literal[0], Literal[1], Literal[2]]] | Unknown | tuple[Literal[0], Literal[1], Literal[2]]`
++ jax/experimental/mosaic/gpu/equations.py:239:6: error[invalid-return-type] Function can implicitly return `None`, which is not assignable to return type `Variable | Constant | LeastReplicated | ... omitted 6 union elements`
++ jax/experimental/mosaic/gpu/equations.py:396:13: error[invalid-argument-type] Argument to function `splat_is_compatible_with_tiled` is incorrect: Expected `WGSplatFragLayout`, found `WGSplatFragLayout | WGStridedFragLayout | TiledLayout`
++ jax/experimental/mosaic/gpu/equations.py:396:28: error[invalid-argument-type] Argument to function `splat_is_compatible_with_tiled` is incorrect: Expected `TiledLayout`, found `WGSplatFragLayout | WGStridedFragLayout | TiledLayout`
++ jax/experimental/mosaic/gpu/equations.py:644:26: error[invalid-argument-type] Argument is incorrect: Expected `tuple[Variable, Constant]`, found `tuple[Variable | Constant | LeastReplicated | ... omitted 6 union elements, Variable | Constant | LeastReplicated | ... omitted 6 union elements]`
++ jax/experimental/mosaic/gpu/equations.py:646:26: error[invalid-argument-type] Argument is incorrect: Expected `tuple[Variable, Constant]`, found `tuple[Variable | Constant | LeastReplicated | ... omitted 6 union elements, Variable | Constant | LeastReplicated | ... omitted 6 union elements]`
+- jax/experimental/mosaic/gpu/equations.py:343:7: error[type-assertion-failure] Argument does not have asserted type `Never`
+- jax/experimental/mosaic/gpu/equations.py:606:7: error[type-assertion-failure] Argument does not have asserted type `Never`
+- jax/experimental/mosaic/gpu/equations.py:644:26: error[invalid-argument-type] Argument is incorrect: Expected `tuple[Variable, Constant]`, found `tuple[@Todo | Unsatisfiable, @Todo | Unsatisfiable]`
+- jax/experimental/mosaic/gpu/equations.py:646:26: error[invalid-argument-type] Argument is incorrect: Expected `tuple[Variable, Constant]`, found `tuple[@Todo | Unsatisfiable, @Todo | Unsatisfiable]`
+- jax/experimental/mosaic/gpu/equations.py:703:11: error[type-assertion-failure] Argument does not have asserted type `Never`
+- jax/experimental/mosaic/gpu/equations.py:720:11: error[type-assertion-failure] Argument does not have asserted type `Never`
+- jax/experimental/mosaic/gpu/equations.py:976:9: error[type-assertion-failure] Argument does not have asserted type `Never`
+- jax/experimental/mosaic/gpu/layouts.py:336:14: error[invalid-return-type] Return type does not match returned value: expected `bool`, found `None`
+- jax/experimental/mosaic/gpu/layouts.py:336:14: error[type-assertion-failure] Argument does not have asserted type `Never`
++ jax/experimental/mosaic/gpu/layouts.py:250:43: error[invalid-argument-type] Argument to function `splat_is_compatible_with_tiled` is incorrect: Expected `WGSplatFragLayout`, found `WGSplatFragLayout | WGStridedFragLayout | TiledLayout`
++ jax/experimental/mosaic/gpu/layouts.py:252:12: warning[possibly-missing-attribute] Attribute `shape` may be missing on object of type `WGSplatFragLayout | WGStridedFragLayout | TiledLayout`
++ jax/experimental/mosaic/gpu/layouts.py:256:43: error[invalid-argument-type] Argument to function `splat_is_compatible_with_tiled` is incorrect: Expected `WGSplatFragLayout`, found `WGSplatFragLayout | WGStridedFragLayout | TiledLayout`
++ jax/experimental/mosaic/gpu/layouts.py:258:29: warning[possibly-missing-attribute] Attribute `shape` may be missing on object of type `WGSplatFragLayout | WGStridedFragLayout | TiledLayout`
++ jax/experimental/mosaic/gpu/layouts.py:307:43: error[invalid-argument-type] Argument to function `splat_is_compatible_with_tiled` is incorrect: Expected `WGSplatFragLayout`, found `WGSplatFragLayout | WGStridedFragLayout | TiledLayout`
++ jax/experimental/mosaic/gpu/layouts.py:309:12: warning[possibly-missing-attribute] Attribute `shape` may be missing on object of type `WGSplatFragLayout | WGStridedFragLayout | TiledLayout`
++ jax/experimental/mosaic/gpu/layouts.py:313:43: error[invalid-argument-type] Argument to function `splat_is_compatible_with_tiled` is incorrect: Expected `WGSplatFragLayout`, found `WGSplatFragLayout | WGStridedFragLayout | TiledLayout`
++ jax/experimental/mosaic/gpu/layouts.py:315:29: warning[possibly-missing-attribute] Attribute `shape` may be missing on object of type `WGSplatFragLayout | WGStridedFragLayout | TiledLayout`
++ jax/experimental/pallas/ops/gpu/attention.py:551:23: error[invalid-argument-type] Argument to function `min` is incorrect: Argument type `int | None` does not satisfy upper bound `SupportsDunderLT[Any] | SupportsDunderGT[Any]` of type variable `SupportsRichComparisonT`
++ jax/experimental/pallas/ops/gpu/attention.py:552:24: error[invalid-argument-type] Argument to function `min` is incorrect: Argument type `int | None` does not satisfy upper bound `SupportsDunderLT[Any] | SupportsDunderGT[Any]` of type variable `SupportsRichComparisonT`
++ jax/experimental/pallas/ops/gpu/attention.py:553:22: error[invalid-argument-type] Argument to function `min` is incorrect: Argument type `int | None` does not satisfy upper bound `SupportsDunderLT[Any] | SupportsDunderGT[Any]` of type variable `SupportsRichComparisonT`
++ jax/experimental/pallas/ops/gpu/attention.py:554:23: error[invalid-argument-type] Argument to function `min` is incorrect: Argument type `int | None` does not satisfy upper bound `SupportsDunderLT[Any] | SupportsDunderGT[Any]` of type variable `SupportsRichComparisonT`
+- jax/experimental/pallas/ops/gpu/attention.py:590:36: error[no-matching-overload] No overload of function `cdiv` matches arguments
+- jax/experimental/pallas/ops/gpu/attention.py:594:11: error[unsupported-operator] Operator `*` is unsupported between objects of type `int | None | Unknown` and `int | None | Un...*[Comment body truncated]*
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-11-01 23:41</div>
+            <div class="timeline-body"><!-- generated-comment ty ecosystem-analyzer -->
+
+<h2><code>ecosystem-analyzer</code> results</h2>
+<p>| Lint rule | Added | Removed | Changed |
+|-----------|------:|--------:|--------:|
+| <code>invalid-argument-type</code> | 493 | 8 | 13 |
+| <code>invalid-key</code> | 108 | 0 | 0 |
+| <code>type-assertion-failure</code> | 2 | 54 | 0 |
+| <code>unused-ignore-comment</code> | 1 | 34 | 0 |
+| <code>invalid-type-form</code> | 14 | 14 | 0 |
+| <code>invalid-assignment</code> | 14 | 0 | 2 |
+| <code>possibly-missing-attribute</code> | 7 | 4 | 4 |
+| <code>unsupported-operator</code> | 2 | 11 | 1 |
+| <code>unresolved-attribute</code> | 0 | 13 | 0 |
+| <code>invalid-return-type</code> | 2 | 5 | 0 |
+| <code>non-subscriptable</code> | 5 | 2 | 0 |
+| <code>unknown-argument</code> | 0 | 6 | 0 |
+| <code>call-non-callable</code> | 2 | 0 | 0 |
+| <code>index-out-of-bounds</code> | 1 | 1 | 0 |
+| <code>no-matching-overload</code> | 1 | 1 | 0 |
+| <code>invalid-parameter-default</code> | 1 | 0 | 0 |
+| <code>redundant-cast</code> | 1 | 0 | 0 |
+| <strong>Total</strong> | <strong>654</strong> | <strong>153</strong> | <strong>20</strong> |</p>
+<p><strong><a href="https://david-implicit-type-aliases.ecosystem-663.pages.dev/diff">Full report with detailed diff</a></strong> (<a href="https://david-implicit-type-aliases.ecosystem-663.pages.dev/timing">timing results</a>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @sharkdp on 2025-11-02 14:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-11-02 14:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[ty] Implicit type aliases: support for unions" to "[ty] Implicit type aliases: support for PEP 604 unions" by @sharkdp on 2025-11-02 14:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @sharkdp on 2025-11-02 17:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-11-02 17:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @sharkdp on 2025-11-02 18:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-11-02 18:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ruff_benchmark/benches/ty_walltime.rs</code>:149 on 2025-11-03 13:13</div>
+            <div class="timeline-body"><p>freqtrade <a href="https://github.com/freqtrade/freqtrade/blob/3cfa366ec9c676abf9da0b3c40d8f3eb43d1e2d2/freqtrade/rpc/telegram.py#L549C1-L549C100">makes use of a pattern</a> where a union of typeddicts is narrowed by using a special tag (<code>msg[&quot;type&quot;] == RPCMessageType.ENTRY</code>). We don't support this yet, leading to ~100 new diagnostics in a single file (but nowhere else in the ecosystem).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-11-03 13:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-11-03 13:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/resources/mdtest/implicit_type_aliases.md</code>:32 on 2025-11-03 13:17</div>
+            <div class="timeline-body"><p>This is unrelated to unions, just something I thought of while writing the tests below. Probably not super important to support :smile:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-11-03 13:38</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-11-03 14:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types.rs</code>:6594 on 2025-11-03 14:12</div>
+            <div class="timeline-body"><p>These are now hard errors. Opaque instances of <code>UnionType</code> can not be used in a type expression (see corresponding test)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-11-03 14:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types.rs</code>:7782 on 2025-11-03 14:15</div>
+            <div class="timeline-body"><p>For consistency with the branches above, I would like to change this to <code>types.UnionType</code>, but I will do that in a separate step, because it causes many downstream changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-11-03 14:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types/class_base.rs</code>:174 on 2025-11-03 14:21</div>
+            <div class="timeline-body"><p>This is different from the <code>Type::Union</code> branch above. <code>UnionType</code> instances are not allowed as bases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @sharkdp on 2025-11-03 14:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-11-03 14:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[ty] Implicit type aliases: support for PEP 604 unions" to "[ty] Support for PEP 604 unions (in implicit type aliases)" by @sharkdp on 2025-11-03 14:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[ty] Support for PEP 604 unions (in implicit type aliases)" to "[ty] Implicit type aliases: Support for PEP 604 unions" by @sharkdp on 2025-11-03 14:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @sharkdp on 2025-11-03 14:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @sharkdp on 2025-11-03 14:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @sharkdp on 2025-11-03 14:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @sharkdp on 2025-11-03 14:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-11-03 15:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @sharkdp on 2025-11-03 15:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-11-03 15:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/implicit_type_aliases.md</code>:32 on 2025-11-03 15:44</div>
+            <div class="timeline-body"><p>It's a one-line fix 😆</p>
+<pre><code class="language-diff">diff --git a/crates/ty_python_semantic/resources/mdtest/implicit_type_aliases.md b/crates/ty_python_semantic/resources/mdtest/implicit_type_aliases.md
+index 904921e7b3..7e7f2fd59f 100644
+--- a/crates/ty_python_semantic/resources/mdtest/implicit_type_aliases.md
++++ b/crates/ty_python_semantic/resources/mdtest/implicit_type_aliases.md
+@@ -22,11 +22,8 @@ f(1)
+ ```py
+ MyNone = None
+ 
+-# TODO: this should not be an error
+-# error: [invalid-type-form] &quot;Variable of type `None` is not allowed in a type expression&quot;
+ def g(x: MyNone):
+-    # TODO: this should be `None`
+-    reveal_type(x)  # revealed: Unknown
++    reveal_type(x)  # revealed: None
+ 
+ g(None)
+ ```
+diff --git a/crates/ty_python_semantic/src/types.rs b/crates/ty_python_semantic/src/types.rs
+index 7d4bf07d97..aaa120f053 100644
+--- a/crates/ty_python_semantic/src/types.rs
++++ b/crates/ty_python_semantic/src/types.rs
+@@ -6565,6 +6565,7 @@ impl&lt;'db&gt; Type&lt;'db&gt; {
+             Type::Dynamic(_) =&gt; Ok(*self),
+ 
+             Type::NominalInstance(instance) =&gt; match instance.known_class(db) {
++                Some(KnownClass::NoneType) =&gt; Ok(Type::none(db)),
+                 Some(KnownClass::TypeVar) =&gt; Ok(todo_type!(
+                     &quot;Support for `typing.TypeVar` instances in type expressions&quot;
+                 )),
+</code></pre>
+<p>may as well just fix it in this PR?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-11-03 15:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/resources/mdtest/implicit_type_aliases.md</code>:32 on 2025-11-03 15:53</div>
+            <div class="timeline-body"><p>I was worried about a case like</p>
+<pre><code class="language-py">def _(n: None):
+    x: int | n = 1
+</code></pre>
+<p>which shouldn't actually be allowed? I'll propose this as a separate change once this lands.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/implicit_type_aliases.md</code>:197 on 2025-11-03 15:56</div>
+            <div class="timeline-body"><p>correct -- this was one of the primary motivations for PEP 613</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types.rs</code>:8911 on 2025-11-03 16:01</div>
+            <div class="timeline-body"><p>what's the motivation for using a boxed array rather than just two separate fields?</p>
+<pre><code class="language-diff">diff --git a/crates/ty_python_semantic/src/types.rs b/crates/ty_python_semantic/src/types.rs
+index 7d4bf07d97..a7dc98d47c 100644
+--- a/crates/ty_python_semantic/src/types.rs
++++ b/crates/ty_python_semantic/src/types.rs
+@@ -7651,7 +7651,7 @@ fn walk_known_instance_type&lt;'db, V: visitor::TypeVisitor&lt;'db&gt; + ?Sized&gt;(
+         }
+         KnownInstanceType::UnionType(union_type) =&gt; {
+             for element in union_type.elements(db) {
+-                visitor.visit_type(db, *element);
++                visitor.visit_type(db, element);
+             }
+         }
+     }
+@@ -8907,27 +8907,22 @@ impl&lt;'db&gt; TypeVarBoundOrConstraints&lt;'db&gt; {
+ #[salsa::interned(debug)]
+ #[derive(PartialOrd, Ord)]
+ pub struct UnionTypeInstance&lt;'db&gt; {
+-    #[returns(deref)]
+-    elements: Box&lt;[Type&lt;'db&gt;; 2]&gt;,
++    left: Type&lt;'db&gt;,
++    right: Type&lt;'db&gt;,
+ }
+ 
+ impl get_size2::GetSize for UnionTypeInstance&lt;'_&gt; {}
+ 
+ impl&lt;'db&gt; UnionTypeInstance&lt;'db&gt; {
+-    pub(crate) fn from_elements(
+-        db: &amp;'db dyn Db,
+-        left: Type&lt;'db&gt;,
+-        right: Type&lt;'db&gt;,
+-    ) -&gt; UnionTypeInstance&lt;'db&gt; {
+-        UnionTypeInstance::new(db, Box::new([left, right]))
++    pub(crate) fn elements(self, db: &amp;'db dyn Db) -&gt; [Type&lt;'db&gt;; 2] {
++        [self.left(db), self.right(db)]
+     }
+ 
+     pub(crate) fn normalized_impl(self, db: &amp;'db dyn Db, visitor: &amp;NormalizedVisitor&lt;'db&gt;) -&gt; Self {
+-        let elements = self.elements(db);
+-        UnionTypeInstance::from_elements(
++        UnionTypeInstance::new(
+             db,
+-            elements[0].normalized_impl(db, visitor),
+-            elements[1].normalized_impl(db, visitor),
++            self.left(db).normalized_impl(db, visitor),
++            self.right(db).normalized_impl(db, visitor),
+         )
+     }
+ }
+diff --git a/crates/ty_python_semantic/src/types/infer/builder.rs b/crates/ty_python_semantic/src/types/infer/builder.rs
+index faa3b3cac8..5330b2830b 100644
+--- a/crates/ty_python_semantic/src/types/infer/builder.rs
++++ b/crates/ty_python_semantic/src/types/infer/builder.rs
+@@ -8474,7 +8474,7 @@ impl&lt;'db, 'ast&gt; TypeInferenceBuilder&lt;'db, 'ast&gt; {
+                     Some(left_ty)
+                 } else {
+                     Some(Type::KnownInstance(KnownInstanceType::UnionType(
+-                        UnionTypeInstance::from_elements(
++                        UnionTypeInstance::new(
+                             self.db(),
+                             convert_none_type(left_ty),
+                             convert_none_type(right_ty),
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/instance.rs</code>:104 on 2025-11-03 16:02</div>
+            <div class="timeline-body"><p>do we also need to add a branch for type aliases here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/class_base.rs</code>:174 on 2025-11-03 16:02</div>
+            <div class="timeline-body"><p>can we add an explicit test for that?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-11-03 16:02</div>
+            <div class="timeline-body"><p>awesome!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-11-03 18:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types.rs</code>:8911 on 2025-11-03 18:55</div>
+            <div class="timeline-body"><p>This struct was initially not interned, so I needed a <code>Box</code> anyway. But now that its interned anyway, I should go back to what I had previously, thanks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-11-03 20:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types/instance.rs</code>:104 on 2025-11-03 20:16</div>
+            <div class="timeline-body"><p>I was mainly trying to replace the previous <code>ty.as_nominal_instance().is_some_and(|instance| instance.class(db).is_known(…))</code> pattern, so.. no?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-11-03 20:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/instance.rs</code>:104 on 2025-11-03 20:22</div>
+            <div class="timeline-body"><p>yes... I have been wondering if we need to update all of our <code>as_*</code> methods along these lines, though... e.g.</p>
+<pre><code class="language-diff">diff --git a/crates/ty_python_semantic/src/types.rs b/crates/ty_python_semantic/src/types.rs
+index e79282a35d..f094763fc5 100644
+--- a/crates/ty_python_semantic/src/types.rs
++++ b/crates/ty_python_semantic/src/types.rs
+@@ -1013,9 +1013,10 @@ impl&lt;'db&gt; Type&lt;'db&gt; {
+         any_over_type(db, self, &amp;|ty| matches!(ty, Type::TypeVar(_)), false)
+     }
+ 
+-    pub(crate) const fn as_class_literal(self) -&gt; Option&lt;ClassLiteral&lt;'db&gt;&gt; {
++    pub(crate) const fn as_class_literal(self, db: &amp;'db dyn Db) -&gt; Option&lt;ClassLiteral&lt;'db&gt;&gt; {
+         match self {
+             Type::ClassLiteral(class_type) =&gt; Some(class_type),
++            Type::TypeAlias(alias) =&gt; alias.value_type(db).as_class_literal(),
+             _ =&gt; None,
+         }
+     }
+</code></pre>
+<p>Since in general, you should always treat a type alias to <code>T</code> the same as you treat <code>T</code> itself.</p>
+<p>But yes, maybe we should just change all these together.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-03 20:40</div>
+            <div class="timeline-body"><p>Quite a few new diagnostics on this branch have the same cause as those I analysed as happening on <code>kornia</code> in https://github.com/astral-sh/ruff/pull/20107#issuecomment-3411347073. I.e., we now emit a diagnostic on things like this, because we now correctly understand typeshed's annotation for <code>isinstance()</code> and we correctly do not view the symbol <code>typing.Dict</code> as being an instance of <code>type</code>:</p>
+<pre><code class="language-py">import typing
+
+isinstance({}, typing.Dict)
+</code></pre>
+<p>I think we should fix this, but that fixing it might need some deep special casing of <code>isinstance()</code>. We cannot simply treat <code>typing.Dict</code> as an alias to <code>dict</code>, because it is not, and has different behaviour in some situations:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; import typing
+&gt;&gt;&gt; typing.Dict()
+Traceback (most recent call last):
+  File &quot;&lt;python-input-7&gt;&quot;, line 1, in &lt;module&gt;
+    typing.Dict()
+    ~~~~~~~~~~~^^
+  File &quot;/Users/alexw/.pyenv/versions/3.13.1/lib/python3.13/typing.py&quot;, line 1315, in __call__
+    raise TypeError(f&quot;Type {self._name} cannot be instantiated; &quot;
+                    f&quot;use {self.__origin__.__name__}() instead&quot;)
+TypeError: Type Dict cannot be instantiated; use dict() instead
+</code></pre>
+<p>This doesn't need to be fixed in this PR, but we might want to prioritise fixing it as a followup.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-03 20:44</div>
+            <div class="timeline-body"><p>The new <code>invalid-type-form</code> errors on <code>trio</code> and <code>zulip</code> also suggest that we might want to prioritise adding support for <code>type[]</code> in implicit type aliases, e.g.</p>
+<pre><code class="language-py">X = type[int] | type[str]
+y: X
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-11-03 20:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-11-03 20:50</div>
+            <div class="timeline-body"><blockquote>
+<p>adding support for <code>type[]</code> in implicit type aliases</p>
+</blockquote>
+<p>Yes, I saw that. I will update the https://github.com/astral-sh/ty/issues/221 ticket with a list of things that we need to support, and put that near the top of the list.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @sharkdp on 2025-11-03 20:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-11-03 20:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-11-03 20:50</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 16:54:19 UTC
+    </footer>
+</body>
+</html>
