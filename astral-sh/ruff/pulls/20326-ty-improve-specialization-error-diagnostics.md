@@ -1,0 +1,440 @@
+```yaml
+number: 20326
+title: "[ty] Improve specialization-error diagnostics"
+type: pull_request
+state: merged
+author: sharkdp
+labels:
+  - ty
+  - diagnostics
+  - ecosystem-analyzer
+assignees: []
+merged: true
+base: main
+head: david/improve-specialization-error-diagnostics
+created_at: 2025-09-10T09:44:20Z
+updated_at: 2025-09-10T12:01:25Z
+url: https://github.com/astral-sh/ruff/pull/20326
+synced_at: 2026-01-10T17:46:22Z
+```
+
+# [ty] Improve specialization-error diagnostics
+
+---
+
+_Pull request opened by @sharkdp on 2025-09-10 09:44_
+
+## Summary
+
+Add information about the upper bound or the constraints of the type variable to the `SpecializationError` diagnostics.
+
+
+
+---
+
+_Review requested from @carljm by @sharkdp on 2025-09-10 09:44_
+
+---
+
+_Review requested from @AlexWaygood by @sharkdp on 2025-09-10 09:44_
+
+---
+
+_Review requested from @dcreager by @sharkdp on 2025-09-10 09:44_
+
+---
+
+_Label `ty` added by @sharkdp on 2025-09-10 09:44_
+
+---
+
+_Label `diagnostics` added by @sharkdp on 2025-09-10 09:44_
+
+---
+
+_Comment by @github-actions[bot] on 2025-09-10 09:46_
+
+<!-- generated-comment typing_conformance_diagnostics_diff -->
+## Diagnostic diff on [typing conformance tests](https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance)
+<details>
+<summary>Changes were detected when running ty on typing conformance tests</summary>
+
+```diff
+--- old-output.txt	2025-09-10 11:27:07.278222165 +0000
++++ new-output.txt	2025-09-10 11:27:10.275248039 +0000
+@@ -539,8 +539,8 @@
+ generics_upper_bound.py:37:1: error[type-assertion-failure] Argument does not have asserted type `list[int]`
+ generics_upper_bound.py:38:1: error[type-assertion-failure] Argument does not have asserted type `set[int]`
+ generics_upper_bound.py:43:1: error[type-assertion-failure] Argument does not have asserted type `list[int] | set[int]`
+-generics_upper_bound.py:51:8: error[invalid-argument-type] Argument to function `longer` is incorrect: Argument type `Literal[3]` does not satisfy upper bound of type variable `ST`
+-generics_upper_bound.py:51:11: error[invalid-argument-type] Argument to function `longer` is incorrect: Argument type `Literal[3]` does not satisfy upper bound of type variable `ST`
++generics_upper_bound.py:51:8: error[invalid-argument-type] Argument to function `longer` is incorrect: Argument type `Literal[3]` does not satisfy upper bound `Sized` of type variable `ST`
++generics_upper_bound.py:51:11: error[invalid-argument-type] Argument to function `longer` is incorrect: Argument type `Literal[3]` does not satisfy upper bound `Sized` of type variable `ST`
+ generics_variance.py:14:6: error[invalid-legacy-type-variable] A legacy `typing.TypeVar` cannot be both covariant and contravariant
+ generics_variance.py:26:27: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `Iterator[T_co@ImmutableList]`
+ generics_variance.py:57:28: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `B_co@func`
+@@ -610,9 +610,9 @@
+ literals_literalstring.py:74:5: error[invalid-assignment] Object of type `Literal[3]` is not assignable to `LiteralString`
+ literals_literalstring.py:75:5: error[invalid-assignment] Object of type `Literal[b"test"]` is not assignable to `LiteralString`
+ literals_literalstring.py:79:21: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `bool`
+-literals_literalstring.py:120:22: error[invalid-argument-type] Argument to function `literal_identity` is incorrect: Argument type `str` does not satisfy upper bound of type variable `TLiteral`
++literals_literalstring.py:120:22: error[invalid-argument-type] Argument to function `literal_identity` is incorrect: Argument type `str` does not satisfy upper bound `LiteralString` of type variable `TLiteral`
+ literals_literalstring.py:130:5: error[invalid-assignment] Object of type `Container[str]` is not assignable to `Container[LiteralString]`
+-literals_literalstring.py:134:51: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `str` does not satisfy upper bound of type variable `T`
++literals_literalstring.py:134:51: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `str` does not satisfy upper bound `LiteralString` of type variable `T`
+ literals_literalstring.py:167:1: error[type-assertion-failure] Argument does not have asserted type `A`
+ literals_literalstring.py:171:5: error[invalid-assignment] Object of type `list[LiteralString]` is not assignable to `list[str]`
+ literals_parameterizations.py:41:15: error[invalid-type-form] Type arguments for `Literal` must be `None`, a literal value (int, bool, str, or bytes), or an enum member
+```
+</details>
+
+
+---
+
+_Comment by @github-actions[bot] on 2025-09-10 09:49_
+
+<!-- generated-comment mypy_primer -->
+## `mypy_primer` results
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+```diff
+anyio (https://github.com/agronholm/anyio)
+- src/anyio/_core/_fileio.py:201:22: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `AnyStr@wrap_file` does not satisfy constraints of type variable `AnyStr`
++ src/anyio/_core/_fileio.py:201:22: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `AnyStr@wrap_file` does not satisfy constraints (`str`, `bytes`) of type variable `AnyStr`
+
+pyinstrument (https://github.com/joerick/pyinstrument)
+- pyinstrument/util.py:65:30: error[invalid-argument-type] Argument to function `file_is_a_tty` is incorrect: Argument type `AnyStr@file_supports_color` does not satisfy constraints of type variable `AnyStr`
++ pyinstrument/util.py:65:30: error[invalid-argument-type] Argument to function `file_is_a_tty` is incorrect: Argument type `AnyStr@file_supports_color` does not satisfy constraints (`str`, `bytes`) of type variable `AnyStr`
+
+koda-validate (https://github.com/keithasaurus/koda-validate)
+- koda_validate/generic.py:152:56: error[invalid-argument-type] Argument is incorrect: Argument type `ExactMatchT@EqualsValidator` does not satisfy constraints of type variable `ExactMatchT`
++ koda_validate/generic.py:152:56: error[invalid-argument-type] Argument is incorrect: Argument type `ExactMatchT@EqualsValidator` does not satisfy constraints (`bool`, `bytes`, `int`, `Decimal`, `str`, `int | float`, `date`, `datetime`, `UUID`) of type variable `ExactMatchT`
+- koda_validate/serialization/json_schema.py:319:43: error[invalid-argument-type] Argument to function `escape` is incorrect: Argument type `object` does not satisfy constraints of type variable `AnyStr`
++ koda_validate/serialization/json_schema.py:319:43: error[invalid-argument-type] Argument to function `escape` is incorrect: Argument type `object` does not satisfy constraints (`str`, `bytes`) of type variable `AnyStr`
+- koda_validate/serialization/json_schema.py:321:42: error[invalid-argument-type] Argument to function `escape` is incorrect: Argument type `object` does not satisfy constraints of type variable `AnyStr`
++ koda_validate/serialization/json_schema.py:321:42: error[invalid-argument-type] Argument to function `escape` is incorrect: Argument type `object` does not satisfy constraints (`str`, `bytes`) of type variable `AnyStr`
+
+scrapy (https://github.com/scrapy/scrapy)
+- tests/test_contracts.py:263:39: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `None` does not satisfy upper bound of type variable `_StreamT`
++ tests/test_contracts.py:263:39: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `None` does not satisfy upper bound `_TextTestStream` of type variable `_StreamT`
+- tests/test_contracts.py:565:39: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `None` does not satisfy upper bound of type variable `_StreamT`
++ tests/test_contracts.py:565:39: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `None` does not satisfy upper bound `_TextTestStream` of type variable `_StreamT`
+
+zope.interface (https://github.com/zopefoundation/zope.interface)
+- src/zope/interface/common/tests/test_io.py:37:56: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `StringIO` does not satisfy upper bound of type variable `_BufferedReaderStreamT`
++ src/zope/interface/common/tests/test_io.py:37:56: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `StringIO` does not satisfy upper bound `_BufferedReaderStream` of type variable `_BufferedReaderStreamT`
+
+strawberry (https://github.com/strawberry-graphql/strawberry)
+- strawberry/federation/object_type.py:90:9: error[invalid-argument-type] Argument to function `type` is incorrect: Argument type `T@_impl_type | None` does not satisfy upper bound of type variable `T`
++ strawberry/federation/object_type.py:90:9: error[invalid-argument-type] Argument to function `type` is incorrect: Argument type `T@_impl_type | None` does not satisfy upper bound `type` of type variable `T`
+- strawberry/types/object_type.py:397:9: error[invalid-argument-type] Argument to function `type` is incorrect: Argument type `T@input | None` does not satisfy upper bound of type variable `T`
++ strawberry/types/object_type.py:397:9: error[invalid-argument-type] Argument to function `type` is incorrect: Argument type `T@input | None` does not satisfy upper bound `type` of type variable `T`
+- strawberry/types/object_type.py:470:9: error[invalid-argument-type] Argument to function `type` is incorrect: Argument type `T@interface | None` does not satisfy upper bound of type variable `T`
++ strawberry/types/object_type.py:470:9: error[invalid-argument-type] Argument to function `type` is incorrect: Argument type `T@interface | None` does not satisfy upper bound `type` of type variable `T`
+
+schemathesis (https://github.com/schemathesis/schemathesis)
+- src/schemathesis/specs/openapi/schemas.py:161:48: error[invalid-argument-type] Argument is incorrect: Argument type `None` does not satisfy upper bound of type variable `D`
++ src/schemathesis/specs/openapi/schemas.py:161:48: error[invalid-argument-type] Argument is incorrect: Argument type `None` does not satisfy upper bound `dict[Unknown, Unknown]` of type variable `D`
+- src/schemathesis/specs/openapi/schemas.py:161:58: error[invalid-argument-type] Argument is incorrect: Argument type `None` does not satisfy upper bound of type variable `D`
++ src/schemathesis/specs/openapi/schemas.py:161:58: error[invalid-argument-type] Argument is incorrect: Argument type `None` does not satisfy upper bound `dict[Unknown, Unknown]` of type variable `D`
+
+werkzeug (https://github.com/pallets/werkzeug)
+- tests/middleware/test_shared_data.py:45:26: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `Iterable[bytes]` does not satisfy upper bound of type variable `_SupportsCloseT`
++ tests/middleware/test_shared_data.py:45:26: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `Iterable[bytes]` does not satisfy upper bound `_SupportsClose` of type variable `_SupportsCloseT`
+- tests/middleware/test_shared_data.py:54:22: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `Iterable[bytes]` does not satisfy upper bound of type variable `_SupportsCloseT`
++ tests/middleware/test_shared_data.py:54:22: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `Iterable[bytes]` does not satisfy upper bound `_SupportsClose` of type variable `_SupportsCloseT`
+
+pywin32 (https://github.com/mhammond/pywin32)
+- com/win32com/client/gencache.py:146:29: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `int` does not satisfy upper bound of type variable `_SupportsCloseT`
++ com/win32com/client/gencache.py:146:29: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `int` does not satisfy upper bound `_SupportsClose` of type variable `_SupportsCloseT`
+
+xarray (https://github.com/pydata/xarray)
+- xarray/coding/frequencies.py:104:32: error[invalid-argument-type] Argument to function `_legacy_to_new_freq` is incorrect: Argument type `str | None` does not satisfy constraints of type variable `T_FreqStr`
++ xarray/coding/frequencies.py:104:32: error[invalid-argument-type] Argument to function `_legacy_to_new_freq` is incorrect: Argument type `str | None` does not satisfy constraints (`str`, `None`) of type variable `T_FreqStr`
+- xarray/core/groupby.py:497:36: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `T_DataWithCoords@_resolve_group` does not satisfy constraints of type variable `T_Xarray`
++ xarray/core/groupby.py:497:36: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `T_DataWithCoords@_resolve_group` does not satisfy constraints (`DataArray`, `Dataset`) of type variable `T_Xarray`
+- xarray/core/indexing.py:193:48: error[invalid-argument-type] Argument to function `group_indexers_by_index` is incorrect: Argument type `T_Xarray@map_index_queries` does not satisfy constraints of type variable `T_Xarray`
++ xarray/core/indexing.py:193:48: error[invalid-argument-type] Argument to function `group_indexers_by_index` is incorrect: Argument type `T_Xarray@map_index_queries` does not satisfy constraints (`DataArray`, `Dataset`) of type variable `T_Xarray`
+- xarray/tests/test_combine.py:1022:42: error[invalid-argument-type] Argument to bound method `broadcast_equals` is incorrect: Argument type `Dataset | DataArray` does not satisfy upper bound of type variable `Self`
++ xarray/tests/test_combine.py:1022:42: error[invalid-argument-type] Argument to bound method `broadcast_equals` is incorrect: Argument type `Dataset | DataArray` does not satisfy upper bound `Dataset` of type variable `Self`
+- xarray/tests/test_coordinates.py:155:34: error[invalid-argument-type] Argument to bound method `equals` is incorrect: Argument type `Literal["not_a_coords"]` does not satisfy upper bound of type variable `Self`
++ xarray/tests/test_coordinates.py:155:34: error[invalid-argument-type] Argument to bound method `equals` is incorrect: Argument type `Literal["not_a_coords"]` does not satisfy upper bound `Coordinates` of type variable `Self`
+- xarray/tests/test_coordinates.py:161:37: error[invalid-argument-type] Argument to bound method `identical` is incorrect: Argument type `Literal["not_a_coords"]` does not satisfy upper bound of type variable `Self`
++ xarray/tests/test_coordinates.py:161:37: error[invalid-argument-type] Argument to bound method `identical` is incorrect: Argument type `Literal["not_a_coords"]` does not satisfy upper bound `Coordinates` of type variable `Self`
+- xarray/tests/test_indexing.py:151:50: error[invalid-argument-type] Argument to function `map_index_queries` is incorrect: Argument type `T_Xarray@test_indexer` does not satisfy constraints of type variable `T_Xarray`
++ xarray/tests/test_indexing.py:151:50: error[invalid-argument-type] Argument to function `map_index_queries` is incorrect: Argument type `T_Xarray@test_indexer` does not satisfy constraints (`DataArray`, `Dataset`) of type variable `T_Xarray`
+
+schema_salad (https://github.com/common-workflow-language/schema_salad)
+- schema_salad/makedoc.py:816:49: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `object` does not satisfy upper bound of type variable `_BufferT_co`
++ schema_salad/makedoc.py:816:49: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `object` does not satisfy upper bound `_WrappedBuffer` of type variable `_BufferT_co`
+- schema_salad/sourceline.py:17:33: error[invalid-argument-type] Argument to function `_add_lc_filename` is incorrect: Argument type `AnyStr@_add_lc_filename` does not satisfy constraints of type variable `AnyStr`
++ schema_salad/sourceline.py:17:33: error[invalid-argument-type] Argument to function `_add_lc_filename` is incorrect: Argument type `AnyStr@_add_lc_filename` does not satisfy constraints (`str`, `bytes`) of type variable `AnyStr`
+- schema_salad/sourceline.py:20:33: error[invalid-argument-type] Argument to function `_add_lc_filename` is incorrect: Argument type `AnyStr@_add_lc_filename` does not satisfy constraints of type variable `AnyStr`
++ schema_salad/sourceline.py:20:33: error[invalid-argument-type] Argument to function `_add_lc_filename` is incorrect: Argument type `AnyStr@_add_lc_filename` does not satisfy constraints (`str`, `bytes`) of type variable `AnyStr`
+
+colour (https://github.com/colour-science/colour)
+- colour/characterisation/aces_it.py:240:33: error[invalid-argument-type] Argument to function `reshape_sd` is incorrect: Argument type `SpectralDistribution | None | Any` does not satisfy upper bound of type variable `TypeSpectralDistribution`
++ colour/characterisation/aces_it.py:240:33: error[invalid-argument-type] Argument to function `reshape_sd` is incorrect: Argument type `SpectralDistribution | None | Any` does not satisfy upper bound `SpectralDistribution` of type variable `TypeSpectralDistribution`
+- colour/characterisation/aces_it.py:1118:38: error[invalid-argument-type] Argument to function `reshape_msds` is incorrect: Argument type `MultiSpectralDistributions | None` does not satisfy upper bound of type variable `TypeMultiSpectralDistributions`
++ colour/characterisation/aces_it.py:1118:38: error[invalid-argument-type] Argument to function `reshape_msds` is incorrect: Argument type `MultiSpectralDistributions | None` does not satisfy upper bound `MultiSpectralDistributions` of type variable `TypeMultiSpectralDistributions`
+- colour/colorimetry/photometry.py:77:9: error[invalid-argument-type] Argument to function `reshape_sd` is incorrect: Argument type `SpectralDistribution | None | Any` does not satisfy upper bound of type variable `TypeSpectralDistribution`
++ colour/colorimetry/photometry.py:77:9: error[invalid-argument-type] Argument to function `reshape_sd` is incorrect: Argument type `SpectralDistribution | None | Any` does not satisfy upper bound `SpectralDistribution` of type variable `TypeSpectralDistribution`
+- colour/colorimetry/photometry.py:128:9: error[invalid-argument-type] Argument to function `reshape_sd` is incorrect: Argument type `SpectralDistribution | None | Any` does not satisfy upper bound of type variable `TypeSpectralDistribution`
++ colour/colorimetry/photometry.py:128:9: error[invalid-argument-type] Argument to function `reshape_sd` is incorrect: Argument type `SpectralDistribution | None | Any` does not satisfy upper bound `SpectralDistribution` of type variable `TypeSpectralDistribution`
+- colour/colorimetry/spectrum.py:2828:23: error[invalid-argument-type] Argument to function `reshape_sd` is incorrect: Argument type `TypeMultiSpectralDistributions@reshape_msds` does not satisfy upper bound of type variable `TypeSpectralDistribution`
++ colour/colorimetry/spectrum.py:2828:23: error[invalid-argument-type] Argument to function `reshape_sd` is incorrect: Argument type `TypeMultiSpectralDistributions@reshape_msds` does not satisfy upper bound `SpectralDistribution` of type variable `TypeSpectralDistribution`
+- colour/colorimetry/tristimulus_values.py:203:33: error[invalid-argument-type] Argument to function `reshape_sd` is incorrect: Argument type `SpectralDistribution | None | Any` does not satisfy upper bound of type variable `TypeSpectralDistribution`
++ colour/colorimetry/tristimulus_values.py:203:33: error[invalid-argument-type] Argument to function `reshape_sd` is incorrect: Argument type `SpectralDistribution | None | Any` does not satisfy upper bound `SpectralDistribution` of type variable `TypeSpectralDistribution`
+
+mitmproxy (https://github.com/mitmproxy/mitmproxy)
+- mitmproxy/net/http/url.py:147:21: error[invalid-argument-type] Argument to function `default_port` is incorrect: Argument type `AnyStr@hostport` does not satisfy constraints of type variable `AnyStr`
++ mitmproxy/net/http/url.py:147:21: error[invalid-argument-type] Argument to function `default_port` is incorrect: Argument type `AnyStr@hostport` does not satisfy constraints (`str`, `bytes`) of type variable `AnyStr`
+- test/mitmproxy/net/http/test_url.py:193:28: error[invalid-argument-type] Argument to function `parse_authority` is incorrect: Argument type `AnyStr@test_parse_authority` does not satisfy constraints of type variable `AnyStr`
++ test/mitmproxy/net/http/test_url.py:193:28: error[invalid-argument-type] Argument to function `parse_authority` is incorrect: Argument type `AnyStr@test_parse_authority` does not satisfy constraints (`str`, `bytes`) of type variable `AnyStr`
+- test/mitmproxy/net/http/test_url.py:196:32: error[invalid-argument-type] Argument to function `parse_authority` is incorrect: Argument type `AnyStr@test_parse_authority` does not satisfy constraints of type variable `AnyStr`
++ test/mitmproxy/net/http/test_url.py:196:32: error[invalid-argument-type] Argument to function `parse_authority` is incorrect: Argument type `AnyStr@test_parse_authority` does not satisfy constraints (`str`, `bytes`) of type variable `AnyStr`
+- test/mitmproxy/net/http/test_url.py:199:29: error[invalid-argument-type] Argument to function `parse_authority` is incorrect: Argument type `AnyStr@test_parse_authority` does not satisfy constraints of type variable `AnyStr`
++ test/mitmproxy/net/http/test_url.py:199:29: error[invalid-argument-type] Argument to function `parse_authority` is incorrect: Argument type `AnyStr@test_parse_authority` does not satisfy constraints (`str`, `bytes`) of type variable `AnyStr`
+
+egglog-python (https://github.com/egraphs-good/egglog-python)
+- python/egglog/examples/jointree.py:38:10: error[invalid-argument-type] Argument to function `set_` is incorrect: Argument type `(...) -> Unknown` does not satisfy upper bound of type variable `BASE_EXPR`
++ python/egglog/examples/jointree.py:38:10: error[invalid-argument-type] Argument to function `set_` is incorrect: Argument type `(...) -> Unknown` does not satisfy upper bound `BaseExpr` of type variable `BASE_EXPR`
+- python/egglog/examples/jointree.py:39:10: error[invalid-argument-type] Argument to function `set_` is incorrect: Argument type `(...) -> Unknown` does not satisfy upper bound of type variable `BASE_EXPR`
++ python/egglog/examples/jointree.py:39:10: error[invalid-argument-type] Argument to function `set_` is incorrect: Argument type `(...) -> Unknown` does not satisfy upper bound `BaseExpr` of type variable `BASE_EXPR`
+- python/egglog/examples/jointree.py:40:10: error[invalid-argument-type] Argument to function `set_` is incorrect: Argument type `(...) -> Unknown` does not satisfy upper bound of type variable `BASE_EXPR`
++ python/egglog/examples/jointree.py:40:10: error[invalid-argument-type] Argument to function `set_` is incorrect: Argument type `(...) -> Unknown` does not satisfy upper bound `BaseExpr` of type variable `BASE_EXPR`
+- python/egglog/examples/jointree.py:41:10: error[invalid-argument-type] Argument to function `set_` is incorrect: Argument type `(...) -> Unknown` does not satisfy upper bound of type variable `BASE_EXPR`
++ python/egglog/examples/jointree.py:41:10: error[invalid-argument-type] Argument to function `set_` is incorrect: Argument type `(...) -> Unknown` does not satisfy upper bound `BaseExpr` of type variable `BASE_EXPR`
+- python/egglog/examples/jointree.py:42:10: error[invalid-argument-type] Argument to function `set_` is incorrect: Argument type `(...) -> Unknown` does not satisfy upper bound of type variable `BASE_EXPR`
++ python/egglog/examples/jointree.py:42:10: error[invalid-argument-type] Argument to function `set_` is incorrect: Argument type `(...) -> Unknown` does not satisfy upper bound `BaseExpr` of type variable `BASE_EXPR`
+- python/egglog/examples/jointree.py:43:10: error[invalid-argument-type] Argument to function `set_` is incorrect: Argument type `(...) -> Unknown` does not satisfy upper bound of type variable `BASE_EXPR`
++ python/egglog/examples/jointree.py:43:10: error[invalid-argument-type] Argument to function `set_` is incorrect: Argument type `(...) -> Unknown` does not satisfy upper bound `BaseExpr` of type variable `BASE_EXPR`
+- python/egglog/examples/jointree.py:53:14: error[invalid-argument-type] Argument to function `set_` is incorrect: Argument type `(...) -> Unknown` does not satisfy upper bound of type variable `BASE_EXPR`
++ python/egglog/examples/jointree.py:53:14: error[invalid-argument-type] Argument to function `set_` is incorrect: Argument type `(...) -> Unknown` does not satisfy upper bound `BaseExpr` of type variable `BASE_EXPR`
+- python/egglog/examples/jointree.py:64:22: error[invalid-argument-type] Argument to bound method `extract` is incorrect: Argument type `(...) -> Unknown` does not satisfy upper bound of type variable `BASE_EXPR`
++ python/egglog/examples/jointree.py:64:22: error[invalid-argument-type] Argument to bound method `extract` is incorrect: Argument type `(...) -> Unknown` does not satisfy upper bound `BaseExpr` of type variable `BASE_EXPR`
+- python/egglog/exp/program_gen.py:129:14: error[invalid-argument-type] Argument to function `set_` is incorrect: Argument type `(...) -> Unknown` does not satisfy upper bound of type variable `BASE_EXPR`
++ python/egglog/exp/program_gen.py:129:14: error[invalid-argument-type] Argument to function `set_` is incorrect: Argument type `(...) -> Unknown` does not satisfy upper bound `BaseExpr` of type variable `BASE_EXPR`
+- python/egglog/exp/program_gen.py:179:46: error[invalid-argument-type] Argument to function `set_` is incorrect: Argument type `(...) -> Unknown` does not satisfy upper bound of type variable `BASE_EXPR`
++ python/egglog/exp/program_gen.py:179:46: error[invalid-argument-type] Argument to function `set_` is incorrect: Argument type `(...) -> Unknown` does not satisfy upper bound `BaseExpr` of type variable `BASE_EXPR`
+- python/egglog/exp/program_gen.py:181:39: error[invalid-argument-type] Argument to function `eq` is incorrect: Argument type `(...) -> Unknown` does not satisfy upper bound of type variable `BASE_EXPR`
++ python/egglog/exp/program_gen.py:181:39: error[invalid-argument-type] Argument to function `eq` is incorrect: Argument type `(...) -> Unknown` does not satisfy upper bound `BaseExpr` of type variable `BASE_EXPR`
+- python/egglog/exp/program_gen.py:186:12: error[invalid-argument-type] Argument to function `ne` is incorrect: Argument type `(...) -> Unknown` does not satisfy upper bound of type variable `BASE_EXPR`
++ python/egglog/exp/program_gen.py:186:12: error[invalid-argument-type] Argument to function `ne` is incorrect: Argument type `(...) -> Unknown` does not satisfy upper bound `BaseExpr` of type variable `BASE_EXPR`
+- python/egglog/exp/program_gen.py:196:12: error[invalid-argument-type] Argument to function `eq` is incorrect: Argument type `(...) -> Unknown` does not satisfy upper bound of type variable `BASE_EXPR`
++ python/egglog/exp/program_gen.py:196:12: error[invalid-argument-type] Argument to function `eq` is incorrect: Argument type `(...) -> Unknown` does not satisfy upper bound `BaseExpr` of type variable `BASE_EXPR`
+- python/egglog/exp/program_gen.py:222:14: error[invalid-argument-type] Argument to function `set_` is incorrect: Argument type `(...) -> Unknown` does not satisfy upper bound of type variable `BASE_EXPR`
++ python/egglog/exp/program_gen.py:222:14: error[invalid-argument-type] Argument to function `set_` is incorrect: Argument type `(...) -> Unknown` does not satisfy upper bound `BaseExpr` of type variable `BASE_EXPR`
+- python/egglog/exp/program_gen.py:226:46: error[invalid-argument-type] Argument to function `eq` is incorrect: Argument type `(...) -> Unknown` does not satisfy upper bound of type variable `BASE_EXPR`
++ python/egglog/exp/program_gen.py:226:46: error[invalid-argument-type] Argument to function `eq` is incorrect: Argument type `(...) -> Unknown` does not satisfy upper bound `BaseExpr` of type variable `BASE_EXPR`
+- python/egglog/exp/program_gen.py:229:66: error[invalid-argument-type] Argument to function `set_` is incorrect: Argument type `(...) -> Unknown` does not satisfy upper bound of type variable `BASE_EXPR`
++ python/egglog/exp/program_gen.py:229:66: error[invalid-argument-type] Argument to function `set_` is incorrect: Argument type `(...) -> Unknown` does not satisfy upper bound `BaseExpr` of type variable `BASE_EXPR`
+- python/egglog/exp/program_gen.py:232:46: error[invalid-argument-type] Argument to function `ne` is incorrect: Argument type `(...) -> Unknown` does not satisfy upper bound of type variable `BASE_EXPR`
++ python/egglog/exp/program_gen.py:232:46: error[invalid-argument-type] Argument to function `ne` is incorrect: Argument type `(...) -> Unknown` does not satisfy upper bound `BaseExpr` of type variable `BASE_EXPR`
+- python/egglog/exp/program_gen.py:232:67: error[invalid-argument-type] Argument to function `eq` is incorrect: Argument type `(...) -> Unknown` does not satisfy upper bound of type variable `BASE_EXPR`
++ python/egglog/exp/program_gen.py:232:67: error[invalid-argument-type] Argument to function `eq` is incorrect: Argument type `(...) -> Unknown` does not satisfy upper bound `BaseExpr` of type variable `BASE_EXPR`
+- python/egglog/exp/program_gen.py:235:47: error[invalid-argument-type] Argument to function `eq` is incorrect: Argument type `(...) -> Unknown` does not satisfy upper bound of type variable `BASE_EXPR`
++ python/egglog/exp/program_gen.py:235:47: error[invalid-argument-type] Argument to function `eq` is incorrect: Argument type `(...) -> Unknown` does not satisfy upper bound `BaseExpr` of type variable `BASE_EXPR`
+- python/egglog/exp/program_gen.py:235:91: error[invalid-argument-type] Argument to function `eq` is incorrect: Argument type `(...) -> Unknown` does not satisfy upper bound of type variable `BASE_EXPR`
++ python/egglog/exp/program_gen.py:235:91: error[invalid-argument-type] Argument to function `eq` is incorrect: Argument type `(...) -> Unknown` does not satisfy upper bound `BaseExpr` of type variable `BASE_EXPR`
+- python/egglog/exp/program_gen.py:250:12: error[invalid-argument-type] Argument to function `eq` is incorrect: Argument type `(...) -> Unknown` does not satisfy upper bound of type variable `BASE_EXPR`
++ python/egglog/exp/program_gen.py:250:12: error[invalid-argument-type] Argument to function `eq` is incorrect: Argument type `(...) -> Unknown` does not satisfy upper bound `BaseExpr` of type variable `BASE_EXPR`
+- python/egglog/exp/program_gen.py:251:12: error[invalid-argument-type] Argument to function `eq` is incorrect: Argument type `(...) -> Unknown` does not satisfy upper bound of type variable `BASE_EXPR`
++ python/egglog/exp/program_gen.py:251:12: error[invalid-argument-type] Argument to function `eq` is incorrect: Argument type `(...) -> Unknown` does not satisfy upper bound `BaseExpr` of type variable `BASE_EXPR`
+- python/egglog/exp/program_gen.py:263:12: error[invalid-argument-type] Argument to function `ne` is incorrect: Argument type `(...) -> Unknown` does not satisfy upper bound of type variable `BASE_EXPR`
++ python/egglog/exp/program_gen.py:263:12: error[invalid-argument-type] Argument to function `ne` is incorrect: Argument type `(...) -> Unknown` does not satisfy upper bound `BaseExpr` of type variable `BASE_EXPR`
+- python/egglog/exp/program_gen.py:264:12: error[invalid-argument-type] Argument to function `ne` is incorrect: Argument type `(...) -> Unknown` does not satisfy upper bound of type variable `BASE_EXPR`
++ python/egglog/exp/program_gen.py:264:12: error[invalid-argument-type] Argument to function `ne` is incorrect: Argument type `(...) -> Unknown` does not satisfy upper bound `BaseExpr` of type variable `BASE_EXPR`
+- python/egglog/exp/program_gen.py:272:12: error[invalid-argument-type] Argument to function `eq` is incorrect: Argument type `(...) -> Unknown` does not satisfy upper bound of type variable `BASE_EXPR`
++ python/egglog/exp/program_gen.py:272:12: error[invalid-argument-type] Argument to function `eq` is incorrect: Argument type `(...) -> Unknown` does not satisfy upper bound `BaseExpr` of type variable `BASE_EXPR`
+- python/egglog/exp/program_gen.py:273:12: error[invalid-argument-type] Argument to function `ne` is incorrect: Argument type `(...) -> Unknown` does not satisfy upper bound of type variable `BASE_EXPR`
++ python/egglog/exp/program_gen.py:273:12: error[invalid-argument-type] Argument to function `ne` is incorrect: Argument type `(...) -> Unknown` does not satisfy upper bound `BaseExpr` of type variable `BASE_EXPR`
+- python/egglog/exp/program_gen.py:283:12: error[invalid-argument-type] Argument to function `eq` is incorrect: Argument type `(...) -> Unknown` does not satisfy upper bound of type variable `BASE_EXPR`
++ python/egglog/exp/program_gen.py:283:12: error[invalid-argument-type] Argument to function `eq` is incorrect: Argument type `(...) -> Unknown` does not satisfy upper bound `BaseExpr` of type variable `BASE_EXPR`
+- python/egglog/exp/program_gen.py:284:12: error[invalid-argument-type] Argument to function `ne` is incorrect: Argument type `(...) -> Unknown` does not satisfy upper bound of type variable `BASE_EXPR`
++ python/egglog/exp/program_gen.py:284:12: error[invalid-argument-type] Argument to function `ne` is incorrect: Argument type `(...) -> Unknown` does not satisfy upper bound `BaseExpr` of type variable `BASE_EXPR`
+- python/egglog/exp/program_gen.py:300:56: error[invalid-argument-type] Argument to function `set_` is incorrect: Argument type `(...) -> Unknown` does not satisfy upper bound of type variable `BASE_EXPR`
++ python/egglog/exp/program_gen.py:300:56: error[invalid-argument-type] Argument to function `set_` is incorrect: Argument type `(...) -> Unknown` does not satisfy upper bound `BaseExpr` of type variable `BASE_EXPR`
+- python/egglog/exp/program_gen.py:302:49: error[invalid-argument-type] Argument to function `eq` is incorrect: Argument type `(...) -> Unknown` does not satisfy upper bound of type variable `BASE_EXPR`
++ python/egglog/exp/program_gen.py:302:49: error[invalid-argument-type] Argument to function `eq` is incorrect: Argument type `(...) -> Unknown` does not satisfy upper bound `BaseExpr` of type variable `BASE_EXPR`
+- python/egglog/exp/program_gen.py:310:12: error[invalid-argument-type] Argument to function `eq` is incorrect: Argument type `(...) -> Unknown` does not satisfy upper bound of type variable `BASE_EXPR`
++ python/egglog/exp/program_gen.py:310:12: error[invalid-argument-type] Argument to function `eq` is incorrect: Argument type `(...) -> Unknown` does not satisfy upper bound `BaseExpr` of type variable `BASE_EXPR`
+- python/egglog/exp/program_gen.py:323:12: error[invalid-argument-type] Argument to function `ne` is incorrect: Argument type `(...) -> Unknown` does not satisfy upper bound of type variable `BASE_EXPR`
++ python/egglog/exp/program_gen.py:323:12: error[invalid-argument-type] Argument to function `ne` is incorrect: Argument type `(...) -> Unknown` does not satisfy upper bound `BaseExpr` of type variable `BASE_EXPR`
+- python/egglog/exp/program_gen.py:338:12: error[invalid-argument-type] Argument to function `eq` is incorrect: Argument type `(...) -> Unknown` does not satisfy upper bound of type variable `BASE_EXPR`
++ python/egglog/exp/program_gen.py:338:12: error[invalid-argument-type] Argument to function `eq` is incorrect: Argument type `(...) -> Unknown` does not satisfy upper bound `BaseExpr` of type variable `BASE_EXPR`
+- python/egglog/exp/program_gen.py:351:12: error[invalid-argument-type] Argument to function `ne` is incorrect: Argument type `(...) -> Unknown` does not satisfy upper bound of type variable `BASE_EXPR`
++ python/egglog/exp/program_gen.py:351:12: error[invalid-argument-type] Argument to function `ne` is incorrect: Argument type `(...) -> Unknown` does not satisfy upper bound `BaseExpr` of type variable `BASE_EXPR`
+- python/egglog/exp/program_gen.py:371:14: error[invalid-argument-type] Argument to function `set_` is incorrect: Argument type `(...) -> Unknown` does not satisfy upper bound of type variable `BASE_EXPR`
++ python/egglog/exp/program_gen.py:371:14: error[invalid-argument-type] Argument to function `set_` is incorrect: Argument type `(...) -> Unknown` does not satisfy upper bound `BaseExpr` of type variable `BASE_EXPR`
+- python/egglog/exp/program_gen.py:372:14: error[invalid-argument-type] Argument to function `set_` is incorrect: Argument type `(...) -> Unknown` does not satisfy upper bound of type variable `BASE_EXPR`
++ python/egglog/exp/program_gen.py:372:14: error[invalid-argument-type] Argument to function `set_` is incorrect: Argument type `(...) -> Unknown` does not satisfy upper bound `BaseExpr` of type variable `BASE_EXPR`
+- python/egglog/exp/program_gen.py:373:14: error[invalid-argument-type] Argument to function `set_` is incorrect: Argument type `(...) -> Unknown` does not satisfy upper bound of type variable `BASE_EXPR`
++ python/egglog/exp/program_gen.py:373:14: error[invalid-argument-type] Argument to function `set_` is incorrect: Argument type `(...) -> Unknown` does not satisfy upper bound `BaseExpr` of type variable `BASE_EXPR`
+- python/egglog/exp/program_gen.py:401:14: error[invalid-argument-type] Argument to function `set_` is incorrect: Argument type `(...) -> Unknown` does not satisfy upper bound of type variable `BASE_EXPR`
++ python/egglog/exp/program_gen.py:401:14: error[invalid-argument-type] Argument to function `set_` is incorrect: Argument type `(...) -> Unknown` does not satisfy upper bound `BaseExpr` of type variable `BASE_EXPR`
+- python/egglog/exp/program_gen.py:402:14: error[invalid-argument-type] Argument to function `set_` is incorrect: Argument type `(...) -> Unknown` does not satisfy upper bound of type variable `BASE_EXPR`
++ python/egglog/exp/program_gen.py:402:14: error[invalid-argument-type] Argument to function `set_` is incorrect: Argument type `(...) -> Unknown` does not satisfy upper bound `BaseExpr` of type variable `BASE_EXPR`
+- python/egglog/exp/program_gen.py:403:14: error[invalid-argument-type] Argument to function `set_` is incorrect: Argument type `(...) -> Unknown` does not satisfy upper bound of type variable `BASE_EXPR`
++ python/egglog/exp/program_gen.py:403:14: error[invalid-argument-type] Argument to function `set_` is incorrect: Argument type `(...) -> Unknown` does not satisfy upper bound `BaseExpr` of type variable `BASE_EXPR`
+- python/egglog/exp/program_gen.py:404:14: error[invalid-argument-type] Argument to function `set_` is incorrect: Argument type `(...) -> Unknown` does not satisfy upper bound of type variable `BASE_EXPR`
++ python/egglog/exp/program_gen.py:404:14: error[invalid-argument-type] Argument to function `set_` is incorrect: Argument type `(...) -> Unknown` does not satisfy upper bound `BaseExpr` of type variable `BASE_EXPR`
+- python/tests/test_program_gen.py:47:19: error[invalid-argument-type] Argument to function `rewrite` is incorrect: Argument type `(...) -> Unknown` does not satisfy upper bound of type variable `EXPR`
++ python/tests/test_program_gen.py:47:19: error[invalid-argument-type] Argument to function `rewrite` is incorrect: Argument type `(...) -> Unknown` does not satisfy upper bound `Expr` of type variable `EXPR`
+- python/tests/test_program_gen.py:48:19: error[invalid-argument-type] Argument to function `rewrite` is incorrect: Argument type `(...) -> Unknown` does not satisfy upper bound of type variable `EXPR`
++ python/tests/test_program_gen.py:48:19: error[invalid-argument-type] Argument to function `rewrite` is incorrect: Argument type `(...) -> Unknown` does not satisfy upper bound `Expr` of type variable `EXPR`
+- python/tests/test_program_gen.py:49:19: error[invalid-argument-type] Argument to function `rewrite` is incorrect: Argument type `(...) -> Unknown` does not satisfy upper bound of type variable `EXPR`
++ python/tests/test_program_gen.py:49:19: error[invalid-argument-type] Argument to function `rewrite` is incorrect: Argument type `(...) -> Unknown` does not satisfy upper bound `Expr` of type variable `EXPR`
+- python/tests/test_program_gen.py:50:19: error[invalid-argument-type] Argument to function `rewrite` is incorrect: Argument type `(...) -> Unknown` does not satisfy upper bound of type variable `EXPR`
++ python/tests/test_program_gen.py:50:19: error[invalid-argument-type] Argument to function `rewrite` is incorrect: Argument type `(...) -> Unknown` does not satisfy upper bound `Expr` of type variable `EXPR`
+- python/tests/test_program_gen.py:51:19: error[invalid-argument-type] Argument to function `rewrite` is incorrect: Argument type `(...) -> Unknown` does not satisfy upper bound of type variable `EXPR`
++ python/tests/test_program_gen.py:51:19: error[invalid-argument-type] Argument to function `rewrite` is incorrect: Argument type `(...) -> Unknown` does not satisfy upper bound `Expr` of type variable `EXPR`
+- python/tests/test_program_gen.py:53:19: error[invalid-argument-type] Argument to function `rewrite` is incorrect: Argument type `(...) -> Unknown` does not satisfy upper bound of type variable `EXPR`
++ python/tests/test_program_gen.py:53:19: error[invalid-argument-type] Argument to function `rewrite` is incorrect: Argument type `(...) -> Unknown` does not satisfy upper bound `Expr` of type variable `EXPR`
+- python/tests/test_program_gen.py:87:47: error[invalid-argument-type] Argument to bound method `extract` is incorrect: Argument type `(...) -> Unknown` does not satisfy upper bound of type variable `BASE_EXPR`
++ python/tests/test_program_gen.py:87:47: error[invalid-argument-type] Argument to bound method `extract` is incorrect: Argument type `(...) -> Unknown` does not satisfy upper bound `BaseExpr` of type variable `BASE_EXPR`
+
+meson (https://github.com/mesonbuild/meson)
+- docs/refman/loaderbase.py:130:62: error[invalid-argument-type] Argument to function `resolve_inherit` is incorrect: Argument type `VarArgs | None` does not satisfy upper bound of type variable `_T`
++ docs/refman/loaderbase.py:130:62: error[invalid-argument-type] Argument to function `resolve_inherit` is incorrect: Argument type `VarArgs | None` does not satisfy upper bound `ArgBase | list[PosArg]` of type variable `_T`
+- mesonbuild/cargo/builder.py:33:72: error[invalid-argument-type] Argument is incorrect: Argument type `TV_TokenTypes@_token` does not satisfy constraints of type variable `TV_TokenTypes`
++ mesonbuild/cargo/builder.py:33:72: error[invalid-argument-type] Argument is incorrect: Argument type `TV_TokenTypes@_token` does not satisfy constraints (`int`, `str`, `bool`) of type variable `TV_TokenTypes`
+- mesonbuild/mparser.py:701:65: error[invalid-argument-type] Argument is incorrect: Argument type `None` does not satisfy constraints of type variable `TV_TokenTypes`
++ mesonbuild/mparser.py:701:65: error[invalid-argument-type] Argument is incorrect: Argument type `None` does not satisfy constraints (`int`, `str`, `bool`) of type variable `TV_TokenTypes`
+- mesonbuild/mparser.py:727:173: error[invalid-argument-type] Argument is incorrect: Argument type `None` does not satisfy constraints of type variable `TV_TokenTypes`
++ mesonbuild/mparser.py:727:173: error[invalid-argument-type] Argument is incorrect: Argument type `None` does not satisfy constraints (`int`, `str`, `bool`) of type variable `TV_TokenTypes`
+
+prefect (https://github.com/PrefectHQ/prefect)
+- src/prefect/utilities/templating.py:92:47: error[invalid-argument-type] Argument to function `find_placeholders` is incorrect: Argument type `object` does not satisfy constraints of type variable `T`
++ src/prefect/utilities/templating.py:92:47: error[invalid-argument-type] Argument to function `find_placeholders` is incorrect: Argument type `object` does not satisfy constraints (`str`, `int`, `int | float`, `bool`, `dict[Any, Any]`, `list[Any]`, `None`) of type variable `T`
+- src/prefect/utilities/templating.py:94:47: error[invalid-argument-type] Argument to function `find_placeholders` is incorrect: Argument type `object` does not satisfy constraints of type variable `T`
++ src/prefect/utilities/templating.py:94:47: error[invalid-argument-type] Argument to function `find_placeholders` is incorrect: Argument type `object` does not satisfy constraints (`str`, `int`, `int | float`, `bool`, `dict[Any, Any]`, `list[Any]`, `None`) of type variable `T`
+
+zulip (https://github.com/zulip/zulip)
+- zerver/views/report.py:13:1: error[invalid-argument-type] Argument to function `csrf_exempt` is incorrect: Argument type `typing.TypeVar` does not satisfy upper bound of type variable `_F`
++ zerver/views/report.py:13:1: error[invalid-argument-type] Argument to function `csrf_exempt` is incorrect: Argument type `typing.TypeVar` does not satisfy upper bound `(...) -> Any` of type variable `_F`
+- zerver/views/video_calls.py:297:1: error[invalid-argument-type] Argument to function `csrf_exempt` is incorrect: Argument type `typing.TypeVar` does not satisfy upper bound of type variable `_F`
++ zerver/views/video_calls.py:297:1: error[invalid-argument-type] Argument to function `csrf_exempt` is incorrect: Argument type `typing.TypeVar` does not satisfy upper bound `(...) -> Any` of type variable `_F`
+
+dd-trace-py (https://github.com/DataDog/dd-trace-py)
+- ddtrace/internal/ci_visibility/git_client.py:99:38: error[invalid-argument-type] Argument to function `urljoin` is incorrect: Argument type `Unknown | DerivedVariable[Unknown] | (Unknown & ~AlwaysFalsy)` does not satisfy constraints of type variable `AnyStr`
++ ddtrace/internal/ci_visibility/git_client.py:99:38: error[invalid-argument-type] Argument to function `urljoin` is incorrect: Argument type `Unknown | DerivedVariable[Unknown] | (Unknown & ~AlwaysFalsy)` does not satisfy constraints (`str`, `bytes`) of type variable `AnyStr`
+- scripts/check_suitespec_coverage.py:42:90: error[invalid-argument-type] Argument to function `fnmatch` is incorrect: Argument type `Path` does not satisfy constraints of type variable `AnyStr`
++ scripts/check_suitespec_coverage.py:42:90: error[invalid-argument-type] Argument to function `fnmatch` is incorrect: Argument type `Path` does not satisfy constraints (`str`, `bytes`) of type variable `AnyStr`
+
+pandas (https://github.com/pandas-dev/pandas)
+- pandas/core/algorithms.py:1035:32: error[invalid-argument-type] Argument to function `_reconstruct_data` is incorrect: Argument type `Any | tuple[@Todo(Support for `typing.TypeAlias`), ndarray[Unknown, Unknown]]` does not satisfy constraints of type variable `ArrayLikeT`
++ pandas/core/algorithms.py:1035:32: error[invalid-argument-type] Argument to function `_reconstruct_data` is incorrect: Argument type `Any | tuple[@Todo(Support for `typing.TypeAlias`), ndarray[Unknown, Unknown]]` does not satisfy constraints (`ExtensionArray`, `ndarray[Unknown, Unknown]`) of type variable `ArrayLikeT`
+- pandas/tests/resample/test_base.py:215:41: error[invalid-argument-type] Argument to function `_asfreq_compat` is incorrect: Argument type `Unknown | Index` does not satisfy constraints of type variable `FreqIndexT`
++ pandas/tests/resample/test_base.py:215:41: error[invalid-argument-type] Argument to function `_asfreq_compat` is incorrect: Argument type `Unknown | Index` does not satisfy constraints (`DatetimeIndex`, `PeriodIndex`, `TimedeltaIndex`) of type variable `FreqIndexT`
+- pandas/tests/resample/test_base.py:219:41: error[invalid-argument-type] Argument to function `_asfreq_compat` is incorrect: Argument type `Unknown | Index` does not satisfy constraints of type variable `FreqIndexT`
++ pandas/tests/resample/test_base.py:219:41: error[invalid-argument-type] Argument to function `_asfreq_compat` is incorrect: Argument type `Unknown | Index` does not satisfy constraints (`DatetimeIndex`, `PeriodIndex`, `TimedeltaIndex`) of type variable `FreqIndexT`
+- pandas/tests/resample/test_base.py:315:28: error[invalid-argument-type] Argument to function `_asfreq_compat` is incorrect: Argument type `Unknown | Index` does not satisfy constraints of type variable `FreqIndexT`
++ pandas/tests/resample/test_base.py:315:28: error[invalid-argument-type] Argument to function `_asfreq_compat` is incorrect: Argument type `Unknown | Index` does not satisfy constraints (`DatetimeIndex`, `PeriodIndex`, `TimedeltaIndex`) of type variable `FreqIndexT`
+- pandas/tests/resample/test_base.py:353:41: error[invalid-argument-type] Argument to function `_asfreq_compat` is incorrect: Argument type `Unknown | Index` does not satisfy constraints of type variable `FreqIndexT`
++ pandas/tests/resample/test_base.py:353:41: error[invalid-argument-type] Argument to function `_asfreq_compat` is incorrect: Argument type `Unknown | Index` does not satisfy constraints (`DatetimeIndex`, `PeriodIndex`, `TimedeltaIndex`) of type variable `FreqIndexT`
+- pandas/tests/resample/test_base.py:361:37: error[invalid-argument-type] Argument to function `_asfreq_compat` is incorrect: Argument type `Unknown | Index` does not satisfy constraints of type variable `FreqIndexT`
++ pandas/tests/resample/test_base.py:361:37: error[invalid-argument-type] Argument to function `_asfreq_compat` is incorrect: Argument type `Unknown | Index` does not satisfy constraints (`DatetimeIndex`, `PeriodIndex`, `TimedeltaIndex`) of type variable `FreqIndexT`
+- pandas/tests/resample/test_base.py:398:28: error[invalid-argument-type] Argument to function `_asfreq_compat` is incorrect: Argument type `Unknown | Index` does not satisfy constraints of type variable `FreqIndexT`
++ pandas/tests/resample/test_base.py:398:28: error[invalid-argument-type] Argument to function `_asfreq_compat` is incorrect: Argument type `Unknown | Index` does not satisfy constraints (`DatetimeIndex`, `PeriodIndex`, `TimedeltaIndex`) of type variable `FreqIndexT`
+- pandas/tests/resample/test_base.py:434:28: error[invalid-argument-type] Argument to function `_asfreq_compat` is incorrect: Argument type `Unknown | Index` does not satisfy constraints of type variable `FreqIndexT`
++ pandas/tests/resample/test_base.py:434:28: error[invalid-argument-type] Argument to function `_asfreq_compat` is incorrect: Argument type `Unknown | Index` does not satisfy constraints (`DatetimeIndex`, `PeriodIndex`, `TimedeltaIndex`) of type variable `FreqIndexT`
+- pandas/tests/resample/test_base.py:453:37: error[invalid-argument-type] Argument to function `_asfreq_compat` is incorrect: Argument type `Unknown | Index` does not satisfy constraints of type variable `FreqIndexT`
++ pandas/tests/resample/test_base.py:453:37: error[invalid-argument-type] Argument to function `_asfreq_compat` is incorrect: Argument type `Unknown | Index` does not satisfy constraints (`DatetimeIndex`, `PeriodIndex`, `TimedeltaIndex`) of type variable `FreqIndexT`
+- pandas/util/_validators.py:360:33: error[invalid-argument-type] Argument to function `validate_bool_kwarg` is incorrect: Argument type `object` does not satisfy constraints of type variable `BoolishNoneT`
++ pandas/util/_validators.py:360:33: error[invalid-argument-type] Argument to function `validate_bool_kwarg` is incorrect: Argument type `object` does not satisfy constraints (`bool`, `int`, `None`) of type variable `BoolishNoneT`
+
+core (https://github.com/home-assistant/core)
+- homeassistant/components/airthings_ble/sensor.py:170:17: error[invalid-argument-type] Argument to function `replace` is incorrect: Argument type `SensorEntityDescription` does not satisfy upper bound of type variable `_DataclassT`
++ homeassistant/components/airthings_ble/sensor.py:170:17: error[invalid-argument-type] Argument to function `replace` is incorrect: Argument type `SensorEntityDescription` does not satisfy upper bound `DataclassInstance` of type variable `_DataclassT`
+- homeassistant/components/efergy/sensor.py:129:17: error[invalid-argument-type] Argument to function `replace` is incorrect: Argument type `SensorEntityDescription` does not satisfy upper bound of type variable `_DataclassT`
++ homeassistant/components/efergy/sensor.py:129:17: error[invalid-argument-type] Argument to function `replace` is incorrect: Argument type `SensorEntityDescription` does not satisfy upper bound `DataclassInstance` of type variable `_DataclassT`
+- homeassistant/components/isy994/number.py:100:13: error[invalid-argument-type] Argument to function `replace` is incorrect: Argument type `NumberEntityDescription` does not satisfy upper bound of type variable `_DataclassT`
++ homeassistant/components/isy994/number.py:100:13: error[invalid-argument-type] Argument to function `replace` is incorrect: Argument type `NumberEntityDescription` does not satisfy upper bound `DataclassInstance` of type variable `_DataclassT`
+- homeassistant/components/tplink/entity.py:391:17: error[invalid-argument-type] Argument to function `replace` is incorrect: Argument type `_D@_description_for_feature & ~AlwaysFalsy` does not satisfy upper bound of type variable `_DataclassT`
++ homeassistant/components/tplink/entity.py:391:17: error[invalid-argument-type] Argument to function `replace` is incorrect: Argument type `_D@_description_for_feature & ~AlwaysFalsy` does not satisfy upper bound `DataclassInstance` of type variable `_DataclassT`
+
+sympy (https://github.com/sympy/sympy)
+- sympy/matrices/tests/test_interactions.py:77:42: error[invalid-argument-type] Argument to function `classof` is incorrect: Argument type `MatrixSymbol` does not satisfy upper bound of type variable `Tmat`
++ sympy/matrices/tests/test_interactions.py:77:42: error[invalid-argument-type] Argument to function `classof` is incorrect: Argument type `MatrixSymbol` does not satisfy upper bound `MatrixBase` of type variable `Tmat`
+- sympy/matrices/tests/test_matrices.py:2592:26: error[invalid-argument-type] Argument to bound method `hstack` is incorrect: Argument type `Basic` does not satisfy upper bound of type variable `Self`
++ sympy/matrices/tests/test_matrices.py:2592:26: error[invalid-argument-type] Argument to bound method `hstack` is incorrect: Argument type `Basic` does not satisfy upper bound `MatrixBase` of type variable `Self`
+- sympy/matrices/tests/test_matrices.py:2593:26: error[invalid-argument-type] Argument to bound method `vstack` is incorrect: Argument type `Basic` does not satisfy upper bound of type variable `Self`
++ sympy/matrices/tests/test_matrices.py:2593:26: error[invalid-argument-type] Argument to bound method `vstack` is incorrect: Argument type `Basic` does not satisfy upper bound `MatrixBase` of type variable `Self`
+- sympy/matrices/tests/test_matrices.py:3117:26: error[invalid-argument-type] Argument to bound method `hstack` is incorrect: Argument type `SubspaceOnlyMatrix` does not satisfy upper bound of type variable `Self`
++ sympy/matrices/tests/test_matrices.py:3117:26: error[invalid-argument-type] Argument to bound method `hstack` is incorrect: Argument type `SubspaceOnlyMatrix` does not satisfy upper bound `MatrixBase` of type variable `Self`
+- sympy/matrices/tests/test_matrixbase.py:3300:26: error[invalid-argument-type] Argument to bound method `hstack` is incorrect: Argument type `Basic` does not satisfy upper bound of type variable `Self`
++ sympy/matrices/tests/test_matrixbase.py:3300:26: error[invalid-argument-type] Argument to bound method `hstack` is incorrect: Argument type `Basic` does not satisfy upper bound `MatrixBase` of type variable `Self`
+- sympy/matrices/tests/test_matrixbase.py:3301:26: error[invalid-argument-type] Argument to bound method `vstack` is incorrect: Argument type `Basic` does not satisfy upper bound of type variable `Self`
++ sympy/matrices/tests/test_matrixbase.py:3301:26: error[invalid-argument-type] Argument to bound method `vstack` is incorrect: Argument type `Basic` does not satisfy upper bound `MatrixBase` of type variable `Self`
+
+```
+</details>
+No memory usage changes detected ✅
+
+
+---
+
+_Label `ecosystem-analyzer` added by @sharkdp on 2025-09-10 09:50_
+
+---
+
+_Comment by @github-actions[bot] on 2025-09-10 09:54_
+
+<!-- generated-comment ty ecosystem-analyzer -->
+
+## `ecosystem-analyzer` results
+
+
+| Lint rule | Added | Removed | Changed |
+|-----------|------:|--------:|--------:|
+| `invalid-argument-type` | 0 | 0 | 114 |
+| **Total** | **0** | **0** | **114** |
+
+**[Full report with detailed diff](https://david-improve-specialization.ecosystem-663.pages.dev/diff)**
+
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/call/bind.rs`:3099 on 2025-09-10 11:08_
+
+maybe we could put them inline?
+
+```suggestion
+                        diag.set_primary_message(format_args!("Argument type `{argument_ty_display}` does not satisfy upper bound `{}` of type variable `{typevar_name}`",
+                        typevar.upper_bound(context.db()).expect("type variable should have an upper bound if this error occurs").display(context.db())
+                    ));
+                    }
+                    SpecializationError::MismatchedConstraint { .. } => {
+                        diag.set_primary_message(format_args!("Argument type `{argument_ty_display}` does not satisfy constraints ({}) of type variable `{typevar_name}`",
+                        typevar.constraints(context.db()).expect("type variable should have constraints if this error occurs").iter().map(|ty| format!("`{}`", ty.display(context.db()))).join(", ")
+```
+
+---
+
+_@AlexWaygood approved on 2025-09-10 11:09_
+
+nice!
+
+---
+
+_Label `ecosystem-analyzer` removed by @sharkdp on 2025-09-10 11:25_
+
+---
+
+_Label `ecosystem-analyzer` added by @sharkdp on 2025-09-10 11:25_
+
+---
+
+_Merged by @sharkdp on 2025-09-10 12:01_
+
+---
+
+_Closed by @sharkdp on 2025-09-10 12:01_
+
+---
+
+_Branch deleted on 2025-09-10 12:01_
+
+---

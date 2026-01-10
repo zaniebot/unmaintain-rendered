@@ -1,0 +1,260 @@
+```yaml
+number: 20253
+title: "Stabilize `pytest-raises-ambiguous-pattern` (`RUF043`)"
+type: pull_request
+state: merged
+author: ntBre
+labels:
+  - rule
+assignees: []
+merged: true
+base: brent/0.13.0
+head: brent/ruf043
+created_at: 2025-09-04T20:33:54Z
+updated_at: 2025-09-05T18:01:12Z
+url: https://github.com/astral-sh/ruff/pull/20253
+synced_at: 2026-01-10T17:46:21Z
+```
+
+# Stabilize `pytest-raises-ambiguous-pattern` (`RUF043`)
+
+---
+
+_Pull request opened by @ntBre on 2025-09-04 20:33_
+
+This one has been a bit contentious in the past. It usually uncovers ~700 ecosystem hits. See:
+
+- https://github.com/astral-sh/ruff/pull/16657
+- https://github.com/astral-sh/ruff/issues/16690
+
+But I think there's consensus that it's okay to merge as-is. We'd love an
+autofix since it's so common, but we can't reliably tell what a user meant. The
+pattern is ambiguous after all :laughing:
+
+This is the first rule that actually needed its test case relocated, but the
+docs looked good.
+
+
+---
+
+_Added to milestone `v0.13` by @ntBre on 2025-09-04 20:33_
+
+---
+
+_Label `rule` added by @ntBre on 2025-09-04 20:33_
+
+---
+
+_Comment by @github-actions[bot] on 2025-09-04 20:45_
+
+<!-- generated-comment ecosystem -->
+## `ruff-ecosystem` results
+### Linter (stable)
+ℹ️ ecosystem check **detected linter changes**. (+573 -0 violations, +0 -0 fixes in 17 projects; 38 projects unchanged)
+
+<details><summary><a href="https://github.com/DisnakeDev/disnake">DisnakeDev/disnake</a> (+14 -0 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/DisnakeDev/disnake/blob/b03ae1d6c27b5782f1a71b7dab68328c79138c6a/tests/test_embeds.py#L353'>tests/test_embeds.py:353:42:</a> RUF043 Pattern passed to `match=` contains metacharacters but is neither escaped nor raw
++ <a href='https://github.com/DisnakeDev/disnake/blob/b03ae1d6c27b5782f1a71b7dab68328c79138c6a/tests/test_embeds.py#L359'>tests/test_embeds.py:359:42:</a> RUF043 Pattern passed to `match=` contains metacharacters but is neither escaped nor raw
++ <a href='https://github.com/DisnakeDev/disnake/blob/b03ae1d6c27b5782f1a71b7dab68328c79138c6a/tests/test_embeds.py#L365'>tests/test_embeds.py:365:42:</a> RUF043 Pattern passed to `match=` contains metacharacters but is neither escaped nor raw
++ <a href='https://github.com/DisnakeDev/disnake/blob/b03ae1d6c27b5782f1a71b7dab68328c79138c6a/tests/test_embeds.py#L371'>tests/test_embeds.py:371:42:</a> RUF043 Pattern passed to `match=` contains metacharacters but is neither escaped nor raw
++ <a href='https://github.com/DisnakeDev/disnake/blob/b03ae1d6c27b5782f1a71b7dab68328c79138c6a/tests/test_embeds.py#L393'>tests/test_embeds.py:393:42:</a> RUF043 Pattern passed to `match=` contains metacharacters but is neither escaped nor raw
++ <a href='https://github.com/DisnakeDev/disnake/blob/b03ae1d6c27b5782f1a71b7dab68328c79138c6a/tests/test_embeds.py#L400'>tests/test_embeds.py:400:42:</a> RUF043 Pattern passed to `match=` contains metacharacters but is neither escaped nor raw
++ <a href='https://github.com/DisnakeDev/disnake/blob/b03ae1d6c27b5782f1a71b7dab68328c79138c6a/tests/test_embeds.py#L406'>tests/test_embeds.py:406:42:</a> RUF043 Pattern passed to `match=` contains metacharacters but is neither escaped nor raw
++ <a href='https://github.com/DisnakeDev/disnake/blob/b03ae1d6c27b5782f1a71b7dab68328c79138c6a/tests/test_embeds.py#L412'>tests/test_embeds.py:412:42:</a> RUF043 Pattern passed to `match=` contains metacharacters but is neither escaped nor raw
++ <a href='https://github.com/DisnakeDev/disnake/blob/b03ae1d6c27b5782f1a71b7dab68328c79138c6a/tests/test_flags.py#L163'>tests/test_flags.py:163:45:</a> RUF043 Pattern passed to `match=` contains metacharacters but is neither escaped nor raw
++ <a href='https://github.com/DisnakeDev/disnake/blob/b03ae1d6c27b5782f1a71b7dab68328c79138c6a/tests/test_flags.py#L167'>tests/test_flags.py:167:45:</a> RUF043 Pattern passed to `match=` contains metacharacters but is neither escaped nor raw
+... 4 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/RasaHQ/rasa">RasaHQ/rasa</a> (+10 -0 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/RasaHQ/rasa/blob/b8de3b231126747ff74b2782cb25cb22d2d898d7/tests/core/test_migrate.py#L1066'>tests/core/test_migrate.py:1066:30:</a> RUF043 Pattern passed to `match=` contains metacharacters but is neither escaped nor raw
++ <a href='https://github.com/RasaHQ/rasa/blob/b8de3b231126747ff74b2782cb25cb22d2d898d7/tests/core/test_migrate.py#L1116'>tests/core/test_migrate.py:1116:15:</a> RUF043 Pattern passed to `match=` contains metacharacters but is neither escaped nor raw
++ <a href='https://github.com/RasaHQ/rasa/blob/b8de3b231126747ff74b2782cb25cb22d2d898d7/tests/core/test_migrate.py#L680'>tests/core/test_migrate.py:680:15:</a> RUF043 Pattern passed to `match=` contains metacharacters but is neither escaped nor raw
++ <a href='https://github.com/RasaHQ/rasa/blob/b8de3b231126747ff74b2782cb25cb22d2d898d7/tests/core/test_migrate.py#L720'>tests/core/test_migrate.py:720:15:</a> RUF043 Pattern passed to `match=` contains metacharacters but is neither escaped nor raw
++ <a href='https://github.com/RasaHQ/rasa/blob/b8de3b231126747ff74b2782cb25cb22d2d898d7/tests/core/test_migrate.py#L877'>tests/core/test_migrate.py:877:30:</a> RUF043 Pattern passed to `match=` contains metacharacters but is neither escaped nor raw
++ <a href='https://github.com/RasaHQ/rasa/blob/b8de3b231126747ff74b2782cb25cb22d2d898d7/tests/engine/test_validation.py#L146'>tests/engine/test_validation.py:146:62:</a> RUF043 Pattern passed to `match=` contains metacharacters but is neither escaped nor raw
++ <a href='https://github.com/RasaHQ/rasa/blob/b8de3b231126747ff74b2782cb25cb22d2d898d7/tests/engine/test_validation.py#L352'>tests/engine/test_validation.py:352:47:</a> RUF043 Pattern passed to `match=` contains metacharacters but is neither escaped nor raw
++ <a href='https://github.com/RasaHQ/rasa/blob/b8de3b231126747ff74b2782cb25cb22d2d898d7/tests/engine/test_validation.py#L390'>tests/engine/test_validation.py:390:47:</a> RUF043 Pattern passed to `match=` contains metacharacters but is neither escaped nor raw
++ <a href='https://github.com/RasaHQ/rasa/blob/b8de3b231126747ff74b2782cb25cb22d2d898d7/tests/engine/test_validation.py#L907'>tests/engine/test_validation.py:907:47:</a> RUF043 Pattern passed to `match=` contains metacharacters but is neither escaped nor raw
++ <a href='https://github.com/RasaHQ/rasa/blob/b8de3b231126747ff74b2782cb25cb22d2d898d7/tests/graph_components/validators/test_default_recipe_validator.py#L462'>tests/graph_components/validators/test_default_recipe_validator.py:462:54:</a> RUF043 Pattern passed to `match=` contains metacharacters but is neither escaped nor raw
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+126 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --no-preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/apache/airflow/blob/6855b41605a3e189d41ef114c8edf862d4b92225/airflow-core/tests/unit/cli/commands/test_connection_command.py#L744'>airflow-core/tests/unit/cli/commands/test_connection_command.py:744:17:</a> RUF043 Pattern passed to `match=` contains metacharacters but is neither escaped nor raw
++ <a href='https://github.com/apache/airflow/blob/6855b41605a3e189d41ef114c8edf862d4b92225/airflow-core/tests/unit/cli/commands/test_legacy_commands.py#L49'>airflow-core/tests/unit/cli/commands/test_legacy_commands.py:49:19:</a> RUF043 Pattern passed to `match=` contains metacharacters but is neither escaped nor raw
++ <a href='https://github.com/apache/airflow/blob/6855b41605a3e189d41ef114c8edf862d4b92225/airflow-core/tests/unit/core/test_configuration.py#L1785'>airflow-core/tests/unit/core/test_configuration.py:1785:23:</a> RUF043 Pattern passed to `match=` contains metacharacters but is neither escaped nor raw
++ <a href='https://github.com/apache/airflow/blob/6855b41605a3e189d41ef114c8edf862d4b92225/airflow-core/tests/unit/dag_processing/bundles/test_dag_bundle_manager.py#L380'>airflow-core/tests/unit/dag_processing/bundles/test_dag_bundle_manager.py:380:58:</a> RUF043 Pattern passed to `match=` contains metacharacters but is neither escaped nor raw
++ <a href='https://github.com/apache/airflow/blob/6855b41605a3e189d41ef114c8edf862d4b92225/airflow-core/tests/unit/models/test_backfill.py#L490'>airflow-core/tests/unit/models/test_backfill.py:490:15:</a> RUF043 Pattern passed to `match=` contains metacharacters but is neither escaped nor raw
++ <a href='https://github.com/apache/airflow/blob/6855b41605a3e189d41ef114c8edf862d4b92225/airflow-core/tests/unit/models/test_backfill.py#L81'>airflow-core/tests/unit/models/test_backfill.py:81:19:</a> RUF043 Pattern passed to `match=` contains metacharacters but is neither escaped nor raw
++ <a href='https://github.com/apache/airflow/blob/6855b41605a3e189d41ef114c8edf862d4b92225/airflow-core/tests/unit/models/test_dag.py#L3270'>airflow-core/tests/unit/models/test_dag.py:3270:34:</a> RUF043 Pattern passed to `match=` contains metacharacters but is neither escaped nor raw
++ <a href='https://github.com/apache/airflow/blob/6855b41605a3e189d41ef114c8edf862d4b92225/airflow-core/tests/unit/models/test_pool.py#L314'>airflow-core/tests/unit/models/test_pool.py:314:48:</a> RUF043 Pattern passed to `match=` contains metacharacters but is neither escaped nor raw
++ <a href='https://github.com/apache/airflow/blob/6855b41605a3e189d41ef114c8edf862d4b92225/airflow-core/tests/unit/models/test_pool.py#L318'>airflow-core/tests/unit/models/test_pool.py:318:52:</a> RUF043 Pattern passed to `match=` contains metacharacters but is neither escaped nor raw
++ <a href='https://github.com/apache/airflow/blob/6855b41605a3e189d41ef114c8edf862d4b92225/airflow-core/tests/unit/models/test_taskinstance.py#L398'>airflow-core/tests/unit/models/test_taskinstance.py:398:46:</a> RUF043 Pattern passed to `match=` contains metacharacters but is neither escaped nor raw
+... 116 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/apache/superset">apache/superset</a> (+3 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --no-preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/apache/superset/blob/ce74ae095d41647206e2cf56c7bc8cc43ba4ea1f/tests/integration_tests/db_engine_specs/hive_tests.py#L256'>tests/integration_tests/db_engine_specs/hive_tests.py:256:19:</a> RUF043 Pattern passed to `match=` contains metacharacters but is neither escaped nor raw
++ <a href='https://github.com/apache/superset/blob/ce74ae095d41647206e2cf56c7bc8cc43ba4ea1f/tests/unit_tests/db_engine_specs/test_doris.py#L176'>tests/unit_tests/db_engine_specs/test_doris.py:176:15:</a> RUF043 Pattern passed to `match=` contains metacharacters but is neither escaped nor raw
++ <a href='https://github.com/apache/superset/blob/ce74ae095d41647206e2cf56c7bc8cc43ba4ea1f/tests/unit_tests/sql/parse_tests.py#L1683'>tests/unit_tests/sql/parse_tests.py:1683:15:</a> RUF043 Pattern passed to `match=` contains metacharacters but is neither escaped nor raw
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/bokeh/bokeh">bokeh/bokeh</a> (+3 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --no-preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/core/test_properties.py#L395'>tests/unit/bokeh/core/test_properties.py:395:48:</a> RUF043 Pattern passed to `match=` contains metacharacters but is neither escaped nor raw
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/core/test_properties.py#L398'>tests/unit/bokeh/core/test_properties.py:398:48:</a> RUF043 Pattern passed to `match=` contains metacharacters but is neither escaped nor raw
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/unit/bokeh/core/test_properties.py#L401'>tests/unit/bokeh/core/test_properties.py:401:48:</a> RUF043 Pattern passed to `match=` contains metacharacters but is neither escaped nor raw
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/ibis-project/ibis">ibis-project/ibis</a> (+21 -0 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/ibis-project/ibis/blob/e4e582a920a7255078cb96c2769d859827b66db1/ibis/backends/bigquery/tests/system/test_connect.py#L280'>ibis/backends/bigquery/tests/system/test_connect.py:280:42:</a> RUF043 Pattern passed to `match=` contains metacharacters but is neither escaped nor raw
++ <a href='https://github.com/ibis-project/ibis/blob/e4e582a920a7255078cb96c2769d859827b66db1/ibis/backends/clickhouse/tests/test_client.py#L431'>ibis/backends/clickhouse/tests/test_client.py:431:40:</a> RUF043 Pattern passed to `match=` contains metacharacters but is neither escaped nor raw
++ <a href='https://github.com/ibis-project/ibis/blob/e4e582a920a7255078cb96c2769d859827b66db1/ibis/backends/flink/tests/test_ddl.py#L141'>ibis/backends/flink/tests/test_ddl.py:141:15:</a> RUF043 Pattern passed to `match=` contains metacharacters but is neither escaped nor raw
++ <a href='https://github.com/ibis-project/ibis/blob/e4e582a920a7255078cb96c2769d859827b66db1/ibis/backends/impala/tests/test_exprs.py#L593'>ibis/backends/impala/tests/test_exprs.py:593:48:</a> RUF043 Pattern passed to `match=` contains metacharacters but is neither escaped nor raw
++ <a href='https://github.com/ibis-project/ibis/blob/e4e582a920a7255078cb96c2769d859827b66db1/ibis/backends/pyspark/tests/test_udf.py#L72'>ibis/backends/pyspark/tests/test_udf.py:72:15:</a> RUF043 Pattern passed to `match=` contains metacharacters but is neither escaped nor raw
++ <a href='https://github.com/ibis-project/ibis/blob/e4e582a920a7255078cb96c2769d859827b66db1/ibis/backends/tests/test_client.py#L350'>ibis/backends/tests/test_client.py:350:34:</a> RUF043 Pattern passed to `match=` contains metacharacters but is neither escaped nor raw
++ <a href='https://github.com/ibis-project/ibis/blob/e4e582a920a7255078cb96c2769d859827b66db1/ibis/backends/tests/test_generic.py#L456'>ibis/backends/tests/test_generic.py:456:34:</a> RUF043 Pattern passed to `match=` contains metacharacters but is neither escaped nor raw
++ <a href='https://github.com/ibis-project/ibis/blob/e4e582a920a7255078cb96c2769d859827b66db1/ibis/backends/tests/test_generic.py#L461'>ibis/backends/tests/test_generic.py:461:34:</a> RUF043 Pattern passed to `match=` contains metacharacters but is neither escaped nor raw
++ <a href='https://github.com/ibis-project/ibis/blob/e4e582a920a7255078cb96c2769d859827b66db1/ibis/backends/tests/test_vectorized_udf.py#L355'>ibis/backends/tests/test_vectorized_udf.py:355:15:</a> RUF043 Pattern passed to `match=` contains metacharacters but is neither escaped nor raw
++ <a href='https://github.com/ibis-project/ibis/blob/e4e582a920a7255078cb96c2769d859827b66db1/ibis/backends/tests/test_vectorized_udf.py#L476'>ibis/backends/tests/test_vectorized_udf.py:476:41:</a> RUF043 Pattern passed to `match=` contains metacharacters but is neither escaped nor raw
+... 11 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/langchain-ai/langchain">langchain-ai/langchain</a> (+57 -0 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/langchain-ai/langchain/blob/bc91a4811c454511af50a2fbd95f48f024b5738a/libs/core/tests/unit_tests/indexing/test_indexing.py#L503'>libs/core/tests/unit_tests/indexing/test_indexing.py:503:15:</a> RUF043 Pattern passed to `match=` contains metacharacters but is neither escaped nor raw
++ <a href='https://github.com/langchain-ai/langchain/blob/bc91a4811c454511af50a2fbd95f48f024b5738a/libs/core/tests/unit_tests/indexing/test_indexing.py#L511'>libs/core/tests/unit_tests/indexing/test_indexing.py:511:15:</a> RUF043 Pattern passed to `match=` contains metacharacters but is neither escaped nor raw
++ <a href='https://github.com/langchain-ai/langchain/blob/bc91a4811c454511af50a2fbd95f48f024b5738a/libs/core/tests/unit_tests/indexing/test_indexing.py#L547'>libs/core/tests/unit_tests/indexing/test_indexing.py:547:15:</a> RUF043 Pattern passed to `match=` contains metacharacters but is neither escaped nor raw
++ <a href='https://github.com/langchain-ai/langchain/blob/bc91a4811c454511af50a2fbd95f48f024b5738a/libs/core/tests/unit_tests/indexing/test_indexing.py#L560'>libs/core/tests/unit_tests/indexing/test_indexing.py:560:15:</a> RUF043 Pattern passed to `match=` contains metacharacters but is neither escaped nor raw
++ <a href='https://github.com/langchain-ai/langchain/blob/bc91a4811c454511af50a2fbd95f48f024b5738a/libs/core/tests/unit_tests/indexing/test_indexing.py#L840'>libs/core/tests/unit_tests/indexing/test_indexing.py:840:15:</a> RUF043 Pattern passed to `match=` contains metacharacters but is neither escaped nor raw
++ <a href='https://github.com/langchain-ai/langchain/blob/bc91a4811c454511af50a2fbd95f48f024b5738a/libs/core/tests/unit_tests/indexing/test_indexing.py#L848'>libs/core/tests/unit_tests/indexing/test_indexing.py:848:15:</a> RUF043 Pattern passed to `match=` contains metacharacters but is neither escaped nor raw
++ <a href='https://github.com/langchain-ai/langchain/blob/bc91a4811c454511af50a2fbd95f48f024b5738a/libs/core/tests/unit_tests/indexing/test_indexing.py#L884'>libs/core/tests/unit_tests/indexing/test_indexing.py:884:15:</a> RUF043 Pattern passed to `match=` contains metacharacters but is neither escaped nor raw
++ <a href='https://github.com/langchain-ai/langchain/blob/bc91a4811c454511af50a2fbd95f48f024b5738a/libs/core/tests/unit_tests/indexing/test_indexing.py#L892'>libs/core/tests/unit_tests/indexing/test_indexing.py:892:15:</a> RUF043 Pattern passed to `match=` contains metacharacters but is neither escaped nor raw
++ <a href='https://github.com/langchain-ai/langchain/blob/bc91a4811c454511af50a2fbd95f48f024b5738a/libs/core/tests/unit_tests/prompts/test_chat.py#L176'>libs/core/tests/unit_tests/prompts/test_chat.py:176:27:</a> RUF043 Pattern passed to `match=` contains metacharacters but is neither escaped nor raw
++ <a href='https://github.com/langchain-ai/langchain/blob/bc91a4811c454511af50a2fbd95f48f024b5738a/libs/core/tests/unit_tests/prompts/test_chat.py#L571'>libs/core/tests/unit_tests/prompts/test_chat.py:571:42:</a> RUF043 Pattern passed to `match=` contains metacharacters but is neither escaped nor raw
+... 47 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/lnbits/lnbits">lnbits/lnbits</a> (+29 -0 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/lnbits/lnbits/blob/88b01e60795c488ae9fd8c2e634f3d218b901aaa/tests/regtest/test_real_invoice.py#L246'>tests/regtest/test_real_invoice.py:246:44:</a> RUF043 Pattern passed to `match=` contains metacharacters but is neither escaped nor raw
++ <a href='https://github.com/lnbits/lnbits/blob/88b01e60795c488ae9fd8c2e634f3d218b901aaa/tests/unit/test_fiat_providers.py#L106'>tests/unit/test_fiat_providers.py:106:42:</a> RUF043 Pattern passed to `match=` contains metacharacters but is neither escaped nor raw
++ <a href='https://github.com/lnbits/lnbits/blob/88b01e60795c488ae9fd8c2e634f3d218b901aaa/tests/unit/test_fiat_providers.py#L112'>tests/unit/test_fiat_providers.py:112:42:</a> RUF043 Pattern passed to `match=` contains metacharacters but is neither escaped nor raw
++ <a href='https://github.com/lnbits/lnbits/blob/88b01e60795c488ae9fd8c2e634f3d218b901aaa/tests/unit/test_fiat_providers.py#L120'>tests/unit/test_fiat_providers.py:120:27:</a> RUF043 Pattern passed to `match=` contains metacharacters but is neither escaped nor raw
++ <a href='https://github.com/lnbits/lnbits/blob/88b01e60795c488ae9fd8c2e634f3d218b901aaa/tests/unit/test_fiat_providers.py#L127'>tests/unit/test_fiat_providers.py:127:27:</a> RUF043 Pattern passed to `match=` contains metacharacters but is neither escaped nor raw
++ <a href='https://github.com/lnbits/lnbits/blob/88b01e60795c488ae9fd8c2e634f3d218b901aaa/tests/unit/test_fiat_providers.py#L135'>tests/unit/test_fiat_providers.py:135:27:</a> RUF043 Pattern passed to `match=` contains metacharacters but is neither escaped nor raw
++ <a href='https://github.com/lnbits/lnbits/blob/88b01e60795c488ae9fd8c2e634f3d218b901aaa/tests/unit/test_fiat_providers.py#L144'>tests/unit/test_fiat_providers.py:144:27:</a> RUF043 Pattern passed to `match=` contains metacharacters but is neither escaped nor raw
++ <a href='https://github.com/lnbits/lnbits/blob/88b01e60795c488ae9fd8c2e634f3d218b901aaa/tests/unit/test_fiat_providers.py#L175'>tests/unit/test_fiat_providers.py:175:42:</a> RUF043 Pattern passed to `match=` contains metacharacters but is neither escaped nor raw
++ <a href='https://github.com/lnbits/lnbits/blob/88b01e60795c488ae9fd8c2e634f3d218b901aaa/tests/unit/test_helpers.py#L12'>tests/unit/test_helpers.py:12:42:</a> RUF043 Pattern passed to `match=` contains metacharacters but is neither escaped nor raw
++ <a href='https://github.com/lnbits/lnbits/blob/88b01e60795c488ae9fd8c2e634f3d218b901aaa/tests/unit/test_helpers.py#L17'>tests/unit/test_helpers.py:17:15:</a> RUF043 Pattern passed to `match=` contains metacharacters but is neither escaped nor raw
+... 19 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/milvus-io/pymilvus">milvus-io/pymilvus</a> (+6 -0 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/milvus-io/pymilvus/blob/c378eac2fe643c8998a7a995a34f8d345fe131ca/tests/test_bulk_writer_validators.py#L115'>tests/test_bulk_writer_validators.py:115:51:</a> RUF043 Pattern passed to `match=` contains metacharacters but is neither escaped nor raw
++ <a href='https://github.com/milvus-io/pymilvus/blob/c378eac2fe643c8998a7a995a34f8d345fe131ca/tests/test_bulk_writer_validators.py#L185'>tests/test_bulk_writer_validators.py:185:51:</a> RUF043 Pattern passed to `match=` contains metacharacters but is neither escaped nor raw
++ <a href='https://github.com/milvus-io/pymilvus/blob/c378eac2fe643c8998a7a995a34f8d345fe131ca/tests/test_bulk_writer_validators.py#L231'>tests/test_bulk_writer_validators.py:231:51:</a> RUF043 Pattern passed to `match=` contains metacharacters but is neither escaped nor raw
++ <a href='https://github.com/milvus-io/pymilvus/blob/c378eac2fe643c8998a7a995a34f8d345fe131ca/tests/test_bulk_writer_validators.py#L61'>tests/test_bulk_writer_validators.py:61:51:</a> RUF043 Pattern passed to `match=` contains metacharacters but is neither escaped nor raw
++ <a href='https://github.com/milvus-io/pymilvus/blob/c378eac2fe643c8998a7a995a34f8d345fe131ca/tests/test_milvus_client.py#L23'>tests/test_milvus_client.py:23:54:</a> RUF043 Pattern passed to `match=` contains metacharacters but is neither escaped nor raw
++ <a href='https://github.com/milvus-io/pymilvus/blob/c378eac2fe643c8998a7a995a34f8d345fe131ca/tests/test_milvus_client.py#L26'>tests/test_milvus_client.py:26:54:</a> RUF043 Pattern passed to `match=` contains metacharacters but is neither escaped nor raw
+</pre>
+
+</p>
+</details>
+
+_... Truncated remaining completed project reports due to GitHub comment length restrictions_
+
+<details><summary>Changes by rule (1 rules affected)</summary>
+<p>
+
+| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| RUF043 | 573 | 573 | 0 | 0 | 0 |
+
+</p>
+</details>
+
+### Linter (preview)
+✅ ecosystem check detected no linter changes.
+
+
+
+
+---
+
+_@amyreese approved on 2025-09-04 23:31_
+
+---
+
+_Comment by @ntBre on 2025-09-05 13:29_
+
+After going through the ecosystem checks, I realized we should probably expand the docs slightly to explain why each `Use instead` example suppresses the lint. This was also discussed a bit on #16690.
+
+All of the ecosystem hits look like true positives, though.
+
+---
+
+_Marked ready for review by @ntBre on 2025-09-05 13:29_
+
+---
+
+_Merged by @ntBre on 2025-09-05 18:01_
+
+---
+
+_Closed by @ntBre on 2025-09-05 18:01_
+
+---
+
+_Branch deleted on 2025-09-05 18:01_
+
+---

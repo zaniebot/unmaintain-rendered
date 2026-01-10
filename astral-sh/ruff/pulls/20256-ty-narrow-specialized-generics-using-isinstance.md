@@ -1,0 +1,632 @@
+```yaml
+number: 20256
+title: "[ty] Narrow specialized generics using isinstance()"
+type: pull_request
+state: merged
+author: JelleZijlstra
+labels:
+  - ty
+  - ecosystem-analyzer
+assignees: []
+merged: true
+base: main
+head: narrow-isinst
+created_at: 2025-09-04T21:19:07Z
+updated_at: 2025-09-04T23:01:40Z
+url: https://github.com/astral-sh/ruff/pull/20256
+synced_at: 2026-01-10T17:46:21Z
+```
+
+# [ty] Narrow specialized generics using isinstance()
+
+---
+
+_Pull request opened by @JelleZijlstra on 2025-09-04 21:19_
+
+Closes astral-sh/ty#456. Part of astral-sh/ty#994.
+
+After all the foundational work, this is only a small change, but let's see if it exposes any unresolved issues.
+
+---
+
+_Review requested from @carljm by @JelleZijlstra on 2025-09-04 21:19_
+
+---
+
+_Review requested from @AlexWaygood by @JelleZijlstra on 2025-09-04 21:19_
+
+---
+
+_Review requested from @sharkdp by @JelleZijlstra on 2025-09-04 21:19_
+
+---
+
+_Review requested from @dcreager by @JelleZijlstra on 2025-09-04 21:19_
+
+---
+
+_Comment by @github-actions[bot] on 2025-09-04 21:21_
+
+<!-- generated-comment typing_conformance_diagnostics_diff -->
+## Diagnostic diff on [typing conformance tests](https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance)
+No changes detected when running ty on typing conformance tests ✅
+
+
+---
+
+_Comment by @github-actions[bot] on 2025-09-04 21:23_
+
+<!-- generated-comment mypy_primer -->
+## `mypy_primer` results
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+```diff
+aioredis (https://github.com/aio-libs/aioredis)
+- aioredis/client.py:3432:13: error[invalid-assignment] Object of type `(Sequence[@Todo(Inference of subscript on special form)] & ~Mapping[Unknown, Unknown]) | (Mapping[AnyKeyT@_zaggregate, int | float] & ~Mapping[Unknown, Unknown])` is not assignable to `Sequence[Unknown] | AbstractSet[AnyKeyT@_zaggregate]`
++ aioredis/client.py:3430:13: error[invalid-assignment] Object of type `KeysView[object]` is not assignable to `Sequence[Unknown] | AbstractSet[AnyKeyT@_zaggregate]`
++ aioredis/client.py:3430:24: error[invalid-assignment] Object of type `ValuesView[object]` is not assignable to `ValuesView[int | float] | None`
+- Found 14 diagnostics
++ Found 15 diagnostics
+
+anyio (https://github.com/agronholm/anyio)
++ src/anyio/_core/_sockets.py:764:9: error[invalid-assignment] Not enough values to unpack: Expected 4
++ src/anyio/_core/_sockets.py:917:38: error[invalid-argument-type] Argument is incorrect: Expected `str | IPv4Address | IPv6Address`, found `str | IPv4Address | IPv6Address | int`
++ src/anyio/_core/_sockets.py:917:38: error[invalid-argument-type] Argument is incorrect: Expected `int`, found `str | IPv4Address | IPv6Address | int`
+- Found 222 diagnostics
++ Found 225 diagnostics
+
+nionutils (https://github.com/nion-software/nionutils)
+- nion/utils/Stream.py:335:67: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `Observable | None`, found `(Observable & ~AbstractStream[Unknown]) | (AbstractStream[Observable] & ~AbstractStream[Unknown])`
++ nion/utils/Stream.py:337:13: error[invalid-assignment] Object of type `(Observable & AbstractStream[object]) | AbstractStream[Observable]` is not assignable to `AbstractStream[Observable]`
+
+Expression (https://github.com/cognitedata/Expression)
++ tests/test_option.py:28:21: error[invalid-argument-type] Argument to function `pipe` is incorrect: Expected `(Option[Literal[42]], /) -> Unknown`, found `def is_some[_TSource](option: Option[_TSource@is_some]) -> @Todo(`TypeGuard[]` special form)`
++ tests/test_option.py:29:21: error[invalid-argument-type] Argument to function `pipe` is incorrect: Expected `(Option[Literal[42]], /) -> Unknown`, found `def is_none[_TSource](option: Option[_TSource@is_none]) -> @Todo(`TypeGuard[]` special form)`
+- Found 225 diagnostics
++ Found 227 diagnostics
+
+alerta (https://github.com/alerta/alerta)
+- alerta/models/alert.py:236:48: error[invalid-return-type] Function can implicitly return `None`, which is not assignable to return type `Alert`
+- alerta/models/blackout.py:213:48: error[invalid-return-type] Function can implicitly return `None`, which is not assignable to return type `Blackout`
+- alerta/models/customer.py:57:48: error[invalid-return-type] Function can implicitly return `None`, which is not assignable to return type `Customer`
+- alerta/models/group.py:121:48: error[invalid-return-type] Function can implicitly return `None`, which is not assignable to return type `Group`
+- alerta/models/heartbeat.py:149:48: error[invalid-return-type] Function can implicitly return `None`, which is not assignable to return type `Heartbeat`
+- alerta/models/key.py:114:48: error[invalid-return-type] Function can implicitly return `None`, which is not assignable to return type `ApiKey`
+- alerta/models/note.py:101:48: error[invalid-return-type] Function can implicitly return `None`, which is not assignable to return type `Note`
+- alerta/models/permission.py:62:48: error[invalid-return-type] Function can implicitly return `None`, which is not assignable to return type `Permission`
+- alerta/models/user.py:140:48: error[invalid-return-type] Function can implicitly return `None`, which is not assignable to return type `User`
++ alerta/utils/api.py:125:17: error[invalid-assignment] Too many values to unpack: Expected 3
+- Found 497 diagnostics
++ Found 489 diagnostics
+
+artigraph (https://github.com/artigraph/artigraph)
+- src/arti/internal/type_hints.py:177:37: error[invalid-argument-type] Argument to function `_check_issubclass` is incorrect: Expected `type`, found `T@lenient_issubclass & ~tuple[Unknown, ...]`
++ src/arti/internal/type_hints.py:177:37: error[invalid-argument-type] Argument to function `_check_issubclass` is incorrect: Expected `type`, found `T@lenient_issubclass & ~tuple[object, ...]`
+
+starlette (https://github.com/encode/starlette)
+- starlette/staticfiles.py:76:45: error[invalid-argument-type] Argument to function `find_spec` is incorrect: Expected `str`, found `str | (tuple[str, str] & ~tuple[Unknown, ...]) | Unknown`
+- Found 149 diagnostics
++ Found 148 diagnostics
+
+koda-validate (https://github.com/keithasaurus/koda-validate)
++ koda_validate/_internal.py:213:16: error[non-subscriptable] Cannot subscript object of type `object` with no `__getitem__` method
++ koda_validate/_internal.py:214:30: error[non-subscriptable] Cannot subscript object of type `object` with no `__getitem__` method
++ koda_validate/_internal.py:216:29: error[non-subscriptable] Cannot subscript object of type `object` with no `__getitem__` method
++ koda_validate/_internal.py:233:16: error[non-subscriptable] Cannot subscript object of type `object` with no `__getitem__` method
++ koda_validate/_internal.py:234:30: error[non-subscriptable] Cannot subscript object of type `object` with no `__getitem__` method
++ koda_validate/_internal.py:236:29: error[non-subscriptable] Cannot subscript object of type `object` with no `__getitem__` method
++ koda_validate/serialization/json_schema.py:319:43: error[invalid-argument-type] Argument to function `escape` is incorrect: Argument type `object` does not satisfy constraints of type variable `AnyStr`
++ koda_validate/serialization/json_schema.py:321:42: error[invalid-argument-type] Argument to function `escape` is incorrect: Argument type `object` does not satisfy constraints of type variable `AnyStr`
++ koda_validate/serialization/json_schema.py:328:20: error[unresolved-attribute] Type `object` has no attribute `isoformat`
++ koda_validate/serialization/json_schema.py:349:20: error[unresolved-attribute] Type `object` has no attribute `isoformat`
++ koda_validate/serialization/json_schema.py:378:22: error[unresolved-attribute] Type `object` has no attribute `isoformat`
++ koda_validate/serialization/json_schema.py:380:22: error[unresolved-attribute] Type `object` has no attribute `isoformat`
++ koda_validate/serialization/json_schema.py:386:22: error[unresolved-attribute] Type `object` has no attribute `decode`
++ koda_validate/serialization/json_schema.py:464:37: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `object`
++ koda_validate/serialization/json_schema.py:467:29: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `object`
++ koda_validate/serialization/json_schema.py:468:29: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `object`
++ koda_validate/serialization/json_schema.py:469:54: error[not-iterable] Object of type `object` is not iterable
+- Found 39 diagnostics
++ Found 56 diagnostics
+
+werkzeug (https://github.com/pallets/werkzeug)
++ src/werkzeug/datastructures/headers.py:518:51: error[invalid-argument-type] Argument to bound method `getlist` is incorrect: Expected `Never`, found `str`
++ src/werkzeug/datastructures/structures.py:193:34: error[invalid-argument-type] Method `__getitem__` of type `Overload[(i: SupportsIndex, /) -> object, (s: slice[Never, Never, Never], /) -> Top[list[Unknown]]]` cannot be called with key of type `slice[None, None, None]` on object of type `Top[list[Unknown]]`
++ src/werkzeug/http.py:277:18: error[non-subscriptable] Cannot subscript object of type `object` with no `__getitem__` method
++ src/werkzeug/local.py:511:24: error[invalid-return-type] Return type does not match returned value: expected `T@LocalProxy`, found `~None | Unknown`
+- src/werkzeug/sansio/response.py:614:50: warning[possibly-unbound-attribute] Attribute `to_header` on type `(WWWAuthenticate & ~AlwaysFalsy & ~list[Unknown]) | (list[WWWAuthenticate] & ~AlwaysFalsy & ~list[Unknown])` is possibly unbound
+- src/werkzeug/sansio/response.py:620:13: error[invalid-assignment] Object of type `def on_update(value: WWWAuthenticate) -> None` is not assignable to attribute `_on_update` on type `(WWWAuthenticate & ~AlwaysFalsy & ~list[Unknown]) | (list[WWWAuthenticate] & ~AlwaysFalsy & ~list[Unknown])`
++ src/werkzeug/sansio/response.py:620:13: error[invalid-assignment] Object of type `def on_update(value: WWWAuthenticate) -> None` is not assignable to attribute `_on_update` on type `WWWAuthenticate & ~AlwaysFalsy & ~Top[list[Unknown]]`
+- src/werkzeug/test.py:364:47: warning[possibly-unbound-attribute] Attribute `to_header` on type `Authorization | (tuple[str, str] & ~tuple[Unknown, ...])` is possibly unbound
+- Found 367 diagnostics
++ Found 369 diagnostics
+
+psycopg (https://github.com/psycopg/psycopg)
+- psycopg/psycopg/crdb/connection.py:36:21: warning[possibly-unbound-attribute] Attribute `parameter_status` on type `(Connection[Any] & ~Connection[tuple[Any, ...]] & ~AsyncConnection[tuple[Any, ...]]) | (AsyncConnection[Any] & ~Connection[tuple[Any, ...]] & ~AsyncConnection[tuple[Any, ...]]) | PGconn | Unknown` is possibly unbound
++ psycopg/psycopg/crdb/connection.py:36:21: warning[possibly-unbound-attribute] Attribute `parameter_status` on type `(Connection[Any] & ~Connection[tuple[object, ...]] & ~AsyncConnection[tuple[object, ...]]) | (AsyncConnection[Any] & ~Connection[tuple[object, ...]] & ~AsyncConnection[tuple[object, ...]]) | PGconn | Unknown` is possibly unbound
+
+kopf (https://github.com/nolar/kopf)
++ kopf/_core/reactor/subhandling.py:71:46: error[invalid-argument-type] Argument to function `generate_id` is incorrect: Expected `(...) -> Any`, found `object`
++ kopf/_core/reactor/subhandling.py:71:53: error[invalid-argument-type] Argument to function `generate_id` is incorrect: Expected `str | None`, found `object`
+- Found 50 diagnostics
++ Found 52 diagnostics
+
+kornia (https://github.com/kornia/kornia)
+- kornia/augmentation/container/augment.py:656:25: warning[possibly-unbound-attribute] Attribute `dtype` on type `(Unknown & ~list[Unknown]) | (list[Unknown] & ~list[Unknown])` is possibly unbound
+- kornia/augmentation/container/augment.py:657:23: warning[possibly-unbound-attribute] Attribute `float` on type `(Unknown & ~list[Unknown]) | (list[Unknown] & ~list[Unknown])` is possibly unbound
+- kornia/augmentation/container/image.py:390:22: warning[possibly-unbound-attribute] Attribute `get` on type `dict[str, Unknown] | (list[ParamItem] & ~list[Unknown])` is possibly unbound
+- kornia/contrib/models/efficient_vit/utils/network.py:33:12: error[unsupported-operator] Operator `//` is unsupported between objects of type `int | (tuple[int, ...] & ~tuple[Unknown, ...])` and `Literal[2]`
+- kornia/contrib/models/tiny_vit.py:304:21: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `int | float`, found `@Todo(Subscript expressions on intersections) | int | float | (list[int | float] & ~list[Unknown])`
++ kornia/feature/sold2/sold2.py:73:40: error[invalid-argument-type] Argument to function `dict_to_dataclass` is incorrect: Expected `dict[str, Any]`, found `DetectorCfg & Top[dict[Unknown, Unknown]]`
++ kornia/feature/sold2/sold2_detector.py:67:40: error[invalid-argument-type] Argument to function `dict_to_dataclass` is incorrect: Expected `dict[str, Any]`, found `DetectorCfg & Top[dict[Unknown, Unknown]]`
+- kornia/filters/gaussian.py:77:17: warning[possibly-unbound-attribute] Attribute `to` on type `(tuple[int | float, int | float] & ~tuple[Unknown, ...]) | (Unknown & ~tuple[Unknown, ...])` is possibly unbound
+- kornia/geometry/boxes.py:747:43: warning[possibly-unbound-attribute] Attribute `dim` on type `(Unknown & ~list[Unknown]) | (list[Unknown] & ~list[Unknown])` is possibly unbound
+- kornia/geometry/boxes.py:747:63: warning[possibly-unbound-attribute] Attribute `shape` on type `(Unknown & ~list[Unknown]) | (list[Unknown] & ~list[Unknown])` is possibly unbound
+- kornia/geometry/boxes.py:750:33: warning[possibly-unbound-attribute] Attribute `size` on type `(Unknown & ~list[Unknown]) | (list[Unknown] & ~list[Unknown])` is possibly unbound
+- kornia/geometry/boxes.py:753:13: warning[possibly-unbound-attribute] Attribute `view` on type `(Unknown & ~list[Unknown]) | (list[Unknown] & ~list[Unknown])` is possibly unbound
+- kornia/geometry/boxes.py:753:24: warning[possibly-unbound-attribute] Attribute `size` on type `(Unknown & ~list[Unknown]) | (list[Unknown] & ~list[Unknown])` is possibly unbound
+- kornia/geometry/boxes.py:753:40: warning[possibly-unbound-attribute] Attribute `size` on type `(Unknown & ~list[Unknown]) | (list[Unknown] & ~list[Unknown])` is possibly unbound
+- kornia/geometry/boxes.py:753:59: warning[possibly-unbound-attribute] Attribute `size` on type `(Unknown & ~list[Unknown]) | (list[Unknown] & ~list[Unknown])` is possibly unbound
+- kornia/geometry/boxes.py:753:74: warning[possibly-unbound-attribute] Attribute `size` on type `(Unknown & ~list[Unknown]) | (list[Unknown] & ~list[Unknown])` is possibly unbound
+- kornia/geometry/keypoints.py:203:43: warning[possibly-unbound-attribute] Attribute `dim` on type `(Unknown & ~list[Unknown]) | (list[Unknown] & ~list[Unknown])` is possibly unbound
+- kornia/geometry/keypoints.py:203:63: warning[possibly-unbound-attribute] Attribute `shape` on type `(Unknown & ~list[Unknown]) | (list[Unknown] & ~list[Unknown])` is possibly unbound
+- kornia/geometry/keypoints.py:206:33: warning[possibly-unbound-attribute] Attribute `size` on type `(Unknown & ~list[Unknown]) | (list[Unknown] & ~list[Unknown])` is possibly unbound
+- kornia/geometry/keypoints.py:210:19: warning[possibly-unbound-attribute] Attribute `view` on type `(Unknown & ~list[Unknown]) | (list[Unknown] & ~list[Unknown])` is possibly unbound
+- kornia/geometry/keypoints.py:210:30: warning[possibly-unbound-attribute] Attribute `size` on type `(Unknown & ~list[Unknown]) | (list[Unknown] & ~list[Unknown])` is possibly unbound
+- kornia/geometry/keypoints.py:210:46: warning[possibly-unbound-attribute] Attribute `size` on type `(Unknown & ~list[Unknown]) | (list[Unknown] & ~list[Unknown])` is possibly unbound
+- kornia/geometry/keypoints.py:210:65: warning[possibly-unbound-attribute] Attribute `size` on type `(Unknown & ~list[Unknown]) | (list[Unknown] & ~list[Unknown])` is possibly unbound
+- kornia/models/depth_estimation/base.py:59:35: warning[possibly-unbound-attribute] Attribute `cpu` on type `(Unknown & ~list[Unknown] & ~tuple[Unknown, ...]) | (list[Unknown] & ~list[Unknown])` is possibly unbound
+- kornia/models/depth_estimation/base.py:60:40: warning[possibly-unbound-attribute] Attribute `device` on type `(Unknown & ~list[Unknown] & ~tuple[Unknown, ...]) | (list[Unknown] & ~list[Unknown])` is possibly unbound
+- kornia/models/depth_estimation/base.py:60:61: warning[possibly-unbound-attribute] Attribute `dtype` on type `(Unknown & ~list[Unknown] & ~tuple[Unknown, ...]) | (list[Unknown] & ~list[Unknown])` is possibly unbound
+- kornia/models/segmentation/base.py:184:40: warning[possibly-unbound-attribute] Attribute `size` on type `(Unknown & ~None & ~list[Unknown] & ~tuple[Unknown, ...]) | (list[Unknown] & ~list[Unknown]) | (Unknown & ~list[Unknown] & ~tuple[Unknown, ...])` is possibly unbound
+- kornia/models/utils.py:61:58: warning[possibly-unbound-attribute] Attribute `shape` on type `(Unknown & ~list[Unknown]) | (list[Unknown] & ~list[Unknown])` is possibly unbound
+- kornia/models/utils.py:95:58: warning[possibly-unbound-attribute] Attribute `shape` on type `(Unknown & ~list[Unknown]) | (list[Unknown] & ~list[Unknown])` is possibly unbound
+- Found 808 diagnostics
++ Found 783 diagnostics
+
+hydra-zen (https://github.com/mit-ll-responsible-ai/hydra-zen)
+- src/hydra_zen/_launch.py:416:5: error[unsupported-operator] Operator `+=` is unsupported between objects of type `Mapping[str, @Todo(Inference of subscript on special form)] & ~Mapping[Unknown, Unknown]` and `list[str]`
++ src/hydra_zen/_launch.py:413:45: error[invalid-argument-type] Argument to function `_process_dict_overrides` is incorrect: Expected `Mapping[str, @Todo(Inference of subscript on special form)]`, found `Mapping[str, @Todo(Inference of subscript on special form)] | (list[str] & Top[Mapping[Unknown, object]]) | (list[@Todo(list literal element type)] & Top[Mapping[Unknown, object]])`
++ src/hydra_zen/funcs.py:54:13: error[invalid-assignment] Object of type `() -> object` is not assignable to `(...) -> T@partial_with_wrapper`
+- src/hydra_zen/wrapper/_implementations.py:945:16: error[invalid-return-type] Return type does not match returned value: expected `DataClass_ | type[@Todo(type[T] for protocols)] | ListConfig | DictConfig`, found `@Todo(unsupported type[X] special form) | (((...) -> Any) & dict[Unknown, Unknown]) | (DataClass_ & dict[Unknown, Unknown]) | dict[Any, Any] | (ListConfig & dict[Unknown, Unknown]) | (DictConfig & dict[Unknown, Unknown]) | (((...) -> Any) & list[Unknown]) | (DataClass_ & list[Unknown]) | list[Any] | (ListConfig & list[Unknown]) | (DictConfig & list[Unknown])`
++ src/hydra_zen/wrapper/_implementations.py:945:16: error[invalid-return-type] Return type does not match returned value: expected `DataClass_ | type[@Todo(type[T] for protocols)] | ListConfig | DictConfig`, found `@Todo(unsupported type[X] special form) | (((...) -> Any) & Top[dict[Unknown, Unknown]]) | (DataClass_ & Top[dict[Unknown, Unknown]]) | dict[Any, Any] | (ListConfig & Top[dict[Unknown, Unknown]]) | (DictConfig & Top[dict[Unknown, Unknown]]) | (((...) -> Any) & Top[list[Unknown]]) | (DataClass_ & Top[list[Unknown]]) | list[Any] | (ListConfig & Top[list[Unknown]]) | (DictConfig & Top[list[Unknown]])`
+- src/hydra_zen/wrapper/_implementations.py:1734:9: error[invalid-assignment] Object of type `((x) -> Unknown) | (Mapping[@Todo(Support for `typing.TypeAlias`), @Todo(Support for `typing.TypeAlias`)] & ~Mapping[Unknown, Unknown]) | (((@Todo(Support for `typing.TypeAlias`), /) -> @Todo(Support for `typing.TypeAlias`)) & ~Mapping[Unknown, Unknown])` is not assignable to `(@Todo(Support for `typing.TypeAlias`), /) -> @Todo(Support for `typing.TypeAlias`)`
+
+discord.py (https://github.com/Rapptz/discord.py)
++ discord/channel.py:632:31: error[unresolved-attribute] Type `object` has no attribute `id`
++ discord/channel.py:639:39: error[unresolved-attribute] Type `object` has no attribute `id`
++ discord/channel.py:1276:31: error[unresolved-attribute] Type `object` has no attribute `id`
++ discord/channel.py:1283:39: error[unresolved-attribute] Type `object` has no attribute `id`
+- discord/ext/commands/converter.py:1121:13: error[invalid-assignment] Object of type `tuple[(tuple[T@__class_getitem__] & ~tuple[Unknown, ...]) | (T@__class_getitem__ & ~tuple[Unknown, ...])]` is not assignable to `tuple[T@__class_getitem__] | T@__class_getitem__`
+- discord/ext/commands/converter.py:1122:16: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `tuple[T@__class_getitem__] | T@__class_getitem__`
+- discord/ext/commands/converter.py:1124:21: error[non-subscriptable] Cannot subscript object of type `T@__class_getitem__` with no `__getitem__` method
++ discord/threads.py:491:26: error[unresolved-attribute] Type `object` has no attribute `id`
++ discord/threads.py:498:39: error[unresolved-attribute] Type `object` has no attribute `id`
+- discord/ui/section.py:188:64: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `str`, found `(str & Item[Unknown] & ~Item[Unknown]) | (Item[Any] & ~Item[Unknown]) | (str & ~Item[Unknown])`
+- Found 527 diagnostics
++ Found 529 diagnostics
+
+trio (https://github.com/python-trio/trio)
++ src/trio/_util.py:147:12: error[invalid-return-type] Return type does not match returned value: expected `Coroutine[object, Never, RetT@coroutine_or_error]`, found `Coroutine[object, Never, object]`
+- Found 681 diagnostics
++ Found 682 diagnostics
+
+strawberry (https://github.com/strawberry-graphql/strawberry)
+- strawberry/schema/name_converter.py:168:31: error[unresolved-attribute] Type `type & ~LazyType[Unknown, Unknown] & ~EnumDefinition & ~StrawberryUnion & ~StrawberryList & ~StrawberryOptional & ~<Protocol with members '_scalar_definition'>` has no attribute `__strawberry_definition__`
++ strawberry/schema/name_converter.py:168:31: error[unresolved-attribute] Type `type & ~EnumDefinition & ~StrawberryUnion & ~StrawberryList & ~StrawberryOptional & ~<Protocol with members '_scalar_definition'>` has no attribute `__strawberry_definition__`
+- strawberry/schema/schema_converter.py:1084:21: warning[possibly-unbound-attribute] Attribute `__strawberry_definition__` on type `(StrawberryType & ~LazyType[Unknown, Unknown]) | (type & ~LazyType[Unknown, Unknown]) | type[Any]` is possibly unbound
+- strawberry/schema/schema_converter.py:1085:21: warning[possibly-unbound-attribute] Attribute `__strawberry_definition__` on type `(StrawberryType & ~LazyType[Unknown, Unknown]) | (type & ~LazyType[Unknown, Unknown]) | type[Any]` is possibly unbound
++ strawberry/schema/schema_converter.py:1084:21: error[unresolved-attribute] Type `(StrawberryType & ~Top[LazyType[Unknown, Unknown]]) | type` has no attribute `__strawberry_definition__`
++ strawberry/schema/schema_converter.py:1085:21: error[unresolved-attribute] Type `(StrawberryType & ~Top[LazyType[Unknown, Unknown]]) | type` has no attribute `__strawberry_definition__`
+- strawberry/types/arguments.py:252:27: error[unresolved-attribute] Type `(StrawberryType & ~StrawberryOptional & ~StrawberryList & ~LazyType[Unknown, Unknown] & ~<Protocol with members '_enum_definition'>) | (type & ~StrawberryOptional & ~StrawberryList & ~LazyType[Unknown, Unknown] & ~<Protocol with members '_enum_definition'>)` has no attribute `__strawberry_definition__`
++ strawberry/types/arguments.py:252:27: error[unresolved-attribute] Type `(StrawberryType & ~StrawberryOptional & ~StrawberryList & ~Top[LazyType[Unknown, Unknown]] & ~<Protocol with members '_enum_definition'>) | (type & ~StrawberryOptional & ~StrawberryList & ~Top[LazyType[Unknown, Unknown]] & ~<Protocol with members '_enum_definition'>)` has no attribute `__strawberry_definition__`
++ strawberry/types/info.py:81:35: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 376 diagnostics
++ Found 377 diagnostics
+
+check-jsonschema (https://github.com/python-jsonschema/check-jsonschema)
+- src/check_jsonschema/transforms/azure_pipelines.py:130:26: error[invalid-argument-type] Argument to function `traverse_dict` is incorrect: Expected `dict[Unknown, Unknown]`, found `dict[Unknown, Unknown] | (list[Unknown] & ~list[Unknown])`
+- Found 58 diagnostics
++ Found 57 diagnostics
+
+PyWinCtl (https://github.com/Kalmat/PyWinCtl)
+- src/pywinctl/_pywinctl_linux.py:170:25: warning[possibly-unbound-attribute] Attribute `lower` on type `(str & ~AlwaysFalsy) | (Pattern[str] & ~AlwaysFalsy)` is possibly unbound
+- src/pywinctl/_pywinctl_linux.py:224:24: warning[possibly-unbound-attribute] Attribute `lower` on type `(str & ~AlwaysFalsy) | (Pattern[str] & ~AlwaysFalsy)` is possibly unbound
+- Found 34 diagnostics
++ Found 32 diagnostics
+
+porcupine (https://github.com/Akuli/porcupine)
++ porcupine/plugins/filetypes.py:32:49: error[invalid-argument-type] Method `__getitem__` of type `bound method Top[dict[Unknown, Unknown]].__getitem__(key: Never, /) -> object` cannot be called with key of type `object` on object of type `Top[dict[Unknown, Unknown]]`
++ porcupine/plugins/filetypes.py:32:70: error[invalid-argument-type] Method `__getitem__` of type `bound method Top[dict[Unknown, Unknown]].__getitem__(key: Never, /) -> object` cannot be called with key of type `object` on object of type `Top[dict[Unknown, Unknown]]`
+- Found 19 diagnostics
++ Found 21 diagnostics
+
+sockeye (https://github.com/awslabs/sockeye)
+- sockeye/inference.py:350:50: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `(Unknown & ~list[Unknown]) | None | list[@Todo(list comprehension element type)]`
++ sockeye/inference.py:350:50: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `(Unknown & ~Top[list[Unknown]]) | None | list[@Todo(list comprehension element type)]`
+- sockeye/inference.py:352:34: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `(Unknown & ~list[Unknown]) | None | list[@Todo(list comprehension element type)]`
++ sockeye/inference.py:352:34: error[invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `(Unknown & ~Top[list[Unknown]]) | None | list[@Todo(list comprehension element type)]`
++ sockeye/inference.py:376:32: error[no-matching-overload] No overload of bound method `get` matches arguments
++ sockeye/inference.py:376:32: error[no-matching-overload] No overload of bound method `get` matches arguments
+- Found 313 diagnostics
++ Found 315 diagnostics
+
+optuna (https://github.com/optuna/optuna)
++ optuna/study/_tell.py:122:9: error[invalid-assignment] Object of type `(int & Sequence[object]) | (float & Sequence[object]) | Sequence[int | float]` is not assignable to `Sequence[int | float] | None`
+- Found 560 diagnostics
++ Found 561 diagnostics
+
+apprise (https://github.com/caronc/apprise)
++ tests/test_config_base.py:89:12: error[unresolved-attribute] Type `object` has no attribute `get`
++ tests/test_config_base.py:90:12: error[unresolved-attribute] Type `object` has no attribute `get`
++ tests/test_config_base.py:103:12: error[unresolved-attribute] Type `object` has no attribute `get`
++ tests/test_config_base.py:104:12: error[unresolved-attribute] Type `object` has no attribute `get`
++ tests/test_config_base.py:179:16: error[unresolved-attribute] Type `object` has no attribute `tags`
++ tests/test_config_base.py:207:16: error[unresolved-attribute] Type `object` has no attribute `tags`
++ tests/test_config_base.py:208:16: error[unresolved-attribute] Type `object` has no attribute `tags`
++ tests/test_config_base.py:209:16: error[unresolved-attribute] Type `object` has no attribute `tags`
++ tests/test_config_base.py:263:16: error[unresolved-attribute] Type `object` has no attribute `tags`
++ tests/test_config_base.py:264:22: error[unresolved-attribute] Type `object` has no attribute `tags`
++ tests/test_config_base.py:316:16: error[unresolved-attribute] Type `object` has no attribute `tags`
++ tests/test_config_base.py:319:16: error[unresolved-attribute] Type `object` has no attribute `tags`
++ tests/test_config_base.py:320:22: error[unresolved-attribute] Type `object` has no attribute `tags`
++ tests/test_config_base.py:321:22: error[unresolved-attribute] Type `object` has no attribute `tags`
++ tests/test_config_base.py:397:16: error[unresolved-attribute] Type `object` has no attribute `tags`
++ tests/test_config_base.py:398:22: error[unresolved-attribute] Type `object` has no attribute `tags`
++ tests/test_config_base.py:399:22: error[unresolved-attribute] Type `object` has no attribute `tags`
++ tests/test_config_base.py:400:22: error[unresolved-attribute] Type `object` has no attribute `tags`
++ tests/test_config_base.py:467:16: error[unresolved-attribute] Type `object` has no attribute `tags`
++ tests/test_config_base.py:468:24: error[unresolved-attribute] Type `object` has no attribute `tags`
++ tests/test_config_base.py:469:19: error[unresolved-attribute] Type `object` has no attribute `tags`
++ tests/test_config_base.py:475:22: error[invalid-argument-type] Argument to bound method `add` is incorrect: Expected `str | dict[Unknown, Unknown] | NotifyBase | AppriseConfig | ConfigBase | list[str | dict[Unknown, Unknown] | NotifyBase | AppriseConfig | ConfigBase]`, found `list[object]`
++ tests/test_config_base.py:516:16: error[unresolved-attribute] Type `object` has no attribute `tags`
++ tests/test_config_base.py:517:23: error[unresolved-attribute] Type `object` has no attribute `tags`
++ tests/test_config_base.py:565:16: error[unresolved-attribute] Type `object` has no attribute `tags`
++ tests/test_config_base.py:568:60: error[unresolved-attribute] Type `object` has no attribute `url`
++ tests/test_config_base.py:569:45: error[unresolved-attribute] Type `object` has no attribute `url`
++ tests/test_config_base.py:575:51: error[unresolved-attribute] Type `object` has no attribute `url`
++ tests/test_config_base.py:580:16: error[unresolved-attribute] Type `object` has no attribute `tags`
++ tests/test_config_base.py:581:60: error[unresolved-attribute] Type `object` has no attribute `url`
++ tests/test_config_base.py:582:45: error[unresolved-attribute] Type `object` has no attribute `url`
++ tests/test_config_base.py:842:16: error[unresolved-attribute] Type `object` has no attribute `tags`
++ tests/test_config_base.py:894:16: error[unresolved-attribute] Type `object` has no attribute `tags`
++ tests/test_config_base.py:924:27: error[unresolved-attribute] Type `object` has no attribute `tags`
++ tests/test_config_base.py:925:28: error[unresolved-attribute] Type `object` has no attribute `tags`
++ tests/test_config_base.py:957:16: error[unresolved-attribute] Type `object` has no attribute `tags`
++ tests/test_config_base.py:958:22: error[unresolved-attribute] Type `object` has no attribute `tags`
++ tests/test_config_base.py:961:16: error[unresolved-attribute] Type `object` has no attribute `tags`
++ tests/test_config_base.py:962:26: error[unresolved-attribute] Type `object` has no attribute `tags`
++ tests/test_config_base.py:1364:16: error[unresolved-attribute] Type `object` has no attribute `tags`
++ tests/test_config_base.py:1365:24: error[unresolved-attribute] Type `object` has no attribute `tags`
++ tests/test_config_base.py:1366:24: error[unresolved-attribute] Type `object` has no attribute `tags`
++ tests/test_config_base.py:1367:24: error[unresolved-attribute] Type `object` has no attribute `tags`
++ tests/test_config_base.py:1368:24: error[unresolved-attribute] Type `object` has no attribute `tags`
++ tests/test_config_base.py:1369:22: error[unresolved-attribute] Type `object` has no attribute `tags`
++ tests/test_config_base.py:1375:22: error[invalid-argument-type] Argument to bound method `add` is incorrect: Expected `str | dict[Unknown, Unknown] | NotifyBase | AppriseConfig | ConfigBase | list[str | dict[Unknown, Unknown] | NotifyBase | AppriseConfig | ConfigBase]`, found `list[object]`
++ tests/test_config_base.py:1479:16: error[unresolved-attribute] Type `object` has no attribute `tags`
++ tests/test_config_base.py:1480:24: error[unresolved-attribute] Type `object` has no attribute `tags`
++ tests/test_config_base.py:1481:24: error[unresolved-attribute] Type `object` has no attribute `tags`
++ tests/test_config_base.py:1482:24: error[unresolved-attribute] Type `object` has no attribute `tags`
++ tests/test_config_base.py:1483:24: error[unresolved-attribute] Type `object` has no attribute `tags`
++ tests/test_config_base.py:1484:22: error[unresolved-attribute] Type `object` has no attribute `tags`
++ tests/test_config_base.py:1490:22: error[invalid-argument-type] Argument to bound method `add` is incorrect: Expected `str | dict[Unknown, Unknown] | NotifyBase | AppriseConfig | ConfigBase | list[str | dict[Unknown, Unknown] | NotifyBase | AppriseConfig | ConfigBase]`, found `list[object]`
++ tests/test_config_base.py:1551:16: error[unresolved-attribute] Type `object` has no attribute `verify_certificate`
++ tests/test_config_base.py:1552:16: error[unresolved-attribute] Type `object` has no attribute `socket_read_timeout`
++ tests/test_config_base.py:1553:16: error[unresolved-attribute] Type `object` has no attribute `socket_connect_timeout`
++ tests/test_plugin_email.py:2111:12: error[unresolved-attribute] Type `object` has no attribute `from_addr`
++ tests/test_plugin_email.py:2112:12: error[unresolved-attribute] Type `object` has no attribute `user`
++ tests/test_plugin_email.py:2113:12: error[unresolved-attribute] Type `object` has no attribute `smtp_host`
++ tests/test_plugin_email.py:2114:12: error[unresolved-attribute] Type `object` has no attribute `targets`
++ tests/test_plugin_email.py:2115:12: error[unresolved-attribute] Type `object` has no attribute `password`
++ tests/test_plugin_email.py:2137:12: error[unresolved-attribute] Type `object` has no attribute `from_addr`
++ tests/test_plugin_email.py:2138:12: error[unresolved-attribute] Type `object` has no attribute `user`
++ tests/test_plugin_email.py:2139:12: error[unresolved-attribute] Type `object` has no attribute `smtp_host`
++ tests/test_plugin_email.py:2140:12: error[unresolved-attribute] Type `object` has no attribute `targets`
++ tests/test_plugin_email.py:2141:12: error[unresolved-attribute] Type `object` has no attribute `password`
++ tests/test_plugin_signal.py:290:16: error[unresolved-attribute] Type `object` has no attribute `tags`
++ tests/test_plugin_signal.py:291:24: error[unresolved-attribute] Type `object` has no attribute `tags`
++ tests/test_plugin_signal.py:295:16: error[unresolved-attribute] Type `object` has no attribute `targets`
++ tests/test_plugin_signal.py:296:12: error[unresolved-attribute] Type `object` has no attribute `source`
++ tests/test_plugin_signal.py:297:29: error[unresolved-attribute] Type `object` has no attribute `targets`
++ tests/test_plugin_signal.py:313:16: error[unresolved-attribute] Type `object` has no attribute `tags`
++ tests/test_plugin_signal.py:314:24: error[unresolved-attribute] Type `object` has no attribute `tags`
++ tests/test_plugin_signal.py:318:16: error[unresolved-attribute] Type `object` has no attribute `targets`
++ tests/test_plugin_signal.py:319:12: error[unresolved-attribute] Type `object` has no attribute `source`
++ tests/test_plugin_signal.py:320:29: error[unresolved-attribute] Type `object` has no attribute `targets`
++ tests/test_plugin_title_maxlen.py:72:16: error[unresolved-attribute] Type `object` has no attribute `tags`
++ tests/test_plugin_title_maxlen.py:75:14: error[invalid-argument-type] Argument to bound method `add` is incorrect: Expected `str | dict[Unknown, Unknown] | NotifyBase | AppriseConfig | ConfigBase | list[str | dict[Unknown, Unknown] | NotifyBase | AppriseConfig | ConfigBase]`, found `list[object]`
++ tests/test_plugin_title_maxlen.py:118:16: error[unresolved-attribute] Type `object` has no attribute `tags`
++ tests/test_plugin_title_maxlen.py:121:14: error[invalid-argument-type] Argument to bound method `add` is incorrect: Expected `str | dict[Unknown, Unknown] | NotifyBase | AppriseConfig | ConfigBase | list[str | dict[Unknown, Unknown] | NotifyBase | AppriseConfig | ConfigBase]`, found `list[object]`
+- Found 1798 diagnostics
++ Found 1878 diagnostics
+
+pydantic (https://github.com/pydantic/pydantic)
+- pydantic/_internal/_decorators.py:389:49: error[invalid-argument-type] Argument to function `mro` is incorrect: Expected `type[Any]`, found `type[Any] | (tuple[type[Any], ...] & ~tuple[Unknown, ...])`
+- pydantic/_internal/_fields.py:101:52: error[invalid-argument-type] Argument to bound method `startswith` is incorrect: Expected `str | tuple[str, ...]`, found `str | Pattern[str]`
+- pydantic/main.py:863:13: error[invalid-assignment] Object of type `tuple[type[Any] | (tuple[type[Any], ...] & ~tuple[Unknown, ...])]` is not assignable to `type[Any] | tuple[type[Any], ...]`
+- pydantic/main.py:867:67: error[invalid-argument-type] Argument to function `map_generic_model_arguments` is incorrect: Expected `tuple[Any, ...]`, found `(tuple[type[Any], ...] & tuple[Unknown, ...]) | type[Any] | tuple[type[Any], ...]`
+- pydantic/types.py:3090:52: warning[possibly-unbound-attribute] Attribute `get` on type `(Unknown & ~tuple[Unknown, ...]) | (tuple[Unknown, str] & ~tuple[Unknown, ...]) | @Todo(Type::Intersection.call())` is possibly unbound
+- pydantic/v1/generics.py:100:13: error[invalid-assignment] Object of type `tuple[type[Any] | (tuple[type[Any], ...] & ~tuple[Unknown, ...])]` is not assignable to `type[Any] | tuple[type[Any], ...]`
+- pydantic/v1/generics.py:106:37: error[invalid-argument-type] Argument to function `check_parameters_count` is incorrect: Expected `tuple[Any, ...]`, found `(tuple[type[Any], ...] & tuple[Unknown, ...]) | type[Any] | tuple[type[Any], ...]`
+- pydantic/v1/utils.py:610:17: error[invalid-argument-type] Argument to function `assert_never` is incorrect: Expected `Never`, found `(Unknown & ~Mapping[Unknown, Unknown] & ~AbstractSet[Unknown]) | (AbstractSet[@Todo(Inference of subscript on special form)] & ~Mapping[Unknown, Unknown] & ~AbstractSet[Unknown]) | (Mapping[@Todo(Inference of subscript on special form), Any] & ~Mapping[Unknown, Unknown] & ~AbstractSet[Unknown])`
++ pydantic/v1/utils.py:610:17: error[invalid-argument-type] Argument to function `assert_never` is incorrect: Expected `Never`, found `(Unknown & ~Top[Mapping[Unknown, object]] & ~AbstractSet[object]) | (AbstractSet[@Todo(Inference of subscript on special form)] & ~Top[Mapping[Unknown, object]] & ~AbstractSet[object])`
+- Found 762 diagnostics
++ Found 755 diagnostics
+
+ignite (https://github.com/pytorch/ignite)
++ ignite/utils.py:87:68: error[invalid-argument-type] Argument to function `_tree_map` is incorrect: Expected `int | str | None`, found `object`
+- Found 2109 diagnostics
++ Found 2110 diagnostics
+
+mongo-python-driver (https://github.com/mongodb/mongo-python-driver)
++ pymongo/asynchronous/topology.py:834:46: error[invalid-argument-type] Argument to bound method `get` is incorrect: Expected `Never`, found `Literal["topologyVersion"]`
++ pymongo/collation.py:225:16: error[invalid-return-type] Return type does not match returned value: expected `dict[str, Any] | None`, found `Mapping[str, Any] & Top[dict[Unknown, Unknown]]`
++ pymongo/errors.py:106:43: error[invalid-argument-type] Argument to bound method `get` is incorrect: Expected `Never`, found `Literal["errorLabels"]`
++ pymongo/helpers_shared.py:341:16: error[invalid-return-type] Return type does not match returned value: expected `Mapping[str, Any]`, found `Top[Mapping[Unknown, object]]`
++ pymongo/synchronous/topology.py:832:46: error[invalid-argument-type] Argument to bound method `get` is incorrect: Expected `Never`, found `Literal["topologyVersion"]`
+- Found 507 diagnostics
++ Found 512 diagnostics
+
+mkosi (https://github.com/systemd/mkosi)
++ mkosi/config.py:2421:9: error[no-matching-overload] No overload of bound method `pop` matches arguments
++ mkosi/config.py:2421:9: error[no-matching-overload] No overload of bound method `pop` matches arguments
+- Found 101 diagnostics
++ Found 103 diagnostics
+
+flake8 (https://github.com/pycqa/flake8)
+- src/flake8/options/manager.py:198:46: error[invalid-argument-type] Argument to function `normalize_path` is incorrect: Expected `str`, found `(Any & ~list[Unknown]) | (list[str] & ~list[Unknown])`
+- Found 40 diagnostics
++ Found 39 diagnostics
+
+schemathesis (https://github.com/schemathesis/schemathesis)
+- src/schemathesis/cli/commands/run/handlers/output.py:1228:32: error[invalid-argument-type] Argument to function `_print_up_to_three` is incorrect: Expected `list[str] | set[str]`, found `set[str] | (dict[Unknown, Unknown] & ~dict[Unknown, Unknown])`
++ src/schemathesis/config/_diff_base.py:43:49: error[invalid-argument-type] Method `__getitem__` of type `bound method Top[dict[Unknown, Unknown]].__getitem__(key: Never, /) -> object` cannot be called with key of type `object` on object of type `Top[dict[Unknown, Unknown]]`
++ src/schemathesis/config/_diff_base.py:63:33: error[invalid-argument-type] Argument to bound method `get` is incorrect: Expected `Never`, found `object`
+- src/schemathesis/config/_warnings.py:25:12: error[invalid-return-type] Return type does not match returned value: expected `bool | list[SchemathesisWarning] | None`, found `bool | (list[str] & ~list[Unknown]) | None`
+- src/schemathesis/openapi/generation/filters.py:67:25: error[not-iterable] Object of type `<Protocol with members '__iter__'> & ~Mapping[Unknown, Unknown]` is not iterable
++ src/schemathesis/openapi/generation/filters.py:67:25: error[not-iterable] Object of type `<Protocol with members '__iter__'> & ~Top[Mapping[Unknown, object]]` is not iterable
++ src/schemathesis/specs/openapi/checks.py:689:9: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[Unknown] | dict[str, Any] | str | int | float | bytes | NotSet`, found `Top[list[Unknown]] | Top[dict[Unknown, Unknown]] | str | int | float | bytes | (NotSet & ~Top[list[Unknown]] & ~Top[dict[Unknown, Unknown]])`
+- Found 270 diagnostics
++ Found 271 diagnostics
+
+tornado (https://github.com/tornadoweb/tornado)
++ tornado/routing.py:357:33: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `Matcher`, found `object`
++ tornado/routing.py:357:33: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `dict[str, Any] | None`, found `object`
++ tornado/routing.py:357:33: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `str | None`, found `object`
+- tornado/template.py:829:14: error[unsupported-operator] Operator `<` is not supported for types `slice[Any, Any, Any]` and `int`, in comparing `int | (slice[Any, Any, Any] & ~slice[Any, Any, Any])` with `Literal[0]`
++ tornado/template.py:829:14: error[unsupported-operator] Operator `<` is not supported for types `slice[Any, Any, Any]` and `int`, in comparing `int | slice[Any, Any, Any]` with `Literal[0]`
+- tornado/web.py:976:17: error[no-matching-overload] No overload of function `utf8` matches arguments
+- Found 244 diagnostics
++ Found 246 diagnostics
+
+mkdocs (https://github.com/mkdocs/mkdocs)
++ mkdocs/config/config_options.py:139:39: error[no-matching-overload] No overload of bound method `setdefault` matches arguments
++ mkdocs/config/config_options.py:219:20: error[invalid-return-type] Return type does not match returned value: expected `list[T@ListOfItems]`, found `Top[list[Unknown]] & ~AlwaysTruthy`
++ mkdocs/config/config_options.py:274:20: error[invalid-return-type] Return type does not match returned value: expected `dict[str, T@DictOfItems]`, found `Top[dict[Unknown, Unknown]] & ~AlwaysTruthy`
++ mkdocs/config/config_options.py:298:16: error[invalid-return-type] Return type does not match returned value: expected `dict[str, T@DictOfItems]`, found `Top[dict[Unknown, Unknown]] & ~AlwaysFalsy`
++ mkdocs/config/config_options.py:834:12: error[invalid-argument-type] Method `__getitem__` of type `bound method Top[dict[Unknown, Unknown]].__getitem__(key: Never, /) -> object` cannot be called with key of type `Literal["name"]` on object of type `Top[dict[Unknown, Unknown]]`
++ mkdocs/config/config_options.py:834:49: error[invalid-argument-type] Method `__getitem__` of type `bound method Top[dict[Unknown, Unknown]].__getitem__(key: Never, /) -> object` cannot be called with key of type `Literal["name"]` on object of type `Top[dict[Unknown, Unknown]]`
++ mkdocs/config/config_options.py:836:46: error[invalid-argument-type] Method `__getitem__` of type `bound method Top[dict[Unknown, Unknown]].__getitem__(key: Never, /) -> object` cannot be called with key of type `Literal["name"]` on object of type `Top[dict[Unknown, Unknown]]`
++ mkdocs/config/config_options.py:840:16: error[invalid-argument-type] Method `__getitem__` of type `bound method Top[dict[Unknown, Unknown]].__getitem__(key: Never, /) -> object` cannot be called with key of type `Literal["name"]` on object of type `Top[dict[Unknown, Unknown]]`
++ mkdocs/config/config_options.py:844:63: error[invalid-argument-type] Method `__getitem__` of type `bound method Top[dict[Unknown, Unknown]].__getitem__(key: Never, /) -> object` cannot be called with key of type `Literal["custom_dir"]` on object of type `Top[dict[Unknown, Unknown]]`
++ mkdocs/config/config_options.py:846:13: error[invalid-assignment] Method `__setitem__` of type `bound method Top[dict[Unknown, Unknown]].__setitem__(key: Never, value: Never, /) -> None` cannot be called with a key of type `Literal["custom_dir"]` and a value of type `str` on object of type `Top[dict[Unknown, Unknown]]`
++ mkdocs/config/config_options.py:846:67: error[invalid-argument-type] Method `__getitem__` of type `bound method Top[dict[Unknown, Unknown]].__getitem__(key: Never, /) -> object` cannot be called with key of type `Literal["custom_dir"]` on object of type `Top[dict[Unknown, Unknown]]`
++ mkdocs/config/config_options.py:848:63: error[invalid-argument-type] Method `__getitem__` of type `bound method Top[dict[Unknown, Unknown]].__getitem__(key: Never, /) -> object` cannot be called with key of type `Literal["custom_dir"]` on object of type `Top[dict[Unknown, Unknown]]`
++ mkdocs/config/config_options.py:851:26: error[invalid-argument-type] Method `__getitem__` of type `bound method Top[dict[Unknown, Unknown]].__getitem__(key: Never, /) -> object` cannot be called with key of type `Literal["custom_dir"]` on object of type `Top[dict[Unknown, Unknown]]`
++ mkdocs/config/config_options.py:855:56: error[invalid-argument-type] Method `__getitem__` of type `bound method Top[dict[Unknown, Unknown]].__getitem__(key: Never, /) -> object` cannot be called with key of type `Literal["locale"]` on object of type `Top[dict[Unknown, Unknown]]`
++ mkdocs/contrib/search/__init__.py:39:21: error[invalid-argument-type] Method `__getitem__` of type `Overload[(i: SupportsIndex, /) -> object, (s: slice[Never, Never, Never], /) -> Top[list[Unknown]]]` cannot be called with key of type `slice[None, None, None]` on object of type `Top[list[Unknown]]`
++ mkdocs/contrib/search/__init__.py:44:34: error[invalid-argument-type] Argument to bound method `remove` is incorrect: Expected `Never`, found `Unknown & ~Literal["en"]`
++ mkdocs/contrib/search/__init__.py:46:38: error[invalid-argument-type] Argument to bound method `append` is incorrect: Expected `Never`, found `Literal["en"]`
++ mkdocs/contrib/search/__init__.py:48:34: error[invalid-argument-type] Argument to bound method `remove` is incorrect: Expected `Never`, found `Unknown & ~Literal["en"]`
++ mkdocs/contrib/search/__init__.py:49:34: error[invalid-argument-type] Argument to bound method `append` is incorrect: Expected `Never`, found `Unknown & ~AlwaysFalsy`
+- mkdocs/tests/base.py:77:38: warning[possibly-unbound-attribute] Attribute `items` on type `Unknown | None | dict[@Todo(dict comprehension key type), @Todo(dict comprehension value type)] | (Unknown & ~list[Unknown] & ~tuple[Unknown, ...] & ~AlwaysFalsy)` is possibly unbound
++ mkdocs/tests/base.py:77:38: warning[possibly-unbound-attribute] Attribute `items` on type `Unknown | None | dict[@Todo(dict comprehension key type), @Todo(dict comprehension value type)] | (Unknown & ~Top[list[Unknown]] & ~tuple[object, ...] & ~AlwaysFalsy)` is possibly unbound
+- Found 179 diagnostics
++ Found 198 diagnostics
+
+poetry (https://github.com/python-poetry/poetry)
+- src/poetry/console/commands/run.py:75:29: warning[possibly-unbound-attribute] Attribute `split` on type `str | (dict[str, str] & ~dict[Unknown, Unknown]) | @Todo(Subscript expressions on intersections)` is possibly unbound
+- Found 929 diagnostics
++ Found 928 diagnostics
+
+vision (https://github.com/pytorch/vision)
+- references/depth/stereo/train.py:27:18: warning[possibly-unbound-attribute] Attribute `shape` on type `(Unknown & ~list[Unknown]) | (list[Unknown] & ~list[Unknown])` is possibly unbound
+- torchvision/io/image.py:219:12: warning[possibly-unbound-attribute] Attribute `device` on type `(Unknown & ~list[Unknown]) | (list[Unknown] & ~list[Unknown])` is possibly unbound
+- torchvision/io/image.py:257:12: warning[possibly-unbound-attribute] Attribute `device` on type `(Unknown & ~list[Unknown]) | (list[Unknown] & ~list[Unknown])` is possibly unbound
+- torchvision/prototype/transforms/_misc.py:34:13: error[invalid-assignment] Object of type `dict[Any, (Sequence[int] & ~dict[Unknown, Unknown]) | (dict[type, Sequence[int] | None] & ~dict[Unknown, Unknown])]` is not assignable to `Sequence[int] | dict[type, Sequence[int] | None]`
++ torchvision/prototype/transforms/_misc.py:34:13: error[invalid-assignment] Object of type `dict[Any, Sequence[int] & ~Top[dict[Unknown, Unknown]]]` is not assignable to `Sequence[int] | dict[type, Sequence[int] | None]`
+- torchvision/prototype/transforms/_misc.py:56:13: error[invalid-assignment] Object of type `dict[Any, tuple[int, int] | (dict[type, tuple[int, int] | None] & ~dict[Unknown, Unknown])]` is not assignable to `tuple[int, int] | dict[type, tuple[int, int] | None]`
++ torchvision/prototype/transforms/_misc.py:56:13: error[invalid-assignment] Object of type `dict[Any, tuple[int, int]]` is not assignable to `tuple[int, int] | dict[type, tuple[int, int] | None]`
++ torchvision/prototype/utils/_internal.py:34:82: error[invalid-argument-type] Argument is incorrect: Expected `Sequence[str]`, found `Sequence[object] | list[Unknown]`
+- torchvision/transforms/_functional_pil.py:181:42: error[invalid-argument-type] Argument to function `expand` is incorrect: Expected `int | tuple[int, ...]`, found `(int & Number) | (list[int] & Number & ~list[Unknown]) | (tuple[int, ...] & Number) | (tuple[int, ...] & tuple[Unknown, ...]) | (list[int] & list[Unknown] & ~list[Unknown]) | @Todo(Subscript expressions on intersections)`
+- torchvision/transforms/_functional_pil.py:185:37: error[invalid-argument-type] Argument to function `expand` is incorrect: Expected `int | tuple[int, ...]`, found `(int & Number) | (list[int] & Number & ~list[Unknown]) | (tuple[int, ...] & Number) | (tuple[int, ...] & tuple[Unknown, ...]) | (list[int] & list[Unknown] & ~list[Unknown]) | @Todo(Subscript expressions on intersections)`
+- torchvision/transforms/functional.py:168:61: warning[possibly-unbound-attribute] Attribute `mode` on type `(Image & ~ndarray[Unknown, Unknown]) | (ndarray[Unknown, Unknown] & ~ndarray[Unknown, Unknown])` is possibly unbound
++ torchvision/transforms/functional.py:168:61: warning[possibly-unbound-attribute] Attribute `mode` on type `(Image & ~ndarray[object, object]) | (ndarray[Unknown, Unknown] & ~ndarray[object, object])` is possibly unbound
+- torchvision/transforms/functional.py:170:8: warning[possibly-unbound-attribute] Attribute `mode` on type `(Image & ~ndarray[Unknown, Unknown]) | (ndarray[Unknown, Unknown] & ~ndarray[Unknown, Unknown])` is possibly unbound
++ torchvision/transforms/functional.py:170:8: warning[possibly-unbound-attribute] Attribute `mode` on type `(Image & ~ndarray[object, object]) | (ndarray[Unknown, Unknown] & ~ndarray[object, object])` is possibly unbound
++ torchvision/transforms/functional.py:1226:45: error[invalid-argument-type] Argument to function `_get_inverse_affine_matrix` is incorrect: Expected `list[int | float]`, found `list[int] | list[@Todo(list literal element type)]`
++ torchvision/transforms/functional.py:1226:60: error[invalid-argument-type] Argument to function `_get_inverse_affine_matrix` is incorrect: Expected `list[int | float]`, found `list[int] | list[Unknown]`
+- torchvision/utils.py:70:8: warning[possibly-unbound-attribute] Attribute `dim` on type `(Unknown & ~list[Unknown]) | (list[Unknown] & ~list[Unknown]) | Unknown` is possibly unbound
+- torchvision/utils.py:71:18: warning[possibly-unbound-attribute] Attribute `unsqueeze` on type `(Unknown & ~list[Unknown]) | (list[Unknown] & ~list[Unknown]) | Unknown` is possibly unbound
+- torchvision/utils.py:72:8: warning[possibly-unbound-attribute] Attribute `dim` on type `(Unknown & ~list[Unknown]) | (list[Unknown] & ~list[Unknown]) | Unknown` is possibly unbound
+- torchvision/utils.py:73:12: warning[possibly-unbound-attribute] Attribute `size` on type `(Unknown & ~list[Unknown]) | (list[Unknown] & ~list[Unknown]) | Unknown` is possibly unbound
+- torchvision/utils.py:75:18: warning[possibly-unbound-attribute] Attribute `unsqueeze` on type `(Unknown & ~list[Unknown]) | (list[Unknown] & ~list[Unknown]) | Unknown` is possibly unbound
+- torchvision/utils.py:77:8: warning[possibly-unbound-attribute] Attribute `dim` on type `(Unknown & ~list[Unknown]) | (list[Unknown] & ~list[Unknown]) | Unknown` is possibly unbound
+- torchvision/utils.py:77:30: warning[possibly-unbound-attribute] Attribute `size` on type `(Unknown & ~list[Unknown]) | (list[Unknown] & ~list[Unknown]) | Unknown` is possibly unbound
+- torchvision/utils.py:81:18: warning[possibly-unbound-attribute] Attribute `clone` on type `(Unknown & ~list[Unknown]) | (list[Unknown] & ~list[Unknown]) | Unknown` is possibly unbound
+- Found 1466 diagnostics
++ Found 1456 diagnostics
+
+scrapy (https://github.com/scrapy/scrapy)
+- scrapy/crawler.py:326:48: error[invalid-argument-type] Argument to bound method `load_pre_crawler_settings` is incorrect: Expected `BaseSettings`, found `(dict[str, Any] & ~dict[Unknown, Unknown]) | Settings`
+- scrapy/crawler.py:328:70: error[invalid-argument-type] Argument to function `get_spider_loader` is incorrect: Expected `BaseSettings`, found `(dict[str, Any] & ~dict[Unknown, Unknown]) | Settings`
+- scrapy/pipelines/files.py:481:29: warning[possibly-unbound-attribute] Attribute `getint` on type `Settings | (dict[str, Any] & ~dict[Unknown, Unknown])` is possibly unbound
+- scrapy/pipelines/images.py:99:29: warning[possibly-unbound-attribute] Attribute `getint` on type `Settings | (dict[str, Any] & ~dict[Unknown, Unknown])` is possibly unbound
+- scrapy/pipelines/images.py:112:31: warning[possibly-unbound-attribute] Attribute `getint` on type `Settings | (dict[str, Any] & ~dict[Unknown, Unknown])` is possibly unbound
+- scrapy/pipelines/images.py:115:32: warning[possibly-unbound-attribute] Attribute `getint` on type `Settings | (dict[str, Any] & ~dict[Unknown, Unknown])` is possibly unbound
+- scrapy/pipelines/media.py:95:38: warning[possibly-unbound-attribute] Attribute `getbool` on type `Settings | (dict[str, Any] & ~dict[Unknown, Unknown])` is possibly unbound
+- scrapy/utils/log.py:124:8: warning[possibly-unbound-attribute] Attribute `getbool` on type `Settings | (dict[Unknown, Any] & ~dict[Unknown, Unknown])` is possibly unbound
+- scrapy/utils/log.py:128:37: error[invalid-argument-type] Argument to function `install_scrapy_root_handler` is incorrect: Expected `Settings`, found `Settings | (dict[Unknown, Any] & ~dict[Unknown, Unknown])`
+- Found 1063 diagnostics
++ Found 1054 diagnostics
+
+boostedblob (https://github.com/hauntsaninja/boostedblob)
+- boostedblob/request.py:235:28: error[invalid-argument-type] Argument to function `dict_to_xml` is incorrect: Expected `Mapping[str, Any]`, found `dict[str, Any] | (memoryview[Unknown] & ~memoryview[Unknown])`
+- Found 24 diagnostics
++ Found 23 diagnostics
+
+freqtrade (https://github.com/freqtrade/freqtrade)
+- freqtrade/optimize/optimize_reports/optimize_reports.py:268:5: error[invalid-assignment] Method `__setitem__` of type `(Overload[(key: SupportsIndex, value: Unknown, /) -> None, (key: slice[Any, Any, Any], value: Iterable[Unknown], /) -> None]) | (bound method DataFrame.__setitem__(key, value) -> None) | Unknown` cannot be called with a key of type `Literal["close_date"]` and a value of type `Timestamp` on object of type `(list[Unknown] & ~list[Unknown]) | (DataFrame & ~list[Unknown]) | Unknown`
+- freqtrade/optimize/optimize_reports/optimize_reports.py:270:17: warning[possibly-unbound-attribute] Attribute `resample` on type `(list[Unknown] & ~list[Unknown]) | (DataFrame & ~list[Unknown]) | Unknown` is possibly unbound
+- Found 388 diagnostics
++ Found 386 diagnostics
+
+pwndbg (https://github.com/pwndbg/pwndbg)
+- pwndbg/aglib/heap/ptmalloc.py:513:30: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
++ pwndbg/aglib/heap/ptmalloc.py:513:30: error[non-subscriptable] Cannot subscript object of type `object` with no `__getitem__` method
+- pwndbg/aglib/heap/ptmalloc.py:520:45: warning[possibly-unbound-attribute] Attribute `sizeof` on type `Unknown | None` is possibly unbound
+- pwndbg/aglib/heap/ptmalloc.py:523:25: warning[possibly-unbound-attribute] Attribute `sizeof` on type `Unknown | None` is possibly unbound
++ pwndbg/aglib/heap/ptmalloc.py:517:71: error[not-iterable] Object of type `property` is not iterable
++ pwndbg/aglib/heap/ptmalloc.py:520:45: error[unresolved-attribute] Type `object` has no attribute `sizeof`
++ pwndbg/aglib/heap/ptmalloc.py:523:25: error[unresolved-attribute] Type `object` has no attribute `sizeof`
++ pwndbg/aglib/heap/ptmalloc.py:523:56: error[invalid-argument-type] Argument to function `round_up` is incorrect: Expected `int`, found `property`
++ pwndbg/aglib/heap/ptmalloc.py:1706:40: error[unsupported-operator] Operator `*` is unsupported between objects of type `property` and `Literal[2]`
++ pwndbg/aglib/heap/ptmalloc.py:2258:48: error[unsupported-operator] Operator `*` is unsupported between objects of type `property` and `Literal[2]`
+- pwndbg/chain.py:140:21: error[invalid-argument-type] Argument to function `get` is incorrect: Expected `int | None`, found `int | (list[int] & ~list[Unknown])`
+- pwndbg/commands/ptmalloc2.py:401:68: warning[possibly-unbound-attribute] Attribute `address` on type `Unknown | None` is possibly unbound
+- pwndbg/commands/ptmalloc2.py:402:11: warning[possibly-unbound-attribute] Attribute `value_to_human_readable` on type `Unknown | None` is possibly unbound
++ pwndbg/commands/ptmalloc2.py:321:18: error[not-iterable] Object of type `property` is not iterable
++ pwndbg/commands/ptmalloc2.py:380:64: error[unresolved-attribute] Type `~AlwaysFalsy` has no attribute `address`
++ pwndbg/commands/ptmalloc2.py:386:15: error[unresolved-attribute] Type `~AlwaysFalsy` has no attribute `value_to_human_readable`
++ pwndbg/commands/ptmalloc2.py:401:68: error[unresolved-attribute] Type `object` has no attribute `address`
++ pwndbg/commands/ptmalloc2.py:402:11: error[unresolved-attribute] Type `object` has no attribute `value_to_human_readable`
++ pwndbg/commands/ptmalloc2.py:760:54: error[invalid-argument-type] Argument to function `format_bin` is incorrect: Expected `int | None`, found `property`
++ pwndbg/commands/ptmalloc2.py:854:10: error[unsupported-operator] Operator `<` is not supported for types `int` and `property`
++ pwndbg/commands/ptmalloc2.py:861:9: error[invalid-assignment] Object of type `property` is not assignable to `int | None`
++ pwndbg/commands/ptmalloc2.py:863:27: error[unsupported-operator] Unary operator `~` is unsupported for type `property`
++ pwndbg/commands/ptmalloc2.py:866:75: error[unsupported-operator] Operator `-` is unsupported between objects of type `property` and `Literal[1]`
++ pwndbg/commands/ptmalloc2.py:875:29: error[unsupported-operator] Operator `-` is unsupported between objects of type `int` and `int | property`
++ pwndbg/commands/ptmalloc2.py:889:28: error[unsupported-operator] Operator `-` is unsupported between objects of type `int` and `int | property`
++ pwndbg/commands/ptmalloc2.py:907:43: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `SupportsIndex`, found `property | Literal[1]`
++ pwndbg/commands/ptmalloc2.py:908:39: error[unsupported-operator] Operator `+` is unsupported between objects of type `int` and `int | property`
++ pwndbg/commands/ptmalloc2.py:911:67: error[invalid-argument-type] Argument to bound method `unpack_size` is incorrect: Expected `int`, found `int | property`
++ pwndbg/commands/ptmalloc2.py:912:27: error[unsupported-operator] Unary operator `~` is unsupported for type `property`
++ pwndbg/commands/ptmalloc2.py:923:57: error[unsupported-operator] Operator `+` is unsupported between objects of type `int` and `property`
++ pwndbg/commands/ptmalloc2.py:1045:38: error[unsupported-operator] Operator `+` is unsupported between objects of type `int` and `property`
++ pwndbg/commands/ptmalloc2.py:1049:33: error[unsupported-operator] Operator `+` is unsupported between objects of type `int` and `property`
++ pwndbg/commands/ptmalloc2.py:1054:42: error[unsupported-operator] Operator `*` is unsupported between objects of type `property` and `Literal[2]`
++ pwndbg/commands/ptmalloc2.py:1057:40: error[unsupported-operator] Operator `*` is unsupported between objects of type `property` and `Literal[2]`
++ pwndbg/commands/ptmalloc2.py:1058:42: error[unsupported-operator] Operator `*` is unsupported between objects of type `property` and `Literal[2]`
++ pwndbg/commands/ptmalloc2.py:1103:81: error[unsupported-operator] Operator `<<` is unsupported between objects of type `property` and `Literal[2]`
++ pwndbg/commands/ptmalloc2.py:1115:59: error[unsupported-operator] Operator `<<` is unsupported between objects of type `property` and `Literal[1]`
++ pwndbg/commands/ptmalloc2.py:1116:55: error[unsupported-operator] Operator `<<` is unsupported between objects of type `property` and `Literal[1]`
++ pwndbg/commands/ptmalloc2.py:1128:17: error[unsupported-operator] Operator `+=` is unsupported between objects of type `int` and `property`
++ pwndbg/commands/ptmalloc2.py:1134:53: error[invalid-argument-type] Argument to function `read` is incorrect: Expected `int`, found `property`
++ pwndbg/commands/ptmalloc2.py:1136:38: error[unsupported-operator] Operator `*` is unsupported between objects of type `property` and `Literal[2]`
++ pwndbg/commands/ptmalloc2.py:1152:13: error[unsupported-operator] Operator `+=` is unsupported between objects of type `int` and `property`
++ pwndbg/commands/ptmalloc2.py:1156:43: error[unsupported-operator] Operator `*` is unsupported between objects of type `Literal[2]` and `property`
+- pwndbg/commands/ptmalloc2.py:1345:31: warning[possibly-unbound-attribute] Attribute `address` on type `Unknown | None` is possibly unbound
++ pwndbg/commands/ptmalloc2.py:1241:19: error[unresolved-attribute] Type `property` has no attribute `bit_length`
++ pwndbg/commands/ptmalloc2.py:1271:13: error[unsupported-operator] Operator `*` is unsupported between objects of type `Literal[2]` and `property`
++ pwndbg/commands/ptmalloc2.py:1303:28: error[unsupported-operator] Operator `*` is unsupported between objects of type `Literal[2]` and `property`
++ pwndbg/commands/ptmalloc2.py:1304:27: error[unsupported-operator] Operator `*` is unsupported between objects of type `Literal[2]` and `property`
++ pwndbg/commands/ptmalloc2.py:1310:27: error[unsupported-operator] Operator `*` is unsupported between objects of type `Literal[2]` and `property`
++ pwndbg/commands/ptmalloc2.py:1337:22: error[unresolved-attribute] Type `~None` has no attribute `keys`
++ pwndbg/commands/ptmalloc2.py:1342:24: error[unsupported-operator] Operator `*` is unsupported between objects of type `Literal[2]` and `property`
++ pwndbg/commands/ptmalloc2.py:1343:18: error[unresolved-attribute] Type `~None` has no attribute `keys`
++ pwndbg/commands/ptmalloc2.py:1345:31: error[unresolved-attribute] Type `object` has no attribute `address`
+- pwndbg/commands/ptmalloc2.py:1357:22: error[non-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
++ pwndbg/commands/ptmalloc2.py:1357:22: error[non-subscriptable] Cannot subscript object of type `object` with no `__getitem__` method
++ pwndbg/commands/ptmalloc2.py:1392:31: error[unsupported-operator] Operator `*` is unsupported between objects of type `Literal[2]` and `property`
++ pwndbg/commands/ptmalloc2.py:1395:47: error[unsupported-operator] Operator `*` is unsupported between objects of type `Literal[2]` and `property`
++ pwndbg/commands/ptmalloc2.py:1481:31: error[unsupported-operator] Operator `*` is unsupported between objects of type `Literal[2]` and `property`
++ pwndbg/commands/ptmalloc2.py:1484:47: error[unsupported-operator] Operator `*` is unsupported between objects of type `Literal[2]` and `property`
+- Found 2503 diagnostics
++ Found 2546 diagnostics
+
+colour (https://github.com/colour-science/colour)
+- colour/io/ctl.py:174:9: error[invalid-assignment] Object of type `(Sequence[str] & ~Sequence[Unknown]) | (dict[str, Sequence[str]] & ~Sequence[Unknown])` is not assignable to `dict[str, Sequence[Unknown]]`
+- colour/io/fichet2021.py:863:42: warning[possibly-unbound-attribute] Attribute `items` on type `(Sequence[SpectralDistribution | MultiSpectralDistributions] & ~Sequence[Unknown] & ~SpectralDistribution & ~MultiSpectralDistributions & ~ValuesView[Unknown]) | (Any & ~Sequence[Unknown] & ~SpectralDistribution & ~MultiSpectralDistributions & ~ValuesView[Unknown]) | (ValuesView[Unknown] & ~Sequence[Unknown] & ~SpectralDistribution & ~MultiSpectralDistributions & ~ValuesView[Unknown]) | Any` is possibly unbound
++ colour/io/fichet2021.py:863:42: warning[possibly-unbound-attribute] Attribute `items` on type `(Any & ~Sequence[object] & ~SpectralDistribution & ~MultiSpectralDistributions & ~ValuesView[object]) | (ValuesView[Unknown] & ~Sequence[object] & ~SpectralDistribution & ~MultiSpectralDistributions & ~ValuesView[object]) | Any` is possibly unbound
+- Found 629 diagnostics
++ Found 628 diagnostics
+
+schema_salad (https://github.com/common-workflow-language/schema_salad)
++ schema_salad/dotnet_codegen.py:462:34: error[no-matching-overload] No overload of bound method `get` matches arguments
++ schema_salad/dotnet_codegen.py:462:34: error[no-matching-overload] No overload of bound method `get` matches arguments
++ schema_salad/java_codegen.py:483:31: error[no-matching-overload] No overload of bound method `get` matches arguments
++ schema_salad/java_codegen.py:483:31: error[no-matching-overload] No overload of bound method `get`...*[Comment body truncated]*
+
+---
+
+_Label `ty` added by @ntBre on 2025-09-04 21:27_
+
+---
+
+_Label `ecosystem-analyzer` added by @AlexWaygood on 2025-09-04 21:50_
+
+---
+
+_Comment by @github-actions[bot] on 2025-09-04 21:55_
+
+<!-- generated-comment ty ecosystem-analyzer -->
+
+## `ecosystem-analyzer` results
+
+
+| Lint rule | Added | Removed | Changed |
+|-----------|------:|--------:|--------:|
+| `invalid-argument-type` | 128 | 49 | 15 |
+| `unresolved-attribute` | 127 | 0 | 6 |
+| `possibly-unbound-attribute` | 1 | 97 | 16 |
+| `no-matching-overload` | 48 | 7 | 0 |
+| `invalid-assignment` | 31 | 17 | 4 |
+| `unsupported-operator` | 40 | 7 | 4 |
+| `invalid-return-type` | 18 | 20 | 5 |
+| `non-subscriptable` | 20 | 2 | 2 |
+| `not-iterable` | 4 | 2 | 3 |
+| `call-non-callable` | 7 | 1 | 0 |
+| `unused-ignore-comment` | 1 | 4 | 0 |
+| `index-out-of-bounds` | 3 | 0 | 0 |
+| `possibly-unbound-implicit-call` | 0 | 2 | 1 |
+| `invalid-await` | 0 | 1 | 0 |
+| **Total** | **428** | **209** | **56** |
+
+
+---
+
+_Comment by @JelleZijlstra on 2025-09-04 22:08_
+
+mypy-primer analysis:
+
+* aio-redis ([link](https://github.com/aio-libs-abandoned/aioredis-py/blob/19be499015a8cf32580e937cbfd711fd48489eca/aioredis/client.py#L3429)): new errors are technically correct. It's in part because ty accounts for the possibility that something could be a Sequence and a Mapping at the same time, which is a bit pedantic but technically possible.
+* anyio ([link](https://github.com/agronholm/anyio/blob/master/src/anyio/_core/_sockets.py)): new errors are due to ty preserving precise tuple types better. The errors should go away once ty supports narrowing by `len()` calls.
+* nionutils ([link](https://github.com/nion-software/nionutils/blob/762ef25d29759c47610d0aa8e70600cc5fc5d785/nion/utils/Stream.py#L335)): similar to aioredis, technically correct new errors that depends on ty accounting for two classes that may not be disjoint.
+* Expression ([link](https://github.com/dbrattli/Expression/blob/3981fd3a3ad60a13d00a4a3c170bdac76c1943fe/tests/test_option.py#L28)): didn't fully track down the types involved, but looks like ty is solving some generics nonoptimally.
+* alerta ([link](https://github.com/alerta/alerta/blob/b7111d23ae9aefb5064ef107976f62e3836217b6/alerta/utils/api.py#L122)): lots of alerts going away due to better exhaustiveness checking. New errors would go away if we had `len()` narrowing on tuples.
+* artigraph: minor change in error message
+* starlette ([link](https://github.com/Kludex/starlette/blob/1ee8f857048368b3603f32f91a1214390e79d614/starlette/staticfiles.py#L76)): false positive goes away because `isinstance(x, tuple)` now works better
+* koda_validate ([link](https://github.com/keithasaurus/koda-validate/blob/9e6c8985b59dceda54b18de7ae79c1059be4d6fc/koda_validate/_internal.py#L212)): ty seems technically correct, maybe something should remain Any though?
+
+That's all for now.
+
+---
+
+_@carljm approved on 2025-09-04 22:28_
+
+Looks great! I'm satisfied with the ecosystem analysis you already did (thank you!).
+
+---
+
+_Merged by @carljm on 2025-09-04 22:28_
+
+---
+
+_Closed by @carljm on 2025-09-04 22:28_
+
+---
+
+_Branch deleted on 2025-09-04 23:01_
+
+---

@@ -1,0 +1,265 @@
+```yaml
+number: 19240
+title: "[`pylint`] stabilizing PLR0917"
+type: pull_request
+state: closed
+author: CodeMan62
+labels:
+  - breaking
+  - do-not-merge
+assignees: []
+draft: true
+base: main
+head: codeman/16867
+created_at: 2025-07-09T17:24:03Z
+updated_at: 2025-09-05T13:05:37Z
+url: https://github.com/astral-sh/ruff/pull/19240
+synced_at: 2026-01-10T17:46:21Z
+```
+
+# [`pylint`] stabilizing PLR0917
+
+---
+
+_Pull request opened by @CodeMan62 on 2025-07-09 17:24_
+
+## Summary
+closes #16867 
+
+## Test Plan
+
+testing mentioned in contributing.md .
+
+
+---
+
+_Comment by @github-actions[bot] on 2025-07-09 17:34_
+
+<!-- generated-comment ecosystem -->
+## `ruff-ecosystem` results
+### Linter (stable)
+ℹ️ ecosystem check **detected linter changes**. (+2501 -0 violations, +0 -0 fixes in 12 projects; 43 projects unchanged)
+
+<details><summary><a href="https://github.com/aiven/aiven-client">aiven/aiven-client</a> (+21 -0 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/aiven/aiven-client/blob/4c8189c7bdba4c86817a4e7925f206604e1cd090/aiven/client/argx.py#L316'>aiven/client/argx.py:316:9:</a> PLR0917 Too many positional arguments (9/5)
++ <a href='https://github.com/aiven/aiven-client/blob/4c8189c7bdba4c86817a4e7925f206604e1cd090/aiven/client/client.py#L1275'>aiven/client/client.py:1275:9:</a> PLR0917 Too many positional arguments (9/5)
++ <a href='https://github.com/aiven/aiven-client/blob/4c8189c7bdba4c86817a4e7925f206604e1cd090/aiven/client/client.py#L1315'>aiven/client/client.py:1315:9:</a> PLR0917 Too many positional arguments (6/5)
++ <a href='https://github.com/aiven/aiven-client/blob/4c8189c7bdba4c86817a4e7925f206604e1cd090/aiven/client/client.py#L1340'>aiven/client/client.py:1340:9:</a> PLR0917 Too many positional arguments (6/5)
++ <a href='https://github.com/aiven/aiven-client/blob/4c8189c7bdba4c86817a4e7925f206604e1cd090/aiven/client/client.py#L1425'>aiven/client/client.py:1425:9:</a> PLR0917 Too many positional arguments (11/5)
++ <a href='https://github.com/aiven/aiven-client/blob/4c8189c7bdba4c86817a4e7925f206604e1cd090/aiven/client/client.py#L1461'>aiven/client/client.py:1461:9:</a> PLR0917 Too many positional arguments (12/5)
++ <a href='https://github.com/aiven/aiven-client/blob/4c8189c7bdba4c86817a4e7925f206604e1cd090/aiven/client/client.py#L1739'>aiven/client/client.py:1739:9:</a> PLR0917 Too many positional arguments (7/5)
++ <a href='https://github.com/aiven/aiven-client/blob/4c8189c7bdba4c86817a4e7925f206604e1cd090/aiven/client/client.py#L212'>aiven/client/client.py:212:9:</a> PLR0917 Too many positional arguments (6/5)
++ <a href='https://github.com/aiven/aiven-client/blob/4c8189c7bdba4c86817a4e7925f206604e1cd090/aiven/client/client.py#L2249'>aiven/client/client.py:2249:9:</a> PLR0917 Too many positional arguments (6/5)
++ <a href='https://github.com/aiven/aiven-client/blob/4c8189c7bdba4c86817a4e7925f206604e1cd090/aiven/client/client.py#L2956'>aiven/client/client.py:2956:9:</a> PLR0917 Too many positional arguments (9/5)
+... 11 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/PlasmaPy/PlasmaPy">PlasmaPy/PlasmaPy</a> (+63 -0 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/PlasmaPy/PlasmaPy/blob/8e3b5d062b374405b7348cc536c76167fa09513c/src/plasmapy/analysis/nullpoint.py#L143'>src/plasmapy/analysis/nullpoint.py:143:5:</a> PLR0917 Too many positional arguments (11/5)
++ <a href='https://github.com/PlasmaPy/PlasmaPy/blob/8e3b5d062b374405b7348cc536c76167fa09513c/src/plasmapy/analysis/nullpoint.py#L1461'>src/plasmapy/analysis/nullpoint.py:1461:5:</a> PLR0917 Too many positional arguments (8/5)
++ <a href='https://github.com/PlasmaPy/PlasmaPy/blob/8e3b5d062b374405b7348cc536c76167fa09513c/src/plasmapy/analysis/nullpoint.py#L1546'>src/plasmapy/analysis/nullpoint.py:1546:5:</a> PLR0917 Too many positional arguments (7/5)
++ <a href='https://github.com/PlasmaPy/PlasmaPy/blob/8e3b5d062b374405b7348cc536c76167fa09513c/src/plasmapy/analysis/nullpoint.py#L570'>src/plasmapy/analysis/nullpoint.py:570:5:</a> PLR0917 Too many positional arguments (8/5)
++ <a href='https://github.com/PlasmaPy/PlasmaPy/blob/8e3b5d062b374405b7348cc536c76167fa09513c/src/plasmapy/analysis/time_series/conditional_averaging.py#L305'>src/plasmapy/analysis/time_series/conditional_averaging.py:305:9:</a> PLR0917 Too many positional arguments (7/5)
++ <a href='https://github.com/PlasmaPy/PlasmaPy/blob/8e3b5d062b374405b7348cc536c76167fa09513c/src/plasmapy/diagnostics/charged_particle_radiography/detector_stacks.py#L59'>src/plasmapy/diagnostics/charged_particle_radiography/detector_stacks.py:59:9:</a> PLR0917 Too many positional arguments (6/5)
++ <a href='https://github.com/PlasmaPy/PlasmaPy/blob/8e3b5d062b374405b7348cc536c76167fa09513c/src/plasmapy/diagnostics/charged_particle_radiography/synthetic_radiography.py#L207'>src/plasmapy/diagnostics/charged_particle_radiography/synthetic_radiography.py:207:9:</a> PLR0917 Too many positional arguments (12/5)
++ <a href='https://github.com/PlasmaPy/PlasmaPy/blob/8e3b5d062b374405b7348cc536c76167fa09513c/src/plasmapy/diagnostics/charged_particle_radiography/synthetic_radiography.py#L359'>src/plasmapy/diagnostics/charged_particle_radiography/synthetic_radiography.py:359:9:</a> PLR0917 Too many positional arguments (6/5)
++ <a href='https://github.com/PlasmaPy/PlasmaPy/blob/8e3b5d062b374405b7348cc536c76167fa09513c/src/plasmapy/diagnostics/charged_particle_radiography/synthetic_radiography.py#L485'>src/plasmapy/diagnostics/charged_particle_radiography/synthetic_radiography.py:485:9:</a> PLR0917 Too many positional arguments (8/5)
++ <a href='https://github.com/PlasmaPy/PlasmaPy/blob/8e3b5d062b374405b7348cc536c76167fa09513c/src/plasmapy/diagnostics/charged_particle_radiography/synthetic_radiography.py#L613'>src/plasmapy/diagnostics/charged_particle_radiography/synthetic_radiography.py:613:9:</a> PLR0917 Too many positional arguments (7/5)
+... 53 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+1361 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --no-preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/apache/airflow/blob/f98bf389f06687abbae581f7d61c175003e0ddb9/airflow-core/src/airflow/api/client/local_client.py#L38'>airflow-core/src/airflow/api/client/local_client.py:38:9:</a> PLR0917 Too many positional arguments (6/5)
++ <a href='https://github.com/apache/airflow/blob/f98bf389f06687abbae581f7d61c175003e0ddb9/airflow-core/src/airflow/api_fastapi/common/parameters.py#L346'>airflow-core/src/airflow/api_fastapi/common/parameters.py:346:5:</a> PLR0917 Too many positional arguments (7/5)
++ <a href='https://github.com/apache/airflow/blob/f98bf389f06687abbae581f7d61c175003e0ddb9/airflow-core/src/airflow/api_fastapi/core_api/routes/public/assets.py#L126'>airflow-core/src/airflow/api_fastapi/core_api/routes/public/assets.py:126:5:</a> PLR0917 Too many positional arguments (8/5)
++ <a href='https://github.com/apache/airflow/blob/f98bf389f06687abbae581f7d61c175003e0ddb9/airflow-core/src/airflow/api_fastapi/core_api/routes/public/assets.py#L262'>airflow-core/src/airflow/api_fastapi/core_api/routes/public/assets.py:262:5:</a> PLR0917 Too many positional arguments (10/5)
++ <a href='https://github.com/apache/airflow/blob/f98bf389f06687abbae581f7d61c175003e0ddb9/airflow-core/src/airflow/api_fastapi/core_api/routes/public/dag_run.py#L152'>airflow-core/src/airflow/api_fastapi/core_api/routes/public/dag_run.py:152:5:</a> PLR0917 Too many positional arguments (7/5)
++ <a href='https://github.com/apache/airflow/blob/f98bf389f06687abbae581f7d61c175003e0ddb9/airflow-core/src/airflow/api_fastapi/core_api/routes/public/dag_run.py#L307'>airflow-core/src/airflow/api_fastapi/core_api/routes/public/dag_run.py:307:5:</a> PLR0917 Too many positional arguments (15/5)
++ <a href='https://github.com/apache/airflow/blob/f98bf389f06687abbae581f7d61c175003e0ddb9/airflow-core/src/airflow/api_fastapi/core_api/routes/public/dag_tags.py#L44'>airflow-core/src/airflow/api_fastapi/core_api/routes/public/dag_tags.py:44:5:</a> PLR0917 Too many positional arguments (6/5)
++ <a href='https://github.com/apache/airflow/blob/f98bf389f06687abbae581f7d61c175003e0ddb9/airflow-core/src/airflow/api_fastapi/core_api/routes/public/dag_versions.py#L87'>airflow-core/src/airflow/api_fastapi/core_api/routes/public/dag_versions.py:87:5:</a> PLR0917 Too many positional arguments (9/5)
++ <a href='https://github.com/apache/airflow/blob/f98bf389f06687abbae581f7d61c175003e0ddb9/airflow-core/src/airflow/api_fastapi/core_api/routes/public/dag_warning.py#L51'>airflow-core/src/airflow/api_fastapi/core_api/routes/public/dag_warning.py:51:5:</a> PLR0917 Too many positional arguments (7/5)
++ <a href='https://github.com/apache/airflow/blob/f98bf389f06687abbae581f7d61c175003e0ddb9/airflow-core/src/airflow/api_fastapi/core_api/routes/public/dags.py#L270'>airflow-core/src/airflow/api_fastapi/core_api/routes/public/dags.py:270:5:</a> PLR0917 Too many positional arguments (11/5)
++ <a href='https://github.com/apache/airflow/blob/f98bf389f06687abbae581f7d61c175003e0ddb9/airflow-core/src/airflow/api_fastapi/core_api/routes/public/dags.py#L78'>airflow-core/src/airflow/api_fastapi/core_api/routes/public/dags.py:78:5:</a> PLR0917 Too many positional arguments (16/5)
++ <a href='https://github.com/apache/airflow/blob/f98bf389f06687abbae581f7d61c175003e0ddb9/airflow-core/src/airflow/api_fastapi/core_api/routes/public/event_logs.py#L68'>airflow-core/src/airflow/api_fastapi/core_api/routes/public/event_logs.py:68:5:</a> PLR0917 Too many positional arguments (15/5)
++ <a href='https://github.com/apache/airflow/blob/f98bf389f06687abbae581f7d61c175003e0ddb9/airflow-core/src/airflow/api_fastapi/core_api/routes/public/extra_links.py#L48'>airflow-core/src/airflow/api_fastapi/core_api/routes/public/extra_links.py:48:5:</a> PLR0917 Too many positional arguments (6/5)
++ <a href='https://github.com/apache/airflow/blob/f98bf389f06687abbae581f7d61c175003e0ddb9/airflow-core/src/airflow/api_fastapi/core_api/routes/public/job.py#L55'>airflow-core/src/airflow/api_fastapi/core_api/routes/public/job.py:55:5:</a> PLR0917 Too many positional arguments (11/5)
++ <a href='https://github.com/apache/airflow/blob/f98bf389f06687abbae581f7d61c175003e0ddb9/airflow-core/src/airflow/api_fastapi/core_api/routes/public/log.py#L166'>airflow-core/src/airflow/api_fastapi/core_api/routes/public/log.py:166:5:</a> PLR0917 Too many positional arguments (6/5)
++ <a href='https://github.com/apache/airflow/blob/f98bf389f06687abbae581f7d61c175003e0ddb9/airflow-core/src/airflow/api_fastapi/core_api/routes/public/log.py#L74'>airflow-core/src/airflow/api_fastapi/core_api/routes/public/log.py:74:5:</a> PLR0917 Too many positional arguments (11/5)
++ <a href='https://github.com/apache/airflow/blob/f98bf389f06687abbae581f7d61c175003e0ddb9/airflow-core/src/airflow/api_fastapi/core_api/routes/public/task_instances.py#L125'>airflow-core/src/airflow/api_fastapi/core_api/routes/public/task_instances.py:125:5:</a> PLR0917 Too many positional arguments (19/5)
++ <a href='https://github.com/apache/airflow/blob/f98bf389f06687abbae581f7d61c175003e0ddb9/airflow-core/src/airflow/api_fastapi/core_api/routes/public/task_instances.py#L237'>airflow-core/src/airflow/api_fastapi/core_api/routes/public/task_instances.py:237:5:</a> PLR0917 Too many positional arguments (6/5)
++ <a href='https://github.com/apache/airflow/blob/f98bf389f06687abbae581f7d61c175003e0ddb9/airflow-core/src/airflow/api_fastapi/core_api/routes/public/task_instances.py#L384'>airflow-core/src/airflow/api_fastapi/core_api/routes/public/task_instances.py:384:5:</a> PLR0917 Too many positional arguments (21/5)
++ <a href='https://github.com/apache/airflow/blob/f98bf389f06687abbae581f7d61c175003e0ddb9/airflow-core/src/airflow/api_fastapi/core_api/routes/public/task_instances.py#L588'>airflow-core/src/airflow/api_fastapi/core_api/routes/public/task_instances.py:588:5:</a> PLR0917 Too many positional arguments (6/5)
++ <a href='https://github.com/apache/airflow/blob/f98bf389f06687abbae581f7d61c175003e0ddb9/airflow-core/src/airflow/api_fastapi/core_api/routes/public/task_instances.py#L624'>airflow-core/src/airflow/api_fastapi/core_api/routes/public/task_instances.py:624:5:</a> PLR0917 Too many positional arguments (6/5)
++ <a href='https://github.com/apache/airflow/blob/f98bf389f06687abbae581f7d61c175003e0ddb9/airflow-core/src/airflow/api_fastapi/core_api/routes/public/task_instances.py#L751'>airflow-core/src/airflow/api_fastapi/core_api/routes/public/task_instances.py:751:5:</a> PLR0917 Too many positional arguments (8/5)
++ <a href='https://github.com/apache/airflow/blob/f98bf389f06687abbae581f7d61c175003e0ddb9/airflow-core/src/airflow/api_fastapi/core_api/routes/public/task_instances.py#L798'>airflow-core/src/airflow/api_fastapi/core_api/routes/public/task_instances.py:798:5:</a> PLR0917 Too many positional arguments (6/5)
++ <a href='https://github.com/apache/airflow/blob/f98bf389f06687abbae581f7d61c175003e0ddb9/airflow-core/src/airflow/api_fastapi/core_api/routes/public/task_instances.py#L834'>airflow-core/src/airflow/api_fastapi/core_api/routes/public/task_instances.py:834:5:</a> PLR0917 Too many positional arguments (9/5)
++ <a href='https://github.com/apache/airflow/blob/f98bf389f06687abbae581f7d61c175003e0ddb9/airflow-core/src/airflow/api_fastapi/core_api/routes/public/xcom.py#L122'>airflow-core/src/airflow/api_fastapi/core_api/routes/public/xcom.py:122:5:</a> PLR0917 Too many positional arguments (9/5)
++ <a href='https://github.com/apache/airflow/blob/f98bf389f06687abbae581f7d61c175003e0ddb9/airflow-core/src/airflow/api_fastapi/core_api/routes/public/xcom.py#L182'>airflow-core/src/airflow/api_fastapi/core_api/routes/public/xcom.py:182:5:</a> PLR0917 Too many positional arguments (6/5)
++ <a href='https://github.com/apache/airflow/blob/f98bf389f06687abbae581f7d61c175003e0ddb9/airflow-core/src/airflow/api_fastapi/core_api/routes/public/xcom.py#L276'>airflow-core/src/airflow/api_fastapi/core_api/routes/public/xcom.py:276:5:</a> PLR0917 Too many positional arguments (6/5)
+... 1334 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/apache/superset">apache/superset</a> (+95 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --no-preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/apache/superset/blob/bc0a10fc735218741c162d185014de695ee62d6f/scripts/check-env.py#L30'>scripts/check-env.py:30:9:</a> PLR0917 Too many positional arguments (6/5)
++ <a href='https://github.com/apache/superset/blob/bc0a10fc735218741c162d185014de695ee62d6f/scripts/cypress_run.py#L39'>scripts/cypress_run.py:39:5:</a> PLR0917 Too many positional arguments (6/5)
++ <a href='https://github.com/apache/superset/blob/bc0a10fc735218741c162d185014de695ee62d6f/superset/async_events/cache_backend.py#L109'>superset/async_events/cache_backend.py:109:9:</a> PLR0917 Too many positional arguments (12/5)
++ <a href='https://github.com/apache/superset/blob/bc0a10fc735218741c162d185014de695ee62d6f/superset/async_events/cache_backend.py#L27'>superset/async_events/cache_backend.py:27:9:</a> PLR0917 Too many positional arguments (11/5)
++ <a href='https://github.com/apache/superset/blob/bc0a10fc735218741c162d185014de695ee62d6f/superset/charts/client_processing.py#L64'>superset/charts/client_processing.py:64:5:</a> PLR0917 Too many positional arguments (10/5)
++ <a href='https://github.com/apache/superset/blob/bc0a10fc735218741c162d185014de695ee62d6f/superset/commands/importers/v1/utils.py#L105'>superset/commands/importers/v1/utils.py:105:5:</a> PLR0917 Too many positional arguments (7/5)
++ <a href='https://github.com/apache/superset/blob/bc0a10fc735218741c162d185014de695ee62d6f/superset/commands/sql_lab/execute.py#L69'>superset/commands/sql_lab/execute.py:69:9:</a> PLR0917 Too many positional arguments (9/5)
++ <a href='https://github.com/apache/superset/blob/bc0a10fc735218741c162d185014de695ee62d6f/superset/common/query_object_factory.py#L52'>superset/common/query_object_factory.py:52:9:</a> PLR0917 Too many positional arguments (7/5)
++ <a href='https://github.com/apache/superset/blob/bc0a10fc735218741c162d185014de695ee62d6f/superset/common/utils/query_cache_manager.py#L52'>superset/common/utils/query_cache_manager.py:52:9:</a> PLR0917 Too many positional arguments (14/5)
++ <a href='https://github.com/apache/superset/blob/bc0a10fc735218741c162d185014de695ee62d6f/superset/common/utils/query_cache_manager.py#L86'>superset/common/utils/query_cache_manager.py:86:9:</a> PLR0917 Too many positional arguments (7/5)
+... 85 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/aws/aws-sam-cli">aws/aws-sam-cli</a> (+313 -0 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/aws/aws-sam-cli/blob/51a21413b8baacbd0f44a81e544f98af7cb6ed8e/samcli/cli/cli_config_file.py#L176'>samcli/cli/cli_config_file.py:176:5:</a> PLR0917 Too many positional arguments (7/5)
++ <a href='https://github.com/aws/aws-sam-cli/blob/51a21413b8baacbd0f44a81e544f98af7cb6ed8e/samcli/commands/_utils/options.py#L210'>samcli/commands/_utils/options.py:210:5:</a> PLR0917 Too many positional arguments (6/5)
++ <a href='https://github.com/aws/aws-sam-cli/blob/51a21413b8baacbd0f44a81e544f98af7cb6ed8e/samcli/commands/_utils/table_print.py#L104'>samcli/commands/_utils/table_print.py:104:5:</a> PLR0917 Too many positional arguments (7/5)
++ <a href='https://github.com/aws/aws-sam-cli/blob/51a21413b8baacbd0f44a81e544f98af7cb6ed8e/samcli/commands/_utils/table_print.py#L16'>samcli/commands/_utils/table_print.py:16:5:</a> PLR0917 Too many positional arguments (6/5)
++ <a href='https://github.com/aws/aws-sam-cli/blob/51a21413b8baacbd0f44a81e544f98af7cb6ed8e/samcli/commands/build/build_context.py#L54'>samcli/commands/build/build_context.py:54:9:</a> PLR0917 Too many positional arguments (27/5)
++ <a href='https://github.com/aws/aws-sam-cli/blob/51a21413b8baacbd0f44a81e544f98af7cb6ed8e/samcli/commands/build/command.py#L136'>samcli/commands/build/command.py:136:5:</a> PLR0917 Too many positional arguments (26/5)
++ <a href='https://github.com/aws/aws-sam-cli/blob/51a21413b8baacbd0f44a81e544f98af7cb6ed8e/samcli/commands/build/command.py#L199'>samcli/commands/build/command.py:199:5:</a> PLR0917 Too many positional arguments (23/5)
++ <a href='https://github.com/aws/aws-sam-cli/blob/51a21413b8baacbd0f44a81e544f98af7cb6ed8e/samcli/commands/delete/command.py#L66'>samcli/commands/delete/command.py:66:5:</a> PLR0917 Too many positional arguments (8/5)
++ <a href='https://github.com/aws/aws-sam-cli/blob/51a21413b8baacbd0f44a81e544f98af7cb6ed8e/samcli/commands/delete/command.py#L91'>samcli/commands/delete/command.py:91:5:</a> PLR0917 Too many positional arguments (6/5)
++ <a href='https://github.com/aws/aws-sam-cli/blob/51a21413b8baacbd0f44a81e544f98af7cb6ed8e/samcli/commands/delete/delete_context.py#L32'>samcli/commands/delete/delete_context.py:32:9:</a> PLR0917 Too many positional arguments (6/5)
+... 303 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/bokeh/bokeh">bokeh/bokeh</a> (+42 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --no-preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/examples/basic/annotations/colorbar_log.py#L15'>examples/basic/annotations/colorbar_log.py:15:5:</a> PLR0917 Too many positional arguments (6/5)
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/examples/models/gauges.py#L48'>examples/models/gauges.py:48:5:</a> PLR0917 Too many positional arguments (7/5)
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/examples/plotting/histogram.py#L17'>examples/plotting/histogram.py:17:5:</a> PLR0917 Too many positional arguments (6/5)
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/examples/topics/hierarchical/treemap.py#L26'>examples/topics/hierarchical/treemap.py:26:5:</a> PLR0917 Too many positional arguments (6/5)
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/client/session.py#L198'>src/bokeh/client/session.py:198:5:</a> PLR0917 Too many positional arguments (6/5)
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/document/callbacks.py#L223'>src/bokeh/document/callbacks.py:223:9:</a> PLR0917 Too many positional arguments (7/5)
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/document/events.py#L290'>src/bokeh/document/events.py:290:9:</a> PLR0917 Too many positional arguments (6/5)
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/document/events.py#L387'>src/bokeh/document/events.py:387:9:</a> PLR0917 Too many positional arguments (7/5)
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/document/events.py#L479'>src/bokeh/document/events.py:479:9:</a> PLR0917 Too many positional arguments (7/5)
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/document/events.py#L577'>src/bokeh/document/events.py:577:9:</a> PLR0917 Too many positional arguments (6/5)
+... 32 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/freedomofpress/securedrop">freedomofpress/securedrop</a> (+11 -0 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/freedomofpress/securedrop/blob/2f944b16282dffcba81759fc7628efd16befa1da/securedrop/journalist_app/sessions.py#L101'>securedrop/journalist_app/sessions.py:101:9:</a> PLR0917 Too many positional arguments (6/5)
++ <a href='https://github.com/freedomofpress/securedrop/blob/2f944b16282dffcba81759fc7628efd16befa1da/securedrop/models.py#L412'>securedrop/models.py:412:9:</a> PLR0917 Too many positional arguments (6/5)
++ <a href='https://github.com/freedomofpress/securedrop/blob/2f944b16282dffcba81759fc7628efd16befa1da/securedrop/pretty_bad_protocol/_meta.py#L134'>securedrop/pretty_bad_protocol/_meta.py:134:9:</a> PLR0917 Too many positional arguments (9/5)
++ <a href='https://github.com/freedomofpress/securedrop/blob/2f944b16282dffcba81759fc7628efd16befa1da/securedrop/pretty_bad_protocol/_meta.py#L787'>securedrop/pretty_bad_protocol/_meta.py:787:9:</a> PLR0917 Too many positional arguments (7/5)
++ <a href='https://github.com/freedomofpress/securedrop/blob/2f944b16282dffcba81759fc7628efd16befa1da/securedrop/pretty_bad_protocol/_meta.py#L859'>securedrop/pretty_bad_protocol/_meta.py:859:9:</a> PLR0917 Too many positional arguments (14/5)
++ <a href='https://github.com/freedomofpress/securedrop/blob/2f944b16282dffcba81759fc7628efd16befa1da/securedrop/pretty_bad_protocol/gnupg.py#L56'>securedrop/pretty_bad_protocol/gnupg.py:56:9:</a> PLR0917 Too many positional arguments (8/5)
++ <a href='https://github.com/freedomofpress/securedrop/blob/2f944b16282dffcba81759fc7628efd16befa1da/securedrop/tests/factories.py#L54'>securedrop/tests/factories.py:54:9:</a> PLR0917 Too many positional arguments (10/5)
++ <a href='https://github.com/freedomofpress/securedrop/blob/2f944b16282dffcba81759fc7628efd16befa1da/securedrop/tests/test_journalist.py#L3517'>securedrop/tests/test_journalist.py:3517:5:</a> PLR0917 Too many positional arguments (6/5)
++ <a href='https://github.com/freedomofpress/securedrop/blob/2f944b16282dffcba81759fc7628efd16befa1da/securedrop/tests/test_journalist.py#L3555'>securedrop/tests/test_journalist.py:3555:5:</a> PLR0917 Too many positional arguments (6/5)
++ <a href='https://github.com/freedomofpress/securedrop/blob/2f944b16282dffcba81759fc7628efd16befa1da/securedrop/tests/test_journalist_api.py#L771'>securedrop/tests/test_journalist_api.py:771:5:</a> PLR0917 Too many positional arguments (6/5)
+... 1 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+
+_... Truncated remaining completed project reports due to GitHub comment length restrictions_
+
+<details><summary>Changes by rule (1 rules affected)</summary>
+<p>
+
+| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| PLR0917 | 2501 | 2501 | 0 | 0 | 0 |
+
+</p>
+</details>
+
+### Linter (preview)
+✅ ecosystem check detected no linter changes.
+
+
+
+
+---
+
+_Label `breaking` added by @ntBre on 2025-07-09 17:35_
+
+---
+
+_Label `do-not-merge` added by @ntBre on 2025-07-09 17:35_
+
+---
+
+_Comment by @ntBre on 2025-07-09 17:40_
+
+This is a very opinionated rule, and we may not want to stabilize it before #1774. That's also quite a large number of ecosystem hits, and there's no autofix really possible in this situation.
+
+---
+
+_Added to milestone `v0.13` by @ntBre on 2025-07-09 17:40_
+
+---
+
+_Comment by @CodeMan62 on 2025-07-09 17:44_
+
+so do i have to close this or wait to get things done first? 
+
+---
+
+_Comment by @ntBre on 2025-07-09 17:47_
+
+You don't have to close it, but there's a good chance that we won't merge this. All of these breaking changes can only come out in "minor" releases (when we bump the version from 0.12 to 0.13, unlike our weekly patch releases). So we'll need to reassess all of these when we prepare for the next minor release in a couple of months.
+
+---
+
+_Converted to draft by @dhruvmanila on 2025-07-10 06:22_
+
+---
+
+_Comment by @ntBre on 2025-09-05 13:05_
+
+We decided not to stabilize this in the 0.13 release for the reasons mentioned here and on the issue.
+
+---
+
+_Closed by @ntBre on 2025-09-05 13:05_
+
+---
