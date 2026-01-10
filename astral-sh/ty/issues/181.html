@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infer `lambda` expression based on the surrounding context - astral-sh/ty #181</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Infer `lambda` expression based on the surrounding context</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/181">#181</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2025-03-13 03:31
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-03-13 03:31</div>
+            <div class="timeline-body"><p>Currently, the inference of <code>lambda</code> expression is done in isolation which isn't very useful because parameters in a <code>lambda</code> expression cannot be annotated. For example,</p>
+<pre><code class="language-py">reveal_type(lambda x: x)  # revealed: (x) -&gt; Unknown
+</code></pre>
+<p>Here, we infer the type of <code>x</code> parameter as <code>Unknown</code> and we also infer the return type as <code>Unknown</code> by default for now. But, consider the following example:</p>
+<pre><code class="language-py">def foo(c: Callable[[int], str]):
+    return
+
+foo(lambda x: x)
+</code></pre>
+<p>In this case, as the <code>lambda</code> expression is used in the context of a <code>Callable</code> annotation, we can infer the argument type as <code>int</code> and thus the return type would be <code>int</code> as well but that is not assignable to the return type <code>str</code> as mentioned in the <code>Callable</code> annotation which should then raise an error.</p>
+<p>Another example would be:</p>
+<pre><code class="language-py">f = lambda x: x
+reveal_type(f(1))
+</code></pre>
+<p>Here, as the lambda expression is being called with a <code>Literal[1]</code> parameter, the return type would be inferred as <code>Literal[1]</code> as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-03-13 07:32</div>
+            <div class="timeline-body"><p>This is interesting. Inlining is one way to solve this problem, but it's probably limited? Both mypy and pyright see the problem in</p>
+<pre><code class="language-py">foo(lambda x: x)
+</code></pre>
+<p>but they do not see a problem with</p>
+<pre><code class="language-py">c = lambda x: x
+foo(c)
+</code></pre>
+<p>They probably don't inline variables, and then just use the gradual <code>Unknown -&gt; Unknown</code> type here.</p>
+<p>In a language with full type inference, you would infer a generic <code>forall T. T -&gt; T</code> type for <code>c</code> and then recognize the problem at the <code>foo</code> call site. Obviously, this would only work in very limited cases in Python. Inferring a generic type for something like <code>lambda x: x + 1</code> might still be possible with (custom) protocols but in general, it's not a feasible approach.</p>
+<p>I still wonder if it would be possible to use an approach like Rust or C++ where you would infer some opaque lambda/callable type for <code>c</code>, and only try to match that against <code>int -&gt; str</code> later. That opaque type could potentially store the reference to the lambda expression internally and then still perform the match-by-inlining operation when used through a binding like this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-03-14 18:04</div>
+            <div class="timeline-body"><p>I don't believe mypy inlines lambdas at all, FWIW; I think mypy detects the error here because it makes heavy use of &quot;type context&quot; (also called bidirectional type inference) when inferring types. Here it sees that the code needs the lambda to have a type of <code>Callable[[int], str]</code> (or a subtype thereof) in order for it to type-check, so it tries its best to use <code>Callable[[int], str]</code> as its inferred type of the lambda -- but realises it can't, and so emits an error</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[red-knot] Support inlining of `lambda` expressions" to "[red-knot] Infer `lambda` expression based on the surrounding context" by @dhruvmanila on 2025-03-18 11:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-03-18 11:24</div>
+            <div class="timeline-body"><p>I've update the issue to reflect it as more around inferring it based on the context and not using a specific implementation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[red-knot] Infer `lambda` expression based on the surrounding context" to "Infer `lambda` expression based on the surrounding context" by @MichaReiser on 2025-05-07 15:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bidirectional inference</span> added by @AlexWaygood on 2025-05-11 10:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Beta" by @carljm on 2025-06-11 00:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "Beta" by @carljm on 2025-08-15 14:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "GA" by @carljm on 2025-08-15 14:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on 2025-12-27 13:28</div>
+            <div class="timeline-body"><p>Would we ever consider special casing an example like <code>lambda x: x</code> and inferring <code>(T) -&gt; T</code> for this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-27 19:11</div>
+            <div class="timeline-body"><blockquote>
+<p>Would we ever consider special casing an example like <code>lambda x: x</code> and inferring <code>(T) -&gt; T</code> for this?</p>
+</blockquote>
+<p>Yes, that's definitely one strategy that can be used here, although I think it has more limited applicability than other strategies (type context, &quot;inlining&quot;).</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:51:35 UTC
+    </footer>
+</body>
+</html>

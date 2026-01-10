@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Widen JustFloat to `float | int` as part of widening literal types - astral-sh/ty #2226</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Widen JustFloat to `float | int` as part of widening literal types</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2226">#2226</a>
+        opened by <a href="https://github.com/Wizzerinus">@Wizzerinus</a>
+        on 2025-12-26 09:39
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Wizzerinus">@Wizzerinus</a> on 2025-12-26 09:39</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>In the following example, the type for <code>FloatDict</code> is inferred as <code>dict[int, float]</code> rather than <code>dict[int, float | int]</code>, which is a bit unexpected to me, because that causes the assignment to fail typechecking.</p>
+<pre><code class="language-py">FloatDict = dict.fromkeys(range(10), 0.5)
+
+def make_float() -&gt; float:
+    raise NotImplementedError()
+
+FloatDict[0] = make_float()
+</code></pre>
+<p>Diagnostic:</p>
+<pre><code>error[invalid-assignment]: Invalid subscript assignment with key of type `Literal[0]` and value of type `int | float` on object of type `dict[int, float]`
+ --&gt; floatdict.py:6:1
+  |
+4 |     raise NotImplementedError()
+5 |
+6 | FloatDict[0] = make_float()
+  | ^^^^^^^^^^^^^^^------------
+  |                |
+  |                Expected value of type `float`, got `int | float`
+  |
+info: rule `invalid-assignment` is enabled by default
+
+Found 1 diagnostic
+</code></pre>
+<h3>Version</h3>
+<p>ty 0.0.7</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-26 17:17</div>
+            <div class="timeline-body"><p>Thanks! I think we need to always &quot;widen&quot; float inferences to <code>float | int</code> in the same scenarios where we widen literal types. So just like we already infer <code>dict.fromkeys(range(10), 1)</code> as <code>dict[int, int]</code> (not <code>dict[int, Literal[1]]</code>), we should likewise infer this case as <code>dict[int, float | int]</code> not <code>dict[int, float]</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @carljm on 2025-12-26 17:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "JustFloat being automatically inferred for `dict.fromkeys`" to "Widen JustFloat to `float | int` as part of widening literal types" by @carljm on 2025-12-26 17:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @carljm on 2025-12-26 17:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-26 17:18</div>
+            <div class="timeline-body"><p>I think this should be a fairly easy change -- we already have the literal-widening logic, this <em>should</em> be just adding one more case to it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-12-27 00:19</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:51:35 UTC
+    </footer>
+</body>
+</html>

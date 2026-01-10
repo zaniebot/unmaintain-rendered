@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generics inference fails for @contextmanagers with TypeVars. - astral-sh/ty #2030</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Generics inference fails for @contextmanagers with TypeVars.</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2030">#2030</a>
+        opened by <a href="https://github.com/amol-mandhane">@amol-mandhane</a>
+        on 2025-12-17 19:06
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/amol-mandhane">@amol-mandhane</a> on 2025-12-17 19:06</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Repro:</p>
+<pre><code class="language-py">from contextlib import contextmanager
+from collections.abc import Generator
+
+class Base:
+    pass
+
+class Derived(Base):
+    pass
+
+
+def factory[T: Base](cls: type[T]) -&gt; T:
+    return cls()
+
+d = factory(Derived)
+
+@contextmanager
+def yielder[T: Base](cls: type[T]) -&gt; Generator[T]:
+    yield cls()
+
+with yielder(Derived) as d:  # error [invalid-argument-type] &quot;Argument is incorrect: Expected `type[T@yielder]`, found `&lt;class 'Derived'&gt;`! 
+    print(d)
+</code></pre>
+<p>https://play.ty.dev/b74578ac-adaf-4c71-a316-e813c7ad701c</p>
+<p>Calling <code>yielder(Derived)</code> should infer <code>T</code> as <code>Derived</code> (since <code>Derived</code> is a subclass of <code>Base</code>), matching the behavior of the regular function <code>factory(Derived)</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Generic inference fails for @contextmanagers with TypeVars." to "Generics inference fails for @contextmanagers with TypeVars." by @amol-mandhane on 2025-12-17 19:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/amol-mandhane">@amol-mandhane</a> on 2025-12-17 20:30</div>
+            <div class="timeline-body"><p>Thinking about it, this might be because ty doesn't resolve type of contextmanager decorator as expected rather than the typevar resolution itself.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">generics</span> added by @carljm on 2025-12-17 20:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @carljm on 2025-12-17 20:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-17 20:38</div>
+            <div class="timeline-body"><p>Thanks for the nicely minimized report! Yeah, it does seem like we are failing to properly bind the typevar to the returned callable type from the decorator here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eclbg">@eclbg</a> on 2025-12-19 09:17</div>
+            <div class="timeline-body"><p>Another similar minimized report with the workaround we've seen that works: https://play.ty.dev/dac79a5c-09b9-4d75-ba07-e1d59e474700</p>
+<p>I think it's the same issue as in OP's playground.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/montasaurus">@montasaurus</a> on 2025-12-31 04:48</div>
+            <div class="timeline-body"><p>Not sure if this is the same issue or not, but generators yielding <code>Self</code> are inferred as <code>None</code></p>
+<pre><code class="language-python">class Z:
+    @classmethod
+    @asynccontextmanager
+    async def init_async(cls) -&gt; AsyncGenerator[Self]:
+        await asyncio.sleep(0.1)
+        yield cls()
+
+    @classmethod
+    @contextmanager
+    def init_sync(cls) -&gt; Generator[Self]:
+        yield cls()
+    
+    @classmethod
+    def get(cls) -&gt; Self:
+        return cls()
+
+
+async def check_context_manager():
+    async with Z.init_async() as g:
+        reveal_type(g) # Revealed type: `None`
+
+    with Z.init_sync() as gs:
+        reveal_type(gs) # Revealed type: `None`
+    
+    gg = Z.get()
+    reveal_type(gg) # Revealed type: `Z`
+</code></pre>
+<p>https://play.ty.dev/7c4bb2d5-6cb9-458f-bc2b-ae792358a8eb</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eclbg">@eclbg</a> on 2026-01-02 19:52</div>
+            <div class="timeline-body"><p>I'm working on this one. I have a working solution and I'm reviewing it again before I submit the PR in the next few days. It will solve both the TypeVar and the Self issues with contextmanager.</p>
+<p>Update: splitting in 2 PRs. First one for the Self fix submitted.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:51:35 UTC
+    </footer>
+</body>
+</html>

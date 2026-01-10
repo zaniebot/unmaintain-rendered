@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>unsupported-bool-conversion should detect __bool__ methods that return NoReturn - astral-sh/ty #2312</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>unsupported-bool-conversion should detect __bool__ methods that return NoReturn</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2312">#2312</a>
+        opened by <a href="https://github.com/eric-distyl-ai">@eric-distyl-ai</a>
+        on 2026-01-02 23:52
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/eric-distyl-ai">@eric-distyl-ai</a> on 2026-01-02 23:52</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>The <code>unsupported-bool-conversion</code> rule currently only detects <code>__bool__ = None</code> (non-callable), but does not flag objects whose <code>__bool__</code> method returns <code>NoReturn</code> (unconditionally raises).</p>
+<p>Pyright catches this under <code>reportGeneralTypeIssues</code>, and it represents a real runtime issue - calling <code>bool()</code> on such objects will raise <code>TypeError</code> (or similar).</p>
+<h2>Example</h2>
+<pre><code class="language-python">class MyClass:
+    def __bool__(self):
+        raise TypeError(&quot;not allowed&quot;)
+
+x = MyClass()
+if x:  # ← Should be flagged: __bool__ raises TypeError at runtime
+    pass
+</code></pre>
+<p><strong>ty 0.0.8 result:</strong> <code>All checks passed!</code></p>
+<p><strong>pyright result:</strong></p>
+<pre><code>error: Invalid conditional operand of type &quot;MyClass&quot;
+  Method __bool__ for type &quot;MyClass&quot; returns type &quot;NoReturn&quot; rather than &quot;bool&quot; (reportGeneralTypeIssues)
+</code></pre>
+<h2>Real-World Impact</h2>
+<p>This affects common libraries:</p>
+<h3>SQLAlchemy (Column.<strong>bool</strong>)</h3>
+<pre><code class="language-python">from sqlalchemy import Column, DateTime
+from sqlalchemy.orm import DeclarativeBase
+
+class Base(DeclarativeBase):
+    pass
+
+class MyModel(Base):
+    __tablename__ = &quot;my_table&quot;
+    created_at = Column(DateTime, nullable=True)
+
+    def to_api(self):
+        # This pattern is flagged by pyright but not by ty
+        return {
+            &quot;createdAt&quot;: self.created_at.isoformat() if self.created_at else None
+        }
+</code></pre>
+<p>Note: The SQLAlchemy case is actually a false positive because the descriptor protocol returns the actual datetime at runtime, not the Column. But the check is still valuable for cases where <code>__bool__</code> truly raises.</p>
+<h3>Pandas (Series.<strong>bool</strong>)</h3>
+<pre><code class="language-python">import pandas as pd
+
+series = pd.Series([1, 2, 3])
+if series:  # Raises ValueError at runtime: &quot;The truth value of a Series is ambiguous&quot;
+    pass
+</code></pre>
+<h2>Suggested Behavior</h2>
+<p>Extend <code>unsupported-bool-conversion</code> to also flag when:</p>
+<ol>
+<li><code>__bool__</code> is inferred to return <code>NoReturn</code></li>
+<li><code>__bool__</code> unconditionally raises an exception</li>
+</ol>
+<p>This would catch real bugs where objects are used in boolean context but cannot be safely converted to bool.</p>
+<h2>Related</h2>
+<ul>
+<li><a href="https://github.com/astral-sh/ty/issues/1889">Type system feature overview #1889</a> - NoReturn/Never function propagation is complete, but this specific interaction isn't covered</li>
+<li>The <a href="https://docs.astral.sh/ty/reference/rules/#unsupported-bool-conversion">unsupported-bool-conversion docs</a> only mention <code>__bool__ = None</code></li>
+</ul>
+<h2>Environment</h2>
+<ul>
+<li>ty version: 0.0.8</li>
+<li>Comparison: pyright 1.1.403</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2026-01-04 21:02</div>
+            <div class="timeline-body"><p>Thanks for the report! It looks like pyright is the only type checker that flags this.</p>
+<p>I think it's a bit arguable. Explicitly calling a function that returns Never/NoReturn is not a type error, so it's not clear why implicitly calling such a function as a dunder method should be.</p>
+<p>It would make sense to at least treat an implicit dunder call that never returns in the same way as an explicit call that never returns? (That is, treat it as terminating control flow.) I don't think we do that today.</p>
+<p>I don't think any change here is high priority, but we can keep the issue open to consider.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-04 21:33</div>
+            <div class="timeline-body"><p>I agree with @carljm here that this should not be reported by <code>unsupported-bool-conversion</code>. All <code>bool(x)</code> does at runtime is implicitly call <code>__bool__</code>, so if calling <code>x.__bool__()</code> directly would not result in a diagnostic then neither should <code>bool(x)</code>.</p>
+<p>Annotating a function as returning <code>NoReturn</code> is not the correct way to indicate to a type checker that calling that function should always lead to a diagnostic being emitted. We don't really have a good mechanism for that right now, but there have been various proposals for this such as https://discuss.python.org/t/wrong-special-form/103832 and https://github.com/python/typing/issues/1043</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:51:35 UTC
+    </footer>
+</body>
+</html>

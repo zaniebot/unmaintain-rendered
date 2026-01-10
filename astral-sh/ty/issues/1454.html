@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Incorrect narrowing of enums with custom `__eq__` methods in `match` statements - astral-sh/ty #1454</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Incorrect narrowing of enums with custom `__eq__` methods in `match` statements</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1454">#1454</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-10-29 19:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-29 19:32</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Originally reported in https://discuss.python.org/t/amend-pep-586-to-make-enum-values-subtypes-of-literal/59456/9.</p>
+<p>At runtime, <code>case</code> statements that use <a href="https://peps.python.org/pep-0634/#literal-patterns">literal patterns</a> or <a href="https://peps.python.org/pep-0634/#value-patterns">value patterns</a> dispatch based on equality, and <code>Color.GREEN == &quot;g&quot;</code> in the following example (since <code>Color</code> has <code>str</code> in its MRO as well as <code>Enum</code>, and inherits its <code>__eq__</code> method from <code>str</code>). We don't recognise this correctly in ty currently:</p>
+<pre><code class="language-py">from enum import StrEnum
+from typing import Literal, assert_never, reveal_type
+
+class Color(StrEnum):
+    RED = &quot;r&quot;
+    GREEN = &quot;g&quot;
+    BLUE = &quot;b&quot;
+
+def test_literal_as_enum(x: Literal[&quot;g&quot;]) -&gt; None:
+    match x:
+        case Color.RED:
+            assert_never(x)
+        case Color.GREEN:
+            reveal_type(x)  # this branch is taken at runtime
+        case Color.BLUE:
+            assert_never(x)
+        case _:
+            assert_never(x)  # false-positive error here
+
+def test_enum_as_literal(y: Literal[Color.BLUE]) -&gt; None:
+    match y:
+        case &quot;r&quot;:
+            assert_never(y)
+        case &quot;g&quot;:
+            assert_never(y)
+        case &quot;b&quot;:
+            reveal_type(y)  # this branch is taken at runtime
+        case _:
+            assert_never(y)  # false-positive error here
+</code></pre>
+<p>https://play.ty.dev/e106f66f-339a-4d1f-a6e4-95f8a4f3bed9</p>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2025-10-29 19:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">narrowing</span> added by @AlexWaygood on 2025-10-29 19:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">runtime semantics</span> added by @AlexWaygood on 2025-10-29 19:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enums</span> added by @AlexWaygood on 2025-10-29 19:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-29 19:39</div>
+            <div class="timeline-body"><p>Similarly, we also incorrectly narrow the type for other <code>Enum</code> classes that override <code>__eq__</code>. Here we say that the type of <code>e</code> must be <code>Literal[Color.RED]</code> in the <code>case Color.RED</code> branch. But at runtime, that branch is also taken if you pass in <code>Color.GREEN</code>, so this inference is incorrectly precise. It's unsafe to do any narrowing at all if the enum class has an arbitrary user-defined <code>__eq__</code> method:</p>
+<pre><code class="language-py">from enum import StrEnum, Enum
+from typing import Literal, assert_never, reveal_type
+
+class Color(Enum):
+    RED = &quot;r&quot;
+    GREEN = &quot;g&quot;
+
+    def __eq__(self, other) -&gt; Literal[True]:
+        return True
+
+def enum_with_overridden_eq(e: Color):
+    match e:
+        case Color.RED:
+            print(&quot;it's red&quot;)
+            reveal_type(e)
+        case Color.GREEN:
+            reveal_type(e)
+        case _:
+            reveal_type(e)
+
+enum_with_overridden_eq(Color.GREEN)
+</code></pre>
+<p>https://play.ty.dev/711252af-30bc-4c5b-9a61-44965e2d06da</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Incorrect narrowing of `StrEnum`s in `match` statements" to "Incorrect narrowing of enums with custom `__eq__` methods in `match` statements" by @AlexWaygood on 2025-10-29 19:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @AlexWaygood on 2025-11-24 22:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thepetertessier">@thepetertessier</a> on 2025-12-31 16:57</div>
+            <div class="timeline-body"><p>Maybe this belongs in its own issue, but I noticed a similar problem when narrowing plain strings. As a simple example (https://play.ty.dev/ff93caef-1263-4286-9600-ba58f95bafc1):</p>
+<pre><code class="language-python">from typing import Literal
+
+
+def convert_to_bool(bool_str: Literal[&quot;True&quot;, &quot;False&quot;]):
+    return bool_str == &quot;True&quot;
+
+def main(string: str):
+    match string:
+        case &quot;True&quot; | &quot;False&quot;:
+            return convert_to_bool(string)  # incorrectly throws invalid-argument-type: Expected `Literal[&quot;True&quot;, &quot;False&quot;]`, found `str`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-01 13:43</div>
+            <div class="timeline-body"><p>@thepetertessier that's unrelated to this issue -- but it's covered by https://github.com/astral-sh/ty/issues/1566</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:51:35 UTC
+    </footer>
+</body>
+</html>

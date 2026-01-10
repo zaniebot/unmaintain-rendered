@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Object of type `PreTrainedTokenizerFast` is callable - astral-sh/ty #2349</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Object of type `PreTrainedTokenizerFast` is callable</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2349">#2349</a>
+        opened by <a href="https://github.com/c-vongpaseut">@c-vongpaseut</a>
+        on 2026-01-05 16:58
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/c-vongpaseut">@c-vongpaseut</a> on 2026-01-05 16:58</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Object of type <code>PreTrainedTokenizerFast</code> is callable (see documentation h<a href="https://huggingface.co/docs/transformers/v5.0.0rc1/main_classes/tokenizer#transformers.TokenizersBackend.__call__">ere</a>) but raise <code>error[call-non-callable]</code>.</p>
+<hr />
+<p>To reproduce</p>
+<p><em>snippet</em></p>
+<pre><code>from transformers import AutoTokenizer, PreTrainedTokenizerFast
+
+
+def tokenize(tokenizer: PreTrainedTokenizerFast):
+    return tokenizer(&quot;blabla&quot;)
+
+t = AutoTokenizer.from_pretrained(&quot;bert-base-uncased&quot;)
+tokenize(t)
+</code></pre>
+<p><em>command</em></p>
+<pre><code>uv add transformer==4.51.0
+uvx ty@0.0.9 check .
+</code></pre>
+<h3>Version</h3>
+<p>0.0.9</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2026-01-05 19:58</div>
+            <div class="timeline-body"><p>I'm not able to reproduce this. When I <code>uv init .</code> in an empty directory, <code>uv add transformers</code>, and then put the above code snippet in a file, <code>uvx ty@0.0.9 check .</code> does not report any errors for me.</p>
+<p>Can you double-check your exact reproduction steps?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-info</span> added by @carljm on 2026-01-05 19:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/c-vongpaseut">@c-vongpaseut</a> on 2026-01-06 08:17</div>
+            <div class="timeline-body"><p>Thanks for checking, I am using <code>transformers==4.51.0</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2026-01-06 17:28</div>
+            <div class="timeline-body"><p>It looks like in <code>transformers==4.51.0</code> there's a complex fallback in <code>transformers/__init__.py</code> where dummy objects are used in case some optional dependency is not installed. So ty understands that <code>PreTrainedTokenizerFast</code> might be the real class, or it might be the dummy object (which is not callable).</p>
+<p>It seems like more recent versions of transformers library have fixed this and removed the dummy objects, which helps type checkers better understand these types.</p>
+<p>I think there's not really anything to fix in ty here -- the best option would be to upgrade your version of transformers.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2026-01-06 17:28</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:51:35 UTC
+    </footer>
+</body>
+</html>

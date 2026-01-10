@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Narrowing across `with` statements is unsound - astral-sh/ty #2285</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Narrowing across `with` statements is unsound</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2285">#2285</a>
+        opened by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a>
+        on 2025-12-31 03:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a> on 2025-12-31 03:19</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>While messing around trying to find general unsoundness, I found this. Both pyright and mypy correctly flag both functions, but ty misses the second one:
+https://play.ty.dev/22b76c09-25ad-4e16-9733-edc338b69a26</p>
+<pre><code class="language-py">def generate_str() -&gt; str:
+    raise NotImplementedError
+
+def uses_try(x: int) -&gt; str:
+    y: int | str = x
+    try:
+        y = generate_str()
+    except NotImplementedError:
+        pass
+    return y  # Errors with invalid-return-type as expected
+
+class MySuppressor:
+    def __enter__(self) -&gt; None: ...
+    def __exit__(self, exc_type, exc_value, traceback) -&gt; bool:
+        return True
+
+def uses_custom(x: int) -&gt; str:
+    y: int | str = x
+    with MySuppressor():
+        y = generate_str()
+    return y  # No error, should also be invalid-return-type
+</code></pre>
+<p><a href="https://pyright-play.net/?pythonVersion=3.12&amp;code=CYUwZgBA5iB2ICcCGAXEB9AzihAKAlBALQB8E2CAXAFAR0TICWmIEAcgPYoCSAtgA4AbELzhpgAUQQIOCatVCQAri0zocAT1wAPShEawUhUuRw16EDXoMoIAH1MIIAXgjba9TeYv0NL6HCIqBgUBB50INoAxiD8tpw8AsKihiCS0rLePhD8SJiY4QwgKEoIsJZ0AMQQUjIImBAA7owoABb6sABuSIKMwEQIxaWwRCga-Kx5EJETUeLyUYJ5DQCyGgDKSvz8g-mZhYoQ6OhiiMe4LIJgxmSc8HoAdE8H4Ecn2i3nl2AANNPR6nGID%2BkSi6G6giUwIgOCQMQARnCANY3CDwjgcQRZHyDEplCAAFQQUPkhxUIDUURUKA4vB01kMqIo2KsHVsDgo-ncFmabQga02212mFkBGxFj8rhg8GQaCwODCFlxwwqEGqnGmGQQf0wrQ4SkEwAgPRFaNYBghfQGQzKoyB1CAA">pyright playground</a>
+https://mypy-play.net/?mypy=latest&amp;python=3.12&amp;gist=decd8c0156ecb1ab8e42ea823f5573aa</p>
+<h3>Version</h3>
+<p>ty 0.0.8 (aa7559db8 2025-12-29) playground 9dadf2724</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">control flow</span> added by @mtshiba on 2025-12-31 03:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @mtshiba by @mtshiba on 2025-12-31 03:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-31 11:03</div>
+            <div class="timeline-body"><p>Thanks! This is #152</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-12-31 11:03</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:51:35 UTC
+    </footer>
+</body>
+</html>

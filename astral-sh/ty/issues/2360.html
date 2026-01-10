@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stack overflow on generic type with forward reference - astral-sh/ty #2360</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Stack overflow on generic type with forward reference</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2360">#2360</a>
+        opened by <a href="https://github.com/lsorber">@lsorber</a>
+        on 2026-01-06 09:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/lsorber">@lsorber</a> on 2026-01-06 09:54</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Ty crashes on this MRE (<a href="https://play.ty.dev/eb5974ff-c7ff-4f32-b690-db1a992d134e">ty playground</a>):</p>
+<pre><code class="language-python">from collections.abc import Iterable, Mapping
+from typing import Any
+
+type AnyComponent = &quot;Component[Any]&quot;  # Ty does not crash without this forward reference
+type Nested[T] = Iterable[Nested[T]] | Mapping[Any, Nested[T]]
+
+
+class Component[T: Iterable[Nested[AnyComponent]] | Mapping[Any, Nested[AnyComponent]]]:
+    pass
+
+
+dict[str, list[AnyComponent]]().get(&quot;x&quot;, [])
+</code></pre>
+<p>Output:</p>
+<pre><code>thread '&lt;unknown&gt;' (17625271) has overflowed its stack
+fatal runtime error: stack overflow, aborting
+</code></pre>
+<h3>Version</h3>
+<p>0.0.9</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Crash on generic type with forward reference" to "Stack overflow on generic type with forward reference" by @AlexWaygood on 2026-01-06 09:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fatal</span> added by @AlexWaygood on 2026-01-06 09:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">type aliases</span> added by @AlexWaygood on 2026-01-06 09:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Pre-stable 1" by @AlexWaygood on 2026-01-06 09:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @mtshiba by @mtshiba on 2026-01-06 15:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mtshiba">@mtshiba</a> on 2026-01-06 18:50</div>
+            <div class="timeline-body"><p>The root cause of this appears to be recursive (synthesized) protocols rather than a recursive type alias, as this example still results in a panic.</p>
+<pre><code class="language-python">from collections.abc import Iterable, Mapping
+from typing import Any
+
+type AnyComponent = Component[Any]
+
+class Component[T: Iterable[Iterable[AnyComponent] | Mapping[Any, Iterable[Any]]] | Mapping[Any, Iterable[AnyComponent] | Mapping[Any, Iterable[Any]]]]:
+    pass
+
+
+dict[str, list[AnyComponent]]().get(&quot;x&quot;, [])
+
+</code></pre>
+<details>
+<summary>backtrace (1 cycle)</summary>
+
+<pre><code>ty!enum2$&lt;ty_python_semantic::types::Type&gt;::apply_type_mapping_impl+0x10ce
+ty!ty_python_semantic::types::signatures::impl$8::apply_type_mapping_impl::closure$0+0xbe
+ty!enum2$&lt;core::option::Option&lt;enum2$&lt;ty_python_semantic::types::Type&gt; &gt; &gt;::map&lt;enum2$&lt;ty_python_semantic::types::Type&gt;,enum2$&lt;ty_python_semantic::types::Type&gt;,ty_python_semantic::types::signatures::impl$8::apply_type_mapping_impl::closure_env$0&gt;+0xc3
+ty!ty_python_semantic::types::signatures::Parameter::apply_type_mapping_impl+0xda
+ty!ty_python_semantic::types::signatures::impl$5::apply_type_mapping_impl::closure$0+0xb9
+ty!core::iter::adapters::map::map_fold::closure$0&lt;ref$&lt;ty_python_semantic::types::signatures::Parameter&gt;,ty_python_semantic::types::signatures::Parameter,tuple$&lt;&gt;,ty_python_semantic::types::signatures::impl$5::apply_type_mapping_impl::closure_env$0,core::iter::traits::iterator::Iterator::for_each::call::closure_env$0&lt;ty_python_semantic::types::signatures::Parameter,alloc::vec::impl$20::extend_trusted::closure_env$0&lt;ty_python_semantic::types::signatures::Parameter,alloc::alloc::Global,core::iter::adapters::map::Map&lt;core::slice::iter::Iter&lt;ty_python_semantic::types::signatures::Parameter&gt;,ty_python_semantic::types::signatures::impl$5::apply_type_mapping_impl::closure_env$0&gt; &gt; &gt; &gt;+0x59
+ty!core::slice::iter::impl$166::fold&lt;ty_python_semantic::types::signatures::Parameter,tuple$&lt;&gt;,core::iter::adapters::map::map_fold::closure_env$0&lt;ref$&lt;ty_python_semantic::types::signatures::Parameter&gt;,ty_python_semantic::types::signatures::Parameter,tuple$&lt;&gt;,ty_python_semantic::types::signatures::impl$5::apply_type_mapping_impl::closure_env$0,core::iter::traits::iterator::Iterator::for_each::call::closure_env$0&lt;ty_python_semantic::types::signatures::Parameter,alloc::vec::impl$20::extend_trusted::closure_env$0&lt;ty_python_semantic::types::signatures::Parameter,alloc::alloc::Global,core::iter::adapters::map::Map&lt;core::slice::iter::Iter&lt;ty_python_semantic::types::signatures::Parameter&gt;,ty_python_semantic::types::signatures::impl$5::apply_type_mapping_impl::closure_env$0&gt; &gt; &gt; &gt; &gt;+0xaf
+ty!core::iter::adapters::map::impl$2::fold&lt;ty_python_semantic::types::signatures::Parameter,core::slice::iter::Iter&lt;ty_python_semantic::types::signatures::Parameter&gt;,ty_python_semantic::types::signatures::impl$5::apply_type_mapping_impl::closure_env$0,tuple$&lt;&gt;,core::iter::traits::iterator::Iterator::for_each::call::closure_env$0&lt;ty_python_semantic::types::signatures::Parameter,alloc::vec::impl$20::extend_trusted::closure_env$0&lt;ty_python_semantic::types::signatures::Parameter,alloc::alloc::Global,core::iter::adapters::map::Map&lt;core::slice::iter::Iter&lt;ty_python_semantic::types::signatures::Parameter&gt;,ty_python_semantic::types::signatures::impl$5::apply_type_mapping_impl::closure_env$0&gt; &gt; &gt; &gt;+0x80
+ty!core::iter::traits::iterator::Iterator::for_each&lt;core::iter::adapters::map::Map&lt;core::slice::iter::Iter&lt;ty_python_semantic::types::signatures::Parameter&gt;,ty_python_semantic::types::signatures::impl$5::apply_type_mapping_impl::closure_env$0&gt;,alloc::vec::impl$20::extend_trusted::closure_env$0&lt;ty_python_semantic::types::signatures::Parameter,alloc::alloc::Global,core::iter::adapters::map::Map&lt;core::slice::iter::Iter&lt;ty_python_semantic::types::signatures::Parameter&gt;,ty_python_semantic::types::signatures::impl$5::apply_type_mapping_impl::closure_env$0&gt; &gt; &gt;+0x28
+ty!alloc::vec::Vec&lt;ty_python_semantic::types::signatures::Parameter,alloc::alloc::Global&gt;::extend_trusted&lt;ty_python_semantic::types::signatures::Parameter,alloc::alloc::Global,core::iter::adapters::map::Map&lt;core::slice::iter::Iter&lt;ty_python_semantic::types::signatures::Parameter&gt;,ty_python_semantic::types::signatures::impl$5::apply_type_mapping_impl::closure_env$0&gt; &gt;+0x128
+ty!alloc::vec::spec_extend::impl$1::spec_extend&lt;ty_python_semantic::types::signatures::Parameter,core::iter::adapters::map::Map&lt;core::slice::iter::Iter&lt;ty_python_semantic::types::signatures::Parameter&gt;,ty_python_semantic::types::signatures::impl$5::apply_type_mapping_impl::closure_env$0&gt;,alloc::alloc::Global&gt;+0xe
+ty!alloc::vec::spec_from_iter_nested::impl$1::from_iter&lt;ty_python_semantic::types::signatures::Parameter,core::iter::adapters::map::Map&lt;core::slice::iter::Iter&lt;ty_python_semantic::types::signatures::Parameter&gt;,ty_python_semantic::types::signatures::impl$5::apply_type_mapping_impl::closure_env$0&gt; &gt;+0xf8
+ty!alloc::vec::spec_from_iter::impl$0::from_iter&lt;ty_python_semantic::types::signatures::Parameter,core::iter::adapters::map::Map&lt;core::slice::iter::Iter&lt;ty_python_semantic::types::signatures::Parameter&gt;,ty_python_semantic::types::signatures::impl$5::apply_type_mapping_impl::closure_env$0&gt; &gt;+0x11
+ty!alloc::vec::impl$15::from_iter&lt;ty_python_semantic::types::signatures::Parameter,core::iter::adapters::map::Map&lt;core::slice::iter::Iter&lt;ty_python_semantic::types::signatures::Parameter&gt;,ty_python_semantic::types::signatures::impl$5::apply_type_mapping_impl::closure_env$0&gt; &gt;+0x27
+ty!core::iter::traits::iterator::Iterator::collect&lt;core::iter::adapters::map::Map&lt;core::slice::iter::Iter&lt;ty_python_semantic::types::signatures::Parameter&gt;,ty_python_semantic::types::signatures::impl$5::apply_type_mapping_impl::closure_env$0&gt;,alloc::vec::Vec&lt;ty_python_semantic::types::signatures::Parameter,alloc::alloc::Global&gt; &gt;+0x11
+ty!ty_python_semantic::types::signatures::Parameters::apply_type_mapping_impl+0x15b
+ty!ty_python_semantic::types::signatures::Signature::apply_type_mapping_impl+0xe9
+ty!ty_python_semantic::types::signatures::impl$0::apply_type_mapping_impl::closure$0+0xb9
+ty!core::ops::function::impls::impl$4::call_once+0xa
+ty!enum2$&lt;core::option::Option&lt;ref$&lt;ty_python_semantic::types::signatures::Signature&gt; &gt; &gt;::map+0x40
+ty!core::iter::adapters::map::impl$2::next&lt;ty_python_semantic::types::signatures::Signature,core::slice::iter::Iter&lt;ty_python_semantic::types::signatures::Signature&gt;,ty_python_semantic::types::signatures::impl$0::apply_type_mapping_impl::closure_env$0&gt;+0x86
+ty!smallvec::impl$31::extend&lt;array$&lt;ty_python_semantic::types::signatures::Signature,1&gt;,core::iter::adapters::map::Map&lt;core::slice::iter::Iter&lt;ty_python_semantic::types::signatures::Signature&gt;,ty_python_semantic::types::signatures::impl$0::apply_type_mapping_impl::closure_env$0&gt; &gt;+0x106
+ty!smallvec::impl$30::from_iter&lt;array$&lt;ty_python_semantic::types::signatures::Signature,1&gt;,core::iter::adapters::map::Map&lt;core::slice::iter::Iter&lt;ty_python_semantic::types::signatures::Signature&gt;,ty_python_semantic::types::signatures::impl$0::apply_type_mapping_impl::closure_env$0&gt; &gt;+0x6b
+ty!core::iter::traits::iterator::Iterator::collect&lt;core::iter::adapters::map::Map&lt;core::slice::iter::Iter&lt;ty_python_semantic::types::signatures::Signature&gt;,ty_python_semantic::types::signatures::impl$0::apply_type_mapping_impl::closure_env$0&gt;,smallvec::SmallVec&lt;array$&lt;ty_python_semantic::types::signatures::Signature,1&gt; &gt; &gt;+0x11
+ty!ty_python_semantic::types::signatures::CallableSignature::from_overloads&lt;core::iter::adapters::map::Map&lt;core::slice::iter::Iter&lt;ty_python_semantic::types::signatures::Signature&gt;,ty_python_semantic::types::signatures::impl$0::apply_type_mapping_impl::closure_env$0&gt; &gt;+0x30
+ty!ty_python_semantic::types::signatures::CallableSignature::apply_type_mapping_impl+0x149
+ty!ty_python_semantic::types::CallableType::apply_type_mapping_impl+0xaf
+ty!enum2$&lt;ty_python_semantic::types::protocol_class::ProtocolMemberKind&gt;::apply_type_mapping_impl+0x117
+ty!ty_python_semantic::types::protocol_class::ProtocolMemberData::apply_type_mapping_impl+0x90
+ty!ty_python_semantic::types::protocol_class::impl$6::specialized_and_normalized::closure$0+0x114
+ty!core::ops::function::impls::impl$4::call_once+0xa
+ty!enum2$&lt;core::option::Option&lt;tuple$&lt;ref$&lt;ruff_python_ast::name::Name&gt;,ref$&lt;ty_python_semantic::types::protocol_class::ProtocolMemberData&gt; &gt; &gt; &gt;::map+0x55
+ty!core::iter::adapters::map::impl$2::next&lt;tuple$&lt;ruff_python_ast::name::Name,ty_python_semantic::types::protocol_class::ProtocolMemberData&gt;,alloc::collections::btree::map::Iter&lt;ruff_python_ast::name::Name,ty_python_semantic::types::protocol_class::ProtocolMemberData&gt;,ty_python_semantic::types::protocol_class::impl$6::specialized_and_normalized::closure_env$0&gt;+0xa6
+ty!alloc::vec::spec_from_iter_nested::impl$0::from_iter&lt;tuple$&lt;ruff_python_ast::name::Name,ty_python_semantic::types::protocol_class::ProtocolMemberData&gt;,core::iter::adapters::map::Map&lt;alloc::collections::btree::map::Iter&lt;ruff_python_ast::name::Name,ty_python_semantic::types::protocol_class::ProtocolMemberData&gt;,ty_python_semantic::types::protocol_class::impl$6::specialized_and_normalized::closure_env$0&gt; &gt;+0x58
+ty!alloc::vec::spec_from_iter::impl$0::from_iter&lt;tuple$&lt;ruff_python_ast::name::Name,ty_python_semantic::types::protocol_class::ProtocolMemberData&gt;,core::iter::adapters::map::Map&lt;alloc::collections::btree::map::Iter&lt;ruff_python_ast::name::Name,ty_python_semantic::types::protocol_class::ProtocolMemberData&gt;,ty_python_semantic::types::protocol_class::impl$6::specialized_and_normalized::closure_env$0&gt; &gt;+0x11
+ty!alloc::vec::impl$15::from_iter&lt;tuple$&lt;ruff_python_ast::name::Name,ty_python_semantic::types::protocol_class::ProtocolMemberData&gt;,core::iter::adapters::map::Map&lt;alloc::collections::btree::map::Iter&lt;ruff_python_ast::name::Name,ty_python_semantic::types::protocol_class::ProtocolMemberData&gt;,ty_python_semantic::types::protocol_class::impl$6::specialized_and_normalized::closure_env$0&gt; &gt;+0x2a
+ty!core::iter::traits::iterator::Iterator::collect&lt;core::iter::adapters::map::Map&lt;alloc::collections::btree::map::Iter&lt;ruff_python_ast::name::Name,ty_python_semantic::types::protocol_class::ProtocolMemberData&gt;,ty_python_semantic::types::protocol_class::impl$6::specialized_and_normalized::closure_env$0&gt;,alloc::vec::Vec&lt;tuple$&lt;ruff_python_ast::name::Name,ty_python_semantic::types::protocol_class::ProtocolMemberData&gt;,alloc::alloc::Global&gt; &gt;+0x11
+ty!alloc::collections::btree::map::impl$80::from_iter&lt;ruff_python_ast::name::Name,ty_python_semantic::types::protocol_class::ProtocolMemberData,core::iter::adapters::map::Map&lt;alloc::collections::btree::map::Iter&lt;ruff_python_ast::name::Name,ty_python_semantic::types::protocol_class::ProtocolMemberData&gt;,ty_python_semantic::types::protocol_class::impl$6::specialized_and_normalized::closure_env$0&gt; &gt;+0x39
+ty!core::iter::traits::iterator::Iterator::collect&lt;core::iter::adapters::map::Map&lt;alloc::collections::btree::map::Iter&lt;ruff_python_ast::name::Name,ty_python_semantic::types::protocol_class::ProtocolMemberData&gt;,ty_python_semantic::types::protocol_class::impl$6::specialized_and_normalized::closure_env$0&gt;,alloc::collections::btree::map::BTreeMap&lt;ruff_python_ast::name::Name,ty_python_semantic::types::protocol_class::ProtocolMemberData,alloc::alloc::Global&gt; &gt;+0x11
+ty!ty_python_semantic::types::protocol_class::ProtocolInterface::specialized_and_normalized+0xc7
+ty!ty_python_semantic::types::instance::synthesized_protocol::SynthesizedProtocolType::apply_type_mapping_impl+0x54
+ty!ty_python_semantic::types::instance::ProtocolInstanceType::apply_type_mapping_impl+0xef
+ty!enum2$&lt;ty_python_semantic::types::Type&gt;::apply_type_mapping_impl+0x679
+ty!ty_python_semantic::types::generics::impl$7::apply_type_mapping_impl::closure$1+0x206
+ty!core::ops::function::impls::impl$4::call_once+0x12
+ty!enum2$&lt;core::option::Option&lt;tuple$&lt;usize,tuple$&lt;ref$&lt;enum2$&lt;ty_python_semantic::types::Type&gt; &gt;,ty_python_semantic::types::BoundTypeVarInstance&gt; &gt; &gt; &gt;::map+0x7c
+ty!core::iter::adapters::map::impl$2::next&lt;enum2$&lt;ty_python_semantic::types::Type&gt;,core::iter::adapters::enumerate::Enumerate&lt;core::iter::adapters::zip::Zip&lt;core::slice::iter::Iter&lt;enum2$&lt;ty_python_semantic::types::Type&gt; &gt;,core::iter::adapters::copied::Copied&lt;indexmap::map::iter::Values&lt;ty_python_semantic::types::BoundTypeVarIdentity,ty_python_semantic::types::BoundTypeVarInstance&gt; &gt; &gt; &gt;,ty_python_semantic::types::generics::impl$7::apply_type_mapping_impl::closure_env$1&gt;+0xba
+ty!alloc::vec::Vec&lt;enum2$&lt;ty_python_semantic::types::Type&gt;,alloc::alloc::Global&gt;::extend_desugared&lt;enum2$&lt;ty_python_semantic::types::Type&gt;,alloc::alloc::Global,core::iter::adapters::map::Map&lt;core::iter::adapters::enumerate::Enumerate&lt;core::iter::adapters::zip::Zip&lt;core::slice::iter::Iter&lt;enum2$&lt;ty_python_semantic::types::Type&gt; &gt;,core::iter::adapters::copied::Copied&lt;indexmap::map::iter::Values&lt;ty_python_semantic::types::BoundTypeVarIdentity,ty_python_semantic::types::BoundTypeVarInstance&gt; &gt; &gt; &gt;,ty_python_semantic::types::generics::impl$7::apply_type_mapping_impl::closure_env$1&gt; &gt;+0x3c
+ty!alloc::vec::spec_extend::impl$0::spec_extend&lt;enum2$&lt;ty_python_semantic::types::Type&gt;,core::iter::adapters::map::Map&lt;core::iter::adapters::enumerate::Enumerate&lt;core::iter::adapters::zip::Zip&lt;core::slice::iter::Iter&lt;enum2$&lt;ty_python_semantic::types::Type&gt; &gt;,core::iter::adapters::copied::Copied&lt;indexmap::map::iter::Values&lt;ty_python_semantic::types::BoundTypeVarIdentity,ty_python_semantic::types::BoundTypeVarInstance&gt; &gt; &gt; &gt;,ty_python_semantic::types::generics::impl$7::apply_type_mapping_impl::closure_env$1&gt;,alloc::alloc::Global&gt;+0xe
+ty!alloc::vec::spec_from_iter_nested::impl$0::from_iter&lt;enum2$&lt;ty_python_semantic::types::Type&gt;,core::iter::adapters::map::Map&lt;core::iter::adapters::enumerate::Enumerate&lt;core::iter::adapters::zip::Zip&lt;core::slice::iter::Iter&lt;enum2$&lt;ty_python_semantic::types::Type&gt; &gt;,core::iter::adapters::copied::Copied&lt;indexmap::map::iter::Values&lt;ty_python_semantic::types::BoundTypeVarIdentity,ty_python_semantic::types::BoundTypeVarInstance&gt; &gt; &gt; &gt;,ty_python_semantic::types::generics::impl$7::apply_type_mapping_impl::closure_env$1&gt; &gt;+0x212
+ty!alloc::vec::spec_from_iter::impl$0::from_iter&lt;enum2$&lt;ty_python_semantic::types::Type&gt;,core::iter::adapters::map::Map&lt;core::iter::adapters::enumerate::Enumerate&lt;core::iter::adapters::zip::Zip&lt;core::slice::iter::Iter&lt;enum2$&lt;ty_python_semantic::types::Type&gt; &gt;,core::iter::adapters::copied::Copied&lt;indexmap::map::iter::Values&lt;ty_python_semantic::types::BoundTypeVarIdentity,ty_python_semantic::types::BoundTypeVarInstance&gt; &gt; &gt; &gt;,ty_python_semantic::types::generics::impl$7::apply_type_mapping_impl::closure_env$1&gt; &gt;+0x11
+ty!alloc::vec::impl$15::from_iter&lt;enum2$&lt;ty_python_semantic::types::Type&gt;,core::iter::adapters::map::Map&lt;core::iter::adapters::enumerate::Enumerate&lt;core::iter::adapters::zip::Zip&lt;core::slice::iter::Iter&lt;enum2$&lt;ty_python_semantic::types::Type&gt; &gt;,core::iter::adapters::copied::Copied&lt;indexmap::map::iter::Values&lt;ty_python_semantic::types::BoundTypeVarIdentity,ty_python_semantic::types::BoundTypeVarInstance&gt; &gt; &gt; &gt;,ty_python_semantic::types::generics::impl$7::apply_type_mapping_impl::closure_env$1&gt; &gt;+0x2a
+ty!core::iter::traits::iterator::Iterator::collect&lt;core::iter::adapters::map::Map&lt;core::iter::adapters::enumerate::Enumerate&lt;core::iter::adapters::zip::Zip&lt;core::slice::iter::Iter&lt;enum2$&lt;ty_python_semantic::types::Type&gt; &gt;,core::iter::adapters::copied::Copied&lt;indexmap::map::iter::Values&lt;ty_python_semantic::types::BoundTypeVarIdentity,ty_python_semantic::types::BoundTypeVarInstance&gt; &gt; &gt; &gt;,ty_python_semantic::types::generics::impl$7::apply_type_mapping_impl::closure_env$1&gt;,alloc::vec::Vec&lt;enum2$&lt;ty_python_semantic::types::Type&gt;,alloc::alloc::Global&gt; &gt;+0x11
+ty!alloc::boxed::iter::impl$13::from_iter&lt;enum2$&lt;ty_python_semantic::types::Type&gt;,core::iter::adapters::map::Map&lt;core::iter::adapters::enumerate::Enumerate&lt;core::iter::adapters::zip::Zip&lt;core::slice::iter::Iter&lt;enum2$&lt;ty_python_semantic::types::Type&gt; &gt;,core::iter::adapters::copied::Copied&lt;indexmap::map::iter::Values&lt;ty_python_semantic::types::BoundTypeVarIdentity,ty_python_semantic::types::BoundTypeVarInstance&gt; &gt; &gt; &gt;,ty_python_semantic::types::generics::impl$7::apply_type_mapping_impl::closure_env$1&gt; &gt;+0x2d
+ty!core::iter::traits::iterator::Iterator::collect&lt;core::iter::adapters::map::Map&lt;core::iter::adapters::enumerate::Enumerate&lt;core::iter::adapters::zip::Zip&lt;core::slice::iter::Iter&lt;enum2$&lt;ty_python_semantic::types::Type&gt; &gt;,core::iter::adapters::copied::Copied&lt;indexmap::map::iter::Values&lt;ty_python_semantic::types::BoundTypeVarIdentity,ty_python_semantic::types::BoundTypeVarInstance&gt; &gt; &gt; &gt;,ty_python_semantic::types::generics::impl$7::apply_type_mapping_impl::closure_env$1&gt;,alloc::boxed::Box&lt;slice2$&lt;enum2$&lt;ty_python_semantic::types::Type&gt; &gt;,alloc::alloc::Global&gt; &gt;+0x9
+ty!ty_python_semantic::types::generics::Specialization::apply_type_mapping_impl+0x266
+ty!ty_python_semantic::types::class::GenericAlias::apply_type_mapping_impl+0x12b
+ty!enum2$&lt;ty_python_semantic::types::class::ClassType&gt;::apply_type_mapping_impl+0xe0
+ty!ty_python_semantic::types::instance::NominalInstanceType::apply_type_mapping_impl+0x1e3
+ty!enum2$&lt;ty_python_semantic::types::Type&gt;::apply_type_mapping_impl+0x10ce
+</code></pre>
+</details>
+
+<p>This means that this may be related to https://github.com/astral-sh/ty/issues/1736, and may be the kind of panic that https://github.com/astral-sh/ruff/pull/21858 did not remove.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">Protocols</span> added by @mtshiba on 2026-01-06 18:50</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:51:35 UTC
+    </footer>
+</body>
+</html>

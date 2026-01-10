@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>invalid-method-override: silent on conflicting method signatures from multiple base classes - astral-sh/ty #2311</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>invalid-method-override: silent on conflicting method signatures from multiple base classes</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2311">#2311</a>
+        opened by <a href="https://github.com/eric-distyl-ai">@eric-distyl-ai</a>
+        on 2026-01-02 23:51
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/eric-distyl-ai">@eric-distyl-ai</a> on 2026-01-02 23:51</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>ty's <code>invalid-method-override</code> rule does not detect conflicting method signatures when a class inherits from multiple base classes that define the same method with incompatible signatures. Pyright's <code>reportIncompatibleMethodOverride</code> catches this.</p>
+<h2>Minimal Reproduction</h2>
+<pre><code class="language-python">from typing import TypeVar, Generic
+
+T = TypeVar(&quot;T&quot;)
+
+class Mixin:
+    def method(self, arg: object) -&gt; None:
+        pass
+
+class Base(Generic[T]):
+    def method(self, arg: T) -&gt; None:
+        pass
+
+class Combined(Base[int], Mixin):
+    pass
+</code></pre>
+<h2>Expected Behavior</h2>
+<p>Error: Base classes define method <code>method</code> in incompatible way.</p>
+<ul>
+<li><code>Base[int].method</code> expects <code>arg: int</code></li>
+<li><code>Mixin.method</code> expects <code>arg: object</code></li>
+<li><code>object</code> is not assignable to <code>int</code></li>
+</ul>
+<p>This violates the Liskov Substitution Principle because the class cannot satisfy both method contracts.</p>
+<h2>Actual Behavior</h2>
+<p><strong>ty 0.0.8</strong>: &quot;All checks passed!&quot;</p>
+<p><strong>pyright 1.1.390</strong>:</p>
+<pre><code>error: Base classes for class &quot;Combined&quot; define method &quot;method&quot; in incompatible way
+    Parameter 2 type mismatch: base parameter is type &quot;object&quot;, override parameter is type &quot;int&quot;
+      &quot;object&quot; is not assignable to &quot;int&quot; (reportIncompatibleMethodOverride)
+</code></pre>
+<h2>Why This Matters</h2>
+<p>This pattern is common in codebases using mixins with generic base classes. In our codebase, we have 91 instances of this error detected by pyright but missed by ty.</p>
+<p>Example from real code:</p>
+<pre><code class="language-python"># ServerModule[TowerConfig].initialize expects config: TowerConfig
+# DBMixin.initialize expects config: CONFIG_CLASS (unbound TypeVar → object)
+class TowerModule(ServerModule[TowerConfig], DBMixin):  # Should error
+    pass
+</code></pre>
+<h2>Environment</h2>
+<ul>
+<li>ty version: 0.0.8</li>
+<li>Python: 3.11</li>
+<li>OS: macOS</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eric-distyl-ai">@eric-distyl-ai</a> on 2026-01-02 23:58</div>
+            <div class="timeline-body"><p>Closing - filed prematurely. Will re-evaluate after improving comparison methodology.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @eric-distyl-ai on 2026-01-02 23:58</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:51:35 UTC
+    </footer>
+</body>
+</html>

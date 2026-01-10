@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Improve diagnostic message clarity when passing a class type instead of an instance - astral-sh/ty #2287</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Improve diagnostic message clarity when passing a class type instead of an instance</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2287">#2287</a>
+        opened by <a href="https://github.com/kkpattern">@kkpattern</a>
+        on 2025-12-31 06:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/kkpattern">@kkpattern</a> on 2025-12-31 06:40</div>
+            <div class="timeline-body"><p>When passing a class object (e.g., <code>Foo</code>) to a function that expects an instance of that class (e.g., <code>a: Foo</code>), the current error message can be visually confusing.</p>
+<p>The distinction between <code>Expected Foo</code> and <code>found &lt;class 'Foo'&gt;</code> is subtle and can be difficult to spot at a glance, especially for beginners or in complex error logs.</p>
+<pre><code class="language-python">class Foo:
+    pass
+
+def test(a: Foo):
+    pass
+
+def main() -&gt; None:
+    a = Foo
+    test(a)  # Passing the class itself, not an instance
+</code></pre>
+<h3>Current Output</h3>
+<pre><code class="language-text">error[invalid-argument-type]: Argument to function `test` is incorrect
+  --&gt; test.py:11:10
+   |
+ 9 | def main() -&gt; None:
+10 |     a = Foo
+11 |     test(a)
+   |          ^ Expected `Foo`, found `&lt;class 'Foo'&gt;`
+   |
+</code></pre>
+<p>The string <code>&lt;class 'Foo'&gt;</code> looks very similar to the expected type <code>Foo</code>. It doesn't clearly communicate that the issue is a <strong>Type vs. Instance</strong> mismatch.</p>
+<p>We can adopt the <code>type[Foo]</code> notation used by other type checkers (like <code>pyright</code> and <code>mypy</code>). This makes it more clear that a Type object was passed instead of an instance.</p>
+<p><strong>Pyright:</strong></p>
+<pre><code class="language-text">test.py:11:10 - error: Argument of type &quot;type[Foo]&quot; cannot be assigned to parameter &quot;a&quot; of type &quot;Foo&quot; in function &quot;test&quot;
+</code></pre>
+<p><strong>Mypy:</strong></p>
+<pre><code class="language-text">test.py:11: error: Argument 1 to &quot;test&quot; has incompatible type &quot;type[Foo]&quot;; expected &quot;Foo&quot;  [arg-type]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">diagnostics</span> added by @MichaReiser on 2025-12-31 08:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-01 15:07</div>
+            <div class="timeline-body"><p>Thanks for the report, and sorry for the confusing diagnostic!</p>
+<p>Unfortunately <code>&lt;class 'Foo'&gt;</code> represents a different type in our model to <code>type[Foo]</code>. The reason why we don't use <code>type[Foo]</code> in our diagnostic here is because <code>type[Foo]</code> isn't the type we inferred for the object you passed in!</p>
+<p><code>type[Foo]</code> represents &quot;the class object <code>Foo</code>, <em>and any subclass of <code>Foo</code></em>&quot;. Like most types in Python, we cannot say how many possible runtime objects there might be that would satisfy this type: it has potentially infinite size. <code>&lt;class 'Foo'&gt;</code>, on the other hand, is a much more precise type. It represents &quot;only the class object <code>Foo</code> (and not any subclasses of <code>Foo</code>)&quot;. We know exactly how big this type is: it has exactly one runtime inhabitant.</p>
+<p><code>&lt;class 'Foo'&gt;</code> is a subtype of <code>type[Foo]</code>, therefore, but they're not the same type. So we shouldn't use <code>type[Foo]</code> in our display, because that would inaccurately blur the distinction between the two types.</p>
+<p>Here are some other strategies I can think of to make this situation less confusing:</p>
+<ul>
+<li>Use another display for &quot;class-literal&quot; types? But I'm not immediately sure what display we could give class-literal types that would be less confusing</li>
+<li>Always add a <code>note:</code> subdiagnostic explaining what class-literal types are, whenever class-literal types appear in a diagnostic. But this would be tricky to implement, I think -- I'm not sure there's an easy, generalised way for us to be able to detect whenever a diagnostic mentions a class-literal type in its prose.</li>
+<li>Add an FAQ to https://docs.astral.sh/ty/reference/typing-faq/ that describes what class-literal types are and how they differ from <code>type[]</code> types</li>
+<li>Provide documentation when hovering over a class-literal type that describes what the type means, and how it's different to <code>type[]</code> types</li>
+</ul>
+<p>The last two of these strategies are relatively straightforward to implement, I think; we should probably just do them. But they might not be very effective at reducing user confusion. The first two would be more effective to reduce confusion but there are some open questions about how we'd implement them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kkpattern">@kkpattern</a> on 2026-01-01 16:06</div>
+            <div class="timeline-body"><p>Thanks for the detailed explanation!</p>
+<p>Confusion regarding <code>&lt;class 'Foo'&gt;</code> usually arises when <code>Foo</code> is expected, but the class object is passed instead. Perhaps we could handle this by adding a specific note for this case (e.g., 'Did you mean to pass an instance?') rather than changing the type display entirely. It wouldn't cause much confusion if we incorrectly pass a class literal like <code>Foo</code> to distinct types like <code>int</code>.</p>
+<p>Also, currently this is quite misleading when combined with instance variables:</p>
+<pre><code class="language-python">class Foo:
+    pass
+
+def dosomething_with_foo(foo: Foo):
+    pass
+
+class Bar:
+    def __init__(self, foo: Foo):
+        self._foo = Foo
+
+    def dosomething(self):
+        dosomething_with_foo(self._foo)
+</code></pre>
+<pre><code>error[invalid-argument-type]: Argument to function `dosomething_with_foo` is incorrect
+  --&gt; test.py:14:30
+   |
+13 |     def dosomething(self):
+14 |         dosomething_with_foo(self._foo)
+   |                              ^^^^^^^^^ Expected `Foo`, found `Unknown | &lt;class 'Foo'&gt;`
+   |
+info: Element `&lt;class 'Foo'&gt;` of this union is not assignable to `Foo`
+info: Function defined here
+ --&gt; test.py:5:5
+  |
+5 | def dosomething_with_foo(foo: Foo):
+  |     ^^^^^^^^^^^^^^^^^^^^ -------- Parameter declared here
+6 |     pass
+  |
+info: rule `invalid-argument-type` is enabled by default
+
+Found 1 diagnostic
+</code></pre>
+<p>In this scenario, developers often suspect the Unknown type is the culprit, failing to realize it's actually a class literal issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-01 16:19</div>
+            <div class="timeline-body"><blockquote>
+<p>In this scenario, developers often suspect the Unknown type is the culprit, failing to realize it's actually a class literal issue.</p>
+</blockquote>
+<p>hmm, though we already have a <code>info:</code> subdiagnostic there that specifically says which union element it is that caused the issue (<code>&lt;class 'Foo'&gt;</code>, not <code>Unknown</code>). But yes, I can see that the wording there is confusing -- we could certainly add more subdiagnostics to certain specific error codes if we think that class-literal types are going to be a common source of confusion for those error codes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kkpattern">@kkpattern</a> on 2026-01-01 16:38</div>
+            <div class="timeline-body"><blockquote>
+<p>hmm, though we already have a info: subdiagnostic there that specifically says which union element it is that caused the issue (&lt;class 'Foo'&gt;, not Unknown).</p>
+</blockquote>
+<p>This is nice! Sorry I didn't notice it because my neovim setup didn't show the info in editor. I think it's because the <code>concise</code> output format is used. Can we ask ty server to output in full format?</p>
+<p><img width="1243" height="183" alt="Image" src="https://github.com/user-attachments/assets/3a0d8ad6-0a53-4cdd-9be3-b84bcd6cbf95" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2026-01-03 17:28</div>
+            <div class="timeline-body"><blockquote>
+<p>This is nice! Sorry I didn't notice it because my neovim setup didn't show the info in editor. I think it's because the concise output format is used. Can we ask ty server to output in full format?</p>
+</blockquote>
+<p>We do for clients that support <a href="https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#publishDiagnosticsClientCapabilities"><code>relatedInformation</code></a> and it seems neovim <a href="https://neovim.io/doc/user/lsp.html#lsp-diagnostic">supports it</a> (I'm not a neovim user myself).</p>
+<p>However, we don't show additional <code>info</code> level messages in the LSP today because the LSP specification, to my knowledge, doesn't provide a way to annotating a diagnostic with additional information (that goes beyond the one line summary message)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2026-01-05 10:09</div>
+            <div class="timeline-body"><blockquote>
+<p>We do for clients that support <a href="https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#publishDiagnosticsClientCapabilities"><code>relatedInformation</code></a> and it seems neovim <a href="https://neovim.io/doc/user/lsp.html#lsp-diagnostic">supports it</a> (I'm not a neovim user myself).</p>
+</blockquote>
+<p>This is relatively new feature (https://github.com/neovim/neovim/pull/34474) and I think it's only available on the nightly Neovim.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2026-01-05 15:41</div>
+            <div class="timeline-body"><p>There is also #1471 to reconsider our display for class-literal types in the LSP.</p>
+<p>I think besides that, the other thing that potentially makes sense to me to do here is to add an extra info diagnostic specifically when we fail assignability of a class type to an instance type of the same class?</p>
+<p>I also think the LSP-specific discussion here is another argument in favor of making our concise and LSP diagnostics less lossy? (I assume we can actually put as many &quot;lines&quot; as we want in the LSP &quot;one-line summary&quot; .)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2026-01-05 16:51</div>
+            <div class="timeline-body"><blockquote>
+<p>(I assume we can actually put as many &quot;lines&quot; as we want in the LSP &quot;one-line summary&quot; .)</p>
+</blockquote>
+<p>That's something we had to try. I don't know how different clients render very long diagnostics on hover (do they truncate? to they wrap the lines? How do they render very long diagnostics in the summary panel)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:51:35 UTC
+    </footer>
+</body>
+</html>

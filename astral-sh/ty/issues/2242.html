@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ty gets confused when reassigning to bound method - astral-sh/ty #2242</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>ty gets confused when reassigning to bound method</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2242">#2242</a>
+        opened by <a href="https://github.com/Paillat-dev">@Paillat-dev</a>
+        on 2025-12-27 22:50
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Paillat-dev">@Paillat-dev</a> on 2025-12-27 22:50</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>When reassigning a bound method to another bound method, type inference glitches and thinks it is now unbound.</p>
+<p>The following code:</p>
+<pre><code class="language-py">class State:
+    def __init__(self, rebind: bool = True):
+        if rebind:
+            self.foo = self.bar  # ty: ignore[invalid-assignment]
+
+    async def foo(self, x: int) -&gt; None:
+        pass
+
+    async def bar(self, x: int) -&gt; None:
+        pass
+
+
+class User:
+    _state: State
+
+    def test(self) -&gt; None:
+        self._state.foo(123)
+</code></pre>
+<p>Causes the confusing:</p>
+<pre><code>uvx ty check --output-format=concise .\test_something.py
+test_undetected_self.py:17:9: error[missing-argument] No argument provided for required parameter `x` of function `foo`
+test_undetected_self.py:17:25: error[invalid-argument-type] Argument to function `foo` is incorrect: Expected `State`, found `Literal[123]`
+Found 2 diagnostics
+</code></pre>
+<p>https://play.ty.dev/540400b7-d0dd-4c3d-acf3-2507ab807e93</p>
+<p>The assignment <code>self.foo = self.bar</code> is obviously unsafe, and being rightfully flagged by ty, and for that reason a <code># ty: ignore[invalid-assignment]</code> comment is added to the line.</p>
+<p>However, at least to my understanding, ty should not try to infer types from that assignment, and just assume <code>foo</code> never changed. Maybe I am wrong on that ?</p>
+<h3>Version</h3>
+<p>ty 0.0.7 (cf82a04b5 2025-12-24)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "ty gets confused when assigning to bound method" to "ty gets confused when reassigning to bound method" by @Paillat-dev on 2025-12-27 22:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-29 11:21</div>
+            <div class="timeline-body"><p>Pyright, pyrefly, and mypy are all okay with this and I think this is the same as https://github.com/astral-sh/ty/issues/350</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-12-29 11:21</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:51:35 UTC
+    </footer>
+</body>
+</html>

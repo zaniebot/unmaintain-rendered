@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TypeIs does not work as a method/classmethod - astral-sh/ty #1569</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>TypeIs does not work as a method/classmethod</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1569">#1569</a>
+        opened by <a href="https://github.com/carljm">@carljm</a>
+        on 2025-11-14 23:31
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/carljm">@carljm</a> on 2025-11-14 23:31</div>
+            <div class="timeline-body"><p>In <a href="https://play.ty.dev/2f2334a7-0510-4d2c-8280-3c1f69983d18">this snippet</a> all <code>reveal_type</code> should reveal <code>int</code>; currently all but the first reveal <code>object</code>.</p>
+<pre><code class="language-py">from typing import TypeIs
+
+def is_int(val: object) -&gt; TypeIs[int]:
+  return isinstance(val, int)
+
+class A:
+  def is_int(self, val: object) -&gt; TypeIs[int]:
+    return isinstance(val, int)
+
+  @classmethod
+  def is_int2(cls, val: object) -&gt; TypeIs[int]:
+    return isinstance(val, int)
+
+def _(x: object):
+  if is_int(x):
+    reveal_type(x)
+
+  if A().is_int(x):
+    reveal_type(x)
+
+  if A().is_int2(x):
+    reveal_type(x)
+
+  if A.is_int2(x):
+    reveal_type(x)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @carljm on 2025-11-14 23:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @carljm on 2025-11-14 23:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">narrowing</span> added by @carljm on 2025-11-14 23:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">typing semantics</span> added by @carljm on 2025-11-14 23:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/NickCrews">@NickCrews</a> on 2025-12-22 16:19</div>
+            <div class="timeline-body"><p>Hi! We have a similar need to <a href="https://github.com/ibis-project/ibis/blob/b2e3100d9277a93fc1d8d97fb3f68856b9e6b91d/ibis/expr/datatypes/core.py#L365-L379">in Ibis</a>, except we want the TypeIs to bind to the <code>self</code>, with no arguments, eg</p>
+<pre><code class="language-python">
+# The base class
+class DataType:
+    # ...lots of stuff..
+
+    # Now have helpful checker methods to test for if this instance is a specific subclass
+	def is_array(self) -&gt; TypeIs[Array]:
+        return isinstance(self, Array)
+
+    def is_binary(self) -&gt; TypeIs[Binary]:
+        return isinstance(self, Binary)
+
+    def is_boolean(self) -&gt; TypeIs[Boolean]:
+        return isinstance(self, Boolean)
+
+    # etc
+</code></pre>
+<p>I'm not sure if this use case is supported in the PEP though, perhaps we would need to modify the PEP to explicitly mention this use case?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-22 16:27</div>
+            <div class="timeline-body"><p>@NickCrews Unfortunately I think that usage is not supported in the PEP, typing spec, or by other type checkers, so that would need discussion on discuss.python.org to reach consensus of type checkers to support this use case and an amendment to the typing spec.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/erictraut">@erictraut</a> on 2025-12-22 16:50</div>
+            <div class="timeline-body"><p>@NickCrews, this use case was discussed during the drafting of PEP 647. You can read about it in the <a href="https://peps.python.org/pep-0647/#narrowing-of-implicit-self-and-cls-parameters">rejected ideas section</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/NickCrews">@NickCrews</a> on 2025-12-22 17:01</div>
+            <div class="timeline-body"><p>Thank you both, sounds good, ibis will need to figure something out more standards-centric, sounds good that there is nothing for ty to do here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-30 11:12</div>
+            <div class="timeline-body"><p>@carljm the example in this issue now reveals <code>int</code> everywhere. Is there something more we want to do beyond the <code>typing.TypeGuard</code> PR or can we close it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-30 13:30</div>
+            <div class="timeline-body"><p>Yes, this was fixed in https://github.com/astral-sh/ruff/pull/20974</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-12-30 13:30</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:51:35 UTC
+    </footer>
+</body>
+</html>

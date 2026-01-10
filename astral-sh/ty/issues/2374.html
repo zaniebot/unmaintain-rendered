@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`isinstance(..., dict)` and top materialization result in false positive on `.get()` call - astral-sh/ty #2374</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`isinstance(..., dict)` and top materialization result in false positive on `.get()` call</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2374">#2374</a>
+        opened by <a href="https://github.com/yilei">@yilei</a>
+        on 2026-01-07 04:21
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/yilei">@yilei</a> on 2026-01-07 04:21</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Given the following code:</p>
+<pre><code class="language-python">def foo(body: object) -&gt; str | None:
+    if isinstance(body, dict):
+        value = body.get(&quot;key&quot;)  # reveal_type(body) shows `Top[dict[Unknown, Unknown]]`
+        if isinstance(value, str):
+            return value
+    return None
+</code></pre>
+<p><code>ty</code> reports:</p>
+<pre><code>error[invalid-argument-type]: Argument to bound method `get` is incorrect
+ --&gt; isinstance_dict_narrowing.py:3:26
+  |
+1 | def foo(body: object) -&gt; str | None:
+2 |     if isinstance(body, dict):
+3 |         value = body.get(&quot;key&quot;)
+  |                          ^^^^^ Expected `Never`, found `Literal[&quot;key&quot;]`
+4 |         if isinstance(value, str):
+5 |             return value
+  |
+info: Matching overload defined here
+    --&gt; stdlib/builtins.pyi:3015:9
+     |
+3013 |     # Positional-only in dict, but not in MutableMapping
+3014 |     @overload  # type: ignore[override]
+3015 |     def get(self, key: _KT, default: None = None, /) -&gt; _VT | None:
+     |         ^^^       -------- Parameter declared here
+3016 |         &quot;&quot;&quot;Return the value for key if key is in the dictionary, else default.&quot;&quot;&quot;
+     |
+info: Non-matching overloads for bound method `get`:
+info:   (self, key: _KT@dict, default: _VT@dict, /) -&gt; _VT@dict
+info:   (self, key: _KT@dict, default: _T@get, /) -&gt; _VT@dict | _T@get
+info: rule `invalid-argument-type` is enabled by default
+</code></pre>
+<p>After reading https://github.com/astral-sh/ty/issues/456 and its implementation https://github.com/astral-sh/ruff/pull/20256, this seems to be working as designed? Top materialization means we can't call the <code>.get</code> method here since there is no type for the key would satisfy all possible dicts of any key type, thus the <code>Never</code> type. The ecosystem analysis result on https://github.com/astral-sh/ruff/pull/20256 also shows a few examples like the <code>theme_config</code> variable <a href="https://github.com/mkdocs/mkdocs/blob/2862536793b3c67d9d83c33e0dd6d50a791928f8/mkdocs/config/config_options.py#L827">here</a>.</p>
+<p>However, I couldn't wrap my head around this behavior. Is there a good or pedantic example that <code>ty</code> is catching real errors? And at least, could we add better diagnostics or documentation?</p>
+<p>(I also found the relevant open issue https://github.com/astral-sh/ty/issues/1130, but it's talking specifically about <code>TypedDict</code>.)</p>
+<h3>Version</h3>
+<p>ty 0.0.9 (f1652f05d 2026-01-05)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2026-01-07 17:11</div>
+            <div class="timeline-body"><p>Thanks for the report, this is really useful!</p>
+<p>There are lots of examples where narrowing generics by top materialization instead of just inserting Unknown specialization catches real errors; the behavior of other type checkers here introduces <code>Unknown</code> into fully-typed code and causes lots of unsoundness. Trivial example:</p>
+<pre><code class="language-py">def f(x: object):
+    if isinstance(x, list):
+        list[0].foobar()
+</code></pre>
+<p>Other type checkers allow the above, but it's obviously unsafe, and it's not even clear how you could annotate to get type safe checking here. ty is safe by default on this code.</p>
+<p>But your specific case with <code>dict.get</code> is more subtle. Your code is perfectly safe, because it's not a type error to pass any random type to <code>.get()</code> of any dictionary -- the worst case scenario is that it just returns <code>None</code> (or the default). Which means that it's kind of wrong for typeshed to <a href="https://github.com/python/typeshed/blob/main/stdlib/builtins.pyi#L1222-L1227">require <code>KT</code> (dictionary key type) as the annotated type of the first argument to <code>get</code></a>; arguably that should be annotated as <code>object</code> instead.</p>
+<p>But probably people like getting errors if they accidentally pass a string to <code>.get()</code> on a <code>dict[int, ...]</code>, even though that's not an error at runtime. That's more of a lint rule than a type error, IMO, but nonetheless there would probably be resistance to changing this annotation in typeshed. Which means it's unclear how we should address this situation in ty. At the very least we should improve/add documentation around this, and improve the diagnostic. I think maybe we should even special-case our understanding of <code>.get()</code> on the top materialization of <code>dict</code> to avoid this error?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2026-01-07 17:15</div>
+            <div class="timeline-body"><p>We have https://github.com/astral-sh/ty/issues/2221 already as a broad issue for improving ty's diagnostics in these top-materialization cases. But I'm inclined to leave this issue open specifically targeted to <code>dict.get</code> behavior.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-07 17:16</div>
+            <div class="timeline-body"><p>There have been <em>quite</em> a few discussions about the proper signature for <code>dict.get</code> on the typeshed issue tracker FWIW — even among mypy/pyright users, I'd say this is probably one of the top 10 most controversial annotations in typeshed. So changing it wouldn't necessarily be easy, but it also wouldn't necessarily be something that would only benefit ty users</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "`isinstance(..., dict)` and top materialization result in unintuitive errors" to "`isinstance(..., dict)` and top materialization result in false positive on `.get()` call" by @carljm on 2026-01-07 18:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @carljm on 2026-01-07 18:15</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:51:35 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>wrong invalid-argument-type errors for prefect task submit function - astral-sh/ty #2081</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>wrong invalid-argument-type errors for prefect task submit function</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2081">#2081</a>
+        opened by <a href="https://github.com/maleasy">@maleasy</a>
+        on 2025-12-18 17:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/maleasy">@maleasy</a> on 2025-12-18 17:27</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Example code (sorry, I did not manage to reproduce this without importing prefect):</p>
+<pre><code class="language-py">from prefect.futures import wait
+from prefect import flow, task
+
+@task
+def task_get() -&gt; int:
+    &quot;&quot;&quot;Task get integer.&quot;&quot;&quot;
+    return 42
+
+@task
+def task_add(x: int, y: int) -&gt; int:
+    &quot;&quot;&quot;Task add two integers.&quot;&quot;&quot;
+    print(f&quot;Adding {x} and {y}&quot;)
+    return x + y
+
+@flow
+def my_flow():
+    &quot;&quot;&quot;My flow.&quot;&quot;&quot;
+    x = 23
+    future_y = task_get.submit()
+
+    future_xy = task_add.submit(x, future_y)
+    future_yy = task_add.submit(future_y, future_y)
+    future_xx = task_add.submit(x, x)
+
+    xx = task_add(x, x)
+    yy = task_add(future_y, future_y)
+    xy = task_add(x, future_y)
+
+    wait([future_xy, future_yy, future_xx])
+
+
+if __name__ == &quot;__main__&quot;:
+    my_flow()
+</code></pre>
+<p><code>ty check</code> output:</p>
+<pre><code>error[invalid-argument-type]: Argument to bound method `submit` is incorrect
+  --&gt; tmp/tmp.py:21:33
+   |
+19 |     future_y = task_get.submit()
+20 |
+21 |     future_xy = task_add.submit(x, future_y)
+   |                                 ^ Expected `(x: int, y: int)`, found `Literal[23]`
+22 |     future_yy = task_add.submit(future_y, future_y)
+23 |     future_xx = task_add.submit(x, x)
+   |
+info: Matching overload defined here
+    --&gt; .venv/lib/python3.12/site-packages/prefect/tasks.py:1066:9
+     |
+1065 |     @overload
+1066 |     def submit(
+     |         ^^^^^^
+1067 |         self: &quot;Task[P, R]&quot;,
+1068 |         *args: P.args,
+     |         ------------- Parameter declared here
+1069 |         **kwargs: P.kwargs,
+1070 |     ) -&gt; PrefectFuture[R]: ...
+     |
+info: Non-matching overloads for bound method `submit`:
+info:   (self: Task[P@Task, Coroutine[Any, Any, R@Task]], *args: P@Task.args, *, return_state: Literal[False], wait_for: PrefectFuture[Any] | Any | Iterable[PrefectFuture[Any] | Any] | None = None, **kwargs: P@Task.kwargs) -&gt; PrefectFuture[R@Task]
+info:   (self: Task[P@Task, R@Task], *args: P@Task.args, *, return_state: Literal[False], wait_for: PrefectFuture[Any] | Any | Iterable[PrefectFuture[Any] | Any] | None = None, **kwargs: P@Task.kwargs) -&gt; PrefectFuture[R@Task]
+info:   (self: Task[P@Task, Coroutine[Any, Any, R@Task]], *args: P@Task.args, *, return_state: Literal[True], wait_for: PrefectFuture[Any] | Any | Iterable[PrefectFuture[Any] | Any] | None = None, **kwargs: P@Task.kwargs) -&gt; State[R@Task]
+info:   (self: Task[P@Task, R@Task], *args: P@Task.args, *, return_state: Literal[True], wait_for: PrefectFuture[Any] | Any | Iterable[PrefectFuture[Any] | Any] | None = None, **kwargs: P@Task.kwargs) -&gt; State[R@Task]
+info: rule `invalid-argument-type` is enabled by default
+
+error[invalid-argument-type]: Argument to bound method `submit` is incorrect
+  --&gt; tmp/tmp.py:21:36
+   |
+19 |     future_y = task_get.submit()
+20 |
+21 |     future_xy = task_add.submit(x, future_y)
+   |                                    ^^^^^^^^ Expected `(x: int, y: int)`, found `PrefectFuture[int]`
+22 |     future_yy = task_add.submit(future_y, future_y)
+23 |     future_xx = task_add.submit(x, x)
+   |
+info: Matching overload defined here
+    --&gt; .venv/lib/python3.12/site-packages/prefect/tasks.py:1066:9
+     |
+1065 |     @overload
+1066 |     def submit(
+     |         ^^^^^^
+1067 |         self: &quot;Task[P, R]&quot;,
+1068 |         *args: P.args,
+     |         ------------- Parameter declared here
+1069 |         **kwargs: P.kwargs,
+1070 |     ) -&gt; PrefectFuture[R]: ...
+     |
+info: Non-matching overloads for bound method `submit`:
+info:   (self: Task[P@Task, Coroutine[Any, Any, R@Task]], *args: P@Task.args, *, return_state: Literal[False], wait_for: PrefectFuture[Any] | Any | Iterable[PrefectFuture[Any] | Any] | None = None, **kwargs: P@Task.kwargs) -&gt; PrefectFuture[R@Task]
+info:   (self: Task[P@Task, R@Task], *args: P@Task.args, *, return_state: Literal[False], wait_for: PrefectFuture[Any] | Any | Iterable[PrefectFuture[Any] | Any] | None = None, **kwargs: P@Task.kwargs) -&gt; PrefectFuture[R@Task]
+info:   (self: Task[P@Task, Coroutine[Any, Any, R@Task]], *args: P@Task.args, *, return_state: Literal[True], wait_for: PrefectFuture[Any] | Any | Iterable[PrefectFuture[Any] | Any] | None = None, **kwargs: P@Task.kwargs) -&gt; State[R@Task]
+info:   (self: Task[P@Task, R@Task], *args: P@Task.args, *, return_state: Literal[True], wait_for: PrefectFuture[Any] | Any | Iterable[PrefectFuture[Any] | Any] | None = None, **kwargs: P@Task.kwargs) -&gt; State[R@Task]
+info: rule `invalid-argument-type` is enabled by default
+
+error[invalid-argument-type]: Argument to bound method `submit` is incorrect
+  --&gt; tmp/tmp.py:22:33
+   |
+21 |     future_xy = task_add.submit(x, future_y)
+22 |     future_yy = task_add.submit(future_y, future_y)
+   |                                 ^^^^^^^^ Expected `(x: int, y: int)`, found `PrefectFuture[int]`
+23 |     future_xx = task_add.submit(x, x)
+   |
+info: Matching overload defined here
+    --&gt; .venv/lib/python3.12/site-packages/prefect/tasks.py:1066:9
+     |
+1065 |     @overload
+1066 |     def submit(
+     |         ^^^^^^
+1067 |         self: &quot;Task[P, R]&quot;,
+1068 |         *args: P.args,
+     |         ------------- Parameter declared here
+1069 |         **kwargs: P.kwargs,
+1070 |     ) -&gt; PrefectFuture[R]: ...
+     |
+info: Non-matching overloads for bound method `submit`:
+info:   (self: Task[P@Task, Coroutine[Any, Any, R@Task]], *args: P@Task.args, *, return_state: Literal[False], wait_for: PrefectFuture[Any] | Any | Iterable[PrefectFuture[Any] | Any] | None = None, **kwargs: P@Task.kwargs) -&gt; PrefectFuture[R@Task]
+info:   (self: Task[P@Task, R@Task], *args: P@Task.args, *, return_state: Literal[False], wait_for: PrefectFuture[Any] | Any | Iterable[PrefectFuture[Any] | Any] | None = None, **kwargs: P@Task.kwargs) -&gt; PrefectFuture[R@Task]
+info:   (self: Task[P@Task, Coroutine[Any, Any, R@Task]], *args: P@Task.args, *, return_state: Literal[True], wait_for: PrefectFuture[Any] | Any | Iterable[PrefectFuture[Any] | Any] | None = None, **kwargs: P@Task.kwargs) -&gt; State[R@Task]
+info:   (self: Task[P@Task, R@Task], *args: P@Task.args, *, return_state: Literal[True], wait_for: PrefectFuture[Any] | Any | Iterable[PrefectFuture[Any] | Any] | None = None, **kwargs: P@Task.kwargs) -&gt; State[R@Task]
+info: rule `invalid-argument-type` is enabled by default
+
+error[invalid-argument-type]: Argument to bound method `submit` is incorrect
+  --&gt; tmp/tmp.py:22:43
+   |
+21 |     future_xy = task_add.submit(x, future_y)
+22 |     future_yy = task_add.submit(future_y, future_y)
+   |                                           ^^^^^^^^ Expected `(x: int, y: int)`, found `PrefectFuture[int]`
+23 |     future_xx = task_add.submit(x, x)
+   |
+info: Matching overload defined here
+    --&gt; .venv/lib/python3.12/site-packages/prefect/tasks.py:1066:9
+     |
+1065 |     @overload
+1066 |     def submit(
+     |         ^^^^^^
+1067 |         self: &quot;Task[P, R]&quot;,
+1068 |         *args: P.args,
+     |         ------------- Parameter declared here
+1069 |         **kwargs: P.kwargs,
+1070 |     ) -&gt; PrefectFuture[R]: ...
+     |
+info: Non-matching overloads for bound method `submit`:
+info:   (self: Task[P@Task, Coroutine[Any, Any, R@Task]], *args: P@Task.args, *, return_state: Literal[False], wait_for: PrefectFuture[Any] | Any | Iterable[PrefectFuture[Any] | Any] | None = None, **kwargs: P@Task.kwargs) -&gt; PrefectFuture[R@Task]
+info:   (self: Task[P@Task, R@Task], *args: P@Task.args, *, return_state: Literal[False], wait_for: PrefectFuture[Any] | Any | Iterable[PrefectFuture[Any] | Any] | None = None, **kwargs: P@Task.kwargs) -&gt; PrefectFuture[R@Task]
+info:   (self: Task[P@Task, Coroutine[Any, Any, R@Task]], *args: P@Task.args, *, return_state: Literal[True], wait_for: PrefectFuture[Any] | Any | Iterable[PrefectFuture[Any] | Any] | None = None, **kwargs: P@Task.kwargs) -&gt; State[R@Task]
+info:   (self: Task[P@Task, R@Task], *args: P@Task.args, *, return_state: Literal[True], wait_for: PrefectFuture[Any] | Any | Iterable[PrefectFuture[Any] | Any] | None = None, **kwargs: P@Task.kwargs) -&gt; State[R@Task]
+info: rule `invalid-argument-type` is enabled by default
+
+error[invalid-argument-type]: Argument to bound method `submit` is incorrect
+  --&gt; tmp/tmp.py:23:33
+   |
+21 |     future_xy = task_add.submit(x, future_y)
+22 |     future_yy = task_add.submit(future_y, future_y)
+23 |     future_xx = task_add.submit(x, x)
+   |                                 ^ Expected `(x: int, y: int)`, found `Literal[23]`
+24 |
+25 |     xx = task_add(x, x)
+   |
+info: Matching overload defined here
+    --&gt; .venv/lib/python3.12/site-packages/prefect/tasks.py:1066:9
+     |
+1065 |     @overload
+1066 |     def submit(
+     |         ^^^^^^
+1067 |         self: &quot;Task[P, R]&quot;,
+1068 |         *args: P.args,
+     |         ------------- Parameter declared here
+1069 |         **kwargs: P.kwargs,
+1070 |     ) -&gt; PrefectFuture[R]: ...
+     |
+info: Non-matching overloads for bound method `submit`:
+info:   (self: Task[P@Task, Coroutine[Any, Any, R@Task]], *args: P@Task.args, *, return_state: Literal[False], wait_for: PrefectFuture[Any] | Any | Iterable[PrefectFuture[Any] | Any] | None = None, **kwargs: P@Task.kwargs) -&gt; PrefectFuture[R@Task]
+info:   (self: Task[P@Task, R@Task], *args: P@Task.args, *, return_state: Literal[False], wait_for: PrefectFuture[Any] | Any | Iterable[PrefectFuture[Any] | Any] | None = None, **kwargs: P@Task.kwargs) -&gt; PrefectFuture[R@Task]
+info:   (self: Task[P@Task, Coroutine[Any, Any, R@Task]], *args: P@Task.args, *, return_state: Literal[True], wait_for: PrefectFuture[Any] | Any | Iterable[PrefectFuture[Any] | Any] | None = None, **kwargs: P@Task.kwargs) -&gt; State[R@Task]
+info:   (self: Task[P@Task, R@Task], *args: P@Task.args, *, return_state: Literal[True], wait_for: PrefectFuture[Any] | Any | Iterable[PrefectFuture[Any] | Any] | None = None, **kwargs: P@Task.kwargs) -&gt; State[R@Task]
+info: rule `invalid-argument-type` is enabled by default
+
+error[invalid-argument-type]: Argument to bound method `submit` is incorrect
+  --&gt; tmp/tmp.py:23:36
+   |
+21 |     future_xy = task_add.submit(x, future_y)
+22 |     future_yy = task_add.submit(future_y, future_y)
+23 |     future_xx = task_add.submit(x, x)
+   |                                    ^ Expected `(x: int, y: int)`, found `Literal[23]`
+24 |
+25 |     xx = task_add(x, x)
+   |
+info: Matching overload defined here
+    --&gt; .venv/lib/python3.12/site-packages/prefect/tasks.py:1066:9
+     |
+1065 |     @overload
+1066 |     def submit(
+     |         ^^^^^^
+1067 |         self: &quot;Task[P, R]&quot;,
+1068 |         *args: P.args,
+     |         ------------- Parameter declared here
+1069 |         **kwargs: P.kwargs,
+1070 |     ) -&gt; PrefectFuture[R]: ...
+     |
+info: Non-matching overloads for bound method `submit`:
+info:   (self: Task[P@Task, Coroutine[Any, Any, R@Task]], *args: P@Task.args, *, return_state: Literal[False], wait_for: PrefectFuture[Any] | Any | Iterable[PrefectFuture[Any] | Any] | None = None, **kwargs: P@Task.kwargs) -&gt; PrefectFuture[R@Task]
+info:   (self: Task[P@Task, R@Task], *args: P@Task.args, *, return_state: Literal[False], wait_for: PrefectFuture[Any] | Any | Iterable[PrefectFuture[Any] | Any] | None = None, **kwargs: P@Task.kwargs) -&gt; PrefectFuture[R@Task]
+info:   (self: Task[P@Task, Coroutine[Any, Any, R@Task]], *args: P@Task.args, *, return_state: Literal[True], wait_for: PrefectFuture[Any] | Any | Iterable[PrefectFuture[Any] | Any] | None = None, **kwargs: P@Task.kwargs) -&gt; State[R@Task]
+info:   (self: Task[P@Task, R@Task], *args: P@Task.args, *, return_state: Literal[True], wait_for: PrefectFuture[Any] | Any | Iterable[PrefectFuture[Any] | Any] | None = None, **kwargs: P@Task.kwargs) -&gt; State[R@Task]
+info: rule `invalid-argument-type` is enabled by default
+
+Found 6 diagnostics
+</code></pre>
+<p>maybe related to #2027 ?</p>
+<h3>Version</h3>
+<p>0.0.3</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-18 17:52</div>
+            <div class="timeline-body"><p>Thanks! Yeah these other methods of prefect's <code>Task</code> are all overloaded in a similar way to <code>__call__</code>, so I strongly suspect this has the same root cause and same fix as #2027. Will leave it open as a sub-issue to make sure we verify the fix covers both cases, though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @carljm on 2025-12-18 17:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2026-01-07 08:00</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:51:35 UTC
+    </footer>
+</body>
+</html>

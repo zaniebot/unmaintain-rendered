@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Annotating Intersection for function that adds a base class does not work - astral-sh/ty #2369</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Annotating Intersection for function that adds a base class does not work</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2369">#2369</a>
+        opened by <a href="https://github.com/classabbyamp">@classabbyamp</a>
+        on 2026-01-06 18:13
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/classabbyamp">@classabbyamp</a> on 2026-01-06 18:13</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>playground: https://play.ty.dev/7e5a436d-3147-4173-9ed2-d119d3f81a7c</p>
+<p>I'm attempting to write a decorator function that takes a class, adds a base class, and makes it a dataclass.</p>
+<p>currently, I'm annotating it like so:</p>
+<pre><code class="language-py">from dataclasses import dataclass
+from typing import Callable, dataclass_transform, TYPE_CHECKING, TypeVar
+
+if TYPE_CHECKING:
+    from _typeshed import DataclassInstance
+    from ty_extensions import Intersection
+
+class MyBase:
+    @classmethod
+    def lorem(cls, *args, **kwargs):
+        return cls(*args, **kwargs)
+
+    def ipsum(self):
+            return dict(self.__dict__)
+
+class Foo:
+    @dataclass_transform()
+    def __call__[T](self, cls: type[T], **kwargs) -&gt; Intersection[T, MyBase, DataclassInstance] | Callable[..., Intersection[T, MyBase, DataclassInstance]]:
+        def wrap(cls):
+            if MyBase not in cls.__bases__:
+                cls = type(cls.__name__, (MyBase,) + cls.__bases__, dict(cls.__dict__))
+            return dataclass(cls, **kwargs)
+
+        if cls is None:
+            return wrap # @foo(...)
+        return wrap(cls) # @foo
+
+foo = Foo()
+
+@foo
+class Struct:
+    bar: str
+    baz: int
+
+s = Struct(bar=&quot;yo&quot;, baz=&quot;something&quot;)
+print(s)
+
+s = Struct(&quot;yo&quot;, &quot;something&quot;)
+print(s)
+
+s = Struct.lorem(bar=&quot;yo&quot;, baz=&quot;something&quot;)
+print(s)
+
+print(s.ipsum())
+</code></pre>
+<p>which gives several errors when trying to use it:</p>
+<pre><code>error[unknown-argument]: Argument `bar` does not match any known parameter of bound method `__init__`
+  --&gt; test.py:37:12
+   |
+35 |     baz: int
+36 |
+37 | s = Struct(bar=&quot;yo&quot;, baz=&quot;something&quot;)
+   |            ^^^^^^^^
+38 | print(s)
+   |
+info: Method signature here
+   --&gt; stdlib/builtins.pyi:136:9
+    |
+134 |     @__class__.setter
+135 |     def __class__(self, type: type[Self], /) -&gt; None: ...
+136 |     def __init__(self) -&gt; None: ...
+    |         ^^^^^^^^^^^^^^^^^^^^^^
+137 |     def __new__(cls) -&gt; Self: ...
+138 |     # N.B. `object.__setattr__` and `object.__delattr__` are heavily special-cased by type checkers.
+    |
+info: rule `unknown-argument` is enabled by default
+
+error[unknown-argument]: Argument `baz` does not match any known parameter of bound method `__init__`
+  --&gt; test.py:37:22
+   |
+35 |     baz: int
+36 |
+37 | s = Struct(bar=&quot;yo&quot;, baz=&quot;something&quot;)
+   |                      ^^^^^^^^^^^^^^^
+38 | print(s)
+   |
+info: Method signature here
+   --&gt; stdlib/builtins.pyi:136:9
+    |
+134 |     @__class__.setter
+135 |     def __class__(self, type: type[Self], /) -&gt; None: ...
+136 |     def __init__(self) -&gt; None: ...
+    |         ^^^^^^^^^^^^^^^^^^^^^^
+137 |     def __new__(cls) -&gt; Self: ...
+138 |     # N.B. `object.__setattr__` and `object.__delattr__` are heavily special-cased by type checkers.
+    |
+info: rule `unknown-argument` is enabled by default
+
+error[too-many-positional-arguments]: Too many positional arguments to bound method `__init__`: expected 1, got 3
+  --&gt; test.py:40:12
+   |
+38 | print(s)
+39 |
+40 | s = Struct(&quot;yo&quot;, &quot;something&quot;)
+   |            ^^^^
+41 | print(s)
+   |
+info: Method signature here
+   --&gt; stdlib/builtins.pyi:136:9
+    |
+134 |     @__class__.setter
+135 |     def __class__(self, type: type[Self], /) -&gt; None: ...
+136 |     def __init__(self) -&gt; None: ...
+    |         ^^^^^^^^^^^^^^^^^^^^^^
+137 |     def __new__(cls) -&gt; Self: ...
+138 |     # N.B. `object.__setattr__` and `object.__delattr__` are heavily special-cased by type checkers.
+    |
+info: rule `too-many-positional-arguments` is enabled by default
+
+error[unresolved-attribute]: Class `Struct` has no attribute `lorem`
+  --&gt; test.py:43:5
+   |
+41 | print(s)
+42 |
+43 | s = Struct.lorem(bar=&quot;yo&quot;, baz=&quot;something&quot;)
+   |     ^^^^^^^^^^^^
+44 | print(s)
+   |
+info: rule `unresolved-attribute` is enabled by default
+
+Found 4 diagnostics
+</code></pre>
+<p>(and of course the code doesn't run with this type hint due to #2084, but that's beside the point)</p>
+<h3>Version</h3>
+<p>ty 0.0.9</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-06 18:22</div>
+            <div class="timeline-body"><p>Hi, thanks for the report!</p>
+<p>We don't currently respect the return type for class decorators at all, I'm afraid -- this is tracked in https://github.com/astral-sh/ty/issues/143. But even if we did, I think it's pretty unlikely that we'd support the specific pattern you're trying to do here. <code>dataclass_transform</code> is very heavily special-cased by type checkers; asking a type-checker to recognise an implicit call to a dataclass-transform-decorated <code>__call__</code> method is quite a tall order. The specific <code>dataclass_transform</code> patterns that a type checker is expected to understand are enumerated in <a href="https://typing.python.org/en/latest/spec/dataclasses.html#the-dataclass-transform-decorator">the spec</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">dataclasses</span> added by @carljm on 2026-01-07 00:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wish</span> added by @carljm on 2026-01-07 00:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-07 12:23</div>
+            <div class="timeline-body"><p>I think it's very unlikely that we'll ever add support for this pattern unless it's added to the typing spec -- it just doesn't come up enough, I don't think. I'm very happy to reopen if you're able to show that I'm mistaken there, but for now I'll close this so that we can keep our issue tracker actionable :-)</p>
+<p>I see you also opened a <a href="https://discuss.python.org/t/type-hinting-a-decorator-that-adds-a-base-class/105557">discuss.python.org post</a>, which is a great forum to ask for help on alternative patterns to use here</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2026-01-07 12:23</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:51:35 UTC
+    </footer>
+</body>
+</html>

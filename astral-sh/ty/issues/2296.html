@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ty is unable to identify Authenticated Users in Django - astral-sh/ty #2296</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>ty is unable to identify Authenticated Users in Django</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2296">#2296</a>
+        opened by <a href="https://github.com/KavyanshKhaitan2">@KavyanshKhaitan2</a>
+        on 2026-01-01 13:07
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/KavyanshKhaitan2">@KavyanshKhaitan2</a> on 2026-01-01 13:07</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I have these views:</p>
+<pre><code class="language-py">class AuthRequiredView(LoginRequiredMixin, View):
+    def dispatch(self, request, *args, **kwargs):
+        request = self.request
+        if not request.user.is_authenticated:
+            return super().dispatch(request, *args, **kwargs)
+        if not request.user.onboarding_complete():  # ty:ignore[unresolved-attribute]
+            return redirect(&quot;authentication.onboarding&quot;)
+        return super().dispatch(request, *args, **kwargs)
+
+
+class ClinicEnabledRequiredView(AuthRequiredView):
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return super().dispatch(request, *args, **kwargs)
+        if not request.user.clinic_enabled:
+            return redirect(&quot;user.dashboard&quot;)
+        return super().dispatch(request, *args, **kwargs)
+</code></pre>
+<p>But then, when I try to use it in this view:</p>
+<pre><code class="language-py">class ClinicPatientRequestsView(ClinicEnabledRequiredView):
+    def get(self, request, *args, **kwargs):
+        appointments = models.Appointment.objects.filter(
+            service__clinic=self.request.user.clinic, status=&quot;BOOKED&quot;
+        )
+        return render(
+            request,
+            &quot;dashboard/clinic/patient_requests.html&quot;,
+            context={&quot;appointments&quot;: appointments},
+        )
+</code></pre>
+<p><code>ty</code> throws an error:</p>
+<p><img width="1021" height="233" alt="Image" src="https://github.com/user-attachments/assets/78e2d4a5-ec20-4db6-8ee3-460b1ac59067" /></p>
+<p>It would be GREAT if I had a way to tell ty that this property is of X type.
+Also, even when I do <code>request.user: User = request.user</code>, it doesnt show up in the other view(s).</p>
+<h3>Version</h3>
+<p>ty 0.0.8</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2026-01-05 10:33</div>
+            <div class="timeline-body"><p>I'm not a Django expert but this looks similar (if not same?) as #1018.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">library</span> added by @dhruvmanila on 2026-01-05 10:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2026-01-06 00:33</div>
+            <div class="timeline-body"><p>I don't think this is the same as #1018. I think this is actually a duplicate of #1479, because there is an <code>AbstractBaseUser | AnonymousUser</code> union, and <code>AbstractBaseUser</code> has <a href="https://github.com/typeddjango/django-stubs/blob/master/django-stubs/contrib/auth/base_user.pyi#L29">an <code>is_authenticated</code> property that is always <code>True</code></a>, whereas <code>AnonymousUser</code> <a href="https://github.com/typeddjango/django-stubs/blob/master/django-stubs/contrib/auth/models.pyi#L149">has one that is always <code>False</code></a>. With #1479 we should be able to filter that union according to the <code>if request.user.is_authenticated</code> checks in the code above.</p>
+<p>Closing as duplicate of #1479. Thanks for the report!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2026-01-06 00:33</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:51:35 UTC
+    </footer>
+</body>
+</html>

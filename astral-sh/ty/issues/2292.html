@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wrong class seen from asyncio.create_datagram_endpoint - astral-sh/ty #2292</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Wrong class seen from asyncio.create_datagram_endpoint</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2292">#2292</a>
+        opened by <a href="https://github.com/romuald">@romuald</a>
+        on 2025-12-31 15:37
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/romuald">@romuald</a> on 2025-12-31 15:37</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>When using protocol instances returned from <code>asyncio.create_datagram_endpoint</code>, it seems like ty is guessing the wrong (parent's parent) class instead of the actual one being used</p>
+<p>Here is a minimal example, (almost) copied from python documentation</p>
+<pre><code class="language-python">import asyncio
+from time import time
+
+from typing import reveal_type
+
+
+class EchoServerProtocol(asyncio.DatagramProtocol):
+    start: float
+
+    def connection_made(self, transport):
+        self.transport = transport
+
+    def datagram_received(self, data, addr):
+        message = data.decode()
+        print('Received %r from %s' % (message, addr))
+        print('Send %r to %s' % (message, addr))
+        self.transport.sendto(data, addr)
+
+    def __init__(self):
+        super().__init__()
+        self.start = time()
+
+
+async def main():
+    print(&quot;Starting UDP server&quot;)
+
+    loop = asyncio.get_event_loop()
+
+    transport, protocol = await loop.create_datagram_endpoint(
+        EchoServerProtocol,
+        local_addr=('127.0.0.1', 9999))
+
+    reveal_type(protocol)  # BaseProtocol instead of EchoServerProtocol
+
+    print(protocol.start)
+
+    try:
+        await asyncio.sleep(3600)
+    finally:
+        transport.close()
+
+
+if __name__ == '__main__':
+    asyncio.run(main())
+
+</code></pre>
+<p>When analysed, ty guesses the type of <code>protocol</code> as BaseProtocol (the parent class of DatagramProtocol), the error is <code>error[unresolved-attribute]: Object of type </code>BaseProtocol<code>has no attribute</code>start``</p>
+<p>The actual MRO at runtime is:</p>
+<pre><code>&lt;class '__main__.EchoServerProtocol'&gt;,
+&lt;class 'asyncio.protocols.DatagramProtocol'&gt;,
+&lt;class 'asyncio.protocols.BaseProtocol'&gt;,
+&lt;class 'object'&gt;
+</code></pre>
+<p>Note that <strong>not</strong> inheriting from <code>asyncio.DatagramProtocol</code> will not raise an issue but the type will then be <code>Unknown</code></p>
+<h3>Version</h3>
+<p>0.0.8</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @carljm on 2026-01-06 01:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2026-01-06 01:40</div>
+            <div class="timeline-body"><p>Thanks for the report! I'm pretty sure we already have a report of this issue (base classes being wrongly inferred instead of a subclass, when matching a type object against a generic <code>Callable</code> annotation), but I'm not able to find it at the moment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2026-01-06 21:10</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:51:35 UTC
+    </footer>
+</body>
+</html>

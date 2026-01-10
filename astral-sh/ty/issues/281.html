@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>respect return type of `__new__` - astral-sh/ty #281</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>respect return type of `__new__`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/281">#281</a>
+        opened by <a href="https://github.com/nickdrozd">@nickdrozd</a>
+        on 2025-05-08 18:04
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/nickdrozd">@nickdrozd</a> on 2025-05-08 18:04</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>This code passes Ty without any warnings. But when run it will fail half the time.</p>
+<pre><code class="language-python">from __future__ import annotations
+
+from random import randint
+from typing import TYPE_CHECKING
+
+class A:
+    def __new__(cls) -&gt; int | A:
+        if randint(0, 1):
+            return object.__new__(cls)
+        else:
+            return randint(0, 100)
+
+def f(x: A) -&gt; None:
+    assert isinstance(x, A)
+
+a = A()
+
+f(a)
+</code></pre>
+<p><code>f</code> expects value of type <code>A</code>. But <code>A.__new__</code> might return <code>int</code>. So constructor of <code>A</code> should not be assumed to always return <code>A</code>. Ty should flag call <code>f(a)</code>.</p>
+<h3>Version</h3>
+<p>ty 0.0.0-alpha.7</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-05-08 18:08</div>
+            <div class="timeline-body"><p>Thanks for the report! Yes, it's a known issue that we don't yet handle <code>__new__</code> return type properly, we currently assume it returns an instance of the class. But I don't think we had an issue open for it yet, that I can find, so will keep this one!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @carljm on 2025-05-08 18:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "`__new__` constructor not checked properly" to "respect return type of `__new__`" by @carljm on 2025-05-08 18:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">calls</span> added by @AlexWaygood on 2025-05-10 18:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "GA" by @carljm on 2025-07-23 23:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-08-29 14:10</div>
+            <div class="timeline-body"><p>This also affects calls like <code>slice(a, b, c)</code> where all parameters are of type <code>int</code> as the reveal type is <code>slice[Any, Any, Any]</code>. The revealed type of the <code>__new__</code> call (which is an overloaded function) is <code>slice[int, int, int]</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-12-31 16:39</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:51:35 UTC
+    </footer>
+</body>
+</html>

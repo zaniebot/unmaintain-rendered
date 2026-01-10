@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>(property tests) ABCMeta and `type[type]` can fail `all_fully_static_type_pairs_are_subtype_of_their_union` invariant - astral-sh/ty #2341</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>(property tests) ABCMeta and `type[type]` can fail `all_fully_static_type_pairs_are_subtype_of_their_union` invariant</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2341">#2341</a>
+        opened by <a href="https://github.com/github-actions">@github-actions</a>
+        on 2026-01-05 12:12
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/github-actions">@github-actions</a> on 2026-01-05 12:12</div>
+            <div class="timeline-body"><p>Run listed here: https://github.com/astral-sh/ty/actions/runs/20714754042</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @github-actions[bot] on 2026-01-05 12:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">type properties</span> added by @github-actions[bot] on 2026-01-05 12:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-05 12:14</div>
+            <div class="timeline-body"><pre><code>failures:
+
+---- types::property_tests::stable::all_fully_static_type_pairs_are_subtype_of_their_union stdout ----
+
+&lt;-- snip --&gt;
+
+Failing types were:
+type[type]
+&lt;class 'ABCMeta'&gt; | ((type[type], /) -&gt; type)
+
+thread 'types::property_tests::stable::all_fully_static_type_pairs_are_subtype_of_their_union' (4504) panicked at /home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/quickcheck-1.0.3/src/tester.rs:165:28:
+[quickcheck] TEST FAILED. Arguments: (FullyStaticTy(SubclassOfBuiltinClass(&quot;type&quot;)), FullyStaticTy(Union([AbcClassLiteral(&quot;ABCMeta&quot;), Callable { params: List([Param { kind: PositionalOnly, name: None, annotated_ty: Some(SubclassOfBuiltinClass(&quot;type&quot;)), default_ty: None }]), returns: Some(SubclassOfBuiltinClass(&quot;object&quot;)) }])))
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-05 12:41</div>
+            <div class="timeline-body"><p>Here's a more minimal reproduction of the bug:</p>
+<p>https://play.ty.dev/a9c72bda-7649-4765-8615-c861d56e855b</p>
+<pre><code class="language-py">from abc import ABCMeta
+from ty_extensions import is_subtype_of
+from typing import reveal_type, Callable
+
+# revealed: `Literal[False]`, but should be `Literal[True]`
+reveal_type(bool(is_subtype_of(type[ABCMeta], type[type] | type[ABCMeta] | Callable[[type], type])))
+</code></pre>
+<p>The condition is understood as evaluating to <code>True</code> (as expected) if either the first or second element of the union on the right-hand side is removed.</p>
+<p>Weirdly, <em>this</em> (swapping out <code>ABCMeta</code> for a custom metaclass) does not seem to reproduce the bug:</p>
+<pre><code class="language-py">from ty_extensions import is_subtype_of
+from typing import reveal_type, Callable
+
+class Foo(type): ...
+
+reveal_type(bool(is_subtype_of(type[Foo], type[type] | type[Foo] | Callable[[type], type])))
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2026-01-06 00:56</div>
+            <div class="timeline-body"><p>Interesting -- this doesn't seem to be a regression? At least I can't find a version on which your minimal repro passes. Rather it seems to be a case that the property tests are just very unlikely to generate by accident, and we finally happened to hit it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2026-01-06 00:57</div>
+            <div class="timeline-body"><p>Given that, I'm going to rename the issue and treat it like any other bug, rather than treating it as something we need to fix immediately in order to keep the property tests usable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Daily property test run failed on Mon Jan 05 2026" to "(property tests) ABCMeta and `type[type]` can fail `all_fully_static_type_pairs_are_subtype_of_their_union` invariant" by @carljm on 2026-01-06 00:58</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:51:35 UTC
+    </footer>
+</body>
+</html>

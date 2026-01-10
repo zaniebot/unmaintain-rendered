@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>False positive when appending a dict to a list of TypedDict unions - astral-sh/ty #2216</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>False positive when appending a dict to a list of TypedDict unions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2216">#2216</a>
+        opened by <a href="https://github.com/kkpattern">@kkpattern</a>
+        on 2025-12-25 02:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/kkpattern">@kkpattern</a> on 2025-12-25 02:22</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>The following code triggers a false positive invalid-argument-type error when appending a dictionary literal to a list of TypedDict unions:</p>
+<pre><code class="language-python">from typing import Literal, TypedDict
+
+
+class Foo(TypedDict):
+    role: Literal[&quot;assistant&quot;]
+    content: str
+
+class Bar(TypedDict):
+    role: Literal[&quot;user&quot;]
+    content: str
+
+
+foo_list: list[Foo | Bar] = []
+foo_list.append({&quot;role&quot;: &quot;assistant&quot;, &quot;content&quot;: &quot;hello world&quot;})
+
+# Argument to bound method `append` is incorrect: Expected `Foo | Bar`, found `dict[Unknown | str, Unknown | str]` (invalid-argument-type) [Ln 14, Col 17]
+</code></pre>
+<p>Both mypy and pyright pass without issues.</p>
+<p>Also the share button in the ty playground seems broken, I got the following error:</p>
+<pre><code>index-CzSy9k3J.js:54 Failed to share playground TypeError: Failed to fetch
+    at H0 (index-CzSy9k3J.js:64:35618)
+    at L0 (index-CzSy9k3J.js:64:35791)
+    at index-CzSy9k3J.js:98:7335
+    at onClick (index-CzSy9k3J.js:54:4234)
+    at Zh (index-CzSy9k3J.js:49:117237)
+    at index-CzSy9k3J.js:49:122342
+    at Pc (index-CzSy9k3J.js:49:9040)
+    at zu (index-CzSy9k3J.js:49:118471)
+    at Gu (index-CzSy9k3J.js:50:26674)
+    at Xb (index-CzSy9k3J.js:50:26496)
+</code></pre>
+<ul>
+<li><a href="https://pyright-play.net/?code=GYJw9gtgBALgngBwJYDsDmUkQWEMoAySMApiAIYA2ANFACqIkAmAIkgMYwCwAUL7%2B0rkAzsKgAxMGAAUDBMzacAlAC5eUDVHCUSKwsTJUA2gCIRwpMJjkUMEwF11m9mFslbeqyH49B5qABC5CCyjKwcMKpOGtq6%2BqQUlKYArsJkDtFQLm4eUF4%2BvMBSAPqUljB6ZVZGkmBQAD6BwfZQALxQRo48RWCl5QB05AjyKEzSAN4msSZ6ZqLlNna0JtmktjNQJgAWJJSUdQDuuJRMJgC%2BSkA">pyright playground</a></li>
+<li><a href="https://mypy-play.net/?mypy=latest&amp;python=3.12&amp;gist=ada118463676e35110c6f35539168520">mypy playground</a></li>
+</ul>
+<h3>Version</h3>
+<p>ty 0.0.6</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-12-25 03:02</div>
+            <div class="timeline-body"><p>(Can you share the browser you're on? The share button works fine for me -- just tested it.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kkpattern">@kkpattern</a> on 2025-12-25 03:12</div>
+            <div class="timeline-body"><p>Windows 11
+Chrome 143.0.7499.146.</p>
+<p>I noticed there is another error log in the console:</p>
+<pre><code>Failed to load resource: net::ERR_CONNECTION_TIMED_OUT    api.astral-1ad.workers.dev/:1
+</code></pre>
+<p>It looks like a local network issue on my end, but the rest of the playground works fine.</p>
+<p>BTW, Happy holidays!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-12-25 03:12</div>
+            <div class="timeline-body"><blockquote>
+<p>BTW, Happy holidays!</p>
+</blockquote>
+<p>You too!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bidirectional inference</span> added by @AlexWaygood on 2025-12-25 08:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @carljm on 2025-12-27 00:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2025-12-29 22:08</div>
+            <div class="timeline-body"><p>It looks like the issue here is that the list element is a union of <code>TypedDict</code>s, which we currently don't support.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ibraheemdev on 2025-12-29 22:08</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:51:35 UTC
+    </footer>
+</body>
+</html>

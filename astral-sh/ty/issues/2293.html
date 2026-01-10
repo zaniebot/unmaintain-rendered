@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inconsistent callable inference between direct method assignment and wrapper-returned method - astral-sh/ty #2293</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Inconsistent callable inference between direct method assignment and wrapper-returned method</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2293">#2293</a>
+        opened by <a href="https://github.com/Cjkjvfnby">@Cjkjvfnby</a>
+        on 2025-12-31 16:09
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Cjkjvfnby">@Cjkjvfnby</a> on 2025-12-31 16:09</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>This code sample works with Mypy and fails on ty.</p>
+<p>No additional configurations, only run: <code>ty check</code></p>
+<pre><code class="language-python">from typing import Callable
+
+
+def _method(self: &quot;Foo&quot;) -&gt; &quot;Foo&quot;:
+    return Foo()
+
+
+def _method_wrapper(
+) -&gt; Callable[[&quot;Foo&quot;], &quot;Foo&quot;]:
+    return _method
+
+
+class Foo:    
+    direct_assignment =  _method
+    assign_via_wrapper = _method_wrapper()
+
+
+def boo(c: Foo) -&gt; None:
+    c.direct_assignment()
+    c.assign_via_wrapper()
+# | ^^^^^^^^^^^^^^^^^^^^^^
+# |
+# info: Union variant `(Foo, /) -&gt; Foo` is incompatible with this call site
+# info: Attempted to call union type `Unknown | ((Foo, /) -&gt; Foo)`
+# info: rule `missing-argument` is enabled by default
+</code></pre>
+<p>The original problem was discovered when using PySpark 3.4 https://github.com/apache/spark/blob/branch-3.4/python/pyspark/sql/column.py#L1065</p>
+<pre><code class="language-python">from pyspark.sql.column import Column
+def foo(c: Column) -&gt; Column:
+    return c.desc()
+</code></pre>
+<h3>Version</h3>
+<p>0.0.8</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">callables</span> added by @mtshiba on 2026-01-01 06:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mtshiba">@mtshiba</a> on 2026-01-01 07:01</div>
+            <div class="timeline-body"><p>Upon closer inspection, ty's behavior appears to be more sound.</p>
+<pre><code class="language-python">from typing import Callable
+
+class Callee:
+    def __call__(self, x: &quot;Foo&quot;) -&gt; &quot;Foo&quot;:
+        return Foo()
+
+def _method_wrapper() -&gt; Callable[[&quot;Foo&quot;], &quot;Foo&quot;]:
+    return Callee() # This is definitely OK
+
+class Foo:
+    assign_via_wrapper = _method_wrapper()
+
+def boo(c: Foo) -&gt; None:
+    c.assign_via_wrapper()
+
+boo(Foo())
+</code></pre>
+<p>This results in a runtime error.</p>
+<pre><code>  File &quot;main.py&quot;, line 14, in boo
+    c.assign_via_wrapper()
+    ~~~~~~~~~~~~~~~~~~~~^^
+TypeError: Callee.__call__() missing 1 required positional argument: 'x'
+</code></pre>
+<p>mypy and pyright miss this error, while ty and pyrefly seem to catch it as an error.</p>
+<p>So, perhaps the thing to do here is to improve the error message (<code>Callable</code> does not necessarily bind <code>self</code>)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Cjkjvfnby">@Cjkjvfnby</a> on 2026-01-01 15:15</div>
+            <div class="timeline-body"><blockquote>
+<p>This results in a runtime error.</p>
+</blockquote>
+<p>You use a different usecase in your example.</p>
+<p>When you define a function inside the class, Python converts it to a bound method (&quot;removes&quot; the first argument from the signature).</p>
+<p>However, when you assign the bound method to the class, it does not become a bound method of this class; it's just an attribute that references this bound method.</p>
+<pre><code class="language-python">&gt;&gt;&gt; print(f.assign_via_wrapper.__call__)
+&lt;bound method Callee.__call__ of &lt;__main__.Callee object at 0x000001CAC2CD9940&gt;&gt;
+</code></pre>
+<details><summary>Example</summary>
+<p>
+
+<pre><code class="language-python">class One:
+    def one(self, x):
+        print(f&quot;{self.__class__.__name__} and {x}&quot;)
+
+class Two:
+    def two(self, x):
+        print(f&quot;{self.__class__.__name__} and {x}&quot;)
+    one = One().one
+
+
+
+if __name__ == '__main__':
+    t = Two()
+    t.one(1)  # &lt;bound method One.one of &lt;__main__.One object a
+    t.two(2)  # &lt;bound method Two.two of &lt;__main__.Two object at
+</code></pre>
+<pre><code>One and 1
+Two and 2
+</code></pre>
+</p>
+</details> 
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2026-01-05 10:31</div>
+            <div class="timeline-body"><p>I think the underlying issue is the same as https://github.com/astral-sh/ty/issues/491, a simpler way to reproduce this:</p>
+<pre><code class="language-py">from collections.abc import Callable
+
+class Foo:
+    other: Callable[[&quot;Foo&quot;], &quot;Foo&quot;]
+
+def boo(c: Foo) -&gt; None:
+	# No argument provided for required parameter 1 (missing-argument)
+    c.other()
+</code></pre>
+<p>The reason it works for the direct assignment is because the type of <code>Foo.direct_assignment</code> is same as <code>_method</code> which is a function literal.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2026-01-05 10:31</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:51:35 UTC
+    </footer>
+</body>
+</html>

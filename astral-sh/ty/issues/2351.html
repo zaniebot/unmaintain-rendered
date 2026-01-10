@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to correctly type generic await_if_awaitable - astral-sh/ty #2351</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>How to correctly type generic await_if_awaitable</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2351">#2351</a>
+        opened by <a href="https://github.com/ThomasPinna">@ThomasPinna</a>
+        on 2026-01-05 17:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ThomasPinna">@ThomasPinna</a> on 2026-01-05 17:30</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>In my code, I sometimes support both sync and async callbacks. For this, I typically use a util &quot;await_if_awaitable&quot;. I would like to correctly type it with ty (but I have no clue how)</p>
+<p>this is the source code</p>
+<pre><code class="language-python">async def await_if_awaitable[T](
+    func: Callable[[], Awaitable[T]] | Callable[[], T]
+) -&gt; T:
+    maybe_awaitable: Awaitable[T] | T = func()
+    if isinstance(maybe_awaitable, Awaitable):
+        return await maybe_awaitable
+    return maybe_awaitable
+
+</code></pre>
+<p>In the <code>if</code> statement, <code>ty</code> correctly deduces that maybe_awaitable could be <code>Awaitable[T]</code> or <code>T &amp; Awaitable[object]</code> (I first thought I encountered a bug). However, after trying many things it feels like an unsolvable issue in this correct mode (there is no way I can ensure whether something complies to <code>T</code>, right?)</p>
+<p><a href="https://play.ty.dev/ee0151ae-cfec-4482-9d6d-340774078bb0">playground link</a></p>
+<h3>Version</h3>
+<p>4712503c6</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @ThomasPinna on 2026-01-05 17:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-05 17:47</div>
+            <div class="timeline-body"><p>Thanks for the nice write-up!</p>
+<p>Yeah... this is tricky. Ideally I feel like you'd be able to do something like this:</p>
+<pre><code class="language-py">import typing
+from typing import Unpack, cast, Any, reveal_type
+from collections.abc import Callable, Awaitable, Coroutine
+from asyncio import iscoroutinefunction
+from ty_extensions import Not
+
+
+async def run_sync_or_async[T: Not[Awaitable[object]]](
+    func: Callable[[], Awaitable[T]| T]
+) -&gt; T:
+    maybe_awaitable: Awaitable[T] | T = func()
+    if isinstance(maybe_awaitable, Awaitable):
+        return await maybe_awaitable
+    return maybe_awaitable
+</code></pre>
+<p>But:</p>
+<ol>
+<li>That requires using <code>ty_extensions.Not</code>, which doesn't exist at runtime (you'd have to import inside an <code>if TYPE_CHECKING</code> block)</li>
+<li>We currently complain (bafflingly) that &quot;<code>Awaitable[T@run_sync_or_async]</code> is not awaitable&quot; on the <code>return await maybe_awaitable</code> line there, which I think is a known bug (https://github.com/astral-sh/ty/issues/1880)</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2026-01-05 17:50</div>
+            <div class="timeline-body"><p>Another solution is to use <code>cast</code>:</p>
+<pre><code class="language-py">import typing
+from typing import Unpack, cast, Any, reveal_type
+from collections.abc import Callable, Awaitable, Coroutine
+from asyncio import iscoroutinefunction
+
+
+async def run_sync_or_async[T](
+    func: Callable[[], Awaitable[T]| T]
+) -&gt; T:
+    maybe_awaitable: Awaitable[T] | T = func()
+    if isinstance(maybe_awaitable, Awaitable):
+        return await cast(Awaitable[T], maybe_awaitable)
+    return maybe_awaitable
+</code></pre>
+<p>Which seems fine to me in a helper function like this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kkpattern">@kkpattern</a> on 2026-01-06 07:19</div>
+            <div class="timeline-body"><p>Can we use <code>TypeIs</code> here?</p>
+<pre><code class="language-python">from typing import Callable, Awaitable, TypeIs
+
+
+def is_awaitable[T](v: Awaitable[T] | T) -&gt; TypeIs[Awaitable[T]]:
+    return isinstance(v, Awaitable)
+
+async def await_if_awaitable[T](
+    func: Callable[[], Awaitable[T]] | Callable[[], T]
+) -&gt; T:
+    maybe_awaitable: Awaitable[T] | T = func()
+    if is_awaitable(maybe_awaitable):
+        return await maybe_awaitable
+    else:
+        return maybe_awaitable
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:51:35 UTC
+    </footer>
+</body>
+</html>

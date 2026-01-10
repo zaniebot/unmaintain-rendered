@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Type system feature overview - astral-sh/ty #1889</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Type system feature overview</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1889">#1889</a>
+        opened by <a href="https://github.com/sharkdp">@sharkdp</a>
+        on 2025-12-15 13:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-12-15 13:10</div>
+            <div class="timeline-body"><h1>Type system features</h1>
+<p>This issue summarizes the support for various type system features in ty. Sections are organized to follow the structure of the <a href="https://typing.python.org/en/latest/spec/">Python typing specification</a>, with some additional sections at the end.</p>
+<p>If a top-level item is marked completed without any sub-items, you can generally expect that feature to be fully implemented (and we value any bug reports in case you find issues). If a top-level item is marked completed with open sub-items, the feature is generally working, but there might be some open issues — including but not limited to the ones listed (in this case, we also value any bug reports, but please search the issue tracker before doing so). If a top-level item is not checked, the feature is not implemented yet (it's probably not helpful to report bugs, but feel free to upvote the tracking issue or comment if you have useful information).</p>
+<h2>Special types and type qualifiers</h2>
+<p><a href="https://typing.python.org/en/latest/spec/special-types.html">Official documentation</a></p>
+<p><strong>tests:</strong> <a href="https://github.com/astral-sh/ruff/blob/main/crates/ty_python_semantic/resources/mdtest/annotations/any.md"><code>any.md</code></a>, <a href="https://github.com/astral-sh/ruff/blob/main/crates/ty_python_semantic/resources/mdtest/annotations/never.md"><code>never.md</code></a>, <a href="https://github.com/astral-sh/ruff/blob/main/crates/ty_python_semantic/resources/mdtest/annotations/int_float_complex.md"><code>int_float_complex.md</code></a>, <a href="https://github.com/astral-sh/ruff/blob/main/crates/ty_python_semantic/resources/mdtest/type_qualifiers/final.md"><code>final.md</code></a>, <a href="https://github.com/astral-sh/ruff/blob/main/crates/ty_python_semantic/resources/mdtest/type_qualifiers/classvar.md"><code>classvar.md</code></a>, <a href="https://github.com/astral-sh/ruff/blob/main/crates/ty_python_semantic/resources/mdtest/annotations/annotated.md"><code>annotated.md</code></a>, <a href="https://github.com/astral-sh/ruff/blob/main/crates/ty_python_semantic/resources/mdtest/annotations/union.md"><code>union.md</code></a>, <a href="https://github.com/astral-sh/ruff/blob/main/crates/ty_python_semantic/resources/mdtest/instance_layout_conflict.md"><code>instance_layout_conflict.md</code></a></p>
+<ul>
+<li>[x] <code>Any</code></li>
+<li>[x] <code>None</code></li>
+<li>[x] <code>NoReturn</code>, <code>Never</code></li>
+<li>[x] <code>object</code></li>
+<li>[x] <code>Literal[...]</code> (strings, ints, bools, enum, None)</li>
+<li>[x] <code>LiteralString</code></li>
+<li>[x] <code>type[C]</code></li>
+<li>[x] <code>float</code>/<code>complex</code> special cases (<code>float</code> means <code>int | float</code>)</li>
+<li>[x] <code>Final</code>, <code>Final[T]</code><ul>
+<li>[ ] Diagnostic: subclass overrides <code>Final</code> attribute #871</li>
+<li>[ ] Diagnostic: <code>Final</code> without binding #872</li>
+</ul>
+</li>
+<li>[x] <code>@final</code> decorator</li>
+<li>[x] <code>@disjoint_base</code> decorator</li>
+<li>[x] <code>ClassVar</code>, <code>ClassVar[T]</code><ul>
+<li>[ ] Diagnostic: <code>ClassVar</code> with type variable #518</li>
+</ul>
+</li>
+<li>[x] <code>InitVar[T]</code> (see Dataclasses)</li>
+<li>[x] <code>Annotated[T, ...]</code></li>
+<li>[x] <code>Required[T]</code>, <code>NotRequired[T]</code> (see TypedDict)</li>
+<li>[x] <code>ReadOnly[T]</code> (see TypedDict)</li>
+<li>[x] <code>Union[X, Y]</code>, <code>X | Y</code></li>
+<li>[x] <code>Optional[X]</code></li>
+<li>[ ] <code>type()</code> functional syntax #740</li>
+</ul>
+<h2>Generics</h2>
+<p><a href="https://typing.python.org/en/latest/spec/generics.html">Official documentation</a></p>
+<p><strong>tests:</strong> <a href="https://github.com/astral-sh/ruff/blob/main/crates/ty_python_semantic/resources/mdtest/generics/pep695/"><code>pep695/</code></a>, <a href="https://github.com/astral-sh/ruff/blob/main/crates/ty_python_semantic/resources/mdtest/generics/legacy/"><code>legacy/</code></a>, <a href="https://github.com/astral-sh/ruff/blob/main/crates/ty_python_semantic/resources/mdtest/annotations/self.md"><code>self.md</code></a>, <a href="https://github.com/astral-sh/ruff/blob/main/crates/ty_python_semantic/resources/mdtest/generics/scoping.md"><code>scoping.md</code></a></p>
+<ul>
+<li>[x] <code>TypeVar</code> (legacy syntax)</li>
+<li>[x] <code>TypeVar</code> (PEP 695 syntax: <code>def f[T]()</code>)</li>
+<li>[x] <code>TypeVar</code> upper bound (<code>bound=</code>)</li>
+<li>[x] <code>TypeVar</code> constraints</li>
+<li>[x] <code>TypeVar</code> defaults (PEP 696)</li>
+<li>[x] <code>TypeVar</code> variance (<code>covariant</code>, <code>contravariant</code>)</li>
+<li>[x] <code>TypeVar</code> variance inference (<code>infer_variance</code>)</li>
+<li>[x] Generic classes (legacy and PEP 695 syntax)</li>
+<li>[x] Generic functions (legacy and PEP 695 syntax)</li>
+<li>[x] Generic type aliases (PEP 695)<ul>
+<li>[ ] Some limitations #1851</li>
+</ul>
+</li>
+<li>[x] <code>ParamSpec</code> (legacy and PEP 695 syntax)<ul>
+<li>[ ] <code>ParamSpec</code> usage validation #1861</li>
+</ul>
+</li>
+<li>[x] <code>ParamSpec.args</code>, <code>ParamSpec.kwargs</code></li>
+<li>[x] <code>ParamSpec</code> defaults</li>
+<li>[x] <code>Self</code><ul>
+<li>[ ] <code>Self</code> in attribute annotations #1124</li>
+<li>[ ] https://github.com/astral-sh/ty/issues/1897</li>
+</ul>
+</li>
+<li>[ ] Solve type variables in all cases #623<ul>
+<li>[x] Generic classes</li>
+<li>[x] Unions</li>
+<li>[ ] <code>Callable</code>s</li>
+<li>[ ] Generic protocols #1714</li>
+<li>[ ] Generic bounds/constraints on type variables #1839</li>
+</ul>
+</li>
+<li>[ ] Support <code>TypeVarTuple</code> #156</li>
+</ul>
+<h2>Protocols</h2>
+<p><a href="https://typing.python.org/en/latest/spec/protocol.html">Official documentation</a></p>
+<p><strong>tests:</strong> <a href="https://github.com/astral-sh/ruff/blob/main/crates/ty_python_semantic/resources/mdtest/protocols.md"><code>protocols.md</code></a></p>
+<ul>
+<li>[x] <code>Protocol</code> class definition</li>
+<li>[x] Generic protocols (legacy and PEP 695 syntax)</li>
+<li>[x] Structural subtyping / assignability</li>
+<li>[x] Protocol inheritance</li>
+<li>[x] <code>is_protocol()</code>, <code>get_protocol_members()</code></li>
+<li>[x] <code>@runtime_checkable</code> decorator</li>
+<li>[x] Protocol instantiation restriction</li>
+<li>[x] Non-protocol class inheritance restriction</li>
+<li>[x] <code>@property</code> members<ul>
+<li>[ ] Partial support #1379</li>
+</ul>
+</li>
+<li>[x] Modules as protocol implementations<ul>
+<li>[ ] Method members have some issues #931</li>
+</ul>
+</li>
+<li>[ ] <code>@classmethod</code> and <code>@staticmethod</code> members #1381</li>
+<li>[ ] <code>ClassVar</code> members #1380</li>
+<li>[ ] <code>type[SomeProtocol]</code> #903</li>
+<li>[ ] <code>issubclass()</code> on protocols with non-methods #1878</li>
+</ul>
+<h2>Type narrowing</h2>
+<p><a href="https://typing.python.org/en/latest/spec/narrowing.html">Official documentation</a></p>
+<p><strong>tests:</strong> <a href="https://github.com/astral-sh/ruff/blob/main/crates/ty_python_semantic/resources/mdtest/narrow/"><code>narrow/</code></a>, <a href="https://github.com/astral-sh/ruff/blob/main/crates/ty_python_semantic/resources/mdtest/narrow/type_guards.md"><code>type_guards.md</code></a></p>
+<ul>
+<li>[x] <code>isinstance()</code> / <code>issubclass()</code> narrowing</li>
+<li>[x] <code>is None</code> / <code>is not None</code> narrowing</li>
+<li>[x] <code>is</code> / <code>is not</code> identity narrowing</li>
+<li>[x] Truthiness narrowing</li>
+<li>[x] <code>assert</code> narrowing</li>
+<li>[x] <code>match</code> statement narrowing</li>
+<li>[x] <code>hasattr()</code> narrowing</li>
+<li>[x] <code>callable()</code> narrowing</li>
+<li>[x] Assignment narrowing</li>
+<li>[x] <code>TypeIs[…]</code> user-defined type guards</li>
+<li>[x] <code>TypeGuard[…]</code> user-defined type guards #117</li>
+<li>[x] <code>TypeIs</code>/<code>TypeGuard</code> as method #1569</li>
+<li>[ ] Tuple length checks #560</li>
+<li>[ ] Tuple match case narrowing #561</li>
+<li>[ ] Narrowing after calls to functions returning <code>Never</code>/<code>NoReturn</code> https://github.com/astral-sh/ty/issues/690</li>
+</ul>
+<h2>Tuples</h2>
+<p><a href="https://typing.python.org/en/latest/spec/tuples.html">Official documentation</a></p>
+<p><strong>tests:</strong> <a href="https://github.com/astral-sh/ruff/blob/main/crates/ty_python_semantic/resources/mdtest/subscript/tuple.md"><code>subscript/tuple.md</code></a>, <a href="https://github.com/astral-sh/ruff/blob/main/crates/ty_python_semantic/resources/mdtest/comparison/tuples.md"><code>comparison/tuples.md</code></a>, <a href="https://github.com/astral-sh/ruff/blob/main/crates/ty_python_semantic/resources/mdtest/binary/tuples.md"><code>binary/tuples.md</code></a></p>
+<ul>
+<li>[x] <code>tuple[X, Y, Z]</code> heterogeneous tuples</li>
+<li>[x] <code>tuple[X, ...]</code> homogeneous tuples</li>
+<li>[x] <code>tuple[()]</code> empty tuple</li>
+<li>[x] Mixed tuples (<code>tuple[X, *tuple[Y, ...]]</code>)</li>
+<li>[x] Indexing with literal integers</li>
+<li>[x] Diagnostic: index out of bounds</li>
+<li>[x] Slicing tuples</li>
+<li>[x] Tuple subclasses</li>
+<li>[x] <code>typing.Tuple</code> (deprecated alias)</li>
+<li>[x] Covariant element types</li>
+<li>[x] Tuple inheritance</li>
+<li>[x] Unpacking in assignments</li>
+<li>[x] <code>*args</code> unpacking in calls</li>
+<li>[ ] Diagnostic: invalid comparisons for non-fixed-length tuples #1741</li>
+<li>[ ] <code>TypeVarTuple</code> / <code>Unpack</code> #156</li>
+<li>[x] #1978</li>
+</ul>
+<h2><code>NamedTuple</code></h2>
+<p><a href="https://typing.python.org/en/latest/spec/namedtuples.html">Official documentation</a></p>
+<p><strong>tests:</strong> <a href="https://github.com/astral-sh/ruff/blob/main/crates/ty_python_semantic/resources/mdtest/named_tuple.md"><code>named_tuple.md</code></a></p>
+<ul>
+<li>[x] Class syntax (<code>class Foo(NamedTuple): ...</code>)</li>
+<li>[x] Field access by name and index, slicing, unpacking</li>
+<li>[x] Default values, diagnostic for non-default after default</li>
+<li>[x] Read-only fields (assignment rejected)</li>
+<li>[x] Inheritance, generic <code>NamedTuple</code>s</li>
+<li>[x] Multiple inheritance restriction</li>
+<li>[x] Underscore field name restriction</li>
+<li>[x] Prohibited attribute override check (<code>_asdict</code>, <code>_make</code>, …)</li>
+<li>[x] <code>_fields</code>, <code>_field_defaults</code>, <code>_make</code>, <code>_asdict</code>, <code>_replace</code></li>
+<li>[x] Subtype of <code>tuple[...]</code></li>
+<li>[x] <code>super()</code> restriction in <code>NamedTuple</code> methods</li>
+<li>[x] <code>NamedTuple</code> in type expressions</li>
+<li>[x] <code>type[NamedTuple]</code> in type expressions<ul>
+<li>[ ] Not fully supported</li>
+</ul>
+</li>
+<li>[ ] Functional syntax (<code>NamedTuple(&quot;Foo&quot;, [...])</code>) #1049</li>
+<li>[ ] <code>collections.namedtuple</code>: not tested</li>
+<li>[ ] Subclass field conflicting with base class field: not tested</li>
+</ul>
+<h2><code>TypedDict</code></h2>
+<p><a href="https://typing.python.org/en/latest/spec/typeddict.html">Official documentation</a></p>
+<p><strong>tests:</strong> <a href="https://github.com/astral-sh/ruff/blob/main/crates/ty_python_semantic/resources/mdtest/typed_dict.md"><code>typed_dict.md</code></a></p>
+<ul>
+<li>[x] Class syntax (<code>class Foo(TypedDict): ...</code>)</li>
+<li>[x] Key access by literal string, <code>Final</code> constants</li>
+<li>[x] Constructor validation (missing keys, invalid types)</li>
+<li>[x] <code>total</code> parameter</li>
+<li>[x] <code>Required[…]</code>, <code>NotRequired[…]</code></li>
+<li>[x] <code>ReadOnly[…]</code></li>
+<li>[x] Inheritance, generic <code>TypedDict</code>s</li>
+<li>[x] Recursive <code>TypedDict</code></li>
+<li>[x] Structural assignability and equivalence</li>
+<li>[x] Methods (<code>get</code>, <code>pop</code>, <code>setdefault</code>, <code>keys</code>, <code>values</code>, <code>copy</code>)</li>
+<li>[x] <code>__total__</code>, <code>__required_keys__</code>, <code>__optional_keys__</code></li>
+<li>[ ] Functional syntax (<code>TypedDict(&quot;Foo&quot;, {...})</code>) #154</li>
+<li>[ ] <code>closed</code>, <code>extra_items</code> (PEP 728) #154</li>
+<li>[ ] <code>Unpack</code> for <code>**kwargs</code> typing #1746</li>
+<li>[ ] Tagged union narrowing #1479</li>
+<li>[ ] Diagnostic: Invalid <code>isinstance()</code> check on <code>TypedDict</code>: not tested</li>
+</ul>
+<h2>Enums</h2>
+<p><a href="https://typing.python.org/en/latest/spec/enums.html">Official documentation</a></p>
+<p><strong>tests:</strong> <a href="https://github.com/astral-sh/ruff/blob/main/crates/ty_python_semantic/resources/mdtest/enums.md"><code>enums.md</code></a>, <a href="https://github.com/astral-sh/ruff/blob/main/crates/ty_python_semantic/resources/mdtest/comparison/enums.md"><code>comparison/enums.md</code></a></p>
+<ul>
+<li>[x] <code>Enum</code>, <code>IntEnum</code>, <code>StrEnum</code></li>
+<li>[x] <code>Literal[EnumMember]</code> types</li>
+<li>[x] <code>.name</code>, <code>.value</code> inference</li>
+<li>[x] <code>auto()</code> value inference</li>
+<li>[x] <code>member()</code>, <code>nonmember()</code><ul>
+<li>[x] #1974</li>
+</ul>
+</li>
+<li>[x] Enum aliases</li>
+<li>[x] <code>_ignore_</code> attribute<ul>
+<li>[ ] List form not fully supported</li>
+</ul>
+</li>
+<li>[x] Implicitly final (subclassing restriction)</li>
+<li>[x] Exhaustiveness checking (<code>if</code>/<code>match</code>)</li>
+<li>[x] Custom <code>__eq__</code>/<code>__ne__</code> methods</li>
+<li>[x] Iteration over enum members<ul>
+<li>[ ] <code>list(Enum)</code> returns <code>list[Unknown]</code></li>
+</ul>
+</li>
+<li>[ ] Functional syntax (<code>Enum(&quot;Name&quot;, [...])</code>) #876</li>
+<li>[ ] <code>enum.Flag</code> expansion handling #876</li>
+<li>[ ] Custom <code>__new__</code> or <code>__init__</code> methods #876</li>
+<li>[ ] <code>_generate_next_value_</code> support #876</li>
+<li>[ ] Value-based member retrieval (<code>Color(&quot;red&quot;)</code>) #876</li>
+<li>[ ] Narrowing with custom <code>__eq__</code> in <code>match</code> #1454</li>
+</ul>
+<h2>Literals</h2>
+<p><a href="https://typing.python.org/en/latest/spec/literal.html">Official documentation</a></p>
+<p><strong>tests:</strong> <a href="https://github.com/astral-sh/ruff/blob/main/crates/ty_python_semantic/resources/mdtest/annotations/literal.md"><code>literal.md</code></a>, <a href="https://github.com/astral-sh/ruff/blob/main/crates/ty_python_semantic/resources/mdtest/annotations/literal_string.md"><code>literal_string.md</code></a></p>
+<ul>
+<li>[x] <code>Literal[0]</code> (integer literals)</li>
+<li>[x] <code>Literal[&quot;a&quot;]</code> (string literals)</li>
+<li>[x] <code>Literal[b&quot;a&quot;]</code> (bytes literals)</li>
+<li>[x] <code>Literal[True]</code> (boolean literals)</li>
+<li>[x] <code>Literal[Color.RED]</code> (enum literals)</li>
+<li>[x] <code>Literal[None]</code></li>
+<li>[x] Nested <code>Literal</code> flattening</li>
+<li>[x] Union of literals simplification</li>
+<li>[x] <code>Literal</code> with type aliases</li>
+<li>[x] Invalid form diagnostics</li>
+<li>[x] <code>LiteralString</code></li>
+<li>[x] <code>LiteralString</code> assignability</li>
+<li>[x] <code>LiteralString</code> narrowing</li>
+<li>[x] <code>LiteralString</code> cannot be parameterized</li>
+<li>[x] <code>LiteralString</code> cannot be subclassed</li>
+</ul>
+<h2>Callables</h2>
+<p><a href="https://typing.python.org/en/latest/spec/callables.html">Official documentation</a></p>
+<p><strong>tests:</strong> <a href="https://github.com/astral-sh/ruff/blob/main/crates/ty_python_semantic/resources/mdtest/annotations/callable.md"><code>callable.md</code></a>, <a href="https://github.com/astral-sh/ruff/blob/main/crates/ty_python_semantic/resources/mdtest/call/callable_instance.md"><code>callable_instance.md</code></a></p>
+<ul>
+<li>[x] <code>Callable[[X, Y], R]</code> syntax</li>
+<li>[x] <code>Callable[..., R]</code> gradual form</li>
+<li>[x] <code>Callable</code> with <code>ParamSpec</code></li>
+<li>[x] Callback protocols (<code>__call__</code> method)</li>
+<li>[x] Callable assignability (contra/covariance)</li>
+<li>[x] Nested <code>Callable</code> types</li>
+<li>[x] <code>Callable</code> in unions/intersections</li>
+<li>[x] Invalid form diagnostics</li>
+<li>[ ] <code>Concatenate</code> #1535</li>
+<li>[ ] <code>Unpack</code> for <code>**kwargs</code> typing #1746</li>
+</ul>
+<h2>Overloads</h2>
+<p><a href="https://typing.python.org/en/latest/spec/overload.html">Official documentation</a></p>
+<p><strong>tests:</strong> <a href="https://github.com/astral-sh/ruff/blob/main/crates/ty_python_semantic/resources/mdtest/overloads.md"><code>overloads.md</code></a>, <a href="https://github.com/astral-sh/ruff/blob/main/crates/ty_python_semantic/resources/mdtest/call/overloads.md"><code>call/overloads.md</code></a></p>
+<ul>
+<li>[x] <code>@overload</code> decorator</li>
+<li>[x] Overload resolution</li>
+<li>[x] Generic overloads</li>
+<li>[x] Methods, constructors, <code>@staticmethod</code>, <code>@classmethod</code></li>
+<li>[x] Version-specific overloads</li>
+<li>[x] Diagnostic: at least two overloads required</li>
+<li>[x] Diagnostic: missing implementation (non-stub)</li>
+<li>[x] Diagnostic: inconsistent decorators</li>
+<li>[x] Diagnostic: <code>@final</code>/<code>@override</code> placement</li>
+<li>[ ] Variadic parameters with generics #1825</li>
+<li>[ ] Unannotated implementation validation: not tested #1232</li>
+<li>[ ] Diagnostic: overlapping overloads #103</li>
+<li>[ ] Implementation consistency check #109</li>
+<li>[ ] <code>@overload</code> with other decorators #1675</li>
+</ul>
+<h2>Dataclasses</h2>
+<p><a href="https://typing.python.org/en/latest/spec/dataclasses.html">Official documentation</a></p>
+<p><strong>tests:</strong> <a href="https://github.com/astral-sh/ruff/blob/main/crates/ty_python_semantic/resources/mdtest/dataclasses/dataclasses.md"><code>dataclasses.md</code></a>, <a href="https://github.com/astral-sh/ruff/blob/main/crates/ty_python_semantic/resources/mdtest/dataclasses/fields.md"><code>fields.md</code></a></p>
+<ul>
+<li>[x] <code>@dataclass</code> decorator (<code>init</code>, <code>repr</code>, <code>eq</code>, <code>order</code>, <code>frozen</code>, <code>match_args</code>, <code>kw_only</code>, <code>slots</code>, <code>weakref_slot</code>, <code>unsafe_hash</code>)</li>
+<li>[x] <code>field()</code> (<code>default</code>, <code>default_factory</code>, <code>init</code>, <code>kw_only</code>, <code>doc</code>, <code>repr</code>, <code>hash</code>, <code>compare</code>)</li>
+<li>[x] <code>InitVar[…]</code>, <code>ClassVar[…]</code> exclusion, <code>KW_ONLY</code> sentinel</li>
+<li>[x] <code>fields()</code>, <code>__dataclass_fields__</code></li>
+<li>[x] <code>Final</code> fields</li>
+<li>[x] Inheritance, generic dataclasses, descriptor-typed fields</li>
+<li>[x] <code>replace()</code>, <code>__replace__</code><ul>
+<li>[ ] <code>replace()</code> returns <code>Unknown</code></li>
+</ul>
+</li>
+<li>[x] <code>asdict()</code><ul>
+<li>[ ] Incorrectly accepts class objects</li>
+</ul>
+</li>
+<li>[x] Diagnostic: frozen/non-frozen dataclass inheritance</li>
+<li>[ ] Diagnostic: non-default field after default field #111</li>
+<li>[ ] Diagnostic: <code>order=True</code> with custom comparison methods #111</li>
+<li>[ ] Diagnostic: <code>frozen=True</code> with <code>__setattr__</code>/<code>__delattr__</code> #111</li>
+<li>[ ] <code>__post_init__</code> signature validation #111</li>
+<li>[ ] Diagnostic: unsound subclassing of <code>order=True</code> dataclasses #1681</li>
+<li>[ ] <code>astuple()</code>: not tested</li>
+<li>[ ] <code>make_dataclass()</code>, <code>is_dataclass()</code>: not tested</li>
+</ul>
+<h2><code>dataclass_transform</code></h2>
+<p><a href="https://typing.python.org/en/latest/spec/dataclasses.html#dataclass-transform">Official documentation</a></p>
+<p><strong>tests:</strong> <a href="https://github.com/astral-sh/ruff/blob/main/crates/ty_python_semantic/resources/mdtest/dataclasses/dataclass_transform.md"><code>dataclass_transform.md</code></a></p>
+<ul>
+<li>[x] Function-based transformers (decorator functions)</li>
+<li>[x] Metaclass-based transformers</li>
+<li>[x] Base-class-based transformers (<code>__init_subclass__</code>)</li>
+<li>[x] <code>eq_default</code> parameter</li>
+<li>[x] <code>order_default</code> parameter</li>
+<li>[x] <code>kw_only_default</code> parameter</li>
+<li>[x] <code>frozen_default</code> parameter<ul>
+<li>[ ] Metaclass override not working</li>
+</ul>
+</li>
+<li>[x] <code>field_specifiers</code> (<code>init</code>, <code>default</code>, <code>default_factory</code>, <code>factory</code>, <code>kw_only</code>, <code>alias</code>)<ul>
+<li>[ ] <code>converter</code> parameter #1327</li>
+</ul>
+</li>
+<li>[x] Other dataclass parameters (<code>slots</code>, etc.)</li>
+<li>[x] Overloaded dataclass-like decorators</li>
+<li>[x] Nested dataclass-transformers</li>
+<li>[x] Combining with <code>@dataclass</code> (Home Assistant pattern)</li>
+<li>[x] https://github.com/astral-sh/ty/issues/1987</li>
+</ul>
+<h2>Constructors</h2>
+<p><a href="https://typing.python.org/en/latest/spec/constructors.html">Official documentation</a></p>
+<p><strong>tests:</strong> <a href="https://github.com/astral-sh/ruff/blob/main/crates/ty_python_semantic/resources/mdtest/call/constructor.md"><code>constructor.md</code></a></p>
+<ul>
+<li>[x] <code>__init__</code> signature inference</li>
+<li>[x] <code>__new__</code> signature inference</li>
+<li>[x] Constructor inheritance from superclass</li>
+<li>[x] Both <code>__new__</code> and <code>__init__</code> present</li>
+<li>[x] Descriptor-based <code>__new__</code>/<code>__init__</code></li>
+<li>[x] Generic class constructor inference</li>
+<li>[x] Type variable solving from constructor params</li>
+<li>[ ] Custom <code>__new__</code> return type #281</li>
+<li>[ ] Custom metaclass <code>__call__</code> #2288</li>
+<li>[ ] <code>__new__</code>/<code>__init__</code> consistency validation</li>
+<li>[ ] Diagnostic: explicit <code>__init__</code> on instance #1016</li>
+</ul>
+<h2>Type aliases</h2>
+<p><a href="https://typing.python.org/en/latest/spec/aliases.html">Official documentation</a></p>
+<p><strong>tests:</strong> <a href="https://github.com/astral-sh/ruff/blob/main/crates/ty_python_semantic/resources/mdtest/pep695_type_aliases.md"><code>pep695_type_aliases.md</code></a>, <a href="https://github.com/astral-sh/ruff/blob/main/crates/ty_python_semantic/resources/mdtest/pep613_type_aliases.md"><code>pep613_type_aliases.md</code></a>, <a href="https://github.com/astral-sh/ruff/blob/main/crates/ty_python_semantic/resources/mdtest/implicit_type_aliases.md"><code>implicit_type_aliases.md</code></a></p>
+<ul>
+<li>[x] Implicit type aliases (<code>Alias = int</code>)</li>
+<li>[x] PEP 613 <code>TypeAlias</code> annotation<ul>
+<li>[ ] Fully stringified RHS not supported</li>
+</ul>
+</li>
+<li>[x] PEP 695 <code>type</code> statement</li>
+<li>[x] Generic type aliases (PEP 695)<ul>
+<li>[ ] Limitations #1851</li>
+</ul>
+</li>
+<li>[x] Generic implicit/PEP 613 aliases<ul>
+<li>[ ] Partial support #1739</li>
+</ul>
+</li>
+<li>[x] <code>TypeAliasType</code> introspection (<code>__name__</code>, <code>__value__</code>)</li>
+<li>[ ] Self-referential generic aliases #1738</li>
+</ul>
+<h2>Type checker directives</h2>
+<p><a href="https://typing.python.org/en/latest/spec/directives.html">Official documentation</a></p>
+<p><strong>tests:</strong> <a href="https://github.com/astral-sh/ruff/blob/main/crates/ty_python_semantic/resources/mdtest/directives/"><code>directives/</code></a></p>
+<ul>
+<li>[x] <code>cast(T, value)</code></li>
+<li>[x] Redundant <code>cast</code> diagnostic</li>
+<li>[x] <code>assert_type(value, T)</code></li>
+<li>[x] <code>assert_never(value)</code></li>
+<li>[x] <code>reveal_type(value)</code></li>
+<li>[x] <code>TYPE_CHECKING</code> constant</li>
+<li>[x] <code>@no_type_check</code> decorator</li>
+<li>[x] <code>type: ignore</code> comments</li>
+<li>[x] <code>ty: ignore</code> comments</li>
+<li>[x] <code>@deprecated</code> decorator</li>
+<li>[x] <code>@override</code> decorator<ul>
+<li>[ ] Diagnostic: override without <code>@override</code> decorator #155</li>
+</ul>
+</li>
+</ul>
+<h2>Module resolution, imports, packages</h2>
+<p><a href="https://typing.python.org/en/latest/spec/distributing.html">Official documentation</a></p>
+<p><strong>tests:</strong> <a href="https://github.com/astral-sh/ruff/blob/main/crates/ty_python_semantic/resources/mdtest/import/"><code>import/</code></a></p>
+<ul>
+<li>[x] Stub files (<code>.pyi</code>)</li>
+<li>[x] Stub packages (<code>&lt;package&gt;-stubs</code>)</li>
+<li>[x] Partial stub packages (<code>py.typed</code> with <code>partial</code>)</li>
+<li>[x] Namespace packages (PEP 420)</li>
+<li>[x] Relative imports</li>
+<li>[x] <code>__all__</code> declarations</li>
+<li>[x] <code>__all__</code> mutations (<code>.append</code>, <code>.extend</code>, <code>+=</code>)</li>
+<li>[x] <code>__all__</code> with submodule <code>__all__</code></li>
+<li>[x] Wildcard (<code>*</code>) imports</li>
+<li>[x] Wildcard imports in stubs re-export</li>
+<li>[x] Re-export conventions (<code>import X as X</code>)</li>
+<li>[x] Conditional re-exports in stub files</li>
+<li>[x] Reachability constraints in imports</li>
+<li>[x] Cyclic imports</li>
+<li>[x] <code>py.typed</code> marker files</li>
+<li>[x] <code>conftest.py</code> resolution (pytest)</li>
+<li>[x] conda/pixi environment support</li>
+<li>[ ] PEP 723 inline script metadata #691</li>
+<li>[x] Custom builtins (<code>__builtins__.pyi</code>) #374</li>
+<li>[ ] Mono-repository support #819</li>
+<li>[ ] Compiled extensions (<code>.so</code> files) #487</li>
+<li>[ ] Per-library import suppression #1354</li>
+</ul>
+<h2>Control flow analysis</h2>
+<p><strong>tests:</strong> <a href="https://github.com/astral-sh/ruff/blob/main/crates/ty_python_semantic/resources/mdtest/terminal_statements.md"><code>terminal_statements.md</code></a>, <a href="https://github.com/astral-sh/ruff/blob/main/crates/ty_python_semantic/resources/mdtest/exhaustiveness_checking.md"><code>exhaustiveness_checking.md</code></a>, <a href="https://github.com/astral-sh/ruff/blob/main/crates/ty_python_semantic/resources/mdtest/unreachable.md"><code>unreachable.md</code></a>, <a href="https://github.com/astral-sh/ruff/blob/main/crates/ty_python_semantic/resources/mdtest/exception/control_flow.md"><code>exception/control_flow.md</code></a></p>
+<ul>
+<li>[x] Terminal statements (<code>return</code>, <code>raise</code>)</li>
+<li>[x] Loop control flow (<code>break</code>, <code>continue</code>)</li>
+<li>[x] <code>for</code>/<code>while</code> loop analysis</li>
+<li>[x] <code>try</code>/<code>except</code>/<code>else</code>/<code>finally</code> control flow<ul>
+<li>[ ] <code>finally</code> limitations #233</li>
+</ul>
+</li>
+<li>[x] <code>Never</code>/<code>NoReturn</code> function propagation</li>
+<li>[x] Exhaustiveness checking (<code>if</code>/<code>elif</code>/<code>else</code>)</li>
+<li>[x] Exhaustiveness checking (<code>match</code>)</li>
+<li>[ ] Advanced <code>match</code> pattern inference #887</li>
+<li>[x] <code>assert_never()</code></li>
+<li>[x] <code>sys.version_info</code> comparisons</li>
+<li>[x] <code>sys.platform</code> checks</li>
+<li>[x] Statically known branches</li>
+<li>[ ] Return type inference #128</li>
+<li>[ ] Walrus operator in boolean expressions #626</li>
+<li>[ ] Cyclic control flow (loop back edges) #232</li>
+<li>[ ] Gray out unreachable code #784</li>
+<li>[ ] Opt-in rule enforcing exhaustive <code>match</code> statements https://github.com/astral-sh/ty/issues/1060</li>
+<li>[ ] Opt-in equivalent of mypy's strict-equality check https://github.com/astral-sh/ty/issues/576</li>
+<li>[ ] #1948</li>
+</ul>
+<h2>Invalid overrides</h2>
+<p>(Liskov Substitution Principle checks, etc)</p>
+<p><strong>tests:</strong> <a href="https://github.com/astral-sh/ruff/blob/main/crates/ty_python_semantic/resources/mdtest/liskov.md"><code>liskov.md</code></a>, <a href="https://github.com/astral-sh/ruff/blob/main/crates/ty_python_semantic/resources/mdtest/override.md"><code>override.md</code></a></p>
+<ul>
+<li>[x] Covariant return types</li>
+<li>[x] Contravariant parameter types</li>
+<li>[x] Invariant mutable attributes</li>
+<li>[x] Full class hierarchy checked</li>
+<li>[x] Positional/keyword parameter kind changes</li>
+<li>[x] Additional optional parameters</li>
+<li>[x] <code>*args</code>/<code>**kwargs</code> compatibility</li>
+<li>[x] <code>@staticmethod</code> and <code>@classmethod</code> overrides</li>
+<li>[x] Synthesized method overrides (dataclasses)</li>
+<li>[ ] Method overridden by non-method https://github.com/astral-sh/ty/issues/2156</li>
+<li>[ ] Non-method overridden by non-method https://github.com/astral-sh/ty/issues/2158</li>
+</ul>
+<h2>Abstract base classes</h2>
+<p><strong>tests:</strong> <a href="https://github.com/astral-sh/ruff/blob/main/crates/ty_python_semantic/resources/mdtest/function/return_type.md"><code>return_type.md</code></a>, <a href="https://github.com/astral-sh/ruff/blob/main/crates/ty_python_semantic/resources/mdtest/overloads.md"><code>overloads.md</code></a></p>
+<ul>
+<li>[x] <code>@abstractmethod</code> decorator</li>
+<li>[x] Empty body allowed for abstract methods</li>
+<li>[x] <code>@abstractmethod</code> with <code>@overload</code> validation</li>
+<li>[ ] #1877</li>
+<li>[ ] https://github.com/astral-sh/ty/issues/1923</li>
+<li>[ ] https://github.com/astral-sh/ty/issues/1927</li>
+</ul>
+<h2><code>__slots__</code></h2>
+<p><strong>tests:</strong> <a href="https://github.com/astral-sh/ruff/blob/main/crates/ty_python_semantic/resources/mdtest/instance_layout_conflict.md"><code>instance_layout_conflict.md</code></a></p>
+<ul>
+<li>[x] <code>__slots__</code> (string or tuple of strings)</li>
+<li>[ ] <code>__slots__</code> (list, dict, set literals)</li>
+<li>[ ] Attribute resolution from <code>__slots__</code> #1268</li>
+<li>[ ] Diagnostic: access outside <code>__slots__</code> #1268</li>
+<li>[ ] Diagnostic: class variable shadowing <code>__slots__</code> name #1268</li>
+<li>[ ] <code>__dict__</code>/<code>__weakref__</code> presence validation #1268</li>
+<li>[ ] Diagnostic: non-empty <code>__slots__</code> on builtin subclasses #1268</li>
+</ul>
+<h2>Special library features</h2>
+<p>Standard library:</p>
+<ul>
+<li>[ ] <code>@cached_property</code> #1446</li>
+<li>[ ] <code>functools.partial</code> #1536</li>
+<li>[ ] <code>functools.total_ordering</code> #1202</li>
+</ul>
+<p>Third-party library support (currently not decided how far we want to go here):</p>
+<ul>
+<li>[ ] Pydantic #291</li>
+<li>[ ] Django #291</li>
+<li>[ ] <code>attrs</code> #291</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Locked by @astral-sh on 2025-12-15 13:11</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:51:35 UTC
+    </footer>
+</body>
+</html>

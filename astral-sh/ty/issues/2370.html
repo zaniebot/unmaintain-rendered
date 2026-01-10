@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Class attribute returns Unknown | type - astral-sh/ty #2370</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Class attribute returns Unknown | type</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2370">#2370</a>
+        opened by <a href="https://github.com/merlinz01">@merlinz01</a>
+        on 2026-01-06 19:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/merlinz01">@merlinz01</a> on 2026-01-06 19:34</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Ty says that a simple <code>int</code> attribute defined on a class is <code>Unknown | int</code>. I was running into this with the Tortoise ORM, but it is reproducible with much simpler code.</p>
+<pre><code class="language-python"># testit.py
+
+from typing import reveal_type
+
+
+class MyClass:
+    attr = 42
+
+
+reveal_type(MyClass.attr)
+reveal_type(MyClass().attr)
+</code></pre>
+<pre><code class="language-sh">$ ty check testit.py
+info[revealed-type]: Revealed type
+ --&gt; backend/testit.py:8:13
+  |
+8 | reveal_type(MyClass.attr)
+  |             ^^^^^^^^^^^^ `Unknown | Literal[42]`
+9 | reveal_type(MyClass().attr)
+  |
+
+info[revealed-type]: Revealed type
+ --&gt; backend/testit.py:9:13
+  |
+8 | reveal_type(MyClass.attr)
+9 | reveal_type(MyClass().attr)
+  |             ^^^^^^^^^^^^^^ `Unknown | Literal[42]`
+  |
+
+Found 2 diagnostics
+</code></pre>
+<p>Using <code>reveal_type(attr)</code> inside the class definition returns <code>Literal[42]</code> as expected.</p>
+<p>Possibly related: #312</p>
+<h3>Version</h3>
+<p>ty 0.0.9</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-06 20:27</div>
+            <div class="timeline-body"><p>Hey, thanks for the report. This is an area where ty (currently) has different behaviour to other type checkers. There are multiple types that ty <em>could</em> infer for this attribute: <code>Literal[42]</code>, <code>int</code>, <code>Literal[42] | Unknown</code>, <code>int | Unknown</code>, <code>int | None</code>, <code>object</code>, <code>typing.SupportsIndex</code>... you could go on for a long time. Exactly what the user <em>intended</em> the type to be for all assignments to this attribute is ambiguous without a type annotation.</p>
+<p>Note that just because it is inferred as <code>int | Unknown</code> doesn't mean that you lose all type safety! If you try doing <code>MyClass.attr + &quot;foo&quot;</code>, ty will report an error, because that operation is not valid for all elements in the union.</p>
+<p>See also our FAQ <a href="https://docs.astral.sh/ty/reference/typing-faq/#what-is-the-unknown-type-and-when-does-it-appear">here</a>. Note that we plan on at least making this behaviour configurable, and we may change our default: see https://github.com/astral-sh/ty/issues/1240</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2026-01-06 20:27</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:51:35 UTC
+    </footer>
+</body>
+</html>

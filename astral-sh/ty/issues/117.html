@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support narrowing using `TypeGuard` - astral-sh/ty #117</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Support narrowing using `TypeGuard`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/117">#117</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2025-04-21 21:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-04-21 21:53</div>
+            <div class="timeline-body"><p>Add support for narrowing on <code>TypeGuard</code> and <code>TypeIs</code>:</p>
+<ul>
+<li>[x] <code>TypeIs</code> https://github.com/astral-sh/ruff/labels/help%20wanted</li>
+<li>[x] <code>TypeGuard</code></li>
+</ul>
+<details><summary>This will in turn support <code>builtins.callable</code>:</summary>
+<p>
+
+<p>Add support for narrowing on <code>builtins.callable</code>, requires <code>TypeIs</code> support.</p>
+<p><code>builtins.pyi</code>:</p>
+<pre><code class="language-py">def callable(obj: object, /) -&gt; TypeIs[Callable[..., object]]: ...
+</code></pre>
+<p>Otherwise, it causes a few false positives, like:</p>
+<pre><code class="language-py">def _(a: Any | None) -&gt; None:
+    # /private/tmp/mypy_primer/projects/bidict/bidict/_iter.py:50:34: Object of type `None` is not callable
+    if callable(a):
+        a()  # red-knot: Object of type `None` is not callable [lint:call-non-callable]
+        reveal_type(a)  # revealed_type: Any | None
+</code></pre>
+</p>
+</details> 
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-04-21 22:08</div>
+            <div class="timeline-body"><p>Hmm, won't this fall out naturally from TypeIs support? I'm not sure we'll need to add any special handling for <code>builtins.callable()</code> once we understand <code>TypeIs</code>.</p>
+<p>It doesn't look like we have a dedicated issue for <code>TypeGuard</code> and <code>TypeIs</code> support right now, but we should maybe make one. It was one of the items listed in https://github.com/astral-sh/ruff/issues/13694, but that issue is now closed</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-04-21 22:33</div>
+            <div class="timeline-body"><blockquote>
+<p>Hmm, won't this fall out naturally from TypeIs support? I'm not sure we'll need to add any special handling for <code>builtins.callable()</code> once we understand <code>TypeIs</code>.</p>
+</blockquote>
+<p>Yeah, you're right. There's https://github.com/astral-sh/ruff/pull/16314 which is in draft.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[red-knot] Support `builtins.callable`" to "[red-knot] Support narrowing using `TypeGuard` and `TypeIs`" by @dhruvmanila on 2025-04-21 22:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @carljm on 2025-04-24 00:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-04-24 00:51</div>
+            <div class="timeline-body"><p><code>TypeIs</code> at least should not be too difficult to build on top of our existing narrowing support; tagging &quot;help wanted&quot; for that.</p>
+<p><code>TypeGuard</code> may be somewhat more challenging, since it can fully override the previous type (like a cast), meaning we will have to extend our narrowing to support forms of narrowing that don't take the form of intersections. (Probably by changing narrowing constraints from a type to an enum where one variant is &quot;a type to intersect with&quot;, another variant is &quot;a typeguard type to override with&quot;, etc.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-04-24 01:30</div>
+            <div class="timeline-body"><p>While working on astral-sh/ruff#16314, I encountered three major problems, all listed at <a href="https://github.com/astral-sh/ruff/pull/16314#issuecomment-2676178735">this comment</a>. I'm willing to resume my work if someone could give a few hints on how to handle them, especially the second.</p>
+<p>As a note to myself, here's a small edge case example to add to the tests:</p>
+<pre><code class="language-python">def is_int(v: int | str) -&gt; TypeIs[int]: ...
+
+class C:
+    a: int | str
+    
+    def __init__(self, a: int | str):
+        self.a = a
+        self.a_is_int = is_int(a)
+</code></pre>
+<pre><code class="language-python">c = C('')
+
+reveal_type(c.a)         # int | str
+reveal_type(c.a_is_int)  # TypeIs[int]
+                         # Or `TypeIs[a, int]`? `TypeIs[c.a, int]`? `TypeIs[C.a, int]`?
+
+if c.a_is_int:
+    reveal_type(c.a)     # ??
+else:
+    reveal_type(c.a)     # ??
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-04-24 04:54</div>
+            <div class="timeline-body"><p>Ah, I wasn't even aware of that PR; I don't get notifications on draft PRs unless pinged. It looks like point 3 there is the same one I mentioned above: <code>TypeGuard</code> will require some significant additions to the current implementation of narrowing in red-knot. The differences in implementation are major enough that I would definitely suggest tackling them in separate PRs. I will try to find some time soon to review that PR and see if I can understand the other two points mentioned.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-04-24 04:56</div>
+            <div class="timeline-body"><blockquote>
+<p>As a note to myself, here's a small edge case example to add to the tests</p>
+</blockquote>
+<p>FWIW, neither pyright nor mypy support this case, and I don't think we need to either. It isn't clear in the spec, but I don't see any evidence in the spec or in the other typechecker implementations to suggest that type guards should have any effect on expressions outside the scope where the type guard is called.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-04-27 01:26</div>
+            <div class="timeline-body"><p>@carljm How about this, then?</p>
+<pre><code class="language-python">def f(a: int | str):
+	class C:
+		def __init__(self):
+			self.a_is_int = is_int(a)
+
+	reveal_type(C().a_is_int)  # TypeIs[a, int]
+
+	if C().a_is_int:
+		reveal_type(a)  # int?
+</code></pre>
+<p>In case it isn't clear, this is just a contrived example to demonstrate the second problem.</p>
+<p>Neither Mypy nor Pyright supports this pattern, for presumably a very good reason. Something noteworthy is that the two type checkers differ in how they infer <code>.a_is_int</code>: Mypy considers it <code>bool</code>, while Pyright reveals <code>TypeIs[int]</code> (but the attribute isn't usable as a narrowing condition).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @MichaReiser on 2025-05-07 15:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[red-knot] Support narrowing using `TypeGuard` and `TypeIs`" to "Support narrowing using `TypeGuard` and `TypeIs`" by @MichaReiser on 2025-05-07 15:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">narrowing</span> added by @AlexWaygood on 2025-05-10 18:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">typing semantics</span> added by @AlexWaygood on 2025-05-11 11:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-05-22 03:39</div>
+            <div class="timeline-body"><p>@InSyncWithFoo I don't think that needs to be supported either.</p>
+<p>I don't think we should support any pattern that would require carrying along with the <code>TypeIs</code> type the knowledge of what symbol or expression it was applied to (that is, any pattern where the call to a <code>TypeIs</code> function is separated from the actual conditional check). I think our implementation should simply look for calls that return <code>TypeIs</code> in a narrowing constraint, and directly check in the AST of the call (in the narrowing constraint resolution) to see what name (or attribute/subscript expression, once that PR lands) is narrowed by the call.</p>
+<p>I realize that pyright does support some limited forms of separating the call from the check, within the same scope, but mypy does not, and there are no examples in the PEP or in the conformance test suite to suggest that this should be supported.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Support narrowing using `TypeGuard` and `TypeIs`" to "Support narrowing using `TypeGuard`" by @carljm on 2025-08-15 14:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @sharkdp by @carljm on 2025-08-22 14:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-09-19 15:13</div>
+            <div class="timeline-body"><p>@dhruvmanila observed a false positive related to <code>TypeGuard</code> after some changes related to <code>**kwargs</code>. We should see that false positive disappearing when <code>TypeGuard</code> is implemented properly.</p>
+<blockquote>
+<p>https://github.com/mit-ll-responsible-ai/hydra-zen/blob/8f8d30622b85983e0f54004ea945858a72f32469/src/hydra_zen/structured_configs/_implementations.py#L2952. The parse_strict_dataclass_option function return a TypeGuard (https://github.com/mit-ll-responsible-ai/hydra-zen/blob/8f8d30622b85983e0f54004ea945858a72f32469/src/hydra_zen/structured_configs/_utils.py#L380-L386) to narrow the generic mapping into a concrete TypedDict.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @sharkdp by @MichaReiser on 2025-12-05 15:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @carljm by @carljm on 2025-12-05 15:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "Beta" by @carljm on 2025-12-16 21:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @carljm on 2025-12-16 21:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "Stable" by @carljm on 2025-12-19 23:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "M1" by @carljm on 2025-12-19 23:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jpgoldberg">@jpgoldberg</a> on 2025-12-21 05:31</div>
+            <div class="timeline-body"><p>With respect to the M1 milestone (which I assume is <em>after</em> &quot;stable&quot;) I would like to point out that <code>TypeIs</code> was introduced in Python 3.13, and 3.12's scheduled end-of-life isn't until late 2028. So like it or not <code>TypeGuard</code> will be a thing for nearly another three years.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-21 05:34</div>
+            <div class="timeline-body"><p>M1 is pre-stable</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Avasam">@Avasam</a> on 2025-12-21 16:46</div>
+            <div class="timeline-body"><blockquote>
+<p>I would like to point out that <code>TypeIs</code> was introduced in Python 3.13, and 3.12's scheduled end-of-life isn't until late 2028. So like it or not <code>TypeGuard</code> will be a thing for nearly another three years.</p>
+</blockquote>
+<p>You make it sound like <code>TypeGuard</code> is deprecated or going away, but <code>TypeGuard</code> and <code>TypeIs</code> are both actively relevant and do something different (especially when it comes to assignability and the <code>False</code> branch): https://typing.python.org/en/latest/guides/type_narrowing.html#typeis-and-typeguard</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jpgoldberg">@jpgoldberg</a> on 2025-12-22 21:36</div>
+            <div class="timeline-body"><p>@Avasam said:</p>
+<blockquote>
+<p>You make it sound like TypeGuard is deprecated</p>
+</blockquote>
+<p>That was not my intention,  but I see how what I wrote could be taken that way.
+I had merely misunderstood the M1 milestone. But thank you for the reminder that <code>TypeGuard</code> is not going away.</p>
+<p>It is true that I don't really grasp the difference between <code>TypeIs</code> and <code>TypeGuard</code>, but I don't need to for the (unnecessary) point I was trying to make. I was just trying to say that <code>TypeGuard</code> support is important. And it is because I had misunderstood the M1 milestone that I erroneously felt it needed to be said. And because I had misunderstood M1 as post-stable, I made incorrect presumptions about the reasons for such a choice.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-30 11:15</div>
+            <div class="timeline-body"><p>@carljm should we close this, now that we have basic <code>TypeGuard</code> support or is there some work left to do here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-30 13:30</div>
+            <div class="timeline-body"><p>Carl opened https://github.com/astral-sh/ty/issues/2267 for some followups, so I think we can close this as completed now</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-12-30 13:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-30 20:38</div>
+            <div class="timeline-body"><p>Yeah I thought this would be closed when I merged the PR -- I guess &quot;Resolve(s)&quot; doesn't match GitHub's auto-close regex :)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:51:35 UTC
+    </footer>
+</body>
+</html>

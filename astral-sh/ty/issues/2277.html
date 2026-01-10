@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emit diagnostic for any non-field (e.g. method or classmethod) defined on TypedDict - astral-sh/ty #2277</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Emit diagnostic for any non-field (e.g. method or classmethod) defined on TypedDict</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2277">#2277</a>
+        opened by <a href="https://github.com/jack-mcivor">@jack-mcivor</a>
+        on 2025-12-30 15:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jack-mcivor">@jack-mcivor</a> on 2025-12-30 15:11</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Ty returns an unresolved-attribute error on TypedDict classmethods, although they appear to work fine at runtime. It's not really clear to me if they <em>should</em> be allowed at run-time - <a href="https://peps.python.org/pep-0589/">PEP-589</a> just says &quot;Methods are not allowed&quot;. Classmethods like this are commonly used for alternative constructors (although it generally seems like a dataclass is a better option).</p>
+<p>Perhaps ty should allow this? Or return a more explicit error?</p>
+<p>Example:</p>
+<pre><code class="language-python">from __future__ import annotations
+from typing import TypedDict
+
+class D(TypedDict):
+    a: int
+
+    @classmethod
+    def c(cls, a: int) -&gt; D:
+        return cls(a=a)
+
+d = D.c(a=5)  # &lt;- Class `D` has no attribute `c` (unresolved-attribute) [Ln 11, Col 5]
+print(d.a)
+</code></pre>
+<p>returns</p>
+<pre><code class="language-sh">Class `D` has no attribute `c` (unresolved-attribute) [Ln 11, Col 5]
+</code></pre>
+<p>(link https://play.ty.dev/862cf628-892f-43bf-9263-66163f1e84d0)</p>
+<h3>Version</h3>
+<p>ty 0.0.8</p>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jack-mcivor">@jack-mcivor</a> on 2025-12-30 15:14</div>
+            <div class="timeline-body"><p>FWIW Mypy v1.19.1 throws two errors - one on the classmethod decorator &amp; a similar attr-defined error on the <code>D.c(a=5)</code> site.</p>
+<pre><code>error: Invalid statement in TypedDict definition; expected &quot;field_name: field_type&quot;  [misc]
+error: &quot;type[D]&quot; has no attribute &quot;c&quot;  [attr-defined]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @oconnor663 by @oconnor663 on 2025-12-30 17:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">typeddict</span> added by @mtshiba on 2025-12-30 17:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-30 18:01</div>
+            <div class="timeline-body"><p>I don't think it should be a priority to provide support for <code>TypedDict</code> classmethods, since they are disallowed by the typing spec. But at the very least, we need to emit an explicit diagnostic saying that it's illegal, like mypy's <code>[misc]</code> diagnostic there. The current diagnostic is obviously pretty bad UX -- thanks for the report!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-30 20:56</div>
+            <div class="timeline-body"><p>Yeah, no other type checker allows these either; I don't think we should allow them unless the spec is amended to explicitly allow them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "TypedDict with classmethod" to "Emit diagnostic for any non-field (e.g. method or classmethod) defined on TypedDict" by @carljm on 2025-12-30 20:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a> on 2025-12-30 21:00</div>
+            <div class="timeline-body"><p>Just because I had some trouble tracking it down, for reference here's the current language of the spec:
+https://typing.python.org/en/latest/spec/typeddict.html#class-based-syntax</p>
+<blockquote>
+<p>The body of the class definition defines the <a href="https://typing.python.org/en/latest/spec/glossary.html#term-item">items</a> of the TypedDict type. It may also contain a docstring or <code>pass</code> statements (primarily to allow the creation of an empty TypedDict). No other statements are allowed, and type checkers should report an error if any are present. Type comments are not supported for creating TypedDict items.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @oconnor663 on 2026-01-05 19:28</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:51:35 UTC
+    </footer>
+</body>
+</html>

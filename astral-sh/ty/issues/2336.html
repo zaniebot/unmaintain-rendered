@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>decorator that uses paramspec breaks generics on decorated function - astral-sh/ty #2336</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>decorator that uses paramspec breaks generics on decorated function</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2336">#2336</a>
+        opened by <a href="https://github.com/DetachHead">@DetachHead</a>
+        on 2026-01-05 07:38
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/DetachHead">@DetachHead</a> on 2026-01-05 07:38</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<pre><code class="language-py">from collections.abc import Callable
+
+def fn[**P, T](value: Callable[P, T]) -&gt;  Callable[P, T]:
+    return value
+
+@fn  # errors go away when this decorator is removed
+def foo[T](value: T) -&gt; T:
+    return value
+
+a: int = foo(1) # errors
+</code></pre>
+<pre><code>Object of type `T@foo` is not assignable to `int` (invalid-assignment) [Ln 10, Col 10]
+Argument is incorrect: Expected `T@foo`, found `Literal[1]` (invalid-argument-type) [Ln 10, Col 14]
+</code></pre>
+<p>https://play.ty.dev/a7e1e83f-6c64-4c50-bf7d-fc7e32fccee8</p>
+<h3>Version</h3>
+<p>ty 0.0.8 (aa7559db8 2025-12-29)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2026-01-06 01:02</div>
+            <div class="timeline-body"><p>I feel like we have another bug open for this, or a variant of it, but not finding it at the moment. Thanks for the report!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">generics</span> added by @carljm on 2026-01-06 01:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">callables</span> added by @carljm on 2026-01-06 01:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Pre-stable 1" by @carljm on 2026-01-06 01:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @dhruvmanila by @dhruvmanila on 2026-01-06 15:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hzechr">@hzechr</a> on 2026-01-07 09:58</div>
+            <div class="timeline-body"><p>Just ran across a related issue (discovered this &quot;in the wild&quot; with the <code>deprecate_renamed_parameter</code> decorator in the <code>polars</code> dataframe library)</p>
+<pre><code class="language-python">from collections.abc import Callable
+
+def test[**P, T]() -&gt; Callable[[Callable[P, T]], Callable[P, T]]:
+    return lambda f: f
+
+@test()
+def ident[T](x: T) -&gt; T:
+    return x
+
+y = ident(2)
+</code></pre>
+<p>Here, there is no error but <code>y</code> is determined as <em>unknown</em> while it should be determined as <em>int</em> (replacing <em>int</em> with <em>str</em> or other types does not change this).</p>
+<p>https://play.ty.dev/a10d191c-6a23-41f5-82b4-7a9338fc1ccb</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:51:35 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>treat `__setattr__` as fallback only - astral-sh/ty #1460</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>treat `__setattr__` as fallback only</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1460">#1460</a>
+        opened by <a href="https://github.com/lbhm">@lbhm</a>
+        on 2025-10-31 09:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/lbhm">@lbhm</a> on 2025-10-31 09:49</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>I recently noticed that ty complains about attribute assignment in <code>torch.nn.Module</code> subclasses that other type checkers do not complain about. If I run ty on the following MWE:</p>
+<pre><code class="language-python">import torch
+
+class MyModule(torch.nn.Module):
+    def __init__(self, param: int = 42) -&gt; None:
+        self.some_param = param
+</code></pre>
+<p>ty complains with the error:</p>
+<pre><code>error[unresolved-attribute]: Can not assign object of type `int` to attribute `some_param` on type `Self@__init__` with custom `__setattr__` method.
+ --&gt; ty_test.py:6:9
+  |
+4 | class MyModule(torch.nn.Module):
+5 |     def __init__(self, param: int = 42) -&gt; None:
+6 |         self.some_param = param
+  |         ^^^^^^^^^^^^^^^
+  |
+info: rule `unresolved-attribute` is enabled by default
+</code></pre>
+<p>However, if I instead use <code>self.some_param: int = param</code>, ty does not complain. Is this intended behavior? Other type checkers do not complain, since the type seems clear from the method signature.</p>
+<p>The root cause seems to be <code>torch.nn.Module</code>'s custom <code>__setattr__</code> implementation, which claims that it only accepts <code>Union[Tensor, &quot;Module&quot;]</code>, but in reality forwards any other types to <code>super().__setattr__</code> (see <a href="https://github.com/pytorch/pytorch/blob/main/torch/nn/modules/module.py#L2078-L2079">here</a>
+).</p>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.25</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @lbhm on 2025-10-31 09:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Assigning non-`Parameter` attributes in `torch.nn.Module` subclass" to "Assigning non-{`Tensor`/`Module`} attributes in `torch.nn.Module` subclasses" by @lbhm on 2025-10-31 09:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-10-31 11:09</div>
+            <div class="timeline-body"><p>Thank you for reporting this.</p>
+<blockquote>
+<p>The root cause seems to be <code>torch.nn.Module</code>'s custom <code>__setattr__</code> implementation, which claims that it only accepts <code>Union[Tensor, &quot;Module&quot;]</code>, but in reality forwards any other types to <code>super().__setattr__</code> (see <a href="https://github.com/pytorch/pytorch/blob/main/torch/nn/modules/module.py#L2078-L2079">here</a>
+).</p>
+</blockquote>
+<p>That seems problematic. <code>__setattr__</code> takes precedence, and its signature clearly states that it won't accept values of type <code>int</code>. I wonder under which assumption other type checkers exempt this <code>__setattr__</code> call from proper call validation.</p>
+<blockquote>
+<p>However, if I instead use <code>self.some_param: int = param</code>, ty does not complain. Is this intended behavior? Other type checkers do not complain, since the type seems clear from the method signature.</p>
+</blockquote>
+<p>That is an interesting observation. I'm pretty sure this was not an intentional decision, even if it looks like a reasonable thing to do(?).</p>
+<p>FWIW, an MRE:</p>
+<pre><code class="language-py">class C:
+    def __setattr__(self, name: str, value: bytes):
+        ...
+
+class M(C):
+    def __init__(self):
+        self.value = 1  # ty: Can not assign object of type `Literal[1]` to attribute `value` on type `Self@__init__` with custom `__setattr__` method
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-10-31 20:06</div>
+            <div class="timeline-body"><p>It seems like other type-checkers only consider <code>__setattr__</code> as a fallback, when there is otherwise no attribute of that name. This seems strange, since at runtime <code>__setattr__</code> always takes precedence. I guess the rationale here is that if you define a <code>__setattr__</code> and also explicitly create some named attributes, it's on you to ensure that at runtime your <code>__setattr__</code> actually handles those named attributes correctly, consistently with how you've annotated them -- and you aren't necessarily expected to repeat the types of those attributes in your annotations of <code>__setattr__</code>.</p>
+<p>Not sure if I agree this is the best choice, but I think we need to modify our behavior accordingly or we'll be too incompatible.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @carljm on 2025-10-31 20:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">runtime semantics</span> added by @carljm on 2025-10-31 20:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "GA" by @carljm on 2025-10-31 20:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Assigning non-{`Tensor`/`Module`} attributes in `torch.nn.Module` subclasses" to "treat `__setattr__` as fallback only" by @carljm on 2025-10-31 20:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-12-17 00:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-12-31 00:01</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:51:35 UTC
+    </footer>
+</body>
+</html>

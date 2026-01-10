@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LSP Panic: access to field whilst the value is being initialized - astral-sh/ty #992</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>LSP Panic: access to field whilst the value is being initialized</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/992">#992</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2025-08-14 18:14
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-08-14 18:14</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<pre><code>LSP[ty] ty encountered a problem. Check the logs for more details.
+lsp_signatur handler RPC[Error] code_name = InternalError, message = &quot;request handler panicked at /Users/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/d66
+fe33/src/tracked_struct.rs:912:21:\
+access to field whilst the value is being initialized\
+run with `RUST_BACKTRACE=1` environment variable to display a backtrace\
+&quot;
+</code></pre>
+<p>This is a bug in Salsa</p>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fatal</span> added by @MichaReiser on 2025-08-14 18:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-08-14 19:26</div>
+            <div class="timeline-body"><p>This normally suggests that we access a tracked struct that has been deleted. I'm not entirely sure how we'd end up here other than that it's probably something, something fixpoint. @ibraheemdev do you have any idea why this might happen?</p>
+<p>This might be https://github.com/salsa-rs/salsa/pull/969#issuecomment-3189567411</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-08-14 19:30</div>
+            <div class="timeline-body"><p>I think the reason this could be an issue for cycle heads only is that we never back date queries that have cycle heads (that is, queries that participated in a cycle but aren't the head). That means, any query dependent on those re-executes and sees any newly created tracked struct.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Beta" by @MichaReiser on 2025-08-15 12:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @MichaReiser by @carljm on 2025-08-15 15:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-08-15 18:12</div>
+            <div class="timeline-body"><p>Okay, I think I have a fix for this. It's not related to my refactors (but I did discover something else that I broke).</p>
+<p>I believe the issue is that <code>deep_verify_memo</code> might return unchanged for a provisional memo from a previous iteration. This seems wrong, at least if the cycle heads weren't finalized. Or we, at least, need to propagate the cycle heads because we may not hit the same cycle heads during verification</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-08-19 05:54</div>
+            <div class="timeline-body"><p>There might be two reasons why this happening:</p>
+<ol>
+<li><p>We access a tracked struct that was removed due to when salsa runs <code>diff_outputs</code> for queries participating in a cycle: https://github.com/salsa-rs/salsa/pull/980</p>
+</li>
+<li><p>I don't have a repro for the second case yet but let's say we have the following query:</p>
+</li>
+</ol>
+<pre><code>a -&gt; b
+  -&gt; d(b.x) (reads interned returned by b)
+
+b -&gt; c
+  -&gt; interns x
+
+c -&gt; a
+</code></pre>
+<p>The execution is as follow when <code>a</code> is the entry point:</p>
+<ul>
+<li><code>maybe_changed_after(a)</code> -&gt; <code>deep_verify_memo(a)</code></li>
+<li><code>maybe_changed_after(b)</code> -&gt; <code>deep_verify_memo(b)</code></li>
+<li><code>maybe_changed_after(c)</code> -&gt; <code>deep_verify_memo(c)</code></li>
+<li>return fixpoint initial for <code>a</code> (unchanged)</li>
+<li><code>maybe_changed_after(x)</code></li>
+<li><code>maybe_changed_after(d(b.x))</code> -&gt; <code>deep_verify_memo(d(b.x))</code> (locks <code>b.x</code>)</li>
+</ul>
+<p>However, if Salsa now calls into <code>b</code> first, the execution is:</p>
+<ul>
+<li><code>maybe_changed_after(b)</code> -&gt; <code>deep_verify_memo(b)</code></li>
+<li><code>maybe_changed_after(c)</code> -&gt; <code>deep_verify_memo(c)</code></li>
+<li><code>maybe_changed_after(a)</code> -&gt; <code>deep_verify_memo(a)</code></li>
+<li>return fixpoint initial for <code>b</code> (unchanged)</li>
+<li><code>maybe_changed_after(d(b.x))</code> -&gt; <code>deep_verify_memo(d(b.x))</code> this panics because <code>b.x</code> hasn't been verified (we haven't fully walked <code>b</code>s dependencies yet)</li>
+</ul>
+<p>The crucial difference to non-cyclic queries is that cyclic queries aren't guaranteed to form a tree; they can form a graph where different queries depend on each other's results from different iterations. The challenge with this is that <code>maybe_changed_after</code> is order sensitive AND it's not guaranteed that <code>maybe_changed_after</code> is guaranteed to be called on the same cycle head as when the value was computed in the last revision.</p>
+<p>I'm not sure if it would be okay to just call <code>maybe_changed_after</code> on the memo's `cycle heads from the last revision. I'd have to double-check if we don't run into any ordering issues</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-08-20 15:19</div>
+            <div class="timeline-body"><p>I'm starting to consider rewriting the fix point implementation to store a separate memo for each iteration instead of aggregating the results of all iterations into a single <code>Memo</code>. The aggregation adds a fair amount of complexity and I suspect that things like <code>validate_same_iteration</code> could become much easier if we have separate memos.</p>
+<p>Separate memos would also guarantee that <code>maybe_changed_after</code> remains a tree walk and not a graph traversal as it is today. It may even allow us to enable backdating for queries participating in cycles and verifying them eagerly in <code>maybe_changed_after</code>.</p>
+<p>We did discuss this a bit in today's salsa meeting: <a href="https://salsa.zulipchat.com/#narrow/channel/333573-Contributing-to-Salsa/topic/2025-08-20.20meeting/near/535333528">#Contributing to Salsa &gt; 2025-08-20 meeting @ 💬</a></p>
+<p>One challenge that I see with this is how to store multiple memo's on a single argument: From my conversation with @ibraheemdev</p>
+<blockquote>
+<p>the memos are type-erased, so  I think you could store a different type of memo for cycle queries that included multiple iterations</p>
+</blockquote>
+<p>oh, like a super memo that has a boxcar vec with the memos of each iteration?</p>
+<blockquote>
+<p>something like that yeah</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-09-19 08:30</div>
+            <div class="timeline-body"><p>Notes from another salsa meeting where we discussed how to fix this https://hackmd.io/L5wDAaqySqacXH1_yzwzXw</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "Beta" by @MichaReiser on 2025-09-19 08:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "GA" by @MichaReiser on 2025-09-19 08:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-10-15 14:34</div>
+            <div class="timeline-body"><p>Some more notes: https://hackmd.io/@michareiser/S11NEQ6pll</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-15 14:37</div>
+            <div class="timeline-body"><blockquote>
+<p>Some more notes: <a href="https://hackmd.io/@michareiser/S11NEQ6pll">hackmd.io/@michareiser/S11NEQ6pll</a></p>
+</blockquote>
+<p><img width="934" height="922" alt="Image" src="https://github.com/user-attachments/assets/4b802b85-1f62-4938-83ce-2725fcb7bb3a" /></p>
+<p>😢</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-12 15:58</div>
+            <div class="timeline-body"><p>We discussed two options in today's <a href="https://hackmd.io/SGYCIVxxTzCnAuzhLmXuzg">salsa meeting</a> and the option 2 sounds promising.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @carljm on 2025-11-13 01:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> removed by @MichaReiser on 2025-11-16 11:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-16 11:36</div>
+            <div class="timeline-body"><p>The new approach should greatly simplify <code>maybe_changed_after</code>, which is nice. The part that isn't clear to me yet is how <code>diff_outputs</code> is going to work, specifically when:</p>
+<ul>
+<li><code>a</code> is a cycle head in revision 1. It stores the aggregated input/outputs of all queries participating in this cycle</li>
+<li><code>a</code> becomes a normal query (or a nested cycle of another query) in revision 2</li>
+</ul>
+<p>Simply removing all unused input/outputs in revision 2 feels incorrect because we may then end up removing the same inputs twice (once when <code>a</code> runs and a second time when the nested query that originally created that input/output runs).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-16 18:01</div>
+            <div class="timeline-body"><p>Some more thoughts:</p>
+<ul>
+<li>This new model requires an eager traversal over all cycle participants after each iteration. The fact that we do an eager traversal allows us to switch to an eager finalization of all cycle participants</li>
+<li>Fixing diff outputs is related to this change but separate. Each query should continue to own its own inputs/outputs, but we have to defer <code>diff_outputs</code> up to the finalization step.</li>
+<li>We need to &quot;back-up&quot; the input/outputs from the last revision's memo for every cycle participant before overriding it with cycle initial (or the value from the first iteration)</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "Stable" by @MichaReiser on 2025-12-31 16:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Pre-stable 1" by @MichaReiser on 2025-12-31 16:36</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:51:35 UTC
+    </footer>
+</body>
+</html>

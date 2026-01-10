@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Improve diagnostics in cases where we infer `object` due to possibility of subclassing - astral-sh/ty #2215</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Improve diagnostics in cases where we infer `object` due to possibility of subclassing</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2215">#2215</a>
+        opened by <a href="https://github.com/ooopus">@ooopus</a>
+        on 2025-12-25 02:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ooopus">@ooopus</a> on 2025-12-25 02:08</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<h2>Summary</h2>
+<p>When using the common guard pattern:</p>
+<pre><code class="language-py">if hasattr(obj, &quot;attr&quot;) and obj.attr:
+    ...
+</code></pre>
+<p>ty incorrectly infers <code>obj.attr</code> as <code>~AlwaysFalsy</code>, producing a false-positive</p>
+<p><code>error[unresolved-attribute]</code> when accessing attributes on <code>obj.attr</code>.</p>
+<p>This code runs correctly at runtime; the issue appears to be in ty's flow-sensitive narrowing.</p>
+<h2>Environment</h2>
+<ul>
+<li><p>OS: Windows 11</p>
+</li>
+<li><p>Python: 3.13.9</p>
+</li>
+<li><p>ty: 0.0.7 (cf82a04b5 2025-12-24)</p>
+</li>
+</ul>
+<h2>Command</h2>
+<pre><code class="language-sh">ty check test_ty_always_falsy.py
+</code></pre>
+<p>(No special <code>pyproject.toml</code> settings; default config.)</p>
+<h2>Reproduction</h2>
+<pre><code class="language-py">from __future__ import annotations
+
+class Editor:
+    def __init__(self) -&gt; None:
+        self.note: Note | None = Note()
+
+class Note:
+    def __init__(self) -&gt; None:
+        self.fields: list[str] = [&quot;field1&quot;, &quot;field2&quot;]
+
+class WebView:
+    pass
+
+class EditorWebView:
+    def __init__(self) -&gt; None:
+        self.editor: Editor | None = Editor()
+
+def test(webview: WebView | EditorWebView) -&gt; list[str] | None:
+    if hasattr(webview, &quot;editor&quot;) and webview.editor:
+        reveal_type(webview)
+        reveal_type(webview.editor)
+
+        note = webview.editor.note # ty: error[unresolved-attribute]
+
+        if note:
+            return note.fields
+
+    return None
+</code></pre>
+<h2>Expected Behavior</h2>
+<p>Inside:</p>
+<pre><code class="language-py">if hasattr(webview, &quot;editor&quot;) and webview.editor:
+</code></pre>
+<p><code>webview.editor</code> should be narrowed to a truthy <code>Editor</code> type, so</p>
+<p><code>webview.editor.note</code> should be valid.</p>
+<h2>Actual Behavior</h2>
+<p>ty reports a false positive similar to:</p>
+<pre><code>error[unresolved-attribute]: Object of type `~AlwaysFalsy` has no attribute `note`
+</code></pre>
+<h2>Workarounds</h2>
+<p>Both of the following avoid the false positive:</p>
+<ul>
+<li><p><code>isinstance()</code>-based narrowing</p>
+</li>
+<li><p><code>getattr(webview, &quot;editor&quot;, None)</code> + truthiness check</p>
+</li>
+</ul>
+<h3>Version</h3>
+<p>ty 0.0.7 (cf82a04b5 2025-12-24)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">narrowing</span> added by @mtshiba on 2025-12-25 03:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mtshiba">@mtshiba</a> on 2025-12-25 03:55</div>
+            <div class="timeline-body"><p>In fact, I think this is the intended behavior, because <code>WebView</code> can be inherited and may have an attribute <code>editor</code>, so even if we can see that the parameter <code>webview</code> has an attribute <code>editor</code>, it doesn't say much about its type.</p>
+<pre><code class="language-python">from __future__ import annotations
+
+class Editor:
+    def __init__(self) -&gt; None:
+        self.note: Note | None = Note()
+
+class Note:
+    def __init__(self) -&gt; None:
+        self.fields: list[str] = [&quot;field1&quot;, &quot;field2&quot;]
+
+class WebView:
+    pass
+
+class WebViewSub(WebView):
+    def __init__(self) -&gt; None:
+        self.editor = 0  # You can assign any type of object here.
+
+class EditorWebView:
+    def __init__(self) -&gt; None:
+        self.editor: Editor | None = Editor()
+
+def test(webview: WebView | EditorWebView) -&gt; list[str] | None:
+    if hasattr(webview, &quot;editor&quot;):
+        reveal_type(webview)  # It may be of type `WebViewSub`
+        reveal_type(webview.editor)  # It may be of type `int`!
+
+    return None
+
+test(WebViewSub())
+</code></pre>
+<p>If you want to avoid this, you can use <code>typing.final</code>, and ty will behave exactly as you intended.</p>
+<pre><code class="language-python">from __future__ import annotations
+from typing import final
+
+class Editor:
+    def __init__(self) -&gt; None:
+        self.note: Note | None = Note()
+
+class Note:
+    def __init__(self) -&gt; None:
+        self.fields: list[str] = [&quot;field1&quot;, &quot;field2&quot;]
+
+@final
+class WebView:
+    pass
+
+class EditorWebView:
+    def __init__(self) -&gt; None:
+        self.editor: Editor | None = Editor()
+
+def test(webview: WebView | EditorWebView) -&gt; list[str] | None:
+    if hasattr(webview, &quot;editor&quot;) and webview.editor:
+        reveal_type(webview)
+        reveal_type(webview.editor)
+
+        note = webview.editor.note # OK
+        reveal_type(note)  # Note | None
+
+        if note:
+            return note.fields
+
+    return None
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mtshiba">@mtshiba</a> on 2025-12-25 04:03</div>
+            <div class="timeline-body"><p>However, it's certainly not clear why narrowing failed, and diagnostic messages could be improved - for example, if the user accesses a non-existent attribute using an expression that appears inside <code>cond</code> of <code>if cond: ...</code>, it could explain the fact that narrowing failed (or is incomplete) and why.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ooopus on 2025-12-25 04:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-26 17:47</div>
+            <div class="timeline-body"><p>I had mentioned the idea in https://github.com/astral-sh/ty/issues/1578#issuecomment-3542936632 that we could improve diagnostics for some similar cases. I will reopen this issue to track this idea. Thanks for the report!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @carljm on 2025-12-26 17:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">diagnostics</span> added by @carljm on 2025-12-26 17:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "hasattr() + truthiness guard incorrectly infers ~AlwaysFalsy for attribute access" to "Improve diagnostics in cases where we infer `object` due to possibility of subclassing" by @carljm on 2025-12-26 17:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-26 18:02</div>
+            <div class="timeline-body"><p>Oh, I just saw #2221 -- we can use that issue instead.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-12-26 18:02</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:51:35 UTC
+    </footer>
+</body>
+</html>

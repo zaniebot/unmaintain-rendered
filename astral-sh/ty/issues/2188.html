@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Improve predictability of instance attribute type inference - astral-sh/ty #2188</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Improve predictability of instance attribute type inference</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2188">#2188</a>
+        opened by <a href="https://github.com/wvanbergen">@wvanbergen</a>
+        on 2025-12-23 17:12
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/wvanbergen">@wvanbergen</a> on 2025-12-23 17:12</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Unrelated code in a  initializer appears to prevent type narrowing. Example:</p>
+<pre><code class="language-python">class Foo:
+    def bar(self) -&gt; None:
+        # revealed type changes to `Literal[True]` if you comment out any of these lines related to _unrelated
+        if hasattr(self, &quot;_unrelated&quot;):
+            return
+        self._unrelated = True
+
+        self._b: bool | None = None    
+        self._b = True
+        reveal_type(self._b)  # bool | None, expected Literal[True]
+</code></pre>
+<p>If you comment out any of the <code>_unrelated</code> lines, it changes to <code>Literal[True]</code>.</p>
+<p>This behaviour seems to be specific to it being an instance method. For a regular function, the type narrowing never happens.</p>
+<ul>
+<li>Playground recreation: https://play.ty.dev/c43a9722-ed99-4749-92d3-ada996276c66</li>
+<li>mypy evaluates it as <code>builtins.bool</code>: https://mypy-play.net/?mypy=latest&amp;python=3.12&amp;gist=a2789d2ba9c6b0c511c577bba939e150</li>
+<li>Running <code>uvx ty check</code>, no <code>ty</code> related settings in <code>pyproject.toml</code></li>
+</ul>
+<h3>Version</h3>
+<p>ty 0.0.5 (d37b7dbd9 2025-12-20)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-23 19:58</div>
+            <div class="timeline-body"><p>Heh, file this one under &quot;things I did not expect to get an issue about.&quot; Lesson learned: everything will be noticed :) Thanks for the report!</p>
+<p>Your &quot;unrelated&quot; code is not really entirely unrelated, because of the conditional <code>return</code>. What happens here is that we enter a cycle finding the attributes of instances of <code>Foo</code>, because we flip between thinking the class has two attributes and thinking it has none (because once we think it has <code>_unrelated</code>, then we see the early exit.) We fallback to just going with the declared type, which I think is reasonable.</p>
+<p>There are various possible improvements here, though I don't think the current behavior is that much of a problem.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Unrelated code in the class instance method appears to prevent type narrowing" to "Improve predictability of instance attribute type inference" by @carljm on 2025-12-23 19:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">narrowing</span> added by @mtshiba on 2025-12-27 06:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">control flow</span> added by @mtshiba on 2025-12-27 06:50</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:51:35 UTC
+    </footer>
+</body>
+</html>

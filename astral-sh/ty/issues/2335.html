@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>&quot;Too many positional arguments&quot; when unpacking a sequence for function parameters. - astral-sh/ty #2335</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>&quot;Too many positional arguments&quot; when unpacking a sequence for function parameters.</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2335">#2335</a>
+        opened by <a href="https://github.com/Boon-in-Oz">@Boon-in-Oz</a>
+        on 2026-01-05 04:12
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Boon-in-Oz">@Boon-in-Oz</a> on 2026-01-05 04:12</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I found a minor bug.
+With a function like this:</p>
+<pre><code class="language-py">def test(a: int, b: int, c: int) -&gt; None:
+    &quot;&quot;&quot;A test function to demonstrate unpacking arguments.&quot;&quot;&quot;
+</code></pre>
+<p>The following works fine, though ty's inline preview identifies the parameter assignment incorrectly:</p>
+<pre><code class="language-py">param = (1, 2, 3)
+test(*param)
+param2 = [4, 5, 6]
+test(*param2)
+test(param2[0], param2[1], 7)
+</code></pre>
+<p>but these examples both incorrectly trigger the ty error <code>Too many positional arguments to function </code>test<code>: expected 3, got 4ty[too-many-positional-arguments](https://ty.dev/rules#too-many-positional-arguments)</code></p>
+<pre><code class="language-py">test(*param2[:2], 7)
+
+param3 = [8, 9]
+test(*param3, 10)
+</code></pre>
+<p>while this incorrectly does not trigger any errors:</p>
+<pre><code class="language-py">test(*param3)
+</code></pre>
+<p>Here's a screenshot of the VS Code window, showing the incorrect inline hints. Not a big deal, but I assume related; ty appears to assume that any unpacked sequence matches all parameters perfectly:</p>
+<p><img width="476" height="189" alt="Image" src="https://github.com/user-attachments/assets/94d39365-cee1-431f-a7a0-310188b790f6" /></p>
+<h3>Version</h3>
+<p>2025.80.0</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Boon-in-Oz">@Boon-in-Oz</a> on 2026-01-05 04:31</div>
+            <div class="timeline-body"><p>Ah. This problem is limited to lists. Tuples work correctly. I expect that might be as good as it can get. It would be nice if it could see the length of a slice, or if it would make the same assumptions about intent when extra parameters are supplied after an unpacked list (ie that I supplied a list with the correct length).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">calls</span> added by @AlexWaygood on 2026-01-05 07:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2026-01-05 08:47</div>
+            <div class="timeline-body"><p>Thanks for the report!</p>
+<p>This is same as https://github.com/astral-sh/ty/issues/1584 (similar to https://github.com/astral-sh/ty/issues/2251) where unpacking a list eagerly assigns to all the remaining parameters because ty doesn't know how many elements will the argument unpack into.</p>
+<p>I'll fold this into #1584.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2026-01-05 08:47</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:51:35 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For extending the type alias created with `TypeAlias` or an assignment statement, ty should also give error for consistency - astral-sh/ty #2334</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>For extending the type alias created with `TypeAlias` or an assignment statement, ty should also give error for consistency</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2334">#2334</a>
+        opened by <a href="https://github.com/hyperkai">@hyperkai</a>
+        on 2026-01-05 03:16
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/hyperkai">@hyperkai</a> on 2026-01-05 03:16</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Memo:</p>
+<ul>
+<li>ty check</li>
+<li>ty 0.0.7</li>
+<li>Python 3.14.0</li>
+</ul>
+<p>Extending the type alias created with a <a href="https://docs.python.org/3/reference/simple_stmts.html#type">type statement</a> or <a href="https://docs.python.org/3/library/typing.html#typing.TypeAliasType">TypeAliasType</a>, ty gives the error as shown below:</p>
+<pre><code class="language-python">''' Type statement '''
+type TA = int
+''' Type statement '''
+
+''' TypeAliasType '''
+# from typing import TypeAliasType
+
+# TA = TypeAliasType('TA', value=int)
+''' TypeAliasType '''
+
+class Cls(TA): pass # Error
+</code></pre>
+<blockquote>
+<p>error[invalid-base]: Invalid class base with type <code>TypeAliasType</code></p>
+</blockquote>
+<p>But extending the type alias created with <a href="https://docs.python.org/3/library/typing.html#typing.TypeAlias">TypeAlias</a> or an <a href="https://docs.python.org/3/reference/simple_stmts.html#assignment-statements">assignment statement</a>, ty doesn't give error as shown below so error should also occur for consistency:</p>
+<pre><code class="language-python">''' TypeAlias '''
+from typing import TypeAlias
+
+TA: TypeAlias = int
+''' TypeAlias '''
+
+''' Assignment statement '''
+# TA = int
+''' Assignment statement '''
+
+class Cls(TA): pass # No error
+</code></pre>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-05 07:48</div>
+            <div class="timeline-body"><p>Thanks for the issue! However, this is deliberate behaviour here. The first of these (the PEP-695 alias) leads to a runtime exception if you try to subclass it. The other two do not.</p>
+<p>In an ideal world, maybe we'd say that you should never be allowed to use any kind of type alias in runtime contexts like this. But we've found that real-world actually does do things like this, and it seems needlessly pedantic to disallow it if it won't lead to a runtime error. It's also allowed by other type checkers such as mypy and pyright, and there doesn't seem to be a strong motivation for us to break compatibility with them here</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2026-01-05 07:48</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:51:35 UTC
+    </footer>
+</body>
+</html>

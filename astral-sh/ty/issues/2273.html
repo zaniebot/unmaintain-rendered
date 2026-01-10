@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auto Import: Add support for namespace packages  - astral-sh/ty #2273</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Auto Import: Add support for namespace packages </h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2273">#2273</a>
+        opened by <a href="https://github.com/Zhmjharmgal">@Zhmjharmgal</a>
+        on 2025-12-30 09:24
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Zhmjharmgal">@Zhmjharmgal</a> on 2025-12-30 09:24</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Hello,</p>
+<p>Thanks for the great work. ty is indeed much faster than pyright and basedpyright. However, I found that it cannot auto-import any functions defined in workspace python files. Below is a minimal reproduction:</p>
+<p>My root directory is <code>test</code> and below is the directory structure:</p>
+<p><img width="895" height="355" alt="Image" src="https://github.com/user-attachments/assets/2bc15a54-1e32-46b2-a096-a3752738c493" /></p>
+<p>Inside <code>src/path2/file2.py</code> I have a dummy function defined as</p>
+<p><img width="1150" height="272" alt="Image" src="https://github.com/user-attachments/assets/5247ef21-1e8c-4d7c-b0dd-7bd08f8400ad" /></p>
+<p>Then, in <code>src/path1/file1.py</code>, when I start typing my_custom<CURSOR>, <code>my_custom_function</code> is not an auto-completion entry from ty:</p>
+<p><img width="493" height="124" alt="Image" src="https://github.com/user-attachments/assets/8be545f7-30a5-4a66-9839-f8e28676893a" /></p>
+<p>Further, after I completely typed my_custom_function there and invoked code actions, no auto-import entry is displayed, only &quot;ignore 'unresolved-reference' for this line [ty]&quot;:</p>
+<p><img width="1404" height="312" alt="Image" src="https://github.com/user-attachments/assets/9edf2d5c-5675-4011-9d7d-f5c30576cc65" /></p>
+<p>However, after I started the lsp basedpyright, <code>my_cumtom_function</code> does become available as an auto-completion suggestion:</p>
+<p><img width="816" height="139" alt="Image" src="https://github.com/user-attachments/assets/60781664-a7d1-4a85-8f40-6a29930a8789" /></p>
+<p>So, I would like to ask if this is a bug or an intentional plan. Thank you!</p>
+<hr />
+<h2>Context:</h2>
+<ul>
+<li>I use Arch Linux.</li>
+<li>I used <code>uv init test</code> to init this python project and used <code>uv tool install ty</code> to install ty. I don't have any other modifications on <code>pyproject.toml</code>.</li>
+<li>I used <code>export PYTHONPATH=$PWD</code> to explicitly set the root directory in <code>test</code> (parent directory of <code>src</code>)</li>
+<li>The ty version is 0.0.8.</li>
+<li>I tested this issue on both neovim and vscode and the behavior is the same.</li>
+</ul>
+<h3>Version</h3>
+<p>ty 0.0.8</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "ty fails to auto-import methods defined in workspace" to "Auto Import: Add support for namespace packages " by @MichaReiser on 2025-12-30 10:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-30 10:02</div>
+            <div class="timeline-body"><p>Thanks for the report. I can reproduce this in the playground. See how ty offers completions (and auto-import) for the <code>my_custom_function</code> function in <code>path1</code> (a regular python module with an <strong>init</strong>.py) but it fails to suggest the function defined in <code>namespace</code></p>
+<p>https://play.ty.dev/a04dc430-8b7c-4854-9951-0818a1553ae3</p>
+<p>CC: @BurntSushi</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">completions</span> added by @MichaReiser on 2025-12-30 10:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Pre-stable 1" by @MichaReiser on 2025-12-30 10:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @AlexWaygood on 2025-12-30 10:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2026-01-05 15:42</div>
+            <div class="timeline-body"><p>This is &quot;intentional&quot; in the sense that we are intentionally not handling this yet in the code path for listing all modules.</p>
+<p>We specifically do not handle namespace packages when listing submodules:</p>
+<p>https://github.com/astral-sh/ruff/blob/f3dea6e5c911b2b34dfb00d3d8696a5af66bb732/crates/ty_module_resolver/src/module.rs#L151-L158</p>
+<p>Which is used when asking for all modules in an environment:</p>
+<p>https://github.com/astral-sh/ruff/blob/f3dea6e5c911b2b34dfb00d3d8696a5af66bb732/crates/ty_module_resolver/src/list.rs#L11-L23</p>
+<p>Which is in turn what we use as a starting point for auto-import:</p>
+<p>https://github.com/astral-sh/ruff/blob/f3dea6e5c911b2b34dfb00d3d8696a5af66bb732/crates/ty_ide/src/all_symbols.rs#L33</p>
+<p>So I think we need to figure out a way to make <code>Module::all_submodules</code> work for namespace packages. I think this requires checking all search paths for a directory at the location where part of a namespace package <em>could</em> exist.</p>
+<p>If we do that, then I <em>think</em> this will just work. The &quot;list modules&quot; implementation already has namespace package support. It just doesn't know how to list the submodules of a namespace package.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">imports</span> added by @BurntSushi on 2026-01-05 15:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @Gankra by @Gankra on 2026-01-05 15:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Zhmjharmgal">@Zhmjharmgal</a> on 2026-01-06 10:47</div>
+            <div class="timeline-body"><p>Thank you for your detailed explanation. I now understand why namespace packages are not handled.</p>
+<p>Previously, I relied heavily on namespace packages because pyright supports them, and my Python projects were primarily for research implementation purposes. I simply wasn’t motivated to explore Python’s &quot;module/package&quot; conventions at the time.</p>
+<p>However, I decided to switch to the uv + ty ecosystem last week for two main reasons: (i) the pip/conda package management system failed me when attempting to reproduce my development environment on another machine with a different architecture, and (ii) pyright has been increasingly slow.</p>
+<p>Reflecting on it now, I suspect my reliance on namespace packages might have contributed to pyright’s performance issues. If the exclusion of namespace packages in ty is a deliberate design choice to maintain performance, I fully understand and support that decision. Speed is indeed a crucial factor for me, and I’m okay with closing this issue if enabling namespace packages would compromise performance.</p>
+<p>That said, it would be helpful if this design decision is mentioned in the documentation. Highlighting it could encourage users like me to adopt Python’s standard module/package conventions.</p>
+<p>Thank you again for this incredible tooling!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2026-01-06 14:20</div>
+            <div class="timeline-body"><p>No, I think this is something we should fix.</p>
+<p>The good news is that namespace package support should only make listing submodules more expensive specifically when a namespace package is used and not make other cases slow. That is, when we have a <code>Module</code> internally, we know whether it's a namespace package or not. But yeah, I could for sure see things being slower for namespace packages compared to regular packages.</p>
+<p>I would generally recommend not using namespace packages if you don't specifically need them though. For your case, you might just need to drop an <code>__init__.py</code> in your directories.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:51:35 UTC
+    </footer>
+</body>
+</html>

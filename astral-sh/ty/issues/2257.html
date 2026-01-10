@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Changes to files outside the project root aren't picked up by the server - astral-sh/ty #2257</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Changes to files outside the project root aren't picked up by the server</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2257">#2257</a>
+        opened by <a href="https://github.com/rivershah">@rivershah</a>
+        on 2025-12-27 16:04
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/rivershah">@rivershah</a> on 2025-12-27 16:04</div>
+            <div class="timeline-body"><p>I am inside a devcontainer. venvs are not being used.
+packages are being installed like this:
+<code>uv pip install --no-progress --compile-bytecode --system -r pyproject.toml</code></p>
+<p><code>ty</code> configuration in <code>devcontainer.json</code> is like this:</p>
+<pre><code>....
+        &quot;ty.configuration&quot;: {
+          &quot;environment&quot;: {
+            &quot;python&quot;: &quot;/usr/local/bin/python&quot;
+          }
+        },
+....
+</code></pre>
+<p>Code navigation does not work till I force server restart:</p>
+<pre><code>2025-12-27 15:50:21.106301373  INFO Version: 0.0.6
+2025-12-27 15:50:21.299023590  INFO Defaulting to python-platform `linux`
+2025-12-27 15:50:21.299860040  INFO Python version: Python 3.12, platform: linux
+2025-12-27 15:50:22.552719729  INFO Indexed 69 file(s) in 0.006s
+2025-12-27 15:50:24.277865454  INFO Initializing the default project
+2025-12-27 15:50:24.280221553  INFO Defaulting to python-platform `linux`
+2025-12-27 15:50:24.280910303  INFO Python version: Python 3.14, platform: linux
+2025-12-27 15:51:04.646402464  INFO Defaulting to python-platform `linux`
+2025-12-27 15:51:04.646872401  INFO Python version: Python 3.12, platform: linux
+2025-12-27 15:53:32.730038234  INFO Indexed 69 file(s) in 0.007s
+2025-12-27 15:53:38.647198755  INFO Indexed 69 file(s) in 0.006s
+###### Code navigation is not working at this point
+2025-12-27 15:53:45.505586220  INFO Server shut down
+[Error - 3:53:45 PM] Server process exited with code 0.
+2025-12-27 15:53:45.574405173  INFO Version: 0.0.6
+2025-12-27 15:53:45.591334552  INFO Defaulting to python-platform `linux`
+2025-12-27 15:53:45.592182967  INFO Python version: Python 3.12, platform: linux
+2025-12-27 15:53:46.525817129  INFO Indexed 69 file(s) in 0.006s
+2025-12-27 15:54:20.960931926  INFO Initializing the default project
+2025-12-27 15:54:20.962718375  INFO Defaulting to python-platform `linux`
+2025-12-27 15:54:20.963330738  INFO Python version: Python 3.14, platform: linux
+2025-12-27 15:54:21.616495762  INFO Indexed 69 file(s) in 0.006s
+2025-12-27 15:55:18.696206614  INFO Defaulting to python-platform `linux`
+2025-12-27 15:55:18.696813328  INFO Python version: Python 3.12, platform: linux
+2025-12-27 15:56:00.597192961  INFO Indexed 69 file(s) in 0.007s
+###### Code navigation is working at this point
+</code></pre>
+<p>Can we please look into this for devcontainers.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-27 16:08</div>
+            <div class="timeline-body"><p>I think the issue here is that we don't fully support system Python installations</p>
+<p>Related to https://github.com/astral-sh/ty/issues/2068</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rivershah">@rivershah</a> on 2025-12-28 07:20</div>
+            <div class="timeline-body"><p>Thanks for pointing me to that issue. I played around with this some more. Indexing seems in general flaky, sometimes not discovering third party system wide installed packages at all. Will await https://github.com/astral-sh/ty/issues/2068 resolution</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-29 12:52</div>
+            <div class="timeline-body"><p>I see, so this is about changes not being detected in your system Python installation. I'll move the issue to the ty repository.</p>
+<p>Is the issue only that changes in your system python environment aren't picked up or do you see the same when changing project files? Could you try setting the <code>logLevel</code> to <code>DEBUG</code>, ty should then log when it detects file changes, see https://github.com/astral-sh/ty-vscode/blob/main/TROUBLESHOOTING.md</p>
+<p>When writing this, I realized that the server currently doesn't subscribe to changes outside the project folder. We should change that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2025-12-29 12:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @MichaReiser on 2025-12-29 12:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Server restart needed devcontainers system wide installed packages" to "Changes to files outside the project root aren't picked up by the server" by @MichaReiser on 2025-12-29 12:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Pre-stable 1" by @MichaReiser on 2025-12-31 15:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "Pre-stable 1" by @MichaReiser on 2025-12-31 16:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @MichaReiser on 2025-12-31 16:52</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:51:35 UTC
+    </footer>
+</body>
+</html>

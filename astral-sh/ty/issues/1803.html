@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Incompatibility with beartype - astral-sh/ty #1803</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Incompatibility with beartype</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1803">#1803</a>
+        opened by <a href="https://github.com/adamtheturtle">@adamtheturtle</a>
+        on 2025-12-08 09:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/adamtheturtle">@adamtheturtle</a> on 2025-12-08 09:08</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<pre><code class="language-python">from beartype import beartype
+
+
+@beartype
+def my_func() -&gt; str:
+    return &quot;Hello, world!&quot;
+
+
+my_func()
+</code></pre>
+<p>Command:</p>
+<pre><code>uv run --with=&quot;beartype==0.22.8&quot; --with=&quot;ty==0.0.1a32&quot; ty check example.py
+</code></pre>
+<p>This errors with:</p>
+<pre><code>error[missing-argument]: No argument provided for required parameter 1
+ --&gt; example.py:9:1
+  |
+9 | my_func()
+  | ^^^^^^^^^
+  |
+info: Union variant `(Unknown, /) -&gt; Unknown` is incompatible with this call site
+info: Attempted to call union type `(def my_func() -&gt; str) | Unknown | ((Unknown, /) -&gt; Unknown)`
+info: rule `missing-argument` is enabled by default
+</code></pre>
+<p><code>mypy</code> and <code>pyright</code> both pass.</p>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.32 (84a188116 2025-12-05)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-08 19:35</div>
+            <div class="timeline-body"><p><a href="https://github.com/beartype/beartype/blob/main/beartype/__init__.py#L158-L159"><code>beartype/__init__.py</code> imports the <code>beartype</code> decorator from <code>beartype._decor.decormain</code></a></p>
+<p><code>decormain.py</code> initially defines it using <a href="https://github.com/beartype/beartype/blob/main/beartype/_decor/decormain.py#L51-L55">these overloads</a> meant for static type checkers</p>
+<p>But then later in the same module it <a href="https://github.com/beartype/beartype/blob/main/beartype/_decor/decormain.py#L75">conditionally</a> overwrites it with <a href="https://github.com/beartype/beartype/blob/main/beartype/_decor/decormain.py#L80-L86">this no-op definition</a>, or else with <a href="https://github.com/beartype/beartype/blob/main/beartype/_decor/decormain.py#L140">this import</a> <a href="https://github.com/beartype/beartype/blob/main/beartype/_decor/decorcache.py#L48-L55">from <code>beartype._decor._decorcache</code></a>.</p>
+<p>No type-checker can statically decide whether <code>is_python_optimized()</code> is true or false, so all type checkers consider both the <code>if</code> and <code>else</code> paths to be possible.</p>
+<p>All four type checkers treat the <code>if</code> path the same. The <code>def beartype</code> there is treated as the implementation of the overloads above, and thus effectively ignored for static typing purposes.</p>
+<p>Mypy and pyright do not support conditional re-definition of a name. Thus, in the <code>else</code> path, mypy and pyright error on the attempt to &quot;redefine&quot; <code>beartype</code> via import, and fallback to ignoring it. (The type error is silenced on that import line with <code># type: ignore</code>.)</p>
+<p>Ty (and pyrefly) support conditional re-definition of names, so we do not error on that import, and treat the type of <code>beartype</code> as a union of the overloads above, and the imported version of the function from <code>decorcache.py</code> (which is not designed to be visible to static type checkers). It's that imported version of <code>beartype</code> that then causes the problem when it is used.</p>
+<p>I don't see this as a bug in ty (or pyrefly). Nothing in the typing spec prohibits type checkers from supporting conditional re-definition, and the conclusions that ty reaches here are plainly accurate: at runtime, <code>beartype</code> can be the imported version of the function from <code>decorcache.py</code>. Beartype is relying on how mypy and pyright happen to handle a type error, which doesn't seem likely to be a reliable behavior even for pyright and mypy, let alone for other type checkers.</p>
+<p>If beartype wants to reliably hide that second definition of the <code>beartype</code> decorator from static type checkers, it should use <code>if not TYPE_CHECKING:</code>, or define the static-type-checker version in a stub file that entirely hides the real implementation, or add the overloads to <code>decorcache.py</code> also, so the imported version has the same overloads.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-12-08 19:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/adamtheturtle">@adamtheturtle</a> on 2025-12-08 19:55</div>
+            <div class="timeline-body"><p>Thank you @carljm for looking into this. Hopefully this is something that can be resolved within <code>beartype</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/leycec">@leycec</a> on 2025-12-10 07:53</div>
+            <div class="timeline-body"><p><strong>Ah-ha!</strong> The wonderful @beartype collaborator @Glinte has <a href="https://github.com/beartype/beartype/pull/600">since resolved this on the @beartype side</a>. We praise his name. 🥳</p>
+<p>That said...</p>
+<blockquote>
+<p>No type-checker can statically decide whether <code>is_python_optimized()</code> is true or false...</p>
+</blockquote>
+<p><strong>Ah-ha!</strong> The opposite is true, actually. It's just a matter of will, grit, determination, and the desire to suffer. Technically, <strong>absolutely all pure static type-checkers can statically decide whether <code>is_python_optimized()</code> is <code>True</code> or <code>False</code>.</strong> Why? Because this is the relevant implementation of the <code>is_python_optimized()</code> function (omitting ignorable docstrings and comments):</p>
+<pre><code class="language-python">def is_python_optimized() -&gt; bool:
+    if (
+        TYPE_CHECKING or
+        not __debug__
+    ):
+        return True
+
+    ...
+</code></pre>
+<p><strong>This is a <code>ty</code> bug.</strong> That's just a hard fact. <code>ty</code> <em>absolutely</em> should know that <code>is_python_optimized()</code> unconditionally evaluates to <code>True</code>. In fact, <strong>mypy and pyright both do just that.</strong> They correctly deduce via static analysis alone that <code>is_python_optimized()</code> unconditionally evaluates to <code>True</code>. It can't be <em>that</em> hard. You just need to propagate <code>if TYPE_CHECKING ...:</code> checks across function boundaries, which is something you want to do sooner or later anyway. Ideally, sooner.</p>
+<p>This issue was unwisely closed prematurely and should be reopened. At a bare minimum, <code>ty</code> needs to hit feature parity with mypy and pyright by exhibiting similar intelligence. Obviously, <code>ty</code> isn't Turing-complete. It's a parser. But there's a considerable amount of intelligence you can stuff into the narrow confines of parsing.</p>
+<p>Mypy and pyright both exhibit that intelligence. So should <code>ty</code>. I shrug. I shrug so hard, fam. <code>&lt;/shrug&gt;</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-10 08:08</div>
+            <div class="timeline-body"><p>I'm very glad to hear that this issue has been resolved for beartype users!</p>
+<blockquote>
+<p><code>ty</code> <em>absolutely</em> should know that <code>is_python_optimized()</code> unconditionally evaluates to <code>True</code>. In fact, <strong>mypy and pyright both do just that.</strong> They correctly deduce via static analysis alone that <code>is_python_optimized()</code> unconditionally evaluates to <code>True</code>.</p>
+</blockquote>
+<p><em>Do</em> they?</p>
+<ul>
+<li>mypy: https://mypy-play.net/?mypy=latest&amp;python=3.12&amp;gist=6b77d9a0fd1cd31aeef337080608b304</li>
+<li>Pyright: https://pyright-play.net/?code=GYJw9gtgBALgngBwJYDsDmUkQWEMoAqAmgAoCiA%2BgMIASZVA0gJIByA4gFAcAmApsJgDOFBHBgALMCgpgEMLEgBevbgAoAlFAC0APigAjMGAA2ALg5RLmAaotX7xctTqNWbKLjv3LKMPgoUfPoArmgBXlDq5t5WILwwwSAohCDBvFwcSAJIwqISUjJyCspqUREAHlAAvFAALBy8xoK80VaVNQBEtR1cWVC%2B%2BDkiYpLSsvIQSioarZZw1XUNTS0R853dERxxAG68AIbGFPAIvKrl6lu8uwdHiKdwF0A</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-12-10 08:09</div>
+            <div class="timeline-body"><p>(Edit: oops, Alex was faster)</p>
+<blockquote>
+<p><code>ty</code> <em>absolutely</em> should know that <code>is_python_optimized()</code> unconditionally evaluates to <code>True</code>. In fact, <strong>mypy and pyright both do just that.</strong></p>
+</blockquote>
+<p>I don't think that is true. If we consider a program like the following, then all of pyright, mypy, pyrefly and ty understand that the type of <code>a</code> can only be <code>None</code>.</p>
+<pre><code class="language-py">from typing import TYPE_CHECKING, reveal_type
+
+
+def is_python_optimized() -&gt; bool:
+    if TYPE_CHECKING or not __debug__:
+        return True
+    else:
+        return False
+
+
+a: int | None
+a = 1
+
+if True:
+    a = None
+
+reveal_type(a)  # all type checkers reveal `None` here
+</code></pre>
+<p>However, if we replace the <code>if True</code> with <code>if is_python_optimized()</code>, then all of these type checkers reveal a type of either <code>Literal[1] | None</code> or <code>int | None</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Glinte">@Glinte</a> on 2025-12-10 08:15</div>
+            <div class="timeline-body"><p>@leycec Not gonna lie, I think you have a decent bit of knowledge gap on static type checkers, so you may want to be a bit more careful than usual when talking about them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-12-10 08:16</div>
+            <div class="timeline-body"><p>To be fair, it's perfectly reasonable to think that a type checker should infer a return type of <code>Literal[True]</code> for this function. But in that case, the <code>-&gt; bool</code> return type annotation would have to be removed (otherwise this is an explicit request for the type checker to widen the type). pyright can do this:</p>
+<pre><code class="language-py">from typing import TYPE_CHECKING
+
+def is_python_optimized():
+    if (
+        TYPE_CHECKING or
+        not __debug__
+    ):
+        return True
+
+    return False
+
+reveal_type(is_python_optimized())  # pyright infers `Literal[True]` here
+</code></pre>
+<p>And ty should also be able to do this once https://github.com/astral-sh/ruff/pull/17371 lands.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/adamtheturtle">@adamtheturtle</a> on 2026-01-02 07:33</div>
+            <div class="timeline-body"><p>Beartype has been updated and now works with ty.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:51:35 UTC
+    </footer>
+</body>
+</html>

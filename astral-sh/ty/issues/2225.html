@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unexpected (to me) Divergent type manifesting in isinstance() - astral-sh/ty #2225</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Unexpected (to me) Divergent type manifesting in isinstance()</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2225">#2225</a>
+        opened by <a href="https://github.com/Wizzerinus">@Wizzerinus</a>
+        on 2025-12-26 09:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Wizzerinus">@Wizzerinus</a> on 2025-12-26 09:26</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Consider the following example:</p>
+<pre><code class="language-py">class Foo: ...
+
+if isinstance(123, &quot;Foo&quot;):
+    pass
+</code></pre>
+<p>This example is obviously ill-formed, but what is interesting about it is the diagnostic that ty emits:</p>
+<pre><code>error[invalid-argument-type]: Argument to function `isinstance` is incorrect
+ --&gt; divergent.py:3:20
+  |
+1 | class Foo: ...
+2 |
+3 | if isinstance(123, &quot;Foo&quot;):
+  |                    ^^^^^ Expected `type | UnionType | tuple[Divergent, ...]`, found `Literal[&quot;Foo&quot;]`
+4 |     pass
+  |
+info: Function defined here
+    --&gt; stdlib/builtins.pyi:3768:5
+     |
+3766 |     _ClassInfo: TypeAlias = type | tuple[_ClassInfo, ...]
+3767 |
+3768 | def isinstance(obj: object, class_or_tuple: _ClassInfo, /) -&gt; bool:
+     |     ^^^^^^^^^^              -------------------------- Parameter declared here
+3769 |     &quot;&quot;&quot;Return whether an object is an instance of a class or of a subclass thereof.
+     |
+info: rule `invalid-argument-type` is enabled by default
+</code></pre>
+<p>I am not sure the intention of this, but I would not expect a <code>Divergent</code> to appear in visible user output.</p>
+<h3>Version</h3>
+<p>ty 0.0.7</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">type aliases</span> added by @mtshiba on 2025-12-26 11:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mtshiba">@mtshiba</a> on 2025-12-26 12:05</div>
+            <div class="timeline-body"><p>Thanks for reporting this. It seems that the root issue is lack of support for self-referential generic implicit/PEP-613 type aliases (https://github.com/astral-sh/ty/issues/1738).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-26 17:00</div>
+            <div class="timeline-body"><p>In general, it is definitely possible for <code>Divergent</code> to appear in visible user output, in cases where there is recursion that doesn't converge.</p>
+<p>In this particular case, this <code>Divergent</code> should go away once #1738 is fixed. The root cause is that the <code>_ClassInfo</code> type alias in typeshed is recursive.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-12-26 17:00</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:51:35 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support for decorator that transforms a class into an instance of a wrapper type - astral-sh/ty #2379</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Support for decorator that transforms a class into an instance of a wrapper type</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2379">#2379</a>
+        opened by <a href="https://github.com/mwaskom">@mwaskom</a>
+        on 2026-01-07 16:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mwaskom">@mwaskom</a> on 2026-01-07 16:28</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>This is perhaps a bit weird, but I'd like to define a decorator that can be applied to a class, producing an instance of a wrapper type with an <code>.invoke()</code> method that proxies to the <code>__call__</code> method of the underlying class.</p>
+<pre><code class="language-python">@wrap()
+class Greeter:
+    def __call__(self, name: str) -&gt; str:
+        return f&quot;Hello, {name}!&quot;
+
+result: str = Greeter.invoke(&quot;World&quot;)  # Greeter is an instance of a `Wrapper` type
+print(result)  # Should print: Hello, World!
+</code></pre>
+<p>I have defined my <code>wrap</code> and <code>Wrapper</code> as</p>
+<pre><code class="language-python">from typing import Any, Callable, Generic, ParamSpec, Protocol, TypeVar
+
+P = ParamSpec(&quot;P&quot;)
+R = TypeVar(&quot;R&quot;, covariant=True)
+
+
+class _HasCall(Protocol[P, R]):
+    &quot;&quot;&quot;Protocol for classes with a __call__ method.&quot;&quot;&quot;
+
+    def __call__(self, *args: P.args, **kwargs: P.kwargs) -&gt; R: ...
+
+
+class Wrapper(Generic[P, R]):
+    &quot;&quot;&quot;
+    Wrapper class that provides an invoke() method.
+
+    Generic over P (the __call__ parameters) and R (the return type).
+    &quot;&quot;&quot;
+
+    def __init__(self, instance: Any) -&gt; None:
+        self._instance = instance
+
+    def invoke(self, *args: P.args, **kwargs: P.kwargs) -&gt; R:
+        &quot;&quot;&quot;Dispatch to the wrapped instance's __call__ method.&quot;&quot;&quot;
+        return self._instance(*args, **kwargs)
+
+
+def wrap() -&gt; Callable[[type[_HasCall[P, R]]], Wrapper[P, R]]:
+    &quot;&quot;&quot;
+    Decorator that wraps a class in a Wrapper instance.
+
+    The decorator:
+    1. Takes a class with __call__[P, R]
+    2. Creates an instance of that class
+    3. Returns a Wrapper[P, R] wrapping that instance
+
+    The return type is explicitly annotated as Wrapper[P, R].
+    &quot;&quot;&quot;
+
+    def decorator(cls: type[_HasCall[P, R]]) -&gt; Wrapper[P, R]:
+        instance = cls()
+        return Wrapper(instance)
+
+    return decorator
+</code></pre>
+<p>This script runs as expected. But it fails type checking with <code>ty</code>, which does not perceive the type transformation applied by the decorator:</p>
+<pre><code>error[unresolved-attribute]: Class `Greeter` has no attribute `invoke`
+  --&gt; minimal_reproducer.py:77:15
+   |
+75 |         return f&quot;Hello, {name}!&quot;
+76 |
+77 | result: str = Greeter.invoke(&quot;World&quot;)
+   |               ^^^^^^^^^^^^^^
+78 | print(result)  # Should print: Hello, World!
+   |
+info: rule `unresolved-attribute` is enabled by default
+</code></pre>
+<p>It is somewhat unclear to me if this is expected to work. <code>mypy</code> type checking fails with the same error, but <code>pyright</code> checking passes as desired.</p>
+<p>I'm curious if this is something I should expect <code>ty</code> to be able to support. I searched open issues and found a number relating to decorator support in general, but none that appeared specifically about this (admittedly unusual) pattern.</p>
+<p>Thank you!</p>
+<h3>Version</h3>
+<p>ty 0.0.9</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-07 16:37</div>
+            <div class="timeline-body"><p>Thanks! We do plan to support this -- see #143</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2026-01-07 16:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mwaskom">@mwaskom</a> on 2026-01-07 16:40</div>
+            <div class="timeline-body"><p>Ah apologies for missing that one. Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mwaskom">@mwaskom</a> on 2026-01-07 16:41</div>
+            <div class="timeline-body"><p>Since that issue is pretty old I wonder if you could comment on current thoughts about prioritization? Is this something you'd see as blocking a &quot;stable&quot; / &quot;GA&quot; release of <code>ty</code> or more of a nice to have eventually?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-07 16:41</div>
+            <div class="timeline-body"><p>np, finding dupes on GitHub is impossible, especially on jargon-y projects like type checkers :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-07 16:45</div>
+            <div class="timeline-body"><blockquote>
+<p>Since that issue is pretty old I wonder if you could comment on current thoughts about prioritization? Is this something you'd see as blocking a &quot;stable&quot; / &quot;GA&quot; release of <code>ty</code> or more of a nice to have eventually?</p>
+</blockquote>
+<p>It's in the &quot;Stable&quot; milestone, so we certainly hope to fix it before we declare that we're stable.</p>
+<p>I would <em>personally</em> view it as pretty low priority relative to many other issues in the &quot;stable&quot; milestone. As you noted, some other type checkers such as mypy that have been stable for a long time have never added support for this pattern, and (I used to contribute to mypy a fair bit) I don't honestly remember it coming up <em>much</em> on the mypy issue tracker. We've just got a <em>lot</em> of issues to fix before we declare ourselves stable 😅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mwaskom">@mwaskom</a> on 2026-01-07 16:49</div>
+            <div class="timeline-body"><p>Understandable thanks! FWIW this is potentially quite important to us at <a href="https://modal.com/">Modal</a>, as we rely heavily on fairly unusual wrapping patterns in our Python SDK. And we'd of course love to be compatible with <code>ty</code> as I know our users will want to leverage it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-07 16:53</div>
+            <div class="timeline-body"><p>Ah that's definitely valuable information, and could definitely change our prioritisation here! Would you mind posting a comment to that effect on the other issue?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mwaskom">@mwaskom</a> on 2026-01-07 16:56</div>
+            <div class="timeline-body"><p>Sure thing. Thanks for explaining, appreciate your time!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:51:35 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>dict.fromkeys introduces Unknown type - astral-sh/ty #2241</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>dict.fromkeys introduces Unknown type</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2241">#2241</a>
+        opened by <a href="https://github.com/TylerYep">@TylerYep</a>
+        on 2025-12-27 22:43
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/TylerYep">@TylerYep</a> on 2025-12-27 22:43</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Ruff autofixes the first comprehension to the second version using <code>dict.fromkeys</code>, but ty flags the new code as having a type error.</p>
+<pre><code class="language-py">from enum import Enum
+from typing import FrozenSet
+
+class Fruit(Enum):
+    APPLE = &quot;apple&quot;
+    BANANA = &quot;banana&quot;
+
+examples: frozenset[Fruit] = frozenset([Fruit.APPLE, Fruit.BANANA])
+# result: list[dict[Fruit, float]] = [
+#     {role: 0.0 for role in examples} for _ in range(5)
+# ]
+result2: list[dict[str, float]] = [
+    dict.fromkeys(examples, 0.0) for _ in range(5)
+]
+</code></pre>
+<p><code>uv run ty check</code></p>
+<p>https://play.ty.dev/abf9edf5-c495-49e5-ac22-bae5b0a6f759</p>
+<h3>Version</h3>
+<p>ty 0.0.7 (cf82a04b5 2025-12-24)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on 2025-12-27 23:04</div>
+            <div class="timeline-body"><p>Using <code>StrEnum</code> instead of <code>Enum</code> removes all diagnostics.</p>
+<p>https://play.ty.dev/477b71ef-024f-4468-9ad6-1faa78ba9a89</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-29 10:56</div>
+            <div class="timeline-body"><p>All other type checkers (pyright, pyrefly, and mypy) also report an error here. I understand that is because <code>Fruit</code> isn't a subclass of <code>str</code>, that's why <code>Fruit</code> isn't assignable to <code>str</code>.</p>
+<p>We can demonstrate this using this simplified version:</p>
+<pre><code class="language-py">from enum import StrEnum, Enum
+from typing import FrozenSet
+
+class Fruit(Enum):
+    APPLE = &quot;apple&quot;
+    BANANA = &quot;banana&quot;
+
+fruit: str = Fruit.APPLE
+</code></pre>
+<p>As @MatthewMckee4 suggested, you can use <code>StrEnum</code> if you want that the enum values are assignable to <code>str</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-12-29 10:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-29 19:42</div>
+            <div class="timeline-body"><p>I tried this out in Ruff, and C420 autofixes from this:</p>
+<pre><code class="language-py">from enum import Enum
+
+
+class Fruit(Enum):
+    APPLE = &quot;apple&quot;
+    BANANA = &quot;banana&quot;
+
+
+examples: frozenset[Fruit] = frozenset([Fruit.APPLE, Fruit.BANANA])
+result: list[dict[Fruit, float]] = [
+    {role: 0.0 for role in examples} for _ in range(5)
+]
+</code></pre>
+<p>to this:</p>
+<pre><code class="language-py">from enum import Enum
+
+
+class Fruit(Enum):
+    APPLE = &quot;apple&quot;
+    BANANA = &quot;banana&quot;
+
+
+examples: frozenset[Fruit] = frozenset([Fruit.APPLE, Fruit.BANANA])
+result: list[dict[Fruit, float]] = [
+    dict.fromkeys(examples, 0.0) for _ in range(5)
+]
+</code></pre>
+<p>And the latter version is fine in both ruff and ty. The problem here was changing the key type from <code>Fruit</code> to <code>str</code>, which is not a change Ruff would make, as far as I know.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:51:35 UTC
+    </footer>
+</body>
+</html>

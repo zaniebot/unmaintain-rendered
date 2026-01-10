@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Treat Callable as having &quot;__name__&quot; attribute - astral-sh/ty #2240</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Treat Callable as having &quot;__name__&quot; attribute</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2240">#2240</a>
+        opened by <a href="https://github.com/dchevell">@dchevell</a>
+        on 2025-12-27 21:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dchevell">@dchevell</a> on 2025-12-27 21:49</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p><code>mypy</code> and <code>pyright</code> intentionally assume that <code>Callable</code> has a <code>__name__</code> attribute, but <code>ty</code> doesn't, and reports usage of <code>__name__</code> as an error:</p>
+<pre><code class="language-python"># err_report.py
+from typing import Any
+from collections.abc import Callable
+
+def fn_name(fn: Callable[..., Any]) -&gt; str:
+    return fn.__name__
+</code></pre>
+<pre><code class="language-shell">$ mypy err_report.py
+Success: no issues found in 1 source file
+$ pyright err_report.py
+0 errors, 0 warnings, 0 informations
+$ ty check err_report.py
+error[unresolved-attribute]: Object of type `(...) -&gt; Any` has no attribute `__name__`
+ --&gt; err_report.py:6:12
+  |
+5 | def fn_name(fn: Callable[..., Any]) -&gt; str:
+6 |     return fn.__name__
+  |            ^^^^^^^^^^^
+  |
+help: Function objects have a `__name__` attribute, but not all callable objects are functions
+info: rule `unresolved-attribute` is enabled by default
+
+Found 1 diagnostic
+</code></pre>
+<p>My understanding (from python/mypy#14392) is that <code>ty</code> is technically correct here, but that mypy et al. are making an intentional special case here to avoid false positives. Can <code>ty</code> conform to the same behaviour?</p>
+<h3>Version</h3>
+<p>ty 0.0.7 (cf82a04b5 2025-12-24)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a> on 2025-12-27 22:45</div>
+            <div class="timeline-body"><p>Discussion about this is still ongoing, see #1495 and #491</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-12-29 07:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @carljm on 2025-12-29 19:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-12-29 19:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-29 19:56</div>
+            <div class="timeline-body"><p>For clarity -- the issue here is #1495. #491 is loosely related in that they are both about &quot;unsound assumptions type checkers make about Callable types&quot;, but presence of <code>__name__</code> is not related to being a bound method descriptor.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-29 19:57</div>
+            <div class="timeline-body"><p>(FWIW, our current leaning in #1495 is not to copy the unsound assumption of mypy here, because we think ty can provide the tools to handle this soundly instead.)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:51:35 UTC
+    </footer>
+</body>
+</html>

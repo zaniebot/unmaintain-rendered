@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>project recognition prefers parent over child - astral-sh/ty #2376</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>project recognition prefers parent over child</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2376">#2376</a>
+        opened by <a href="https://github.com/dorschw">@dorschw</a>
+        on 2026-01-07 14:52
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dorschw">@dorschw</a> on 2026-01-07 14:52</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>given this project structure</p>
+<pre><code>├── README.md
+├── bar
+│   ├── README.md
+│   ├── main.py
+│   └── pyproject.toml
+├── main.py
+└── pyproject.toml
+</code></pre>
+<p>With this being <code>foo/pyproject.toml</code></p>
+<pre><code>[project]
+name = &quot;foo&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.14&quot;
+dependencies = []
+
+[tool.uv.workspace]
+members = [
+    &quot;bar&quot;,
+]
+
+[tool.ty.src]
+exclude=[&quot;bar/**&quot;] // &lt;&lt;&lt;&lt;&lt;&lt; NOTE THIS
+</code></pre>
+<p>when running <code>uvx ty check .</code> or <code>uv run ty check .</code> <strong>in the <code>bar</code> folder</strong>, all <code>bar</code> files are ignored.</p>
+<pre><code>WARN No python files found under the given path(s)
+All checks passed!
+</code></pre>
+<h3>Version</h3>
+<p>ty 0.0.9</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @AlexWaygood on 2026-01-07 15:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2026-01-07 15:41</div>
+            <div class="timeline-body"><p>is <code>foo</code> the outer directory?</p>
+<p>If so, <code>ty</code> searches for the closest <code>ty.toml</code> or <code>pyproject.toml</code> with a <code>tool.ty</code> section and uses that configuration. If you want <code>bar</code> to be it's own ty project, add an empty <code>[tool.ty]</code> section, so that ty knows, hey, don't search any further, this is the root of the project.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dorschw">@dorschw</a> on 2026-01-07 15:49</div>
+            <div class="timeline-body"><p>yes, <code>foo</code> is the outer one (sorry it didn't show in the tree)</p>
+<p>and gotcha, thanks. missed that in the docs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dorschw on 2026-01-07 15:49</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:51:35 UTC
+    </footer>
+</body>
+</html>

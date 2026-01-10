@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`--add-noqa`‑style auto-suppression feature - astral-sh/ty #913</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`--add-noqa`‑style auto-suppression feature</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/913">#913</a>
+        opened by <a href="https://github.com/aaronsteers">@aaronsteers</a>
+        on 2025-07-30 00:39
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/aaronsteers">@aaronsteers</a> on 2025-07-30 00:39</div>
+            <div class="timeline-body"><p>Hi Astral/<code>ty</code> team – I’m evaluating <strong>ty</strong> (and Pyrefly) for static typing adoption across a very large legacy codebase (tens of thousands of lines) that never adopted MyPy.</p>
+<p><strong>Ruff supports <code>--add-noqa</code></strong> to append <code># noqa: E###</code> comments for lint errors and ease migration.</p>
+<p><strong>Pyrefly similarly offers an auto-suppress feature</strong> — specifically, <code>pyrefly check --suppress-errors</code> can insert <code># pyrefly: ignore</code> comments automatically to silence type-checking errors inline, making gradual adoption far more feasible.</p>
+<h3>🙏 Why this matters</h3>
+<ul>
+<li>Without auto suppression, introducing <strong>ty</strong> into a massive legacy codebase would generate an overwhelming wall of errors.</li>
+<li>We need a way to silence all current type-checking issues inline, then iteratively fix them over time.</li>
+<li>This is a hard requirement for us to consider adopting <strong>ty</strong>, especially given our codebase size and legacy state. (We can wait a little while but we'd like to add <code>ty</code> support soon, as long as it is somewhere in the mid-term version. We are completely ignoring the legacy options, so our next-best option would be <code>pyrefly</code>.)</li>
+</ul>
+<h3>✅ Proposal</h3>
+<p>Add <strong>ty</strong> support for a <code>--add-noqa</code> or <code>--add-type-ignore</code> arg, which:</p>
+<ul>
+<li>Automatically inserts suppression comments like <code># type: ignore</code> or ideally <code># ty: ignore[...]</code></li>
+<li>Includes rule codes or kinds where feasible</li>
+<li>Applies across files/directories in one command</li>
+</ul>
+<p>Even a basic version — suppressing <em>all</em> present errors — would be incredibly useful. Ideally the feature could later evolve to support finer‑grained control.</p>
+<p>If this isn’t currently on the roadmap, I’d love to know if you're open to a design proposal or PR. I’d be glad to collaborate on an initial implementation or spec.</p>
+<p>Thanks for the effort you’ve put into <strong>ruff</strong>, <strong>uv</strong>, and <strong>ty</strong> — the ecosystem of high‑performance Python tooling from Astral has been inspiring, and I'm honestly very much looking forward to adding <strong>ty</strong> to our stack.</p>
+<p>— AJ</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "🚀 Feature Request: `--add-noqa`‑style auto-suppression for **ty**" to "🚀 Feature Request: `--add-noqa`‑style auto-suppression for `ty`" by @aaronsteers on 2025-07-30 00:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">feature</span> added by @MichaReiser on 2025-07-30 06:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @MichaReiser on 2025-07-30 06:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-30 06:35</div>
+            <div class="timeline-body"><p>Hi and thanks for the great write up. Yes, that's a feature we want. We haven't had the time to work on it. It does require some upfront CLI design work. Should this be a flag similar to pyrefly or should it be a separate command like in Ruff? Should this be a rule (with a fix) or is it an entirely separate feature.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wish</span> added by @MichaReiser on 2025-07-30 06:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/aaronsteers">@aaronsteers</a> on 2025-07-31 02:20</div>
+            <div class="timeline-body"><blockquote>
+<p>Hi and thanks for the great write up.</p>
+</blockquote>
+<p>🙏 Thanks! 😄</p>
+<blockquote>
+<p>Yes, that's a feature we want.</p>
+</blockquote>
+<p>Awesome. Thanks for confirming.</p>
+<blockquote>
+<p>Should this be a flag similar to pyrefly or should it be a separate command like in Ruff?</p>
+</blockquote>
+<p>I think the <code>ruff</code> implementation is already great in terms of ergonomics.</p>
+<p>IIRC, in Ruff it can be invoked with <code>ruff check --add-noqa</code>.</p>
+<p>And, helpfully, I believe there's a means also of identifying and <em>removing</em> stale noqas, although I don't recall if that is only with 'normal' <code>ruff check --fix</code>.</p>
+<blockquote>
+<p>Should this be a rule (with a fix) or is it an entirely separate feature.</p>
+</blockquote>
+<p>I think in an ideal world, the noqa statements are specific to the error being ignored (meaning there's a meta aspect of a rule needing to know all the other rules), so I don't know if it is feasible to apply as a rule in itself, versus a command (or command-like behavior triggered via CLI arg).</p>
+<p>I do think the <strong><em>removal</em></strong> of unused noqas might be feasible as a fixable rule.</p>
+<p>And to be very specific, I don't have a strong preference in terms of ergonomics whether it is a rule, a command, or a CLI flag that triggers a command-like action. Others who better understand the internals might have stronger opinions here, and I'm happy to defer.</p>
+<h2>Argument for a dedicated command...</h2>
+<p>That said, I did use a now very-old tool called <code>flakehell</code>, and that tool specifically had a '<a href="https://flakehell.readthedocs.io/commands/baseline.html">baseline</a>' command. For my use case (below), I'm totally okay if this follows that paradigm: almost on onboarding-type activity - done once and then forgotten. I would be completely okay with a <code>ty baseline</code> command, or similar, which just treated current state as &quot;baseline&quot; and noqa-ed whatever was needed.</p>
+<p>This would probably just be run once, or perhaps run again if/when stricter rules are opted-into.</p>
+<h3>More Context</h3>
+<p>For my part, this is <em>most</em> valuable when baselining existing codebases quickly (like overnight) so that <em>incrementally</em> things are sane, and can be progressively improved as people find ways to remove those noqas. To do so frequently in the course of regular development (such as in a PR slash command) does give some convenience - but seems to trivialize the value of typing in the first place. Hopefully the IDE can put squigglies where they need to be, and a developer can add noqas when/if they disagree with the feedback or don't have an immediate fix. But for my part, after initial adoption, these should ideally be infrequent. For my use cases, I'm happy if I can quickly onboard a large codebase, knowing that (1) I'm not making anything worse and (2) unused/unneeded noqas will disappear organically when they are no longer needed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">feature</span> removed by @AlexWaygood on 2025-10-06 16:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "🚀 Feature Request: `--add-noqa`‑style auto-suppression for `ty`" to "`--add-noqa`‑style auto-suppression feature" by @AlexWaygood on 2025-10-07 08:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/janosh">@janosh</a> on 2025-10-29 23:17</div>
+            <div class="timeline-body"><p>we use a monorepo and lack of <code>--add-noqa</code> auto-suppression is preventing us from updating to newer <code>ty</code> versions due to the large number of legacy errors. would be super useful to have this! 👍</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-10-30 14:51</div>
+            <div class="timeline-body"><p>I think we should probably bump up the priority on this, as I don't think it's that <em>hard</em> (though it does require some design decisions), and it can be a real blocker to adoption. (I.e. I think we probably shouldn't mark it &quot;wish&quot;, and should maybe even put it under the GA milestone.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wish</span> removed by @carljm on 2025-10-30 16:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "GA" by @carljm on 2025-10-30 16:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-14 08:24</div>
+            <div class="timeline-body"><p>Related to https://github.com/astral-sh/ty/issues/1501</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-23 14:10</div>
+            <div class="timeline-body"><p>Same as for https://github.com/astral-sh/ty/issues/1501#issuecomment-3567994631. The main outstanding decision here is whether we want a <code>ty fix</code> command or <code>ty check --fix</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/janosh">@janosh</a> on 2025-11-23 15:10</div>
+            <div class="timeline-body"><p>definitely ty check --fix for consistency with ruff</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-23 15:20</div>
+            <div class="timeline-body"><blockquote>
+<p>definitely ty check --fix for consistency with ruff</p>
+</blockquote>
+<p>There's a two-year-old proposal from @zanieb to deprecate <code>ruff check-- fix</code> in favor of <code>ruff fix</code>. We just never got to implement the change.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-23 16:23</div>
+            <div class="timeline-body"><p>The proposal, is unfortunately, an internal notion document. But it also says</p>
+<blockquote>
+<p>We want to retain a good single command interface, so ruff check --fix should remain available. This pattern allows users to fix violations with the same options they’ve provided to check with minimal effort.</p>
+</blockquote>
+<p>So starting with <code>ty check --fix</code> might be a good first step. The main concern mentioned in the proposal are the <code>--fix-only</code> and other flags that require <code>--fix</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">suppression</span> added by @MichaReiser on 2025-11-29 15:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-29 17:17</div>
+            <div class="timeline-body"><p>I started hacking on something but there are a few more wrinkles to solve (e.g. ty has a watch mode, how to support notebooks, ..., we need to render all remaining diagnostics)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danielgafni">@danielgafni</a> on 2025-12-18 11:41</div>
+            <div class="timeline-body"><p>I can confirm this is an adoption blocker for us. I assume it will be for most large projects.</p>
+<p>But I also believe a <a href="https://github.com/astral-sh/ty/issues/1074">baseline</a> feature - the way <code>basedpyright</code> has it implemented - is a superior alternative, since it allows tracking and gradually eliminating these initial ignores separately from all the others, &quot;legitimate&quot; ones.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "Stable" by @MichaReiser on 2025-12-31 16:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Pre-stable 1" by @MichaReiser on 2025-12-31 16:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2026-01-07 10:17</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:51:35 UTC
+    </footer>
+</body>
+</html>

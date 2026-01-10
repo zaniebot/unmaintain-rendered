@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unexpected inferred type when using `typing.Literal` - astral-sh/ty #2301</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Unexpected inferred type when using `typing.Literal`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2301">#2301</a>
+        opened by <a href="https://github.com/jeertmans">@jeertmans</a>
+        on 2026-01-02 10:31
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jeertmans">@jeertmans</a> on 2026-01-02 10:31</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Hi!</p>
+<p>I recently faced an issue when trying to correctly annotate the following pattern:</p>
+<pre><code class="language-python">from typing import Literal, get_args
+
+Value = Literal[&quot;a&quot;, &quot;b&quot;]
+ALLOWED_VALUES = get_args(Value)
+
+def f(x: str) -&gt; Value:
+    if x not in ALLOWED_VALUES:
+        raise ValueError
+    return x
+</code></pre>
+<p>where <code>ty</code> would complain that <code>foo</code> returns a <code>str</code> and not a <code>Value</code>.</p>
+<p>I came up with different ideas to try to solve this issue, but none work, except for the last case, which is quite surprising. As you can see in the code below, <a href="https://play.ty.dev/c0941551-ec5a-4d3e-b06e-15b185d7ca46">link to playground</a>, the inferred type for <code>ALLOWED_VALUES_BAR</code> changes whether we are inside or outside the <code>bar</code> function.</p>
+<details>
+
+<summary>Full Python code</summary>
+
+<pre><code class="language-python">from typing import Any, Literal, assert_type, get_args
+
+Value = Literal[&quot;a&quot;, &quot;b&quot;]
+
+# Ty does not infer that x: tuple[Value, ...]
+# probably because get_args is typed tuple[Any, ...]?
+ALLOWED_VALUES_FOO = get_args(Value)
+
+def foo(x: str) -&gt; Value:
+    if x not in ALLOWED_VALUES_FOO:
+        raise ValueError
+    reveal_type(x)
+    return x
+
+# Type hint...
+ALLOWED_VALUES_BAR: tuple[Value, ...] = get_args(Value)
+# ... seems to be ignored as it reveals tuple[Any, ...]
+reveal_type(ALLOWED_VALUES_BAR)
+
+def bar(x: str) -&gt; Value:
+    # but here it is revealed to be tuple[Literal[&quot;a&quot;, &quot;b&quot;], ...]
+    reveal_type(ALLOWED_VALUES_BAR)
+    if x not in ALLOWED_VALUES_BAR:
+        raise ValueError
+    reveal_type(x)
+    return x
+
+# Another way I tried to overcome this issue,
+# but this requires duplicating the allowed literals
+ALLOWED_VALUES_BAZ: tuple[Value, ...] = (&quot;a&quot;, &quot;b&quot;)
+
+def baz(x: str) -&gt; Value:
+    if x not in ALLOWED_VALUES_BAZ:
+        raise ValueError
+    reveal_type(x)
+    return x
+
+# For some reasons, using x: Any works...
+
+def baz_any(x: Any) -&gt; Value:
+    if x not in ALLOWED_VALUES_BAZ:
+        raise ValueError
+    reveal_type(x)
+    return x
+</code></pre>
+</details>
+
+<details>
+
+<summary>File diagnostic</summary>
+
+<pre><code>Revealed type: `str` (revealed-type) [Ln 12, Col 17]
+Return type does not match returned value: expected `Literal[&quot;a&quot;, &quot;b&quot;]`, found `str` (invalid-return-type) [Ln 13, Col 12]
+Revealed type: `tuple[Any, ...]` (revealed-type) [Ln 18, Col 13]
+Revealed type: `tuple[Literal[&quot;a&quot;, &quot;b&quot;], ...]` (revealed-type) [Ln 22, Col 17]
+Revealed type: `str` (revealed-type) [Ln 25, Col 17]
+Return type does not match returned value: expected `Literal[&quot;a&quot;, &quot;b&quot;]`, found `str` (invalid-return-type) [Ln 26, Col 12]
+Revealed type: `str` (revealed-type) [Ln 35, Col 17]
+Return type does not match returned value: expected `Literal[&quot;a&quot;, &quot;b&quot;]`, found `str` (invalid-return-type) [Ln 36, Col 12]
+Revealed type: `Any` (revealed-type) [Ln 43, Col 17]
+</code></pre>
+</details>
+
+<p>I hope this is not a duplicate of any existing issue.</p>
+<p>Thanks in advance!</p>
+<h3>Version</h3>
+<p>ty 0.0.8</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mtshiba">@mtshiba</a> on 2026-01-02 22:11</div>
+            <div class="timeline-body"><p>I think there are two main factors at play.</p>
+<p>One is https://github.com/astral-sh/ty/issues/136. The other is that <code>str</code> is an inheritable class, which disables narrowing in tuples.</p>
+<pre><code class="language-python">from typing import Literal
+
+Value = Literal[&quot;a&quot;, &quot;b&quot;]
+
+class BadStr(str):
+    def __eq__(self, other):
+        return True
+
+def f(x: str) -&gt; Value:
+    if x not in (&quot;a&quot;, &quot;b&quot;):
+        raise ValueError
+    return x
+
+x = f(BadStr(&quot;c&quot;))
+print(x)  # c
+</code></pre>
+<p>So you should probably use <code>LiteralString</code>.</p>
+<pre><code class="language-python">from typing import Literal, LiteralString
+
+Value = Literal[&quot;a&quot;, &quot;b&quot;]
+
+def f(x: LiteralString) -&gt; Value:
+    if x not in (&quot;a&quot;, &quot;b&quot;):
+        raise ValueError
+    return x  # OK
+
+def g(x: LiteralString) -&gt; Value:
+    if x not in (&quot;a&quot;, &quot;c&quot;):
+        raise ValueError
+    return x # Not OK
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">narrowing</span> added by @mtshiba on 2026-01-02 22:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bidirectional inference</span> added by @mtshiba on 2026-01-02 22:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @MichaReiser on 2026-01-03 17:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2026-01-04 21:08</div>
+            <div class="timeline-body"><p>The issue for tracking the possibility that we could add some unsafe narrowing even when a subclass could override <code>__eq__</code> is https://github.com/astral-sh/ty/issues/1566</p>
+<p>Will close this as duplicate - thanks for the report!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2026-01-04 21:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jeertmans">@jeertmans</a> on 2026-01-05 08:29</div>
+            <div class="timeline-body"><p>Thanks for your help and reply @mtshiba &amp; @carljm!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:51:35 UTC
+    </footer>
+</body>
+</html>

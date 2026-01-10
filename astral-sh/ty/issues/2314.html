@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>False positive [invalid-assignment] on assigning to union with bounded typevar - astral-sh/ty #2314</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>False positive [invalid-assignment] on assigning to union with bounded typevar</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2314">#2314</a>
+        opened by <a href="https://github.com/randolf-scholz">@randolf-scholz</a>
+        on 2026-01-03 10:20
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/randolf-scholz">@randolf-scholz</a> on 2026-01-03 10:20</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>https://play.ty.dev/b3098a7e-d5ce-480f-be95-3f4cd7a6d224</p>
+<pre><code class="language-python">def upcast(arg: int) -&gt; int:
+    return arg
+
+def test[X: int](items: list[X]) -&gt; list[X]:
+    _a: list[int] = list(items)           # ✅️
+    _b: list[int] = [*items]              # ✅️
+    _c: list[int] = [x for x in items]    # ✅️
+
+    _1: list[str] | list[int] = list(items)         # ❌️
+    _2: list[int] | list[str] = list(items)         # ❌️
+    _3: list[str] | list[int] = [*items]            # ✅️
+    _4: list[int] | list[str] = [*items]            # ✅️
+    _5: list[str] | list[int] = [x for x in items]  # ✅️
+    _6: list[int] | list[str] = [x for x in items]  # ✅️
+    _7: list[str] | list[int] = [upcast(x) for x in items]  # ✅️
+    _8: list[int] | list[str] = [upcast(x) for x in items]  # ✅️
+    return items
+</code></pre>
+<p>This reports</p>
+<blockquote>
+<p>Object of type <code>list[X@test]</code> is not assignable to `list[str] | list[int]</p>
+</blockquote>
+<p>But at the same time, it reports <code>list</code> is <code>[T] (Iterable[T]) -&gt; list[T]</code>.</p>
+<p>So in <code>_1</code> and <code>_2</code> we have joint constraints:</p>
+<ul>
+<li><code>X &lt;: T</code> (<code>list[X]</code> must be assignable to <code>Iterable[T]</code>),</li>
+<li><code>X &lt;: int</code> upper bound</li>
+<li><code>T = int</code> or <code>T=str</code> (<code>list[T] &lt;: list[int] | list[str]</code>)</li>
+</ul>
+<p>So, this has the unique solution <code>T=int</code>, but <code>ty</code> seems to incorrectly select <code>T=X</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ElVynz">@ElVynz</a> on 2026-01-03 23:55</div>
+            <div class="timeline-body"><p>I have encountered the same issue in a very similar case (https://play.ty.dev/77b3c10e-0aeb-4f2f-8007-31b79671733e)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2026-01-04 22:51</div>
+            <div class="timeline-body"><p>Thanks for the report!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @carljm on 2026-01-04 22:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bidirectional inference</span> added by @carljm on 2026-01-04 22:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">generics</span> added by @carljm on 2026-01-04 22:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Hugo-Polloli">@Hugo-Polloli</a> on 2026-01-05 22:16</div>
+            <div class="timeline-body"><p>If that is alright, I would like to try to fix this one :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2026-01-05 22:35</div>
+            <div class="timeline-body"><blockquote>
+<p>If that is alright, I would like to try to fix this one :)</p>
+</blockquote>
+<p>Definitely!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @Hugo-Polloli by @carljm on 2026-01-05 22:35</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:51:35 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Go-to-definition jumps to typeshed stubs for datetime module import  - astral-sh/ty #2249</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Go-to-definition jumps to typeshed stubs for datetime module import </h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2249">#2249</a>
+        opened by <a href="https://github.com/olzhasar">@olzhasar</a>
+        on 2025-12-28 16:17
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/olzhasar">@olzhasar</a> on 2025-12-28 16:17</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>When jumping to a definition ~~that corresponds to an external library~~, <code>ty</code> points to the cached Python file. This file is generally identical to the source, so exploring it's contents works fine.
+However, it gets inconvenient when one wants to, for example, explore other files in the same folder as the source. This feels like a common use case when jumping to definitions.</p>
+<h3>Version</h3>
+<p>ty 0.0.7</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @AlexWaygood on 2025-12-28 16:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-28 17:01</div>
+            <div class="timeline-body"><p>Can you share an example? I'm not entirely sure if I understand what you mean by cache.</p>
+<p>The LSP also differentiates between go to definition and go to declaration: <em>Go to declaration</em> jumps to the implementation (py file) and not the definition (pyi file)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-info</span> added by @MichaReiser on 2025-12-28 17:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/olzhasar">@olzhasar</a> on 2025-12-28 22:21</div>
+            <div class="timeline-body"><pre><code>from datetime import datetime
+</code></pre>
+<p>When I try to go to <code>datetime</code>'s definition (not type definition) using <code>ty</code> LSP here, I'm being dropped to:</p>
+<p><code>~/.cache/ty/vendored/typeshed/3c2dbb1fde8e8d1d59b10161c8bf5fd06c0011cd/stdlib/datetime.pyi</code></p>
+<p><code>pyright</code>, on the other hand, points to the correct module in the standard library.</p>
+<p>I thought this was happening for external imports, but it seems that it's Python's standard library imports that are causing issues.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-29 07:51</div>
+            <div class="timeline-body"><p>Thanks for the example.</p>
+<p>ty correctly jumps to <code>datetime.py</code> when clicking on the name after <code>from</code> but we always jump to the <code>pyi</code> file when clicking on <code>datetime</code> after the <code>import</code> keyword.</p>
+<p>I'm not too familiar with that part of the code but what I noticed:</p>
+<ul>
+<li>Once in <code>datetime.py</code>: Go to def for the <code>_datetime</code> import doesn't work.</li>
+<li><code>datetime.py</code> does use star imports. Does our definition mapper support star imports?</li>
+</ul>
+<p>Either way, we should look into this. Thanks for the report</p>
+<p>CC: @Gankra</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-info</span> removed by @MichaReiser on 2025-12-29 07:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2025-12-29 07:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Pre-stable 1" by @MichaReiser on 2025-12-29 07:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-29 08:51</div>
+            <div class="timeline-body"><blockquote>
+<ul>
+<li>Once in <code>datetime.py</code>: Go to def for the <code>_datetime</code> import doesn't work.</li>
+</ul>
+</blockquote>
+<p>I think this part, at least, is expected with our current capabilities because <code>_datetime</code> is a C extension</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-29 09:04</div>
+            <div class="timeline-body"><p>Makes sense. I'm not sure then how Pylance resolves <code>datetime</code> to <code>_pydatetime.py</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-29 09:04</div>
+            <div class="timeline-body"><p>Oh, Pylance emulates:</p>
+<pre><code class="language-py">try:
+    from _datetime import *
+    from _datetime import __doc__
+except ImportError:
+    from _pydatetime import *
+    from _pydatetime import __doc__
+</code></pre>
+<p>That's interesting</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Point to the actual file when going to the definition instead of cache" to "Go-to-definition jumps to typeshed stubs for datetime module import " by @AlexWaygood on 2025-12-29 09:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-29 09:06</div>
+            <div class="timeline-body"><p>This is related to <a href="https://github.com/astral-sh/ty/issues/2096">#2096</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "Pre-stable 1" by @MichaReiser on 2025-12-31 15:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @MichaReiser on 2025-12-31 15:20</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:51:35 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support self-referential generic implicit/PEP-613 type aliases - astral-sh/ty #1738</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Support self-referential generic implicit/PEP-613 type aliases</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1738">#1738</a>
+        opened by <a href="https://github.com/sharkdp">@sharkdp</a>
+        on 2025-12-03 08:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-12-03 08:40</div>
+            <div class="timeline-body"><p>We currently handle self-referential generic implicit (and PEP 613) type aliases by <a href="https://github.com/astral-sh/ruff/blob/f4e4229683936a486f689aebb9d7d06b3985952d/crates/ty_python_semantic/resources/mdtest/implicit_type_aliases.md?plain=1#L1532-L1548">falling back to <code>Divergent</code></a>. This prevents infinite recursion and false positive diagnostics, but we should properly support them. For example, this should be an error, but currently is not:</p>
+<pre><code class="language-py">from typing import TypeVar
+
+T = TypeVar(&quot;T&quot;)
+NestedDict = dict[str, &quot;NestedDict[T]&quot;]
+
+n: NestedDict[int] = {&quot;foo&quot;: b&quot;wrong&quot;}
+</code></pre>
+<p>An example case where this is relied on in typeshed is the annotation for the second argument to <code>isinstance</code>, which is a recursive tuple-of-tuples. Currently we don't catch the type error in <code>isinstance(None, (int, None))</code> (though we do catch it in <code>isinstance(None, None)</code>), due to not fully supporting the recursion.</p>
+<p>(Note: we <a href="https://play.ty.dev/22eb39cd-098f-4b84-80e9-70bc088740d5">already support this</a> for PEP 695 type aliases)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mtshiba">@mtshiba</a> on 2025-12-26 12:13</div>
+            <div class="timeline-body"><p>If we can support implicit recursive type aliases, we should also be able to automatically support PEP-613-style type aliases.
+To support implicit recursive type aliases, they must be lazily evaluated if named.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:51:35 UTC
+    </footer>
+</body>
+</html>

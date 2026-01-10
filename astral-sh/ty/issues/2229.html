@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Narrowing to Any/Unknown loses type information - astral-sh/ty #2229</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Narrowing to Any/Unknown loses type information</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2229">#2229</a>
+        opened by <a href="https://github.com/Decodetalkers">@Decodetalkers</a>
+        on 2025-12-26 15:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Decodetalkers">@Decodetalkers</a> on 2025-12-26 15:22</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<pre><code class="language-py">import numpy as np
+import matplotlib.pyplot as plt
+from model import Perception
+
+data = np.genfromtxt(&quot;perceptron_toydata.txt&quot;, delimiter=&quot;\t&quot;)
+X: np.ndarray
+Y: np.ndarray
+X, Y = data[:, :2], data[:, 2]
+Y = Y.astype(np.int64)
+
+print(&quot;Class label counts:&quot;, np.bincount(Y))
+print(&quot;X.shape:&quot;, X.shape)
+print(&quot;y.shape:&quot;, Y.shape)
+
+shuffle_idx = np.arange(Y.shape[0])
+shuffle_rng = np.random.RandomState(123)
+shuffle_rng.shuffle(shuffle_idx)
+X = X[shuffle_idx]
+Y = Y[shuffle_idx]
+
+X_train: np.ndarray
+X_test: np.ndarray
+Y_train: np.ndarray
+Y_test: np.ndarray
+
+X_train, X_test = X[shuffle_idx[:70]], X[shuffle_idx[70:]]
+Y_train, Y_test = Y[shuffle_idx[:70]], Y[shuffle_idx[70:]]
+</code></pre>
+<p>So I have already mark the X_train is np.ndarray, but the type hint did not work</p>
+<p><img width="1147" height="409" alt="Image" src="https://github.com/user-attachments/assets/bb36032b-25f5-48d3-8253-966957760229" /></p>
+<h3>Version</h3>
+<p>ty 0.0.7</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-12-26 16:01</div>
+            <div class="timeline-body"><p>Thanks for the report! I'll transfer this to the ty repo.</p>
+<p>I think this might be related to https://github.com/astral-sh/ty/issues/136, but someone else will probably have a better answer than I do :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "ty: Type Hint does not work very well" to "Type Hint does not work very well" by @ntBre on 2025-12-26 16:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Type Hint does not work very well" to "Narrowing to Any/Unknown loses type information" by @carljm on 2025-12-26 16:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-26 16:56</div>
+            <div class="timeline-body"><p>This is definitely closely related to #136, but I'll keep it open as a separate sub-issue; the plan in #136 is to prefer the annotation over the inferred type in an annotated assignment, but that actually wouldn't help in this case. In this case we either want to avoid &quot;narrowing&quot; to <code>Any</code> / <code>Unknown</code> at all, or we want to narrow to the intersection (<code>ndarray &amp; Unknown</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @carljm on 2025-12-26 16:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @carljm on 2025-12-26 17:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">type-inference</span> added by @carljm on 2025-12-26 17:29</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:51:35 UTC
+    </footer>
+</body>
+</html>

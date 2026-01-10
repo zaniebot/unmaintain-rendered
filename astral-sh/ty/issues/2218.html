@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Go-to-definition for a class returns both the `__init__` definition and the class itself - astral-sh/ty #2218</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Go-to-definition for a class returns both the `__init__` definition and the class itself</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2218">#2218</a>
+        opened by <a href="https://github.com/lkhphuc">@lkhphuc</a>
+        on 2025-12-25 06:59
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/lkhphuc">@lkhphuc</a> on 2025-12-25 06:59</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>When using the &quot;go to definition&quot; (in neovim) for a class, currently ty return 2 &quot;definitions&quot;:</p>
+<ul>
+<li>The class name line <code>class MyClass(...):</code></li>
+<li>and the init method <code>def __init__(self,...):</code></li>
+</ul>
+<p>I'm not sure if this is by design or not, but other lsp (pyright) just return one definition <code>class MyClass</code> and thus the editor can jump directly to that definition.
+Current it unnecessary open a picker to pick the definition even though there's just one implementaton of that class.</p>
+<p><img width="959" height="100" alt="Image" src="https://github.com/user-attachments/assets/661757f8-bf24-4b9f-bb3e-9bb97c8fa477" /></p>
+<h3>Version</h3>
+<p>ty 0.0.5</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @AlexWaygood on 2025-12-25 08:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Duplicate definition of a class" to "Go-to-definition for a class returns both the `__init__` definition and the class itself" by @MichaReiser on 2025-12-25 14:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-25 14:56</div>
+            <div class="timeline-body"><p>Interesting, I'm unable to reproduce this but maybe it's because I'm using VS Code or because my example is too simple?</p>
+<p>If I have:</p>
+<pre><code class="language-py">class Test:
+    def __init__(self): ...
+
+
+a = Test()
+</code></pre>
+<p>and click on <code>Test</code>, VS Code then jumps right to <code>class Test</code>. But I assume your case is different. Can you say me more on where you click?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-12-25 15:21</div>
+            <div class="timeline-body"><p>I can partially reproduce this in Emacs. Using the <code>lsp-find-type-defintion</code> command with my cursor on the <code>Test()</code> call takes me straight to the <code>class Test</code> line, but <code>lsp-find-declaration</code> opens a buffer with links to both the class and the <code>__init__</code> method. Maybe neovim has a distinction between the two as well?</p>
+<p>(I kind of like this behavior and actually have <code>lsp-find-declaration</code> on the more convenient keybinding)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lkhphuc">@lkhphuc</a> on 2025-12-26 06:41</div>
+            <div class="timeline-body"><p>I'm using <a href="https://www.lazyvim.org/">LazyVim</a> to be precise, but the behaviour is the same for plain <code>vim.lsp.buf.definition()</code>.</p>
+<p>In my case, both go to definition <code>vim.lsp.buf.definition()</code>, go to declaration <code>vim.lsp.buf.declaration()</code> return both class name and <code>__init__</code>.
+ONly <code>vim.lsp.buf.type_definition()</code> bring me directly to the class name.</p>
+<blockquote>
+<p>Can you say me more on where you click?</p>
+</blockquote>
+<pre><code>class Test:
+    def __init__(self): ...
+
+
+a = Test()
+    ^^^^ cursor is anywhere here.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-26 08:38</div>
+            <div class="timeline-body"><p>It's somewhat intentional that clicking on the constructor returns a reference to both. I need to double-check why this wasn't working for me in VS Code. The idea is that you might be interested in both the type or the <code>__init__</code> method. This was added in https://github.com/astral-sh/ruff/pull/20014</p>
+<p>An alternative would be to make <code>Test</code> go to the class and <code>(</code> go to the <code>__init__</code> method which we discussed on the PR but decided to wait on user feedback. So thanks for the feedback :) Let's keep this issue open to see if other people feel the same.</p>
+<p>Clicking on <code>Test</code> anywhere else, e.g. in a type annotation, should jump directly to the class's definition</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @MichaReiser on 2025-12-26 08:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lkhphuc">@lkhphuc</a> on 2025-12-26 10:07</div>
+            <div class="timeline-body"><p>Thanks. The bracket go to init thing sounds like a good UX to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a> on 2025-12-26 19:04</div>
+            <div class="timeline-body"><p>I can reproduce this on VSC and in the playground using @MichaReiser's example by Ctrl-clicking on the <code>Test</code> in <code>Test()</code>, not sure what would be different (VSC extension version <code>2025.76.0</code> playground <code>9693375e1</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @MichaReiser on 2025-12-31 15:45</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:51:35 UTC
+    </footer>
+</body>
+</html>

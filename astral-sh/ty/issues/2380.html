@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>dict erroneously does not match a Protocol with get() - astral-sh/ty #2380</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>dict erroneously does not match a Protocol with get()</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2380">#2380</a>
+        opened by <a href="https://github.com/bcmills">@bcmills</a>
+        on 2026-01-07 20:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/bcmills">@bcmills</a> on 2026-01-07 20:47</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>https://play.ty.dev/d9fa963a-91ff-4a6d-a39d-53add13eeeee:</p>
+<pre><code class="language-py">from typing import Protocol
+
+class _Headers(Protocol):
+    def get(self, /, key: str) -&gt; str| None: ...
+
+d: dict[str, str] = {}
+
+def use_dict(h: dict[str, str]):
+    v: str | None = h.get(&quot;foo&quot;)
+
+def use_headers(h: _Headers):
+    v: str | None = h.get(&quot;foo&quot;)
+
+use_dict(d)
+use_headers(d)
+
+</code></pre>
+<p><code>ty</code> accepts both <code>use_dict</code> and <code>use_headers</code> as valid functions, and when running this program directly in Python, both <code>use_dict(d)</code> and <code>use_headers(d)</code> succeed without type errors.</p>
+<p>However, <code>ty</code> rejects the use of a <code>dict</code> as an instance of <code>Headers</code>:</p>
+<pre><code>Argument to function `use_headers` is incorrect: Expected `_Headers`, found `dict[str, str]` (invalid-argument-type) [Ln 15, Col 13]
+</code></pre>
+<p>It looks like this may be a bad interaction between Protocol and overload resolution.</p>
+<h3>Version</h3>
+<p>ty 0.0.9</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2026-01-07 23:01</div>
+            <div class="timeline-body"><p>Hi, thanks for the report!</p>
+<p>ty is correct here, and pyright and pyrefly agree -- only mypy allows this, apparently because it doesn't fully consider positional-only arguments in callable assignability.</p>
+<p>The key factor is that all overloads of <code>dict.get</code> have all arguments marked as positional-only in typeshed, meaning that a dict <code>d</code> does not permit the call <code>d.get(key=&quot;foo&quot;)</code>, but your <code>_Headers</code> protocol currently does (if you try changing the <code>.get</code> calls in both <code>use_dict</code> and <code>use_headers</code> to use a keyword argument, you'll see that only the one in <code>use_dict</code> fails.)</p>
+<p>If you change the signature of <code>get</code> on your <code>_Headers</code> protocol to <code>def get(self, key: str, /) -&gt; str| None: ...</code> (making the <code>key</code> argument positional-only, as on <code>dict.get</code>), then ty is happy with this code (and so are all other type checkers).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2026-01-07 23:01</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:51:35 UTC
+    </footer>
+</body>
+</html>

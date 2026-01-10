@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support truthiness type narrowing for checks involving `all(…)` / `any(…)` - astral-sh/ty #521</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Support truthiness type narrowing for checks involving `all(…)` / `any(…)`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/521">#521</a>
+        opened by <a href="https://github.com/Julian-J-S">@Julian-J-S</a>
+        on 2025-05-27 09:05
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Julian-J-S">@Julian-J-S</a> on 2025-05-27 09:05</div>
+            <div class="timeline-body"><p>A python concept I often see in functions is checking if a certain set of variables is not None.</p>
+<p>Checking that individually with <code>if not x: return</code> works fine.</p>
+<p>But checking for multiple variables at a time with <code>if not all(...)</code> seems to break currently type checkers which is unfortunate.</p>
+<pre><code class="language-python">data: dict[str, str] = {
+    &quot;a&quot;: &quot;hello&quot;,
+    &quot;b&quot;: &quot;world&quot;,
+}
+
+a_val = data.get(&quot;a&quot;)
+b_val = data.get(&quot;b&quot;)
+
+def test1():  # &gt;&gt;&gt; This works 👍 
+    if not a_val or not b_val:
+        return
+
+    _ = a_val * 2  # ✅ 
+    _ = b_val * 2  # ✅ 
+
+
+def test2():  # This breaks 💥 
+    if not all([a_val, b_val]):
+        return
+
+    _ = a_val * 2  # 🛑 
+    _ = b_val * 2  # 🛑 
+
+</code></pre>
+<p>Any way this could be achieved? 🤓</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">narrowing</span> added by @AlexWaygood on 2025-05-27 11:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-05-27 11:52</div>
+            <div class="timeline-body"><p>Thank you for reporting this.</p>
+<p>This is <em>technically</em> possible, but would require special-casing <code>all(…)</code> calls, and explicit matching on various kinds of inner iterables.</p>
+<p>Given that no other type checker supports this either, I'm questioning if this really something that we should implement. The alternative of <code>not a or not b or not c or not …</code> or <code>not (a and b and c and …)</code> does not seem much more verbose than <code>not all([a, b, c, …])</code>? Is this really a common pattern (in code that would benefit from this kind of type narrowing)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Infer "Nullability" (non-None) from `not all(...)`" to "Support truthiness type narrowing for checks involving `all(…)` / `any(…)`" by @sharkdp on 2025-05-27 11:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wish</span> added by @MichaReiser on 2025-05-27 12:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Julian-J-S">@Julian-J-S</a> on 2025-05-27 14:03</div>
+            <div class="timeline-body"><p>Interesting thoughts 🤔</p>
+<p>I have seen this a few times and many ai tools / copilots seem to suggest that regularly so this must be based on something 😆 .</p>
+<p>But I agree, this is not ideal.
+Maybe a ruff rule could actualy suggest and auto-fix that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Z post-stable" by @carljm on 2025-11-15 01:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "Z post-stable" by @carljm on 2025-11-18 16:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jelle-openai">@jelle-openai</a> on 2026-01-05 17:23</div>
+            <div class="timeline-body"><p>I ran into some errors where it would be helpful if ty supported narrowing on <code>all()</code>.</p>
+<p>Code looks like this:</p>
+<pre><code class="language-python">def f(x: list[str]): ...
+
+def _(value: object):
+    if isinstance(value, list) and all(isinstance(item, str) for item in value):
+        f(value)
+</code></pre>
+<p>(And similarly with using <code>isinstance(..., dict)</code> and then passing the object to something that needs <code>dict[str, object]</code>.)</p>
+<p>While other type checkers do not support this, narrowing here is uniquely useful with <code>ty</code> because it narrows <code>value</code> to <code>Top[list[Any]]</code> instead of <code>list[Any]</code>, so operations that other type checkers would accept are rejected by ty.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2026-01-05 20:16</div>
+            <div class="timeline-body"><p>I think this code example is still unsound, though? Just because <code>value</code> is a list at runtime and it happens to contain all strings at runtime, does not mean we can type it as <code>list[str]</code>. It may elsewhere (that is, in the caller) be typed as e.g. <code>list[Literal[&quot;foo&quot; | &quot;bar&quot;]]</code>, or <code>list[LiteralString]</code>.</p>
+<p>I think that we could safely type <code>value</code> within the <code>if</code> as <code>Top[list[Unknown]] &amp; Iterable[str]</code>? Which I think should then be assignable to e.g. <code>Sequence[str]</code>, though this probably requires some logic we don't currently have.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:51:35 UTC
+    </footer>
+</body>
+</html>

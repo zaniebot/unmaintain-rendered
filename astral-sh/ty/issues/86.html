@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code completion - astral-sh/ty #86</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Code completion</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/86">#86</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2025-03-14 10:18
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-03-14 10:18</div>
+            <div class="timeline-body"><p>Implement auto-completion support</p>
+<h1>Plan</h1>
+<p>At time of writing (2025-05-02), the plan below represents my best effort guess as to how we want to proceed here. The first few items are meant to correspond to lower hanging fruit.</p>
+<p>One thing that is not really captured by the plan here, but I think may require some effort, is figuring out how best to identify what the current context is. I suspect there may be an easy way to start for specific cases, but the extent to which that works more generally is not totally clear to me yet.</p>
+<ul>
+<li>[x] Add built-ins to code completions.</li>
+<li>[x] Return all names from scopes in current module. <a href="https://github.com/astral-sh/ruff/pull/17744#discussion_r2069886060">ref</a></li>
+<li>[x] Identify current scope and return names from just that scope.</li>
+<li>[x] Identify a <code>Object.&lt;typing&gt;</code> context and return attributes on <code>Object</code>.</li>
+<li>[x] Identify a <code>from module import &lt;typing&gt;</code> context and return items from <code>module</code>.</li>
+<li>[x] Identify <code>import &lt;typing&gt;</code> and <code>import module.&lt;typing&gt;</code> contexts and return available modules.</li>
+<li>[x] #1550</li>
+<li>[x] [BETA] Add type signatures to completion suggestions</li>
+<li>[x] [BETA] <a href="https://github.com/astral-sh/ty/issues/535">For scope based completions, offer unimported symbols as suggestions. (And upon selection, add the required import.)</a></li>
+<li>[ ] Offer string literals based on type context.</li>
+<li>[ ] Offer string literals based on <code>TypedDict</code> context.</li>
+<li>[ ] Offer contextual language keywords in completions (e.g., <code>def</code> and <code>match</code>).</li>
+<li>[ ] Offer completions for cases in <code>match</code> statements.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @MichaReiser on 2025-03-14 10:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-03-16 16:21</div>
+            <div class="timeline-body"><p>I think this is a pretty big feature and not one that specifically plays to my strengths. Why I think it's big:</p>
+<ul>
+<li>Code completion is context sensitive: It needs to list all modules when in an <code>import &lt;here&gt;</code> position but list a module's symbols when at the start of an identifier, or types when in a typing position (oh right, knowing whether we're in a typing position isn't trivial in Python, thanks to stringified type annotations and legacy type aliases)</li>
+<li>We lack the necessary queries: The module resolver allows individual module lookups but it has no API to list all modules. The same is true for all other APIs. We have APIs to lookup a single attribute but we don't have one that lists the possible attributes of a class, taking descriptor protocol, inheritance, and what not into account (and hide attributes that are hidden because of inheritance).</li>
+<li>It's important to rank suggestions because you want to avoid re-experts if you can import the symbol directly.</li>
+</ul>
+<p>I think we can implement something basic, but the project itself is probably a larger one that spans multiple months.</p>
+<p>Edited:</p>
+<p>Next steps:</p>
+<ul>
+<li>What's the minimum amount of work we can do to ship something useful?</li>
+<li>If we had to ship this in one week (or in two weeks), what would we do?</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @BurntSushi by @BurntSushi on 2025-04-04 13:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[red-knot] Code completion" to "Code completion" by @MichaReiser on 2025-05-07 15:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-28 11:37</div>
+            <div class="timeline-body"><p>Completing signature might actually be a separate feature in the LSP specification and could be worth tracking separately: https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#textDocument_signatureHelp</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-08 06:30</div>
+            <div class="timeline-body"><p>@BurntSushi it might be worth updating the issue summary with the next tasks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "Beta" by @BurntSushi on 2025-08-15 13:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "GA" by @BurntSushi on 2025-08-15 13:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-08-26 07:19</div>
+            <div class="timeline-body"><blockquote>
+<p>Offer contextual language keywords in completions</p>
+</blockquote>
+<p>The fact that this feature is still missing makes typing code quite painful in some cases. For example, open an empty <a href="https://play.ty.dev/">playground</a> and type <code>x = None&lt;Enter&gt;</code>. Since <code>None</code> is not one of the completions, you'll end up with <code>x = NotImplemented</code>. For the playground in particular, I can't even get rid of the autocompletion suggestions using <code>Esc</code>, so I need to manually move the cursor or use other tricks to be able to enter this without being modified.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-26 09:17</div>
+            <div class="timeline-body"><p>Similarly, the new <code>import &lt;CURSOR&gt;</code> completions are awesome, but it keeps annoying me that <code>importlib</code> is suggested in cases like this 😆 from a human's perspective, it's pretty clear that <code>import</code> is going to be the next token here</p>
+<p><img width="1452" height="288" alt="Image" src="https://github.com/user-attachments/assets/e8c33b43-114d-44ea-90b2-8003b7d9a436" /></p>
+<hr />
+<p><img width="1338" height="302" alt="Image" src="https://github.com/user-attachments/assets/bc49bad7-625e-4256-8ee8-50763cf6acbc" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-09-29 09:32</div>
+            <div class="timeline-body"><p>Thread with feedback on completions: https://github.com/astral-sh/ty/issues/1274</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">completions</span> added by @AlexWaygood on 2025-09-30 15:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-10-15 11:29</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/ruff/pull/20807 supposedly added support for <code>None</code>, but I don't see it in the provided completions in the playground and still have trouble writing <code>x = None&lt;Enter&gt;</code>:</p>
+<p><img width="705" height="332" alt="Image" src="https://github.com/user-attachments/assets/c9d810d7-5f0f-4e37-a197-2dbb19c8434e" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-15 11:47</div>
+            <div class="timeline-body"><p>@sharkdp I think that's because there hasn't been a successful ty playground deploy since https://github.com/astral-sh/ruff/pull/20807 landed: see the list of runs in https://github.com/astral-sh/ruff/actions/workflows/publish-ty-playground.yml. The playground deploy was broken by https://github.com/astral-sh/ruff/pull/20863 and then fixed again in https://github.com/astral-sh/ruff/pull/20885, but none of the commits that have been merged to <code>main</code> since https://github.com/astral-sh/ruff/pull/20885 landed have touched the parts of the codebase that would lead to a fresh ty playground deploy from <code>main</code> being triggered.</p>
+<p>I tried out a local build of the playground as part of my review of https://github.com/astral-sh/ruff/pull/20807 and confirmed that it fixed the issue with <code>None</code> locally for me</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-10-15 11:51</div>
+            <div class="timeline-body"><p>That makes sense, thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-14 08:34</div>
+            <div class="timeline-body"><p>@BurntSushi I think it would be useful to split out some smaller tasks so that we can be explicit about which feature should be part of stable and which completions feature are fine to defer until after stable. But this can wait until after the beta is out</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "Stable" by @MichaReiser on 2025-12-31 15:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Pre-stable 1" by @MichaReiser on 2025-12-31 15:21</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:51:35 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infered generic type doesn't respect boundary - astral-sh/ty #1700</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Infered generic type doesn't respect boundary</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1700">#1700</a>
+        opened by <a href="https://github.com/kalekseev">@kalekseev</a>
+        on 2025-12-01 11:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/kalekseev">@kalekseev</a> on 2025-12-01 11:03</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>This pattern used in django stubs</p>
+<pre><code class="language-py">import uuid
+from typing import TYPE_CHECKING, Generic, Literal, TypeVar, overload, reveal_type
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
+
+_U = TypeVar(&quot;_U&quot;, bound=uuid.UUID | None)
+
+class UUIDField(Generic[_U]):
+    @overload
+    def __new__(
+        cls,
+        *,
+        null: Literal[False] = False,
+        default: _U | Callable[[], _U] | None = ...,
+    ) -&gt; UUIDField[uuid.UUID]: ...
+    @overload
+    def __new__(
+        cls,
+        *,
+        null: Literal[True],
+        default: _U | Callable[[], _U] = ...,
+    ) -&gt; UUIDField[uuid.UUID | None]: ...
+
+class Model:
+    field = UUIDField(default=uuid.uuid4)
+    field_null = UUIDField(null=True)
+
+reveal_type(Model().field)
+reveal_type(Model().field_null)
+</code></pre>
+<p>pyright output:</p>
+<pre><code>information: Type of &quot;Model().field&quot; is &quot;UUIDField[UUID]&quot;
+information: Type of &quot;Model().field_null&quot; is &quot;UUIDField[UUID | None]&quot;
+</code></pre>
+<p>ty output</p>
+<pre><code>info[revealed-type]: Revealed type
+  --&gt; a.pyi:31:13
+   |
+29 |     field_null = UUIDField(null=True)
+30 |
+31 | reveal_type(Model().field)
+   |             ^^^^^^^^^^^^^ `UUIDField[() -&gt; UUID]`
+32 | reveal_type(Model().field_null)
+   |
+
+info[revealed-type]: Revealed type
+  --&gt; a.pyi:32:13
+   |
+31 | reveal_type(Model().field)
+32 | reveal_type(Model().field_null)
+   |             ^^^^^^^^^^^^^^^^^^ `UUIDField[Unknown]
+</code></pre>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.29 (0c3cae494 2025-11-28)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @sharkdp on 2025-12-01 11:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">generics</span> added by @sharkdp on 2025-12-01 11:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-12-01 11:15</div>
+            <div class="timeline-body"><p>Thank you for reporting this.</p>
+<p>This might be solved by https://github.com/astral-sh/ruff/pull/21551?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-02 02:51</div>
+            <div class="timeline-body"><p>I think the more fundamental issue here is #281 . Pyright is (correctly) preferring the return type of <code>__new__</code> (which in this case is concrete, does not include a type variable) over anything inferred from the call. Mypy does the same.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-12-02 02:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kalekseev">@kalekseev</a> on 2026-01-08 04:02</div>
+            <div class="timeline-body"><p>JFYI this problem is fixed in 0.0.10, the only django types specific problem I see in my codebase is None assignement to nullable field ie <code>model.filed = None</code> leads to <code>Invalid assignment to data descriptor attribute `field` on type `Self@method` with custom `__set__` method</code></p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:51:35 UTC
+    </footer>
+</body>
+</html>

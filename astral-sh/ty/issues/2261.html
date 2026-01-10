@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rules ignored with Unknown types - astral-sh/ty #2261</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Rules ignored with Unknown types</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2261">#2261</a>
+        opened by <a href="https://github.com/mxrch">@mxrch</a>
+        on 2025-12-29 16:12
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mxrch">@mxrch</a> on 2025-12-29 16:12</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>There seems to be an issue if, in the following Playground examples, the variable &quot;output&quot; is Unknown instead of str. If &quot;line&quot; is str, &quot;output&quot; will be str, and the rules will work and report an error, otherwise, it seems to ignore (while Pyright reports the error correctly).</p>
+<h2>Example 1 : Non-iterable int</h2>
+<p>https://play.ty.dev/d8a0c386-7003-45f9-962f-045ff5f1ce42</p>
+<h2>Example 2 : Math operations not supported on None</h2>
+<p>https://play.ty.dev/dc296cdb-7050-404c-90c6-79d563869b7a</p>
+<h2>Example 3 : &quot;output&quot; is correctly typed, and the rules are not ignored anymore</h2>
+<p>https://play.ty.dev/d7bd629c-66a4-4ec3-bd37-1702be0c38f1</p>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-29 16:20</div>
+            <div class="timeline-body"><p>Thanks for the report! This is actually a duplicate of #136. The problem is that <code>line</code> is type <code>Unknown</code>, which means we infer <code>Unknown</code> for the variable <code>position</code> as well, even though you've annotated it as <code>int</code>. (We currently treat <code>int</code> as the &quot;upper bound&quot; on its type, but since <code>Unknown</code> is assignable to <code>int</code>, we allow an inferred type of <code>Unknown</code> for it.) We plan to change this. So with <code>position</code> as <code>Unknown</code>, <code>None * position</code> is valid, since <code>position</code> could be some time which implements <code>__rmul__</code> to accept <code>None</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-12-29 16:20</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:51:35 UTC
+    </footer>
+</body>
+</html>

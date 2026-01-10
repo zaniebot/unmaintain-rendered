@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Type check does not work on a class wrapper when used as a decorator - astral-sh/ty #2313</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Type check does not work on a class wrapper when used as a decorator</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2313">#2313</a>
+        opened by <a href="https://github.com/owais">@owais</a>
+        on 2026-01-03 06:48
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/owais">@owais</a> on 2026-01-03 06:48</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<h3><code>ty</code> fails to catch wrong type of class being decorated</h3>
+<pre><code class="language-python">from typing import Protocol, Callable
+
+
+class NumberProto(Protocol):
+    value: int
+
+def set_number_value(override: int) -&gt; Callable[[NumberProto], NumberProto]:
+    def wrapper(number: NumberProto):
+        number.value = override
+        return number 
+    return wrapper
+
+
+@set_number_value(10)
+class SomeClass:
+    x = 0
+</code></pre>
+<p><img width="570" height="246" alt="Image" src="https://github.com/user-attachments/assets/b3cfd552-5388-4efd-8eef-bfeae48c1734" /></p>
+<h3>But works when class is &quot;decorated&quot; without the <code>@</code> syntax</h3>
+<p><code>wrapper</code> expects a class with attribute value of type <code>int</code> which <code>SomeClass</code> does not satisfy.</p>
+<pre><code class="language-python">from typing import Protocol, Callable
+
+
+class NumberProto(Protocol):
+    value: int
+
+
+def set_number_value(override: int) -&gt; Callable[[NumberProto], NumberProto]:
+    def wrapper(number: NumberProto):
+        number.value = override
+        return number
+    return wrapper
+
+
+class SomeClass:
+    x = 0
+
+
+SomeClass = set_number_value(10)(SomeClass)
+</code></pre>
+<p><img width="980" height="557" alt="Image" src="https://github.com/user-attachments/assets/7652a3d2-ba85-4f00-8d60-47b0939515de" /></p>
+<p>Both snippets do the same thing but <code>ty</code> only catches the issue in the non-decorator implementation.</p>
+<hr />
+<h3>Version</h3>
+<p>Python: <code>3.12</code> and <code>3.14</code>
+Ty: <code>0.0.8</code></p>
+<hr />
+<h3>pyright works</h3>
+<p><img width="1402" height="186" alt="Image" src="https://github.com/user-attachments/assets/83d8ea83-a733-4255-95c1-c6beb6453d15" /></p>
+<h3>mypy works as well</h3>
+<p><img width="974" height="156" alt="Image" src="https://github.com/user-attachments/assets/dd5508b9-c190-436a-9902-5cd0ee96ee95" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/owais">@owais</a> on 2026-01-03 07:05</div>
+            <div class="timeline-body"><p>It works when decorating functions though:</p>
+<pre><code class="language-python">from typing import Protocol, Callable
+
+def add(to_add: int) -&gt; Callable[[Callable[[int], int]], Callable[[int], int]]:
+    def wrapper(func: Callable[[int], int]) -&gt; Callable[[int], int]:
+        def inner(num: int) -&gt; int:
+            return func(num) + to_add
+        return inner
+    return wrapper
+
+@add(10)
+def string(s: str) -&gt; str:
+    return s
+</code></pre>
+<p><img width="704" height="520" alt="Image" src="https://github.com/user-attachments/assets/86759859-1bb6-496b-b56f-6a0ccdee9f1e" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2026-01-04 19:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @charliermarsh by @charliermarsh on 2026-01-04 19:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2026-01-04 20:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @carljm on 2026-01-04 20:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2026-01-04 22:11</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:51:35 UTC
+    </footer>
+</body>
+</html>

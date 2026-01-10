@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`repr` gets incorrect `Literal` types for strings - astral-sh/ty #2286</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`repr` gets incorrect `Literal` types for strings</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2286">#2286</a>
+        opened by <a href="https://github.com/dscorbett">@dscorbett</a>
+        on 2025-12-31 04:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dscorbett">@dscorbett</a> on 2025-12-31 04:08</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>ty’s implementation of <code>repr</code> for strings doesn’t match Python’s. <a href="https://play.ty.dev/c83eb871-1800-45c1-bb22-584e434c02d3">Example</a>:</p>
+<pre><code class="language-console">$ cat &gt;invalid-assignment.py &lt;&lt;'# EOF'
+from typing import Literal
+x: Literal[&quot;'\&quot;\\x05⦂🙾'&quot;] = repr('&quot;\5\u2982\U0001F67E')
+# EOF
+
+$ ty check --output-format concise invalid-assignment.py
+invalid-assignment.py:2:29: error[invalid-assignment] Object of type `Literal[&quot;'\\\&quot;\\u{5}\\u{2982}\\u{1f67e}'&quot;]` is not assignable to `Literal[&quot;'\&quot;\\x05⦂🙾'&quot;]`
+Found 1 diagnostic
+</code></pre>
+<p><code>repr</code> changes between Python versions to match Unicode. It is not safe to make assumptions about its exact output for strings. Its behavior for some characters might be considered reliable enough.</p>
+<h3>Version</h3>
+<p>ty 0.0.8 (aa7559db8 2025-12-29)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2025-12-31 11:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">runtime semantics</span> added by @AlexWaygood on 2025-12-31 11:00</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:51:35 UTC
+    </footer>
+</body>
+</html>

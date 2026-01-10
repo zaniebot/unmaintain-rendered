@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consider unsafely assuming in narrowing that multiple inheritance of user types and builtin containers won't happen - astral-sh/ty #1578</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Consider unsafely assuming in narrowing that multiple inheritance of user types and builtin containers won't happen</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1578">#1578</a>
+        opened by <a href="https://github.com/RandomBrainCode">@RandomBrainCode</a>
+        on 2025-11-17 14:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/RandomBrainCode">@RandomBrainCode</a> on 2025-11-17 14:44</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Is it possible for Ty to infer the type of the Iterator Variable when Iterator is properly defined?</p>
+<p>In the below example running, <code>area</code> is properly defined above</p>
+<pre><code>		if allowed:
+			area: list[Area] = await user.get_allowed_areas()
+		else:
+			area: Area = await user.area_get()
+</code></pre>
+<p>but when I run <code>ty check</code>, I get the following</p>
+<pre><code>error[unresolved-attribute]: Object of type `object` has no attribute `get_model`
+   --&gt; app/routers/me.py:113:36
+    |
+112 |     if isinstance(area, list):
+113 |         models: list[AreaModel] = [await a.get_model() for a in area]
+    |                                          ^^^^^^^^^^^
+114 |         return JSONResponse(content=loads(dumps([a.content() for a in models])), status_code=200)
+    |
+info: rule `unresolved-attribute` is enabled by default
+</code></pre>
+<p>I was able to resolve it by adding <code>a: Area</code> above line 113, but that causes ruff to throw warning <code>Local variable 'a' is annotated but never used</code></p>
+<p>One thing, I am not sure if this could be impacting it, but the variable <code>area</code> can actually be of type <code>Area</code> or type <code>list[Area]</code>, hence the <code>if isinstance(area, list):</code> at line 112.</p>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.26 (b225fd8b4 2025-11-10)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/RandomBrainCode">@RandomBrainCode</a> on 2025-11-17 14:47</div>
+            <div class="timeline-body"><p><strong><em>CORRECTION</em></strong>: Annotating <code>a: Area</code> first did not resolve the issue:</p>
+<pre><code>error[unresolved-attribute]: Object of type `object` has no attribute `get_model`
+   --&gt; app/routers/me.py:114:36
+    |
+112 |     if isinstance(area, list):
+113 |         a: Area  # noqa: F842
+114 |         models: list[AreaModel] = [await a.get_model() for a in area]
+    |                                          ^^^^^^^^^^^
+115 |         return JSONResponse(content=loads(dumps([m.content() for m in models])), status_code=200)
+    |
+info: rule `unresolved-attribute` is enabled by default
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">narrowing</span> added by @carljm on 2025-11-17 15:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @carljm on 2025-11-17 15:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-11-17 15:20</div>
+            <div class="timeline-body"><p>Thanks for the report! What ty is (subtly) telling you here is that it is possible for there to exist a subclass of <code>Area</code> that is also a subclass of <code>list</code>, for example.</p>
+<pre><code class="language-py">class Hypothetical(Area, list[int]): ...
+</code></pre>
+<p>So because of that possibility, <code>isinstance(area, list): ...</code> does not actually guarantee that we have a <code>list[Area]</code>, it could be a list of anything. That's why ty infers <code>object</code> when you iterate over <code>area</code> after that check.</p>
+<p>One alternative here is to use <code>not isinstance(area, Area)</code> in place of <code>isinstance(a, list)</code>; this <a href="https://play.ty.dev/748a6d1d-1b56-4e91-a857-0bec2c9bde43">fixes the issue</a>.</p>
+<p>Another alternative, if you don't ever subclass <code>Area</code>, is to mark it <code>@typing.final</code>, which will allow ty to make various more precise inferences based on the knowledge that it won't be subclassed.</p>
+<p>This issue is related to #1566 and #1567 in that they are all examples of how ty is being &quot;correct but pedantic&quot; about narrowing, in a way which users may not prefer or be accustomed to. We do value &quot;correct&quot; highly, but I will leave this issue open as well, with <code>needs-decision</code> tag, so we can evaluate whether we need to consider doing something different.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Z post-stable" by @carljm on 2025-11-17 15:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Infer type for the Iterator Variable in a For Loop" to "Consider unsafely assuming in narrowing that multiple inheritance of user types and builtin containers won't happen" by @carljm on 2025-11-17 16:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-11-17 16:58</div>
+            <div class="timeline-body"><p>Another thing we could try to do here (and in #1567 and similar issues) is add better explanatory diagnostics. This is tricky since these issues tend to manifest as just &quot;unexpected <code>object</code> type inferred&quot;, but it might be possible by using a special variant of <code>object</code> in certain places (e.g. top materialization method return types) and then special-casing diagnostics involving that special <code>object</code> type.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "Z post-stable" by @carljm on 2025-11-18 16:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/RandomBrainCode">@RandomBrainCode</a> on 2025-11-18 19:56</div>
+            <div class="timeline-body"><p>@carljm Thanks for the reply!</p>
+<p>I will give @typing.final a shot in the next couple of days and let you know if that resolves this scenario. The <code>Area</code> object will never be subclassed, so doing this should not cause any issues in my particular scenario.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-26 17:48</div>
+            <div class="timeline-body"><blockquote>
+<p>Another thing we could try to do here (and in <a href="https://github.com/astral-sh/ty/issues/1567">#1567</a> and similar issues) is add better explanatory diagnostics. This is tricky since these issues tend to manifest as just &quot;unexpected <code>object</code> type inferred&quot;, but it might be possible by using a special variant of <code>object</code> in certain places (e.g. top materialization method return types) and then special-casing diagnostics involving that special <code>object</code> type.</p>
+</blockquote>
+<p>I opened #2215 to track this idea.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:51:35 UTC
+    </footer>
+</body>
+</html>

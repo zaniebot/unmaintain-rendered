@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Incorrect type inference for `bisect` - astral-sh/ty #2227</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Incorrect type inference for `bisect`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2227">#2227</a>
+        opened by <a href="https://github.com/condemil">@condemil</a>
+        on 2025-12-26 14:42
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/condemil">@condemil</a> on 2025-12-26 14:42</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I see that ty cannot properly match types for <code>bisect</code> functions:</p>
+<pre><code class="language-python">import bisect
+
+def foo(number: int, ranges: list[tuple[int, float]]) -&gt; None:
+    # Argument to function `bisect_right` is incorrect: Expected `SupportsLenAndGetItem[tuple[int, float]]`, found `list[tuple[int, int | float]]`
+    bisect.bisect_right(ranges, (number, float(&quot;inf&quot;)))
+</code></pre>
+<p>The similar issue happens for <code>ranges: list[tuple[int, int]]</code> type.</p>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-26 17:10</div>
+            <div class="timeline-body"><p>Thanks! This looks like a case where we need to better solve a type variable that appears twice in a signature, and one of the occurrences could be widened with type context. The OP example is <code>float | int</code> vs <code>float</code> (which only occurs because we interpret a <code>float</code> annotation as <code>float | int</code> but a float literal as simply <code>float</code>), but the same thing occurs more simply with <code>int</code> vs <code>Literal[1]</code>:</p>
+<pre><code class="language-py">import bisect
+
+def foo(number: int, ranges: list[tuple[int, int]]) -&gt; None:
+    # Argument to function `bisect_right` is incorrect: Expected `SupportsLenAndGetItem[tuple[int, Literal[1]]]`, found `list[tuple[int, int]]`
+    bisect.bisect_right(ranges, (number, 1))
+</code></pre>
+<p>Maybe similar to #1970 ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @carljm on 2025-12-26 17:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">generics</span> added by @carljm on 2025-12-26 17:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bidirectional inference</span> added by @carljm on 2025-12-26 17:11</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:51:35 UTC
+    </footer>
+</body>
+</html>

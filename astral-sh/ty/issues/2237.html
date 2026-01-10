@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>io.TextIOWrapper: &quot;Definition is incompatible with `IO.write`&quot; - astral-sh/ty #2237</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>io.TextIOWrapper: &quot;Definition is incompatible with `IO.write`&quot;</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2237">#2237</a>
+        opened by <a href="https://github.com/bastimeyer">@bastimeyer</a>
+        on 2025-12-27 16:13
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/bastimeyer">@bastimeyer</a> on 2025-12-27 16:13</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I couldn't find anything with <code>TextIOWrapper</code> on the issue tracker. I've also checked the pinned thread with the status of various implementations, but I'm not 100% sure if this is covered yet (#1714 ?!), so I decided to post this new issue.</p>
+<p><code>TextIOWrapper</code>'s typing data is defined like this in typeshed (notice the comment):</p>
+<pre><code class="language-py">class TextIOWrapper(TextIOBase, _TextIOBase, TextIO, Generic[_BufferT_co]):  # type: ignore[misc]  # incompatible definitions of write in the base classes
+</code></pre>
+<p>https://github.com/python/typeshed/blob/6b4691d04491dc3800fef9598c526f49c7fa4bd7/stdlib/_io.pyi#L239-L272</p>
+<p>with its <code>write(self, s: str, /) -&gt; int: ...</code> method being inherited from <code>_TextIOBase</code>:
+https://github.com/python/typeshed/blob/6b4691d04491dc3800fef9598c526f49c7fa4bd7/stdlib/_io.pyi#L201-L212</p>
+<p>The <code>_BufferT_co</code> typevar, which is bound to <code>_WrappedBuffer(Protocol)</code> however defines <code>def write(self, b: bytes, /) -&gt; object: ...</code>:
+https://github.com/python/typeshed/blob/6b4691d04491dc3800fef9598c526f49c7fa4bd7/stdlib/_io.pyi#L214-L237</p>
+<hr />
+<p>Example:</p>
+<pre><code class="language-py">from io import BytesIO, TextIOWrapper
+
+
+class MyTextIOWrapper(TextIOWrapper):
+    def write(self, s: str) -&gt; int:
+        data = s.encode(&quot;utf-8&quot;)
+        self.buffer.write(data)
+
+        return len(data)
+
+
+buffer = BytesIO()
+inst = MyTextIOWrapper(buffer)
+inst.write(&quot;foo&quot;)
+
+assert buffer.getvalue() == b&quot;foo&quot;
+</code></pre>
+<pre><code>$ ty check scratch_1.py 
+error[invalid-method-override]: Invalid override of method `write`
+    --&gt; scratch_1.py:5:9
+     |
+   4 | class MyTextIOWrapper(TextIOWrapper):
+   5 |     def write(self, s: str) -&gt; int:
+     |         ^^^^^^^^^^^^^^^^^^^^^^^^^^ Definition is incompatible with `IO.write`
+   6 |         data = s.encode(&quot;utf-8&quot;)
+   7 |         self.buffer.write(data)
+     |
+    ::: stdlib/typing.pyi:1427:9
+     |
+1425 |     @abstractmethod
+1426 |     @overload
+1427 |     def write(self, s: AnyStr, /) -&gt; int: ...
+     |         -------------------------------- `IO.write` defined here
+1428 |     @abstractmethod
+1429 |     @overload
+     |
+info: This violates the Liskov Substitution Principle
+info: rule `invalid-method-override` is enabled by default
+
+Found 1 diagnostic
+</code></pre>
+<p>https://play.ty.dev/58ec3283-eb45-430e-8719-1d18c6003f7a</p>
+<h3>Version</h3>
+<p>0.0.7</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-27 19:08</div>
+            <div class="timeline-body"><p>Thanks for the report! This is another example of #2000 -- I'll close as duplicate, but mention on that issue that this is another case in the standard library.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-12-27 19:08</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:51:35 UTC
+    </footer>
+</body>
+</html>

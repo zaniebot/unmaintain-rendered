@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>no-matching-overload reported for decorated function with correct typing - astral-sh/ty #2027</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>no-matching-overload reported for decorated function with correct typing</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2027">#2027</a>
+        opened by <a href="https://github.com/egorbn">@egorbn</a>
+        on 2025-12-17 18:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/egorbn">@egorbn</a> on 2025-12-17 18:44</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<h1>Issue</h1>
+<p><code>no-matching-overload</code> is reported even though the function being called is typed and the argument has the correct type.</p>
+<h1>Minimum reproducible example</h1>
+<p>Tested only in this one minimum reproducible case with <code>prefect</code>:</p>
+<pre><code class="language-python"># hello.py
+from prefect import flow, task
+
+
+@task
+def echo_message(message: str) -&gt; None:
+    &quot;&quot;&quot;Print the provided message.&quot;&quot;&quot;
+    print(message)
+
+
+@flow
+def run_flow() -&gt; None:
+    constant_message = &quot;Hello from Prefect!&quot;
+    echo_message(constant_message)
+
+
+if __name__ == &quot;__main__&quot;:
+    run_flow()
+</code></pre>
+<p>And here's the result:
+<img width="800" height="474" alt="Image" src="https://github.com/user-attachments/assets/58a17010-feea-4cc6-b81a-1c08d509c0aa" /></p>
+<h1>Additional info</h1>
+<p>Using in <code>neovim</code> through <code>mason</code> and <code>nvim-lspconfig</code></p>
+<pre><code class="language-shell">NVIM v0.11.5
+Build type: Release
+LuaJIT 2.1.1765228720
+</code></pre>
+<h3>Version</h3>
+<p>ty 0.0.2 (42835578d 2025-12-16)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-17 20:29</div>
+            <div class="timeline-body"><p>Thanks for the report! This looks like a bug in our overload resolution. I narrowed it down to this example:</p>
+<pre><code class="language-py">from typing import Callable, overload, Never
+
+class Task[**P, R]:
+    def __init__(self, func: Callable[P, R]) -&gt; None:
+        self.func = func
+
+    @overload
+    def __call__(self: &quot;Task[P, R]&quot;, *args: P.args, **kwargs: P.kwargs) -&gt; R:
+        ...
+
+    @overload
+    def __call__(self: &quot;Task[P, Never]&quot;, *args: P.args, **kwargs: P.kwargs) -&gt; None:
+        ...
+    
+    def __call__(self, *args: P.args, **kwargs: P.kwargs) -&gt; R | None:
+        return self.func(*args, **kwargs)
+
+
+def myfunc(x: int) -&gt; str:
+    return str(x)
+
+def _():
+    t = Task(myfunc)
+    t(1)
+</code></pre>
+<p>https://play.ty.dev/05bb33d9-f7ab-424a-ab15-c31dfb22fbab</p>
+<p>If we remove the overloads and just annotate <code>__call__</code> with the signature of the first overload, there's no issue. If we remove the <code>self</code> annotations on the overloads (which are supposed to distinguish them), the issue persists.</p>
+<p>If I try removing the ParamSpec, the issue goes away, so it seems like the ParamSpec is also related.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">overloads</span> added by @carljm on 2025-12-17 20:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">generics</span> added by @carljm on 2025-12-17 20:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @carljm on 2025-12-17 20:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pegaslee">@pegaslee</a> on 2025-12-18 16:10</div>
+            <div class="timeline-body"><h2>Same issue with Taskiq</h2>
+<p>I'm seeing the exact same <code>no-matching-overload</code> error with <a href="https://github.com/taskiq-python/taskiq">Taskiq</a>, which uses the same decorator pattern with dependency injection.</p>
+<h3>Minimal example:</h3>
+<pre><code class="language-python">from taskiq import InMemoryBroker, TaskiqDepends
+
+broker = InMemoryBroker()
+
+@broker.task
+async def my_task(
+    regular_param: str,
+    optional_param: str | None = None,
+    injected_dep: int = TaskiqDepends(),  # This is injected at runtime
+) -&gt; str:
+    return f&quot;{regular_param} - {optional_param} - {injected_dep}&quot;
+
+async def main():
+    # This is correct - only pass non-dependency params
+    task = await my_task.kiq(&quot;hello&quot;)  #  no-matching-overload error
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ragokan">@ragokan</a> on 2025-12-20 19:22</div>
+            <div class="timeline-body"><p>One more error from my side;</p>
+<p>src/task/count.py</p>
+<pre><code class="language-py">import asyncio
+
+from src.core.taskiq import broker
+
+
+@broker.task
+async def run_count_task(count: int):
+    print(f&quot;🤖 Agent running for {count}&quot;)
+    await asyncio.sleep(3)  # Simulate work
+    print(&quot;🤖 Agent completed&quot;)
+
+</code></pre>
+<p>And on src/main.py</p>
+<pre><code class="language-py">from src.task.count import run_count_task
+
+
+async def main():
+    print(&quot;Hello, World!&quot;)
+    await run_count_task.kiq(count=5)
+</code></pre>
+<p>I get this error;
+&quot;No overload of bound method <code>kiq</code> matches arguments&quot;</p>
+<p>When I check the implementation, the &quot;kiq&quot; function has</p>
+<pre><code class="language-py">        *args: _FuncParams.args,
+        **kwargs: _FuncParams.kwargs,
+</code></pre>
+<p>But sadly I can't put my args since I get the error.</p>
+<p>You can see the full error here;</p>
+<pre><code class="language-json">[{
+    &quot;resource&quot;: &quot;src/main.py&quot;,
+    &quot;owner&quot;: &quot;ty&quot;,
+    &quot;code&quot;: {
+        &quot;value&quot;: &quot;no-matching-overload&quot;,
+        &quot;target&quot;: {
+            &quot;$mid&quot;: 1,
+            &quot;path&quot;: &quot;/rules&quot;,
+            &quot;scheme&quot;: &quot;https&quot;,
+            &quot;authority&quot;: &quot;ty.dev&quot;,
+            &quot;fragment&quot;: &quot;no-matching-overload&quot;
+        }
+    },
+    &quot;severity&quot;: 8,
+    &quot;message&quot;: &quot;No overload of bound method `kiq` matches arguments&quot;,
+    &quot;source&quot;: &quot;ty&quot;,
+    &quot;startLineNumber&quot;: 6,
+    &quot;startColumn&quot;: 11,
+    &quot;endLineNumber&quot;: 6,
+    &quot;endColumn&quot;: 38,
+    &quot;relatedInformation&quot;: [
+        {
+            &quot;startLineNumber&quot;: 100,
+            &quot;startColumn&quot;: 15,
+            &quot;endLineNumber&quot;: 104,
+            &quot;endColumn&quot;: 29,
+            &quot;message&quot;: &quot;First overload defined here&quot;,
+            &quot;resource&quot;: &quot;.venv/lib/python3.13/site-packages/taskiq/decor.py&quot;
+        },
+        {
+            &quot;startLineNumber&quot;: 120,
+            &quot;startColumn&quot;: 15,
+            &quot;endLineNumber&quot;: 124,
+            &quot;endColumn&quot;: 13,
+            &quot;message&quot;: &quot;Overload implementation defined here&quot;,
+            &quot;resource&quot;: &quot;.venv/lib/python3.13/site-packages/taskiq/decor.py&quot;
+        }
+    ],
+    &quot;origin&quot;: &quot;extHost4&quot;
+}]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "Stable" by @carljm on 2025-12-22 20:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "M1" by @carljm on 2025-12-22 20:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @dhruvmanila by @dhruvmanila on 2026-01-06 04:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2026-01-06 06:13</div>
+            <div class="timeline-body"><p>I think the issue here is that the generic context is not available at the point when we'd need to substitute the paramspec in <code>P.args, P.kwargs</code> to evaluate it as a sub-call. I'm trying to figure out where it needs to be passed, it could be related to https://github.com/astral-sh/ruff/pull/21798.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2026-01-06 10:30</div>
+            <div class="timeline-body"><p>Hmm, maybe not. We don't apply the type mapping for a ParamSpec when there's an overload involved i.e.,</p>
+<p>https://github.com/astral-sh/ruff/blob/e63cf978aeb9e685490c7ddb71392c2001f4fbef/crates/ty_python_semantic/src/types/signatures.rs#L222-L222</p>
+<p>This means that it falls through and tries to substitute the <code>P.args</code> and <code>P.kwargs</code> individually which is why the overload resolution fails.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2026-01-07 08:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/egorbn">@egorbn</a> on 2026-01-07 16:52</div>
+            <div class="timeline-body"><p>Awesome! Thanks!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:51:35 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feature: Support for setting virtual environment path in LSP settings - astral-sh/ty #2032</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Feature: Support for setting virtual environment path in LSP settings</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2032">#2032</a>
+        opened by <a href="https://github.com/joshzcold">@joshzcold</a>
+        on 2025-12-17 19:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/joshzcold">@joshzcold</a> on 2025-12-17 19:55</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>Support for setting the virtual env path via lsp settings aswell as <code>VIRTUAL_ENV</code></p>
+<p><code>basepyright</code> supports this in the form of</p>
+<blockquote>
+<p>python.venvPath [path]: Path to folder with subdirectories that contain virtual environments. The python.pythonPath setting is recommended over this mechanism for most users. For more details, refer to the <a href="https://docs.basedpyright.com/v1.23.1/usage/import-resolution/#configuring-your-python-environment">import resolution</a> documentation.</p>
+</blockquote>
+<p>https://docs.basedpyright.com/v1.23.1/configuration/language-server-settings/</p>
+<p>What this allows is editors to have the ability to configure the path to virtual environment dynamically instead of having to set it in the OS environment and restarting the lsp server.</p>
+<p>See my plugins interaction with <code>basedpyright</code> for details.
+https://github.com/joshzcold/python.nvim/blob/main/lua/python/lsp/init.lua#L23</p>
+<h3>Version</h3>
+<p>ty 0.0.2</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @joshzcold on 2025-12-17 19:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @carljm on 2025-12-17 21:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @carljm on 2025-12-17 21:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-12-17 22:48</div>
+            <div class="timeline-body"><p>In vscode we explicitly depend on the generic python extension to provide this functionality. Although you might be able to use <a href="https://docs.astral.sh/ty/reference/configuration/#extra-paths">the <code>[tool.ty.environment]</code> setting</a>?</p>
+<p>See also:</p>
+<ul>
+<li>https://github.com/astral-sh/ty/issues/1185</li>
+<li>https://github.com/astral-sh/ty-vscode/issues/5</li>
+<li>https://github.com/astral-sh/ty/issues/536</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/joshzcold">@joshzcold</a> on 2025-12-17 23:12</div>
+            <div class="timeline-body"><blockquote>
+<p>In vscode we explicitly depend on the generic python extension to provide this functionality. Although you might be able to use <a href="https://docs.astral.sh/ty/reference/configuration/#extra-paths">the [tool.ty.environment] setting</a>?</p>
+</blockquote>
+<p>My use case is somewhat unqiue and requires the ability to change the venv path while the lsp server is running.</p>
+<p>I maintain a plugin for neovim dev in python.
+https://github.com/joshzcold/python.nvim</p>
+<p>This plugin supports a number of lsp servers when the user wants to change their venv.</p>
+<p>pyright and basedpyright allows me to send a new venv location to the server while the editor is still running. pyright respondes to this by re-reading the workspace with the new venv in the lsp server.
+https://github.com/joshzcold/python.nvim/blob/main/lua/python/lsp/init.lua#L29</p>
+<p>Most users will probably get by with <code>uv</code> and <code>.venv</code>, but for users outside of the <code>uv</code> ecosystem they might have their venv in the <code>~/.virtual_env</code> directory.</p>
+<p>So this might not be &quot;nessesary&quot;, but might be a nice addition to the lsp server.</p>
+<p>I probably can get by with <code>VIRTUAL_ENV</code> and some fix to #2031  to have the LSP server restart gracefully.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-18 07:26</div>
+            <div class="timeline-body"><p>Have you tried what I described here https://github.com/astral-sh/ty/issues/2010#issuecomment-3665555239?</p>
+<p>This is what both Zed and VS Code use to change the python environment at runtime</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/joshzcold">@joshzcold</a> on 2025-12-18 18:10</div>
+            <div class="timeline-body"><p>@MichaReiser Does vscode and zed restart the lsp to pick up the new setting from the start? I don't think ty server has a mechanism to update the configuration via the client?</p>
+<p>Theres probably a way for me to stop and launch the <code>ty</code> server with new settings in neovim, but I think that would be unique logic from my plugin and not something as standard as <code>workspace/didChangeConfiguration</code> ?</p>
+<pre><code>WARN Received notification workspace/didChangeConfiguration which does not have a handler.\n&quot;
+</code></pre>
+<p>https://github.com/astral-sh/ruff/blob/c31516473296a8b745af946b827d3342ef81060f/crates/ty_server/src/server/api.rs#L111</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-18 18:14</div>
+            <div class="timeline-body"><p>Yes, Zed and VS Code restart ty on any configuration change because ty doesn't yet support <code>didChangeConfiguration</code>. I don't think it would be very hard to add support for <code>didChangeConfiguration</code>; it's just not a high-priority feature.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/purepani">@purepani</a> on 2025-12-19 00:06</div>
+            <div class="timeline-body"><p>Being able to set this would also help with opening scripts with inline metadata!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/joshzcold">@joshzcold</a> on 2025-12-19 15:45</div>
+            <div class="timeline-body"><p>Could break this down into 2 more focused feature requests</p>
+<ul>
+<li>support for settings the environment in lsp settings. Very close to https://github.com/astral-sh/ty/issues/2010#issuecomment-3665555239 but in an easy to use fashion (something that could benefit the hack in the vscode extension)</li>
+<li>support for <code>workspace/didChangeConfiguration</code> which would benefit the vscode extension and others by not needed to restart the server on updates.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-19 16:18</div>
+            <div class="timeline-body"><p>The first point is covered by https://github.com/astral-sh/ruff/pull/22053</p>
+<blockquote>
+<p>but in an easy-to-use fashion (something that could benefit the hack in the VS Code extension)</p>
+</blockquote>
+<p>I don't think so. We still need the &quot;hack&quot; because an explicitly configured virtual environment using ty's configuration takes precedence over the interpreter selected in VS Code</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Pre-stable 1" by @MichaReiser on 2025-12-31 15:43</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:51:35 UTC
+    </footer>
+</body>
+</html>

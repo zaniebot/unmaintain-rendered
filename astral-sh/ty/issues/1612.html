@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Design: Rule settings - astral-sh/ty #1612</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Design: Rule settings</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1612">#1612</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2025-11-23 14:21
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-23 14:21</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/ty/issues/1354, https://github.com/astral-sh/ty/issues/1422, and https://github.com/astral-sh/ty/issues/278 are in themselves trivial, but they're all blocked on a decision on where to put rule-related settings/type checker settings other than environment.</p>
+<p>Here a few options</p>
+<h2>Top-level</h2>
+<p>Put the settings directly under <code>ty</code>.</p>
+<pre><code class="language-toml">[tool.ty]
+allowed-unresolved-modules = [...]
+</code></pre>
+<p>The main downside of this, and the reason why all existing settings are grouped, is that top-level settings make it more difficult to explain which settings are allowed within <code>.overrides</code>, in user-level configurations, or when we add hierarchical configurations.</p>
+<p>No grouping can also make it more difficult to discover options, asssuming we can come up with meaningful section names.</p>
+<h2>Rule-level</h2>
+<pre><code class="language-toml">[tool.ty.rules]
+unresolved-import = { level = &quot;warning&quot;, allow=[...] }
+</code></pre>
+<p>I like that the settings are very local to the rule. However, many settings are specific to many rules (e.g. whether ty should respect <code>type: ignore</code> comments) and I worry that the configuration schema becomes very complicated and I don't know how well editors support tagged-unions...</p>
+<h2>Sub-section</h2>
+<p>This is still my favorite option, except that I'm struggling to come up with a good section name. The most obvious choice is <code>check</code></p>
+<pre><code class="language-toml">[tool.ty.check]
+allowed-unresolved-modules = [...]
+</code></pre>
+<p>Long-term, what if ty also supports formatting and the options only apply to typing? Is <code>check</code> still a good name? Could we come up with something more meaningful? <code>tool.ty.typing</code>?</p>
+<p>The other downside is that a separte section is somewhat verbose when using overrides</p>
+<pre><code class="language-toml">[[tool.ty.overrides]]
+include = [...]
+
+[[tool.ty.overrides.check]]
+allowed-unresolved-modules = []
+</code></pre>
+<p>I think the following should also work, but only for as long as the configuration fits on a single line</p>
+<pre><code class="language-toml">[[tool.ty.overrides]]
+include = [...]
+check.allowed-unresolved-modules = []
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @MichaReiser on 2025-11-23 14:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-design</span> added by @MichaReiser on 2025-11-23 14:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-09 12:47</div>
+            <div class="timeline-body"><p>Related to rule settings, there's also a discussion of where to put a potential <code>strict-typing</code> setting, which controls how ty handles <code>type-ignore</code> comments, and a setting to allow unresolved modules (which is the case I used above). What's special about <code>strict-typing</code> is that this is another setting that probably can't be overridden in an initial version; instead, it applies to the entire project.</p>
+<p>Under the current design, the idea was to use different sections for project-level settings (e.g., <code>environment</code>) and settings that can be overridden at a per-file level. The idea behind this guiding principle was that having settings grouped this way makes it relatively easy to explain and verify which settings can be used within <code>overrides</code>, a user-level configuration, or, in the future, a workspace member configuration.</p>
+<p>However, I do think there are two main challenges with it and I'm starting to conclude that we should give up on this principle:</p>
+<ul>
+<li>It's difficult to come up with both semantically meaningful section names while also separating project-level settings from file-level settings. E.g., one proposal is to introduce an <code>analyze</code> section for settings that change how the analyzer works (this section might differ from rule-specific options). If there were an <code>analyze</code> section, as a user, I'd expect both <code>allowed-unresolved-modules</code> and <code>strict-typing</code> to be there rather than, e.g., finding <code>strict-typing</code> in <code>environment</code> just because it's a project-level setting.</li>
+<li>It's impossible to predict the future, and what used to be a project-level setting inevitably becomes a file-level (or member-level) setting. For example, we currently don't support checking multiple projects in a single ty invocation. However, this might change depending on how we design our mono-repository support. It would be unfortunate if we had to move settings around just because their scope has changed.</li>
+</ul>
+<p>Given that project-level settings should be rare, I think it should be sufficient if their scope is documented (and warning about invalid usages).</p>
+<p>Drawing this conclusion, I think we should put <code>allowed-unresolved-modules</code> into a new <code>analyze</code> section. I consider <code>allowed-unresolved-modules</code> an analyzer and not a rule-level setting because ignoring imports changes what types we infer for those modules. Meaning, the setting doesn't just change a single diagnostic; it has a more widespread impact on how your project is checked.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-09 18:07</div>
+            <div class="timeline-body"><p>I'm happy with your conclusions in the previous comment.</p>
+<blockquote>
+<p>a potential <code>strict-typing</code> setting, which controls how ty handles <code>type-ignore</code> comments</p>
+</blockquote>
+<p>It's not clear to me why an option for how we handle <code>type: ignore</code> comments would use the name <code>strict-typing</code>? That seems like a very general name with many possible interpretations; if we have it at all, I think it probably needs to be a meta-option that turns on a bunch of other different options. (But I think we should try to avoid having it, and just let the individual options stand on their own.)</p>
+<p>Another &quot;strict typing&quot; option that I think we will need is an option to not union <code>Unknown</code> into un-annotated attribute types. (Or alternatively this could be named something like a <code>gradual-typing</code> option.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-09 18:51</div>
+            <div class="timeline-body"><blockquote>
+<p>It's not clear to me why an option for how we handle type: ignore comments would use the name strict-typing? That seems like a very general name with many possible interpretations; if we have it at all, I think it probably needs to be a meta-option that turns on a bunch of other different options. (But I think we should try to avoid having it, and just let the individual options stand on their own.)</p>
+</blockquote>
+<p>Sorry, that must have been my auto correct tool making my English better but mixing up the semantics of what I tried to say 😆. These should be two settings: one for <code>strict-typing</code> and one for ignore comments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-12-09 19:07</div>
+            <div class="timeline-body"><p>Is the final concept then something like this?</p>
+<pre><code class="language-toml">[tool.ty.rules]
+unresolved-import = { level = &quot;warning&quot; }
+
+[tool.ty.analyze]
+gradual-typing-strict-name = false
+type-ignores = &quot;foobar&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-12-09 19:07</div>
+            <div class="timeline-body"><p>(I think <code>analysis</code> makes more sense than <code>analyze</code> if you're using <code>rules</code>?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-09 19:19</div>
+            <div class="timeline-body"><blockquote>
+<p>Is the final concept then something like this?</p>
+</blockquote>
+<p>Yes (minus exact setting names). I don't know yet whether we should put lint rule settings under <code>lint</code>, inline them into <code>rules</code>, put them in <code>rules.settings</code>, or put them in <code>analyze</code>, but I'm leaning towards punting on that design question for now because we don't need a decision today.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @MichaReiser on 2025-12-31 15:35</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:51:35 UTC
+    </footer>
+</body>
+</html>

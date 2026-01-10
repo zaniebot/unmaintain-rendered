@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>python-ldap exceptions are not found - astral-sh/ty #2316</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>python-ldap exceptions are not found</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2316">#2316</a>
+        opened by <a href="https://github.com/Salamandar">@Salamandar</a>
+        on 2026-01-03 13:01
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Salamandar">@Salamandar</a> on 2026-01-03 13:01</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Using python-ldap exceptions trigger this issue:</p>
+<pre><code>error[unresolved-attribute]: Module `ldap` has no member `SERVER_DOWN`
+    |
+214 |         try:
+215 |             result = self.con.search_s(base, ldap.SCOPE_SUBTREE, filter, attrs)
+216 |         except ldap.SERVER_DOWN as e:
+    |                ^^^^^^^^^^^^^^^^
+217 |             raise e
+218 |         except Exception as e:
+</code></pre>
+<p>Indeed these classes are not explicitly set, see the corresponding code there: https://github.com/python-ldap/python-ldap/blob/main/Lib/ldap/constants.py#L82</p>
+<p>Not sure how you can fix <code>ty</code> to handle this, but mypy works properly on that.</p>
+<h3>Version</h3>
+<p>ty 0.0.2 (42835578d 2025-12-16)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-03 13:09</div>
+            <div class="timeline-body"><p>Thanks for the report!</p>
+<p>To reproduce this issue, I created a <code>foo.py</code> file like the following:</p>
+<pre><code class="language-py">import ldap
+ldap.SERVER_DOWN
+</code></pre>
+<p>I then ran <code>uvx --with=python-ldap mypy foo.py</code>. The output was:</p>
+<pre><code>foo.py:1: error: Skipping analyzing &quot;ldap&quot;: module is installed, but missing library stubs or py.typed marker  [import-untyped]
+foo.py:1: note: See https://mypy.readthedocs.io/en/stable/running_mypy.html#missing-imports
+</code></pre>
+<p>When you say &quot;mypy works properly&quot;, do you have <code>--ignore-missing-imports</code> set in your mypy configuration file? Or do you have some stubs for this package also installed in your environment?</p>
+<p>If you set <code>--ignore-missing-imports</code> in your mypy configuration, mypy will silently infer the type of all unresolved modules to <code>Any</code>. Mypy also, by default, treats all packages without a <code>py.typed</code> file as not being resolvable. So if you have <code>--ignore-missing-imports</code> set, mypy would not complain about the above snippet.</p>
+<p>If you're looking for similar behaviour from ty, then https://github.com/astral-sh/ty/issues/2082 might be helpful for you -- it would essentially be a way of opting into mypy-like behaviour (where some modules are treated as <code>Any</code>, even if the import can be resolved) on a per-module basis.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @AlexWaygood on 2026-01-03 13:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-info</span> added by @AlexWaygood on 2026-01-03 13:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Salamandar">@Salamandar</a> on 2026-01-06 22:15</div>
+            <div class="timeline-body"><blockquote>
+<p>do you have --ignore-missing-imports set in your mypy configuration file</p>
+</blockquote>
+<p><em>gasp</em>, you're right, we explicitly ignored the ldap module.</p>
+<blockquote>
+<p>Mypy also, by default, treats all packages without a py.typed file as not being resolvable</p>
+</blockquote>
+<p>That's probably the reason i get a different behaviour. Thanks for the explanation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @Salamandar on 2026-01-06 22:15</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:51:35 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>&quot;incorrect&quot; inlay hint on attribute assignment - astral-sh/ty #2297</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>&quot;incorrect&quot; inlay hint on attribute assignment</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2297">#2297</a>
+        opened by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a>
+        on 2026-01-01 19:16
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on 2026-01-01 19:16</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>In the following example we see the inlay hint <code>: int</code>, but in my opinion this is not very useful because the actual type of <code>self.x</code> is <code>Unknown | int</code>.</p>
+<pre><code class="language-py">class Foo:
+    def __init__(self, x: int):
+        self.x = x
+</code></pre>
+<p>I feel like we should infer the type of the lhs here instead of the rhs.</p>
+<p>I have a initial working solution, that works semi well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from ""incorrect" inlay hint" to ""incorrect" inlay hint on attribute assignment" by @MatthewMckee4 on 2026-01-01 19:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mtshiba">@mtshiba</a> on 2026-01-02 02:51</div>
+            <div class="timeline-body"><p>Outside the method, we cannot definitively infer the type of <code>Foo.x</code> to be <code>int</code>, but we can at least infer that it is <code>int</code> within <code>__init__</code>. This can be considered a kind of narrowing.</p>
+<pre><code class="language-python">class Foo:
+    def __init__(self, x: int):
+        self.x = x
+        reveal_type(self.x)  # int
+        self.x = 1
+        reveal_type(self.x)  # Literal[1]
+
+reveal_type(Foo(1).x)  # Unknown | int
+</code></pre>
+<p>So the issue becomes whether, when displaying attribute types, we should display the global type or the local type. I think the current approach (local) is fine.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">attribute access</span> added by @mtshiba on 2026-01-02 02:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mtshiba">@mtshiba</a> on 2026-01-03 01:49</div>
+            <div class="timeline-body"><p>However, it can indeed feel inconvenient that when examining the type of an implicit instance attribute, we cannot determine the global type from its usage within a method. It might be helpful to display the global type as well, as supplementary information alongside the type shown on hover.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @mtshiba on 2026-01-03 01:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on 2026-01-03 04:30</div>
+            <div class="timeline-body"><p>I agree that we should show some other information. I that recently, quite a few issues people have had on discord, make it seem like there is a bug in ty, when in fact one of their instance attributes are unioned with unknown, but it's hard to see that when we don't show that information, and rather we show something that seems wrong.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2026-01-03 17:37</div>
+            <div class="timeline-body"><p>I agree that this is confusing. It also means that baking an inlay can create new issues downstreams</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @MichaReiser on 2026-01-03 17:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "Stable" by @MichaReiser on 2026-01-03 17:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Pre-stable 1" by @MichaReiser on 2026-01-03 17:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2026-01-04 22:59</div>
+            <div class="timeline-body"><p>I don't think that we should invest time/complexity in addressing this on the inlay-hint side of things, because I think we should stop unioning attribute types with <code>Unknown</code> in these cases by default. The confusion is caused by the Unknown unioning, not by anything specific to inlay hints.</p>
+<blockquote>
+<p>It also means that baking an inlay can create new issues downstreams</p>
+</blockquote>
+<p>This is true in many situations, and it will always be true; it's just the nature of baking inlays, it's not at all specific to attributes or the <code>Unknown</code> unioning. The only reason this snippet is more than two lines is because we suppress &quot;trivial&quot; inlay hints:</p>
+<pre><code class="language-py">def returns_int() -&gt; int:
+    return 1
+
+x = returns_int()
+x = &quot;foo&quot;
+</code></pre>
+<p>This code is fine as-is, but if you bake the inlay hint of <code>int</code> on the first assignment to <code>x</code>, the second assignment becomes a type error.</p>
+<p>A type annotation is a declared upper bound on the type of that variable, the inlay hint is just the inferred type of the RHS. So baking inlay hints is, by nature, something that changes the semantics of the code and may cause new errors.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2026-01-04 23:00</div>
+            <div class="timeline-body"><p>(I would suggest to close this as duplicate of #1240, personally.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2026-01-05 08:19</div>
+            <div class="timeline-body"><blockquote>
+<p>(I would suggest to close this as duplicate of https://github.com/astral-sh/ty/issues/1240, personally.)</p>
+</blockquote>
+<p>I'm fine with this as long as the conclusion on #1240 is that this isn't behind an option and is prioritized before stable (which both seem the case today)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2026-01-05 08:19</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:51:35 UTC
+    </footer>
+</body>
+</html>

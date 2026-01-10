@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`invalid-argument-type` on union with pre PEP 695 type parameter - astral-sh/ty #1564</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`invalid-argument-type` on union with pre PEP 695 type parameter</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1564">#1564</a>
+        opened by <a href="https://github.com/edgarrmondragon">@edgarrmondragon</a>
+        on 2025-11-14 19:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/edgarrmondragon">@edgarrmondragon</a> on 2025-11-14 19:32</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>The following is accepted by mypy and was also working in previous versions of ty:</p>
+<pre><code class="language-python">from typing import Any, Generic, TypeAlias, TypeVar, Union
+
+_JsonValue: TypeAlias = str | int | float | bool | list | dict | None
+
+T = TypeVar(&quot;T&quot;, bound=_JsonValue)
+
+
+class JSONTypeHelper(Generic[T]):
+    def __init__(self) -&gt; None: ...
+
+
+class StringType(JSONTypeHelper[str]):
+    def __init__(self) -&gt; None: ...
+
+
+W = TypeVar(&quot;W&quot;, bound=JSONTypeHelper)
+
+
+class ArrayType(JSONTypeHelper[list], Generic[W]):
+    def __init__(self, wrapped_type: W | type[W], **kwargs: Any) -&gt; None: ...
+
+
+array = ArrayType(StringType)
+# Argument to bound method `__init__` is incorrect: Expected `ArrayType[W@ArrayType]`, found `ArrayType[&lt;class 'StringType'&gt;]` (invalid-argument-type) [Ln 23, Col 9]
+</code></pre>
+<p>https://play.ty.dev/bddec81e-101a-4c8b-818b-5012af6dec2e</p>
+<p>Curiously, using PEP 695 seems to make ty happy, though unfortunately I need to support Python 3.10+:</p>
+<pre><code class="language-python">from typing import Any, TypeAlias, Union
+
+_JsonValue: TypeAlias = str | int | float | bool | list | dict | None
+
+
+class JSONTypeHelper[T: _JsonValue]():
+    def __init__(self) -&gt; None: ...
+
+
+class StringType(JSONTypeHelper[str]):
+    def __init__(self) -&gt; None: ...
+
+
+class ArrayType[W: JSONTypeHelper](JSONTypeHelper[list]):
+    def __init__(self, wrapped_type: W | type[W], **kwargs: Any) -&gt; None: ...
+
+
+array = ArrayType(StringType)
+</code></pre>
+<p>https://play.ty.dev/5369dde9-a05c-4788-86c2-8d7291f6d85f</p>
+<h3>Version</h3>
+<p>ty 0.0.1-alpha.26 (b225fd8b4 2025-11-10)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-11-14 20:40</div>
+            <div class="timeline-body"><p>Thanks for the report! This is a pre-existing limitation of our generic solver (we don't understand <code>type[W]</code> where <code>W</code> is a type variable), which we hope to fix shortly. It's revealed in a recent ty release in this example because we recently improved our understanding of type aliases (such as <code>_JsonValue</code>).</p>
+<p>I'm not entirely sure why the behavior is different when you switch to PEP 695; I suspect it has something to do with how we synthesize the type of <code>self</code> in each case? That part needs more exploration to understand.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Beta" by @carljm on 2025-11-14 20:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "Beta" by @carljm on 2025-11-14 20:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @carljm on 2025-11-14 20:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/edgarrmondragon">@edgarrmondragon</a> on 2025-11-14 21:07</div>
+            <div class="timeline-body"><p>Interesting, come to think of it I've also run into https://github.com/astral-sh/ty/issues/783 and I see how both of these have the same underlying cause.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/yoonthegoon">@yoonthegoon</a> on 2025-11-18 17:10</div>
+            <div class="timeline-body"><p>+1</p>
+<p>Where <code>Bet().update_or_create() -&gt; Bet</code> and <code>Event().update_or_create() -&gt; Event</code></p>
+<p>This works just fine:</p>
+<pre><code class="language-py">    def process_item(self, item: Bet | Event, spider: Spider) -&gt; Bet | Event:
+        return item.update_or_create(self.session)
+</code></pre>
+<p>But the following gives me these issues:</p>
+<pre><code class="language-py">    def process_item[T: Bet | Event](self, item: T, spider: Spider) -&gt; T:
+        return item.update_or_create(self.session)
+</code></pre>
+<pre><code>Argument to bound method `update_or_create` is incorrect: Expected `Bet`, found `T@process_item`ty[invalid-argument-type](https://ty.dev/rules#invalid-argument-type)
+---
+Argument to bound method `update_or_create` is incorrect: Expected `Event`, found `T@process_item`ty[invalid-argument-type](https://ty.dev/rules#invalid-argument-type)
+---
+Return type does not match returned value: expected `T@process_item`, found `Bet | Event`ty[invalid-return-type](https://ty.dev/rules#invalid-return-type)
+pipelines.py(25, 72): Expected `T@process_item` because of return type
+</code></pre>
+<hr />
+<p>ty 0.0.1-alpha.26
+Python 3.14.0</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dmytro-GL">@dmytro-GL</a> on 2025-11-18 18:21</div>
+            <div class="timeline-body"><p>Here is another one (though I'm not 100% sure this is the exact same issue):</p>
+<pre><code>from typing import Callable, Protocol, ParamSpec
+
+P = ParamSpec(&quot;P&quot;)
+T = Callable[[], None]
+
+class Foo:
+    def __init__(self, func: T) -&gt; None:
+        self.func = func
+    def __call__(self) -&gt; None:
+        self.func()
+
+class FooFactory1(Protocol[P]):
+    def __call__(self, func: T, /, *args: P.args, **kwargs: P.kwargs) -&gt; T: ...
+
+class FooFactory2(Protocol[P]):
+    def __call__(self, func: T) -&gt; T: ...
+
+def test1(func: FooFactory1[P]):
+    func(lambda: print(&quot;1&quot;))()
+
+def test2(func: FooFactory2[P]):
+    func(lambda: print(&quot;2&quot;))()
+
+def test3(func: FooFactory1):
+    func(lambda: print(&quot;3&quot;))()
+
+def test4(func: FooFactory2):
+    func(lambda: print(&quot;4&quot;))()
+
+test1(Foo)
+test2(Foo)
+test3(Foo)
+test4(Foo)
+</code></pre>
+<p>0.0.1a25 complains about cases 3 and 4:</p>
+<pre><code>$ uvx --with-requirements=requirements.txt ty@0.0.1a25 check test.min.py
+error[invalid-argument-type]: Argument to function `test3` is incorrect
+  --&gt; test.min.py:32:7
+   |
+30 | test1(Foo)
+31 | test2(Foo)
+32 | test3(Foo)
+   |       ^^^ Expected `FooFactory1`, found `&lt;class 'Foo'&gt;`
+33 | test4(Foo)
+   |
+info: Function defined here
+  --&gt; test.min.py:24:5
+   |
+22 |     func(lambda: print(&quot;2&quot;))()
+23 |
+24 | def test3(func: FooFactory1):
+   |     ^^^^^ ----------------- Parameter declared here
+25 |     func(lambda: print(&quot;3&quot;))()
+   |
+info: rule `invalid-argument-type` is enabled by default
+
+error[invalid-argument-type]: Argument to function `test4` is incorrect
+  --&gt; test.min.py:33:7
+   |
+31 | test2(Foo)
+32 | test3(Foo)
+33 | test4(Foo)
+   |       ^^^ Expected `FooFactory2`, found `&lt;class 'Foo'&gt;`
+   |
+info: Function defined here
+  --&gt; test.min.py:27:5
+   |
+25 |     func(lambda: print(&quot;3&quot;))()
+26 |
+27 | def test4(func: FooFactory2):
+   |     ^^^^^ ----------------- Parameter declared here
+28 |     func(lambda: print(&quot;4&quot;))()
+   |
+info: rule `invalid-argument-type` is enabled by default
+
+Found 2 diagnostics
+</code></pre>
+<p>0.0.1a26 complains about cases 1 and 3:</p>
+<pre><code>$ uvx --with-requirements=requirements.txt ty@0.0.1a26 check test.min.py
+error[invalid-argument-type]: Argument to function `test1` is incorrect
+  --&gt; test.min.py:30:7
+   |
+28 |     func(lambda: print(&quot;4&quot;))()
+29 |
+30 | test1(Foo)
+   |       ^^^ Expected `FooFactory1[Unknown]`, found `&lt;class 'Foo'&gt;`
+31 | test2(Foo)
+32 | test3(Foo)
+   |
+info: Function defined here
+  --&gt; test.min.py:18:5
+   |
+16 |     def __call__(self, func: T) -&gt; T: ...
+17 |
+18 | def test1(func: FooFactory1[P]):
+   |     ^^^^^ -------------------- Parameter declared here
+19 |     func(lambda: print(&quot;1&quot;))()
+   |
+info: rule `invalid-argument-type` is enabled by default
+
+error[invalid-argument-type]: Argument to function `test3` is incorrect
+  --&gt; test.min.py:32:7
+   |
+30 | test1(Foo)
+31 | test2(Foo)
+32 | test3(Foo)
+   |       ^^^ Expected `FooFactory1[Unknown]`, found `&lt;class 'Foo'&gt;`
+33 | test4(Foo)
+   |
+info: Function defined here
+  --&gt; test.min.py:24:5
+   |
+22 |     func(lambda: print(&quot;2&quot;))()
+23 |
+24 | def test3(func: FooFactory1):
+   |     ^^^^^ ----------------- Parameter declared here
+25 |     func(lambda: print(&quot;3&quot;))()
+   |
+info: rule `invalid-argument-type` is enabled by default
+
+Found 2 diagnostics
+</code></pre>
+<p>pyright doesn't like the first case, but for a different reason (?)</p>
+<pre><code>$ uvx --with-requirements requirements.txt pyright@1.1.407 test.min.py
+/tmp/t/test.min.py
+  /tmp/t/test.min.py:19:5 - error: Arguments for ParamSpec &quot;P@test1&quot; are missing (reportCallIssue)
+1 error, 0 warnings, 0 informations
+</code></pre>
+<p>The example above is an attempt to investigate the <code>invalid-argument-type</code> issue reported by ty@0.0.1a26 in the following code (ty@0.0.1a25 and pyright@1.1.407 don't report any issues):</p>
+<pre><code># /// script
+# dependencies = [
+#   &quot;uvicorn   == 0.38.0&quot;,
+#   &quot;fastapi   == 0.121.2&quot;,
+#   &quot;starlette == 0.49.3&quot;,
+# ]
+# ///
+
+import uvicorn
+
+from fastapi import FastAPI
+
+from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
+from starlette.requests import Request
+from starlette.responses import Response
+
+class HelloMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request: Request, call_next: RequestResponseEndpoint) -&gt; Response:
+        print(&quot;hello&quot;)
+        return await call_next(request)
+
+app = FastAPI()
+app.add_middleware(HelloMiddleware)
+
+if __name__ == &quot;__main__&quot;:
+    uvicorn.run(&quot;test:app&quot;, host=&quot;127.0.0.1&quot;, port=8000)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">type aliases</span> added by @AlexWaygood on 2025-12-19 12:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/edgarrmondragon">@edgarrmondragon</a> on 2025-12-24 17:47</div>
+            <div class="timeline-body"><p>This seems to have been fixed in 0.0.2, at least for the case I described at the top.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-27 19:28</div>
+            <div class="timeline-body"><p>I think the case shown by @dmytro-GL is something different, it looks more like #1970 and #2227.</p>
+<p>I think the original report here was fixed in 0.0.2 with the addition of support for <code>type[T]</code>.</p>
+<p>Thanks for following up, @edgarrmondragon !</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-12-27 19:28</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:51:35 UTC
+    </footer>
+</body>
+</html>

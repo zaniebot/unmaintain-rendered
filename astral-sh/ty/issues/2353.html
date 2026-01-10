@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stale diagnostics when content is updated outside the editor - astral-sh/ty #2353</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Stale diagnostics when content is updated outside the editor</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2353">#2353</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2026-01-06 05:37
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2026-01-06 05:37</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>As seen in the following video, when I add new content to the file using <code>echo</code>, the diagnostics isn't updated:</p>
+<p>https://github.com/user-attachments/assets/a70fc8b2-5753-4cb1-85da-5b4ad81038a5</p>
+<p>Here's the code:</p>
+<pre><code class="language-py">import os
+
+import something
+</code></pre>
+<p>And, then use the following command to append the file with a new unknown import:</p>
+<pre><code class="language-bash">echo &quot;import other\n&quot; &gt;&gt; src/ty_server/bug.py
+</code></pre>
+<p>Here's what Neovim is sending when the above command is executed which is a <code>didClose</code> notification followed by a <code>didOpen</code> notification with the updated file content:</p>
+<pre><code>2026-01-06 11:02:09 [DEBUG] rpc.send {
+  jsonrpc = &quot;2.0&quot;,
+  method = &quot;textDocument/didClose&quot;,
+  params = {
+    textDocument = {
+      uri = &quot;file:///Users/dhruv/playground/ty-server/src/ty_server/bug.py&quot;
+    }
+  }
+}
+2026-01-06 11:02:09 [DEBUG] rpc.send {
+  jsonrpc = &quot;2.0&quot;,
+  method = &quot;textDocument/didOpen&quot;,
+  params = {
+    textDocument = {
+      languageId = &quot;python&quot;,
+      text = &quot;import os\n\nimport something\nimport other\n\n&quot;,
+      uri = &quot;file:///Users/dhruv/playground/ty-server/src/ty_server/bug.py&quot;,
+      version = 0
+    }
+  }
+}
+</code></pre>
+<p>And, here's the logs which says that ty thinks the diagnostics are unchanged:</p>
+<pre><code>2026-01-06 11:02:09 [DEBUG] rpc.send {
+  id = 6,
+  jsonrpc = &quot;2.0&quot;,
+  method = &quot;textDocument/diagnostic&quot;,
+  params = {
+    previousResultId = &quot;919997a55b1181a2&quot;,
+    textDocument = {
+      uri = &quot;file:///Users/dhruv/playground/ty-server/src/ty_server/bug.py&quot;
+    }
+  }
+}
+2026-01-06 11:02:09 [DEBUG] rpc.receive {
+  id = 6,
+  jsonrpc = &quot;2.0&quot;,
+  result = {
+    kind = &quot;unchanged&quot;,
+    resultId = &quot;919997a55b1181a2&quot;
+  }
+}
+</code></pre>
+<p>These are the ty server's debug logs during the <code>didClose</code> and <code>didOpen</code> events:</p>
+<pre><code>2026-01-06 11:02:09.644047000 DEBUG notification{method=&quot;textDocument/didClose&quot;}: Closing file `/Users/dhruv/playground/ty-server/src/ty_server/bug.py`
+2026-01-06 11:02:09.644209000 DEBUG notification{method=&quot;textDocument/didClose&quot;}: Take open project files
+2026-01-06 11:02:09.644357000 DEBUG notification{method=&quot;textDocument/didClose&quot;}:set_open_files{open_files={}}: Set open project files (count: 0)
+2026-01-06 11:02:09.644687000 DEBUG notification{method=&quot;textDocument/didOpen&quot;}: Opening file `/Users/dhruv/playground/ty-server/src/ty_server/bug.py`
+2026-01-06 11:02:09.644716000 DEBUG notification{method=&quot;textDocument/didOpen&quot;}: Take open project files
+2026-01-06 11:02:09.644771000 DEBUG notification{method=&quot;textDocument/didOpen&quot;}:set_open_files{open_files={file(Id(c09))}}: Set open project files (count: 1)
+</code></pre>
+<h3>Version</h3>
+<p>ty ruff/0.14.10+203 (e63cf978a 2026-01-05)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @dhruvmanila on 2026-01-06 05:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @dhruvmanila on 2026-01-06 05:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2026-01-06 05:37</div>
+            <div class="timeline-body"><p>#2346 might be related</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @dhruvmanila on 2026-01-06 05:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2026-01-06 09:34</div>
+            <div class="timeline-body"><blockquote>
+<p><a href="https://github.com/astral-sh/ty/issues/2346">#2346</a> might be related</p>
+</blockquote>
+<p>Yes, I think this is the same</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2026-01-06 10:52</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:51:35 UTC
+    </footer>
+</body>
+</html>

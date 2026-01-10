@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Decide on &quot;enabled-by-default&quot; inlays - astral-sh/ty #1003</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Decide on &quot;enabled-by-default&quot; inlays</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1003">#1003</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2025-08-15 13:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-08-15 13:46</div>
+            <div class="timeline-body"><p>Decide which inlays should be enabled by default.</p>
+<p>https://github.com/astral-sh/ruff/pull/19910#discussion_r2275980197</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @MichaReiser on 2025-08-15 13:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-19 09:55</div>
+            <div class="timeline-body"><p>I would prefer for these to be off by default. I think this is what most Python IDE users coming from Pylance will expect, since they are off by default in Pylance.</p>
+<p>In cases like this, I find the inlay hints telling me what the argument names are very distracting, and it annoys me that they significantly increase the amount of space on my screen taken up by my code:</p>
+<p><img width="1722" height="760" alt="Image" src="https://github.com/user-attachments/assets/b85441ed-a65c-417f-9490-0ba9e6115c45" /></p>
+<p><br><br></p>
+<p>The parameter names aren't particularly useful in this funciton call; if they were, I would have used keyword arguments in the function call. (The fact that Python has keyword arguments makes the situation quite different from Rust, in my opinion -- I often find reading Rust outside of an IDE quite hard due to the lack of keyword arguments, but inlay hints supplied by rust-analyzer or other language servers can definitely help mitigate that. The prevalence of keyword arguments in Python means that I generally find Python code much easier to read outside of an IDE.)</p>
+<p>I think in general, it's quite important to have defaults that match users' expectations with regards to the language server. It would take me some time to figure out how to change the appropriate setting for this feature in VSCode (I can never find my way to the right setting on the rare occasion I need to change something).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-08-19 10:22</div>
+            <div class="timeline-body"><p>This sounds as if it is mainly about the argument inlay hints and not necessarily about all inlay hints.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-19 10:26</div>
+            <div class="timeline-body"><p>I'm finding the argument inlay hints especially noisy in the playground right now, for sure. I do like that some of our other inlay hints provide an easy way to tell what type ty infers a variable as having, without even having to hover over a symbol.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-08-19 11:06</div>
+            <div class="timeline-body"><p>Disabling the argument inlays by default seems very reasonable to me and I agree that they're more noisy (and probably too noisy to have them enabled by default).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-08-19 12:17</div>
+            <div class="timeline-body"><p>For argument inlays, I'm wondering if there is a reasonable default somewhere in between &quot;off by default&quot; and &quot;on by default&quot;: For calls with a single positional parameter, it's almost certainly never going to be useful to show an inlay hint. However, for calls that take three or more <em>positional</em> arguments, it might be reasonable to show them by default. For two arguments, there are probably arguments in both directions, but I would argue that the meaning is clear for the majority of functions. So could there be a setting where we show inlays for (d), but not for (a-c)?</p>
+<pre><code class="language-py"># (a) no inlay hint
+print(&quot;Hello&quot;)
+
+# (b) no inlay hint
+max(1, 3)
+
+# (c) also no inlay hint, only one positional argument
+subprocess.run([&quot;program&quot;, &quot;arg&quot;], check=True, text=True)  
+
+# (d) 3+ positional args =&gt; add hints: randrange(start=0, stop=10, step=2)
+randrange(0, 10, 2)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-08-19 12:22</div>
+            <div class="timeline-body"><blockquote>
+<p>However, for calls that take three or more <em>positional</em> arguments, it might be reasonable to show them by default.</p>
+</blockquote>
+<p>and especially if:</p>
+<ul>
+<li>all arguments passed in are the same type (like your <code>randrange</code> function). In that kind of situation it can become hard to tell which argument corresponds to which parameter</li>
+<li><em>and</em> the parameter names are longer than a single letter (e.g. I wouldn't particularly appreciate <code>x</code> and <code>y</code> showing up as inlay hints for a call to a function like <a href="https://github.com/python/typeshed/blob/d270bb0dc1df3fcfae2808c9a5a0f7ec802e1fb2/stdlib/statistics.pyi#L115-L117">this</a>, even if it had &gt;=3 positional arguments)</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "GA" by @AlexWaygood on 2025-10-06 16:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-12-04 17:53</div>
+            <div class="timeline-body"><p>Since this was last discussed we've landed a ton of inlay hint improvements, making them both more useful and less annoying.</p>
+<p>Type inlay hints:</p>
+<ul>
+<li>are supressed in many cases where they're trivial/unhelpful</li>
+<li>are truncated when too long</li>
+<li>can be hovered to get type info / docs</li>
+<li>can be cmd+clicked to goto-definition</li>
+<li>can be double-clicked to insert them (helping you add types to your code)</li>
+</ul>
+<p>Function argument inlay hints:</p>
+<ul>
+<li>are supressed in many cases where they're trivial/unhelpful</li>
+<li>can be cmd+clicked to goto-definition</li>
+</ul>
+<p>I find both really helpful now, helping me understand python types and the libraries I'm using. But I am a big inlay-hint fangirl.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-04 17:59</div>
+            <div class="timeline-body"><p>I would personally still prefer them suppressed (by default) for function arguments in call expressions. They're still too noisy and distracting for me :-)</p>
+<p>Most of the time if it's ambiguous which argument is being passed to which parameter, you just use a keyword argument in Python. I just don't think they provide the same degree of benefits as they do with Rust.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-04 18:01</div>
+            <div class="timeline-body"><p>I would just wait for more user feedback rather than taking any one's preference here :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a> on 2025-12-31 22:14</div>
+            <div class="timeline-body"><p>My two cents on this as you may have gathered from my other issues, I'm a massive fan of inlay hints and would love if everything was on by default.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:51:35 UTC
+    </footer>
+</body>
+</html>

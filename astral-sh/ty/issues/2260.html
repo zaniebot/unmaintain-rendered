@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Variable is resolved to `Never` after `match` against `Enum | None` - astral-sh/ty #2260</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Variable is resolved to `Never` after `match` against `Enum | None`</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2260">#2260</a>
+        opened by <a href="https://github.com/condemil">@condemil</a>
+        on 2025-12-29 16:01
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/condemil">@condemil</a> on 2025-12-29 16:01</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>The expected outcome is that <code>ty</code> will resolve <code>c</code> variable as <code>TestClass</code>, but it's resolved to <code>Never</code>. Probably <code>ty</code> thinks that <code>none_value</code> will always match to one of <code>case</code>'s, but it's not.</p>
+<pre><code class="language-python">from enum import Enum
+
+
+class TestEnum(Enum):
+    FOO = &quot;FOO&quot;
+    BAR = &quot;BAR&quot;
+
+class TestClass: ...
+
+async def test():
+    none_value = get_none()
+
+    match none_value:
+        case TestEnum.FOO:
+            return
+        case TestEnum.BAR:
+            return
+
+    c = TestClass()  # Never
+
+
+
+def get_none() -&gt; TestEnum | None:
+    return None
+</code></pre>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Return variables resolved to `Never` after `match` against `Enum | None`" to "Variable is resolved to `Never` after `match` against `Enum | None`" by @condemil on 2025-12-29 16:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">control flow</span> added by @mtshiba on 2025-12-29 16:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-29 16:23</div>
+            <div class="timeline-body"><p>Thanks for the report -- this definitely looks like a bug!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @carljm on 2025-12-29 16:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mtshiba">@mtshiba</a> on 2025-12-29 16:28</div>
+            <div class="timeline-body"><p>It looks like the reachability of the code after the match statement is determined to be <code>AlwaysFalse</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-29 18:35</div>
+            <div class="timeline-body"><p>Slightly smaller repro:</p>
+<pre><code class="language-py">from enum import Enum
+
+class TestEnum(Enum):
+    FOO = &quot;FOO&quot;
+    BAR = &quot;BAR&quot;
+
+def test(none_value: TestEnum | None):
+    if none_value != TestEnum.FOO:
+        reveal_type(none_value)  # revealed: Literal[TestEnum.BAR] ??
+</code></pre>
+<p>https://play.ty.dev/23764653-906c-47c0-86b5-070649c3172e</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "Stable" by @carljm on 2025-12-29 19:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Pre-stable 1" by @carljm on 2025-12-29 19:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-12-29 19:30</div>
+            <div class="timeline-body"><p>This diff appears to fix it (though haven't dug-in to understand if it's correct):</p>
+<pre><code class="language-diff">diff --git a/crates/ty_python_semantic/src/types/builder.rs b/crates/ty_python_semantic/src/types/builder.rs
+index 132c5b077d..36a258f20d 100644
+--- a/crates/ty_python_semantic/src/types/builder.rs
++++ b/crates/ty_python_semantic/src/types/builder.rs
+@@ -810,13 +810,6 @@ impl&lt;'db&gt; IntersectionBuilder&lt;'db&gt; {
+         ty: Type&lt;'db&gt;,
+         seen_aliases: &amp;mut Vec&lt;Type&lt;'db&gt;&gt;,
+     ) -&gt; Self {
+-        let contains_enum = |enum_instance| {
+-            self.intersections
+-                .iter()
+-                .flat_map(|intersection| &amp;intersection.positive)
+-                .any(|ty| *ty == enum_instance)
+-        };
+-
+         // See comments above in `add_positive`; this is just the negated version.
+         match ty {
+             Type::TypeAlias(alias) =&gt; {
+@@ -871,12 +864,27 @@ impl&lt;'db&gt; IntersectionBuilder&lt;'db&gt; {
+                     },
+                 )
+             }
+-            Type::EnumLiteral(enum_literal)
+-                if contains_enum(enum_literal.enum_class_instance(self.db)) =&gt;
+-            {
+-                let db = self.db;
+-                self.add_positive_impl(
+-                    UnionType::from_elements(
++            Type::EnumLiteral(enum_literal) =&gt; {
++                let enum_instance = enum_literal.enum_class_instance(self.db);
++
++                // Partition intersections into those that contain the enum instance and those that don't.
++                // For intersections containing the enum, we need to expand to remaining members.
++                // For others, we just add the negative normally.
++                let (enum_intersections, other_intersections): (Vec&lt;_&gt;, Vec&lt;_&gt;) = self
++                    .intersections
++                    .into_iter()
++                    .partition(|inner| inner.positive.contains(&amp;enum_instance));
++
++                if enum_intersections.is_empty() {
++                    // No inner intersection contains the enum, just add negative normally
++                    self.intersections = other_intersections;
++                    for inner in &amp;mut self.intersections {
++                        inner.add_negative(self.db, ty);
++                    }
++                    self
++                } else {
++                    let db = self.db;
++                    let remaining_members = UnionType::from_elements(
+                         db,
+                         enum_member_literals(
+                             db,
+@@ -884,9 +892,32 @@ impl&lt;'db&gt; IntersectionBuilder&lt;'db&gt; {
+                             Some(enum_literal.name(db)),
+                         )
+                         .expect(&quot;Calling `enum_member_literals` on an enum class&quot;),
+-                    ),
+-                    seen_aliases,
+-                )
++                    );
++
++                    // For enum-containing intersections, add the remaining members as positive
++                    let mut enum_builder = IntersectionBuilder {
++                        db,
++                        order_elements: self.order_elements,
++                        intersections: enum_intersections,
++                    }
++                    .add_positive_impl(remaining_members, seen_aliases);
++
++                    // For non-enum intersections, just add the negative normally
++                    let mut other_builder = IntersectionBuilder {
++                        db,
++                        order_elements: self.order_elements,
++                        intersections: other_intersections,
++                    };
++                    for inner in &amp;mut other_builder.intersections {
++                        inner.add_negative(db, ty);
++                    }
++
++                    // Combine the results
++                    enum_builder
++                        .intersections
++                        .extend(other_builder.intersections);
++                    enum_builder
++                }
+             }
+             _ =&gt; {
+                 for inner in &amp;mut self.intersections {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">control flow</span> removed by @AlexWaygood on 2025-12-29 19:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">set-theoretic types</span> added by @AlexWaygood on 2025-12-29 19:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-12-29 20:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-12-30 03:19</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:51:35 UTC
+    </footer>
+</body>
+</html>

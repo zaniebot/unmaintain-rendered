@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`Unknown` return type for higher order decorator wrapped functions - astral-sh/ty #2284</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>`Unknown` return type for higher order decorator wrapped functions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2284">#2284</a>
+        opened by <a href="https://github.com/jamestrew">@jamestrew</a>
+        on 2025-12-31 02:52
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jamestrew">@jamestrew</a> on 2025-12-31 02:52</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Higher order decorator = second order decorator = decorator factory
+Not sure what the exactly correct term but hope the playground link clears it up. Feel free to change the issue title.</p>
+<p>When a function is wrapped by such a decorator, the wrapped functions return type becomes <code>Unknown</code>.</p>
+<pre><code class="language-python">from typing import Callable, TypeVar, reveal_type, ParamSpec
+from functools import wraps
+
+P = ParamSpec(&quot;P&quot;)
+R = TypeVar(&quot;R&quot;)
+
+
+def big_wrap() -&gt; Callable[[Callable[P, R]], Callable[P, R]]:
+    def decorator(func: Callable[P, R]) -&gt; Callable[P, R]:
+        @wraps(func)
+        def wrapper(*args: P.args, **kwargs: P.kwargs) -&gt; R:
+            return func(*args, **kwargs)
+
+        return wrapper
+
+    return decorator
+
+
+@big_wrap()
+def wrapped_foo() -&gt; int:
+    return 42
+
+
+x = wrapped_foo()
+reveal_type(x)  # Revealed type: `Unknown`
+</code></pre>
+<p>https://play.ty.dev/8743f5e8-d4a2-432e-91be-7cd5d25da734</p>
+<p>For ref:
+<a href="https://mypy-play.net/?mypy=latest&amp;python=3.12&amp;gist=bece442ac4db1b2897138cfd1bb83b7e">mypy playground</a>
+<a href="https://pyright-play.net/?code=GYJw9gtgBALgngBwJYDsDmUkQWEMoDCAhgDYlEBGJApgDRQAqi1AakSPSNQG7WkD68BHSgAFdkQgBlYQGMAUKEhRgAVxSyYYMCQDOmbLnwB3EEQS7580VAC8YidLkAKAESjXASnkAlO42Y2EDcfLyt5ABNqYCgKJDR%2BU3NnTygAWgA%2BQlJyKmoAbXziMkoafNF6HwBdKvpi3LKKqGqqgC55KE6oKJio2VwiLWC1DVbskrzyyqrUzPGGgqbq9q7VqAABJItnEdlvNa6eqC3hYIAqdjRdMdEAOkvdejOzgGtjB5vbt4fZrJ8Vg5rLgwVQgFAqdSyZwXEBXJ6vd6w3TeDqA4Gg8EnaggKyrdFg7rUfpmIbhdZxBJbFKRaLHMwIYQRfjAbQpdJZVAwAGdfHggAsACZwgAPfxYpkssDUri8ARCajOYWpKAAYmaPD4NAisGYYwABgBVFAvFBgYwoPXyIA">pyright playgroud</a>
+Both reveal <code>int</code> as the type as expected.</p>
+<h3>Version</h3>
+<p>ty ruff/0.14.10+165 (f61978306 2025-12-30)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-31 11:11</div>
+            <div class="timeline-body"><p>Thanks! I'm pretty sure this is #1136</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-12-31 11:11</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:51:35 UTC
+    </footer>
+</body>
+</html>

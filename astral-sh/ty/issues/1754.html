@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auto-import should have some rudimentary support for evaluating conditionals - astral-sh/ty #1754</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Auto-import should have some rudimentary support for evaluating conditionals</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/1754">#1754</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2025-12-04 14:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-12-04 14:10</div>
+            <div class="timeline-body"><p>At present, auto-import assumes all conditionals are always true. This means it will return symbols that may not be available in the current environment.</p>
+<p>Auto-import likely can't be as good as ty itself here since we want to avoid bringing in type machinery for this. But perhaps we can cover some obvious cases like:</p>
+<pre><code class="language-python">if True: ...
+if False: ...
+if sys.version_info &gt;= (3, 12): ...
+if TYPE_CHECKING: ...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @BurntSushi on 2025-12-04 14:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">completions</span> added by @BurntSushi on 2025-12-04 14:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-04 14:12</div>
+            <div class="timeline-body"><p>The <code>sys.version_info</code> case will be hard without bringing type machinery into this, unless you want to build out an architecture for evaluating <code>sys.version_info</code> guards that's totally parallel to the way the type checker does it :/</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-12-04 14:27</div>
+            <div class="timeline-body"><p>I guess I was assuming that most would be simple conditionals like <code>sys.version_info &gt;= (3, 12)</code>. Just supporting those seems reasonable to me if it's the vast majority of instances.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-04 14:31</div>
+            <div class="timeline-body"><p>it gets a bit more complicated to do correctly if you have something like</p>
+<pre><code class="language-py">import sys
+
+sys = something_else_entirely()
+
+if sys.version_info &gt;= (3, 12):
+    ...
+</code></pre>
+<p>but yes, it's certainly possible. Most (all?) other type checkers only support simple <code>sys.version_info</code> checks, because they do it by looking at conditions syntactically, without type inference. Ty is the odd one out here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-04 15:33</div>
+            <div class="timeline-body"><p>What do other type checkers do here?</p>
+<p>I don't know if auto-completion has to support conditions. I think unioning is fine in most cases and other edge cases seem very hard to handle, e.g. what if the user is typing in a narrowed sys-version branch, would we have to narrow the auto completions too?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-12-04 15:38</div>
+            <div class="timeline-body"><p>I think currently our UX is bad in general for code blocks the type checker infers as unreachable, and that's sort-of expected (it matches rust-analyzer and pyright, IIRC). For example, we won't include various attributes that might exist on the Python version corresponding to that<code>sys.version_info</code> block, and we will include various attributes that don't exist on the Python version corresponding to that unreachable <code>sys.version_info</code> block</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-12-04 17:09</div>
+            <div class="timeline-body"><p>I think it is inevitable that whatever support auto-import has for <code>sys.version_info</code> conditionals will be a parallel re-implementation to what ty does. This is perhaps not ideal, but it's already the status quo: the IDE already has an entirely parallel reimplementation of <code>__all__</code> parsing, for example. I don't think that's an inherent blocker to doing it. The question is just the cost-benefit: how much value it provides, and how much work it is to implement. I think the work to implement a simple version that matches the capabilities of other type-checkers is not prohibitive. It certainly seems preferable if we don't offer to auto-complete version-guarded symbols which our type checker will immediately turn around and tell you don't exist.</p>
+<p>I haven't checked how other type-checkers handle version conditionals in auto-import specifically. I would be somewhat surprised if they don't support it, since other type-checkers use fairly simple syntactic matching on such conditionals, which shouldn't be hard to integrate with their LSP. But I could be wrong.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-31 15:39</div>
+            <div class="timeline-body"><p>@BurntSushi can you triage this (should this be part of stable/pre-stable)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @BurntSushi on 2026-01-05 14:46</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:51:35 UTC
+    </footer>
+</body>
+</html>

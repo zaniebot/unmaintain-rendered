@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Using `ParamSpec`, tyshouldn't give error with a tuple but should give error with a list as a default value, following the docstring. - astral-sh/ty #2234</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Using `ParamSpec`, tyshouldn't give error with a tuple but should give error with a list as a default value, following the docstring.</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2234">#2234</a>
+        opened by <a href="https://github.com/hyperkai">@hyperkai</a>
+        on 2025-12-27 04:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/hyperkai">@hyperkai</a> on 2025-12-27 04:11</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>*Memo:</p>
+<ul>
+<li>ty check</li>
+<li>ty 0.0.7</li>
+<li>Python 3.14</li>
+<li>Windows 11</li>
+</ul>
+<p>The docstring of <a href="https://docs.python.org/3/library/typing.html#typing.ParamSpec">ParamSpec</a> shows two examples using the default value with a tuple as shown below:</p>
+<pre><code class="language-python">from typing import ParamSpec
+
+print(help(ParamSpec))
+</code></pre>
+<blockquote>
+<p>type IntFuncDefault[**P = (int, str)] = Callable[P, int]</p>
+</blockquote>
+<blockquote>
+<p>P = ParamSpec('P')
+DefaultP = ParamSpec('DefaultP', default=(int, str))</p>
+</blockquote>
+<p>But ty gives the error because a tuple is set instead of a list as shown below:</p>
+<pre><code class="language-python">from typing import ParamSpec
+
+                        # ↓ tuple  ↓
+type IntFuncDefault[**P = (int, str)] = Callable[P, int] # Error
+
+P = ParamSpec('P')                     # ↓ tuple  ↓
+DefaultP = ParamSpec('DefaultP', default=(int, str)) # Error
+</code></pre>
+<blockquote>
+<p>error[invalid-paramspec]: The default value to <code>ParamSpec</code> must be either a list of types, <code>ParamSpec</code>, or <code>...</code></p>
+</blockquote>
+<p>Actually, setting a list gets no error as shown below:</p>
+<pre><code class="language-python">from typing import ParamSpec
+
+                        # ↓  list  ↓
+type IntFuncDefault[**P = [int, str]] = Callable[P, int] # No error
+
+P = ParamSpec('P')                     # ↓  list  ↓
+DefaultP = ParamSpec('DefaultP', default=[int, str]) # No error
+</code></pre>
+<p>So using <code>ParamSpec</code>, ty shouldn't give error with a tuple but should give error with a list as a default value, following the docstring.</p>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-12-27 07:11</div>
+            <div class="timeline-body"><p>I think the docstring is incorrect as the typing spec mentions that it should be a <em>list</em> of types (and not <em>tuple</em> of types):</p>
+<blockquote>
+<p>ParamSpec defaults are defined using the same syntax as TypeVar s but use a list of types or an ellipsis literal “...” or another in-scope ParamSpec (see <a href="https://typing.python.org/en/latest/spec/generics.html#scoping-rules">Scoping Rules</a>).</p>
+<p>https://typing.python.org/en/latest/spec/generics.html#paramspec-defaults</p>
+</blockquote>
+<p>Other type checkers error on tuple of types as well - <a href="https://pyright-play.net/?code=GYJw9gtgBALgngBwJYDsDmUkQWEMoDCAhgDYlEBGJApgDRQAKRIREAygtQMYBQP8nKAEkUMAGIBXFFwAi1YEQkkYAbQBUahlAC8UABSoY9AM4wQASgC6OwqXJVqKhvUPWAxFACiIcCD5bdJhZ2Ti49AHIGcPMeOQUlGADGZlYObgi4xWUo%2BgATeSyYbQNREzNzcygPb18gA">Pyright</a>, <a href="https://mypy-play.net/?mypy=latest&amp;python=3.14&amp;gist=c1da95c4525a174a58c4e6a2371badf3">mypy</a>.</p>
+<p>I think we just need to update the docs here: https://github.com/python/cpython/blob/54362898f32bf195db898bfead15784d6ab5831b/Objects/typevarobject.c#L1441-L1492 in the CPython repository.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @dhruvmanila on 2025-12-27 07:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-12-27 07:18</div>
+            <div class="timeline-body"><p>I've opened https://github.com/python/cpython/issues/143206, it looks like a good first issue :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2025-12-27 07:18</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:51:35 UTC
+    </footer>
+</body>
+</html>

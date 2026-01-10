@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Regression in v0.0.9: match statement exhaustive check of enum values - astral-sh/ty #2367</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Regression in v0.0.9: match statement exhaustive check of enum values</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2367">#2367</a>
+        opened by <a href="https://github.com/scosman">@scosman</a>
+        on 2026-01-06 16:12
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/scosman">@scosman</a> on 2026-01-06 16:12</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>The latest release has regressed exhaustive enum checking. In V0.0.8 it would know the <code>case _:</code> statement was unreachable, and not complain. However, in v0.0.9 it complains, even though it's unreachable.</p>
+<p>I use this pattern to ensure all enum cases are covered. Complaining if it's reachable is the goal: type checker forces me to handle new enum values in the match statement.</p>
+<h2>Minimal Repo</h2>
+<pre><code class="language-python">from enum import Enum
+from typing import NoReturn
+
+from pydantic import BaseModel, Field
+
+
+class TestEnum(str, Enum):
+    A = (&quot;a&quot;,)
+    B = (&quot;b&quot;,)
+    C = (&quot;c&quot;,)
+
+
+class TestClass(BaseModel):
+    def __init__(self, value: TestEnum):
+        self._value = value
+
+    value: TestEnum = Field(
+        description=&quot;A field.&quot;,
+    )
+
+# Note: also reproduces with assert_never. I use this function so the type checker complains unless all enum values are handled.
+def raise_exhaustive_enum_error(value: NoReturn) -&gt; NoReturn:
+    raise ValueError(f&quot;Unhandled enum value: {value}&quot;)
+
+
+def isA(item: TestClass | None) -&gt; bool:
+    if item is None:
+        return False
+    val = item.value
+    match item._value:
+        case TestEnum.A:
+            return True
+        case TestEnum.B:
+            return False
+        case TestEnum.C:
+            return False
+        case _:
+            raise_exhaustive_enum_error(val)
+            # Also reproduces with assert_never
+
+</code></pre>
+<h2>V0.0.9 Behaviour</h2>
+<p>Complains about the typing, even though it's unreachable (exhaustive enum check above).</p>
+<pre><code>39 |             raise_exhaustive_enum_error(val)
+   |                                         ^^^ Expected `Never`, found `TestEnum | Unknown`
+</code></pre>
+<p>or using assert_never</p>
+<pre><code>40 |             assert_never(val)
+   |             ^^^^^^^^^^^^^---^
+   |                          |
+   |                          Inferred type of argument is `TestEnum`
+</code></pre>
+<h2>V0.0.8 Behaviour</h2>
+<p><code>All checks passed!</code></p>
+<h3>Version</h3>
+<p>0.0.9</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-06 21:10</div>
+            <div class="timeline-body"><p><code>git bisect</code> points to</p>
+<pre><code>9333f1543378b4ebb1b8098bd16eec0de2032247 is the first bad commit
+commit 9333f1543378b4ebb1b8098bd16eec0de2032247
+Author: Charlie Marsh &lt;charlie.r.marsh@gmail.com&gt;
+Date:   Mon Dec 29 22:19:28 2025 -0500
+
+    [ty] Fix match exhaustiveness for enum | None unions (#22290)
+    
+    ## Summary
+    
+    If we match on an `TestEnum | None`, then when adding a case like
+    `~Literal[TestEnum.FOO]` (i.e., after `if value == TestEnum.FOO:
+    return`), we'd distribute `Literal[TestEnum.BAR]` on the entire builder,
+    creating `None &amp; Literal[TestEnum.BAR]` which simplified to `Never`.
+    Instead, we should only expand to the remaining members for pieces of
+    the intersection that contain the enum.
+    
+    Now, `(TestEnum | None) &amp; ~Literal[TestEnum.FOO] &amp;
+    ~Literal[TestEnum.BAR]` correctly simplifies to `None` instead of
+    `Never`.
+    
+    Closes https://github.com/astral-sh/ty/issues/2260.
+
+ .../resources/mdtest/conditional/match.md          | 49 +++++++++++++++++
+ crates/ty_python_semantic/src/types/builder.rs     | 63 ++++++++++++++++------
+ 2 files changed, 96 insertions(+), 16 deletions(-)
+</code></pre>
+<p>...and, now that I look at your code more closely, I think that this is a desirable change. You haven't annotated the <code>_value</code> attribute on your <code>TestClass</code> class, so the inferred public type of this attribute is not <code>TestEnum</code>, it is <code>TestEnum | Unknown</code>. The error on your code goes away if you change your <code>TestClass</code> to either this:</p>
+<pre><code class="language-py">class TestClass(BaseModel):
+    def __init__(self, value: TestEnum):
+        self._value: TestEnum = value
+
+    value: TestEnum = Field(
+        description=&quot;A field.&quot;,
+    )
+</code></pre>
+<p>or this:</p>
+<pre><code class="language-py">class TestClass(BaseModel):
+    _value: TestEnum
+
+    def __init__(self, value: TestEnum):
+        self._value: TestEnum = value
+
+    value: TestEnum = Field(
+        description=&quot;A field.&quot;,
+    )
+</code></pre>
+<p>You can see my explanation in https://github.com/astral-sh/ty/issues/2370 for why we infer the type as <code>TestEnum | Unknown</code> without the annotation. We plan to make this configurable in the future and possibly change the default; see #1240 for that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2026-01-06 21:10</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 01:51:35 UTC
+    </footer>
+</body>
+</html>
