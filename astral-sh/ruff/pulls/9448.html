@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add a idempotent fuzz_target for ruff_python_formatter - astral-sh/ruff #9448</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add a idempotent fuzz_target for ruff_python_formatter</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/9448">#9448</a>
+        opened by <a href="https://github.com/manunio">@manunio</a>
+        on 2024-01-09 11:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/manunio">@manunio</a> on 2024-01-09 11:34</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>This pull request attempts to add:</p>
+<ul>
+<li>An idempotent harness for ruff_python_formatter.</li>
+<li>A validity harness for ruff_python_formatter by (@addisoncrump).</li>
+</ul>
+<p>Relevant issue: #9169.</p>
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+<h2>Test Plan</h2>
+<p>Not needed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/addisoncrump">@addisoncrump</a> on 2024-01-09 14:25</div>
+            <div class="timeline-body"><p>Actually, this is valid syntax. You found precisely the kind of issue that the fuzzer should be looking for! :grin:</p>
+<p>Now, you can take the input and minimise it with <code>cargo fuzz tmin -s none /path/to/testcase</code>. This will give you a more representative testcase that you can then report via the issues.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/addisoncrump">@addisoncrump</a> on 2024-01-09 14:48</div>
+            <div class="timeline-body"><p>As an example, I was able to (very quickly) reproduce your discovery, and minimised it to the following:</p>
+<pre><code class="language-py">a=b=c,d,=e
+</code></pre>
+<p>A more realistic case:</p>
+<pre><code class="language-py">a=b=(c,d,)=e
+</code></pre>
+<p>Ultimately, it seems that specifically when chaining assignments, tuples that cause multiline expansion (due to trailing comma) cause the intermediary chained assignment to be wrapped with parentheses.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/addisoncrump">@addisoncrump</a> on 2024-01-09 15:45</div>
+            <div class="timeline-body"><p>:sweat_smile: Revenge of the comment:</p>
+<pre><code class="language-py">(~~#
+R)
+</code></pre>
+<pre><code class="language-diff">--- Formatted Once
++++ Formatted Twice
+@@ -1,5 +1,4 @@
+ (
+-    ~
+     #
+-    ~R
++    ~~R
+ )
+</code></pre>
+<p>Similarly:</p>
+<pre><code class="language-py">[c%s#
+[c]]
+</code></pre>
+<pre><code class="language-diff">--- Formatted Once
++++ Formatted Twice
+@@ -1,4 +1,3 @@
+ [
+-    c
+-    % s[c]  #
++    c % s[c]  #
+ ]
+</code></pre>
+<p>At a guess, empty end line comments are not idempotent when placed between pre- and post-fix operators inside brackets.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/addisoncrump">@addisoncrump</a> on 2024-01-09 15:50</div>
+            <div class="timeline-body"><p>I'll stop adding issues here. To give you a sense of how I tend to go about this to help you optimise your process, I launch the fuzzers like so:</p>
+<pre><code>cargo fuzz run --sanitizer=none ruff_formatter_idempotency -- -timeout=5 -fork=1 -ignore_crashes=1 -ignore_timeouts=1
+</code></pre>
+<p>Then, in a second window, I launch an inotify task (inside <code>fuzz/artifacts</code>):</p>
+<pre><code class="language-sh">inotifywait -m * -e create --format &quot;%w%f&quot; 2&gt;/dev/null | while read crash; do
+  ls -l &quot;$crash&quot;
+  xxd &quot;$crash&quot;
+done
+</code></pre>
+<p>You can then visually inspect each crash and determine which are appropriate to minimise:</p>
+<pre><code>./fuzz/target/x86_64-unknown-linux-gnu/release/ruff_formatter_idempotency path/to/testcase -artifact_prefix=/tmp/ -minimize_crash=1 -runs=$((1 &lt;&lt; 16)) -mutate_depth=1
+</code></pre>
+<p>Then report!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @manunio on 2024-01-10 11:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @manunio on 2024-01-10 12:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @manunio on 2024-01-10 12:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-01-10 12:45</div>
+            <div class="timeline-body"><p>@addisoncrump would you mind taking a look. I don't really know how our fuzzers work :sweat_smile:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/addisoncrump">@addisoncrump</a> on 2024-01-10 12:47</div>
+            <div class="timeline-body"><p>Sure thing, though I warn you that I wrote one of them :joy: My review might be a bit biased.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>fuzz/fuzz_targets/ruff_formatter_validity.rs</code>:76 on 2024-01-10 12:48</div>
+            <div class="timeline-body"><p>Could we show the lint rule in the diagnostic message? Same for the message below.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>fuzz/fuzz_targets/ruff_formatter_validity.rs</code>:29 on 2024-01-10 12:48</div>
+            <div class="timeline-body"><p>I don't think we need this because we aren't applying linter fixes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>fuzz/fuzz_targets/ruff_formatter_validity.rs</code>:98 on 2024-01-10 12:49</div>
+            <div class="timeline-body"><p>Can you explain the motivation for calling <code>test_snippet</code> here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-01-10 12:49</div>
+            <div class="timeline-body"><p>Nice</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/addisoncrump">@addisoncrump</a> on <code>fuzz/README.md</code>:108 on 2024-01-10 12:50</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">This fuzz harness ensures that the formatter is [idempotent](https://en.wikipedia.org/wiki/Idempotence)
+which detects possible unsteady states of Ruff's formatter.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-01-10 12:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>fuzz/fuzz_targets/ruff_formatter_validity.rs</code>:27 on 2024-01-10 12:51</div>
+            <div class="timeline-body"><p>Should we test with all rules (rather than just the default rule set)?</p>
+<p>If so, we then need to exclude the rules that we know are conflicting with the formatter</p>
+<p>https://github.com/astral-sh/ruff/blob/da8a3af52409a5cd5034060a482ae93ac6abc27f/crates/ruff_cli/src/commands/format.rs#L735-L746</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/addisoncrump">@addisoncrump</a> on <code>fuzz/README.md</code>:113 on 2024-01-10 12:53</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">This fuzz harness checks that Ruff's formatter does not introduce new linter errors/warnings by
+linting once, counting the number of each error type, then formatting, then linting again and
+ensuring that the number of each error type does not increase across formats. This has the
+beneficial side effect of discovering cases where the linter does not discover a lint error when
+it should have due to a formatting inconsistency.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/addisoncrump">@addisoncrump</a> on <code>fuzz/fuzz_targets/ruff_formatter_validity.rs</code>:99 on 2024-01-10 12:54</div>
+            <div class="timeline-body"><pre><code class="language-suggestion"></code></pre>
+<p>Whoops, looks like I forgot to remove this the first time.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/addisoncrump">@addisoncrump</a> on <code>fuzz/fuzz_targets/ruff_formatter_validity.rs</code>:29 on 2024-01-10 12:54</div>
+            <div class="timeline-body"><pre><code class="language-suggestion"></code></pre>
+<p>This can be removed as the later test call is not necessary.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/addisoncrump">@addisoncrump</a> reviewed on 2024-01-10 12:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/addisoncrump">@addisoncrump</a> reviewed on 2024-01-10 12:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/addisoncrump">@addisoncrump</a> on <code>fuzz/fuzz_targets/ruff_formatter_validity.rs</code>:27 on 2024-01-10 12:58</div>
+            <div class="timeline-body"><p>Can we make this a public array so that we can remove them in the fuzzer? Then, they can be updated in the crate according to when the rules are eventually made compatible, if ever.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/addisoncrump">@addisoncrump</a> reviewed on 2024-01-10 12:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/addisoncrump">@addisoncrump</a> on <code>fuzz/fuzz_targets/ruff_formatter_validity.rs</code>:29 on 2024-01-10 12:59</div>
+            <div class="timeline-body"><p>Nope, artifact of me misreading my own code. This can be removed, see my review.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/addisoncrump">@addisoncrump</a> reviewed on 2024-01-10 12:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/addisoncrump">@addisoncrump</a> on <code>fuzz/fuzz_targets/ruff_formatter_validity.rs</code>:98 on 2024-01-10 12:59</div>
+            <div class="timeline-body"><p>See above.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/addisoncrump">@addisoncrump</a> on <code>fuzz/fuzz_targets/ruff_formatter_validity.rs</code>:76 on 2024-01-10 12:59</div>
+            <div class="timeline-body"><p>Is that not shown by <code>{msg:?}</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/addisoncrump">@addisoncrump</a> reviewed on 2024-01-10 12:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>fuzz/fuzz_targets/ruff_formatter_validity.rs</code>:76 on 2024-01-11 07:55</div>
+            <div class="timeline-body"><p>Ah right, I missed this. Thanks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>fuzz/fuzz_targets/ruff_formatter_validity.rs</code>:27 on 2024-01-11 07:55</div>
+            <div class="timeline-body"><p>We probably could. Let's go with the standard rules for now. Is it possible to parametrize fuzzers?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-01-11 07:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2024-01-11 07:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-01-11 07:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/addisoncrump">@addisoncrump</a> on <code>fuzz/fuzz_targets/ruff_formatter_validity.rs</code>:27 on 2024-01-11 11:09</div>
+            <div class="timeline-body"><p>@MichaReiser Kind of, but fuzzers should generally avoid it. Since we are already parameterised over input, parameterising over something else means we basically square our input space (which is going to make the fuzzer ineffective).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/addisoncrump">@addisoncrump</a> reviewed on 2024-01-11 11:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-01-11 17:53</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 22:58:00 UTC
+    </footer>
+</body>
+</html>

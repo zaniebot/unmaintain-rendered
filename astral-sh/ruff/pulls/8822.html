@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add &quot;preserve&quot; quote-style to mimic Black's skip-string-normalization - astral-sh/ruff #8822</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add &quot;preserve&quot; quote-style to mimic Black's skip-string-normalization</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/8822">#8822</a>
+        opened by <a href="https://github.com/sciyoshi">@sciyoshi</a>
+        on 2023-11-22 20:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/sciyoshi">@sciyoshi</a> on 2023-11-22 20:32</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>Adds a new option to the <code>quote-style</code> formatter configuration called &quot;preserve&quot;:</p>
+<ul>
+<li>normalizes the prefixes of all strings</li>
+<li>enforces double quotes for triple-quoted strings (docstrings and multiline strings)</li>
+<li>normalizes unnecessary escapes</li>
+</ul>
+<p>In other words, using <code>preserve</code> leaves the quotes of inline-strings as is, but performs all other normalisation, the same as for <code>single</code> or <code>double</code>.</p>
+<p>Fixes #7525</p>
+<h2>Test Plan</h2>
+<p>Added tests.  Tested that <code>quote-style=&quot;preserve</code> without <code>--preview</code> fails with an error.</p>
+<p>Edited by @MichaReiser: I expanded the summary to be explicit about what <code>preserve</code> does and updated the test plan.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-11-22 20:48</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/hussein-awala">@hussein-awala</a> reviewed on 2023-11-26 18:15</div>
+            <div class="timeline-body"><p>Nice one! +1</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @MichaReiser on 2023-11-27 02:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @MichaReiser on 2023-11-27 02:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-11-27 07:33</div>
+            <div class="timeline-body"><p>Thanks for implementing this new option. It is a good signal on how important this functionality is for the community.</p>
+<p>I haven't looked at the code yet and have some more catch-up work to do before I'll find the time for the review. I'm overall okay with adding this new option but I want to make sure that it removes the need for <code>--skip-string-normalization</code> because I want to avoid eventually having to support both.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-27 18:21</div>
+            <div class="timeline-body"><p>Awesome, thanks @sciyoshi, great to see you back on the repo :) I have basically the same reaction: I support adding this, though it'd be nice if doing so could definitively preclude us from adding <code>--skip-string-normalization</code> in the future.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sciyoshi">@sciyoshi</a> on 2023-11-27 19:12</div>
+            <div class="timeline-body"><p>Thanks :) I think there's three cases to think about for the <code>preserve</code> option and how it compares to <code>skip-string-normalization</code>:</p>
+<ol>
+<li>Whether it should keep existing string prefixes or normalize them</li>
+<li>Whether it should format docstrings to use double quotes</li>
+<li>Whether it should normalize unnecessary escapes, e.g. <code>&quot;\'&quot;</code> ➡️<code>&quot;'&quot;</code></li>
+</ol>
+<p>Black's behavior with <code>skip-string-normalization</code> is to not touch any string prefixes or docstrings, and also to skip changing any character escapes. Personally, I think that having ruff normalize string prefixes and escapes (1. and 3.) in <code>preserve</code> mode is OK, although docstrings probably should be kept as-is. As it stands, this PR does all three (but for 2., only if the docstring is triple-quoted).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-11-28 02:14</div>
+            <div class="timeline-body"><blockquote>
+<p>Black's behavior with skip-string-normalization is to not touch any string prefixes or docstrings, and also to skip changing any character escapes. Personally, I think that having ruff normalize string prefixes and escapes (1. and 3.) in preserve mode is OK, although docstrings probably should be kept as-is. As it stands, this PR does all three (but for 2., only if the docstring is triple-quoted).</p>
+</blockquote>
+<p>To make sure I understand you correctly. This PR</p>
+<ul>
+<li>normalizes the prefixes of all strings</li>
+<li>enforces double quotes for triple-quoted strings (docstrings and multiline strings)</li>
+<li>normalizes unnecessary escapes</li>
+</ul>
+<p>In other words, using <code>preserve</code> leaves the quotes of inline-strings as is, but performs all other normalisation as with <code>single</code> or <code>double</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sciyoshi">@sciyoshi</a> on 2023-11-28 02:26</div>
+            <div class="timeline-body"><p>Correct, that's the current behavior of this PR:</p>
+<pre><code class="language-diff">--- example.py
++++ example.py
+@@ -6,12 +6,12 @@
+
+ R&quot;double&quot;
+
+-B'single'
++b'single'
+
+-B&quot;double&quot;
++b&quot;double&quot;
+
+-&quot;\' escape&quot;
++&quot;' escape&quot;
+
+-'''single triple'''
++&quot;&quot;&quot;single triple&quot;&quot;&quot;
+
+ &quot;&quot;&quot;double triple&quot;&quot;&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/edreamleo">@edreamleo</a> on 2023-11-29 09:49</div>
+            <div class="timeline-body"><p>@MichaReiser</p>
+<p>The &quot;preserve&quot; quote style looks like a step in the right direction.</p>
+<p>What would this PR do about this?</p>
+<pre><code class="language-python">s = '''
+&quot;&quot;&quot;
+Example docstring
+&quot;&quot;&quot;
+'''
+</code></pre>
+<p>Or this?</p>
+<pre><code class="language-python">return('''
+&quot;&quot;&quot;
+Example docstring
+&quot;&quot;&quot;
+'''
+)
+</code></pre>
+<p>Are you <em>sure</em> you know what an &quot;unnecessary&quot; escape is? What about?</p>
+<pre><code class="language-python">pattern = re.compile('''
+whatever
+''')
+</code></pre>
+<p>Or this?</p>
+<pre><code class="language-python">pattern = re.compile(fr&quot;&quot;&quot;
+whatever
+&quot;&quot;&quot;)
+</code></pre>
+<p>Finally, what about backslash-newlines?</p>
+<pre><code class="language-python">s = textwrap.dedent(&quot;&quot;&quot;\
+unit test data
+&quot;&quot;&quot;)
+</code></pre>
+<p>Removing the trailing backslash would break some of Leo's unit tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-11-29 16:08</div>
+            <div class="timeline-body"><p>@edreamleo the result for your examples would be</p>
+<pre><code class="language-python">import re
+import textwrap
+
+s = '''&quot;&quot;&quot;
+Example docstring
+&quot;&quot;&quot;
+'''
+
+def foo():
+    return('''
+    &quot;&quot;&quot;
+    Example docstring
+    &quot;&quot;&quot;
+    '''
+    )
+
+pattern = re.compile('''
+whatever
+''')
+
+pattern = re.compile(fr&quot;&quot;&quot;
+whatever
+&quot;&quot;&quot;)
+
+s = textwrap.dedent(&quot;&quot;&quot;\
+unit test data
+&quot;&quot;&quot;)
+</code></pre>
+<pre><code class="language-diff">--- example.py
++++ example.py
+@@ -6,22 +6,29 @@
+ &quot;&quot;&quot;
+ '''
+ 
++
+ def foo():
+-    return('''
++    return '''
+     &quot;&quot;&quot;
+     Example docstring
+     &quot;&quot;&quot;
+     '''
+-    )
+ 
+-pattern = re.compile('''
++
++pattern = re.compile(
++    &quot;&quot;&quot;
+ whatever
+-''')
++&quot;&quot;&quot;
++)
+ 
+-pattern = re.compile(fr&quot;&quot;&quot;
++pattern = re.compile(
++    rf&quot;&quot;&quot;
+ whatever
+-&quot;&quot;&quot;)
++&quot;&quot;&quot;
++)
+ 
+-s = textwrap.dedent(&quot;&quot;&quot;\
++s = textwrap.dedent(
++    &quot;&quot;&quot;\
+ unit test data
+-&quot;&quot;&quot;)
++&quot;&quot;&quot;
++)
+</code></pre>
+<p>This happens to be identical to the formatting <em>without</em> the <code>preserve</code> option.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/edreamleo">@edreamleo</a> on 2023-11-29 16:15</div>
+            <div class="timeline-body"><p>@zanieb Thanks for your comment!</p>
+<p>My only remaining concern is the backslash-newline question. By &quot;whatever&quot; I meant various cases containing escapes that might be considered &quot;unnecessary&quot;. Perhaps this PR has no effect on that question.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sciyoshi">@sciyoshi</a> on 2023-11-30 04:48</div>
+            <div class="timeline-body"><p>I've added an argument to <code>ruff format</code> which will allow setting <code>--quote-style</code> via the CLI.</p>
+<p>Backslash-newlines will be preserved, as will other escape sequences. From my testing I think it is only unnecessarily-escaped quotes that are changed.</p>
+<p>If @MichaReiser and @charliermarsh are OK with it, I think this could probably be merged as-is. Nothing precludes us from changing the behavior of <code>preserve</code> to be weaker if there are still concerns with the reformatting of triple quotes &amp; string prefixes - making it stronger on the other hand would be a more of a breaking change. If on the other hand we want <code>preserve</code> to match <code>skip-string-normalization</code> exactly, I can take a look at changing that behavior as well. We probably do also want a test or two for this option.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-11-30 04:58</div>
+            <div class="timeline-body"><blockquote>
+<p>I've added an argument to ruff format which will allow setting --quote-style via the CLI.</p>
+</blockquote>
+<p>We've intentionally omitted any other options than <code>--line-length</code> for now. Let's not mix this PR with other changes.</p>
+<blockquote>
+<p>Nothing precludes us from changing the behavior of preserve to be weaker if there are still concerns with the reformatting of triple quotes &amp; string prefixes - making it stronger on the other hand would be a more of a breaking change</p>
+</blockquote>
+<p>Any other semantic than what we've defined in this PR would be confusing in my view, because the scope of the <code>quote-style</code> setting than depends on the value which makes it harder to predict what changing the value does.</p>
+<blockquote>
+<p>If on the other hand we want preserve to match skip-string-normalization exactly, I can take a look at changing that behavior as well.</p>
+</blockquote>
+<p>In that case, I would prefer having a dedicated <code>--skip-string-normalization</code> option instead to ensure all <code>quote-style</code> settings have the same semantics (they only change the outcome, but they configure the same functionality).</p>
+<blockquote>
+<p>We probably do also want a test or two for this option.</p>
+</blockquote>
+<p>That would be great. You can probably even use an existing test and add an <code>&lt;test-name&gt;.options.json</code> file and add a test case for <code>quote-style: &quot;preserve&quot;</code>. For example see <code>docstring.options.json</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sciyoshi">@sciyoshi</a> on 2023-12-03 02:05</div>
+            <div class="timeline-body"><blockquote>
+<p>We've intentionally omitted any other options than <code>--line-length</code> for now. Let's not mix this PR with other changes.</p>
+</blockquote>
+<p>No problem, I've now removed those.</p>
+<blockquote>
+<p>Any other semantic than what we've defined in this PR would be confusing in my view, because the scope of the <code>quote-style</code> setting than depends on the value which makes it harder to predict what changing the value does.</p>
+</blockquote>
+<blockquote>
+<p>In that case, I would prefer having a dedicated <code>--skip-string-normalization</code> option instead to ensure all <code>quote-style</code> settings have the same semantics (they only change the outcome, but they configure the same functionality).</p>
+</blockquote>
+<p>I don't quite follow, are you saying that the issue is with the name <code>quote-style</code> since the option might change things other than just the string quotes?</p>
+<p>I don't think Ruff will need to add a separate <code>skip-string-normalization</code> option regardless. This option would be mutually exclusive with any value of <code>quote-style</code>, so it would be confusing (you could only set one or the other). Having <code>quote-style=preserve</code> as another value is equivalent and removes that ambiguity. The reason Black added it under that name is probably because it doesn't support configuring string quoting otherwise.</p>
+<blockquote>
+<p>That would be great. You can probably even use an existing test and add an <code>&lt;test-name&gt;.options.json</code> file and add a test case for <code>quote-style: &quot;preserve&quot;</code>. For example see <code>docstring.options.json</code>.</p>
+</blockquote>
+<p>Thanks for the tip - I added some simple tests to this PR. Let me know if there's other cases we should be checking.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/options.rs</code>:210 on 2023-12-05 05:04</div>
+            <div class="timeline-body"><p>We need to update the documentation of the <code>FormatOption::quote_style</code> field to make the change reflect on our website:</p>
+<p>https://github.com/astral-sh/ruff/blob/578ddf1bb1e8edef50cda9981744ba5fe825867d/crates/ruff_workspace/src/options.rs#L2804-L2829</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-12-05 05:09</div>
+            <div class="timeline-body"><p>I made a few changes to the code and introduced a <code>QuoteChar</code> to avoid having to handle <code>Preserve</code> in situations where <code>Preserve</code> isn't a valid variant (and there's no good way of e.g. implementing <code>invert</code>).</p>
+<p>I also extended your tests by a few docstring examples and noticed that single-quoted docstrings remain unchanged (see failing tests). This isn't specific to <code>preserve</code>, the docstring quotes also remain unchanged when using <code>quote-style: single</code>.</p>
+<p>@charliermarsh I belive you changed the formatter to enforce double quotes for all docstrings and triple quoted strings. Was it an intentional decision to handle single quoted docstrings the same as inline strings or do you think this should be changed?</p>
+<p>Implementation note: The string formatting should know that it is a docstring by check its layout.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> removed by @MichaReiser on 2023-12-05 05:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @MichaReiser on 2023-12-07 05:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @MichaReiser on 2023-12-07 05:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-12-07 05:51</div>
+            <div class="timeline-body"><p>I rebased the changes, updated the documentation, and gated the new option behind the <code>--preview</code> flag to get more feedback.</p>
+<p>Something I noticed when updating the documentation is that <code>preserve</code> is special in the sense that it won't pick the quote that requires the few escapes, at least not the way it's implemented now. This is a slight deviation from <code>single</code> and <code>double</code> but I think it's subtle enough that adding <code>preserve</code> to quote-style is fine.</p>
+<p>The reason for gating this behind preview is that we had some internal discussions and @charliermarsh brought up this valid concern:</p>
+<blockquote>
+<p>I think more users are likely to be confused that preserve changes docstrings than they are happy that preserve changes docstrings.</p>
+</blockquote>
+<p>We gate this behind preview because we want to ship the functionality that allows users to preserve their quote style, but we need to gather more feedback if configuring this using <code>quote-style</code> is the right way to go.</p>
+<p>@charliermarsh or @BurntSushi would appreciate if you could review the changes that I made to this PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-12-07 05:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_python_formatter/src/options.rs</code>:218 on 2023-12-07 14:03</div>
+            <div class="timeline-body"><p>Maybe a dumb question, but what does &quot;not used&quot; mean here? Would it make sense to have this return an <code>Option&lt;char&gt;</code> instead or is it not worth it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_python_formatter/src/options.rs</code>:218 on 2023-12-07 14:06</div>
+            <div class="timeline-body"><p>Oh nice, you fixed this in a subsequent commit!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_python_formatter/tests/snapshots/format@quote_style.py.snap</code>:266 on 2023-12-07 14:13</div>
+            <div class="timeline-body"><p>Just to clarify here (given what @charliermarsh said), we are starting with normalizing docstring using single quotes to double quotes (even with <code>preserve=true</code>)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2023-12-07 14:14</div>
+            <div class="timeline-body"><p>Nice!</p>
+<p>One other thought here is whether it makes sense to document the nooks and crannies of the <code>preserve</code> option. That is, its impact (or not) on docstring quoting and how it interacts with escaping and what not.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sciyoshi">@sciyoshi</a> reviewed on 2023-12-07 14:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sciyoshi">@sciyoshi</a> on <code>crates/ruff_python_formatter/tests/snapshots/format@quote_style.py.snap</code>:266 on 2023-12-07 14:23</div>
+            <div class="timeline-body"><p>Correct, that's the current behavior of this PR. Like @charliermarsh this is probably unexpected behavior, but can be changed later if we hear feedback about it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2023-12-07 14:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sciyoshi">@sciyoshi</a> on 2023-12-07 14:26</div>
+            <div class="timeline-body"><blockquote>
+<p>I think more users are likely to be confused that preserve changes docstrings than they are happy that preserve changes docstrings.</p>
+</blockquote>
+<p>I agree with this, although like I mentioned this can be relaxed in a followup without breaking compatibility.</p>
+<blockquote>
+<p>We need to gather more feedback if configuring this using quote-style is the right way to go.</p>
+</blockquote>
+<p>I think adding a separate option for this would be a mistake - <code>preserve</code> is an aid to adopting ruff, and <code>single</code>/<code>double</code> are the alternative configurations. If the confusion is that this changes things other than quotes, then maybe the option should be renamed to <code>string-style</code> or just <code>strings</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-07 14:29</div>
+            <div class="timeline-body"><blockquote>
+<p>I agree with this, although like I mentioned this can be relaxed in a followup without breaking compatibility.</p>
+</blockquote>
+<p>This is my feeling as well.</p>
+<blockquote>
+<p>I think adding a separate option for this would be a mistake - preserve is an aid to adopting ruff, and single/double are the alternative configurations. If the confusion is that this changes things other than quotes, then maybe the option should be renamed to string-style or just strings.</p>
+</blockquote>
+<p>(Just to clarify, I was referring here to the confusion that <code>preserve</code> changes quotes, not that it may change things <em>other</em> than quotes.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2023-12-07 14:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_python_formatter/tests/snapshots/format@quote_style.py.snap</code>:266 on 2023-12-07 14:34</div>
+            <div class="timeline-body"><p>SGTM!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-12-07 23:59</div>
+            <div class="timeline-body"><blockquote>
+<p>I agree with this, although like I mentioned this can be relaxed in a followup without breaking compatibility.</p>
+</blockquote>
+<p>I continue to feel conflicted about this. The documentation for <code>quote-style</code> already become more complicated because some parts no longer apply for <code>preserve</code>. Potentially preserving all quotes styles and having this configured under the same setting will make this worse.</p>
+<p>The other challenge is that we wouldn't be able to support enforcing double quotes for triple quoted strings and docstrings but preserve the other quotes.</p>
+<p>Anyway, I think this is something we can re-visit when we get more feedback. This looks good to me. Thanks for pushing us to revisit adding this option by creating the PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2023-12-07 23:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2023-12-07 23:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-12-14 04:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/genericmoniker">@genericmoniker</a> on 2023-12-15 23:03</div>
+            <div class="timeline-body"><p>I was trying out the &quot;preserve&quot; quote-style on a code base formatted with black using &quot;skip-string-normalization&quot; and was surprised to see non-docstring multiline strings using <code>'''</code> have their quotes replaced. I came looking for a bug on that, but discovered it was intentional.</p>
+<blockquote>
+<p>enforces double quotes for triple-quoted strings (docstrings and multiline strings)</p>
+</blockquote>
+<p>Just a little feedback.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-12-16 02:24</div>
+            <div class="timeline-body"><p>Thanks for the feedback. Does this behavior prevent you from adopting ruff or are okay with the changes that it introduces?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/genericmoniker">@genericmoniker</a> on 2023-12-16 15:47</div>
+            <div class="timeline-body"><p>I wouldn't say the behavior prevents adoption, but it does add a little friction. If there were only a small number of changes between black and ruff on our code base, I'd just open a pull request to switch to ruff and expect my team to be happy that formatting is faster. Without &quot;preserve&quot; there are hundreds of files changed. Since &quot;preserve&quot; is only currently available with the preview setting and that changes other things, using it also results in many files reformatted.</p>
+<p>I'm personally fine normalizing all quotes, and I imagine my teammates probably are too, but it becomes a point of discussion when lots of files change and cause merge conflicts with their outstanding pull requests.</p>
+<p><strong>Edit</strong>: I do notice that PEP 8 says:</p>
+<blockquote>
+<p>In Python, single-quoted strings and double-quoted strings are the same. This PEP does not make a recommendation for this....
+For triple-quoted strings, always use double quote characters...</p>
+</blockquote>
+<p>So the behavior seems good.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lucas-labs">@lucas-labs</a> on 2024-01-10 23:48</div>
+            <div class="timeline-body"><p>Just like @genericmoniker I also expected <code>preserve</code> to completely skip quotes normalization (just like black's <code>--skip-string-normalization</code> which is what we've been using on our code base). I understand this is by-design but I guess it would at least delay adopting ruff until we have fewer ongoing pull requests to avoid conflicts (I mean, to adopt it as a formatter, obviously; we are already using ruff as a linter and its awesome).</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 22:57:54 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Use publicly available Apple Silicon runners - astral-sh/ruff #9726</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Use publicly available Apple Silicon runners</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/9726">#9726</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-01-31 00:37
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-31 00:37</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR switches over to the <code>macos-14</code> runners for our macOS wheel builds, which are GitHub's newly announced public M1 macOS runners (https://github.blog/changelog/2024-01-30-github-actions-introducing-the-new-m1-macos-runner-available-to-open-source/).</p>
+<p>Before:</p>
+<ul>
+<li>x64_64: 10m 38s (https://github.com/astral-sh/ruff/actions/runs/7703465381/job/20993903864)</li>
+<li>Universal: 19m 35s (https://github.com/astral-sh/ruff/actions/runs/7703465381/job/20993902533)</li>
+</ul>
+<p>After:</p>
+<ul>
+<li>x64_64: 3m 30s (https://github.com/astral-sh/ruff/actions/runs/7719827902/job/21043743558?pr=9726)</li>
+<li>Universal: 5m 59s (https://github.com/astral-sh/ruff/actions/runs/7719827902/job/21043743243?pr=9726)</li>
+</ul>
+<p>So it's like &gt; 3x speedup for what is currently the bottleneck in our release pipeline.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2024-01-31 01:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2024-01-31 01:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">release</span> added by @charliermarsh on 2024-01-31 01:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-31 01:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>.github/workflows/release.yaml</code>:81 on 2024-01-31 01:31</div>
+            <div class="timeline-body"><p>Unfortunately we can no longer run the x64_64 wheel (since this is an ARM runner, we're cross-compiling), but I think it's fine and worth it (we already run this test in the Universal branch below).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/messense">@messense</a> reviewed on 2024-01-31 01:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/messense">@messense</a> on <code>.github/workflows/release.yaml</code>:81 on 2024-01-31 01:47</div>
+            <div class="timeline-body"><p>IMO if the M1 runner has Rostta2 enabled it should run fine? At least for <code>ruff --help</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-31 02:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>.github/workflows/release.yaml</code>:81 on 2024-01-31 02:24</div>
+            <div class="timeline-body"><p>Lemme look back at what failed...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-31 02:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>.github/workflows/release.yaml</code>:81 on 2024-01-31 02:24</div>
+            <div class="timeline-body"><p>I think it was the <code>pip install dist/${{ env.PACKAGE_NAME }}-*.whl --force-reinstall</code>, saying that the wheel isn't supported for the current platform.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/messense">@messense</a> reviewed on 2024-01-31 02:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/messense">@messense</a> on <code>.github/workflows/release.yaml</code>:81 on 2024-01-31 02:27</div>
+            <div class="timeline-body"><p>Oh right, the python interpreter it installed might not be universal2, if it is you can probably use <code>arch -x86_64 python</code> to switch to x86_64 mode.</p>
+<p>Anyway it's definitly not a big issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2024-01-31 12:37</div>
+            <div class="timeline-body"><p>:rocket:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-31 15:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>.github/workflows/release.yaml</code>:81 on 2024-01-31 15:36</div>
+            <div class="timeline-body"><p>I appreciate you chiming in, you're always so helpful.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-01-31 15:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-01-31 15:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-01-31 15:36</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 22:58:11 UTC
+    </footer>
+</body>
+</html>

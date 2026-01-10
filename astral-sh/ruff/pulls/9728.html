@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Implement RUF027: `Missing F-String Syntax` lint - astral-sh/ruff #9728</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Implement RUF027: <code>Missing F-String Syntax</code> lint</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/9728">#9728</a>
+        opened by <a href="https://github.com/snowsignal">@snowsignal</a>
+        on 2024-01-31 03:24
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/snowsignal">@snowsignal</a> on 2024-01-31 03:24</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>Fixes #8151</p>
+<p>This PR implements a new rule, <code>RUF027</code>.</p>
+<h2>What it does</h2>
+<p>Checks for strings that contain f-string syntax but are not f-strings.</p>
+<h3>Why is this bad?</h3>
+<p>An f-string missing an <code>f</code> at the beginning won't format anything, and instead treat the interpolation syntax as literal.</p>
+<h3>Example</h3>
+<pre><code class="language-python">name = &quot;Sarah&quot;
+dayofweek = &quot;Tuesday&quot;
+msg = &quot;Hello {name}! It is {dayofweek} today!&quot;
+</code></pre>
+<p>It should instead be:</p>
+<pre><code class="language-python">name = &quot;Sarah&quot;
+dayofweek = &quot;Tuesday&quot;
+msg = f&quot;Hello {name}! It is {dayofweek} today!&quot;
+</code></pre>
+<h2>Heuristics</h2>
+<p>Since there are many possible string literals which contain syntax similar to f-strings yet are not intended to be,
+this lint will disqualify any literal that satisfies any of the following conditions:</p>
+<ol>
+<li>The string literal is a standalone expression. For example, a docstring.</li>
+<li>The literal is part of a function call with keyword arguments that match at least one variable (for example: <code>format(&quot;Message: {value}&quot;, value = &quot;Hello World&quot;)</code>)</li>
+<li>The literal (or a parent expression of the literal) has a direct method call on it (for example: <code>&quot;{value}&quot;.format(...)</code>)</li>
+<li>The string has no <code>{...}</code> expression sections, or uses invalid f-string syntax.</li>
+<li>The string references variables that are not in scope, or it doesn't capture variables at all.</li>
+<li>Any format specifiers in the potential f-string are invalid.</li>
+</ol>
+<h2>Test Plan</h2>
+<p>I created a new test file, <code>RUF027.py</code>, which is both an example of what the lint should catch and a way to test edge cases that may trigger false positives.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @snowsignal on 2024-01-31 03:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @snowsignal on 2024-01-31 03:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @snowsignal on 2024-01-31 03:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_linter/src/rules/ruff/rules/helpers.rs</code>:122 on 2024-01-31 03:28</div>
+            <div class="timeline-body"><p>This needs to be changed to accept the original string literal using <code>locator.slice(...)</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_linter/src/rules/ruff/rules/helpers.rs</code>:135 on 2024-01-31 03:29</div>
+            <div class="timeline-body"><p>I'm working on making this more performant and avoiding memory allocations</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_linter/src/rules/ruff/rules/missing_fstring_syntax.rs</code>:39 on 2024-01-31 03:30</div>
+            <div class="timeline-body"><p>The examples could probably be expanded. @charliermarsh would a description of the heuristics be useful, or is that too much?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/snowsignal">@snowsignal</a> reviewed on 2024-01-31 03:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/ruff/rules/helpers.rs</code>:104 on 2024-01-31 04:32</div>
+            <div class="timeline-body"><p>We already rely on <code>memchr</code>, so you could consider using <code>memchr2</code> here to find all <code>{</code> and <code>}</code> characters, iterate over the matches, and ensure there's at least one of each? Though @BurntSushi would know if that will even be faster than what you have here :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/ruff/rules/helpers.rs</code>:114 on 2024-01-31 04:33</div>
+            <div class="timeline-body"><p>I feel like I instinctively tend towards <code>Option&lt;&amp;[Keyword]&gt;</code> for something like this. What are your preferences / tendencies?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/ruff/rules/helpers.rs</code>:135 on 2024-01-31 04:35</div>
+            <div class="timeline-body"><p>I believe this can be:</p>
+<pre><code class="language-rust">let kw_idents: FxHashSet&lt;&amp;str&gt; = kwargs
+    .map(|keywords| {
+        keywords
+            .iter()
+            .filter_map(|k| k.arg.as_ref())
+            .map(|arg| arg.as_str())
+            .collect()
+    })
+    .unwrap_or_default();
+</code></pre>
+<p>And then below, <code>kw_idents.contains(id.as_str())</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/ruff/rules/helpers.rs</code>:146 on 2024-01-31 04:37</div>
+            <div class="timeline-body"><p>Do you mind adding some comments here to guide the reader? E.g.:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/ruff/rules/helpers.rs</code>:146 on 2024-01-31 04:37</div>
+            <div class="timeline-body"><p>As a tip, you can use <code>semantic.resolve_name</code> instead of <code>semantic.lookup_symbol</code>, since you have an <code>ast::ExprName</code> here. (We save the binding that each name resolves to, so if you have a name rather than a string symbol, looking up whether its bound is really cheap.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/ruff/rules/missing_fstring_syntax.rs</code>:39 on 2024-01-31 04:38</div>
+            <div class="timeline-body"><p>I think it'd make sense to include the heuristics as a standalone paragraph in the &quot;Why is this bad?&quot; , that's the pattern we tend to follow for other rules (e.g., to document when it does or does not trigger).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/ruff/rules/missing_fstring_syntax.rs</code>:41 on 2024-01-31 04:39</div>
+            <div class="timeline-body"><p>Nit (sorry): we tend to omit a period unless the message spans multiple sentences</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/ruff/rules/missing_fstring_syntax.rs</code>:55 on 2024-01-31 04:40</div>
+            <div class="timeline-body"><p>Another option: check if <code>semantic.current_expression_parent().is_none()</code>, I think? Since that implies that this is a top-level expression.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/ruff/rules/missing_fstring_syntax.rs</code>:102 on 2024-01-31 04:42</div>
+            <div class="timeline-body"><p>I think this can <em>maybe</em> be simplified to: <code>Fix::unsafe_edit(Edit::insertion(&quot;f&quot;, literal.start()))</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/ruff/rules/missing_fstring_syntax.rs</code>:101 on 2024-01-31 04:42</div>
+            <div class="timeline-body"><p>Small tip: anything that implements <code>Ranged</code> gets a <code>.start()</code> and <code>.end()</code>, so these can be (e.g.) <code>literal.start()</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/resources/test/fixtures/ruff/RUF027.py</code>:74 on 2024-01-31 04:43</div>
+            <div class="timeline-body"><p>What happens with: <code>&quot;{a}&quot;.format(**kwargs)</code>?</p>
+<p>I'm wondering if we should <em>always</em> ignore strings that are the callee on a <code>.format</code> call. It seems like it would only ever be a false positive.</p>
+<p>Similarly, what about <code>&quot;{a}&quot; % foo</code>, which is the older style of string formatting? We should <em>probably</em> take care to ignore those too. What do you think?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/ruff/rules/missing_fstring_syntax.rs</code>:81 on 2024-01-31 04:44</div>
+            <div class="timeline-body"><p>Should we iterate over <em>all</em> parent expressions here? Or is it intentionally limited to the next two?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-31 04:44</div>
+            <div class="timeline-body"><p>Excellent.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/checkers/ast/analyze/expression.rs</code>:1332 on 2024-01-31 07:45</div>
+            <div class="timeline-body"><p>Should this rule also trigger for implicit concatenated f-strings where one literal isn't an f-string literal but contains placeholders?</p>
+<pre><code class="language-python">output = (
+	f&quot;{a} + {b} = &quot;
+	&quot;{a + b}&quot;
+)
+</code></pre>
+<p>it may not be worth supporting if it requires a lot of effort</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/helpers.rs</code>:94 on 2024-01-31 07:47</div>
+            <div class="timeline-body"><p>Nit: I would make this helper local to your rule. I don't see it as something that comes up often and even if, duplicating this code won't hurt much.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/helpers.rs</code>:112 on 2024-01-31 07:49</div>
+            <div class="timeline-body"><p>The same for this function. It seems to be fundamental to your rule, which is why I think it would be better to co-locate it with the rule rather than in the rule-agnostic <code>helpers</code> file (which would is unlikely to be the place where I would be looking for it)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/helpers.rs</code>:111 on 2024-01-31 07:50</div>
+            <div class="timeline-body"><p>Nit: I had to read this comment multiple times to understand what it explains. Maybe add a small code example</p>
+<pre><code>/// ```python
+/// def test(**kwargs):
+/// 		... 
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/helpers.rs</code>:135 on 2024-01-31 07:54</div>
+            <div class="timeline-body"><p>Cloning all <code>kwargs</code> for every string literal that is in a function with <code>kwargs</code> and collecting them to a hash set seems expensive.</p>
+<p>Assuming that it is rare to have a large number of <code>kwargs</code>: It might be faster to iterate over the <code>vec</code> in-place. It might actually be faster than doing a hash map lookup (because there are only few elements)</p>
+<p>Edit: I just realized that this only applies to string literals containing <code>{}.</code> that's probably not too common, and, therefore, is less of a concern.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/helpers.rs</code>:143 on 2024-01-31 07:54</div>
+            <div class="timeline-body"><p>Nit</p>
+<pre><code class="language-suggestion">        for element in f_string.elements.iter().filter_map(|element| element.as_expression()) {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/missing_fstring_syntax.rs</code>:55 on 2024-01-31 07:59</div>
+            <div class="timeline-body"><p>I think this checks something else... A comment explaining why we bail out for statement expressions where the value is a string literal would be helpful</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/missing_fstring_syntax.rs</code>:56 on 2024-01-31 08:01</div>
+            <div class="timeline-body"><p>Nit:</p>
+<pre><code class="language-suggestion">        if value.is_string_literal() {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/helpers.rs</code>:122 on 2024-01-31 08:04</div>
+            <div class="timeline-body"><p>Can you explain why you would change it to use <code>locator.slice</code>? I fear that you could run into issue for parenthesized multline string literals.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/missing_fstring_syntax.rs</code>:97 on 2024-01-31 08:05</div>
+            <div class="timeline-body"><p>I think we need to be careful to not mess with escaped characters:</p>
+<ul>
+<li>The literal could be a raw-string (I recommend to not provide a fix if they contain any backslashes)</li>
+<li>We need to escape any <code>{</code> that have no matching <code>}</code>. (Okay. I think you're safe because of the <code>should_be_fstring</code>. The two are tightly coupled, which is why I think they should be co-located).</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/missing_fstring_syntax.rs</code>:101 on 2024-01-31 08:05</div>
+            <div class="timeline-body"><p>Or you can use <code>range_replacement(content, literal)</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/snapshots/ruff_linter__rules__ruff__tests__RUF027_RUF027.py.snap</code>:2 on 2024-01-31 08:06</div>
+            <div class="timeline-body"><p>I think it would be great to have some more examples with</p>
+<ul>
+<li>triple quoted strings (multiline and single line)</li>
+<li>single quoted, multiline strings</li>
+<li>Implicitly concatenated strings (if you want to have fun, with comments in between)</li>
+<li>string literals that use escaped characters (and <code>{</code> for something other than placeholders)</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/helpers.rs</code>:122 on 2024-01-31 08:09</div>
+            <div class="timeline-body"><p>I wonder what happens if you have</p>
+<pre><code class="language-python">a = &quot;&quot;&quot;b { # comment
+c}  d
+&quot;&quot;&quot;
+</code></pre>
+<p>when running in Python 3.12. I would assume that we accept this as a valid f-string :laughing:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-01-31 08:09</div>
+            <div class="timeline-body"><p>This is looking good. I mainly left a few nit comments and some suggestions for more tests (I fear, some of them will be painful)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/checkers/ast/analyze/expression.rs</code>:1332 on 2024-01-31 08:32</div>
+            <div class="timeline-body"><p>I think it should be simple to add support for it but @snowsignal might have more idea here. Following changes would be required:</p>
+<ul>
+<li>Iterate over each parts of an <code>ExprFString</code> and calling the rule function on the <code>StringLiteral</code></li>
+<li>Update the rule calling function to take in <code>StringLiteral</code> (individual string) instead of the <code>StringLiteralValue</code> (concatenated version)</li>
+<li>Possibly move the rule calling logic to <code>string_like</code> then</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/ruff/rules/helpers.rs</code>:122 on 2024-01-31 08:38</div>
+            <div class="timeline-body"><p>Can we avoid adding the quotes here and instead just add the prefix with the original string? I think that would require <code>locator.slice(...)</code> to extract to literal.</p>
+<blockquote>
+<p>I fear that you could run into issue for parenthesized multline string literals.</p>
+</blockquote>
+<p>I'm not sure if that would be a problem here because, per my understanding, this function is called for individual string literal and not the concatenated one.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/ruff/rules/missing_fstring_syntax.rs</code>:55 on 2024-01-31 08:41</div>
+            <div class="timeline-body"><p>As per the test cases, I believe this is checking if it's a standalone string literal and abort if so.</p>
+<p>If that's the case and we decide to add support for string literals that are implicitly concatenated to a f-string, we might need to update this part to include <code>Expr::FString</code> as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/ruff/rules/missing_fstring_syntax.rs</code>:71 on 2024-01-31 08:43</div>
+            <div class="timeline-body"><p>nit: maybe combine this using <code>with_fix</code>: <code>Diagnostic::new(...).with_fix(...)</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/ruff/rules/missing_fstring_syntax.rs</code>:81 on 2024-01-31 08:54</div>
+            <div class="timeline-body"><p>I want to understand the same. Is it possible that we capture unwanted keyword arguments (one test case suggests otherwise) or that we don't capture the necessary keyword arguments? An example would be helpful as well to better understand the reasoning behind this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-01-31 08:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/snowsignal">@snowsignal</a> reviewed on 2024-01-31 10:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_linter/src/rules/ruff/rules/helpers.rs</code>:114 on 2024-01-31 10:37</div>
+            <div class="timeline-body"><p>I prefer <code>Option&lt;&amp;[Keyword]&gt;</code> too. This was just an oversight, my bad.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/snowsignal">@snowsignal</a> reviewed on 2024-01-31 10:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_linter/src/rules/ruff/rules/helpers.rs</code>:104 on 2024-01-31 10:38</div>
+            <div class="timeline-body"><p>Good suggestion!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/snowsignal">@snowsignal</a> reviewed on 2024-01-31 10:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_linter/resources/test/fixtures/ruff/RUF027.py</code>:74 on 2024-01-31 10:41</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm wondering if we should always ignore strings that are the callee on a .format call. It seems like it would only ever be a false positive.</p>
+</blockquote>
+<p>I was considering adding something like that (since that's one of the things <code>pyanalyze</code> checks for). Let's do that.</p>
+<blockquote>
+<p>Similarly, what about &quot;{a}&quot; % foo, which is the older style of string formatting? We should probably take care to ignore those too. What do you think?</p>
+</blockquote>
+<p>We definitely should, good call.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/snowsignal">@snowsignal</a> reviewed on 2024-01-31 22:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_linter/src/checkers/ast/analyze/expression.rs</code>:1332 on 2024-01-31 22:15</div>
+            <div class="timeline-body"><p>I think what @dhruvmanila suggested makes sense. I do think this is something we should support.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_linter/src/rules/ruff/rules/helpers.rs</code>:104 on 2024-01-31 22:21</div>
+            <div class="timeline-body"><p>Some ideas:</p>
+<ol>
+<li>Since you're just looking for ASCII bytes, I would jetison the use of <code>string.chars()</code>. That's doing UTF-8 decoding when you don't need it because UTF-8 is ASCII compatible. So just <code>for &amp;byte in possible_fstring.as_bytes() {</code> will do.</li>
+<li>When both <code>opening</code> and <code>closing</code> are <code>true</code>, the loop can stop. Although I could see this hurting more than helping.</li>
+<li><code>memchr2</code> should have substantially higher throughput than what you have here, but its latency is <em>probably</em> worse. By how much, I'm not sure. What that means is that if this functions is usually called with very short strings (I mean very short, like a few bytes), then your code here might beat <code>memchr2</code>. But if they're usually longer, then <code>memchr2</code> is likely about the best you can do. (And to be clear, even if <code>memchr2</code> is faster here, I don't have enough context here to guess at whether it will be a holistic improvement.)</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-01-31 22:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/snowsignal">@snowsignal</a> reviewed on 2024-01-31 22:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_linter/src/rules/ruff/rules/helpers.rs</code>:146 on 2024-01-31 22:50</div>
+            <div class="timeline-body"><p>This isn't working for me, and I wonder if it's because the binding id is different (since this <code>ExprName</code> came from a standalone <code>parse_expression</code> call)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/snowsignal">@snowsignal</a> reviewed on 2024-01-31 23:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_linter/src/rules/ruff/rules/helpers.rs</code>:122 on 2024-01-31 23:15</div>
+            <div class="timeline-body"><p>This works as a valid f-string in Python 3.12:</p>
+<pre><code>&gt;&gt;&gt; a = f&quot;&quot;&quot;b { # comment
+... c}  d
+... &quot;&quot;&quot;
+&gt;&gt;&gt; a
+'b 4  d\n'
+</code></pre>
+<p>And yes, we catch this:</p>
+<pre><code>RUF027.py:37:22: RUF027 [*] `&quot;&quot;&quot;b { # comment
+    c}  d
+    &quot;&quot;&quot;` may be a formatting string without an `f` prefix
+   |
+35 |       c = a
+36 |       single_line = &quot;&quot;&quot; {a} &quot;&quot;&quot;
+37 |       multi_line = a = &quot;&quot;&quot;b { # comment
+   |  ______________________^
+38 | |     c}  d
+39 | |     &quot;&quot;&quot; 
+   | |_______^ RUF027
+   |
+   = help: Add an `f` prefix to the formatting string
+
+ℹ Unsafe fix
+34 34 |     a = 4
+35 35 |     c = a
+36 36 |     single_line = &quot;&quot;&quot; {a} &quot;&quot;&quot;
+37    |-    multi_line = a = &quot;&quot;&quot;b { # comment
+   37 |+    multi_line = a = f&quot;&quot;&quot;b { # comment
+38 38 |     c}  d
+39 39 |     &quot;&quot;&quot; 
+40 40 |     
+</code></pre>
+<p>Though we probably want to collapse the multi-line string for the error message somehow.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-01-31 23:20</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>ℹ️ ecosystem check <strong>encountered linter errors</strong>. (no lint changes; 1 project error)</p>
+<details><summary><a href="https://github.com/sphinx-doc/sphinx">sphinx-doc/sphinx</a> (error)</summary>
+<p>
+
+<pre><code>ruff failed
+  Cause: Selection of unstable rules without the `--preview` flag is not allowed. Enable preview or remove selection of:
+	- FURB113
+	- FURB131
+	- FURB132
+</code></pre>
+</p>
+</details>
+
+<h3>Linter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+91 -0 violations, +0 -0 fixes in 7 projects; 36 projects unchanged)</p>
+<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+4 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/apache/airflow/blob/7324400c6b379d22030a6bd54fb14912c1cb291f/airflow/models/dag.py#L2155'>airflow/models/dag.py:2155:30:</a> RUF027 Possible f-string without an `f` prefix
++ <a href='https://github.com/apache/airflow/blob/7324400c6b379d22030a6bd54fb14912c1cb291f/airflow/providers/amazon/aws/hooks/s3.py#L746'>airflow/providers/amazon/aws/hooks/s3.py:746:21:</a> RUF027 Possible f-string without an `f` prefix
++ <a href='https://github.com/apache/airflow/blob/7324400c6b379d22030a6bd54fb14912c1cb291f/tests/providers/docker/operators/test_docker.py#L566'>tests/providers/docker/operators/test_docker.py:566:28:</a> RUF027 Possible f-string without an `f` prefix
++ <a href='https://github.com/apache/airflow/blob/7324400c6b379d22030a6bd54fb14912c1cb291f/tests/test_utils/asserts.py#L94'>tests/test_utils/asserts.py:94:16:</a> RUF027 Possible f-string without an `f` prefix
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/bokeh/bokeh">bokeh/bokeh</a> (+9 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/examples/plotting/customjs_expr.py#L26'>examples/plotting/customjs_expr.py:26:49:</a> RUF027 Possible f-string without an `f` prefix
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/examples/styling/mathtext/latex_normal_distribution.py#L47'>examples/styling/mathtext/latex_normal_distribution.py:47:13:</a> RUF027 Possible f-string without an `f` prefix
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/examples/styling/mathtext/latex_normal_distribution.py#L48'>examples/styling/mathtext/latex_normal_distribution.py:48:13:</a> RUF027 Possible f-string without an `f` prefix
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/examples/styling/mathtext/latex_normal_distribution.py#L49'>examples/styling/mathtext/latex_normal_distribution.py:49:13:</a> RUF027 Possible f-string without an `f` prefix
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/examples/styling/mathtext/latex_normal_distribution.py#L50'>examples/styling/mathtext/latex_normal_distribution.py:50:13:</a> RUF027 Possible f-string without an `f` prefix
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/examples/styling/mathtext/latex_normal_distribution.py#L51'>examples/styling/mathtext/latex_normal_distribution.py:51:13:</a> RUF027 Possible f-string without an `f` prefix
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/examples/styling/mathtext/latex_normal_distribution.py#L52'>examples/styling/mathtext/latex_normal_distribution.py:52:13:</a> RUF027 Possible f-string without an `f` prefix
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/examples/styling/mathtext/latex_normal_distribution.py#L53'>examples/styling/mathtext/latex_normal_distribution.py:53:13:</a> RUF027 Possible f-string without an `f` prefix
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/models/annotations/legends.py#L581'>src/bokeh/models/annotations/legends.py:581:28:</a> RUF027 Possible f-string without an `f` prefix
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/ibis-project/ibis">ibis-project/ibis</a> (+2 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/ibis-project/ibis/blob/7ce9e879681cbf04dd3747d59724756bfd9d3de3/ibis/backends/exasol/__init__.py#L70'>ibis/backends/exasol/__init__.py:70:13:</a> RUF027 Possible f-string without an `f` prefix
++ <a href='https://github.com/ibis-project/ibis/blob/7ce9e879681cbf04dd3747d59724756bfd9d3de3/ibis/backends/snowflake/__init__.py#L338'>ibis/backends/snowflake/__init__.py:338:9:</a> RUF027 Possible f-string without an `f` prefix
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/pandas-dev/pandas">pandas-dev/pandas</a> (+5 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/pandas-dev/pandas/blob/77188e0e04db70c7a1bb63008388791db37ed810/pandas/io/formats/format.py#L1266'>pandas/io/formats/format.py:1266:27:</a> RUF027 Possible f-string without an `f` prefix
++ <a href='https://github.com/pandas-dev/pandas/blob/77188e0e04db70c7a1bb63008388791db37ed810/pandas/io/formats/format.py#L1268'>pandas/io/formats/format.py:1268:27:</a> RUF027 Possible f-string without an `f` prefix
++ <a href='https://github.com/pandas-dev/pandas/blob/77188e0e04db70c7a1bb63008388791db37ed810/pandas/tests/dtypes/test_dtypes.py#L1063'>pandas/tests/dtypes/test_dtypes.py:1063:13:</a> RUF027 Possible f-string without an `f` prefix
++ <a href='https://github.com/pandas-dev/pandas/blob/77188e0e04db70c7a1bb63008388791db37ed810/pandas/tests/indexes/base_class/test_formats.py#L138'>pandas/tests/indexes/base_class/test_formats.py:138:35:</a> RUF027 Possible f-string without an `f` prefix
++ <a href='https://github.com/pandas-dev/pandas/blob/77188e0e04db70c7a1bb63008388791db37ed810/pandas/tests/indexes/base_class/test_formats.py#L141'>pandas/tests/indexes/base_class/test_formats.py:141:16:</a> RUF027 Possible f-string without an `f` prefix
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/rotki/rotki">rotki/rotki</a> (+1 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/rotki/rotki/blob/193be7f08964783f0b36d4b4011814f7ee29b342/rotkehlchen/tests/utils/blockchain.py#L410'>rotkehlchen/tests/utils/blockchain.py:410:38:</a> RUF027 Possible f-string without an `f` prefix
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/scikit-build/scikit-build-core">scikit-build/scikit-build-core</a> (+1 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/scikit-build/scikit-build-core/blob/3ea800b719b1683380c1333c6788d0f7d7b50ef6/src/scikit_build_core/builder/wheel_tag.py#L84'>src/scikit_build_core/builder/wheel_tag.py:84:27:</a> RUF027 Possible f-string without an `f` prefix
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/zulip/zulip">zulip/zulip</a> (+69 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/zulip/zulip/blob/a0e7f1296ff6d9445dc152b35cdc849aaf23c7b6/tools/droplets/create.py#L321'>tools/droplets/create.py:321:21:</a> RUF027 Possible f-string without an `f` prefix
++ <a href='https://github.com/zulip/zulip/blob/a0e7f1296ff6d9445dc152b35cdc849aaf23c7b6/zerver/actions/streams.py#L1575'>zerver/actions/streams.py:1575:13:</a> RUF027 Possible f-string without an `f` prefix
++ <a href='https://github.com/zulip/zulip/blob/a0e7f1296ff6d9445dc152b35cdc849aaf23c7b6/zerver/actions/streams.py#L1576'>zerver/actions/streams.py:1576:13:</a> RUF027 Possible f-string without an `f` prefix
++ <a href='https://github.com/zulip/zulip/blob/a0e7f1296ff6d9445dc152b35cdc849aaf23c7b6/zerver/actions/streams.py#L1577'>zerver/actions/streams.py:1577:13:</a> RUF027 Possible f-string without an `f` prefix
++ <a href='https://github.com/zulip/zulip/blob/a0e7f1296ff6d9445dc152b35cdc849aaf23c7b6/zerver/lib/redis_utils.py#L44'>zerver/lib/redis_utils.py:44:40:</a> RUF027 Possible f-string without an `f` prefix
++ <a href='https://github.com/zulip/zulip/blob/a0e7f1296ff6d9445dc152b35cdc849aaf23c7b6/zerver/lib/typed_endpoint.py#L366'>zerver/lib/typed_endpoint.py:366:32:</a> RUF027 Possible f-string without an `f` prefix
++ <a href='https://github.com/zulip/zulip/blob/a0e7f1296ff6d9445dc152b35cdc849aaf23c7b6/zerver/management/commands/edit_linkifiers.py#L14'>zerver/management/commands/edit_linkifiers.py:14:12:</a> RUF027 Possible f-string without an `f` prefix
++ <a href='https://github.com/zulip/zulip/blob/a0e7f1296ff6d9445dc152b35cdc849aaf23c7b6/zerver/migrations/0423_fix_email_gateway_attachment_owner.py#L93'>zerver/migrations/0423_fix_email_gateway_attachment_owner.py:93:21:</a> RUF027 Possible f-string without an `f` prefix
++ <a href='https://github.com/zulip/zulip/blob/a0e7f1296ff6d9445dc152b35cdc849aaf23c7b6/zerver/openapi/curl_param_value_generators.py#L281'>zerver/openapi/curl_param_value_generators.py:281:9:</a> RUF027 Possible f-string without an `f` prefix
++ <a href='https://github.com/zulip/zulip/blob/a0e7f1296ff6d9445dc152b35cdc849aaf23c7b6/zerver/openapi/python_examples.py#L1031'>zerver/openapi/python_examples.py:1031:45:</a> RUF027 Possible f-string without an `f` prefix
++ <a href='https://github.com/zulip/zulip/blob/a0e7f1296ff6d9445dc152b35cdc849aaf23c7b6/zerver/openapi/python_examples.py#L1046'>zerver/openapi/python_examples.py:1046:45:</a> RUF027 Possible f-string without an `f` prefix
++ <a href='https://github.com/zulip/zulip/blob/a0e7f1296ff6d9445dc152b35cdc849aaf23c7b6/zerver/openapi/python_examples.py#L1055'>zerver/openapi/python_examples.py:1055:45:</a> RUF027 Possible f-string without an `f` prefix
++ <a href='https://github.com/zulip/zulip/blob/a0e7f1296ff6d9445dc152b35cdc849aaf23c7b6/zerver/openapi/python_examples.py#L1096'>zerver/openapi/python_examples.py:1096:45:</a> RUF027 Possible f-string without an `f` prefix
++ <a href='https://github.com/zulip/zulip/blob/a0e7f1296ff6d9445dc152b35cdc849aaf23c7b6/zerver/openapi/python_examples.py#L1133'>zerver/openapi/python_examples.py:1133:45:</a> RUF027 Possible f-string without an `f` prefix
++ <a href='https://github.com/zulip/zulip/blob/a0e7f1296ff6d9445dc152b35cdc849aaf23c7b6/zerver/openapi/python_examples.py#L1157'>zerver/openapi/python_examples.py:1157:45:</a> RUF027 Possible f-string without an `f` prefix
++ <a href='https://github.com/zulip/zulip/blob/a0e7f1296ff6d9445dc152b35cdc849aaf23c7b6/zerver/openapi/python_examples.py#L1307'>zerver/openapi/python_examples.py:1307:45:</a> RUF027 Possible f-string without an `f` prefix
++ <a href='https://github.com/zulip/zulip/blob/a0e7f1296ff6d9445dc152b35cdc849aaf23c7b6/zerver/openapi/python_examples.py#L1398'>zerver/openapi/python_examples.py:1398:45:</a> RUF027 Possible f-string without an `f` prefix
++ <a href='https://github.com/zulip/zulip/blob/a0e7f1296ff6d9445dc152b35cdc849aaf23c7b6/zerver/openapi/python_examples.py#L1409'>zerver/openapi/python_examples.py:1409:45:</a> RUF027 Possible f-string without an `f` prefix
++ <a href='https://github.com/zulip/zulip/blob/a0e7f1296ff6d9445dc152b35cdc849aaf23c7b6/zerver/openapi/python_examples.py#L1487'>zerver/openapi/python_examples.py:1487:45:</a> RUF027 Possible f-string without an `f` prefix
++ <a href='https://github.com/zulip/zulip/blob/a0e7f1296ff6d9445dc152b35cdc849aaf23c7b6/zerver/openapi/python_examples.py#L303'>zerver/openapi/python_examples.py:303:45:</a> RUF027 Possible f-string without an `f` prefix
++ <a href='https://github.com/zulip/zulip/blob/a0e7f1296ff6d9445dc152b35cdc849aaf23c7b6/zerver/openapi/python_examples.py#L315'>zerver/openapi/python_examples.py:315:45:</a> RUF027 Possible f-string without an `f` prefix
++ <a href='https://github.com/zulip/zulip/blob/a0e7f1296ff6d9445dc152b35cdc849aaf23c7b6/zerver/openapi/python_examples.py#L321'>zerver/openapi/python_examples.py:321:45:</a> RUF027 Possible f-string without an `f` prefix
++ <a href='https://github.com/zulip/zulip/blob/a0e7f1296ff6d9445dc152b35cdc849aaf23c7b6/zerver/openapi/python_examples.py#L333'>zerver/openapi/python_examples.py:333:45:</a> RUF027 Possible f-string without an `f` prefix
++ <a href='https://github.com/zulip/zulip/blob/a0e7f1296ff6d9445dc152b35cdc849aaf23c7b6/zerver/openapi/python_examples.py#L343'>zerver/openapi/python_examples.py:343:45:</a> RUF027 Possible f-string without an `f` prefix
++ <a href='https://github.com/zulip/zulip/blob/a0e7f1296ff6d9445dc152b35cdc849aaf23c7b6/zerver/openapi/python_examples.py#L355'>zerver/openapi/python_examples.py:355:45:</a> RUF027 Possible f-string without an `f` prefix
++ <a href='https://github.com/zulip/zulip/blob/a0e7f1296ff6d9445dc152b35cdc849aaf23c7b6/zerver/openapi/python_examples.py#L362'>zerver/openapi/python_examples.py:362:45:</a> RUF027 Possible f-string without an `f` prefix
++ <a href='https://github.com/zulip/zulip/blob/a0e7f1296ff6d9445dc152b35cdc849aaf23c7b6/zerver/openapi/python_examples.py#L379'>zerver/openapi/python_examples.py:379:17:</a> RUF027 Possible f-string without an `f` prefix
++ <a href='https://github.com/zulip/zulip/blob/a0e7f1296ff6d9445dc152b35cdc849aaf23c7b6/zerver/openapi/python_examples.py#L454'>zerver/openapi/python_examples.py:454:25:</a> RUF027 Possible f-string without an `f` prefix
++ <a href='https://github.com/zulip/zulip/blob/a0e7f1296ff6d9445dc152b35cdc849aaf23c7b6/zerver/openapi/python_examples.py#L469'>zerver/openapi/python_examples.py:469:25:</a> RUF027 Possible f-string without an `f` prefix
++ <a href='https://github.com/zulip/zulip/blob/a0e7f1296ff6d9445dc152b35cdc849aaf23c7b6/zerver/openapi/python_examples.py#L477'>zerver/openapi/python_examples.py:477:45:</a> RUF027 Possible f-string without an `f` prefix
++ <a href='https://github.com/zulip/zulip/blob/a0e7f1296ff6d9445dc152b35cdc849aaf23c7b6/zerver/openapi/python_examples.py#L572'>zerver/openapi/python_examples.py:572:45:</a> RUF027 Possible f-string without an `f` prefix
++ <a href='https://github.com/zulip/zulip/blob/a0e7f1296ff6d9445dc152b35cdc849aaf23c7b6/zerver/openapi/python_examples.py#L588'>zerver/openapi/python_examples.py:588:45:</a> RUF027 Possible f-string without an `f` prefix
++ <a href='https://github.com/zulip/zulip/blob/a0e7f1296ff6d9445dc152b35cdc849aaf23c7b6/zerver/openapi/python_examples.py#L627'>zerver/openapi/python_examples.py:627:45:</a> RUF027 Possible f-string without an `f` prefix
++ <a href='https://github.com/zulip/zulip/blob/a0e7f1296ff6d9445dc152b35cdc849aaf23c7b6/zerver/openapi/python_examples.py#L796'>zerver/openapi/python_examples.py:796:45:</a> RUF027 Possible f-string without an `f` prefix
++ <a href='https://github.com/zulip/zulip/blob/a0e7f1296ff6d9445dc152b35cdc849aaf23c7b6/zerver/openapi/python_examples.py#L809'>zerver/openapi/python_examples.py:809:17:</a> RUF027 Possible f-string without an `f` prefix
++ <a href='https://github.com/zulip/zulip/blob/a0e7f1296ff6d9445dc152b35cdc849aaf23c7b6/zerver/openapi/python_examples.py#L934'>zerver/openapi/python_examples.py:934:45:</a> RUF027 Possible f-string without an `f` prefix
++ <a href='https://github.com/zulip/zulip/blob/a0e7f1296ff6d9445dc152b35cdc849aaf23c7b6/zerver/openapi/python_examples.py#L959'>zerver/openapi/python_examples.py:959:45:</a> RUF027 Possible f-string without an `f` prefix
+... 32 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (1 rules affected)</summary>
+<p>
+
+<p>| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| RUF027 | 91 | 91 | 0 | 0 | 0 |</p>
+</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/snowsignal">@snowsignal</a> reviewed on 2024-01-31 23:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_linter/src/rules/ruff/rules/missing_fstring_syntax.rs</code>:81 on 2024-01-31 23:28</div>
+            <div class="timeline-body"><p>This was intentional, though it's not clarified very well in the code itself.</p>
+<blockquote>
+<p>Is it possible that we capture unwanted keyword arguments (one test case suggests otherwise) or that we don't capture the necessary keyword arguments?</p>
+</blockquote>
+<p>The idea was to handle cases like <code>&quot;{a}&quot;.format(a = 4)</code> where the parent expression is <code>Expr::Attribute</code> instead of <code>Expr::Call</code> - we have to go up one more layer for that.</p>
+<p>The reason we only check the first two parents for a call with keyword arguments is because I didn't see a reason to go any higher.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/snowsignal">@snowsignal</a> reviewed on 2024-01-31 23:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_linter/src/rules/ruff/rules/helpers.rs</code>:122 on 2024-01-31 23:29</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm not sure if that would be a problem here because, per my understanding, this function is called for individual string literal and not the concatenated one.</p>
+</blockquote>
+<p>Right, this is for individual string literals.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/hauntsaninja">@hauntsaninja</a> reviewed on 2024-02-01 03:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/hauntsaninja">@hauntsaninja</a> on <code>crates/ruff_linter/resources/test/fixtures/ruff/RUF027.py</code>:74 on 2024-02-01 03:45</div>
+            <div class="timeline-body"><p>The old-style printf formatting doesn't use curly braces anywhere (afaik), so shouldn't need it in this check</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-02-01 04:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/ruff/rules/helpers.rs</code>:146 on 2024-02-01 04:06</div>
+            <div class="timeline-body"><p>Oh yes of course -- my bad. It has the be a node that we visited in the semantic model, and these are entirely new. Sorry!!!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-02-01 05:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/ruff/rules/helpers.rs</code>:122 on 2024-02-01 05:08</div>
+            <div class="timeline-body"><blockquote>
+<p>Though we probably want to collapse the multi-line string for the error message somehow.</p>
+</blockquote>
+<p>I would be in favor of removing it from the message as it seems redundant with <code>--show-source</code>.</p>
+<p>Might I suggest to use &quot;f-string&quot; instead of &quot;formatting string&quot; for consistency with other rule messages?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2024-02-01 23:54</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/jane/linter/rule/fstring">CodSpeed Performance Report</a></h2>
+<h3>Merging #9728 will <strong>not alter performance</strong></h3>
+<p><sub>Comparing <code>jane/linter/rule/fstring</code> (3e5953e) with <code>main</code> (25d9305)</sub></p>
+<h3>Summary</h3>
+<p><code>✅ 30</code> untouched benchmarks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/snowsignal">@snowsignal</a> reviewed on 2024-02-02 21:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_linter/src/rules/ruff/rules/missing_fstring_syntax.rs</code>:81 on 2024-02-02 21:01</div>
+            <div class="timeline-body"><p>Update: it turns out that the code for keyword matching did have to be a bit smarter. It now looks through all parent expressions, concatenating all keyword arguments, and also checks if a parent attribute expression contains a function call.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-02 21:13</div>
+            <div class="timeline-body"><p>Really weird false positive</p>
+<p>https://github.com/pandas-dev/pandas/blob/c3f7fee653fef5598055227821b6974f1eb87968/pandas/core/window/doc.py#L96-L115</p>
+<p>They're basically doing <code>&quot;{foo}&quot;.replace(&quot;{foo}&quot;, foo)</code> which such an anti-pattern that I'm not sure I mind?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-02 21:15</div>
+            <div class="timeline-body"><p>Here's another false positive</p>
+<p>https://github.com/DisnakeDev/disnake/blob/a24abf43297215b6fe70e0bc61b2ec1dada84b9f/disnake/client.py#L2446</p>
+<p>They're doing <code>data = {&quot;foo&quot;: 1, &quot;bar&quot;: 2}; &quot;{foo} {bar}&quot;.format_map(data)</code> which seems like a true false positive. Perhaps we should ignore strings with a <code>.&lt;call&gt;</code> attached</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-02 21:16</div>
+            <div class="timeline-body"><p>This false positive is no good</p>
+<p>https://github.com/apache/airflow/blob/3ec781946a7fcb5fa5bc99449d59d5981e6257ab/airflow/www/utils.py#L437-L446</p>
+<p>e.g. <code>&quot;{foo}&quot;.format(foo=1)</code> should definitely not be flagged</p>
+<p>The vast majority of the false positives in the ecosystem are this.</p>
+<p>I think we should also not flag <code>&quot; = &quot;{foo}&quot;; x.format(foo=1)</code> if feasible.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-02 21:20</div>
+            <div class="timeline-body"><p>This false positive is due to some inline JavaScript written as a string</p>
+<p>https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/examples/plotting/customjs_expr.py#L26-L38</p>
+<p>I think that's okay...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/snowsignal">@snowsignal</a> on 2024-02-02 21:22</div>
+            <div class="timeline-body"><blockquote>
+<p>e.g. &quot;{foo}&quot;.format(foo=1) should definitely not be flagged</p>
+</blockquote>
+<p>I think this ecosystem check might be outdated, this should be fixed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-02 21:23</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>e.g. &quot;{foo}&quot;.format(foo=1) should definitely not be flagged</p>
+</blockquote>
+<p>I think this ecosystem check might be outdated, this should be fixed.</p>
+</blockquote>
+<p>Sweet. It'll update when the build succeeds.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/snowsignal">@snowsignal</a> on 2024-02-02 21:24</div>
+            <div class="timeline-body"><blockquote>
+<p>Perhaps we should ignore strings with a <code>.&lt;call&gt;</code> attached</p>
+</blockquote>
+<p>This is probably the best approach, honestly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @snowsignal on 2024-02-02 21:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @snowsignal on 2024-02-02 21:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @snowsignal on 2024-02-02 21:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/ruff/rules/missing_fstring_syntax.rs</code>:92 on 2024-02-02 22:16</div>
+            <div class="timeline-body"><p>Nit: extra dashes here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/ruff/rules/missing_fstring_syntax.rs</code>:93 on 2024-02-02 22:16</div>
+            <div class="timeline-body"><p>Does this need to be <code>pub</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/ruff/rules/missing_fstring_syntax.rs</code>:57 on 2024-02-02 22:18</div>
+            <div class="timeline-body"><p>We often do a weird thing here where we add a comment like:</p>
+<pre><code>/// RUF027
+</code></pre>
+<p>It just makes searching by code much easier (e.g., &quot;Go to the definition of rule <code>RUF027</code>&quot;).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/ruff/rules/missing_fstring_syntax.rs</code>:50 on 2024-02-02 22:20</div>
+            <div class="timeline-body"><p>These show up in the editor, so I try to think of them in terms of how they'll appear in the Code Action menu:</p>
+<p><img src="https://github.com/astral-sh/ruff/assets/1309177/dbdaf074-38f6-44d9-bc54-2affd8bb8f79" alt="Screenshot 2024-02-02 at 5 19 20 PM" /></p>
+<p>So I might abbreviate this to: &quot;Add <code>f</code> prefix&quot; or &quot;Add <code>f</code> prefix to f-string&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/ruff/rules/missing_fstring_syntax.rs</code>:34 on 2024-02-02 22:20</div>
+            <div class="timeline-body"><p>Nit: this should say &quot;Use instead:&quot; for consistency with other documentation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-02-02 22:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @snowsignal on 2024-02-03 00:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @snowsignal on 2024-02-03 00:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-02-03 00:21</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 22:58:11 UTC
+    </footer>
+</body>
+</html>

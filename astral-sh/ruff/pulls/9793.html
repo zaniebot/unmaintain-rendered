@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RUF022, RUF023: Ensure closing parentheses for multiline sequences are always on their own line - astral-sh/ruff #9793</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>RUF022, RUF023: Ensure closing parentheses for multiline sequences are always on their own line</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/9793">#9793</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2024-02-02 18:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-02-02 18:54</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Currently these rules apply the heuristic that if the original sequence doesn't have a newline in between the final sequence item and the closing parenthesis, the autofix won't add one for you. The feedback from @ThiefMaster, however, was that this was producing slightly unusual formatting -- things like this:</p>
+<pre><code class="language-py">__all__ = [
+    &quot;b&quot;, &quot;c&quot;,
+    &quot;a&quot;, &quot;d&quot;]
+</code></pre>
+<p>were being autofixed to this:</p>
+<pre><code class="language-py">__all__ = [
+    &quot;a&quot;,
+    &quot;b&quot;,
+    &quot;c&quot;,
+    &quot;d&quot;]
+</code></pre>
+<p>When, if it was <em>going</em> to be exploded anyway, they'd prefer something like this (with the closing parenthesis on its own line):</p>
+<pre><code class="language-py">__all__ = [
+    &quot;a&quot;,
+    &quot;b&quot;,
+    &quot;c&quot;,
+    &quot;d&quot;
+]
+</code></pre>
+<p>I'm still pretty skeptical that we'll be able to please everybody here with the formatting choices we make; <em>but</em>, on the other hand, this <em>specific</em> change is pretty easy to make.</p>
+<h2>Test Plan</h2>
+<p><code>cargo test</code>. I also ran the autofixes for RUF022 and RUF023 on CPython to check how they looked; they looked fine to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-02-02 19:08</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-02-02 19:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sequence_sorting.rs</code>:934 on 2024-02-02 19:37</div>
+            <div class="timeline-body"><p>If we wanted to <em>always</em> add a trailing comma to the last item here (@ThiefMaster does), we could do something like this instead:</p>
+<pre><code class="language-suggestion">        let parenthesis_re = regex::Regex::new(r&quot;^,?([\])}])$&quot;).unwrap();
+        if let Some(captures) = parenthesis_re.captures(postlude) {
+            let closing_paren = &amp;captures[1];
+            return Cow::Owned(format!(&quot;,{newline}{leading_indent}{closing_paren}&quot;));
+        }
+        return Cow::Borrowed(postlude);
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @charliermarsh on 2024-02-09 14:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2024-02-09 14:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-02-09 20:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sequence_sorting.rs</code>:905 on 2024-02-09 20:38</div>
+            <div class="timeline-body"><p>Is it possible to write this via string find / filter checks, rather than using a regex? Regex tends to be overkill and slower for simple operations like this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-02-09 20:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sequence_sorting.rs</code>:905 on 2024-02-09 20:43</div>
+            <div class="timeline-body"><p>Yes, definitely doable -- just <em>slightly</em> less elegant here :)</p>
+<p>I'll make the change!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-02-09 20:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sequence_sorting.rs</code>:905 on 2024-02-09 20:48</div>
+            <div class="timeline-body"><p>As a tip: if we <em>did</em> use a regex, we should ensure that it's only compiled once (like in Python). It can make a <em>huge</em> difference. You can grep for <code>Lazy&lt;Regex&gt;</code> as an example of that pattern.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-02-09 21:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/ruff/rules/sequence_sorting.rs</code>:905 on 2024-02-09 21:12</div>
+            <div class="timeline-body"><p>Got rid of the regex in 6fa2c43c8629094ae4b918cbb97b94bee432e4ac!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2024-02-09 21:18</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/AlexWaygood:closing-paren">CodSpeed Performance Report</a></h2>
+<h3>Merging #9793 will <strong>improve performances by 44.39%</strong></h3>
+<p><sub>Comparing <code>AlexWaygood:closing-paren</code> (6fa2c43) with <code>main</code> (c53aae0)</sub></p>
+<h3>Summary</h3>
+<p><code>⚡ 18</code> improvements
+<code>✅ 12</code> untouched benchmarks</p>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Benchmark | <code>main</code> | <code>AlexWaygood:closing-paren</code> | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| ⚡ | <code>parser[numpy/globals.py]</code> | 1,117.4 µs | 963.5 µs | +15.98% |
+| ⚡ | <code>parser[large/dataset.py]</code> | 69.1 ms | 63.5 ms | +8.78% |
+| ⚡ | <code>lexer[numpy/globals.py]</code> | 223.5 µs | 154.8 µs | +44.39% |
+| ⚡ | <code>linter/all-rules[numpy/globals.py]</code> | 2.8 ms | 2.6 ms | +7.65% |
+| ⚡ | <code>lexer[unicode/pypinyin.py]</code> | 571.5 µs | 526.5 µs | +8.55% |
+| ⚡ | <code>linter/all-rules[pydantic/types.py]</code> | 44.3 ms | 39.8 ms | +11.4% |
+| ⚡ | <code>lexer[numpy/ctypeslib.py]</code> | 1.8 ms | 1.6 ms | +15.26% |
+| ⚡ | <code>linter/all-rules[unicode/pypinyin.py]</code> | 11.8 ms | 10.2 ms | +15.65% |
+| ⚡ | <code>parser[pydantic/types.py]</code> | 26.4 ms | 24.4 ms | +8.1% |
+| ⚡ | <code>parser[unicode/pypinyin.py]</code> | 4.3 ms | 3.9 ms | +9.89% |
+| ⚡ | <code>linter/all-rules[numpy/ctypeslib.py]</code> | 22 ms | 18.9 ms | +16.46% |
+| ⚡ | <code>linter/all-with-preview-rules[unicode/pypinyin.py]</code> | 12.8 ms | 11.3 ms | +13.33% |
+| ⚡ | <code>linter/all-with-preview-rules[numpy/globals.py]</code> | 3.1 ms | 3 ms | +4.09% |
+| ⚡ | <code>linter/all-with-preview-rules[pydantic/types.py]</code> | 51.9 ms | 47.2 ms | +9.9% |
+| ⚡ | <code>linter/all-with-preview-rules[numpy/ctypeslib.py]</code> | 24.6 ms | 22 ms | +11.8% |
+| ⚡ | <code>parser[numpy/ctypeslib.py]</code> | 11.8 ms | 10.8 ms | +9.85% |
+| ⚡ | <code>linter/all-rules[large/dataset.py]</code> | 94.1 ms | 82.6 ms | +13.83% |
+| ⚡ | <code>linter/all-with-preview-rules[large/dataset.py]</code> | 106.9 ms | 96 ms | +11.39% |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-09 21:19</div>
+            <div class="timeline-body"><p>Lol</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-02-09 21:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2024-02-09 21:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2024-02-09 21:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-02-09 21:27</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 22:58:13 UTC
+    </footer>
+</body>
+</html>

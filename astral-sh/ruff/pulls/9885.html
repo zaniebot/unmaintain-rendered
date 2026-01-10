@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reduce `Result&lt;Tok, LexicalError&gt;` size by using `Box&lt;str&gt;` instead of `String` - astral-sh/ruff #9885</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Reduce <code>Result&lt;Tok, LexicalError&gt;</code> size by using <code>Box&lt;str&gt;</code> instead of <code>String</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/9885">#9885</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2024-02-07 22:16
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-02-07 22:16</div>
+            <div class="timeline-body"><ul>
+<li>Reduce the <code>LexicalError</code> type by using <code>Box&lt;str&gt;</code> over <code>String</code></li>
+<li>Reduce the <code>Tok</code> size by using <code>Box&lt;str&gt;</code> over <code>String</code>.</li>
+</ul>
+<p>Using <code>Box&lt;str&gt;</code> is sufficient for us because we don't want to mutate the error message or token value.</p>
+<p>The downside of this is that using <code>Box&lt;str&gt;</code> is slightly more annoying.</p>
+<p>Future: It would be interesting to change the Lexer signature always to return a <code>Tok::Invalid</code> and write the errors to a <code>Vec</code> instead. This should allow for drastically reducing the size of <code>Tok</code> and <code>Spanned.</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2024-02-07 22:23</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/reduce-tok-size">CodSpeed Performance Report</a></h2>
+<h3>Merging #9885 will <strong>not alter performance</strong></h3>
+<p><sub>Comparing <code>reduce-tok-size</code> (7a7f01c) with <code>main</code> (9027169)</sub></p>
+<h3>Summary</h3>
+<p><code>✅ 30</code> untouched benchmarks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-02-07 23:31</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @MichaReiser on 2024-02-08 03:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @MichaReiser on 2024-02-08 03:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Reduce `Tok` size by using `Box<str>` instead of `String`" to "Reduce `Tok` and `Result<Tok, LexicalError>` sizes by using `Box<str>` instead of `String`" by @MichaReiser on 2024-02-08 12:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Reduce `Tok` and `Result<Tok, LexicalError>` sizes by using `Box<str>` instead of `String`" to "Reduce `Result<Tok, LexicalError>` size by using `Box<str>` instead of `String`" by @MichaReiser on 2024-02-08 12:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-02-08 12:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @MichaReiser on 2024-02-08 12:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_linter/src/rules/pycodestyle/rules/invalid_escape_sequence.rs</code>:77 on 2024-02-08 14:49</div>
+            <div class="timeline-body"><p>I don't think you want <code>.as_ref()</code> here. Generally one should only use <code>as_ref()</code> when a <code>AsRef</code> bound is in scope, otherwise you're susceptible to inference failures in future Rust releases.</p>
+<p>If <code>value</code> is a <code>Box&lt;str&gt;</code>, then you can get a <code>&amp;str</code> with <code>&amp;*value</code>. If <code>value</code> is a <code>&amp;Box&lt;str&gt;</code> (which is I think the case here), then you can get a <code>&amp;str</code> with <code>&amp;**value</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_linter/src/rules/pycodestyle/rules/invalid_escape_sequence.rs</code>:77 on 2024-02-08 14:49</div>
+            <div class="timeline-body"><p>And I would generally apply this same comment to I believe all other uses of <code>as_ref()</code> in this PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-02-08 14:51</div>
+            <div class="timeline-body"><p>Nice!!!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-02-08 14:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_linter/src/rules/pycodestyle/rules/invalid_escape_sequence.rs</code>:77 on 2024-02-08 14:57</div>
+            <div class="timeline-body"><p>Some references:</p>
+<ul>
+<li>https://github.com/rust-lang/rust/issues/60958</li>
+<li>https://github.com/rust-lang/rust/issues/62586</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pycodestyle/rules/invalid_escape_sequence.rs</code>:77 on 2024-02-08 14:59</div>
+            <div class="timeline-body"><p>Makes sense. I like <code>as_ref</code> because I don't need to guess the number of <code>*</code> that I have to use 😆 but I can change it.</p>
+<p>I'm somewhat hesitant of merging the PR because I don't see an improvement when running the lexer benchmarks locally :(</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-02-08 14:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_linter/src/rules/pycodestyle/rules/invalid_escape_sequence.rs</code>:77 on 2024-02-08 17:01</div>
+            <div class="timeline-body"><p>I do see a very small improvement on my machine:</p>
+<pre><code>$ critcmp base test
+group                        base                                   test
+-----                        ----                                   ----
+lexer/large/dataset.py       1.01    202.0±0.66µs   201.4 MB/sec    1.00    200.9±0.51µs   202.5 MB/sec
+lexer/numpy/ctypeslib.py     1.03     48.9±0.15µs   340.5 MB/sec    1.00     47.7±0.17µs   349.2 MB/sec
+lexer/numpy/globals.py       1.04      5.0±0.02µs   592.9 MB/sec    1.00      4.8±0.01µs   616.2 MB/sec
+lexer/pydantic/types.py      1.02     93.8±0.25µs   271.9 MB/sec    1.00     92.2±0.37µs   276.6 MB/sec
+lexer/unicode/pypinyin.py    1.01     12.5±0.03µs   335.4 MB/sec    1.00     12.4±0.05µs   337.6 MB/sec
+</code></pre>
+<p>I'd say ship it!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-02-08 17:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-08 17:09</div>
+            <div class="timeline-body"><p>I'm not kidding I was thinking about this as I fell asleep a few nights ago.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2024-02-08 18:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2024-02-08 20:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-02-08 20:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-02-08 20:36</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 22:58:16 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`flake8-pyi`] Ignore 'unused' private type dicts in class scopes - astral-sh/ruff #9952</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>flake8-pyi</code>] Ignore 'unused' private type dicts in class scopes</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/9952">#9952</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-02-12 15:09
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-12 15:09</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>If these are defined within class scopes, they're actually attributes of the class, and can be accessed through the class itself.</p>
+<p>(We preserve our existing behavior for <code>.pyi</code> files.)</p>
+<p>Closes https://github.com/astral-sh/ruff/issues/9948.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @charliermarsh on 2024-02-12 15:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2024-02-12 15:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2024-02-12 15:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Ignore 'unused' private type dicts in class scopes" to "[`flake8-pyi`] Ignore 'unused' private type dicts in class scopes" by @charliermarsh on 2024-02-12 15:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-02-12 15:22</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-02-12 15:27</div>
+            <div class="timeline-body"><p>I think maybe this rule should work differently for <code>.py</code> and <code>.pyi</code> files.</p>
+<p>For a <code>.py</code> file, it makes sense not to flag something like this since, as you say, it's an attribute and maybe it's used elsewhere:</p>
+<pre><code class="language-py">class Foo:
+    class _Unused(TypeDict):
+        pass
+</code></pre>
+<p>But in a <code>.pyi</code> file, I'd definitely still want that flagged. (I'm not sure why you'd do something like that in a <code>.pyi</code> file... but I still feel like the principle is important 😄)</p>
+<p>In a <code>.pyi</code> file, it's still highly likely that the <code>TypedDict</code> class there doesn't exist at runtime, even though it's inside the class scope. One of the heuristics these rules rely on (which in general is nearly always accurate) is the idea that TypedDicts, protocols, type aliases and protocols in stub files are nearly always &quot;stub-only constructs&quot; that don't exist at runtime, and are used purely for improving the annotations that we're able to supply in the stubs. I think that heuristic applies just as well to private definitions inside class scopes as it does to private definitions in the global scope.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-12 15:30</div>
+            <div class="timeline-body"><p>Ok, I'll gate it by type. Makes sense.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @charliermarsh on 2024-02-12 15:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/resources/test/fixtures/flake8_pyi/PYI049.pyi</code>:46 on 2024-02-12 15:50</div>
+            <div class="timeline-body"><p>Nit: maybe get rid of the <code>print()</code> call in the <code>.pyi</code> fixture here; I'm not sure it adds anything</p>
+<pre><code class="language-suggestion"># Error
+# (in .pyi files, we flag unused definitions in class scopes
+# as well as the global scope, unlike in .py files)
+class _CustomClass3:
+    class _UnusedTypeDict4(TypedDict):
+        pass
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-12 15:57</div>
+            <div class="timeline-body"><p>Fixed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2024-02-12 15:57</div>
+            <div class="timeline-body"><p>LGTM.</p>
+<p>I think there would still be a false positive if you did something like this in a <code>.pyi</code> file:</p>
+<pre><code class="language-py">class Foo:
+    class _VeryPrivate(TypedDict):
+        x: str
+
+    bar: _VeryPrivate
+</code></pre>
+<p>But it seems pretty unlikely to actually come up. And I think this PR is probably an improvement as-is since it gets rid of the <code>.py</code>-file false positive (and I think it's probably correct to not worry about any of these rules inside class scopes in <code>.py</code> files). So I'm happy with this to go in as-is.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-02-12 16:07</div>
+            <div class="timeline-body"><blockquote>
+<p>I think there would still be a false positive if you did something like this in a <code>.pyi</code> file:</p>
+<pre><code class="language-python">class Foo:
+    class _VeryPrivate(TypedDict):
+        x: str
+
+    bar: _VeryPrivate
+</code></pre>
+</blockquote>
+<p>Hmm, no, it looks like that isn't flagged as being unused -- sorry, I should have checked. I think I might have slightly misunderstood the root cause of this issue here, in that case</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-02-12 16:10</div>
+            <div class="timeline-body"><p>Ah, is the cause that the visitor recurses into class scopes when looking for references that might count as &quot;usages&quot;, but does not recurse into method definitions <em>inside</em> class scopes?</p>
+<p>In that case, we should definitely be fine, since the bodies of methods in <code>.pyi</code> files <em>should</em> always be empty except for <code>...</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-12 16:54</div>
+            <div class="timeline-body"><p>The root cause is that given:</p>
+<pre><code class="language-python">class A:
+    class _B(TypedDict):
+        pass
+
+    def f(self) -&gt; None:
+        print(A._B())
+</code></pre>
+<p>Our semantic model doesn't currently detect that <code>A._B()</code> is a usage of <code>_B</code>, since we don't follow attribute references.</p>
+<p>But given:</p>
+<pre><code class="language-python">class Foo:
+    class _VeryPrivate(TypedDict):
+        x: str
+
+    bar: _VeryPrivate
+</code></pre>
+<p>We <em>can</em> resolve <code>_VeryPrivate</code> to the inner class correctly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-02-12 16:59</div>
+            <div class="timeline-body"><p>Makes sense. I think this should be fine, then, since accessing private attributes in general is very rare in <code>.pyi</code> files, so the false-positive as it was reported in the issue is very unlikely to occur for <code>.pyi</code> files.</p>
+<p>Sorry for the slightly confused review!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-02-12 17:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-02-12 17:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-02-12 17:06</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 22:58:17 UTC
+    </footer>
+</body>
+</html>

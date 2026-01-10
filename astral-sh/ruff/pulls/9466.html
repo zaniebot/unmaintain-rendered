@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Remove type parameter from `parse_*` methods - astral-sh/ruff #9466</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Remove type parameter from <code>parse_*</code> methods</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/9466">#9466</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2024-01-11 11:41
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-01-11 11:41</div>
+            <div class="timeline-body"><p>This PR removes the <code>I</code> (tokens iterator) type parameter from all <code>parse_*</code> methods. This is done in preparation for https://github.com/astral-sh/ruff/pull/9152 to avoid accidentally monomorphizing the parser more than once.</p>
+<p>The <code>Parser</code> struct defined in https://github.com/astral-sh/ruff/pull/9152 is parametrized by the underlying tokens iterator. This is dangerous because Rust will monomorphize the entire parser for each distinct <code>I</code> type parameter.</p>
+<p>This PR removes the <code>I</code> type parameters from all <code>parse_*</code> methods and introduces a new <code>TokenSource</code> type in the parser that:</p>
+<ul>
+<li>Filters out trivia tokens</li>
+<li>Allows lookahead without the need for <code>MultiPeek</code> (which has an overhead when reading tokens)</li>
+<li>Is a single type used by our <code>Parser</code> to read tokens.</li>
+</ul>
+<p>The downside is that all <code>parse_</code> methods now take a <code>Vec&lt;LexResult&gt;</code>, which requires collecting the lexer result into a Vec before parsing. Our micro-benchmarks show that this is slower than streaming the tokens one by one.</p>
+<p>However, it turns out that both the linter and formatter both collect the tokens before parsing them to an AST. That means the path tested by the micro-benchmark isn't used in the actual product and the introduced regression doesn't affect users.</p>
+<p>You may wonder why this is only a problem now but hasn't been a problem with lalrpop. The problem existed with lalrpop as well but to a much smaller extent because lalrpop separates the parser into two parts:</p>
+<ul>
+<li>A state machine parametrized by <code>I</code> that consumes the tokens and calls into the parser methods (only passing the tokens)</li>
+<li>The actual parsing methods</li>
+</ul>
+<p>Only the state machine gets monomorphized, which is fine because it is limited in size. Another way to think about it is that the lalrpop pushes the tokens into the parser (and, therefore, the parser is decoupled from I). In contrast, the handwritten parser pulls the tokens (and, therefore, is generic over I).</p>
+<h2>Alternatives</h2>
+<p>Alternatives that may be less affected by the performance regression are</p>
+<ul>
+<li>A <code>TokenSource</code> enum with two variants: One storing the lexed tokens and the other storing the lexer to consume the tokens lazily.</li>
+<li>Storing a <code>Box&lt;impl Iterator&gt;</code> in the hand written parser</li>
+</ul>
+<p>I went with the above approach because we don't need the flexibility of either lexing lazily or eagerly in Ruff outside the parser benchmark. Thus, using a <code>Vec&lt;LexResult&gt;</code> seemed the easiest solution.</p>
+<p>CC: @LaBatata101</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2024-01-11 12:01</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/token-source">CodSpeed Performance Report</a></h2>
+<h3>Merging #9466 will <strong>degrade performances by 6.76%</strong></h3>
+<p><sub>Comparing <code>token-source</code> (9d17580) with <code>main</code> (14d3fe6)</sub></p>
+<h3>Summary</h3>
+<p><code>❌ 5 (👁 5)</code> regressions
+<code>✅ 25</code> untouched benchmarks</p>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Benchmark | <code>main</code> | <code>token-source</code> | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| 👁 | <code>parser[unicode/pypinyin.py]</code> | 4 ms | 4.3 ms | -6.76% |
+| 👁 | <code>parser[pydantic/types.py]</code> | 25.7 ms | 27.3 ms | -5.9% |
+| 👁 | <code>parser[numpy/globals.py]</code> | 1.1 ms | 1.1 ms | -4.87% |
+| 👁 | <code>parser[numpy/ctypeslib.py]</code> | 11.6 ms | 12.2 ms | -5.49% |
+| 👁 | <code>parser[large/dataset.py]</code> | 67.4 ms | 70.8 ms | -4.82% |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-01-11 12:43</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Add TokenSource" to "Remove type parameter from `parse_*` methods" by @MichaReiser on 2024-01-11 13:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @MichaReiser on 2024-01-11 13:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">parser</span> added by @MichaReiser on 2024-01-11 13:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2024-01-11 13:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @MichaReiser on 2024-01-11 13:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @MichaReiser on 2024-01-11 13:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @MichaReiser on 2024-01-11 13:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-01-11 14:47</div>
+            <div class="timeline-body"><p>This seems reasonable to me given the explanation (especially around the perceived regression) in the summary.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_python_parser/src/parser.rs</code>:214 on 2024-01-11 15:10</div>
+            <div class="timeline-body"><p>I was trying to figure out why this is a dedicated type instead of a <code>tokens.into_iter().filter(...)</code> but couldn't come up with a reason. (Usually it's because you want to name the type somewhere, but maybe I'm missing that.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2024-01-11 15:10</div>
+            <div class="timeline-body"><p>I buy what you're selling.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-01-11 15:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/parser.rs</code>:214 on 2024-01-11 15:50</div>
+            <div class="timeline-body"><p>It's mainly to have a named type in https://github.com/astral-sh/ruff/pull/9152 and a place where we can implement lookahead without using <code>PeekMany</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-01-11 15:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_python_parser/src/parser.rs</code>:214 on 2024-01-11 15:51</div>
+            <div class="timeline-body"><p>Ah gotya, don't mind me then. :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/LaBatata101">@LaBatata101</a> on 2024-01-11 18:28</div>
+            <div class="timeline-body"><p>LGTM. I was actually going to something like this later, glad you saved me the work 😊</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2024-01-11 18:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-01-11 18:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-01-11 18:41</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 22:58:00 UTC
+    </footer>
+</body>
+</html>

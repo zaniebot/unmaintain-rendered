@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Use atomic write when persisting cache - astral-sh/ruff #9981</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Use atomic write when persisting cache</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/9981">#9981</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2024-02-14 09:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-02-14 09:56</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Fixes https://github.com/astral-sh/ruff/issues/8147</p>
+<p>I ~strongly suspect~ have prove that the cache gets corrupted because of a race between different ruff processes writing to the same cache file but with different content (e.g. format writes the cache with the &quot;old&quot; lint results and lint updates the lint results).
+Multiple processes writing to the same cache file is possible because POSIX only guarantees that a single <code>write</code> call is atomic, but our
+implementation uses a <code>BufWriter</code> that chunks the data into multiple write calls if necessary.</p>
+<p>This PR changes our <code>persist</code> implementation to use a temporary file instead and renames it on success. Renaming is guaranteed
+to be atomic. This approach has the added benefit of preventing cache corruption if ruff dies while writing the cache data (SIGKIL, panic, the computer shuts down...).</p>
+<p>This PR removes the <code>BufWriter</code> because I noticed that the implementation became slower when using a temporary file, and the <code>BufWriter</code> (I added the <a href="https://doc.rust-lang.org/std/io/struct.BufWriter.html">recommended <code>flush</code></a> call to the <code>BufWriter</code>).
+Removing the <code>BufWriter</code> gives us about the same performance for the CPython benchmark with the default rules but results in a ~2% speedup when selecting all rules (instead of a 5% slowdown due to the use of a tempfile).</p>
+<h2>Test Plan</h2>
+<p>I wrote a script to reproduce my theory ~~but failed to get a single reproduction~~.</p>
+<p>The script starts ten ruff instances in a loop with the default or all rules (coinflip). The instances must use different rules or all instances write the same cache file, which makes it impossible to show the race.  ~~But without success. Ruff never fails with the old build :(~~ I had to patch up the cache to a) use the same cache regardless of the settings, and b) never return cached data but always write to the cache.</p>
+<p>This allowed me to reproduce the bug fairly consistently on main. I'm no longer able to reproduce the issue with the changes from this PR:</p>
+<details>
+
+<pre><code class="language-javascript">const child_process = require(&quot;child_process&quot;);
+
+async function run() {
+  for (let i = 0; i &lt; 100; ++i) {
+    let promises = [];
+    for (let i = 0; i &lt; 10; ++i) {
+      const rules =
+        Math.random() &gt; 0.5
+          ? [&quot;--select&quot;, &quot;ALL&quot;]
+          : [&quot;--select&quot;, &quot;ALL&quot;, &quot;--ignore&quot;, &quot;ANN001&quot;];
+      //   console.log(rules);
+      promises.push(
+        spawn(&quot;../../ruff/target/release/ruff&quot;, [&quot;check&quot;, &quot;.&quot;, &quot;-s&quot;, ...rules])
+      );
+    }
+
+    let results = await Promise.all(promises);
+
+    for (let result of results) {
+      process.stdout.write(result[0]);
+      process.stderr.write(result[1]);
+    }
+  }
+}
+
+function spawn(cmd, args) {
+  return new Promise((resolve, reject) =&gt; {
+    const cp = child_process.spawn(cmd, args);
+    const stderr = [];
+    const stdout = [];
+    cp.stdout.on(&quot;data&quot;, (data) =&gt; {
+      stdout.push(data.toString());
+    });
+
+    cp.on(&quot;error&quot;, (e) =&gt; {
+      stderr.push(e.toString());
+    });
+
+    cp.on(&quot;close&quot;, () =&gt; {
+      if (stderr.length) reject(stderr.join(&quot;&quot;));
+      else resolve([stdout.join(&quot;&quot;), stderr.join(&quot;&quot;)]);
+    });
+  });
+}
+
+run().catch((error) =&gt; console.error(error));
+</code></pre>
+<pre><code class="language-diff">Subject: [PATCH] isort-lines-after-imports
+---
+Index: crates/ruff/src/cache.rs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+&lt;+&gt;UTF-8
+===================================================================
+diff --git a/crates/ruff/src/cache.rs b/crates/ruff/src/cache.rs
+--- a/crates/ruff/src/cache.rs	(revision 297a6ffcae54b5dd4fd7c1d7d5a94f6b305ad607)
++++ b/crates/ruff/src/cache.rs	(date 1707913224871)
+@@ -364,7 +364,7 @@
+ fn cache_key(package_root: &amp;Path, settings: &amp;Settings) -&gt; u64 {
+     let mut hasher = CacheKeyHasher::new();
+     package_root.cache_key(&amp;mut hasher);
+-    settings.cache_key(&amp;mut hasher);
++    // settings.cache_key(&amp;mut hasher);
+ 
+     hasher.finish()
+ }
+Index: crates/ruff/src/diagnostics.rs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+&lt;+&gt;UTF-8
+===================================================================
+diff --git a/crates/ruff/src/diagnostics.rs b/crates/ruff/src/diagnostics.rs
+--- a/crates/ruff/src/diagnostics.rs	(revision 297a6ffcae54b5dd4fd7c1d7d5a94f6b305ad607)
++++ b/crates/ruff/src/diagnostics.rs	(date 1707913224871)
+@@ -200,19 +200,19 @@
+             let cached_diagnostics = cache
+                 .get(relative_path, &amp;cache_key)
+                 .and_then(|entry| entry.to_diagnostics(path));
+-            if let Some(diagnostics) = cached_diagnostics {
+-                // `FixMode::Generate` and `FixMode::Diff` rely on side-effects (writing to disk,
+-                // and writing the diff to stdout, respectively). If a file has diagnostics, we
+-                // need to avoid reading from and writing to the cache in these modes.
+-                if match fix_mode {
+-                    flags::FixMode::Generate =&gt; true,
+-                    flags::FixMode::Apply | flags::FixMode::Diff =&gt; {
+-                        diagnostics.messages.is_empty() &amp;&amp; diagnostics.fixed.is_empty()
+-                    }
+-                } {
+-                    return Ok(diagnostics);
+-                }
+-            }
++            // if let Some(diagnostics) = cached_diagnostics {
++            //     // `FixMode::Generate` and `FixMode::Diff` rely on side-effects (writing to disk,
++            //     // and writing the diff to stdout, respectively). If a file has diagnostics, we
++            //     // need to avoid reading from and writing to the cache in these modes.
++            //     if match fix_mode {
++            //         flags::FixMode::Generate =&gt; true,
++            //         flags::FixMode::Apply | flags::FixMode::Diff =&gt; {
++            //             diagnostics.messages.is_empty() &amp;&amp; diagnostics.fixed.is_empty()
++            //         }
++            //     } {
++            //         return Ok(diagnostics);
++            //     }
++            // }
+ 
+             // Stash the file metadata for later so when we update the cache it reflects the prerun
+             // information
+
+</code></pre>
+</details>
+
+<h2>Benchmarks</h2>
+<pre><code>❯ hyperfine --warmup 10 --runs 100 \
+        &quot;./target/release/ruff-main check crates/ruff_linter/resources/test/cpython -e&quot; \
+        &quot;./target/release/ruff-atomic check crates/ruff_linter/resources/test/cpython -e&quot;
+Benchmark 1: ./target/release/ruff-main check crates/ruff_linter/resources/test/cpython -e
+  Time (mean ± σ):      37.4 ms ±   0.7 ms    [User: 44.2 ms, System: 54.0 ms]
+  Range (min … max):    35.3 ms …  39.1 ms    100 runs
+ 
+Benchmark 2: ./target/release/ruff-atomic check crates/ruff_linter/resources/test/cpython -e
+  Time (mean ± σ):      37.6 ms ±   0.8 ms    [User: 43.9 ms, System: 55.0 ms]
+  Range (min … max):    36.0 ms …  40.2 ms    100 runs
+ 
+Summary
+  ./target/release/ruff-main check crates/ruff_linter/resources/test/cpython -e ran
+    1.01 ± 0.03 times faster than ./target/release/ruff-atomic check crates/ruff_linter/resources/test/cpython -e
+
+ruff on  atomic-cache-write [$!] is 📦 v0.2.1 via 🐍 v3.11.7 via 🦀 v1.76.0 took 8s 
+❯ hyperfine --warmup 10 --runs 20 \
+        &quot;./target/release/ruff-main check crates/ruff_linter/resources/test/cpython -e --select=ALL&quot; \
+        &quot;./target/release/ruff-atomic check crates/ruff_linter/resources/test/cpython -e --select=ALL&quot;
+Benchmark 1: ./target/release/ruff-main check crates/ruff_linter/resources/test/cpython -e --select=ALL
+  Time (mean ± σ):     617.6 ms ±  10.4 ms    [User: 849.8 ms, System: 300.7 ms]
+  Range (min … max):   593.8 ms … 635.7 ms    20 runs
+ 
+Benchmark 2: ./target/release/ruff-atomic check crates/ruff_linter/resources/test/cpython -e --select=ALL
+  Time (mean ± σ):     601.8 ms ±  14.4 ms    [User: 823.6 ms, System: 320.5 ms]
+  Range (min … max):   576.3 ms … 631.0 ms    20 runs
+ 
+Summary
+  ./target/release/ruff-atomic check crates/ruff_linter/resources/test/cpython -e --select=ALL ran
+    1.03 ± 0.03 times faster than ./target/release/ruff-main check crates/ruff_linter/resources/test/cpython -e --select=ALL
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2024-02-14 09:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @MichaReiser on 2024-02-14 10:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-02-14 10:09</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @MichaReiser on 2024-02-14 12:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @MichaReiser on 2024-02-14 12:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2024-02-14 13:30</div>
+            <div class="timeline-body"><p>Nice find and fix!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-02-14 13:54</div>
+            <div class="timeline-body"><p>Excellent!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-02-14 14:09</div>
+            <div class="timeline-body"><blockquote>
+<p>Excellent!</p>
+</blockquote>
+<p>I knew that would make you happy ;) This bug annoyed you for a long time.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2024-02-14 14:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-02-14 14:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-02-14 14:09</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 22:58:18 UTC
+    </footer>
+</body>
+</html>

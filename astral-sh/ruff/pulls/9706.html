@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`pylint`] Add `__mro_entries__` to known dunder methods (`PLW3201`) - astral-sh/ruff #9706</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>pylint</code>] Add <code>__mro_entries__</code> to known dunder methods (<code>PLW3201</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/9706">#9706</a>
+        opened by <a href="https://github.com/johnslavik">@johnslavik</a>
+        on 2024-01-30 15:25
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/johnslavik">@johnslavik</a> on 2024-01-30 15:25</div>
+            <div class="timeline-body"><p>Yes, I actually need this dunder in my project.</p>
+<!--
+Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+<p>This change adds <a href="https://docs.python.org/3/reference/datamodel.html#object.__mro_entries__"><code>__mro_entries__</code></a> to the list of known dunder methods.</p>
+<h2>Test Plan</h2>
+<!-- How was it tested? -->
+
+<p>8893a3ca5784034101701bad8024e8bf59c6f8b6.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Add __mro_entries__ to known dunder methods" to "Add `__mro_entries__` to known dunder methods" by @johnslavik on 2024-01-30 15:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Add `__mro_entries__` to known dunder methods" to "[`pylint`] Add `__mro_entries__` to known dunder methods" by @johnslavik on 2024-01-30 15:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-01-30 15:38</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[`pylint`] Add `__mro_entries__` to known dunder methods" to "[`pylint`] Add `__mro_entries__` to known dunder methods (`PLW3201`)" by @johnslavik on 2024-01-30 15:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-01-30 16:40</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-01-30 16:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-01-30 16:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-01-30 16:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-01-30 16:55</div>
+            <div class="timeline-body"><p>I ran a small script to find all the dunders defined in CPython (not thoroughly tested; it might have bugs):</p>
+<pre><code class="language-py">import ast, re, pathlib, pprint
+
+is_dunder = re.compile(r&quot;__[^_](.+[^_])?__&quot;).fullmatch
+
+class DunderCollector(ast.NodeVisitor):
+    def visit_FunctionDef(self, node):
+        if is_dunder(node.name):
+            dunders.add(node.name)
+    visit_AsyncFunctionDef = visit_FunctionDef
+
+dunders = set()
+
+for path in pathlib.Path(&quot;.&quot;).rglob(&quot;*.py&quot;):
+    try:
+        source = path.read_text()
+    except Exception as e:
+        print(f&quot;Skipping {path} due to {e}&quot;)
+        continue
+    try:
+        tree = ast.parse(tree)
+    except Exception as e:
+        print(f&quot;Skipping {path} due to {e}&quot;)
+        continue
+    DunderCollector().visit(tree)
+
+pprint.pprint(sorted(dunders))
+</code></pre>
+<p>Run it from the CPython repo root, and it gives these results:</p>
+<details>
+
+<pre><code>['__abs__',
+ '__add__',
+ '__aenter__',
+ '__aexit__',
+ '__aiter__',
+ '__and__',
+ '__anext__',
+ '__await__',
+ '__bool__',
+ '__buffer__',
+ '__bytes__',
+ '__call__',
+ '__ceil__',
+ '__class__',
+ '__class_getitem__',
+ '__cmp__',
+ '__complex__',
+ '__conform__',
+ '__contains__',
+ '__copy__',
+ '__deepcopy__',
+ '__del__',
+ '__delattr__',
+ '__delete__',
+ '__delitem__',
+ '__dir__',
+ '__divmod__',
+ '__enter__',
+ '__exit__',
+ '__float__',
+ '__floor__',
+ '__floordiv__',
+ '__format__',
+ '__fspath__',
+ '__get__',
+ '__getattr__',
+ '__getattribute__',
+ '__getinitargs__',
+ '__getitem__',
+ '__getitem_inner__',
+ '__getnewargs__',
+ '__getnewargs_ex__',
+ '__getslice__',
+ '__getstate__',
+ '__hash__',
+ '__iadd__',
+ '__iand__',
+ '__ilshift__',
+ '__import__',
+ '__imul__',
+ '__index__',
+ '__init__',
+ '__init_subclass__',
+ '__instancecheck__',
+ '__int__',
+ '__invert__',
+ '__ior__',
+ '__isabstractmethod__',
+ '__isub__',
+ '__iter__',
+ '__ixor__',
+ '__len__',
+ '__length_hint__',
+ '__lshift__',
+ '__members__',
+ '__missing__',
+ '__mod__',
+ '__mro_entries__',
+ '__mul__',
+ '__neg__',
+ '__new__',
+ '__newobj__',
+ '__newobj_ex__',
+ '__next__',
+ '__nonzero__',
+ '__parameters__',
+ '__pos__',
+ '__post_init__',
+ '__pow__',
+ '__prepare__',
+ '__radd__',
+ '__rand__',
+ '__rdivmod__',
+ '__reduce__',
+ '__reduce_ex__',
+ '__repr__',
+ '__reversed__',
+ '__rfloordiv__',
+ '__rich__',
+ '__rich_console__',
+ '__rich_measure__',
+ '__rich_repr__',
+ '__rlshift__',
+ '__rmod__',
+ '__rmul__',
+ '__ror__',
+ '__round__',
+ '__rpow__',
+ '__rrshift__',
+ '__rshift__',
+ '__rsub__',
+ '__rtruediv__',
+ '__rxor__',
+ '__set__',
+ '__set_name__',
+ '__setattr__',
+ '__setitem__',
+ '__setslice__',
+ '__setstate__',
+ '__signature__',
+ '__sizeof__',
+ '__str__',
+ '__sub__',
+ '__subclasscheck__',
+ '__subclasshook__',
+ '__tp_del__',
+ '__truediv__',
+ '__trunc__',
+ '__typing_is_unpacked_typevartuple__',
+ '__typing_unpacked_tuple_args__',
+ '__unicode__',
+ '__version__',
+ '__wrapped__',
+ '__xor__']
+</code></pre>
+</details>
+
+<p>Some of those are internal implementation details that we definitely shouldn't add to the list of known dunder methods, in my opinion (<code>__typing_is_unpacked_typevartuple__</code>, etc.), but it might be worth looking through that list to see if there are any we're missing that would be worth adding</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/trag1c">@trag1c</a> on 2024-01-30 17:03</div>
+            <div class="timeline-body"><p>A <a href="https://github.com/trag1c/mcoding-all-dunders">community project I maintain</a> has a spreadsheet with a curated list of all* 224 dunders (iirc it includes docs too) :+1:</p>
+<p><sub>*excluding a few false positives like <code>__name___</code> or <code>__dunder__</code></sub></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-01-30 19:38</div>
+            <div class="timeline-body"><blockquote>
+<p>but it might be worth looking through that list to see if there are any we're missing that would be worth adding</p>
+</blockquote>
+<p>having now done this, I think there are 0 true positives (that are not already listed by ruff) in that list my script produced :)</p>
+<p>This is the set of dunders that were surfaced in my script and are not currently listed by ruff as excluded from this rule:</p>
+<pre><code>['__cmp__',
+ '__conform__',
+ '__getinitargs__',
+ '__getitem_inner__',
+ '__getslice__',
+ '__import__',
+ '__isabstractmethod__',
+ '__members__',
+ '__newobj__',
+ '__newobj_ex__',
+ '__nonzero__',
+ '__parameters__',
+ '__rich__',
+ '__rich_console__',
+ '__rich_measure__',
+ '__rich_repr__',
+ '__setslice__',
+ '__signature__',
+ '__tp_del__',
+ '__typing_is_unpacked_typevartuple__',
+ '__typing_unpacked_tuple_args__',
+ '__unicode__',
+ '__version__',
+ '__wrapped__']
+</code></pre>
+<p>Most of them seem to be definitions in tests, internal implementation details that are undocumented, and/or leftovers from Python 2 that still haven't been cleaned up. The <code>__rich_*__</code> ones are because I have <code>rich</code> installed in a venv inside my cpython local clone, I think?</p>
+<p>I like that the script surfaced <code>__import__</code> -- that's the literal definition of Python's <code>import</code> statement right there 😄</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/johnslavik">@johnslavik</a> on 2024-01-30 19:44</div>
+            <div class="timeline-body"><p>It would be useful to add <code>__wrapped__</code> , <code>__isabstractmethod__</code> and <code>__signature__</code> in case one wants to define those as properties.
+<code>__rich_*__</code> should definitely be supported, a lot of critical tools &amp; libraries have integrations with rich (including pip or Pydantic).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/johnslavik">@johnslavik</a> on 2024-01-30 19:51</div>
+            <div class="timeline-body"><p>Let's move the discussion to #9716.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-01-30 19:56</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 22:58:10 UTC
+    </footer>
+</body>
+</html>

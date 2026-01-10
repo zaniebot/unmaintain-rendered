@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reduce size of `Expr` from 80 to 64 bytes - astral-sh/ruff #9900</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Reduce size of <code>Expr</code> from 80 to 64 bytes</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/9900">#9900</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-02-08 20:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-08 20:02</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR reduces the size of <code>Expr</code> from 80 to 64 bytes, by reducing the sizes of...</p>
+<ul>
+<li><code>ExprCall</code> from 72 to 56 bytes, by using boxed slices for <code>Arguments</code>.</li>
+<li><code>ExprCompare</code> from 64 to 48 bytes, by using boxed slices for its various vectors.</li>
+</ul>
+<p>In testing, the parser gets a bit faster, and the linter benchmarks improve quite a bit.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2024-02-08 20:28</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/charlie/box">CodSpeed Performance Report</a></h2>
+<h3>Merging #9900 will <strong>improve performances by 4.49%</strong></h3>
+<p><sub>Comparing <code>charlie/box</code> (708ef73) with <code>main</code> (bd8123c)</sub></p>
+<h3>Summary</h3>
+<p><code>⚡ 1</code> improvements
+<code>✅ 29</code> untouched benchmarks</p>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Benchmark | <code>main</code> | <code>charlie/box</code> | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| ⚡ | <code>linter/all-with-preview-rules[large/dataset.py]</code> | 100.2 ms | 95.9 ms | +4.49% |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-08 20:29</div>
+            <div class="timeline-body"><p>That's a bit better...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-08 20:29</div>
+            <div class="timeline-body"><p>I think I can do even better though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-08 21:02</div>
+            <div class="timeline-body"><p>Okay, there's no longer any parser regression, and there are parser and linter improvements across the board (though many don't meet our threshold).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @charliermarsh on 2024-02-08 21:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @charliermarsh on 2024-02-08 21:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2024-02-08 21:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @charliermarsh on 2024-02-08 21:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-02-08 21:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:2991 on 2024-02-08 21:17</div>
+            <div class="timeline-body"><p>We could make these <code>Option&lt;Box&lt;...&gt;&gt;</code> to avoid allocating when empty...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-02-08 21:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:898 on 2024-02-08 21:17</div>
+            <div class="timeline-body"><p>These are never empty so zero-length slice is not a problem.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-02-08 21:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:3935 on 2024-02-08 21:17</div>
+            <div class="timeline-body"><p>@MichaReiser - I missed your comment when we talked in-person -- did you want me to include these as <code>assert!</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/bad_version_info_comparison.rs</code>:72 on 2024-02-08 21:44</div>
+            <div class="timeline-body"><p>You're a champ.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_python_parser/src/function.rs</code>:140 on 2024-02-08 21:47</div>
+            <div class="timeline-body"><p>I might suggest adding a comment explaining what's going on here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2024-02-08 21:47</div>
+            <div class="timeline-body"><p>Master of the double-star.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/bad_version_info_comparison.rs</code>:72 on 2024-02-09 02:44</div>
+            <div class="timeline-body"><p>We're no longer allowed to use <code>as_slice</code>... 😨 😛</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-02-09 02:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-02-09 02:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-02-09 02:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:2991 on 2024-02-09 02:59</div>
+            <div class="timeline-body"><p>It should be possible to use <code>Option</code> without increasing the struct size, and avoiding the allocation could be nice. although It doesn't seem that the empty slice allocates</p>
+<p>https://godbolt.org/z/E9cxqE9P3 CC: @BurntSushi</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-02-09 02:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-02-09 03:03</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-02-09 03:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:2991 on 2024-02-09 03:14</div>
+            <div class="timeline-body"><p>Gasp...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-02-09 03:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:3935 on 2024-02-09 03:18</div>
+            <div class="timeline-body"><p>Ah sorry. I don't mind keeping them. I do find them useful when analyzing the type's size in the future.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-02-10 01:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:2991 on 2024-02-10 01:16</div>
+            <div class="timeline-body"><p>Yeah that is interesting. I actually couldn't find how this was being done in std specifically. So it could just be an optimization in the code generator somewhere. Or perhaps I missed a call to <a href="https://doc.rust-lang.org/std/ptr/struct.NonNull.html#method.dangling"><code>dangling</code></a>.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 22:58:17 UTC
+    </footer>
+</body>
+</html>

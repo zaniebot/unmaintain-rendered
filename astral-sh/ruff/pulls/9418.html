@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Don't flag `redefined-while-unused` in if branches - astral-sh/ruff #9418</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Don't flag <code>redefined-while-unused</code> in if branches</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/9418">#9418</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-01-07 01:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-07 01:40</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>On <code>main</code>, we flag redefinitions in cases like:</p>
+<pre><code class="language-python">import os
+
+x = 1
+
+if x &gt; 0:
+    import os
+</code></pre>
+<p>That is, we consider these to be in the &quot;same branch&quot;, since they're not in disjoint branches. This matches Flake8's behavior, but it seems to lead to false positives.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Don't flag redefined-while-unsed in if branches" to "Don't flag `redefined-while-unsed` in if branches" by @charliermarsh on 2024-01-07 01:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-07 01:45</div>
+            <div class="timeline-body"><p>Just looking at <code># noqa: F811</code> usages in Code Search... At present, we often flag redefinitions within conditionals, and I don't see why we should:</p>
+<pre><code class="language-python">with safe_import() as exc:
+    import cffi
+if exc.error:
+    cffi = None  # noqa: F811
+</code></pre>
+<pre><code class="language-python">from kivy.core.window import Window
+from kivy.metrics import dp
+from kivy.utils import platform
+
+if &quot;KIVY_DOC_INCLUDE&quot; in os.environ:
+    dp = lambda x: x  # NOQA: F811
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-07 01:51</div>
+            <div class="timeline-body"><p>Enforcing this is also the source of the bug we introduced in https://github.com/astral-sh/ruff/issues/2044.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-01-07 01:55</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+2 -0 violations, +0 -0 fixes in 2 projects; 41 projects unchanged)</p>
+<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+1 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --no-preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/apache/airflow/blob/ef1498831a54c76a928d0a56eaf4c232925c0c65/tests/www/views/test_views_rendered.py#L259'>tests/www/views/test_views_rendered.py:259:55:</a> RUF100 [*] Unused `noqa` directive (unused: `F811`)
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/bokeh/bokeh">bokeh/bokeh</a> (+1 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --no-preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/bokeh/bokeh/blob/929ee8ab38207eca08d1601a0164952fb21c9c6a/src/bokeh/embed/util.py#L143'>src/bokeh/embed/util.py:143:32:</a> RUF100 [*] Unused blanket `noqa` directive
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (1 rules affected)</summary>
+<p>
+
+<p>| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| RUF100 | 2 | 2 | 0 | 0 | 0 |</p>
+</p>
+</details>
+
+<h3>Linter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+2 -0 violations, +0 -0 fixes in 2 projects; 41 projects unchanged)</p>
+<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+1 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/apache/airflow/blob/ef1498831a54c76a928d0a56eaf4c232925c0c65/tests/www/views/test_views_rendered.py#L259'>tests/www/views/test_views_rendered.py:259:55:</a> RUF100 [*] Unused `noqa` directive (unused: `F811`)
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/bokeh/bokeh">bokeh/bokeh</a> (+1 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/bokeh/bokeh/blob/929ee8ab38207eca08d1601a0164952fb21c9c6a/src/bokeh/embed/util.py#L143'>src/bokeh/embed/util.py:143:32:</a> RUF100 [*] Unused blanket `noqa` directive
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (1 rules affected)</summary>
+<p>
+
+<p>| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| RUF100 | 2 | 2 | 0 | 0 | 0 |</p>
+</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @charliermarsh on 2024-01-07 01:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Don't flag `redefined-while-unsed` in if branches" to "Don't flag `redefined-while-unused` in if branches" by @charliermarsh on 2024-01-07 01:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2024-01-07 01:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-07 02:00</div>
+            <div class="timeline-body"><p>Enforcing this would also resolve the bug introduced in https://github.com/astral-sh/ruff/issues/5561#issuecomment-1623720408.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-07 17:37</div>
+            <div class="timeline-body"><p>Perhaps this should be preview though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2024-01-08 21:57</div>
+            <div class="timeline-body"><p>I think this is okay without preview since it's a reduction in scope; unless you think it is possible we will revert.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-01-08 22:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-01-08 22:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-01-08 22:06</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 22:57:58 UTC
+    </footer>
+</body>
+</html>

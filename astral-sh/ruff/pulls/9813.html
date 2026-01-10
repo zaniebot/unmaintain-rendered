@@ -1,0 +1,1242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Don't trim last empty line in docstrings - astral-sh/ruff #9813</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Don't trim last empty line in docstrings</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/9813">#9813</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2024-02-04 17:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-02-04 17:10</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR fixes a bug in our formatter where it would remove the last empty line for docstrings when <code>&quot;&quot;&quot;</code> is not intented:</p>
+<pre><code class="language-python">def test7():
+    &quot;&quot;&quot;
+    a, b
+    
+    
+    
+    
+&quot;&quot;&quot;
+</code></pre>
+<p>Would get formatted to</p>
+<pre><code class="language-python">def test7():
+    &quot;&quot;&quot;
+    a, b
+    
+    
+    
+&quot;&quot;&quot;
+</code></pre>
+<p>(Removing the last empty line).</p>
+<p>This is inconsistent with Black and how we format docstrings when the closing quotes are indented. The empty line does not get removed for:</p>
+<pre><code class="language-python">def test7():
+    &quot;&quot;&quot;
+    a, b
+    
+    
+    
+    
+    &quot;&quot;&quot;
+</code></pre>
+<p>The root cause of the divergence was that we use <code>str::lines()</code> which uses <code>split_inclusive</code> underneath that omits the last element if it matches the separator:</p>
+<blockquote>
+<p>If the last element of the string is matched, that element will be considered the terminator of the preceding substring. That substring will be the last item returned by the iterator.</p>
+</blockquote>
+<pre><code class="language-rust">let v: Vec&lt;&amp;str&gt; = &quot;Mary had a little lamb\nlittle lamb\nlittle lamb.\n&quot;
+    .split_inclusive('\n').collect();
+assert_eq!(v, [&quot;Mary had a little lamb\n&quot;, &quot;little lamb\n&quot;, &quot;little lamb.\n&quot;]); 
+</code></pre>
+<p>The PR fixes the divergence by using <code>split</code> instead.</p>
+<p>Fixes https://github.com/astral-sh/ruff/issues/9804</p>
+<h2>Preview</h2>
+<p>This change is not gated behind preview because it doesn't change the output for already formatted code.</p>
+<h2>Test Plan</h2>
+<p>Added snapshot test</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2024-02-04 17:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @MichaReiser on 2024-02-04 17:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @MichaReiser on 2024-02-04 17:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @MichaReiser on 2024-02-04 17:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2024-02-04 17:24</div>
+            <div class="timeline-body"><p>Nice fix! This is why <a href="https://docs.rs/bstr/latest/bstr/trait.ByteSlice.html#method.lines_with_terminator"><code>bstr</code> has a <code>lines_with_terminator</code> method</a>. ;-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-02-04 17:25</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Formatter (stable)</h3>
+<p>ℹ️ ecosystem check <strong>detected format changes</strong>. (+59 -1 lines in 3 files in 3 projects; 2 project errors; 38 projects unchanged)</p>
+<details><summary><a href="https://github.com/bokeh/bokeh">bokeh/bokeh</a> (+56 -0 lines across 1 file)</summary>
+<p>
+
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L78'>src/bokeh/plotting/glyph_api.py~L78</a></p>
+<pre><code class="language-diff">                              inner_radius=0.2, outer_radius=0.5)
+ 
+                 show(plot)
++
+         &quot;&quot;&quot;
+ 
+     @glyph_method(glyphs.Arc)
+</code></pre>
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L97'>src/bokeh/plotting/glyph_api.py~L97</a></p>
+<pre><code class="language-diff">                 plot.asterisk(x=[1,2,3], y=[1,2,3], size=20, color=&quot;#F0027F&quot;)
+ 
+                 show(plot)
++
+         &quot;&quot;&quot;
+ 
+     @glyph_method(glyphs.Bezier)
+</code></pre>
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L120'>src/bokeh/plotting/glyph_api.py~L120</a></p>
+<pre><code class="language-diff">                 plot.circle(x=[1, 2, 3], y=[1, 2, 3], size=20)
+ 
+                 show(plot)
++
+         &quot;&quot;&quot;
+ 
+     @glyph_method(glyphs.Block)
+</code></pre>
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L135'>src/bokeh/plotting/glyph_api.py~L135</a></p>
+<pre><code class="language-diff">                 plot.block(x=[1, 2, 3], y=[1,2,3], width=0.5, height=1, , color=&quot;#CAB2D6&quot;)
+ 
+                 show(plot)
++
+         &quot;&quot;&quot;
+ 
+     @marker_method()
+</code></pre>
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L151'>src/bokeh/plotting/glyph_api.py~L151</a></p>
+<pre><code class="language-diff">                                   color=&quot;#FB8072&quot;, fill_alpha=0.2, line_width=2)
+ 
+                 show(plot)
++
+         &quot;&quot;&quot;
+ 
+     @marker_method()
+</code></pre>
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L167'>src/bokeh/plotting/glyph_api.py~L167</a></p>
+<pre><code class="language-diff">                                 color=&quot;#FB8072&quot;, fill_color=None)
+ 
+                 show(plot)
++
+         &quot;&quot;&quot;
+ 
+     @marker_method()
+</code></pre>
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L183'>src/bokeh/plotting/glyph_api.py~L183</a></p>
+<pre><code class="language-diff">                               color=&quot;#DD1C77&quot;, fill_alpha=0.2)
+ 
+                 show(plot)
++
+         &quot;&quot;&quot;
+ 
+     @marker_method()
+</code></pre>
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L199'>src/bokeh/plotting/glyph_api.py~L199</a></p>
+<pre><code class="language-diff">                               color=&quot;#DD1C77&quot;, fill_alpha=0.2)
+ 
+                 show(plot)
++
+         &quot;&quot;&quot;
+ 
+     @marker_method()
+</code></pre>
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L215'>src/bokeh/plotting/glyph_api.py~L215</a></p>
+<pre><code class="language-diff">                            color=&quot;#E6550D&quot;, line_width=2)
+ 
+                 show(plot)
++
+         &quot;&quot;&quot;
+ 
+     @marker_method()
+</code></pre>
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L231'>src/bokeh/plotting/glyph_api.py~L231</a></p>
+<pre><code class="language-diff">                           color=&quot;#99D594&quot;, line_width=2)
+ 
+                 show(plot)
++
+         &quot;&quot;&quot;
+ 
+     @marker_method()
+</code></pre>
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L247'>src/bokeh/plotting/glyph_api.py~L247</a></p>
+<pre><code class="language-diff">                              color=&quot;#1C9099&quot;, line_width=2)
+ 
+                 show(plot)
++
+         &quot;&quot;&quot;
+ 
+     @marker_method()
+</code></pre>
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L263'>src/bokeh/plotting/glyph_api.py~L263</a></p>
+<pre><code class="language-diff">                                    color=&quot;#386CB0&quot;, fill_color=None, line_width=2)
+ 
+                 show(plot)
++
+         &quot;&quot;&quot;
+ 
+     @marker_method()
+</code></pre>
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L279'>src/bokeh/plotting/glyph_api.py~L279</a></p>
+<pre><code class="language-diff">                                  color=&quot;#386CB0&quot;, fill_color=None)
+ 
+                 show(plot)
++
+         &quot;&quot;&quot;
+ 
+     @marker_method()
+</code></pre>
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L294'>src/bokeh/plotting/glyph_api.py~L294</a></p>
+<pre><code class="language-diff">                 plot.dot(x=[1, 2, 3], y=[1, 2, 3], size=20, color=&quot;#386CB0&quot;)
+ 
+                 show(plot)
++
+         &quot;&quot;&quot;
+ 
+     @glyph_method(glyphs.HArea)
+</code></pre>
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L310'>src/bokeh/plotting/glyph_api.py~L310</a></p>
+<pre><code class="language-diff">                            fill_color=&quot;#99D594&quot;)
+ 
+                 show(plot)
++
+         &quot;&quot;&quot;
+ 
+     @glyph_method(glyphs.HAreaStep)
+</code></pre>
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L326'>src/bokeh/plotting/glyph_api.py~L326</a></p>
+<pre><code class="language-diff">                                 step_mode=&quot;after&quot;, fill_color=&quot;#99D594&quot;)
+ 
+                 show(plot)
++
+         &quot;&quot;&quot;
+ 
+     @glyph_method(glyphs.HBar)
+</code></pre>
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L341'>src/bokeh/plotting/glyph_api.py~L341</a></p>
+<pre><code class="language-diff">                 plot.hbar(y=[1, 2, 3], height=0.5, left=0, right=[1,2,3], color=&quot;#CAB2D6&quot;)
+ 
+                 show(plot)
++
+         &quot;&quot;&quot;
+ 
+     @glyph_method(glyphs.HSpan)
+</code></pre>
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L356'>src/bokeh/plotting/glyph_api.py~L356</a></p>
+<pre><code class="language-diff">                 plot.hspan(y=[1, 2, 3], color=&quot;#CAB2D6&quot;)
+ 
+                 show(plot)
++
+         &quot;&quot;&quot;
+ 
+     @glyph_method(glyphs.HStrip)
+</code></pre>
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L371'>src/bokeh/plotting/glyph_api.py~L371</a></p>
+<pre><code class="language-diff">                 plot.hstrip(y0=[1, 2, 5], y1=[3, 4, 8], color=&quot;#CAB2D6&quot;)
+ 
+                 show(plot)
++
+         &quot;&quot;&quot;
+ 
+     @glyph_method(glyphs.Ellipse)
+</code></pre>
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L387'>src/bokeh/plotting/glyph_api.py~L387</a></p>
+<pre><code class="language-diff">                              color=&quot;#386CB0&quot;, fill_color=None, line_width=2)
+ 
+                 show(plot)
++
+         &quot;&quot;&quot;
+ 
+     @marker_method()
+</code></pre>
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L402'>src/bokeh/plotting/glyph_api.py~L402</a></p>
+<pre><code class="language-diff">                 plot.hex(x=[1, 2, 3], y=[1, 2, 3], size=[10,20,30], color=&quot;#74ADD1&quot;)
+ 
+                 show(plot)
++
+         &quot;&quot;&quot;
+ 
+     @marker_method()
+</code></pre>
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L418'>src/bokeh/plotting/glyph_api.py~L418</a></p>
+<pre><code class="language-diff">                              color=&quot;#74ADD1&quot;, fill_color=None)
+ 
+                 show(plot)
++
+         &quot;&quot;&quot;
+ 
+     @glyph_method(glyphs.HexTile)
+</code></pre>
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L433'>src/bokeh/plotting/glyph_api.py~L433</a></p>
+<pre><code class="language-diff">                 plot.hex_tile(r=[0, 0, 1], q=[1, 2, 2], fill_color=&quot;#74ADD1&quot;)
+ 
+                 show(plot)
++
+         &quot;&quot;&quot;
+ 
+     @glyph_method(glyphs.Image)
+</code></pre>
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L442'>src/bokeh/plotting/glyph_api.py~L442</a></p>
+<pre><code class="language-diff">             If both ``palette`` and ``color_mapper`` are passed, a ``ValueError``
+             exception will be raised. If neither is passed, then the ``Greys9``
+             palette will be used as a default.
++
+         &quot;&quot;&quot;
+ 
+     @glyph_method(glyphs.ImageRGBA)
+</code></pre>
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L450'>src/bokeh/plotting/glyph_api.py~L450</a></p>
+<pre><code class="language-diff">         .. note::
+             The ``image_rgba`` method accepts images as a two-dimensional array of RGBA
+             values (encoded as 32-bit integers).
++
+         &quot;&quot;&quot;
+ 
+     @glyph_method(glyphs.ImageStack)
+</code></pre>
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L473'>src/bokeh/plotting/glyph_api.py~L473</a></p>
+<pre><code class="language-diff">                 plot.inverted_triangle(x=[1, 2, 3], y=[1, 2, 3], size=20, color=&quot;#DE2D26&quot;)
+ 
+                 show(plot)
++
+         &quot;&quot;&quot;
+ 
+     @glyph_method(glyphs.Line)
+</code></pre>
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L488'>src/bokeh/plotting/glyph_api.py~L488</a></p>
+<pre><code class="language-diff">                 p.line(x=[1, 2, 3, 4, 5], y=[6, 7, 2, 4, 5])
+ 
+                 show(p)
++
+         &quot;&quot;&quot;
+ 
+     @glyph_method(glyphs.MultiLine)
+</code></pre>
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L508'>src/bokeh/plotting/glyph_api.py~L508</a></p>
+<pre><code class="language-diff">                             color=['red','green'])
+ 
+                 show(p)
++
+         &quot;&quot;&quot;
+ 
+     @glyph_method(glyphs.MultiPolygons)
+</code></pre>
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L528'>src/bokeh/plotting/glyph_api.py~L528</a></p>
+<pre><code class="language-diff">                                 ys=[[[[4, 3, 3, 4]]], [[[1, 3, 1], [1.5, 2, 1.5]]]],
+                                 color=['red', 'green'])
+                 show(p)
++
+         &quot;&quot;&quot;
+ 
+     @glyph_method(glyphs.Patch)
+</code></pre>
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L543'>src/bokeh/plotting/glyph_api.py~L543</a></p>
+<pre><code class="language-diff">                 p.patch(x=[1, 2, 3, 2], y=[6, 7, 2, 2], color=&quot;#99d8c9&quot;)
+ 
+                 show(p)
++
+         &quot;&quot;&quot;
+ 
+     @glyph_method(glyphs.Patches)
+</code></pre>
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L563'>src/bokeh/plotting/glyph_api.py~L563</a></p>
+<pre><code class="language-diff">                           color=[&quot;#43a2ca&quot;, &quot;#a8ddb5&quot;])
+ 
+                 show(p)
++
+         &quot;&quot;&quot;
+ 
+     @marker_method()
+</code></pre>
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L578'>src/bokeh/plotting/glyph_api.py~L578</a></p>
+<pre><code class="language-diff">                 plot.plus(x=[1, 2, 3], y=[1, 2, 3], size=20, color=&quot;#DE2D26&quot;)
+ 
+                 show(plot)
++
+         &quot;&quot;&quot;
+ 
+     @glyph_method(glyphs.Quad)
+</code></pre>
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L594'>src/bokeh/plotting/glyph_api.py~L594</a></p>
+<pre><code class="language-diff">                           right=[1.2, 2.5, 3.7], color=&quot;#B3DE69&quot;)
+ 
+                 show(plot)
++
+         &quot;&quot;&quot;
+ 
+     @glyph_method(glyphs.Quadratic)
+</code></pre>
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L614'>src/bokeh/plotting/glyph_api.py~L614</a></p>
+<pre><code class="language-diff">                         line_width=2)
+ 
+                 show(plot)
++
+         &quot;&quot;&quot;
+ 
+     @glyph_method(glyphs.Rect)
+</code></pre>
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L635'>src/bokeh/plotting/glyph_api.py~L635</a></p>
+<pre><code class="language-diff">                 ``Rect`` glyphs are not well defined on logarithmic scales. Use
+                 :class:`~bokeh.models.Block` or :class:`~bokeh.models.Quad` glyphs
+                 instead.
++
+         &quot;&quot;&quot;
+ 
+     @glyph_method(glyphs.Step)
+</code></pre>
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L650'>src/bokeh/plotting/glyph_api.py~L650</a></p>
+<pre><code class="language-diff">                 plot.step(x=[1, 2, 3, 4, 5], y=[1, 2, 3, 2, 5], color=&quot;#FB8072&quot;)
+ 
+                 show(plot)
++
+         &quot;&quot;&quot;
+ 
+     @glyph_method(glyphs.Segment)
+</code></pre>
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L667'>src/bokeh/plotting/glyph_api.py~L667</a></p>
+<pre><code class="language-diff">                              color=&quot;#F4A582&quot;, line_width=3)
+ 
+                 show(plot)
++
+         &quot;&quot;&quot;
+ 
+     @marker_method()
+</code></pre>
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L682'>src/bokeh/plotting/glyph_api.py~L682</a></p>
+<pre><code class="language-diff">                 plot.square(x=[1, 2, 3], y=[1, 2, 3], size=[10,20,30], color=&quot;#74ADD1&quot;)
+ 
+                 show(plot)
++
+         &quot;&quot;&quot;
+ 
+     @marker_method()
+</code></pre>
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L698'>src/bokeh/plotting/glyph_api.py~L698</a></p>
+<pre><code class="language-diff">                                   color=&quot;#7FC97F&quot;,fill_color=None, line_width=2)
+ 
+                 show(plot)
++
+         &quot;&quot;&quot;
+ 
+     @marker_method()
+</code></pre>
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L714'>src/bokeh/plotting/glyph_api.py~L714</a></p>
+<pre><code class="language-diff">                                 color=&quot;#7FC97F&quot;, fill_color=None)
+ 
+                 show(plot)
++
+         &quot;&quot;&quot;
+ 
+     @marker_method()
+</code></pre>
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L730'>src/bokeh/plotting/glyph_api.py~L730</a></p>
+<pre><code class="language-diff">                                 color=&quot;#7FC97F&quot;,fill_color=None, line_width=2)
+ 
+                 show(plot)
++
+         &quot;&quot;&quot;
+ 
+     @marker_method()
+</code></pre>
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L746'>src/bokeh/plotting/glyph_api.py~L746</a></p>
+<pre><code class="language-diff">                               color=&quot;#FDAE6B&quot;,fill_color=None, line_width=2)
+ 
+                 show(plot)
++
+         &quot;&quot;&quot;
+ 
+     @marker_method()
+</code></pre>
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L762'>src/bokeh/plotting/glyph_api.py~L762</a></p>
+<pre><code class="language-diff">                           color=&quot;#1C9099&quot;, line_width=2)
+ 
+                 show(plot)
++
+         &quot;&quot;&quot;
+ 
+     @marker_method()
+</code></pre>
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L778'>src/bokeh/plotting/glyph_api.py~L778</a></p>
+<pre><code class="language-diff">                               color=&quot;#386CB0&quot;, fill_color=None, line_width=2)
+ 
+                 show(plot)
++
+         &quot;&quot;&quot;
+ 
+     @glyph_method(glyphs.Text)
+</code></pre>
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L786'>src/bokeh/plotting/glyph_api.py~L786</a></p>
+<pre><code class="language-diff">         .. note::
+             The location and angle of the text relative to the ``x``, ``y`` coordinates
+             is indicated by the alignment and baseline text properties.
++
+         &quot;&quot;&quot;
+ 
+     @marker_method()
+</code></pre>
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L802'>src/bokeh/plotting/glyph_api.py~L802</a></p>
+<pre><code class="language-diff">                               color=&quot;#99D594&quot;, line_width=2)
+ 
+                 show(plot)
++
+         &quot;&quot;&quot;
+ 
+     @marker_method()
+</code></pre>
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L818'>src/bokeh/plotting/glyph_api.py~L818</a></p>
+<pre><code class="language-diff">                                   color=&quot;#99D594&quot;, fill_color=None)
+ 
+                 show(plot)
++
+         &quot;&quot;&quot;
+ 
+     @marker_method()
+</code></pre>
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L834'>src/bokeh/plotting/glyph_api.py~L834</a></p>
+<pre><code class="language-diff">                               color=&quot;#99D594&quot;, line_width=2)
+ 
+                 show(plot)
++
+         &quot;&quot;&quot;
+ 
+     @glyph_method(glyphs.VArea)
+</code></pre>
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L850'>src/bokeh/plotting/glyph_api.py~L850</a></p>
+<pre><code class="language-diff">                            fill_color=&quot;#99D594&quot;)
+ 
+                 show(plot)
++
+         &quot;&quot;&quot;
+ 
+     @glyph_method(glyphs.VAreaStep)
+</code></pre>
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L866'>src/bokeh/plotting/glyph_api.py~L866</a></p>
+<pre><code class="language-diff">                                 step_mode=&quot;after&quot;, fill_color=&quot;#99D594&quot;)
+ 
+                 show(plot)
++
+         &quot;&quot;&quot;
+ 
+     @glyph_method(glyphs.VBar)
+</code></pre>
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L881'>src/bokeh/plotting/glyph_api.py~L881</a></p>
+<pre><code class="language-diff">                 plot.vbar(x=[1, 2, 3], width=0.5, bottom=0, top=[1,2,3], color=&quot;#CAB2D6&quot;)
+ 
+                 show(plot)
++
+         &quot;&quot;&quot;
+ 
+     @glyph_method(glyphs.VSpan)
+</code></pre>
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L896'>src/bokeh/plotting/glyph_api.py~L896</a></p>
+<pre><code class="language-diff">                 plot.vspan(x=[1, 2, 3], color=&quot;#CAB2D6&quot;)
+ 
+                 show(plot)
++
+         &quot;&quot;&quot;
+ 
+     @glyph_method(glyphs.VStrip)
+</code></pre>
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L911'>src/bokeh/plotting/glyph_api.py~L911</a></p>
+<pre><code class="language-diff">                 plot.vstrip(x0=[1, 2, 5], x1=[3, 4, 8], color=&quot;#CAB2D6&quot;)
+ 
+                 show(plot)
++
+         &quot;&quot;&quot;
+ 
+     @glyph_method(glyphs.Wedge)
+</code></pre>
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L927'>src/bokeh/plotting/glyph_api.py~L927</a></p>
+<pre><code class="language-diff">                            end_angle=4.1, radius_units=&quot;screen&quot;, color=&quot;#2b8cbe&quot;)
+ 
+                 show(plot)
++
+         &quot;&quot;&quot;
+ 
+     @marker_method()
+</code></pre>
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L942'>src/bokeh/plotting/glyph_api.py~L942</a></p>
+<pre><code class="language-diff">                 plot.x(x=[1, 2, 3], y=[1, 2, 3], size=[10, 20, 25], color=&quot;#fa9fb5&quot;)
+ 
+                 show(plot)
++
+         &quot;&quot;&quot;
+ 
+     @marker_method()
+</code></pre>
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L957'>src/bokeh/plotting/glyph_api.py~L957</a></p>
+<pre><code class="language-diff">                 plot.y(x=[1, 2, 3], y=[1, 2, 3], size=20, color=&quot;#DE2D26&quot;)
+ 
+                 show(plot)
++
+         &quot;&quot;&quot;
+ 
+     # -------------------------------------------------------------------------
+</code></pre>
+</p>
+</details>
+<details><summary><a href="https://github.com/docker/docker-py">docker/docker-py</a> (+1 -0 lines across 1 file)</summary>
+<p>
+
+<p><a href='https://github.com/docker/docker-py/blob/bd164f928ab82e798e30db455903578d06ba2070/docker/api/container.py#L647'>docker/api/container.py~L647</a></p>
+<pre><code class="language-diff">             ... )
+             {'CapDrop': ['MKNOD'], 'LxcConf': None, 'Privileged': True,
+             'VolumesFrom': ['nostalgic_newton'], 'PublishAllPorts': False}
++
+         &quot;&quot;&quot;
+         if not kwargs:
+             kwargs = {}
+</code></pre>
+</p>
+</details>
+<details><summary><a href="https://github.com/rotki/rotki">rotki/rotki</a> (+2 -1 lines across 1 file)</summary>
+<p>
+
+<p><a href='https://github.com/rotki/rotki/blob/0c90a6080dcc745b0d0973aa1424881e777ad988/rotkehlchen/db/utils.py#L483'>rotkehlchen/db/utils.py~L483</a></p>
+<pre><code class="language-diff"> def protect_password_sqlcipher(password: str) -&gt; str:
+     &quot;&quot;&quot;A double quote in the password would close the string. To escape it double it
+ 
+-    source: https://stackoverflow.com/a/603579/110395&quot;&quot;&quot;
++    source: https://stackoverflow.com/a/603579/110395
++    &quot;&quot;&quot;
+     return password.replace(r'&quot;', r'&quot;&quot;')
+ 
+ 
+</code></pre>
+</p>
+</details>
+<details><summary><a href="https://github.com/sphinx-doc/sphinx">sphinx-doc/sphinx</a> (error)</summary>
+<p>
+<pre>ruff format --no-preview --exclude tests/roots/test-pycode/cp_1251_coded.py</pre>
+</p>
+<p>
+
+<pre><code>ruff failed
+  Cause: Selection of unstable rules without the `--preview` flag is not allowed. Enable preview or remove selection of:
+	- FURB113
+	- FURB131
+	- FURB132
+</code></pre>
+</p>
+</details>
+<details><summary><a href="https://github.com/openai/openai-cookbook">openai/openai-cookbook</a> (error)</summary>
+<p>
+
+<pre><code>warning: Detected debug build without --no-cache.
+error: Failed to parse examples/dalle/Image_generations_edits_and_variations_with_DALL-E.ipynb:3:7:8: Unexpected token 'prompt'
+</code></pre>
+</p>
+</details>
+
+<h3>Formatter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>detected format changes</strong>. (+59 -1 lines in 3 files in 3 projects; 1 project error; 39 projects unchanged)</p>
+<details><summary><a href="https://github.com/bokeh/bokeh">bokeh/bokeh</a> (+56 -0 lines across 1 file)</summary>
+<p>
+<pre>ruff format --preview</pre>
+</p>
+<p>
+
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L78'>src/bokeh/plotting/glyph_api.py~L78</a></p>
+<pre><code class="language-diff">                              inner_radius=0.2, outer_radius=0.5)
+ 
+                 show(plot)
++
+         &quot;&quot;&quot;
+ 
+     @glyph_method(glyphs.Arc)
+</code></pre>
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L97'>src/bokeh/plotting/glyph_api.py~L97</a></p>
+<pre><code class="language-diff">                 plot.asterisk(x=[1,2,3], y=[1,2,3], size=20, color=&quot;#F0027F&quot;)
+ 
+                 show(plot)
++
+         &quot;&quot;&quot;
+ 
+     @glyph_method(glyphs.Bezier)
+</code></pre>
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L120'>src/bokeh/plotting/glyph_api.py~L120</a></p>
+<pre><code class="language-diff">                 plot.circle(x=[1, 2, 3], y=[1, 2, 3], size=20)
+ 
+                 show(plot)
++
+         &quot;&quot;&quot;
+ 
+     @glyph_method(glyphs.Block)
+</code></pre>
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L135'>src/bokeh/plotting/glyph_api.py~L135</a></p>
+<pre><code class="language-diff">                 plot.block(x=[1, 2, 3], y=[1,2,3], width=0.5, height=1, , color=&quot;#CAB2D6&quot;)
+ 
+                 show(plot)
++
+         &quot;&quot;&quot;
+ 
+     @marker_method()
+</code></pre>
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L151'>src/bokeh/plotting/glyph_api.py~L151</a></p>
+<pre><code class="language-diff">                                   color=&quot;#FB8072&quot;, fill_alpha=0.2, line_width=2)
+ 
+                 show(plot)
++
+         &quot;&quot;&quot;
+ 
+     @marker_method()
+</code></pre>
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L167'>src/bokeh/plotting/glyph_api.py~L167</a></p>
+<pre><code class="language-diff">                                 color=&quot;#FB8072&quot;, fill_color=None)
+ 
+                 show(plot)
++
+         &quot;&quot;&quot;
+ 
+     @marker_method()
+</code></pre>
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L183'>src/bokeh/plotting/glyph_api.py~L183</a></p>
+<pre><code class="language-diff">                               color=&quot;#DD1C77&quot;, fill_alpha=0.2)
+ 
+                 show(plot)
++
+         &quot;&quot;&quot;
+ 
+     @marker_method()
+</code></pre>
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L199'>src/bokeh/plotting/glyph_api.py~L199</a></p>
+<pre><code class="language-diff">                               color=&quot;#DD1C77&quot;, fill_alpha=0.2)
+ 
+                 show(plot)
++
+         &quot;&quot;&quot;
+ 
+     @marker_method()
+</code></pre>
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L215'>src/bokeh/plotting/glyph_api.py~L215</a></p>
+<pre><code class="language-diff">                            color=&quot;#E6550D&quot;, line_width=2)
+ 
+                 show(plot)
++
+         &quot;&quot;&quot;
+ 
+     @marker_method()
+</code></pre>
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L231'>src/bokeh/plotting/glyph_api.py~L231</a></p>
+<pre><code class="language-diff">                           color=&quot;#99D594&quot;, line_width=2)
+ 
+                 show(plot)
++
+         &quot;&quot;&quot;
+ 
+     @marker_method()
+</code></pre>
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L247'>src/bokeh/plotting/glyph_api.py~L247</a></p>
+<pre><code class="language-diff">                              color=&quot;#1C9099&quot;, line_width=2)
+ 
+                 show(plot)
++
+         &quot;&quot;&quot;
+ 
+     @marker_method()
+</code></pre>
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L263'>src/bokeh/plotting/glyph_api.py~L263</a></p>
+<pre><code class="language-diff">                                    color=&quot;#386CB0&quot;, fill_color=None, line_width=2)
+ 
+                 show(plot)
++
+         &quot;&quot;&quot;
+ 
+     @marker_method()
+</code></pre>
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L279'>src/bokeh/plotting/glyph_api.py~L279</a></p>
+<pre><code class="language-diff">                                  color=&quot;#386CB0&quot;, fill_color=None)
+ 
+                 show(plot)
++
+         &quot;&quot;&quot;
+ 
+     @marker_method()
+</code></pre>
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L294'>src/bokeh/plotting/glyph_api.py~L294</a></p>
+<pre><code class="language-diff">                 plot.dot(x=[1, 2, 3], y=[1, 2, 3], size=20, color=&quot;#386CB0&quot;)
+ 
+                 show(plot)
++
+         &quot;&quot;&quot;
+ 
+     @glyph_method(glyphs.HArea)
+</code></pre>
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L310'>src/bokeh/plotting/glyph_api.py~L310</a></p>
+<pre><code class="language-diff">                            fill_color=&quot;#99D594&quot;)
+ 
+                 show(plot)
++
+         &quot;&quot;&quot;
+ 
+     @glyph_method(glyphs.HAreaStep)
+</code></pre>
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L326'>src/bokeh/plotting/glyph_api.py~L326</a></p>
+<pre><code class="language-diff">                                 step_mode=&quot;after&quot;, fill_color=&quot;#99D594&quot;)
+ 
+                 show(plot)
++
+         &quot;&quot;&quot;
+ 
+     @glyph_method(glyphs.HBar)
+</code></pre>
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L341'>src/bokeh/plotting/glyph_api.py~L341</a></p>
+<pre><code class="language-diff">                 plot.hbar(y=[1, 2, 3], height=0.5, left=0, right=[1,2,3], color=&quot;#CAB2D6&quot;)
+ 
+                 show(plot)
++
+         &quot;&quot;&quot;
+ 
+     @glyph_method(glyphs.HSpan)
+</code></pre>
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L356'>src/bokeh/plotting/glyph_api.py~L356</a></p>
+<pre><code class="language-diff">                 plot.hspan(y=[1, 2, 3], color=&quot;#CAB2D6&quot;)
+ 
+                 show(plot)
++
+         &quot;&quot;&quot;
+ 
+     @glyph_method(glyphs.HStrip)
+</code></pre>
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L371'>src/bokeh/plotting/glyph_api.py~L371</a></p>
+<pre><code class="language-diff">                 plot.hstrip(y0=[1, 2, 5], y1=[3, 4, 8], color=&quot;#CAB2D6&quot;)
+ 
+                 show(plot)
++
+         &quot;&quot;&quot;
+ 
+     @glyph_method(glyphs.Ellipse)
+</code></pre>
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L387'>src/bokeh/plotting/glyph_api.py~L387</a></p>
+<pre><code class="language-diff">                              color=&quot;#386CB0&quot;, fill_color=None, line_width=2)
+ 
+                 show(plot)
++
+         &quot;&quot;&quot;
+ 
+     @marker_method()
+</code></pre>
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L402'>src/bokeh/plotting/glyph_api.py~L402</a></p>
+<pre><code class="language-diff">                 plot.hex(x=[1, 2, 3], y=[1, 2, 3], size=[10,20,30], color=&quot;#74ADD1&quot;)
+ 
+                 show(plot)
++
+         &quot;&quot;&quot;
+ 
+     @marker_method()
+</code></pre>
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L418'>src/bokeh/plotting/glyph_api.py~L418</a></p>
+<pre><code class="language-diff">                              color=&quot;#74ADD1&quot;, fill_color=None)
+ 
+                 show(plot)
++
+         &quot;&quot;&quot;
+ 
+     @glyph_method(glyphs.HexTile)
+</code></pre>
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L433'>src/bokeh/plotting/glyph_api.py~L433</a></p>
+<pre><code class="language-diff">                 plot.hex_tile(r=[0, 0, 1], q=[1, 2, 2], fill_color=&quot;#74ADD1&quot;)
+ 
+                 show(plot)
++
+         &quot;&quot;&quot;
+ 
+     @glyph_method(glyphs.Image)
+</code></pre>
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L442'>src/bokeh/plotting/glyph_api.py~L442</a></p>
+<pre><code class="language-diff">             If both ``palette`` and ``color_mapper`` are passed, a ``ValueError``
+             exception will be raised. If neither is passed, then the ``Greys9``
+             palette will be used as a default.
++
+         &quot;&quot;&quot;
+ 
+     @glyph_method(glyphs.ImageRGBA)
+</code></pre>
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L450'>src/bokeh/plotting/glyph_api.py~L450</a></p>
+<pre><code class="language-diff">         .. note::
+             The ``image_rgba`` method accepts images as a two-dimensional array of RGBA
+             values (encoded as 32-bit integers).
++
+         &quot;&quot;&quot;
+ 
+     @glyph_method(glyphs.ImageStack)
+</code></pre>
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L473'>src/bokeh/plotting/glyph_api.py~L473</a></p>
+<pre><code class="language-diff">                 plot.inverted_triangle(x=[1, 2, 3], y=[1, 2, 3], size=20, color=&quot;#DE2D26&quot;)
+ 
+                 show(plot)
++
+         &quot;&quot;&quot;
+ 
+     @glyph_method(glyphs.Line)
+</code></pre>
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L488'>src/bokeh/plotting/glyph_api.py~L488</a></p>
+<pre><code class="language-diff">                 p.line(x=[1, 2, 3, 4, 5], y=[6, 7, 2, 4, 5])
+ 
+                 show(p)
++
+         &quot;&quot;&quot;
+ 
+     @glyph_method(glyphs.MultiLine)
+</code></pre>
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L508'>src/bokeh/plotting/glyph_api.py~L508</a></p>
+<pre><code class="language-diff">                             color=['red','green'])
+ 
+                 show(p)
++
+         &quot;&quot;&quot;
+ 
+     @glyph_method(glyphs.MultiPolygons)
+</code></pre>
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L528'>src/bokeh/plotting/glyph_api.py~L528</a></p>
+<pre><code class="language-diff">                                 ys=[[[[4, 3, 3, 4]]], [[[1, 3, 1], [1.5, 2, 1.5]]]],
+                                 color=['red', 'green'])
+                 show(p)
++
+         &quot;&quot;&quot;
+ 
+     @glyph_method(glyphs.Patch)
+</code></pre>
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L543'>src/bokeh/plotting/glyph_api.py~L543</a></p>
+<pre><code class="language-diff">                 p.patch(x=[1, 2, 3, 2], y=[6, 7, 2, 2], color=&quot;#99d8c9&quot;)
+ 
+                 show(p)
++
+         &quot;&quot;&quot;
+ 
+     @glyph_method(glyphs.Patches)
+</code></pre>
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L563'>src/bokeh/plotting/glyph_api.py~L563</a></p>
+<pre><code class="language-diff">                           color=[&quot;#43a2ca&quot;, &quot;#a8ddb5&quot;])
+ 
+                 show(p)
++
+         &quot;&quot;&quot;
+ 
+     @marker_method()
+</code></pre>
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L578'>src/bokeh/plotting/glyph_api.py~L578</a></p>
+<pre><code class="language-diff">                 plot.plus(x=[1, 2, 3], y=[1, 2, 3], size=20, color=&quot;#DE2D26&quot;)
+ 
+                 show(plot)
++
+         &quot;&quot;&quot;
+ 
+     @glyph_method(glyphs.Quad)
+</code></pre>
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L594'>src/bokeh/plotting/glyph_api.py~L594</a></p>
+<pre><code class="language-diff">                           right=[1.2, 2.5, 3.7], color=&quot;#B3DE69&quot;)
+ 
+                 show(plot)
++
+         &quot;&quot;&quot;
+ 
+     @glyph_method(glyphs.Quadratic)
+</code></pre>
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L614'>src/bokeh/plotting/glyph_api.py~L614</a></p>
+<pre><code class="language-diff">                         line_width=2)
+ 
+                 show(plot)
++
+         &quot;&quot;&quot;
+ 
+     @glyph_method(glyphs.Rect)
+</code></pre>
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L635'>src/bokeh/plotting/glyph_api.py~L635</a></p>
+<pre><code class="language-diff">                 ``Rect`` glyphs are not well defined on logarithmic scales. Use
+                 :class:`~bokeh.models.Block` or :class:`~bokeh.models.Quad` glyphs
+                 instead.
++
+         &quot;&quot;&quot;
+ 
+     @glyph_method(glyphs.Step)
+</code></pre>
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L650'>src/bokeh/plotting/glyph_api.py~L650</a></p>
+<pre><code class="language-diff">                 plot.step(x=[1, 2, 3, 4, 5], y=[1, 2, 3, 2, 5], color=&quot;#FB8072&quot;)
+ 
+                 show(plot)
++
+         &quot;&quot;&quot;
+ 
+     @glyph_method(glyphs.Segment)
+</code></pre>
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L667'>src/bokeh/plotting/glyph_api.py~L667</a></p>
+<pre><code class="language-diff">                              color=&quot;#F4A582&quot;, line_width=3)
+ 
+                 show(plot)
++
+         &quot;&quot;&quot;
+ 
+     @marker_method()
+</code></pre>
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L682'>src/bokeh/plotting/glyph_api.py~L682</a></p>
+<pre><code class="language-diff">                 plot.square(x=[1, 2, 3], y=[1, 2, 3], size=[10,20,30], color=&quot;#74ADD1&quot;)
+ 
+                 show(plot)
++
+         &quot;&quot;&quot;
+ 
+     @marker_method()
+</code></pre>
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L698'>src/bokeh/plotting/glyph_api.py~L698</a></p>
+<pre><code class="language-diff">                                   color=&quot;#7FC97F&quot;,fill_color=None, line_width=2)
+ 
+                 show(plot)
++
+         &quot;&quot;&quot;
+ 
+     @marker_method()
+</code></pre>
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L714'>src/bokeh/plotting/glyph_api.py~L714</a></p>
+<pre><code class="language-diff">                                 color=&quot;#7FC97F&quot;, fill_color=None)
+ 
+                 show(plot)
++
+         &quot;&quot;&quot;
+ 
+     @marker_method()
+</code></pre>
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L730'>src/bokeh/plotting/glyph_api.py~L730</a></p>
+<pre><code class="language-diff">                                 color=&quot;#7FC97F&quot;,fill_color=None, line_width=2)
+ 
+                 show(plot)
++
+         &quot;&quot;&quot;
+ 
+     @marker_method()
+</code></pre>
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L746'>src/bokeh/plotting/glyph_api.py~L746</a></p>
+<pre><code class="language-diff">                               color=&quot;#FDAE6B&quot;,fill_color=None, line_width=2)
+ 
+                 show(plot)
++
+         &quot;&quot;&quot;
+ 
+     @marker_method()
+</code></pre>
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L762'>src/bokeh/plotting/glyph_api.py~L762</a></p>
+<pre><code class="language-diff">                           color=&quot;#1C9099&quot;, line_width=2)
+ 
+                 show(plot)
++
+         &quot;&quot;&quot;
+ 
+     @marker_method()
+</code></pre>
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L778'>src/bokeh/plotting/glyph_api.py~L778</a></p>
+<pre><code class="language-diff">                               color=&quot;#386CB0&quot;, fill_color=None, line_width=2)
+ 
+                 show(plot)
++
+         &quot;&quot;&quot;
+ 
+     @glyph_method(glyphs.Text)
+</code></pre>
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L786'>src/bokeh/plotting/glyph_api.py~L786</a></p>
+<pre><code class="language-diff">         .. note::
+             The location and angle of the text relative to the ``x``, ``y`` coordinates
+             is indicated by the alignment and baseline text properties.
++
+         &quot;&quot;&quot;
+ 
+     @marker_method()
+</code></pre>
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L802'>src/bokeh/plotting/glyph_api.py~L802</a></p>
+<pre><code class="language-diff">                               color=&quot;#99D594&quot;, line_width=2)
+ 
+                 show(plot)
++
+         &quot;&quot;&quot;
+ 
+     @marker_method()
+</code></pre>
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L818'>src/bokeh/plotting/glyph_api.py~L818</a></p>
+<pre><code class="language-diff">                                   color=&quot;#99D594&quot;, fill_color=None)
+ 
+                 show(plot)
++
+         &quot;&quot;&quot;
+ 
+     @marker_method()
+</code></pre>
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L834'>src/bokeh/plotting/glyph_api.py~L834</a></p>
+<pre><code class="language-diff">                               color=&quot;#99D594&quot;, line_width=2)
+ 
+                 show(plot)
++
+         &quot;&quot;&quot;
+ 
+     @glyph_method(glyphs.VArea)
+</code></pre>
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L850'>src/bokeh/plotting/glyph_api.py~L850</a></p>
+<pre><code class="language-diff">                            fill_color=&quot;#99D594&quot;)
+ 
+                 show(plot)
++
+         &quot;&quot;&quot;
+ 
+     @glyph_method(glyphs.VAreaStep)
+</code></pre>
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L866'>src/bokeh/plotting/glyph_api.py~L866</a></p>
+<pre><code class="language-diff">                                 step_mode=&quot;after&quot;, fill_color=&quot;#99D594&quot;)
+ 
+                 show(plot)
++
+         &quot;&quot;&quot;
+ 
+     @glyph_method(glyphs.VBar)
+</code></pre>
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L881'>src/bokeh/plotting/glyph_api.py~L881</a></p>
+<pre><code class="language-diff">                 plot.vbar(x=[1, 2, 3], width=0.5, bottom=0, top=[1,2,3], color=&quot;#CAB2D6&quot;)
+ 
+                 show(plot)
++
+         &quot;&quot;&quot;
+ 
+     @glyph_method(glyphs.VSpan)
+</code></pre>
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L896'>src/bokeh/plotting/glyph_api.py~L896</a></p>
+<pre><code class="language-diff">                 plot.vspan(x=[1, 2, 3], color=&quot;#CAB2D6&quot;)
+ 
+                 show(plot)
++
+         &quot;&quot;&quot;
+ 
+     @glyph_method(glyphs.VStrip)
+</code></pre>
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L911'>src/bokeh/plotting/glyph_api.py~L911</a></p>
+<pre><code class="language-diff">                 plot.vstrip(x0=[1, 2, 5], x1=[3, 4, 8], color=&quot;#CAB2D6&quot;)
+ 
+                 show(plot)
++
+         &quot;&quot;&quot;
+ 
+     @glyph_method(glyphs.Wedge)
+</code></pre>
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L927'>src/bokeh/plotting/glyph_api.py~L927</a></p>
+<pre><code class="language-diff">                            end_angle=4.1, radius_units=&quot;screen&quot;, color=&quot;#2b8cbe&quot;)
+ 
+                 show(plot)
++
+         &quot;&quot;&quot;
+ 
+     @marker_method()
+</code></pre>
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L942'>src/bokeh/plotting/glyph_api.py~L942</a></p>
+<pre><code class="language-diff">                 plot.x(x=[1, 2, 3], y=[1, 2, 3], size=[10, 20, 25], color=&quot;#fa9fb5&quot;)
+ 
+                 show(plot)
++
+         &quot;&quot;&quot;
+ 
+     @marker_method()
+</code></pre>
+<p><a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/glyph_api.py#L957'>src/bokeh/plotting/glyph_api.py~L957</a></p>
+<pre><code class="language-diff">                 plot.y(x=[1, 2, 3], y=[1, 2, 3], size=20, color=&quot;#DE2D26&quot;)
+ 
+                 show(plot)
++
+         &quot;&quot;&quot;
+ 
+     # -------------------------------------------------------------------------
+</code></pre>
+</p>
+</details>
+<details><summary><a href="https://github.com/docker/docker-py">docker/docker-py</a> (+1 -0 lines across 1 file)</summary>
+<p>
+<pre>ruff format --preview</pre>
+</p>
+<p>
+
+<p><a href='https://github.com/docker/docker-py/blob/bd164f928ab82e798e30db455903578d06ba2070/docker/api/container.py#L647'>docker/api/container.py~L647</a></p>
+<pre><code class="language-diff">             ... )
+             {'CapDrop': ['MKNOD'], 'LxcConf': None, 'Privileged': True,
+             'VolumesFrom': ['nostalgic_newton'], 'PublishAllPorts': False}
++
+         &quot;&quot;&quot;
+         if not kwargs:
+             kwargs = {}
+</code></pre>
+</p>
+</details>
+<details><summary><a href="https://github.com/rotki/rotki">rotki/rotki</a> (+2 -1 lines across 1 file)</summary>
+<p>
+<pre>ruff format --preview</pre>
+</p>
+<p>
+
+<p><a href='https://github.com/rotki/rotki/blob/0c90a6080dcc745b0d0973aa1424881e777ad988/rotkehlchen/db/utils.py#L479'>rotkehlchen/db/utils.py~L479</a></p>
+<pre><code class="language-diff"> def protect_password_sqlcipher(password: str) -&gt; str:
+     &quot;&quot;&quot;A double quote in the password would close the string. To escape it double it
+ 
+-    source: https://stackoverflow.com/a/603579/110395&quot;&quot;&quot;
++    source: https://stackoverflow.com/a/603579/110395
++    &quot;&quot;&quot;
+     return password.replace(r'&quot;', r'&quot;&quot;')
+ 
+ 
+</code></pre>
+</p>
+</details>
+<details><summary><a href="https://github.com/openai/openai-cookbook">openai/openai-cookbook</a> (error)</summary>
+<p>
+<pre>ruff format --preview</pre>
+</p>
+<p>
+
+<pre><code>warning: Detected debug build without --no-cache.
+error: Failed to parse examples/dalle/Image_generations_edits_and_variations_with_DALL-E.ipynb:3:7:8: Unexpected token 'prompt'
+</code></pre>
+</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2024-02-04 23:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2024-02-05 13:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-02-05 13:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-02-05 13:29</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 22:58:14 UTC
+    </footer>
+</body>
+</html>

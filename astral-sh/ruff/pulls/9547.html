@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Revert &quot;[`pylint`] Implement `import-private-name` (`C2701`)&quot; - astral-sh/ruff #9547</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Revert &quot;[<code>pylint</code>] Implement <code>import-private-name</code> (<code>C2701</code>)&quot;</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/9547">#9547</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2024-01-16 08:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-01-16 08:28</div>
+            <div class="timeline-body"><p>Reverts astral-sh/ruff#5920 because It's panicking in the pydantic benchmark run (see <a href="https://github.com/astral-sh/ruff/actions/runs/7537305800/job/20516059364?pr=5920">astral-sh/ruff/actions/runs/7537305800/job/20516059364?pr=5920</a>).</p>
+<pre><code>ruff on  lexer-explicit-id-false-brnaches [$] is 📦 v0.1.13 via 🐍 v3.11.6 via 🦀 v1.75.0 
+❯ cargo bench -p ruff_benchmark --bench linter --  &quot;all-with-preview-rules[pydantic/types.py]&quot;
+    Finished bench [optimized] target(s) in 0.08s
+     Running benches/linter.rs (target/release/deps/linter-3478ab4e9ed35ca9)
+linter/all-with-preview-rules/numpy/globals.py
+                        time:   [165.16 µs 165.62 µs 166.37 µs]
+                        thrpt:  [17.736 MiB/s 17.816 MiB/s 17.866 MiB/s]
+Found 6 outliers among 100 measurements (6.00%)
+  1 (1.00%) high mild
+  5 (5.00%) high severe
+linter/all-with-preview-rules/unicode/pypinyin.py
+                        time:   [657.40 µs 657.83 µs 658.47 µs]
+                        thrpt:  [6.3813 MiB/s 6.3875 MiB/s 6.3917 MiB/s]
+Found 11 outliers among 100 measurements (11.00%)
+  6 (6.00%) high mild
+  5 (5.00%) high severe
+linter/all-with-preview-rules/pydantic/types.py
+                        time:   [2.5630 ms 2.5687 ms 2.5749 ms]
+                        thrpt:  [9.9046 MiB/s 9.9285 MiB/s 9.9506 MiB/s]
+Found 20 outliers among 100 measurements (20.00%)
+  18 (18.00%) high mild
+  2 (2.00%) high severe
+Benchmarking linter/all-with-preview-rules/numpy/ctypeslib.py: Warming up for 3.0000 sthread 'main' panicked at crates/ruff_linter/src/rules/pylint/rules/import_private_name.rs:137:41:
+range end index 2 out of range for slice of length 1
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+error: bench failed, to rerun pass `-p ruff_benchmark --bench linter`
+</code></pre>
+<p>@tjkuson would you mind having a look? I think it's due to the <a href="https://github.com/astral-sh/ruff/pull/5920/files/bd483d3fc35fef88afddd7313ed64df142caa038#diff-deb7d79fa4cb9ffa3d1a73320007e23db5022916746a287d8bf70b2da5c9c01d">slicing into <code>module_name</code></a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2024-01-16 08:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2024-01-16 08:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-01-16 08:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-01-16 08:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2024-01-16 08:35</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/revert-5920-import-private-name">CodSpeed Performance Report</a></h2>
+<h3>Merging #9547 will <strong>improve performances by 4.66%</strong></h3>
+<p><sub>:warning: No base runs were found</sub></p>
+<p><sub>Falling back to comparing <code>revert-5920-import-private-name</code> (b045ee1) with <code>main</code> (7ef7e0d)</sub></p>
+<h3>Summary</h3>
+<p><code>⚡ 1</code> improvements
+<code>✅ 29</code> untouched benchmarks</p>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Benchmark | <code>main</code> | <code>revert-5920-import-private-name</code> | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| ⚡ | <code>parser[numpy/ctypeslib.py]</code> | 12.8 ms | 12.2 ms | +4.66% |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-01-16 08:41</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tjkuson">@tjkuson</a> on 2024-01-16 09:30</div>
+            <div class="timeline-body"><p>@MichaReiser I can submit a patch this evening, sorry for any disruption!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-01-16 10:01</div>
+            <div class="timeline-body"><blockquote>
+<p>@MichaReiser I can submit a patch this evening, sorry for any disruption!</p>
+</blockquote>
+<p>No worries at all and thanks for taking a look. This is also not urgent (that's why I reverted, there's no need to rush it)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 22:58:03 UTC
+    </footer>
+</body>
+</html>

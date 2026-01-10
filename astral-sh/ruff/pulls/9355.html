@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[flake8-pyi] Add autofix for PYI058 - astral-sh/ruff #9355</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[flake8-pyi] Add autofix for PYI058</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/9355">#9355</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2024-01-02 12:01
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-01-02 12:01</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR adds an autofix for the newly added PYI058 rule (added in #9313). ~~The PR's current implementation is that the fix is only available if the fully qualified name of <code>Generator</code> or <code>AsyncGenerator</code> is being used:~~</p>
+<ul>
+<li>~~<code>-&gt; typing.Generator</code> is converted to <code>-&gt; typing.Iterator</code>;~~</li>
+<li>~~<code>-&gt; collections.abc.AsyncGenerator[str, Any]</code> is converted to <code>-&gt; collections.abc.AsyncIterator[str]</code>;~~</li>
+<li>~~but <code>-&gt; Generator</code> is <em>not</em> converted to <code>-&gt; Iterator</code>. (It would require more work to figure out if <code>Iterator</code> was already imported or not. And if it wasn't, where should we import it from? <code>typing</code>, <code>typing_extensions</code>, or <code>collections.abc</code>? It seems much more complicated.)~~</li>
+</ul>
+<p>The fix is marked as always safe for <code>__iter__</code> or <code>__aiter__</code> methods in <code>.pyi</code> files, but unsafe for all such methods in <code>.py</code> files that have more than one statement in the method body.</p>
+<p>This felt slightly fiddly to accomplish, but I couldn't <em>see</em> any utilities in https://github.com/astral-sh/ruff/tree/main/crates/ruff_linter/src/fix that would have made it simpler to implement. Lmk if I'm missing something, though -- my first time implementing an autofix! :)</p>
+<h2>Test Plan</h2>
+<p><code>cargo test</code> / <code>cargo insta review</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-01-02 12:13</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-02 14:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/bad_generator_return_type.rs</code>:339 on 2024-01-02 14:07</div>
+            <div class="timeline-body"><p>So, one thing you can explore here: take a look at <code>get_or_import_symbol</code> on <code>Importer</code>. It lets you define a module-and-member, and then gives you (1) the edit required to import the symbol (if not present), and (2) the bound name of the symbol. It should thus allow you to support cases in which the symbol is not accessed as a fully-qualified name.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Skylion007">@Skylion007</a> reviewed on 2024-01-02 15:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Skylion007">@Skylion007</a> on <code>crates/ruff_linter/resources/test/fixtures/flake8_pyi/PYI058.py</code>:25 on 2024-01-02 15:46</div>
+            <div class="timeline-body"><p><code>typing.Generator[str, None, None]</code> is a really common usecase I see in pratice and we may want to add a test that it can probably change it to <code>typing.Iterator[str]</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-01-03 14:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/resources/test/fixtures/flake8_pyi/PYI058.py</code>:25 on 2024-01-03 14:53</div>
+            <div class="timeline-body"><p>Added an explicit test for that 👍</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-01-03 14:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/bad_generator_return_type.rs</code>:339 on 2024-01-03 14:54</div>
+            <div class="timeline-body"><p>Thanks, that was easier than I expected! The autofix now also fixes things even if it's not a fully qualified name.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @AlexWaygood on 2024-01-03 14:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-03 15:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/bad_generator_return_type.rs</code>:300 on 2024-01-03 15:58</div>
+            <div class="timeline-body"><p>@AlexWaygood - I did some light refactoring here to use enums for all the different values rather than strings. You might be interested in taking a look. I think it helps enforce some of the invariants that are expected throughout the code and make it clear which values are valid in various places.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-03 15:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/resources/test/fixtures/flake8_pyi/PYI058.py</code>:2 on 2024-01-03 15:59</div>
+            <div class="timeline-body"><p>Unfortunately, I had to scope each test here into its own function so that they can reason about the imports independently.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-03 15:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/bad_generator_return_type.rs</code>:267 on 2024-01-03 15:59</div>
+            <div class="timeline-body"><p>@AlexWaygood - I tried to generalize this so that it doesn't need different logic for attribute vs. name.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-03 16:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/snapshots/ruff_linter__rules__flake8_pyi__tests__PYI058_PYI058.pyi.snap</code>:116 on 2024-01-03 16:00</div>
+            <div class="timeline-body"><p>This is a bug in <code>get_or_import_symbol</code> (it doesn't know that it can reuse <code>collections.abc</code> because it's a two-part module). Need to fix.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-01-03 16:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/resources/test/fixtures/flake8_pyi/PYI058.py</code>:2 on 2024-01-03 16:00</div>
+            <div class="timeline-body"><p>Ahh, that makes sense, was wondering if that would be an issue</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-01-03 16:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-03 16:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/snapshots/ruff_linter__rules__flake8_pyi__tests__PYI058_PYI058.pyi.snap</code>:116 on 2024-01-03 16:06</div>
+            <div class="timeline-body"><p>I'll fix this separately, since the current fix isn't &quot;wrong&quot;, it's just suboptimal.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-03 16:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/bad_generator_return_type.rs</code>:285 on 2024-01-03 16:10</div>
+            <div class="timeline-body"><p>@AlexWaygood - A bit advanced but I changed this to use a lifetime so that it doesn't need to clone the expression. We know the expression will &quot;live&quot; long enough, so it's okay for us to use a reference.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-03 16:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/bad_generator_return_type.rs</code>:83 on 2024-01-03 16:10</div>
+            <div class="timeline-body"><p>@AlexWaygood - I removed this since it's enforced in <code>let (method, module, member) = {</code> below.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/bad_generator_return_type.rs</code>:64 on 2024-01-03 16:11</div>
+            <div class="timeline-body"><p>@AlexWaygood - I changed this to use the enums, which implement <code>std::fmt::Display</code>, so we can still inline them in the <code>format!</code> call and automatically get the expected formatting.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-03 16:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-03 16:11</div>
+            <div class="timeline-body"><p>Excellent work!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-01-03 16:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-01-03 16:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">autofix</span> added by @charliermarsh on 2024-01-03 16:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2024-01-03 16:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-01-03 16:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-01-03 16:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/bad_generator_return_type.rs</code>:285 on 2024-01-03 16:20</div>
+            <div class="timeline-body"><p>Nice, thanks! I've read about things being generic over lifetimes but have yet to successfully use the feature :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/bad_generator_return_type.rs</code>:293 on 2024-01-03 16:21</div>
+            <div class="timeline-body"><p>For my education: what's the advantage of implementing the trait here rather than just reading the attribute?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-01-03 16:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-01-03 16:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/bad_generator_return_type.rs</code>:300 on 2024-01-03 16:22</div>
+            <div class="timeline-body"><p>Yeah, this is nice, thanks! Fewer magic strings everywhere</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-03 16:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/bad_generator_return_type.rs</code>:293 on 2024-01-03 16:27</div>
+            <div class="timeline-body"><p>It's really minor, more of a consistency thing... If you implement <code>Ranged</code>, then you get methods like <code>.start()</code> and <code>.end()</code> instead of having to do <code>.range.start()</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/bad_generator_return_type.rs</code>:267 on 2024-01-03 16:30</div>
+            <div class="timeline-body"><p>Nice, I didn't realise how powerful <code>get_or_import_symbol</code> was</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-01-03 16:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-01-03 16:30</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 22:57:57 UTC
+    </footer>
+</body>
+</html>

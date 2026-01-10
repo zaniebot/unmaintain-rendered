@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Use `memchr` for string lexing - astral-sh/ruff #9888</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Use <code>memchr</code> for string lexing</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/9888">#9888</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-02-08 03:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-08 03:53</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>On <code>main</code>, string lexing consists of walking through the string character-by-character to search for the closing quote (with some nuance: we also need to skip escaped characters, and error if we see newlines in non-triple-quoted strings). This PR rewrites <code>lex_string</code> to instead use <code>memchr</code> to search for the closing quote, which is significantly faster. On my machine, at least, the <code>globals.py</code> benchmark (which contains a lot of docstrings) gets 40% faster...</p>
+<pre><code class="language-text">lexer/numpy/globals.py  time:   [3.6410 µs 3.6496 µs 3.6585 µs]
+                        thrpt:  [806.53 MiB/s 808.49 MiB/s 810.41 MiB/s]
+                 change:
+                        time:   [-40.413% -40.185% -39.984%] (p = 0.00 &lt; 0.05)
+                        thrpt:  [+66.623% +67.181% +67.822%]
+                        Performance has improved.
+Found 2 outliers among 100 measurements (2.00%)
+  2 (2.00%) high mild
+lexer/unicode/pypinyin.py
+                        time:   [12.422 µs 12.445 µs 12.467 µs]
+                        thrpt:  [337.03 MiB/s 337.65 MiB/s 338.27 MiB/s]
+                 change:
+                        time:   [-9.4213% -9.1930% -8.9586%] (p = 0.00 &lt; 0.05)
+                        thrpt:  [+9.8401% +10.124% +10.401%]
+                        Performance has improved.
+Found 3 outliers among 100 measurements (3.00%)
+  1 (1.00%) high mild
+  2 (2.00%) high severe
+lexer/pydantic/types.py time:   [107.45 µs 107.50 µs 107.56 µs]
+                        thrpt:  [237.11 MiB/s 237.24 MiB/s 237.35 MiB/s]
+                 change:
+                        time:   [-4.0108% -3.7005% -3.3787%] (p = 0.00 &lt; 0.05)
+                        thrpt:  [+3.4968% +3.8427% +4.1784%]
+                        Performance has improved.
+Found 7 outliers among 100 measurements (7.00%)
+  2 (2.00%) high mild
+  5 (5.00%) high severe
+lexer/numpy/ctypeslib.py
+                        time:   [46.123 µs 46.165 µs 46.208 µs]
+                        thrpt:  [360.36 MiB/s 360.69 MiB/s 361.01 MiB/s]
+                 change:
+                        time:   [-19.313% -18.996% -18.710%] (p = 0.00 &lt; 0.05)
+                        thrpt:  [+23.016% +23.451% +23.935%]
+                        Performance has improved.
+Found 8 outliers among 100 measurements (8.00%)
+  3 (3.00%) low mild
+  1 (1.00%) high mild
+  4 (4.00%) high severe
+lexer/large/dataset.py  time:   [231.07 µs 231.19 µs 231.33 µs]
+                        thrpt:  [175.87 MiB/s 175.97 MiB/s 176.06 MiB/s]
+                 change:
+                        time:   [-2.0437% -1.7663% -1.4922%] (p = 0.00 &lt; 0.05)
+                        thrpt:  [+1.5148% +1.7981% +2.0864%]
+                        Performance has improved.
+Found 10 outliers among 100 measurements (10.00%)
+  5 (5.00%) high mild
+  5 (5.00%) high severe
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @charliermarsh on 2024-02-08 03:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2024-02-08 04:00</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/charlie/l">CodSpeed Performance Report</a></h2>
+<h3>Merging #9888 will <strong>improve performances by 40.35%</strong></h3>
+<p><sub>Comparing <code>charlie/l</code> (4b4b298) with <code>main</code> (ad313b9)</sub></p>
+<h3>Summary</h3>
+<p><code>⚡ 4</code> improvements
+<code>✅ 26</code> untouched benchmarks</p>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Benchmark | <code>main</code> | <code>charlie/l</code> | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| ⚡ | <code>lexer[unicode/pypinyin.py]</code> | 571.5 µs | 543.4 µs | +5.18% |
+| ⚡ | <code>lexer[numpy/ctypeslib.py]</code> | 1.8 ms | 1.7 ms | +11.64% |
+| ⚡ | <code>lexer[numpy/globals.py]</code> | 223.5 µs | 159.3 µs | +40.35% |
+| ⚡ | <code>parser[numpy/globals.py]</code> | 1.1 ms | 1.1 ms | +6.07% |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @charliermarsh on 2024-02-08 04:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @charliermarsh on 2024-02-08 04:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-02-08 04:37</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-02-08 11:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:697 on 2024-02-08 11:39</div>
+            <div class="timeline-body"><p>Nit: I find the <code>let Some(...) .. else</code> use here slightly confusing because the <code>else</code> block is so long. That's why I would prefer a regular <code>if let Some(index) {...} else {...}</code> here</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-02-08 11:44</div>
+            <div class="timeline-body"><p>Nice!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-02-08 11:44</div>
+            <div class="timeline-body"><p>Nice!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:697 on 2024-02-08 14:43</div>
+            <div class="timeline-body"><p>I don't think I mind the <code>let ... else</code>, but I'd probably do <code>u8::try_from(quote).expect(&quot;char that fits in u8&quot;)</code> here instead of <code>quote as u8</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:749 on 2024-02-08 14:45</div>
+            <div class="timeline-body"><p>Same as above for <code>quote</code> (or just do <code>let quote_byte = u8::try_from(quote).unwrap()</code> at the top of the function once). But for <code>'\r' as u8</code> and <code>'\n' as u8</code>, you can just write <code>b'\r'</code> and <code>b'\n'</code>, respectively.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:746 on 2024-02-08 14:45</div>
+            <div class="timeline-body"><p>Ah I see now why you were asking about <code>memchr3</code>. :P</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2024-02-08 14:46</div>
+            <div class="timeline-body"><p>Nice, I like it!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-02-08 17:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-02-08 17:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-02-08 17:23</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 22:58:16 UTC
+    </footer>
+</body>
+</html>

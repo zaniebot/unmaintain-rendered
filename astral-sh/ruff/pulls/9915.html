@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Docstring formatting: Preserve tab indentation when using `indent-style=tabs` - astral-sh/ruff #9915</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Docstring formatting: Preserve tab indentation when using <code>indent-style=tabs</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/9915">#9915</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2024-02-09 20:23
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-02-09 20:23</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR ensures that the formatter preserves <code>tab</code>s inside of docstring when using <code>indent-style=tab</code>.</p>
+<p>Today, the formatter converts all docstring-indent to spaces, regardless of the configured indent-style.
+This is unexpected for users and creates with <code>E101</code> (<code>mixed-spaces-and-tabs</code>). For example:</p>
+<pre><code class="language-python">def tab_argument(arg1: str) -&gt; None:
+	&quot;&quot;&quot;
+	Arguments:
+		arg1: super duper arg with 2 tabs in front
+	&quot;&quot;&quot;
+</code></pre>
+<p>Gets reformatted to</p>
+<pre><code class="language-python">def tab_argument(arg1: str) -&gt; None:
+	&quot;&quot;&quot;
+	Arguments:
+	        arg1: super duper arg with 2 tabs in front
+	&quot;&quot;&quot;
+</code></pre>
+<p>Even though the user expliclty wants tab indentations.</p>
+<p>The formatter won't automatically convert multiples of <code>indent-width</code> spaces to tabs because it can break
+ASCII arts (and other formatting that use spaces for alignmen).</p>
+<p>The downside of this change is tha the formatter won't enforce a consistent indentation inside of docstrings when using <code>indent-style=tab</code>.</p>
+<p>Fixes https://github.com/astral-sh/ruff/issues/8430</p>
+<p>This PR does not yet address that our formatter always expands <code>tab</code> to 8 spaces (instead of the configured <code>indent-width</code>)</p>
+<p>It's not necessary to gate this change behind preview because it doesn't change already formatted code.</p>
+<h2>Test Plan</h2>
+<p>added tests, <code>cargo test</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @MichaReiser on 2024-02-09 20:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-02-09 20:34</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @MichaReiser on 2024-02-10 06:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @MichaReiser on 2024-02-10 06:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2024-02-10 06:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_python_formatter/src/string/docstring.rs</code>:1596 on 2024-02-12 14:15</div>
+            <div class="timeline-body"><p>What does the value signify here? Is it the number of bytes or the visual width?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_python_formatter/src/string/docstring.rs</code>:1675 on 2024-02-12 14:18</div>
+            <div class="timeline-body"><p>If this is returning the visual width, maybe a name other than <code>len</code> would be appropriate here? I usually expect a value returned by a method name <code>len()</code> to be usable as part of a range/offset calculation. <code>visual_len</code>? <code>visual_width</code>? <code>number_of_spaces</code>? <code>columns</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_python_formatter/src/string/docstring.rs</code>:1667 on 2024-02-12 14:18</div>
+            <div class="timeline-body"><p>What does this method return? As in, what does the value signify?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_python_formatter/src/string/docstring.rs</code>:1675 on 2024-02-12 14:19</div>
+            <div class="timeline-body"><p>Can we write a comment explaining why this <code>unwrap()</code> can never fail?</p>
+<p>If it possibly can, would <code>TextSize::try_from(len).ok()</code> make sense instead?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_python_formatter/src/string/docstring.rs</code>:1579 on 2024-02-12 14:20</div>
+            <div class="timeline-body"><p>I like this type. Great thinking.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2024-02-12 14:22</div>
+            <div class="timeline-body"><p>This looks great to me! I think it might help to polish up the <code>Indent</code> type a touch, but I love the approach. :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-02-12 14:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/string/docstring.rs</code>:1675 on 2024-02-12 14:39</div>
+            <div class="timeline-body"><p>I like it. I think I'll go with <code>width</code>. It aligns nicely with <code>indent_width.</code> It then reads as <code>indentation.width()</code> (I'll rename the <code>Indent</code> type to <code>Indentation</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-02-12 14:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_python_formatter/src/string/docstring.rs</code>:1675 on 2024-02-12 14:48</div>
+            <div class="timeline-body"><p>Oh yeah that's great!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2024-02-12 15:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-02-12 15:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-02-12 15:09</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 22:58:17 UTC
+    </footer>
+</body>
+</html>

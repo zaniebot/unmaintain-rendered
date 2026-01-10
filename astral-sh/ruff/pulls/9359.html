@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generate deterministic ids when formatting notebooks - astral-sh/ruff #9359</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Generate deterministic ids when formatting notebooks</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/9359">#9359</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2024-01-02 16:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/zanieb">@zanieb</a> on 2024-01-02 16:11</div>
+            <div class="timeline-body"><p>When formatting notebooks, we populate the <code>id</code> field for cells that do not have one. Previously, we generated a UUID v4 which resulted in non-deterministic formatting. Here, we generate the UUID from a seeded random number generator instead of using true randomness. For example, here are the first five ids it would generate:</p>
+<pre><code>7fb27b94-1602-401d-9154-2211134fc71a
+acae54e3-7e7d-407b-bb7b-55eff062a284
+9a63283c-baf0-4dbc-ab1f-6479b197f3a8
+8dd0d809-2fe7-4a7c-9628-1538738b07e2
+72eea511-9410-473a-a328-ad9291626812
+</code></pre>
+<p>We also add a check that an id is not present in another cell to prevent accidental introduction of duplicate ids.</p>
+<p>The specification is lax, and we could just use incrementing integers e.g. <code>0</code>, <code>1</code>, ... but I have a minor preference for retaining the UUID format. Some discussion <a href="https://github.com/astral-sh/ruff/pull/9359#discussion_r1439607121">here</a> — I'm happy to go either way though.</p>
+<p>Discovered via #9293</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-01-02 16:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ruff_notebook/src/notebook.rs</code>:150 on 2024-01-02 16:12</div>
+            <div class="timeline-body"><p>We should collect all of the ids beforehand, otherwise we could generate an id that is present in a later cell.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-01-02 16:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ruff_notebook/src/notebook.rs</code>:160 on 2024-01-02 16:12</div>
+            <div class="timeline-body"><p>I'm not sure about using <code>from_u128</code> with an integer index vs seeding a random number generator and using <code>from_random_bytes</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-01-02 16:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_notebook/src/notebook.rs</code>:160 on 2024-01-02 16:20</div>
+            <div class="timeline-body"><p>Why not use <code>id_index</code> directly? It's allowed in the schema</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-01-02 16:23</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-01-02 16:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ruff_notebook/src/notebook.rs</code>:160 on 2024-01-02 16:24</div>
+            <div class="timeline-body"><p>Definitely an option. I guess it's a question of matching user expectations vs just being schema complaint.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-01-02 17:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ruff_notebook/src/notebook.rs</code>:160 on 2024-01-02 17:49</div>
+            <div class="timeline-body"><p>These generate UUIDs like</p>
+<pre><code>00000000-0000-0000-0000-000000000001
+00000000-0000-0000-0000-000000000002
+00000000-0000-0000-0000-000000000003
+00000000-0000-0000-0000-000000000004
+00000000-0000-0000-0000-000000000005
+</code></pre>
+<p>which I think is basically worthless — we might as well use the integer directly in that case.</p>
+<p>Another option is to do use a mock random number generator e.g. <code>rand::rngs::mock::StepRng::new(0, 1)</code> which yields</p>
+<pre><code>00010203-0405-4607-8809-0a0b0c0d0e0f
+10111213-1415-4617-9819-1a1b1c1d1e1f
+20212223-2425-4627-a829-2a2b2c2d2e2f
+30313233-3435-4637-b839-3a3b3c3d3e3f
+40414243-4445-4647-8849-4a4b4c4d4e4f
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @zanieb on 2024-01-03 03:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @zanieb on 2024-01-03 16:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @zanieb on 2024-01-03 16:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-03 16:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_notebook/src/notebook.rs</code>:152 on 2024-01-03 16:53</div>
+            <div class="timeline-body"><p>Could we use a seeded number generator rather than the <code>StepRng</code> one, so that the IDs are deterministic but look random rather than structured as they do now? Or was this the only option for deterministic UUIDs?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ruff_notebook/src/notebook.rs</code>:152 on 2024-01-03 16:57</div>
+            <div class="timeline-body"><p>I'm sure there's another option for a seeded number generator, this one was just the most obvious way I saw.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-01-03 16:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-01-03 17:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ruff_notebook/src/notebook.rs</code>:152 on 2024-01-03 17:02</div>
+            <div class="timeline-body"><p>Sure we can use the <code>StdRng</code> seeded with <code>0</code></p>
+<pre><code>7fb27b94-1602-401d-9154-2211134fc71a
+acae54e3-7e7d-407b-bb7b-55eff062a284
+9a63283c-baf0-4dbc-ab1f-6479b197f3a8
+8dd0d809-2fe7-4a7c-9628-1538738b07e2
+72eea511-9410-473a-a328-ad9291626812
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-01-03 17:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @zanieb on 2024-01-03 17:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2024-01-04 12:24</div>
+            <div class="timeline-body"><p>I'd go with natural numbers for simplicity but it doesn't matter much since the users shouldn't see that id anyway.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2024-01-04 15:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-01-04 15:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-01-04 15:19</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 22:57:57 UTC
+    </footer>
+</body>
+</html>

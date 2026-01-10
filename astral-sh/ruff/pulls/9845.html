@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`pylint`] Add PLE1141 `DictIterMissingItems` - astral-sh/ruff #9845</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>pylint</code>] Add PLE1141 <code>DictIterMissingItems</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/9845">#9845</a>
+        opened by <a href="https://github.com/DanielNoord">@DanielNoord</a>
+        on 2024-02-05 21:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/DanielNoord">@DanielNoord</a> on 2024-02-05 21:55</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>References https://github.com/astral-sh/ruff/issues/970.</p>
+<p>Implements <a href="https://pylint.readthedocs.io/en/latest/user_guide/messages/error/dict-iter-missing-items.html"><code>dict-iter-missing-items</code></a>.</p>
+<p>Took the tests from &quot;upstream&quot; <a href="https://github.com/DanielNoord/pylint/blob/main/tests/functional/d/dict_iter_missing_items.py">here</a>.</p>
+<p>~I wasn't able to implement code for one false positive, but it is pretty estoric: https://github.com/pylint-dev/pylint/issues/3283. I would personally argue that adding this check as preview rule without supporting this specific use case is fine. I did add a &quot;test&quot; for it.~ This was implemented.</p>
+<h2>Test Plan</h2>
+<p>Followed the Contributing guide to create tests, hopefully I didn't miss any.
+Also ran CI on my own fork and seemed to be all okay 😄</p>
+<p>~Edit: the ecosystem check seems a bit all over the place? 😅~ All good.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-02-05 22:08</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-02-05 22:19</div>
+            <div class="timeline-body"><blockquote>
+<p>Edit: the ecosystem check seems a bit all over the place? 😅</p>
+</blockquote>
+<p>Could it be that the main branch on your fork is behind the main branch on this repository? IOW, can you try rebasing your branch with the latest changes on main?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DanielNoord">@DanielNoord</a> on 2024-02-05 22:38</div>
+            <div class="timeline-body"><p>@dhruvmanila A rebase did not seem to fix the issue. The edit of the comment is still the same. I don't see how this PR could have that ecosystem impact without any test related to these messages failing?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/resources/test/fixtures/pylint/dict_iter_missing_items.py</code>:17 on 2024-02-05 23:10</div>
+            <div class="timeline-body"><p>I wonder if we could avoid raising this false positive. I haven't explored this but maybe we could use <code>binding.statement(model)</code> to get the statement where the binding is defined and then we could check if the RHS is a dictionary with a 2-value tuple key.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/pylint/rules/dict_iter_missing_items.rs</code>:66 on 2024-02-05 23:15</div>
+            <div class="timeline-body"><p>We could also provide a fix if you're up to implement it :)</p>
+<p>The fix could be to replace the identifier range with <code>{identifier}.items()</code>. You can either use the AST and generate the source code but I think it would be easier to just replace it with the string value like: <code>format!(&quot;{}.items()&quot;, identifier)</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-02-05 23:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-02-05 23:15</div>
+            <div class="timeline-body"><blockquote>
+<p>@dhruvmanila A rebase did not seem to fix the issue. The edit of the comment is still the same. I don't see how this PR could have that ecosystem impact without any test related to these messages failing?</p>
+</blockquote>
+<p>Yeah, don't worry about the ecosystem results.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/DanielNoord">@DanielNoord</a> reviewed on 2024-02-06 22:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/DanielNoord">@DanielNoord</a> on <code>crates/ruff_linter/resources/test/fixtures/pylint/dict_iter_missing_items.py</code>:17 on 2024-02-06 22:40</div>
+            <div class="timeline-body"><p>I played around with this and came up with something, as well as two additional test cases to make sure it &quot;works&quot;.</p>
+<p>It's in the last commit but I'm really not sure about the style (this <code>rust</code> thing is kind a new to me). So please tell me how to format it to be as expected (feel free to push to the branch).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/DanielNoord">@DanielNoord</a> reviewed on 2024-02-06 22:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/DanielNoord">@DanielNoord</a> on <code>crates/ruff_linter/src/rules/pylint/rules/dict_iter_missing_items.rs</code>:66 on 2024-02-06 22:41</div>
+            <div class="timeline-body"><p>I tried to keep the PR small as it is my first, but this proved to be really easy indeed. Added a fix. Classified it as safe as I think it is? But please let me know if it isn't.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DanielNoord">@DanielNoord</a> on 2024-02-06 22:42</div>
+            <div class="timeline-body"><p>Thanks for the feedback @dhruvmanila.</p>
+<p>I force pushed as I made a <code>clippy</code> error in a previous commit. This should address your comments. Hopefully the <code>ecosystem</code> check can help out here as well :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @DanielNoord on 2024-02-07 12:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-02-07 14:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/resources/test/fixtures/pylint/dict_iter_missing_items.py</code>:17 on 2024-02-07 14:36</div>
+            <div class="timeline-body"><p>Thanks! Looks good. I've extracted out the logic to a function to avoid having nested if conditions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/DanielNoord">@DanielNoord</a> reviewed on 2024-02-07 14:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/DanielNoord">@DanielNoord</a> on <code>crates/ruff_linter/resources/test/fixtures/pylint/dict_iter_missing_items.py</code>:17 on 2024-02-07 14:37</div>
+            <div class="timeline-body"><p>Thanks, that looks much better!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2024-02-07 14:43</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/DanielNoord:dict-iter-without-items">CodSpeed Performance Report</a></h2>
+<h3>Merging #9845 will <strong>not alter performance</strong></h3>
+<p><sub>Comparing <code>DanielNoord:dict-iter-without-items</code> (76d85ec) with <code>main</code> (b4f2882)</sub></p>
+<h3>Summary</h3>
+<p><code>✅ 30</code> untouched benchmarks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> approved on 2024-02-07 14:50</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @dhruvmanila on 2024-02-07 14:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DanielNoord">@DanielNoord</a> on 2024-02-19 08:26</div>
+            <div class="timeline-body"><p>Hi, @charliermarsh is there anything I can do to move this PR forward?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @dhruvmanila on 2024-02-19 11:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-02-19 14:26</div>
+            <div class="timeline-body"><p>I think it's good to go. I'll merge it but feel free to review it and I can make any follow-up changes @charliermarsh</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Add PLE1141, ``DictIterMissingItems``" to "[`pylint`] Add PLE1141 `DictIterMissingItems`" by @dhruvmanila on 2024-02-19 14:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2024-02-19 14:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2024-02-19 14:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-19 14:31</div>
+            <div class="timeline-body"><p>Thanks @dhruvmanila.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 22:58:15 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`typing`] Add `find_assigned_value` helper func to `typing.rs` to retrieve value of a given variable `id` - astral-sh/ruff #8583</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>typing</code>] Add <code>find_assigned_value</code> helper func to <code>typing.rs</code> to retrieve value of a given variable <code>id</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/8583">#8583</a>
+        opened by <a href="https://github.com/qdegraaf">@qdegraaf</a>
+        on 2023-11-09 13:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/qdegraaf">@qdegraaf</a> on 2023-11-09 13:49</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Adds <code>find_assigned_value</code> a function which gets the <code>&amp;Expr</code> assigned to a given <code>id</code> if one exists in the semantic model.</p>
+<p>Open TODOs:</p>
+<ul>
+<li>[ ] Handle <code>binding.kind.is_unpacked_assignment()</code>: I am bit confused by this one. The snippet from its documentation does not appear to be counted as an unpacked assignment and the only ones I could find for which that was true were invalid Python like:</li>
+</ul>
+<pre><code class="language-python">x, y = 1 
+</code></pre>
+<ul>
+<li>[ ] How to handle AugAssign. Can we combine statements like:</li>
+</ul>
+<pre><code class="language-python">(a, b) = [(1, 2, 3), (4,)]
+a += (6, 7)
+</code></pre>
+<p>to get the full value for a? Code currently just returns <code>None</code> for these assign types</p>
+<ul>
+<li>[ ] Multi target assigns</li>
+</ul>
+<pre><code class="language-python">m_c = (m_d, m_e) = (0, 0)
+trio.sleep(m_c)  # OK
+trio.sleep(m_d)  # TRIO115
+trio.sleep(m_e)  # TRIO115
+</code></pre>
+<h2>Test Plan</h2>
+<p>Used the function in two rules:</p>
+<ul>
+<li><code>TRIO115</code></li>
+<li><code>PERF101</code></li>
+</ul>
+<p>Expanded both their fixtures for explicit multi target check</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-11-09 23:10</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @qdegraaf on 2023-11-13 12:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/qdegraaf">@qdegraaf</a> on 2023-11-13 12:44</div>
+            <div class="timeline-body"><p>@charliermarsh I'm thinking the <code>binding.kind.is_unpacked_assignment()</code> can be left as a TODO for later when it is necessary? Let me know if that is acceptable. I think it would be good to review current set-up and logic first regardless, before expanding further.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-11-22 00:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_semantic/src/analyze/typing.rs</code>:594 on 2023-11-22 00:01</div>
+            <div class="timeline-body"><p>What happens here in the case of multi-target assignments?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/qdegraaf">@qdegraaf</a> reviewed on 2023-11-22 10:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/qdegraaf">@qdegraaf</a> on <code>crates/ruff_python_semantic/src/analyze/typing.rs</code>:594 on 2023-11-22 10:19</div>
+            <div class="timeline-body"><p>Good catch. It works for</p>
+<pre><code class="language-python">x = y = 0
+</code></pre>
+<p>Added example of that to TRIO115 fixture</p>
+<p>Does not work for</p>
+<pre><code class="language-python">(x, y) = [a, b] = (0, 0)
+</code></pre>
+<p>Which will only manage to retrieve the values for <code>x</code> and <code>y</code> right now.</p>
+<p>Would it be an idea to set up unit tests for this and the other new func in the module? If so, is there a leading example of non plugin unit tests I can have a look at?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_semantic/src/analyze/typing.rs</code>:594 on 2023-11-22 18:31</div>
+            <div class="timeline-body"><p>Is it able to detect <code>y</code> in <code>x = y = 0</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-11-22 18:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-11-22 18:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_semantic/src/analyze/typing.rs</code>:594 on 2023-11-22 18:33</div>
+            <div class="timeline-body"><p>Yeah, we don't have great infrastructure for this. I'd probably just recommend adding more trio test cases as a means of testing this behavior.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-22 18:45</div>
+            <div class="timeline-body"><p>I think there's one more case to consider:</p>
+<pre><code class="language-python">m_c = (m_d, m_e) = (0, 0)
+trio.sleep(m_c)  # OK
+trio.sleep(m_d)  # TRIO115
+trio.sleep(m_e)  # TRIO115
+</code></pre>
+<p>Right now, these <em>all</em> get matched to <code>(0, 0)</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/qdegraaf">@qdegraaf</a> reviewed on 2023-11-22 18:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/qdegraaf">@qdegraaf</a> on <code>crates/ruff_python_semantic/src/analyze/typing.rs</code>:594 on 2023-11-22 18:57</div>
+            <div class="timeline-body"><blockquote>
+<p>Is it able to detect <code>y</code> in <code>x = y = 0</code>?</p>
+</blockquote>
+<p>Yeah this one works. But if one of the targets is a collection there are issues. e.g.</p>
+<pre><code class="language-python">a = (x, y) = (0, 0)
+(a, b) = [c, d] = [0, 0]
+</code></pre>
+<p>Not entirely sure how to best fix that. Flag it as a multi assign if the top-level targets has a length larger than 1 and add a separate branch for that? Or are there single target scenarios that could be mistaken then?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/qdegraaf">@qdegraaf</a> on 2023-11-22 19:01</div>
+            <div class="timeline-body"><blockquote>
+<p>I think there's one more case to consider:</p>
+<pre><code class="language-python">m_c = (m_d, m_e) = (0, 0)
+trio.sleep(m_c)  # OK
+trio.sleep(m_d)  # TRIO115
+trio.sleep(m_e)  # TRIO115
+</code></pre>
+<p>Right now, these <em>all</em> get matched to <code>(0, 0)</code>.</p>
+</blockquote>
+<p>Ho missed this one when I posted https://github.com/astral-sh/ruff/pull/8583#discussion_r1402583307</p>
+<p>Added it to TODOs. Gonna look at this again, see if there's a way to be aware of the multi target nature of the assign before drilling down.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[`typing`] Add `get_assigned_value` helper func to `typing.rs` to retrieve value of a given variable `id`" to "[`typing`] Add `find_assigned_value` helper func to `typing.rs` to retrieve value of a given variable `id`" by @qdegraaf on 2023-11-24 10:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @qdegraaf on 2023-11-30 17:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2023-12-13 00:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2023-12-13 00:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-12-13 00:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-12-13 00:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-01-02 14:58</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 22:57:53 UTC
+    </footer>
+</body>
+</html>

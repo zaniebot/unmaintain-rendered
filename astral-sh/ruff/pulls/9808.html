@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add fast-path for comment detection - astral-sh/ruff #9808</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add fast-path for comment detection</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/9808">#9808</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-02-03 16:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-03 16:22</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>When we fall through to parsing, the comment-detection rule is a significant portion of lint time. This PR adds an additional fast heuristic whereby we abort if a comment contains two consecutive name tokens (via the zero-allocation lexer). For the <code>ctypeslib.py</code>, which has a few cases that are now caught by this, it's a 2.5x speedup for the rule (and a 20% speedup for token-based rules).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2024-02-03 16:45</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/charlie/eradicate">CodSpeed Performance Report</a></h2>
+<h3>Merging #9808 will <strong>improve performances by 4.84%</strong></h3>
+<p><sub>Comparing <code>charlie/eradicate</code> (c63bc5e) with <code>main</code> (b47f85e)</sub></p>
+<h3>Summary</h3>
+<p><code>⚡ 2</code> improvements
+<code>✅ 28</code> untouched benchmarks</p>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Benchmark | <code>main</code> | <code>charlie/eradicate</code> | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| ⚡ | <code>linter/all-with-preview-rules[numpy/ctypeslib.py]</code> | 24.4 ms | 23.2 ms | +4.84% |
+| ⚡ | <code>linter/all-rules[numpy/ctypeslib.py]</code> | 21.7 ms | 20.7 ms | +4.44% |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/eradicate/detection.rs</code>:66 on 2024-02-04 11:12</div>
+            <div class="timeline-body"><p>The comment mentions that this tests if the comment starts with two consecutive identifiers but the implementation consumes all tokens and tests if there are any consecutive identifiers.</p>
+<p>If it's only the first pair, than I would probably use (I'm not a huge can of <code>tuple_windows</code> because it's a performance footgun if the values are expensive to <code>Clone</code>. This is not the case here but it's the reason why I try to avoid it in general).</p>
+<pre><code class="language-rust">if let (Some(a), Some(b)) = (tokenizer.next(), tokenizer.next()) {
+	if a.kind == SimpleTokenKind::Name &amp;&amp; b.kind == SimpleTokenKind::Name {
+	  return false;
+	}
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/eradicate/detection.rs</code>:66 on 2024-02-04 11:13</div>
+            <div class="timeline-body"><p>What if we have</p>
+<pre><code class="language-python"># a
+# b
+</code></pre>
+<p>Or does this only ever run over a single comment</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_trivia/src/tokenizer.rs</code>:185 on 2024-02-04 11:14</div>
+            <div class="timeline-body"><p>How can we avoid returning a <code>Name</code> for a string prefix?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-02-04 11:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-02-04 12:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/eradicate/detection.rs</code>:66 on 2024-02-04 12:01</div>
+            <div class="timeline-body"><p>It’s in draft for this reason — haven’t finished the PR!</p>
+<p>(This only ever runs over a single own-line comment.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2024-02-04 21:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @charliermarsh on 2024-02-04 21:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @charliermarsh on 2024-02-04 21:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-02-04 21:51</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>ℹ️ ecosystem check <strong>encountered linter errors</strong>. (no lint changes; 1 project error)</p>
+<details><summary><a href="https://github.com/sphinx-doc/sphinx">sphinx-doc/sphinx</a> (error)</summary>
+<p>
+
+<pre><code>ruff failed
+  Cause: Selection of unstable rules without the `--preview` flag is not allowed. Enable preview or remove selection of:
+	- FURB113
+	- FURB131
+	- FURB132
+</code></pre>
+</p>
+</details>
+
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>ℹ️ ecosystem check <strong>encountered format errors</strong>. (no format changes; 2 project errors)</p>
+<details><summary><a href="https://github.com/sphinx-doc/sphinx">sphinx-doc/sphinx</a> (error)</summary>
+<p>
+<pre>ruff format --no-preview --exclude tests/roots/test-pycode/cp_1251_coded.py</pre>
+</p>
+<p>
+
+<pre><code>ruff failed
+  Cause: Selection of unstable rules without the `--preview` flag is not allowed. Enable preview or remove selection of:
+	- FURB113
+	- FURB131
+	- FURB132
+</code></pre>
+</p>
+</details>
+<details><summary><a href="https://github.com/openai/openai-cookbook">openai/openai-cookbook</a> (error)</summary>
+<p>
+
+<pre><code>warning: Detected debug build without --no-cache.
+error: Failed to parse examples/dalle/Image_generations_edits_and_variations_with_DALL-E.ipynb:3:7:8: Unexpected token 'prompt'
+</code></pre>
+</p>
+</details>
+
+<h3>Formatter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>encountered format errors</strong>. (no format changes; 1 project error)</p>
+<details><summary><a href="https://github.com/openai/openai-cookbook">openai/openai-cookbook</a> (error)</summary>
+<p>
+<pre>ruff format --preview</pre>
+</p>
+<p>
+
+<pre><code>warning: Detected debug build without --no-cache.
+error: Failed to parse examples/dalle/Image_generations_edits_and_variations_with_DALL-E.ipynb:3:7:8: Unexpected token 'prompt'
+</code></pre>
+</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_trivia/src/tokenizer.rs</code>:185 on 2024-02-05 13:33</div>
+            <div class="timeline-body"><p>I don't feel comfortable with this. It violates the constraint outlined in the <code>SimpleTokenizer</code> lexer where it guarantees to generate valid results for as long as you don't point it in the middle of a token, string, or comment.</p>
+<p>It's also not a constraint easily guarded against because it yields incorrect results whenever you start lexing at the start of ANY expression.</p>
+<p>I recommend exploring how expensive it is to handle string prefixes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> requested changes on 2024-02-05 13:35</div>
+            <div class="timeline-body"><p>I don't feel comfortable having such an important constraint in an inline comment that violates the basic properties of <code>SimpleTokenizer</code>. We should explore if we can support proper name lexing in <code>SimpleTokenizer</code> without degrading performance.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-02-05 13:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_trivia/src/tokenizer.rs</code>:185 on 2024-02-05 13:42</div>
+            <div class="timeline-body"><p>I’m confused - this is an internal method? The SimpleTokenizer handles this internally.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-02-05 13:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_trivia/src/tokenizer.rs</code>:185 on 2024-02-05 13:44</div>
+            <div class="timeline-body"><p>We do properly handle string prefixes in the simple tokenizer - see below (and the test cases). In what case would this yield incorrect results?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @charliermarsh on 2024-02-05 13:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_trivia/src/tokenizer.rs</code>:185 on 2024-02-05 15:09</div>
+            <div class="timeline-body"><p>I see now. You already do what I recommended and I misunderstood the comment. I assumed that the &quot;caller&quot; referred to in the comment is the caller of <code>SimpleTokenizer::next</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_trivia/src/tokenizer.rs</code>:573 on 2024-02-05 15:13</div>
+            <div class="timeline-body"><p>This is an over-approximation and might be fine... but it will return a different output than <code>Lexer</code> gives for</p>
+<pre><code class="language-python">abc&quot;test&quot;
+</code></pre>
+<p>Our regular lexer returns <code>Name</code> and <code>String</code> but this implementation returns <code>Other</code>, <code>Other</code>.</p>
+<p>It would be nice if we could align the behavior by either matching on all possible valid prefixes OR do the prefix check before lexing the identifier, similar to what <code>Lexer</code> does</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-02-05 15:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-02-05 15:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_trivia/src/tokenizer.rs</code>:573 on 2024-02-05 15:50</div>
+            <div class="timeline-body"><p>I changed it to be more defensive.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-02-05 15:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_trivia/src/tokenizer.rs</code>:185 on 2024-02-05 15:50</div>
+            <div class="timeline-body"><p>I clarified in the comment -- sorry!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-02-05 16:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-02-05 16:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-02-05 16:00</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 22:58:14 UTC
+    </footer>
+</body>
+</html>

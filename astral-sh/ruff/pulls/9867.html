@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Improve trailing comma rule performance - astral-sh/ruff #9867</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Improve trailing comma rule performance</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/9867">#9867</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2024-02-06 22:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-02-06 22:30</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>I'm not sure what precisely improves performance but these are the things I did:</p>
+<ul>
+<li>I removed a lot of the iterator chaining. Before <code>flatten</code>, <code>filter_map</code>, <code>chain</code>, <code>coalesce</code>, <code>tuple_windows</code>. Now it's just <code>filter_map</code> I would have expected that Rust sees through that but maybe it does not.</li>
+<li>I reordered the <code>TokenType</code> variants to match <code>Tok</code>.... I doubt that this has any impact</li>
+<li>I changed <code>Token::from</code> from <code>&amp;Spanned</code> to <code>(&amp;Tok, TextRange)</code>.</li>
+<li>I avoid reading <code>context.last()</code> when we already set the context in the branch above</li>
+</ul>
+<h2>Test Plan</h2>
+<p><code>cargo test</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2024-02-06 22:39</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/perf-trailing-comma">CodSpeed Performance Report</a></h2>
+<h3>Merging #9867 will <strong>improve performances by 10%</strong></h3>
+<p><sub>Comparing <code>perf-trailing-comma</code> (f7076c4) with <code>main</code> (daae28e)</sub></p>
+<h3>Summary</h3>
+<p><code>⚡ 10</code> improvements
+<code>✅ 20</code> untouched benchmarks</p>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Benchmark | <code>main</code> | <code>perf-trailing-comma</code> | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| ⚡ | <code>linter/all-rules[large/dataset.py]</code> | 92.5 ms | 84 ms | +10% |
+| ⚡ | <code>linter/all-rules[unicode/pypinyin.py]</code> | 10.8 ms | 10.3 ms | +5.23% |
+| ⚡ | <code>linter/all-rules[pydantic/types.py]</code> | 43.9 ms | 40 ms | +9.67% |
+| ⚡ | <code>linter/all-rules[numpy/ctypeslib.py]</code> | 20.6 ms | 19.1 ms | +8.13% |
+| ⚡ | <code>linter/all-rules[numpy/globals.py]</code> | 2.8 ms | 2.7 ms | +5.63% |
+| ⚡ | <code>linter/all-with-preview-rules[unicode/pypinyin.py]</code> | 11.8 ms | 11.3 ms | +4.7% |
+| ⚡ | <code>linter/all-with-preview-rules[numpy/globals.py]</code> | 3.1 ms | 2.9 ms | +5.02% |
+| ⚡ | <code>linter/all-with-preview-rules[numpy/ctypeslib.py]</code> | 23.3 ms | 21.6 ms | +7.41% |
+| ⚡ | <code>linter/all-with-preview-rules[large/dataset.py]</code> | 105.1 ms | 96 ms | +9.48% |
+| ⚡ | <code>linter/all-with-preview-rules[pydantic/types.py]</code> | 51 ms | 47.4 ms | +7.77% |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-02-06 22:43</div>
+            <div class="timeline-body"><p>I prefer your changes anyway lol.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @MichaReiser on 2024-02-06 22:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "perf trailing comma" to "Improve trailing comma rule performance" by @MichaReiser on 2024-02-06 22:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2024-02-06 23:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2024-02-06 23:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-02-06 23:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-02-06 23:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-02-06 23:05</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 22:58:15 UTC
+    </footer>
+</body>
+</html>

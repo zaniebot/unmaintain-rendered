@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Separate `StringNormalizer` from `StringPart` - astral-sh/ruff #9954</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Separate <code>StringNormalizer</code> from <code>StringPart</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/9954">#9954</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2024-02-12 15:18
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-02-12 15:18</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR is a small refactor to extract out the logic for normalizing string in the formatter from the <code>StringPart</code> struct. It also separates the quote selection into a separate method on the new <code>StringNormalizer</code>. Both of these will help in the f-string formatting to use <code>StringPart</code> and <code>choose_quotes</code> irrespective of normalization.</p>
+<p>The reason for having separate quote selection and normalization step is so that the f-string formatting can perform quote selection on its own.</p>
+<p>Unlike string and byte literals, the f-string formatting would require that the normalization happens only for the literal elements of it i.e., the &quot;foo&quot; and &quot;bar&quot; in <code>f&quot;foo {x + y} bar&quot;</code>. This will automatically be handled by the already separate <code>normalize_string</code> function.</p>
+<p>Another use-case in the f-string formatting is to extract out the relevant information from the <code>StringPart</code> like quotes and prefix which is to be passed as context while formatting each element of an f-string.</p>
+<h2>Test Plan</h2>
+<p>Ensure that clippy is happy and all tests pass.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @dhruvmanila on 2024-02-12 15:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/string/mod.rs</code>:317 on 2024-02-12 15:26</div>
+            <div class="timeline-body"><p>I think I would rather store <code>quoting</code>, <code>configured_style</code>, <code>parent_docstring_quote_char</code>, and <code>normalize_hex</code> rather than the part in the normalizer and expose a single <code>normalize(&amp;self, part: &amp;StringPart) -&gt; NormalizedString</code> function.</p>
+<p>You could even have a single <code>StringNormalizer::from_context</code> method with methods like <code>with_prefered_quote_style</code> to configure it (builder like API).</p>
+<p>This way the normalizer could be called multiple times, making it more independent from the <code>StringPart</code>.</p>
+<p>another alternative would be to add a <code>NormalizedString::from_part</code> method and move the normalization there.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-02-12 15:27</div>
+            <div class="timeline-body"><p>Could you add an explanation to your PR explaining what motivates extracting the normalisation. E.g., what's difficult with the current design?I read that you want to use <code>StringPart</code> without the normalization. I understand this is possible today, for as long as you don't call <code>part.normalze</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-02-12 19:01</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-02-12 19:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_formatter/src/string/mod.rs</code>:317 on 2024-02-12 19:02</div>
+            <div class="timeline-body"><p>Thanks for the suggestions! Let me take a look at it tomorrow morning though</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-02-13 12:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2024-02-13 12:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2024-02-13 12:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-02-13 12:44</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 22:58:18 UTC
+    </footer>
+</body>
+</html>

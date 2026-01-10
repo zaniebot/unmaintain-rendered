@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detect automagic-like assignments in notebooks - astral-sh/ruff #9653</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Detect automagic-like assignments in notebooks</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/9653">#9653</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-01-26 16:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-26 16:27</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Given a statement like <code>colors = 6</code>, we currently treat the cell as an automagic (since <code>colors</code> is an automagic) -- i.e., we assume it's equivalent to <code>%colors = 6</code>. This PR adds some additional detection whereby if the statement is an <em>assignment</em>, we avoid treating it as such. I audited the list of automagics, and I believe this is safe for all of them.</p>
+<p>Closes https://github.com/astral-sh/ruff/issues/8526.</p>
+<p>Closes https://github.com/astral-sh/ruff/issues/9648.</p>
+<h2>Test Plan</h2>
+<p><code>cargo test</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @charliermarsh on 2024-01-26 16:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-01-26 16:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-01-26 16:41</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+0 -3 violations, +0 -0 fixes in 1 projects; 42 projects unchanged)</p>
+<details><summary><a href="https://github.com/mlflow/mlflow">mlflow/mlflow</a> (+0 -3 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
+- examples/llms/RAG/question-generation-retrieval-evaluation.ipynb:cell 14:1:1: F821 Undefined name `df`
+- examples/llms/RAG/question-generation-retrieval-evaluation.ipynb:cell 4:14:8: F401 [*] `requests` imported but unused
+- examples/llms/RAG/question-generation-retrieval-evaluation.ipynb:cell 4:16:17: F401 [*] `bs4.BeautifulSoup` imported but unused
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (2 rules affected)</summary>
+<p>
+
+<p>| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| F401 | 2 | 0 | 2 | 0 | 0 |
+| F821 | 1 | 0 | 1 | 0 | 0 |</p>
+</p>
+</details>
+
+<h3>Linter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+0 -3 violations, +0 -0 fixes in 1 projects; 42 projects unchanged)</p>
+<details><summary><a href="https://github.com/mlflow/mlflow">mlflow/mlflow</a> (+0 -3 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --preview</pre>
+</p>
+<p>
+
+<pre>
+- examples/llms/RAG/question-generation-retrieval-evaluation.ipynb:cell 14:1:1: F821 Undefined name `df`
+- examples/llms/RAG/question-generation-retrieval-evaluation.ipynb:cell 4:14:8: F401 [*] `requests` imported but unused
+- examples/llms/RAG/question-generation-retrieval-evaluation.ipynb:cell 4:16:17: F401 [*] `bs4.BeautifulSoup` imported but unused
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (2 rules affected)</summary>
+<p>
+
+<p>| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| F401 | 2 | 0 | 2 | 0 | 0 |
+| F821 | 1 | 0 | 1 | 0 | 0 |</p>
+</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-26 19:06</div>
+            <div class="timeline-body"><p>Ecosystem checks are correct (i.e., they were false positives before the change).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_notebook/src/cell.rs</code>:170 on 2024-01-29 07:50</div>
+            <div class="timeline-body"><p>I think the correct wording would be that &quot;The assignment operators can never follow an automagic [..]&quot; because <code>foo = !pwd</code> is valid and <code>foo</code> will be the output of <code>pwd</code> command.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> approved on 2024-01-29 07:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-01-29 12:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-01-29 12:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-01-29 12:55</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 22:58:07 UTC
+    </footer>
+</body>
+</html>

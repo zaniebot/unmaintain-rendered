@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Range formatting API - astral-sh/ruff #9635</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Range formatting API</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/9635">#9635</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2024-01-24 15:16
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-01-24 15:16</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR adds an API for range formatting Python code. It is not within the scope of this PR to expose range formatting to the CLI or use it in the LSP.  Part of https://github.com/astral-sh/ruff/issues/7233</p>
+<p>The implementation is inspired by Prettier's and Biome's functionality, but I adopted it for better and correct results when formatting Python code and extended it with support for suppression comments.</p>
+<p>The range formatting performs the following steps:</p>
+<ol>
+<li>~~Trim <code>range</code> to ensure the start and end are non-whitespace characters (helps to format the smallest possible range)~~</li>
+<li>Find the deepest node that fully covers <code>range</code> (ideally a single logical line statement).</li>
+<li>Try to narrow the range of the node identified by step 2: For example, the deepest node might be an <code>if</code> statement but it's only necessary to format two sibling statements in the <code>if</code> body. This step narrows the range of the <code>if</code> statement to the range between the two sibling statements.</li>
+<li>Format the deepest node and use the generated source map to map the range identified in step 3. to the range in the formatted output. It takes the relevant subslice from the formatted code.</li>
+</ol>
+<p>The range-formatting only selects logical-line nodes because a design goal is that formatting a range results in the same formatting (for that range) as when formatting the entire file. This property would be violated when supporting formatting sub-expressions because a) Adding parentheses around enclosing expressions can toggle an expression from non-splittable to splittable, b) formatting a sub-expression has fewer split points than formatting the entire expressions.</p>
+<p>Note: Our implementation no longer trims the range as the first step. It proved to be an issue when used in IDEs where you want Ruff to remove newlines after you delete a set of statements or when you insert unnecessary newlines between statements. In this case, the sent range is whitespace only and we should format the whitespace to the right amount of blank lines.</p>
+<p>This implementation differs from Prettier and Biome by:</p>
+<p><strong>Indentation</strong></p>
+<p>Python's whitespace sensitivity complicates range formatting in case the actual indentation in the source code doesn't match the desired indentation (specified in the configuration):</p>
+<pre><code class="language-python">0| def test(a):
+1|   b = 10
+2|   return a + 10
+</code></pre>
+<p>The above example uses a 2-space indentation, and let's assume the configured desired indentation is 4-spaces. It isn't possible to format only <code>b = 10</code> because it would change the statement indentation from 2 spaces to 4 spaces, but <code>return a + 10</code> still uses a 2-space indentation. This situation is rare enough that it isn't worth handling in non-whitespace-sensitive languages where the result looks odd, but the program remains correct. However, it must be handled when formatting Python code. This PR implements this by increasing (or not narrowing) the formatting range to cover all &quot;incorrectly&quot; indented statements.</p>
+<p>I had an earlier implementation that did allow the ancestor node to use a <em>nonstandard</em> indentation. However, it complicated the implementation and violates the property that formatting a range results in the same formatting for the given range as when formatting the entire document.</p>
+<p><strong>Suppressions</strong></p>
+<p>The passed range may fall into a suppressed range. To my understanding, neither Biome nor Prettier handles the case where one of the ancestor nodes is suppressed.</p>
+<pre><code class="language-python">def test():
+	# fmt: off
+	if True:
+		&lt;RANGE_START&gt;[a, b, c,]&lt;RANGE_END&gt;
+</code></pre>
+<p>The array <code>[a, b, c,]</code> should not get formatted because the enclosing <code>if</code> statement is suppressed.</p>
+<p><strong>Clause headers</strong></p>
+<pre><code class="language-python">&lt;RANGE_START&gt;def test(a, b, c): &lt;RANGE_END&gt;
+	print(&quot;Don't format this&quot;)
+</code></pre>
+<p>Step 2. selects the function definition statement as the deepest node that fully encloses the formatting range. Prettier and Biome format the entire function definition statement rather than just the header. This results in formatting significantly more statements than specified by the range (it looks harmless here but what if it is a class with many methods). This is because Biome and Prettier only allow sibling nodes in the range narrowing step 3.</p>
+<p>Our implementation lifts the restriction that the start and end in step 3 need to be sibling nodes and supports:</p>
+<ul>
+<li>start: The start or end of any <em>child</em> node or any leading or trailing comment.</li>
+<li>end: The start or end of any <em>child</em> node, any leading or trailing comment, or the end of the <code>:</code> after a clause header.</li>
+</ul>
+<h2>Printer changes</h2>
+<p>This PR includes a fix to the <code>Printer</code>s source map generation. The formatter emits source map markers at the beginning and end of each node. For example:</p>
+<pre><code class="language-python">def test():
+	pass
+</code></pre>
+<p>the generated IR is:</p>
+<pre><code>[
+  source_position(0),
+  &quot;def test&quot;,
+  group([source_position(8), group([&quot;()&quot;]), source_position(10)]),
+  &quot;:&quot;,
+  source_position(11),
+  indent([hard_line_break, source_position(13), &quot;pass&quot;, source_position(17)]),
+  hard_line_break,
+  source_position(17),
+  hard_line_break,
+  source_position(17)
+]
+</code></pre>
+<p>The <em>start</em> source position marker of <code>pass</code> is emitted inside of <code>indent</code>. However, the printer mapped position 13 to the position before the indent in the formatted output (that's offset <code>9</code>). This was due to the Printer deferring the printing of indentations until it prints the next text, but it emitted the source position immediately when seeing the <code>FormatElement::SourcePosition</code>. Which semantically was equal to:</p>
+<pre><code>source_position(11),
+hard_line_break
+source_position(13)
+indent([ &quot;pass&quot;, source_position(17)]),
+</code></pre>
+<h2>Test Plan</h2>
+<p>Added tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-01-27 20:44</div>
+            <div class="timeline-body"><p>Oh my, I'm bad at making small PRs :scream:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-01-27 20:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_formatter/src/builders.rs</code>:331 on 2024-01-27 20:47</div>
+            <div class="timeline-body"><p>In many situations, nodes start and end exactly at the same position. For example:</p>
+<pre><code class="language-python">print(&quot;a&quot;)
+</code></pre>
+<p>The Module, the expression statement, and the call expression all start and end at the same position. This check prevents that we push the same source marker multiple times to:</p>
+<ul>
+<li>Reduce the IR size (write less data)</li>
+<li>Reduce the work during printing (less IR to read, also applies to humans debugging the IR)</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-01-27 20:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_formatter/src/printer/mod.rs</code>:51 on 2024-01-27 20:49</div>
+            <div class="timeline-body"><p>I had to change the printer to accept an arbitrary indentation to support <code>&lt;space&gt;&lt;tab&gt;&lt;space&gt;</code> indentation (and not just <code>&lt;indent&gt;&lt;space&gt;</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-01-27 20:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_formatter/src/printer/mod.rs</code>:155 on 2024-01-27 20:51</div>
+            <div class="timeline-body"><p>This change fixes the source map offsets for nodes.</p>
+<p>We emit a source map entry at the start of every node. For example:</p>
+<pre><code class="language-python">def a():
+    pass
+</code></pre>
+<p>We emit a source map entry at the start of <code>def a</code> (0) and another for <code>pass</code> (13).</p>
+<p><strong>Before</strong>:</p>
+<p>The source map entry started at position 9 (before the indentation) which is unexpected because it is wider than the node's range.</p>
+<p><strong>After</strong>:</p>
+<p>The source map begins after the indent at position 13.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @MichaReiser on 2024-01-27 20:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Formatter: Stable" by @MichaReiser on 2024-01-27 20:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-01-27 21:02</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>ℹ️ ecosystem check <strong>encountered format errors</strong>. (no format changes; 1 project error)</p>
+<details><summary><a href="https://github.com/openai/openai-cookbook">openai/openai-cookbook</a> (error)</summary>
+<p>
+
+<pre><code>warning: Detected debug build without --no-cache.
+error: Failed to parse examples/dalle/Image_generations_edits_and_variations_with_DALL-E.ipynb:3:7:8: Unexpected token 'prompt'
+</code></pre>
+</p>
+</details>
+
+<h3>Formatter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>encountered format errors</strong>. (no format changes; 1 project error)</p>
+<details><summary><a href="https://github.com/openai/openai-cookbook">openai/openai-cookbook</a> (error)</summary>
+<p>
+<pre>ruff format --preview</pre>
+</p>
+<p>
+
+<pre><code>warning: Detected debug build without --no-cache.
+error: Failed to parse examples/dalle/Image_generations_edits_and_variations_with_DALL-E.ipynb:3:7:8: Unexpected token 'prompt'
+</code></pre>
+</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-01-28 12:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_formatter/src/printer/mod.rs</code>:64 on 2024-01-28 12:29</div>
+            <div class="timeline-body"><p>This fixes the issue where the base indentation was missing for the first node.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-01-28 12:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/tests/snapshots/black_compatibility@cases__line_ranges_diff_edge_case.py.snap</code>:29 on 2024-01-28 12:30</div>
+            <div class="timeline-body"><p>This Black test documents a limitation of Black. Ruff does not have this limitation</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @MichaReiser on 2024-01-29 08:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_wasm/src/lib.rs</code>:297 on 2024-01-29 09:27</div>
+            <div class="timeline-body"><p>Seeing source position helps debugging sourcce map issues.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-01-29 09:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2024-01-29 09:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @MichaReiser on 2024-01-29 09:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @MichaReiser on 2024-01-29 09:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @MichaReiser on 2024-01-29 09:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_formatter/src/builders.rs</code>:331 on 2024-01-29 14:57</div>
+            <div class="timeline-body"><p>Gah, how does the call expression start and end at the same position? Doesn't it start before <code>p</code> and end after <code>)</code>? I think I'm revealing a misunderstanding of <code>SourcePosition</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/comments/mod.rs</code>:368 on 2024-01-29 15:03</div>
+            <div class="timeline-body"><p>To avoid monomorphization? (Or whatever the right term would be for: generating lots of implementations now that it's generic.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/tests/fixtures.rs</code>:59 on 2024-01-29 15:07</div>
+            <div class="timeline-body"><p>Good news, you already had to write the argument-parsing code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/tests/fixtures.rs</code>:103 on 2024-01-29 15:07</div>
+            <div class="timeline-body"><p>Nit: should we move this about the <code>let extension</code> line, so it sits with the stability check?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/range.rs</code>:28 on 2024-01-29 15:09</div>
+            <div class="timeline-body"><p>What's &quot;single line body&quot;? Like <code>foo()</code> in <code>while True: foo()</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/range.rs</code>:331 on 2024-01-29 15:25</div>
+            <div class="timeline-body"><p>Nit: ragne</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/range.rs</code>:353 on 2024-01-29 15:26</div>
+            <div class="timeline-body"><p>Nit: two spaces after &quot;and&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/range.rs</code>:497 on 2024-01-29 15:27</div>
+            <div class="timeline-body"><p>👍 👍</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/range.rs</code>:512 on 2024-01-29 15:28</div>
+            <div class="timeline-body"><p>Yeah this is actually the reason we end up using LibCST in the linter when adjusting indentation of bodies for fixes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-01-29 15:29</div>
+            <div class="timeline-body"><p>This is so impressive, and so well-documented!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-01-29 15:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/range.rs</code>:28 on 2024-01-29 15:31</div>
+            <div class="timeline-body"><p>Yes. Do you know a more formal term for this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-01-29 15:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_formatter/src/builders.rs</code>:331 on 2024-01-29 15:42</div>
+            <div class="timeline-body"><p>I was confused why you think that the call expression should start and end at the same position, but my poor phrasing was the reason.</p>
+<p>It's not that the call expression starts and ends at the same position, but that different nodes can start or end at the same positions</p>
+<pre><code>[
+  source_position(0),
+  source_position(0),
+  source_position(0),
+  source_position(0),
+  &quot;print&quot;,
+  source_position(5),
+  source_position(5),
+  &quot;(&quot;,
+  group([
+    indent([
+      soft_line_break,
+      group([source_position(6), &quot;\&quot;a\&quot;&quot;, source_position(9)])
+    ]),
+    soft_line_break
+  ]),
+  &quot;)&quot;,
+  source_position(10),
+  source_position(10),
+  source_position(10),
+  hard_line_break,
+  source_position(10)
+]
+</code></pre>
+<p>This is the IR generated for the above example <strong>without</strong> this change. There are a lot of duplicated positions.</p>
+<ul>
+<li>position(0): The module, expression statement, call expression, and the identifier <code>print</code> start at position 0</li>
+<li>position(5): The identifier ends at position 5 and the arguments start at position 5</li>
+<li>position(10): The call arguments, call expression, expression statement, and module all end at position 10</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-29 15:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/range.rs</code>:28 on 2024-01-29 15:50</div>
+            <div class="timeline-body"><p>Unfortunately no. I just know that this is a compound statement (https://docs.python.org/3/reference/compound_stmts.html). Maybe &quot;single-line compound statement&quot;?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-01-29 15:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_formatter/src/builders.rs</code>:331 on 2024-01-29 15:51</div>
+            <div class="timeline-body"><p>Oh right, this makes sense, thank you.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-01-29 16:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/range.rs</code>:28 on 2024-01-29 16:17</div>
+            <div class="timeline-body"><p>I guess we could say a compound statement with a simple statement body (or non-suite body)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_formatter/src/lib.rs</code>:449 on 2024-01-29 18:48</div>
+            <div class="timeline-body"><p>What is <code>source</code> here? Is it the unformatted/original version of <code>self.code</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_python_formatter/resources/test/fixtures/ruff/range_formatting/docstring_code_examples.py</code>:79 on 2024-01-29 18:59</div>
+            <div class="timeline-body"><p>Glad you found this little test useful. :P</p>
+<p>I think Murphy was watching Madagascar while I wrote this originally...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_python_formatter/src/comments/mod.rs</code>:368 on 2024-01-29 19:11</div>
+            <div class="timeline-body"><p>That would be my guess. See: https://nnethercote.github.io/perf-book/compile-times.html#llvm-ir</p>
+<p>I'm not sure &quot;avoid monomorhpization&quot; is the right phrasing, but I actually don't know if there is a specific word for it. I think I would probably say something like, &quot;ensure there is only one copy of the function by writing an internal monomorphic helper.&quot; Where &quot;monomorphic&quot; is synonymous with &quot;not polymorphic.&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_python_formatter/src/range.rs</code>:20 on 2024-01-29 19:12</div>
+            <div class="timeline-body"><p>Out of curiosity, why not <code>use crate::{comments::Comments, prelude::*, format_module_source, ...};</code> instead? (And similar above.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_python_formatter/src/range.rs</code>:190 on 2024-01-29 19:33</div>
+            <div class="timeline-body"><p>Do you know why we use visitors instead of &quot;regular&quot; recursion? (Is it to avoid recursion causing stack overflows?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_python_formatter/src/range.rs</code>:795 on 2024-01-29 19:38</div>
+            <div class="timeline-body"><p>I might just call this <code>indent_level</code> or <code>source_indent_level</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2024-01-29 19:43</div>
+            <div class="timeline-body"><p>Amazing! I tried looking for bugs in the string manipulation part, but none stood out to me. :)</p>
+<p>One thing I might suggest is trying a commit-by-commit breakdown of big PRs like this. It would let you keep it to a single PR, but might make it easier to review. The commit messages can be used to contextualize each change.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-01-29 20:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/range.rs</code>:20 on 2024-01-29 20:51</div>
+            <div class="timeline-body"><p>I rarely write the use statements by hand. This is what RustRover generates (after running Organize imports. I would need to look into the settings to see if I can fine tune the behavior</p>
+<p>I personally would prefer one use per line (and sorted) because I find merging use conflicts rather annoying and my IDE collapses the use statements anyway.</p>
+<p>To sum it up: it's not intentional. I don't write use statements by hand</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-01-29 20:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/resources/test/fixtures/ruff/range_formatting/docstring_code_examples.py</code>:79 on 2024-01-29 20:52</div>
+            <div class="timeline-body"><p>Oh it was. It saved me a good amount of time to specify the edge cases</p>
+<p>Did you notice that you wrote zeba... or is it intentional?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-01-29 20:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/range.rs</code>:190 on 2024-01-29 20:55</div>
+            <div class="timeline-body"><p>How do you mean? The visitors use recursion internally. I doubt that the visitor pattern (as used here) prevents stack overflows.</p>
+<p>How would you write this with recursion without using a visitor? Would you use a queue with the nodes to visit and loop over it until it's empty (and push the node's children to the front while visiting?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-01-29 20:58</div>
+            <div class="timeline-body"><blockquote>
+<p>One thing I might suggest is trying a commit-by-commit breakdown of big PRs like this. It would let you keep it to a single PR, but might make it easier to review. The commit messages can be used to contextualize each change.</p>
+</blockquote>
+<p>I fear that I don't have the git superpowers to do it 😕 But I could have done an interactive rebase at the end to move e.g the printer changes to their own commit (make it the first commit)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2024-01-30 09:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-01-30 14:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_python_formatter/resources/test/fixtures/ruff/range_formatting/docstring_code_examples.py</code>:79 on 2024-01-30 14:20</div>
+            <div class="timeline-body"><p>Hah no it wasn't. Whoops. Although the way DuBois (the villain in Madagascar 3) pronounces &quot;zebra&quot; does actually sound like &quot;zeba.&quot; Hehe.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-01-31 09:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_formatter/src/lib.rs</code>:449 on 2024-01-31 09:44</div>
+            <div class="timeline-body"><p>That's it but it's gone now ;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-01-31 09:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/range.rs</code>:353 on 2024-01-31 09:48</div>
+            <div class="timeline-body"><p>Code pilot is no good add spaces</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Range formatting" to "Range formatting API" by @MichaReiser on 2024-01-31 10:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2024-01-31 10:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-01-31 10:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-01-31 10:13</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 22:58:06 UTC
+    </footer>
+</body>
+</html>
