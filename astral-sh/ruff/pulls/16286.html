@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Consolidate `SymbolBindings`/`SymbolDeclarations` state - astral-sh/ruff #16286</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Consolidate <code>SymbolBindings</code>/<code>SymbolDeclarations</code> state</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/16286">#16286</a>
+        opened by <a href="https://github.com/dcreager">@dcreager</a>
+        on 2025-02-20 19:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dcreager">@dcreager</a> on 2025-02-20 19:32</div>
+            <div class="timeline-body"><p>This updates the <code>SymbolBindings</code> and <code>SymbolDeclarations</code> types to use a single smallvec of live bindings/declarations, instead of splitting that out into separate containers for each field.</p>
+<p>I'm seeing an 11-13% <code>cargo bench</code> performance improvement with this locally (for both cold and incremental).  I'm interested to see if Codspeed agrees!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @dcreager on 2025-02-20 19:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @dcreager on 2025-02-20 19:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @dcreager on 2025-02-20 19:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @dcreager on 2025-02-20 19:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @dcreager on 2025-02-20 19:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @dcreager on 2025-02-20 19:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-02-20 19:37</div>
+            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+
+<!-- __CODSPEED_INSTRUMENTATION_PERFORMANCE_REPORT_COMMENT__ -->
+
+<h2><a href="https://codspeed.io/astral-sh/ruff/branches/dcreager%2Ffold-arrays">CodSpeed Performance Report</a></h2>
+<h3>Merging #16286 will <strong>improve performances by 7.37%</strong></h3>
+<p><sub>Comparing <code>dcreager/fold-arrays</code> (3859aeb) with <code>main</code> (470f852)</sub></p>
+<h3>Summary</h3>
+<p><code>⚡ 1</code> improvements<br />
+<code>✅ 31</code> untouched benchmarks</p>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Benchmark | <code>BASE</code> | <code>HEAD</code> | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| ⚡ | <code>red_knot_check_file[cold]</code> | 90.8 ms | 84.5 ms | +7.37% |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def/bitset.rs</code>:98 on 2025-02-20 19:48</div>
+            <div class="timeline-body"><p>If we no longer need this method, let's just remove it and its tests? It'll always be there in git history if we need it again.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def/bitset.rs</code>:29 on 2025-02-20 19:49</div>
+            <div class="timeline-body"><p>Same as for <code>union</code>, maybe just remove this method if we no longer need it?</p>
+<p>If it's a useful convenience for tests, maybe move it into a separate <code>impl</code> in the test module?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def.rs</code>:451 on 2025-02-20 19:56</div>
+            <div class="timeline-body"><p>The name <code>ConstraintIdIterator</code> (instead of <code>ConstraintIterator</code>) was meant to distinguish an iterator over internal constraint IDs from an iterator over <code>Constraint</code> Salsa ingredients (which of course are also just IDs 😆 but global ones). After this name change we now have <code>ConstraintsIterator</code> and <code>ConstraintIterator</code>, which seems... less clear. I guess you made this name change because it's now just an iterator over <code>u32</code> instead of <code>ScopedConstraintId</code>? Maybe <code>ConstraintIndexIterator</code>? Or maybe this doesn't matter...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def/symbol_state.rs</code>:100 on 2025-02-20 20:00</div>
+            <div class="timeline-body"><p>Nit: I think we usually try to not put other types in between a struct and its impl? But I don't feel strongly about this, if you feel this is the clearest ordering in this case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def/symbol_state.rs</code>:140 on 2025-02-20 20:02</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    /// Iterate over the IDs of each currently live declaration for this symbol
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def/symbol_state.rs</code>:261 on 2025-02-20 20:06</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    /// Iterate over the IDs of each currently live binding for this symbol
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-02-20 20:08</div>
+            <div class="timeline-body"><p>This is awesome, thank you!!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def/bitset.rs</code>:29 on 2025-02-20 20:51</div>
+            <div class="timeline-body"><p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def/bitset.rs</code>:98 on 2025-02-20 20:51</div>
+            <div class="timeline-body"><p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def/symbol_state.rs</code>:100 on 2025-02-20 20:52</div>
+            <div class="timeline-body"><p>Yeah my thought was that these three types only make sense together, and so it's useful to see the type definitions next to each other.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def.rs</code>:451 on 2025-02-20 20:54</div>
+            <div class="timeline-body"><p>It wasn't as intentional as you're giving me credit for... :smile:</p>
+<p>This iterator comes from <code>symbol_state.rs</code> now, instead of being defined here, and I was trying to follow the naming convention of the other iterators there.  Although I now see that I didn't do that successfully — it should be <code>ConstraintsIterator</code>, since it seems like the pattern there is to name the iterator after the type being iterated, not the element type.  But that then conflicts with the iterator defined here...</p>
+<p>Anyway I went with <code>ConstraintIndexIterator</code> as you suggest.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-02-20 20:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dcreager on 2025-02-20 21:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dcreager on 2025-02-20 21:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-02-20 21:20</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:49:30 UTC
+    </footer>
+</body>
+</html>

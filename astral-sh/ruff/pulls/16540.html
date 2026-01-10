@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] detect invalid return type - astral-sh/ruff #16540</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] detect invalid return type</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/16540">#16540</a>
+        opened by <a href="https://github.com/mtshiba">@mtshiba</a>
+        on 2025-03-06 17:48
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/mtshiba">@mtshiba</a> on 2025-03-06 17:48</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR closes #16248.</p>
+<p>If the return type of the function isn't assignable to the one specified, an <code>invalid-return-type</code> error occurs.
+I thought it would be better to report this as a different kind of error than the <code>invalid-assignment</code> error, so I defined this as a new error.</p>
+<h2>Test Plan</h2>
+<p>All type inconsistencies in the test cases have been replaced with appropriate ones.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @mtshiba on 2025-03-06 17:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @mtshiba on 2025-03-06 17:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @mtshiba on 2025-03-06 17:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @mtshiba on 2025-03-06 17:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2025-03-06 17:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:279 on 2025-03-06 18:09</div>
+            <div class="timeline-body"><p>Would it be possible to retrieve the return type from the current scope instead of storing it as an extra field on the context?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/call/getattr_static.md</code>:15 on 2025-03-06 18:11</div>
+            <div class="timeline-body"><p>Minor: Found that as well today, I simply changed it to</p>
+<pre><code class="language-suggestion">        return &quot;a&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-03-06 18:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-03-06 18:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1152 on 2025-03-06 18:19</div>
+            <div class="timeline-body"><p>The invalid-return-type diagnostics are currently attached to the whole function. I think we should aim to attach them to individual <code>return</code> statements. Ideally, it would be a multi-span diagnostic where we highlight the expression that is being returned as the primary span, and the actual return type of the function as a secondary span (the idea being that it's &quot;typically&quot; the <code>return</code>ed expression that is wrong, and not the annotated return type).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-03-06 18:20</div>
+            <div class="timeline-body"><p>Thank you!</p>
+<p>I appreciate that you fixed all existing instances of this diagnostic (it's fascinating how much wrong code we've written :smile:). But we should also write some tests where we can actually see how this new diagnostic works. But I think it makes sense to reconsider the general approach first — see my other comment regarding attaching diagnostics to individual return statements and not to the whole function.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-03-06 18:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1152 on 2025-03-06 18:24</div>
+            <div class="timeline-body"><p>For example:</p>
+<pre><code class="language-py">#        this could be the secondary span
+#                    vvv
+def f(flag: bool) -&gt; int:
+    if flag:
+        return 1  # nothing is wrong here
+    else:
+        return &quot;foo&quot;
+#              ^^^^^
+#     this should be the primary
+#       span for the diagnostic
+</code></pre>
+<p>Even if we don't want to work on multi-span diagnostics right away, I think we should still aim to attach the diagnostic to the &quot;foo&quot; expression, and not to the whole function.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1152 on 2025-03-06 18:25</div>
+            <div class="timeline-body"><p>For comparison, this is what we currently get on your branch (for a slightly modified example):</p>
+<pre><code>error: lint:invalid-return-type
+ --&gt; /home/shark/playground/test.py:1:1
+  |
+1 | / def f(flag: bool, flag2: bool) -&gt; int:
+2 | |     if flag:
+3 | |         return 1  # nothing is wrong here
+4 | |     elif flag2:
+5 | |         return &quot;foo&quot;
+6 | |
+7 | |     return 2  # nothing wrong here either
+  | |____________^ Object of type `Literal[1, &quot;foo&quot;, 2]` is not assignable to return type `int`
+  |
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-03-06 18:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-03-06 18:37</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/descriptor_protocol.md</code>:159 on 2025-03-07 17:52</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    @property
+    def name(self) -&gt; str:
+        # TODO: No diagnostic should be emitted here
+        # error: [invalid-return-type]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/function/return_type.md</code>:11 on 2025-03-07 17:54</div>
+            <div class="timeline-body"><p>Let's use a different error type here; this test is technically fine but it's needlessly close to <code>return NotImplemented</code>, a common idiom which will probably need special handling, a different error type works just as well for this test and avoids that potential confusion</p>
+<pre><code class="language-suggestion">    raise ValueError()
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/generics/functions.md</code>:122 on 2025-03-07 17:55</div>
+            <div class="timeline-body"><p>I realize this test is kind of passing for the wrong reason, since we don't actually understand these type vars as type vars yet. But the result is still correct, so I don't think we need a TODO here.</p>
+<pre><code class="language-suggestion"></code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/function/return_type.md</code>:1 on 2025-03-07 17:57</div>
+            <div class="timeline-body"><p>These tests look good, but we usually split our tests up a bit more and intersperse a bit more prose commentary to help make the purpose of each test clearer to the reader.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/terminal_statements.md</code>:656 on 2025-03-07 17:58</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        return &quot;&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/diagnostic.rs</code>:267 on 2025-03-07 17:59</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        summary: &quot;detects a returned value that can't be assigned to the function's annotated return type&quot;,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1059 on 2025-03-07 18:02</div>
+            <div class="timeline-body"><p>The name <code>set_return_type</code> suggests a single value we are setting, not pushing to a vector. I'd suggest <code>push_return_type</code> or <code>record_return_type</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1142 on 2025-03-07 18:12</div>
+            <div class="timeline-body"><p>Three comments here:</p>
+<p>a) I don't see any test for the &quot;suite has only ellipsis&quot; case in the added tests in this PR?</p>
+<p>b) I think we should only apply this special case in stub files (and in overload definitions and protocol method definitions, but we don't support either of these yet so don't need to handle them in this PR), not generally for all functions. A normal function in a <code>.py</code> file should error if annotated to return some non-None type but its body consists only of ellipsis. (The behavior I suggest matches mypy, but not pyright.)</p>
+<p>c) We can do this check only in the case that <code>self.types.return_types_and_ranges</code> is empty, which should be cheaper to check for than walking all statements in the body.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @mtshiba on 2025-03-07 18:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1154 on 2025-03-07 18:21</div>
+            <div class="timeline-body"><p>I don't think we should construct a union type for a single initial assignability check. Assignability checking for a union generally means iterating all its member types anyway, and this way we also pay the cost to construct the union type. Why not iterate all possible return types and ranges (after adding &quot;end-of-body <code>None</code>&quot; to the list) and check each one for assignability to the annotated return type (that is, what we end up doing here in the error case anyway), without first doing a union assignability check?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1146 on 2025-03-07 18:33</div>
+            <div class="timeline-body"><p>I don't think this logic is quite right. Consider a function like this:</p>
+<pre><code class="language-py">def f(cond: bool) -&gt; int:
+    if cond:
+        return 1
+</code></pre>
+<p>This function will not have an empty <code>return_type_and_ranges</code>, but it is still possible for control flow to fall off the end of the function (implicit return <code>None</code>).</p>
+<p>I think the best way to check for this is to query the final state of the use-def map builder to see whether <code>scope_start_visibility</code> is <code>ALWAYS_FALSE</code>. This will require recording one new field onto <code>UseDefMap</code> (we can call it <code>can_implicit_return: bool</code> and add a public method <code>UseDefMap::can_implicit_return()</code>) based on checking <code>scope_start_visibility</code> in <code>UseDefMapBuilder::finish</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1175 on 2025-03-07 18:37</div>
+            <div class="timeline-body"><p>Even for this case, reporting an error on the entire function definition node is not a good user experience, it leads to massive blocks of red squiggly lines in an editor. Pyright reports this error on the function return annotation node, I think that's a good choice.</p>
+<p>Also, I think we should use a distinctive error message for this case. Something like &quot;Function can implicitly return <code>None</code>, which is not assignable to return type {}&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-03-07 18:38</div>
+            <div class="timeline-body"><p>Looking good, thank you! A few comments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @mtshiba on 2025-03-08 19:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/resources/mdtest/function/return_type.md</code>:1 on 2025-03-10 08:48</div>
+            <div class="timeline-body"><p>Let's add at least one test where we snapshot the entire diagnostic. Ideally, we'd have multiple tests:</p>
+<ul>
+<li>One where a specific return returns a not-assignable value</li>
+<li>One where at least one branch has no return statement but the function has a non optional return type</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/diagnostic.rs</code>:265 on 2025-03-10 08:50</div>
+            <div class="timeline-body"><p>We should write at least a basic documentation for new lint rules. I mainly created #14899 because I didn't wanted to document all existing lint rules when I introduced <code>declare_lint</code> but we should avoid accumulating the documentation-debt for new lints</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:288 on 2025-03-10 08:55</div>
+            <div class="timeline-body"><p>Would it be possible to move this field to the <code>TypeInferenceBuilder</code>. Or are there cases where a return statement is inferred as part of another type-inference region that then needs to be aggregated at the function-region-level?</p>
+<p>I'm asking because including any sort of range at the <code>TypeInference</code> level is problematic because it means that the <code>infer_types</code> salsa query invalidates (the returned value!) on every single change in that file.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1142 on 2025-03-10 08:59</div>
+            <div class="timeline-body"><p>NIt</p>
+<pre><code class="language-suggestion">                match &amp;*suite {
+                	[Stmt::Expr(StmtExpr { value, .. }), ..] if value.is_ellipsis_literal_expr() =&gt; value.is_ellipsis_literal_expr(),
+                	[Stmt::Expr(StmtExpr { value: first, ..}, StmtExpr(StmtExpr { value: second, .. }, ..] if first.is_string_literal_expr() =&gt; second.is_ellispsis_literal_expr(),
+                	_ =&gt; false
+              	}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1165 on 2025-03-10 09:01</div>
+            <div class="timeline-body"><p>We have to account for the handlers here too</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1185 on 2025-03-10 09:02</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">            let is_overloaded = function.decorator_list.iter().any(|decorator| {
+            		let decorator_type = self.file_expression_type(&amp;decorator.expression);
+            		
+                decorator_type
+                    .into_function_literal()
+                    .is_some_and(|f| f.is_known(self.db(), KnownFunction::Overload))
+            });
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1127 on 2025-03-10 09:03</div>
+            <div class="timeline-body"><p>Nit: <code>is_stub_suite</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-03-10 09:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/function/return_type.md</code>:24 on 2025-03-11 00:28</div>
+            <div class="timeline-body"><p>This test and <code>reveal_type</code> seem to be testing something about function parameters, not about return types. What is this test demonstrating about function return values?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-03-11 14:00</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">git-revise (https://github.com/mystor/git-revise)
++ error: lint:invalid-return-type
++   --&gt; /tmp/mypy_primer/projects/git-revise/gitrevise/todo.py:25:20
++    |
++ 23 |     def parse(instr: str) -&gt; StepKind:
++ 24 |         if &quot;pick&quot;.startswith(instr):
++ 25 |             return StepKind.PICK
++    |                    ^^^^^^^^^^^^^ Object of type `Unknown | Literal[&quot;pick&quot;]` is not assignable to return type `StepKind`
++ 26 |         if &quot;fixup&quot;.startswith(instr):
++ 27 |             return StepKind.FIXUP
++    |
++   ::: /tmp/mypy_primer/projects/git-revise/gitrevise/todo.py:23:30
++    |
++ 22 |     @staticmethod
++ 23 |     def parse(instr: str) -&gt; StepKind:
++    |                              -------- info: Return type is declared here as `StepKind`
++ 24 |         if &quot;pick&quot;.startswith(instr):
++ 25 |             return StepKind.PICK
++    |
++ 
++ error: lint:invalid-return-type
++   --&gt; /tmp/mypy_primer/projects/git-revise/gitrevise/todo.py:27:20
++    |
++ 25 |             return StepKind.PICK
++ 26 |         if &quot;fixup&quot;.startswith(instr):
++ 27 |             return StepKind.FIXUP
++    |                    ^^^^^^^^^^^^^^ Object of type `Unknown | Literal[&quot;fixup&quot;]` is not assignable to return type `StepKind`
++ 28 |         if &quot;squash&quot;.startswith(instr):
++ 29 |             return StepKind.SQUASH
++    |
++   ::: /tmp/mypy_primer/projects/git-revise/gitrevise/todo.py:23:30
++    |
++ 22 |     @staticmethod
++ 23 |     def parse(instr: str) -&gt; StepKind:
++    |                              -------- info: Return type is declared here as `StepKind`
++ 24 |         if &quot;pick&quot;.startswith(instr):
++ 25 |             return StepKind.PICK
++    |
++ 
++ error: lint:invalid-return-type
++   --&gt; /tmp/mypy_primer/projects/git-revise/gitrevise/todo.py:29:20
++    |
++ 27 |             return StepKind.FIXUP
++ 28 |         if &quot;squash&quot;.startswith(instr):
++ 29 |             return StepKind.SQUASH
++    |                    ^^^^^^^^^^^^^^^ Object of type `Unknown | Literal[&quot;squash&quot;]` is not assignable to return type `StepKind`
++ 30 |         if &quot;reword&quot;.startswith(instr):
++ 31 |             return StepKind.REWORD
++    |
++   ::: /tmp/mypy_primer/projects/git-revise/gitrevise/todo.py:23:30
++    |
++ 22 |     @staticmethod
++ 23 |     def parse(instr: str) -&gt; StepKind:
++    |                              -------- info: Return type is declared here as `StepKind`
++ 24 |         if &quot;pick&quot;.startswith(instr):
++ 25 |             return StepKind.PICK
++    |
++ 
++ error: lint:invalid-return-type
++   --&gt; /tmp/mypy_primer/projects/git-revise/gitrevise/todo.py:31:20
++    |
++ 29 |             return StepKind.SQUASH
++ 30 |         if &quot;reword&quot;.startswith(instr):
++ 31 |             return StepKind.REWORD
++    |                    ^^^^^^^^^^^^^^^ Object of type `Unknown | Literal[&quot;reword&quot;]` is not assignable to return type `StepKind`
++ 32 |         if &quot;cut&quot;.startswith(instr):
++ 33 |             return StepKind.CUT
++    |
++   ::: /tmp/mypy_primer/projects/git-revise/gitrevise/todo.py:23:30
++    |
++ 22 |     @staticmethod
++ 23 |     def parse(instr: str) -&gt; StepKind:
++    |                              -------- info: Return type is declared here as `StepKind`
++ 24 |         if &quot;pick&quot;.startswith(instr):
++ 25 |             return StepKind.PICK
++    |
++ 
++ error: lint:invalid-return-type
++   --&gt; /tmp/mypy_primer/projects/git-revise/gitrevise/todo.py:33:20
++    |
++ 31 |             return StepKind.REWORD
++ 32 |         if &quot;cut&quot;.startswith(instr):
++ 33 |             return StepKind.CUT
++    |                    ^^^^^^^^^^^^ Object of type `Unknown | Literal[&quot;cut&quot;]` is not assignable to return type `StepKind`
++ 34 |         if &quot;index&quot;.startswith(instr):
++ 35 |             return StepKind.INDEX
++    |
++   ::: /tmp/mypy_primer/projects/git-revise/gitrevise/todo.py:23:30
++    |
++ 22 |     @staticmethod
++ 23 |     def parse(instr: str) -&gt; StepKind:
++    |                              -------- info: Return type is declared here as `StepKind`
++ 24 |         if &quot;pick&quot;.startswith(instr):
++ 25 |             return StepKind.PICK
++    |
++ 
++ error: lint:invalid-return-type
++   --&gt; /tmp/mypy_primer/projects/git-revise/gitrevise/todo.py:35:20
++    |
++ 33 |             return StepKind.CUT
++ 34 |         if &quot;index&quot;.startswith(instr):
++ 35 |             return StepKind.INDEX
++    |                    ^^^^^^^^^^^^^^ Object of type `Unknown | Literal[&quot;index&quot;]` is not assignable to return type `StepKind`
++ 36 |         raise ValueError(
++ 37 |             f&quot;step kind '{instr}' must be one of: pick, fixup, squash, reword, cut, or index&quot;
++    |
++   ::: /tmp/mypy_primer/projects/git-revise/gitrevise/todo.py:23:30
++    |
++ 22 |     @staticmethod
++ 23 |     def parse(instr: str) -&gt; StepKind:
++    |                              -------- info: Return type is declared here as `StepKind`
++ 24 |         if &quot;pick&quot;.startswith(instr):
++ 25 |             return StepKind.PICK
++    |
++ 
+- Found 52 diagnostics
++ Found 58 diagnostics
+
+black (https://github.com/psf/black)
++    |
++ 
++ error: lint:invalid-return-type
++   --&gt; /tmp/mypy_primer/projects/black/src/blib2to3/pytree.py:83:20
++    |
++ 81 |         &quot;&quot;&quot;
++ 82 |         if self.__class__ is not other.__class__:
++ 83 |             return NotImplemented
++    |                    ^^^^^^^^^^^^^^ Object of type `_NotImplementedType` is not assignable to return type `bool`
++ 84 |         return self._eq(other)
++    |
++   ::: /tmp/mypy_primer/projects/black/src/blib2to3/pytree.py:76:37
++    |
++ 74 |         return object.__new__(cls)
++ 75 |
++ 76 |     def __eq__(self, other: Any) -&gt; bool:
++    |                                     ---- info: Return type is declared here as `bool`
++ 77 |         &quot;&quot;&quot;
++ 78 |         Compare two nodes for equality.
++ 
++    |
++    |
++    |
++    |
++ error: lint:invalid-return-type
++   --&gt; /tmp/mypy_primer/projects/black/src/blackd/middlewares.py:35:12
++ 33 |         return resp
++ 34 |
++ 35 |     return impl
++    |            ^^^^ Object of type `Literal[impl]` is not assignable to return type `Middleware`
++   ::: /tmp/mypy_primer/projects/black/src/blackd/middlewares.py:11:43
++ 11 | def cors(allow_headers: Iterable[str]) -&gt; Middleware:
++    |                                           ---------- info: Return type is declared here as `Middleware`
++ 12 |     @middleware
++ 13 |     async def impl(request: Request, handler: Handler) -&gt; StreamResponse:
+- Found 296 diagnostics
++ Found 298 diagnostics
+
+arrow (https://github.com/arrow-py/arrow)
++ 
++ 
++ 
++ 
++ 
++ 
++ 
++      |
++      |
++      |
++      |
++      |
++      |
++      |
++      |
++      |
++      |
++      |
++      |
++      |
++      |
++      |
++      |
++      |
++      |
++      |
++      |
++      |
++      |
++      |
++      |
++      |
++      |
++      |
++      |
++ error: lint:invalid-return-type
++     --&gt; /tmp/mypy_primer/projects/arrow/arrow/arrow.py:1721:16
++ 1719 |             return self.fromdatetime(self._datetime + other, self._datetime.tzinfo)
++ 1720 |
++ 1721 |         return NotImplemented
++      |                ^^^^^^^^^^^^^^ Object of type `_NotImplementedType` is not assignable to return type `Arrow`
++ 1722 |
++ 1723 |     def __radd__(self, other: Union[timedelta, relativedelta]) -&gt; &quot;Arrow&quot;:
++     ::: /tmp/mypy_primer/projects/arrow/arrow/arrow.py:1717:38
++ 1715 |     # math
++ 1716 |
++ 1717 |     def __add__(self, other: Any) -&gt; &quot;Arrow&quot;:
++      |                                      ------- info: Return type is declared here as `Arrow`
++ 1718 |         if isinstance(other, (timedelta, relativedelta)):
++ 1719 |             return self.fromdatetime(self._datetime + other, self._datetime.tzinfo)
++ error: lint:invalid-return-type
++     --&gt; /tmp/mypy_primer/projects/arrow/arrow/arrow.py:1744:16
++ 1742 |             return self._datetime - other._datetime
++ 1743 |
++ 1744 |         return NotImplemented
++      |                ^^^^^^^^^^^^^^ Object of type `_NotImplementedType` is not assignable to return type `timedelta | Arrow`
++ 1745 |
++ 1746 |     def __rsub__(self, other: Any) -&gt; timedelta:
++     ::: /tmp/mypy_primer/projects/arrow/arrow/arrow.py:1734:38
++ 1732 |         pass  # pragma: no cover
++ 1733 |
++ 1734 |     def __sub__(self, other: Any) -&gt; Union[timedelta, &quot;Arrow&quot;]:
++      |                                      ------------------------- info: Return type is declared here as `timedelta | Arrow`
++ 1735 |         if isinstance(other, (timedelta, relativedelta)):
++ 1736 |             return self.fromdatetime(self._datetime - other, self._datetime.tzinfo)
++ error: lint:invalid-return-type
++     --&gt; /tmp/mypy_primer/projects/arrow/arrow/arrow.py:1750:16
++ 1748 |             return other - self._datetime
++ 1749 |
++ 1750 |         return NotImplemented
++      |                ^^^^^^^^^^^^^^ Object of type `_NotImplementedType` is not assignable to return type `timedelta`
++ 1751 |
++ 1752 |     # comparisons
++     ::: /tmp/mypy_primer/projects/arrow/arrow/arrow.py:1746:39
++ 1744 |         return NotImplemented
++ 1745 |
++ 1746 |     def __rsub__(self, other: Any) -&gt; timedelta:
++      |                                       --------- info: Return type is declared here as `timedelta`
++ 1747 |         if isinstance(other, dt_datetime):
++ 1748 |             return other - self._datetime
++ error: lint:invalid-return-type
++     --&gt; /tmp/mypy_primer/projects/arrow/arrow/arrow.py:1768:20
++ 1766 |     def __gt__(self, other: Any) -&gt; bool:
++ 1767 |         if not isinstance(other, (Arrow, dt_datetime)):
++ 1768 |             return NotImplemented
++      |                    ^^^^^^^^^^^^^^ Object of type `_NotImplementedType` is not assignable to return type `bool`
++ 1769 |
++ 1770 |         return self._datetime &gt; self._get_datetime(other)
++     ::: /tmp/mypy_primer/projects/arrow/arrow/arrow.py:1766:37
++ 1764 |         return not self.__eq__(other)
++ 1765 |
++ 1766 |     def __gt__(self, other: Any) -&gt; bool:
++      |                                     ---- info: Return type is declared here as `bool`
++ 1767 |         if not isinstance(other, (Arrow, dt_datetime)):
++ 1768 |             return NotImplemented
++ error: lint:invalid-return-type
++     --&gt; /tmp/mypy_primer/projects/arrow/arrow/arrow.py:1774:20
++ 1772 |     def __ge__(self, other: Any) -&gt; bool:
++ 1773 |         if not isinstance(other, (Arrow, dt_datetime)):
++ 1774 |             return NotImplemented
++      |                    ^^^^^^^^^^^^^^ Object of type `_NotImplementedType` is not assignable to return type `bool`
++ 1775 |
++ 1776 |         return self._datetime &gt;= self._get_datetime(other)
++     ::: /tmp/mypy_primer/projects/arrow/arrow/arrow.py:1772:37
++ 1770 |         return self._datetime &gt; self._get_datetime(other)
++ 1771 |
++ 1772 |     def __ge__(self, other: Any) -&gt; bool:
++      |                                     ---- info: Return type is declared here as `bool`
++ 1773 |         if not isinstance(other, (Arrow, dt_datetime)):
++ 1774 |             return NotImplemented
++ error: lint:invalid-return-type
++     --&gt; /tmp/mypy_primer/projects/arrow/arrow/arrow.py:1780:20
++ 1778 |     def __lt__(self, other: Any) -&gt; bool:
++ 1779 |         if not isinstance(other, (Arrow, dt_datetime)):
++ 1780 |             return NotImplemented
++      |                    ^^^^^^^^^^^^^^ Object of type `_NotImplementedType` is not assignable to return type `bool`
++ 1781 |
++ 1782 |         return self._datetime &lt; self._get_datetime(other)
++     ::: /tmp/mypy_primer/projects/arrow/arrow/arrow.py:1778:37
++ 1776 |         return self._datetime &gt;= self._get_datetime(other)
++ 1777 |
++ 1778 |     def __lt__(self, other: Any) -&gt; bool:
++      |                                     ---- info: Return type is declared here as `bool`
++ 1779 |         if not isinstance(other, (Arrow, dt_datetime)):
++ 1780 |             return NotImplemented
++ error: lint:invalid-return-type
++     --&gt; /tmp/mypy_primer/projects/arrow/arrow/arrow.py:1786:20
++ 1784 |     def __le__(self, other: Any) -&gt; bool:
++ 1785 |         if not isinstance(other, (Arrow, dt_datetime)):
++ 1786 |             return NotImplemented
++      |                    ^^^^^^^^^^^^^^ Object of type `_NotImplementedType` is not assignable to return type `bool`
++ 1787 |
++ 1788 |         return self._datetime &lt;= self._get_datetime(other)
++     ::: /tmp/mypy_primer/projects/arrow/arrow/arrow.py:1784:37
++ 1782 |         return self._datetime &lt; self._get_datetime(other)
++ 1783 |
++ 1784 |     def __le__(self, other: Any) -&gt; bool:
++      |                                     ---- info: Return type is declared here as `bool`
++ 1785 |         if not isinstance(other, (Arrow, dt_datetime)):
++ 1786 |             return NotImplemented
+- Found 73 diagnostics
++ Found 80 diagnostics
+
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-03-11 14:26</div>
+            <div class="timeline-body"><blockquote>
+<p><code>mypy_primer</code> results</p>
+</blockquote>
+<p>FYI, the results look mostly as expected to me. There are three distinct issues (none related to your PR), as far as I can tell:</p>
+<ul>
+<li>Missing assignability of intersection types (see #16611)</li>
+<li>Missing support for enums</li>
+<li>Missing support for <code>types.NotImplementedType</code></li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @mtshiba on 2025-03-11 18:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def.rs</code>:396 on 2025-03-12 00:23</div>
+            <div class="timeline-body"><p>Can we just use <code>VisibilityConstraints::evaluate</code> here? (Sorry, I directed you wrongly in my earlier comment suggesting we could simply check for <code>ALWAYS_FALSE</code>.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def.rs</code>:325 on 2025-03-12 00:23</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    /// This is used to check if a function scope can implicitly return `None`.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def.rs</code>:334 on 2025-03-12 00:24</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    /// In this case, the function may implicitly return `None`.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/visibility_constraints.rs</code>:235 on 2025-03-12 00:26</div>
+            <div class="timeline-body"><p>It seems to me that we should be able to use <code>VisibilityConstraints::evaluate</code> in <code>UseDefMap::can_implicit_return</code>, and avoid the need for any of the changes in this module.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1139 on 2025-03-12 01:03</div>
+            <div class="timeline-body"><p>We should also allow (and test for) the case where we have just a docstring (without <code>pass</code> or ellipsis). This is valid syntax and should be accepted as a stub suite.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1182 on 2025-03-12 01:04</div>
+            <div class="timeline-body"><p>nit: what this is really checking is whether this function is an overload, not whether it is overloaded</p>
+<pre><code class="language-suggestion">            let is_overload = function.decorator_list.iter().any(|decorator| {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1212 on 2025-03-12 01:26</div>
+            <div class="timeline-body"><p>We shouldn't need this function at all; this is what <code>can_implicit_return</code> should do for us. I investigated why it doesn't, and realized that it's our temporary hack here: https://github.com/astral-sh/ruff/blob/main/crates/red_knot_python_semantic/src/semantic_index/builder.rs#L880-L899</p>
+<p>Really sorry I missed this and it caused a bunch of extra unnecessary work for you! I found a 2-3 line temporary fix that will solve this until we get rid of this hack, will push that up to this PR since I already did it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2683 on 2025-03-12 01:29</div>
+            <div class="timeline-body"><p>I don't think we need this? By definition, <code>Never</code> is assignable to all types, so it is impossible for a <code>Never</code> return to ever emit a diagnostic, no matter what the annotated return type is.</p>
+<p>Removing this change doesn't cause any tests to fail; unless we can write a counter-example test, we should remove this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/visibility_constraints.rs</code>:235 on 2025-03-12 01:30</div>
+            <div class="timeline-body"><p>I went ahead and also pushed this change, since I'd already tested it locally to make sure I wasn't misleading you again!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-03-12 01:30</div>
+            <div class="timeline-body"><p>Looks good!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-03-12 01:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def.rs</code>:396 on 2025-03-12 01:32</div>
+            <div class="timeline-body"><p>Pushed this change.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-03-12 01:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2683 on 2025-03-12 01:32</div>
+            <div class="timeline-body"><p>Pushed this change.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-03-12 01:56</div>
+            <div class="timeline-body"><p>Since the remainder of my comments were minor and I already had this loaded up locally, I just made the remaining changes and pushed it, will merge! Thank you for the PR! Please let me know if any of my changes missed an important point.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @carljm on 2025-03-12 01:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-03-12 01:59</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:49:32 UTC
+    </footer>
+</body>
+</html>

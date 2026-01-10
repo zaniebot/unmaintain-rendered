@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>print MDTEST_TEST_FILTER value in single-quotes (and escaped) - astral-sh/ruff #16548</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>print MDTEST_TEST_FILTER value in single-quotes (and escaped)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/16548">#16548</a>
+        opened by <a href="https://github.com/ericmarkmartin">@ericmarkmartin</a>
+        on 2025-03-07 07:35
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ericmarkmartin">@ericmarkmartin</a> on 2025-03-07 07:35</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+<p>If an mdtest fails, the error output will include an example command that can be run to re-run just the failing test, e.g</p>
+<pre><code>To rerun this specific test, set the environment variable: MDTEST_TEST_FILTER=&quot;sync.md - With statements - Context manager with non-callable `__exit__` attribute&quot;
+MDTEST_TEST_FILTER=&quot;sync.md - With statements - Context manager with non-callable `__exit__` attribute&quot; cargo test -p red_knot_python_semantic --test mdtest -- mdtest__with_sync
+</code></pre>
+<p>This is very helpful, but because we're printing the envvar value surrounded in double-quotes, the bits between backticks in this example get interpreted as a shell interpolation. When running this in zsh, for example, I see</p>
+<pre><code class="language-console">❯ MDTEST_TEST_FILTER=&quot;sync.md - With statements - Context manager with non-callable `__exit__` attribute&quot; cargo test -p red_knot_python_semantic --test mdtest -- mdtest__with_sync  
+zsh: command not found: __exit__
+   Compiling red_knot_python_semantic v0.0.0 (/home/ericmarkmartin/Development/ruff/crates/red_knot_python_semantic)
+   Compiling red_knot_test v0.0.0 (/home/ericmarkmartin/Development/ruff/crates/red_knot_test)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 6.09s
+     Running tests/mdtest.rs (target/debug/deps/mdtest-149b8f9d937e36bc)
+
+running 1 test
+test mdtest__with_sync ... ok
+</code></pre>
+<p>[^1]</p>
+<p>This is a minor annoyance which we can solve by using single-quotes instead of double-quotes for this string. To do so safely, we also escape single-quotes possibly contained within the string.</p>
+<p>There is a <a href="https://github.com/allenap/shell-quote">shell-quote</a> crate, which seems to handle all this escaping stuff for you but fixing this issue perfectly isn't a big deal (if there are more things to escape we can deal with it then), so adding a new dependency (even a dev one) seemed overkill.</p>
+<p>[^1]: The filter does still work---it turns out that the filter <code>MDTEST_TEST_FILTER=&quot;sync.md - With statements - Context manager with non-callable  attribute&quot;</code> (what you get after the failed interpolation) is still good enough</p>
+<h2>Test Plan</h2>
+<!-- How was it tested? -->
+
+<p>I broke the <code>## Context manager with non-callable `__exit__` attribute</code> test by deleting the error assertion, then successfully ran the new command it printed out.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @ericmarkmartin on 2025-03-07 07:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @ericmarkmartin on 2025-03-07 07:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @ericmarkmartin on 2025-03-07 07:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @ericmarkmartin on 2025-03-07 07:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2025-03-07 07:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-03-07 08:04</div>
+            <div class="timeline-body"><p>Thanks. I verified that this doesn't break fish shell.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2025-03-07 08:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-03-07 08:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-03-08 15:37</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:49:32 UTC
+    </footer>
+</body>
+</html>

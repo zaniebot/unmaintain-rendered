@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>improve diagnostics for &quot;invalid argument type&quot; - astral-sh/ruff #16239</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>improve diagnostics for &quot;invalid argument type&quot;</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/16239">#16239</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2025-02-18 19:25
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-02-18 19:25</div>
+            <div class="timeline-body"><p>This PR takes a quick route toward prototyping multi-span diagnostics.
+As one concrete improvement, the diagnostics for invalid argument types
+are improved by adding a secondary span. Specifically, red-knot will
+now show not just the call site (which remains as the primary span
+in the diagnostic output), but also the function definition with the
+corresponding parameter annotated.</p>
+<p>The form and definition of secondary diagnostic spans in this PR
+is <em>not</em> meant to be where we end up. We will want something more
+sophisticated pretty soon, and the version in this PR is very limited.
+For example, it doesn't let you attach multiple annotations to the
+same snippet of code. Every diagnostic message is one snippet with one
+annotation. We obviously want things to be more flexible than that.
+Still, this was a useful exericse to go through for myself, and also I
+think comes with one concrete improvement.</p>
+<p>One comparison point with <code>rustc</code> that I found interesting is how dense
+<code>rustc</code> error messages can be. For example, given this Rust code:</p>
+<pre><code class="language-rust">fn main() {
+    foo(&quot;a&quot;, &quot;b&quot;, &quot;c&quot;);
+}
+
+fn foo(x: i32, y: i32, z: i32) -&gt; i32 {
+    x * y * z
+}
+</code></pre>
+<p><code>rustc</code> will emit:</p>
+<pre><code>error[E0308]: arguments to this function are incorrect
+ --&gt; src/main.rs:2:5
+  |
+2 |     foo(&quot;a&quot;, &quot;b&quot;, &quot;c&quot;);
+  |     ^^^ ---  ---  --- expected `i32`, found `&amp;str`
+  |         |    |
+  |         |    expected `i32`, found `&amp;str`
+  |         expected `i32`, found `&amp;str`
+  |
+note: function defined here
+ --&gt; src/main.rs:5:4
+  |
+5 | fn foo(x: i32, y: i32, z: i32) -&gt; i32 {
+  |    ^^^ ------  ------  ------
+</code></pre>
+<p>In contrast, in Red Knot presently, a similar program with similar
+faults actually results in three different diagnostics being rendered:</p>
+<pre><code>error: lint:invalid-argument-type
+ --&gt; /home/andrew/astral/ruff/play/diags/play/test.py:4:11
+  |
+4 | other.foo(&quot;a&quot;, &quot;b&quot;, &quot;c&quot;)
+  |           ^^^ Object of type `Literal[&quot;a&quot;]` cannot be assigned to parameter 1 (`x`) of function `foo`; expected type `int`
+  |
+ ::: /home/andrew/astral/ruff/play/diags/play/other.py:1:9
+  |
+1 | def foo(x: int, y: int, z: int) -&gt; int:
+  |         ------ info: function defined here
+2 |     return x * y * z
+  |
+
+error: lint:invalid-argument-type
+ --&gt; /home/andrew/astral/ruff/play/diags/play/test.py:4:16
+  |
+4 | other.foo(&quot;a&quot;, &quot;b&quot;, &quot;c&quot;)
+  |                ^^^ Object of type `Literal[&quot;b&quot;]` cannot be assigned to parameter 2 (`y`) of function `foo`; expected type `int`
+  |
+ ::: /home/andrew/astral/ruff/play/diags/play/other.py:1:17
+  |
+1 | def foo(x: int, y: int, z: int) -&gt; int:
+  |                 ------ info: function defined here
+2 |     return x * y * z
+  |
+
+error: lint:invalid-argument-type
+ --&gt; /home/andrew/astral/ruff/play/diags/play/test.py:4:21
+  |
+4 | other.foo(&quot;a&quot;, &quot;b&quot;, &quot;c&quot;)
+  |                     ^^^ Object of type `Literal[&quot;c&quot;]` cannot be assigned to parameter 3 (`z`) of function `foo`; expected type `int`
+  |
+ ::: /home/andrew/astral/ruff/play/diags/play/other.py:1:25
+  |
+1 | def foo(x: int, y: int, z: int) -&gt; int:
+  |                         ------ info: function defined here
+2 |     return x * y * z
+  |
+</code></pre>
+<p>Assuming for the sake of argument that we all agree that <code>rustc</code>'s
+diagnostic output is better in this case, this is the sort of thing
+I'll be thinking about as I work on a proposal for a high level
+diagnostic design. But it is definitely not something that is tackled
+by this PR. (I considered it, but I think it requires a fair bit of
+work, and I didn't want to spend a bunch of time on that during a
+prototype.) While <code>rustc</code>'s output requires be able to attach multiple
+annotations to the same snippet of code, it may also require deeper
+changes to how diagnostics themselves are emitted. (For example,
+should such things be merged by the diagnostic rendering, or should
+the type checker somehow know to merge them?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @BurntSushi on 2025-02-18 19:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @BurntSushi on 2025-02-18 19:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @BurntSushi on 2025-02-18 19:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @BurntSushi on 2025-02-18 19:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-02-18 19:26</div>
+            <div class="timeline-body"><p>Here's a screenshot of what this diagnostic improvement looks like:</p>
+<p><img src="https://github.com/user-attachments/assets/f26c278c-7bff-4524-b350-6b46379d7452" alt="diag-example" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/call/bind.rs</code>:329 on 2025-02-18 19:30</div>
+            <div class="timeline-body"><p>I think something like this might be a better message? Since the range highlights the parameter declaration rather than the function definition</p>
+<pre><code class="language-suggestion">                            &quot;parameter declared here&quot;,
+</code></pre>
+<p>or:</p>
+<pre><code class="language-suggestion">                            &quot;parameter declared in function definition here&quot;,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-02-18 19:32</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-02-18 19:32</div>
+            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+
+<!-- __CODSPEED_INSTRUMENTATION_PERFORMANCE_REPORT_COMMENT__ -->
+
+<h2><a href="https://codspeed.io/astral-sh/ruff/branches/ag%2Fmulti-span">CodSpeed Performance Report</a></h2>
+<h3>Merging #16239 will <strong>degrade performances by 17.42%</strong></h3>
+<p><sub>Comparing <code>ag/multi-span</code> (5db203d) with <code>main</code> (e84985e)</sub></p>
+<h3>Summary</h3>
+<p><code>❌ 1 (👁 1)</code> regressions<br />
+<code>✅ 31</code> untouched benchmarks</p>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Benchmark | <code>BASE</code> | <code>HEAD</code> | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| 👁 | <code>red_knot_check_file[incremental]</code> | 4.7 ms | 5.7 ms | -17.42% |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/diagnostics/invalid_argument_type.md</code>:81 on 2025-02-18 19:32</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">## Tests for a variety of argument types
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-02-18 19:33</div>
+            <div class="timeline-body"><p>Do we expect that codspeed regression to be real?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/diagnostics/invalid_argument_type.md</code>:1 on 2025-02-18 19:36</div>
+            <div class="timeline-body"><p>Could you add a test for the case where the &quot;definition&quot; of the function is actually found in one of our stub files (that we vendor from typeshed, found in https://github.com/astral-sh/ruff/tree/main/crates/red_knot_vendored) for the standard library? I'd be curious to see what those diagnostics look like</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-02-18 19:38</div>
+            <div class="timeline-body"><p>Very nice!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-02-18 19:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/red_knot_python_semantic/resources/mdtest/diagnostics/invalid_argument_type.md</code>:1 on 2025-02-18 19:56</div>
+            <div class="timeline-body"><p>Done! Actually looks pretty okay?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @MichaReiser on 2025-02-18 20:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-18 20:08</div>
+            <div class="timeline-body"><p>The regression is certainly real. The red knot benchmark have 0-1% flakiness at best!</p>
+<p>The regression comes from what we discussed on Discord about incrementality and multi-file diagnostics. Red Knot currently incorrectly emits 3 <code>invalid-argument-type</code> diagnostics in <code>_parser.py</code> but the function is defined in <code>_re.py</code>. That means, we now have to re-infer parts of <code>_parser.py</code> because the diagnostic code created a dependency from <code>_parser.py</code> to <code>_re.py</code>'s AST and our benchmark simulates a no-op change to <code>_re.py</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/resources/mdtest/snapshots/invalid_argument_type.md_-_Invalid_argument_type_diagnostics_-_Tests_for_a_variety_of_argument_types_-_Variadic_keyword_arguments.snap</code>:30 on 2025-02-18 20:11</div>
+            <div class="timeline-body"><p>I think you called this out in your summary. But we probably want different messages for the primary span and the diagnostic itself (the diagnostic now lacks a message)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/context.rs</code>:86 on 2025-02-18 20:15</div>
+            <div class="timeline-body"><p>I think you called this out too. We probably want something that scales a little better than a separate function for every combination of arguments :) But I'm fine with this for now</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/diagnostic.rs</code>:280 on 2025-02-18 20:16</div>
+            <div class="timeline-body"><p>I think it's fine. The <code>fatal</code> label should be distinct enough</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-02-18 20:18</div>
+            <div class="timeline-body"><p>This is cool. I agree that the type checker has to do some more heavy lifting to collapse argument errors for a single function into a single diagnostic. But that's not related to your PR</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-02-18 22:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/diagnostics/invalid_argument_type.md</code>:1 on 2025-02-18 22:33</div>
+            <div class="timeline-body"><p>Yeah! Much better than I feared haha 😄</p>
+<p>Ideally I think we'd add some kind of note there that explains that we're showing a snippet from typeshed's stubs there rather than the <em>actual</em> definition of the function in the standard library. (We lookup standard-library symbols in the vendored typeshed stubs instead of the actual standard library because the actual standard library doesn't include type information in its function signatures — and also because much of the actual standard library is written in C). But that can wait for another PR. This looks fine for now!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-02-19 08:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types/call/bind.rs</code>:323 on 2025-02-19 08:56</div>
+            <div class="timeline-body"><p>In the presence of synthetic arguments like <code>self</code>, this matching of argument indices to parameter indices is not always correct, I'm afraid. Consider this example:</p>
+<pre><code class="language-py">class C:
+    def __call__(self, x: int) -&gt; int:
+        return 1
+
+
+c = C()
+c(&quot;wrong&quot;)
+</code></pre>
+<p>which currently results in a wrong highlighting of the <code>self</code> parameter:</p>
+<p><img src="https://github.com/user-attachments/assets/cf821f4f-82d4-4cea-80af-fa9645d73f19" alt="image" /></p>
+<p>It looks like this can be fixed by taking the information from <code>parameter.index</code> instead?</p>
+<pre><code class="language-suggestion">                        let range = func_def
+                            .parameters
+                            .iter()
+                            .nth(parameter.index)
+</code></pre>
+<p>This would also lead to more correct ranges for functions with variadic arguments, where we currently highlight <em>all parameters</em> if the argument index is (seemingly) &quot;out of bounds&quot;:</p>
+<pre><code class="language-py">def f(x: int, *y: str):
+    pass
+
+f(1, &quot;foo&quot;, None)
+</code></pre>
+<p><img src="https://github.com/user-attachments/assets/a04cafaa-ec3d-42fd-b110-0ddad6b8671c" alt="image" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-02-19 12:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/red_knot_python_semantic/src/types/call/bind.rs</code>:323 on 2025-02-19 12:35</div>
+            <div class="timeline-body"><p>Nice catches. I added a regression test for the first case. And I think the second case is covered by an existing test. (The span still points to all parameters, but now it doesn't include the parentheses.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> reviewed on 2025-02-19 13:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on <code>crates/red_knot_python_semantic/resources/mdtest/diagnostics/invalid_argument_type.md</code>:184 on 2025-02-19 13:15</div>
+            <div class="timeline-body"><p>A couple more edge cases to consider (not necessarily as a part of this PR though):</p>
+<ol>
+<li><p>Lambda</p>
+<pre><code class="language-python">f: Callable[[int], int] = lambda lorem: 1
+f('wrong')
+</code></pre>
+</li>
+<li><p>Lambda in class body</p>
+<pre><code class="language-python">class C:
+    f: Callable[[Self, int], int] = lambda self, lorem: 1
+
+C().f('wrong')
+C.f('also', 'wrong')
+</code></pre>
+</li>
+<li><p>Lambda as static method</p>
+<pre><code class="language-python">class C:
+    f: Callable[[int], int] = staticmethod(lambda lorem: 1)
+
+C().f('wrong')
+C.f('wrong')
+</code></pre>
+</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @BurntSushi on 2025-02-19 13:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2025-02-19 13:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-02-19 13:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-02-19 13:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/red_knot_python_semantic/resources/mdtest/diagnostics/invalid_argument_type.md</code>:184 on 2025-02-19 13:49</div>
+            <div class="timeline-body"><p>It looks like we might not be type checking lambdas yet? Not sure:</p>
+<pre><code class="language-py">from typing import Callable
+
+f: Callable[[int], int] = lambda lorem: 1
+f(&quot;wrong&quot;)
+</code></pre>
+<p>Gives:</p>
+<pre><code>[andrew@duff play]$ run-red-knot pr1 -- check
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.08s
+[andrew@duff play]$
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-02-19 13:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/diagnostics/invalid_argument_type.md</code>:184 on 2025-02-19 13:50</div>
+            <div class="timeline-body"><blockquote>
+<p>It looks like we might not be type checking lambdas yet?</p>
+</blockquote>
+<p>Yeah, I think they're blocked on support for <code>Callable[]</code> types</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/call/bind.rs</code>:275 on 2025-02-19 20:48</div>
+            <div class="timeline-body"><p>Sorry for the post-land review; I'm way behind on notifications this week. I think instead of adding <code>callable_ty</code> to every <code>InvalidArgumentType</code>, we should just thread it in from <code>CallBinding::report_diagnostics</code> to <code>CallBindingError::report_diagnostic</code>. We already pass in the <code>callable_name</code>, which is derived from the <code>callable_ty</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/call/bind.rs</code>:322 on 2025-02-19 20:51</div>
+            <div class="timeline-body"><p>As Micha noted in Discord, it would be ideal if we can make this cross-module range-finding lazy at diagnostic rendering time instead. This would both make it easier to avoid doing it in a future &quot;concise&quot; output mode, and would help avoid the unnecessary cross-module AST dependence in cases where this diagnostic is disabled or suppressed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-02-19 20:51</div>
+            <div class="timeline-body"><p>Very nice!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-02-19 21:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/red_knot_python_semantic/src/types/call/bind.rs</code>:275 on 2025-02-19 21:43</div>
+            <div class="timeline-body"><p>Happy to do this. Can you say more about the reasoning? Mostly so that I can try to internalize it and apply it to future work as well. As in, what is the thinking between what is put in the error and what is threaded through to the diagnostic handling outside of the error?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-02-19 21:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/red_knot_python_semantic/src/types/call/bind.rs</code>:322 on 2025-02-19 21:50</div>
+            <div class="timeline-body"><p>I think this could be challenging. My suspicion is that generating diagnostics is going to greatly benefit from the context in which it is generated. Because that's where all of the information is. I imagine this could also create a cliff in producing diagnostics, where a diagnostic across multiple files needs to be written &quot;different&quot; or &quot;specially&quot; than diagnostics within a single file. It would be much nicer, I think, if writing diagnostics didn't need to care about whether it was reaching across multiple files or not.</p>
+<p>Another possible design trajectory is to make the diagnostic production itself aware of whether the diagnostic is enabled or not, and if it is, whether &quot;extra&quot; information should be fetched for it. I think I would call this &quot;conditional diagnostics,&quot; where as &quot;lazy diagnostics&quot; to me implies capturing some state that is cheap at the time of reporting the diagnostic, and then only later near rendering time to use the state to, e.g., inspect the relevant parts of the AST to produce a better diagnostic. In my mind, the &quot;lazy&quot; approach breaks locality of creating diagnostics.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-02-19 22:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/call/bind.rs</code>:275 on 2025-02-19 22:01</div>
+            <div class="timeline-body"><p>There's no deep reasoning, just a small efficiency gain. All errors in a single binding will always share the same callable, it's already always stored on the binding, and individual errors always render their diagnostics through the binding, so the callable is always available from the binding; doesn't seem like there's any compelling reason to duplicate it on each individual error.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-02-19 22:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/red_knot_python_semantic/src/types/call/bind.rs</code>:275 on 2025-02-19 22:03</div>
+            <div class="timeline-body"><p>Gotya. That's super helpful. I think I had an unknown unknown here about the bigger picture of this piece of the code that you filled in. Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-02-19 22:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/call/bind.rs</code>:322 on 2025-02-19 22:09</div>
+            <div class="timeline-body"><p>I don't think I have a strong opinion between those design directions, would defer to you and @MichaReiser; would just like to reclaim some efficiency in these cases if we can.</p>
+<p>(I guess one thing to consider about the concise-output case is the question of whether we want a config change from concise to verbose output to require a full re-check, or if it's actually better to &quot;waste&quot; some work when generating concise output so we can then generate verbose output without re-checking. This maybe becomes more relevant with persistent caching; I can imagine running with concise output by default but then wanting to re-run with verbose output to explore an unclear error.)</p>
+<p>Seems like the main difficulty in the lazy approach is how painful it is to store all the needed context, but I suspect in practice it's not too bad, would just be some Salsa IDs since we can take advantage of Salsa memoization to easily re-query large items like AST. For the conditional diagnostics, it would be how painful it is to make the full diagnostic config available wherever we emit diagnostics.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/diagnostics/invalid_argument_type.md</code>:91 on 2025-02-19 22:12</div>
+            <div class="timeline-body"><p>For what it's worth, I don't expect this to be a difficult feature on the type-checking side; all the errors will already be collected in the same binding, it would just mean moving a bit of logic out into <code>CallBinding::report_diagnostics</code> to &quot;collect&quot; similar errors and emit them together.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-02-19 22:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-19 22:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/call/bind.rs</code>:322 on 2025-02-19 22:16</div>
+            <div class="timeline-body"><p>We discussed this on Discord.</p>
+<p>I consider our CallError etc structs as what @BurntSushi describes as lazy. IMO the main priority is to make diagnostics conditional so that we e.g don't waste time constructing diagnostics for disabled rules or third party code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-02-20 13:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/red_knot_python_semantic/src/types/call/bind.rs</code>:275 on 2025-02-20 13:12</div>
+            <div class="timeline-body"><p>Follow-up is here: https://github.com/astral-sh/ruff/pull/16273</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:49:30 UTC
+    </footer>
+</body>
+</html>

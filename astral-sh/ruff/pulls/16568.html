@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Support multiple overloads when binding parameters at call sites - astral-sh/ruff #16568</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Support multiple overloads when binding parameters at call sites</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/16568">#16568</a>
+        opened by <a href="https://github.com/dcreager">@dcreager</a>
+        on 2025-03-08 17:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dcreager">@dcreager</a> on 2025-03-08 17:40</div>
+            <div class="timeline-body"><p>This updates the <code>Signature</code> and <code>CallBinding</code> machinery to support multiple overloads for a callable.  This is currently only used for <code>KnownFunction</code>s that we special-case in our type inference code.  It does <strong><em>not</em></strong> yet update the semantic index builder to handle <code>@overload</code> decorators and construct a multi-signature <code>Overloads</code> instance for real Python functions.</p>
+<p>While I was here, I updated many of the <code>try_call</code> special cases to use signatures (possibly overloaded ones now) and <code>bind_call</code> to check parameter lists.  We still need some of the mutator methods on <code>OverloadBinding</code> for the special cases where we need to update return types based on some Rust code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @dcreager on 2025-03-08 17:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @dcreager on 2025-03-08 17:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @dcreager on 2025-03-08 17:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @dcreager on 2025-03-08 17:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @dcreager on 2025-03-08 17:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-03-08 17:40</div>
+            <div class="timeline-body"><p>/cc @dhruvmanila</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-03-08 17:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:2390 on 2025-03-08 17:42</div>
+            <div class="timeline-body"><p>This is the one remaining call to <code>from_return_type</code>.  Removing it introduces a salsa cycle.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:2390 on 2025-03-08 19:02</div>
+            <div class="timeline-body"><p>Never mind! Picking up the latest <code>main</code> lets me remove this too...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/types/call/bind.rs</code>:164 on 2025-03-08 19:04</div>
+            <div class="timeline-body"><p>...which lets me address this TODO!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-03-08 19:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:2326 on 2025-03-08 19:08</div>
+            <div class="timeline-body"><p>All of these updates will help separate call binding into two phases, since all of the <code>Signature</code>s that we construct no longer depend on the inferred argument types.  (We still have special case logic to update the return type of the call based on argument types, but that won't conflict with the two-phase change)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:2790 on 2025-03-08 19:11</div>
+            <div class="timeline-body"><p>@mishamsk, I think this is where your work on #16512 would slot back in</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-03-08 19:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mishamsk">@mishamsk</a> reviewed on 2025-03-08 22:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/mishamsk">@mishamsk</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:2790 on 2025-03-08 22:16</div>
+            <div class="timeline-body"><p>Yes. That's exactly what I am changing.</p>
+<p>I see that you've extracted the known classes into separate arms with hard coded signatures. That's awesome as it improves the current code.</p>
+<p>However, as we've decided yesterday I was going to add handling of <code>__new__</code>, which should enable signature inference from the typeshed.</p>
+<p>Not a big deal. If this PR is merged first I'll rebase and adjust accordingly. If mine happens to be first, these additional arms may or may not be necessary.</p>
+<p>This all looks great and I like simpler API to create the outcome! Thanks for keeping me updated too!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/resources/mdtest/descriptor_protocol.md</code>:719 on 2025-03-10 11:24</div>
+            <div class="timeline-body"><p>I'm not suggesting that we have to solve this in your PR but raising multiple diagnostics doesn't seem to be a great user experience.</p>
+<p>I think I'd expect a diagnostic in the form of:</p>
+<ul>
+<li>Failed to call <code>FunctionType.__get__</code> because</li>
+<li>No arguments provided for the required parameters <code>instance</code>, and <code>owner</code> of the overload defined here (...code frame)</li>
+<li>No arguments provided for the required parameter <code>instance</code> of the overload defined here (...code frame).</li>
+</ul>
+<p>However, this does raise an interesting question and may require us to rethink our diagnostic groups because I'd expect that we use the same pattern when one overload can't be called because of a missing argument and another because of an invalid argument type (or too many positional etc)</p>
+<p>Unless emitting a single diagnostic would change your approach in this PR, then I think it's worthwhile to take a closer look on how we want to support this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:2338 on 2025-03-10 11:27</div>
+            <div class="timeline-body"><p>Use <code>Name::new_static</code> here to get a compile time <code>Name</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/signatures.rs</code>:29 on 2025-03-10 11:31</div>
+            <div class="timeline-body"><p>We should document that <code>overloads</code> should be non-empty, considering that this is a <code>pub(crate)</code> interface or change the signature to <code>from_overloads(first: Signature&lt;'db&gt;, rest: I)</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-03-10 11:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-03-10 11:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/descriptor_protocol.md</code>:719 on 2025-03-10 11:54</div>
+            <div class="timeline-body"><p>I like mypy's diagnostics for overloads quite a lot. I find them very readable and helpful: https://mypy-play.net/?mypy=latest&amp;python=3.12&amp;gist=7bd36f8b5b3fce49a59f4bdfb34c5fef</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-03-10 14:50</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/resources/mdtest/descriptor_protocol.md</code>:719 on 2025-03-10 16:52</div>
+            <div class="timeline-body"><p>It doesn't change the binding machinery.  For now, I've updated this PR to print out a single new <code>no-matching-overload</code> error, mimicking Alex's mypy link, which is only shown when there are multiple overloads in the thing you're trying to call.  If you call a non-overloaded function, you get the existing multiple diagnostics for each parameter error.</p>
+<p>The information is there to add sub-diagnostics about how each particular overload failed, which I think we should tackle in future PRs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:2338 on 2025-03-10 16:52</div>
+            <div class="timeline-body"><p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/types/signatures.rs</code>:29 on 2025-03-10 16:52</div>
+            <div class="timeline-body"><p>Done (documented, not changed API)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-03-10 16:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/diagnostics/invalid_argument_type.md</code>:207 on 2025-03-10 19:36</div>
+            <div class="timeline-body"><p>Why is this test located in <code>invalid_argument_type.md</code>? It looks to me like this is an arity error, not an argument type issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/call/bind.rs</code>:26 on 2025-03-10 20:18</div>
+            <div class="timeline-body"><p>There's a fair bit more complexity involved in fully binding overloads according to the spec. See https://github.com/python/typing/pull/1839 for the proposed spec, which isn't merged yet but will likely be merged in something similar to that form.</p>
+<p>(Not suggesting to do more of it in this PR, just that the TODO comment could be broader.)</p>
+<p>One particular item that might be worth noting in the context of your next steps around splitting call checking, is that the spec says overloads should first all be checked for arity match, and only matching ones should be checked for type assignability. I don't think this actually changes the effective semantics, but it should be better for perf. (It might just be what falls out naturally with call splitting.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/call/bind.rs</code>:175 on 2025-03-10 21:41</div>
+            <div class="timeline-body"><p>There should perhaps be a TODO here as well, as the specified overload-matching algorithm has quite a few wrinkles missing from this description.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/call/bind.rs</code>:201 on 2025-03-10 22:02</div>
+            <div class="timeline-body"><p>Would it be simpler to frame (and implement) this as <code>self.matching_overload().is_none()</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/call/bind.rs</code>:230 on 2025-03-10 22:07</div>
+            <div class="timeline-body"><p>I'm not sure we should actually do this. It can cause a lot of bogus cascading errors due to getting an argument wrong at a call site. It is likely the case that subsequent code may be (correctly) written to handle only one or some of the possible overload results, and evaluating it as if it were required to handle any possible overload result will probably result in false positives.</p>
+<p>I think this should just be <code>Unknown</code> (or arguably <code>Never</code>, but we've typically preferred <code>Unknown</code> in such cases) instead.</p>
+<p>(Of course we should keep the prior special case in case there's actually just one &quot;overload&quot;; in that case we know the correct return type.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3431 on 2025-03-10 22:34</div>
+            <div class="timeline-body"><p>Orthogonal to this PR, but since you've changed this line: should this use <code>overload.two_parameter_types()</code> as below?</p>
+<p>Or alternately, do we not really need those per-arity methods, when it's this easy to just match directly on <code>overload.parameter_types()</code>?</p>
+<p>(Feel free to do nothing with this comment in this PR.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:2355 on 2025-03-10 22:43</div>
+            <div class="timeline-body"><p>None of this depends on any context from the current call; what with union construction and all, it feels like a lot of work to be unnecessarily repeating on every call to any <code>__get__</code> method? I wonder how much difference it would make to memoize this behind a zero-argument Salsa query?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:2393 on 2025-03-10 22:46</div>
+            <div class="timeline-body"><p>It feels like we ought to be able to unify this with the previous case, which is a degenerate case. E.g. do we really need both signatures, or just this one and call it with prepended <code>self</code> type above?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-03-10 23:00</div>
+            <div class="timeline-body"><p>This is excellent, thank you!</p>
+<p>None of my comments are blocking, any/all can become TODO comments (if that).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> approved on 2025-03-11 08:20</div>
+            <div class="timeline-body"><p>These changes looks good to me 👍</p>
+<p>I don't think this needs to be addressed in this PR but I think using the term &quot;overloads&quot; for a function with a single signature (no <code>@overload</code>) is a bit confusing although I do see why that might be required. One possibility would be to use <code>Signatures</code> (plural) instead of <code>Overloads</code> which can either be a <code>Single</code> signature or an <code>Overloaded</code> variant which has a list of signatures.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/resources/mdtest/diagnostics/invalid_argument_type.md</code>:207 on 2025-03-11 14:31</div>
+            <div class="timeline-body"><p>Moved it into a new <code>no_matching_overloads.md</code> file</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/types/call/bind.rs</code>:26 on 2025-03-11 14:36</div>
+            <div class="timeline-body"><p>Thanks for the link to the proposed spec, that's very helpful!</p>
+<p>I've updated this TODO to call out that we'll only type-check against overloads whose arity matches.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/types/call/bind.rs</code>:175 on 2025-03-11 14:42</div>
+            <div class="timeline-body"><p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/types/call/bind.rs</code>:201 on 2025-03-11 14:43</div>
+            <div class="timeline-body"><p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/types/call/bind.rs</code>:230 on 2025-03-11 14:47</div>
+            <div class="timeline-body"><p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3431 on 2025-03-11 15:31</div>
+            <div class="timeline-body"><blockquote>
+<p>Or alternately, do we not really need those per-arity methods, when it's this easy to just match directly on <code>overload.parameter_types()</code>?</p>
+</blockquote>
+<p>Went with this. The main drawback is that matching against the slice gives you <code>&amp;Type</code> references, so there are a couple of places where you have to add some dereferences.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:2355 on 2025-03-11 15:35</div>
+            <div class="timeline-body"><p>Yeah I had also thought about a <code>LazyLock</code>, but that wouldn't work because of how you need the <code>db</code> to construct things.  The nullary Salsa query is a good suggestion!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:2393 on 2025-03-11 15:46</div>
+            <div class="timeline-body"><p>Added a TODO for this one</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-03-11 16:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-03-11 18:07</div>
+            <div class="timeline-body"><blockquote>
+<p>I don't think this needs to be addressed in this PR but I think using the term &quot;overloads&quot; for a function with a single signature (no <code>@overload</code>) is a bit confusing although I do see why that might be required. One possibility would be to use <code>Signatures</code> (plural) instead of <code>Overloads</code> which can either be a <code>Single</code> signature or an <code>Overloaded</code> variant which has a list of signatures.</p>
+</blockquote>
+<p>Per discussion in Discord, I've renamed this to <code>CallableSignature</code> and <code>Signature</code>. As part of #15460 we'll need to add a third level to this to track the signature of a <em>union</em> of callables, and we want to reserve the concise name <code>Signatures</code> for that, since it will soon become the type that the rest of the type inference code refers to most often by name. So we'll end up with a three-level structure: <code>Signatures</code>, which is a possible union of <code>CallableSignature</code>s, each of which is a possibly overloaded collection of <code>Signature</code>s.</p>
+<p>We'll also want to mimic that structure on the binding side, where (as of this PR) we have <code>CallOutcome</code> / <code>CallBinding</code> / <code>OverloadBinding</code>, but I suggest tackling that renaming separately.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dcreager on 2025-03-11 19:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dcreager on 2025-03-11 19:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-03-11 19:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types/diagnostic.rs</code>:484 on 2025-03-11 19:52</div>
+            <div class="timeline-body"><p>Minor point: it's not necessarily true that this will raise a <code>TypeError</code>. Calling a function with arguments of the wrong type can result in any kind of error, or none at all.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types/diagnostic.rs</code>:491 on 2025-03-11 19:53</div>
+            <div class="timeline-body"><p>Maybe we can choose something else as an example here, because <code>int</code> is a supertype of <code>bool</code>, which would mean that the second overload would never be selected(?).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-03-11 19:57</div>
+            <div class="timeline-body"><p>Very nice work — just two minor post-merge comments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-03-11 20:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/call/bind.rs</code>:29 on 2025-03-11 20:11</div>
+            <div class="timeline-body"><p>I specifically called out the arity thing (that's step 1 and 2 in the proposed spec), but there are also a number of other wrinkles, like union-argument expansion (step 3), preference for variadic signature matches to variadic arguments (step 4), and special handling for non-fully-static argument types matching multiple arguments (step 5). Not at all urgent, but at some point would be good to broaden this TODO comment even more to cover these things, as long as we haven't yet implemented them.</p>
+<p>EDIT: oh, actually perhaps this is sufficiently covered by the TODO on CallBinding below.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-03-11 20:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/call/bind.rs</code>:307 on 2025-03-11 20:13</div>
+            <div class="timeline-body"><p>Did you decide against the parallel rename here, where this would just be <code>Binding</code>, and we'd have <code>CallableBinding</code> and <code>Bindings</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/types/call/bind.rs</code>:307 on 2025-03-11 20:42</div>
+            <div class="timeline-body"><p>I had planned on doing that in a follow-on PR, which also renames/consolidates <code>CallOutcome</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-03-11 20:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-03-11 20:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/types/call/bind.rs</code>:29 on 2025-03-11 20:43</div>
+            <div class="timeline-body"><p>Right, here I wanted to focus on the bit about only type-checking the overloads that arity-match</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:49:32 UTC
+    </footer>
+</body>
+</html>

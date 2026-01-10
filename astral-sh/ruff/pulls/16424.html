@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[pylint] Fix convert a code keyword argument to a positional argument (PLR1722) - astral-sh/ruff #16424</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[pylint] Fix convert a code keyword argument to a positional argument (PLR1722)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/16424">#16424</a>
+        opened by <a href="https://github.com/VascoSch92">@VascoSch92</a>
+        on 2025-02-27 21:50
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/VascoSch92">@VascoSch92</a> on 2025-02-27 21:50</div>
+            <div class="timeline-body"><p>The PR addresses issue #16396 .</p>
+<p>Specifically:</p>
+<ul>
+<li>If the exit statement contains a code keyword argument, it is converted into a positional argument.</li>
+<li>If retrieving the code from the exit statement is not possible, a violation is raised without suggesting a fix.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-02-27 22:04</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-02-27 23:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ntBre by @MichaReiser on 2025-02-28 08:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/pylint/rules/sys_exit_alias.rs</code>:97 on 2025-02-28 19:55</div>
+            <div class="timeline-body"><p>I think you can simplify this to:</p>
+<pre><code class="language-suggestion">    let arg = call.arguments.find_argument_value(&quot;code&quot;, 0);
+
+    let code = if let Some(arg) = arg {
+        &amp;checker.source()[arg.range()]
+    } else {
+        // if it is not possible to retrieve the code, just a violation is raised
+        checker.report_diagnostic(diagnostic);
+        return;
+    };
+</code></pre>
+<p><code>Arguments::find_argument_value</code> is a really handy method for this kind of thing, and we can just slice the <code>checker.source</code> instead of doing the parsing stuff you have here. <code>find_argument_value</code> will already ensure the argument isn't starred (as in your nice <code>**dict</code> case). Additionally, this will allow us to accept variable arguments that are not starred. I'm surprised that none of the existing test cases had something like this:</p>
+<pre><code class="language-python">if success:
+    code = 0
+else:
+    code = 1
+
+exit(code)
+</code></pre>
+<p>We should add a test case where we fix that because I think it's a reasonable use case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/pylint/rules/sys_exit_alias.rs</code>:105 on 2025-02-28 19:56</div>
+            <div class="timeline-body"><p>If you accept my change above, you also need to remove the <code>:?</code> from the <code>code</code> format here to avoid  quotes around the result.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> requested changes on 2025-02-28 20:00</div>
+            <div class="timeline-body"><p>Thanks! I think we can simplify the implementation a bit here and also support more use cases at the same time.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-02-28 20:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/pylint/rules/sys_exit_alias.rs</code>:97 on 2025-02-28 20:06</div>
+            <div class="timeline-body"><p>Even this is slightly overly-restrictive because it would exclude a valid starred expression like:</p>
+<pre><code class="language-python">import sys
+
+code = [1]
+sys.exit(*code)
+</code></pre>
+<p>but that's arguably an issue with <code>find_positional</code> itself, I think.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/VascoSch92">@VascoSch92</a> on 2025-03-01 12:44</div>
+            <div class="timeline-body"><p>Hey @ntBre</p>
+<p>thank you very much for the feedback. Yes, my solution was pretty convoluted. I suspected there it was a better way to do it but I could not find how ;-)</p>
+<p>Everything works fine.</p>
+<p>I also added the test cases that you suggested and it seems that the output it is what expected.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ntBre by @VascoSch92 on 2025-03-01 12:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/pylint/rules/sys_exit_alias.rs</code>:72 on 2025-03-02 16:15</div>
+            <div class="timeline-body"><p>Sorry for not catching this on the first round, but I just realized that with the new <code>format!</code> replace down below, we will end up replacing a call like <code>exit(2, 3, 4)</code> with just <code>exit(2)</code>. That's an invalid call to begin with, but I think we probably shouldn't drop the extra arguments, even in an unsafe fix.</p>
+<p>The other unfortunate thing about <code>format!</code> is that we will drop the first two comments in a snippet like this:</p>
+<pre><code class="language-python">exit( # comment
+    1, # 2
+    ) # 3
+</code></pre>
+<p>This is a pretty contrived example, and I think simple calls like <code>exit(1)</code> are definitely the most common, but I think we can still handle it more carefully without too much more work.</p>
+<p>As a result, I would propose this diff:</p>
+<pre><code class="language-diff">diff --git a/crates/ruff_linter/src/rules/pylint/rules/sys_exit_alias.rs b/crates/ruff_linter/src/rules/pylint/rules/sys_exit_alias.rs
+index 41a32eafb..f9950567c 100644
+--- a/crates/ruff_linter/src/rules/pylint/rules/sys_exit_alias.rs
++++ b/crates/ruff_linter/src/rules/pylint/rules/sys_exit_alias.rs
+@@ -70,14 +70,17 @@ pub(crate) fn sys_exit_alias(checker: &amp;Checker, call: &amp;ExprCall) {
+         call.func.range(),
+     );
+
+-    let arg = call.arguments.find_argument_value(&quot;code&quot;, 0);
+-    let code = if let Some(arg) = arg {
+-        &amp;checker.source()[arg.range()]
+-    } else {
+-        // if it is not possible to retrieve the code, just a violation is raised
++    let has_star_kwargs = call
++        .arguments
++        .keywords
++        .iter()
++        .any(|kwarg| kwarg.arg.is_none());
++
++    // only one optional argument allowed, and we can't convert **kwargs
++    if call.arguments.len() &gt; 1 || has_star_kwargs {
+         checker.report_diagnostic(diagnostic);
+         return;
+-    };
++    }
+
+     diagnostic.try_set_fix(|| {
+         let (import_edit, binding) = checker.importer().get_or_import_symbol(
+@@ -85,8 +88,15 @@ pub(crate) fn sys_exit_alias(checker: &amp;Checker, call: &amp;ExprCall) {
+             call.func.start(),
+             checker.semantic(),
+         )?;
+-        let reference_edit = Edit::range_replacement(format!(&quot;{binding}({code})&quot;), call.range);
+-        Ok(Fix::unsafe_edits(import_edit, [reference_edit]))
++        let reference_edit = Edit::range_replacement(binding, call.func.range());
++        let mut edits = vec![reference_edit];
++        if let Some(kwarg) = call.arguments.find_keyword(&quot;code&quot;) {
++            edits.push(Edit::range_replacement(
++                checker.source()[kwarg.value.range()].to_string(),
++                kwarg.range,
++            ));
++        };
++        Ok(Fix::unsafe_edits(import_edit, edits))
+     });
+     checker.report_diagnostic(diagnostic);
+ }
+</code></pre>
+<p>Along with a few new test cases:</p>
+<pre><code class="language-python"># comments preserved with a positional argument
+exit( # comment
+    1, # 2
+    ) # 3
+
+# comments preserved with a single keyword argument
+exit( # comment
+    code=1, # 2
+    ) # 3
+
+# no diagnostic for multiple arguments
+exit(2, 3, 4)
+
+# this should now be fixable
+codes = [1]
+exit(*codes)
+</code></pre>
+<p>This will convert a <code>code</code> keyword without dropping any comments, avoid a diagnostic on weird calls like <code>exit(2, 3, 4)</code>, allow a fix for <code>*args</code>, and still avoid a fix for <code>**kwargs</code>. What do you think?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-03-02 16:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/VascoSch92">@VascoSch92</a> reviewed on 2025-03-02 18:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/VascoSch92">@VascoSch92</a> on <code>crates/ruff_linter/src/rules/pylint/rules/sys_exit_alias.rs</code>:72 on 2025-03-02 18:57</div>
+            <div class="timeline-body"><p>It makes sense. I start always from the point that the python source code is correct, but I understand your point.</p>
+<p>I added the new test cases and updated the code ;-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ntBre by @VascoSch92 on 2025-03-02 18:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-03-03 14:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/pylint/rules/sys_exit_alias.rs</code>:72 on 2025-03-03 14:19</div>
+            <div class="timeline-body"><p>I think that's the right approach :)</p>
+<p>The main thing here was avoiding the <code>format!</code> call to save comments. We probably could have omitted the arguments length check but it seemed easy enough to throw in.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> approved on 2025-03-03 14:20</div>
+            <div class="timeline-body"><p>This looks great, thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ntBre on 2025-03-03 14:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-03-03 14:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-03-03 14:31</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:49:31 UTC
+    </footer>
+</body>
+</html>

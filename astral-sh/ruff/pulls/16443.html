@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document `LinterResult::has_syntax_error` and add `Parsed::has_no_errors` - astral-sh/ruff #16443</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Document <code>LinterResult::has_syntax_error</code> and add <code>Parsed::has_no_errors</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/16443">#16443</a>
+        opened by <a href="https://github.com/ntBre">@ntBre</a>
+        on 2025-02-28 17:18
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ntBre">@ntBre</a> on 2025-02-28 17:18</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This is a follow up addressing the comments on #16425. As @dhruvmanila pointed out, the naming is a bit tricky. I went with <code>has_no_errors</code> to try to differentiate it from <code>is_valid</code>. It actually ends up negated in most uses, so it would be more convenient to have <code>has_any_errors</code> or <code>has_errors</code>, but I thought it would sound too much like the opposite of <code>is_valid</code> in that case. I'm definitely open to suggestions here.</p>
+<h2>Test Plan</h2>
+<p>Existing tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @ntBre on 2025-02-28 17:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">parser</span> added by @ntBre on 2025-02-28 17:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @ntBre on 2025-02-28 17:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @ntBre on 2025-02-28 17:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-02-28 17:27</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/lib.rs</code>:361 on 2025-03-03 05:54</div>
+            <div class="timeline-body"><p>It seems that we use <code>!has_no_errors</code> in most places so I'd optimize for that instead i.e., use <code>has_errors</code> or <code>has_any_error</code> or <code>contains_errors</code> or <code>has_syntax_errors</code> (similar to the field on <code>LinterResult</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/tests/fixtures.rs</code>:42 on 2025-03-03 05:55</div>
+            <div class="timeline-body"><p>I think we should now rename the variable <code>is_valid</code> to match the method name. If it's only being used once we can just inline the method call there instead.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/tests/fixtures.rs</code>:104 on 2025-03-03 05:55</div>
+            <div class="timeline-body"><p>Same as above.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> approved on 2025-03-03 05:57</div>
+            <div class="timeline-body"><p>Thanks for doing this.</p>
+<p>Regardless of the name choice, I think it might be useful to keep it consistent throughout the code base i.e., keep the method name same as variable name and field name on <code>LinterResult</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-03-03 07:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/lib.rs</code>:351 on 2025-03-03 07:58</div>
+            <div class="timeline-body"><p>Not specifically related to this PR but it seems a good opportunity. How about:</p>
+<ul>
+<li>Add a method <code>has_invalid_syntax</code> or <code>is_invalid_syntax</code> as the opposite of <code>is_valid</code> (we could also rename <code>is_valid</code> to <code>has_valid_syntax</code> or <code>is_valid_syntax</code>. It's still somewhat ambigious by what it mean but I think it works well with unsupported syntax (which technically is valid, it's just unsupported)</li>
+<li>Rename the new method to <code>has_syntax_errors</code> and <code>has_no_syntax_errors</code>?</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-03-03 07:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @ntBre on 2025-03-03 15:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @ntBre on 2025-03-03 15:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @ntBre on 2025-03-03 15:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-03-03 15:26</div>
+            <div class="timeline-body"><p>Thanks for the suggestions! There are now four methods here:</p>
+<ul>
+<li><code>has_valid_syntax</code></li>
+<li><code>has_invalid_syntax</code></li>
+<li><code>has_syntax_errors</code></li>
+<li><code>has_no_syntax_errors</code></li>
+</ul>
+<p>and I checked the references for each of the original methods and replaced negations with the new, negated methods.</p>
+<p>I also inlined the <code>is_valid</code> variables that @dhruvmanila pointed out.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-03-03 15:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/lib.rs</code>:354 on 2025-03-03 15:54</div>
+            <div class="timeline-body"><p>I think i'd prefer to use the term parse errors or a more detailed description over using <em>syntax errors</em>. The description otherwise doesn't make it clear how it is different from <code>has_syntax_erros</code>.</p>
+<p>But it's tricky with all those being syntax errors.</p>
+<p>Another option is to rename <code>unsupported_syntax_errors</code> to <code>has_unsupported_syntax</code> (which would match <code>has_invalid_syntax</code>) or <code>has_no_unsupported_syntax</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-03-03 15:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_parser/src/lib.rs</code>:354 on 2025-03-03 15:58</div>
+            <div class="timeline-body"><p>Oh good catch. I can even link to the <code>ParseError</code> and <code>UnsupportedSyntaxError</code> types like I did in the new methods.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ntBre on 2025-03-04 13:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-03-04 13:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-03-04 13:35</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:49:31 UTC
+    </footer>
+</body>
+</html>

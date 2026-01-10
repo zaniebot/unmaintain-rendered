@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] avoid inferring types if unpacking fails - astral-sh/ruff #16530</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] avoid inferring types if unpacking fails</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/16530">#16530</a>
+        opened by <a href="https://github.com/mtshiba">@mtshiba</a>
+        on 2025-03-06 10:31
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/mtshiba">@mtshiba</a> on 2025-03-06 10:31</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR closes #15199.</p>
+<p>The change I just made is to set all variables to type <code>Unknown</code> if unpacking fails, but in some cases this may be excessive.
+For example:</p>
+<pre><code class="language-py">a, b, c = &quot;ab&quot;
+reveal_type(a)  # Unknown, but it would be reasonable to think of it as LiteralString
+reveal_type(c)  # Unknown
+</code></pre>
+<pre><code class="language-py"># Failed to unpack before the starred expression
+(a, b, *c, d, e) = (1,)
+reveal_type(a)  # Unknown
+reveal_type(b)  # Unknown
+...
+# Failed to unpack after the starred expression
+(a, b, *c, d, e) = (1, 2, 3)
+reveal_type(a)  # Unknown, but should it be Literal[1]?
+reveal_type(b)  # Unknown, but should it be Literal[2]?
+reveal_type(c)  # Todo
+reveal_type(d)  # Unknown
+reveal_type(e)  # Unknown
+</code></pre>
+<p>I will modify it if you think it would be better to make it a different type than just <code>Unknown</code>.</p>
+<h2>Test Plan</h2>
+<p>I have made appropriate modifications to the test cases affected by this change, and also added some more test cases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @mtshiba on 2025-03-06 10:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @mtshiba on 2025-03-06 10:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @mtshiba on 2025-03-06 10:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @mtshiba on 2025-03-06 10:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2025-03-06 10:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/resources/mdtest/unpacking.md</code>:65 on 2025-03-07 09:44</div>
+            <div class="timeline-body"><p>We should probably move this comment at the top as it's related to multiple test cases. I'd also remove the behavior comparison from the document.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/resources/mdtest/unpacking.md</code>:93 on 2025-03-07 09:46</div>
+            <div class="timeline-body"><p>It might be worth expanding your previous comment to state that this behavior is only for the <em>current</em> unpacking and if there are any unpacking in the outer context or a nested unpacking which are valid, then the inference still happens correctly.</p>
+<p>This matches the behavior of mypy: https://mypy-play.net/?mypy=latest&amp;python=3.13&amp;gist=d1986f8345de346c91188f530b71a3e9&amp;flags=show-traceback,strict.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/resources/mdtest/unpacking.md</code>:260 on 2025-03-07 09:49</div>
+            <div class="timeline-body"><p>I think this should be <code>Unknown</code> as well. Otherwise, once this todo is fixed, we might start inferring it as <code>list[Unknown]</code> which could seem like a special case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types/unpacker.rs</code>:261 on 2025-03-07 09:59</div>
+            <div class="timeline-body"><p>We can simplify this entire branch because (a) we want to avoid the <code>list[Unknown]</code> as I mentioned above and (b) every element would need to be <code>Unknown</code>.</p>
+<p>So, we should keep the error reporting and then directly create a vector of <code>Unknowns</code> that is exactly equal to the number of targets:</p>
+<pre><code class="language-rs">return Cow::Owned(vec![Type::unknown(); targets.len()]);
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types/unpacker.rs</code>:124 on 2025-03-07 10:05</div>
+            <div class="timeline-body"><p>I think the value of this is not exactly what it represents because in <code>tuple_ty_elements</code> method, we would return a vector of unknowns that's exactly the same length as the number of targets but that's mainly because the error message is a little bit different in that case.</p>
+<p>I don't think there's any action item here except that I'd probably rename this variable to something like <code>length_mismatch</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> requested changes on 2025-03-07 10:05</div>
+            <div class="timeline-body"><p>Thank you for doing this! There are couple of changes around simplification and using <code>Unknown</code> even in the case of starred unpacking but otherwise this looks good.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @mtshiba on 2025-03-07 18:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-03-07 19:03</div>
+            <div class="timeline-body"><p>Looks good to me with the changes from Dhruv's review!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @carljm on 2025-03-07 19:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-03-07 19:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-03-09 03:57</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:49:32 UTC
+    </footer>
+</body>
+</html>

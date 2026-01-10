@@ -1,0 +1,1154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Method calls and the descriptor protocol - astral-sh/ruff #16121</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Method calls and the descriptor protocol</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/16121">#16121</a>
+        opened by <a href="https://github.com/sharkdp">@sharkdp</a>
+        on 2025-02-12 15:16
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-02-12 15:16</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR achieves the following:</p>
+<ul>
+<li>Add support for checking method calls, and inferring return types from method calls. For example:<pre><code class="language-py">reveal_type(&quot;abcde&quot;.find(&quot;abc&quot;))  # revealed: int
+reveal_type(&quot;foo&quot;.encode(encoding=&quot;utf-8&quot;))  # revealed: bytes
+
+&quot;abcde&quot;.find(123)  # error: [invalid-argument-type]
+
+class C:
+    def f(self) -&gt; int:
+        pass
+
+reveal_type(C.f)  # revealed: &lt;function `f`&gt;
+reveal_type(C().f)  # revealed: &lt;bound method: `f` of `C`&gt;
+
+C.f()  # error: [missing-argument]
+reveal_type(C().f())  # revealed: int
+</code></pre>
+</li>
+<li>Implement the descriptor protocol, i.e. properly call the <code>__get__</code> method when a descriptor object is accessed through a class object or an instance of a class. For example:<pre><code class="language-py">from typing import Literal
+
+class Ten:
+    def __get__(self, instance: object, owner: type | None = None) -&gt; Literal[10]:
+        return 10
+
+class C:
+    ten: Ten = Ten()
+
+reveal_type(C.ten)  # revealed: Literal[10]
+reveal_type(C().ten)  # revealed: Literal[10]
+</code></pre>
+</li>
+<li>Add support for member lookup on intersection types.</li>
+<li>Support type inference for <code>inspect.getattr_static(obj, attr)</code> calls. This was mostly used as a debugging tool during development, but seems more generally useful. It can be used to bypass the descriptor protocol. For the example above:<pre><code class="language-py">from inspect import getattr_static
+
+reveal_type(getattr_static(C, &quot;ten&quot;))  # revealed: Ten
+</code></pre>
+</li>
+<li>Add a new <code>Type::Callable(…)</code> variant with the following sub-variants:<ul>
+<li><code>Type::Callable(CallableType::BoundMethod(…))</code> — represents bound method objects, e.g. <code>C().f</code> above</li>
+<li><code>Type::Callable(CallableType::MethodWrapperDunderGet(…))</code> — represents <code>f.__get__</code> where <code>f</code> is a function</li>
+<li><code>Type::Callable(WrapperDescriptorDunderGet)</code> — represents <code>FunctionType.__get__</code></li>
+</ul>
+</li>
+<li>Add new known classes:<ul>
+<li><code>types.MethodType</code></li>
+<li><code>types.MethodWrapperType</code></li>
+<li><code>types.WrapperDescriptorType</code></li>
+<li><code>builtins.range</code></li>
+</ul>
+</li>
+</ul>
+<h2>Performance analysis</h2>
+<p>On this branch, we do more work. We need to do more call checking, since we now check all method calls. We also need to do ~twice as many member lookups, because we need to check if a <code>__get__</code> attribute exists on accessed members.</p>
+<p>A brief analysis on <code>tomllib</code> shows that we now call <code>Type::call</code> 1780 times, compared to 612 calls before. ~~We also emit 18 additional diagnostics, which might also explain some of the performance regression.~~</p>
+<p>I did some wall time benchmarks as well and only find a minor 1% regression on <code>black</code>, and a 6% regression on <code>tomllib</code>.</p>
+<h2><code>black</code></h2>
+<p>| Command | Mean [ms] | Min [ms] | Max [ms] | Relative |
+|:---|---:|---:|---:|---:|
+| <code>./red_knot_feature check --project ~/black</code> | 184.1 ± 8.1 | 166.1 | 193.2 | 1.01 ± 0.07 |
+| <code>./red_knot_main check --project ~/black</code> | 182.7 ± 10.1 | 164.1 | 194.6 | 1.00 |</p>
+<h2><code>tomllib</code></h2>
+<p>| Command | Mean [ms] | Min [ms] | Max [ms] | Relative |
+|:---|---:|---:|---:|---:|
+| <code>./red_knot_feature check --project ~/tomllib</code> | 24.6 ± 0.9 | 22.7 | 26.7 | 1.06 ± 0.06 |
+| <code>./red_knot_main check --project ~/tomllib</code> | 23.2 ± 1.1 | 21.3 | 29.0 | 1.00 |</p>
+<h2>Limitations</h2>
+<ul>
+<li>Data descriptors are not yet supported, i.e. we do not infer correct types for descriptor attribute accesses in <code>Store</code> context and do not check writes to descriptor attributes. I felt like this was something that could be split out as a follow-up without risking a major architectural change.</li>
+<li>We currently distinguish between <code>Type::member</code> (with descriptor protocol) and <code>Type::static_member</code> (without descriptor protocol). The former corresponds to <code>obj.attr</code>, the latter corresponds to <code>getattr_static(obj, &quot;attr&quot;)</code>. However, to model some details correctly, we would also need to distinguish between a static member lookup <em>with</em> and <em>without</em> instance variables. The lookup without instance variables corresponds to <code>find_name_in_mro</code> <a href="https://docs.python.org/3/howto/descriptor.html#invocation-from-an-instance">here</a>. We currently approximate both using <code>member_static</code>, which leads to two open TODOs. Changing this would be a larger refactoring of <code>Type::own_instance_member</code>, so I chose to leave it out of this PR.</li>
+</ul>
+<p>Please let me know if you would like to see any or both of these limitations be solved in this PR instead.</p>
+<h2>Test Plan</h2>
+<ul>
+<li>New <code>call/methods.md</code> test suite for method calls</li>
+<li>New tests in <code>descriptor_protocol.md</code></li>
+<li>New <code>call/getattr_static.md</code> test suite for <code>inspect.getattr_static</code></li>
+<li>Various updated tests</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @sharkdp on 2025-02-12 15:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-02-17 15:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/literal_string.md</code>:76 on 2025-02-17 15:24</div>
+            <div class="timeline-body"><p>It doesn't look like it, but this is progress. We now understand attribute access on <code>StringLiteral</code> types, but <code>str.join</code> is an <code>@overload</code>ed method.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-02-17 15:27</div>
+            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+
+<!-- __CODSPEED_INSTRUMENTATION_PERFORMANCE_REPORT_COMMENT__ -->
+
+<h2><a href="https://codspeed.io/astral-sh/ruff/branches/david%2Fdescriptor-protocol">CodSpeed Performance Report</a></h2>
+<h3>Merging #16121 will <strong>degrade performances by 6.88%</strong></h3>
+<p><sub>Comparing <code>david/descriptor-protocol</code> (05d689d) with <code>main</code> (f62e540)</sub></p>
+<h3>Summary</h3>
+<p><code>❌ 1 (👁 1)</code> regressions<br />
+<code>✅ 31</code> untouched benchmarks</p>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Benchmark | <code>BASE</code> | <code>HEAD</code> | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| 👁 | <code>red_knot_check_file[incremental]</code> | 5.1 ms | 5.5 ms | -6.88% |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-02-17 15:29</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-02-17 20:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ruff_benchmark/benches/red_knot.rs</code>:76 on 2025-02-17 20:14</div>
+            <div class="timeline-body"><p>So these simply happen because we don't understand protocols yet, and don't understand that <code>int</code> is assignable to <code>SupportsIndex</code>.</p>
+<p>I invested 20 min trying to get rid of these by treating <code>Protocol</code> as a dynamic <code>@Todo</code> base, but ran into problems and decided to simply add these for now. Let me know if you think we should patch this somehow until we add proper support for protocols.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-02-17 20:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/attributes.md</code>:856 on 2025-02-17 20:16</div>
+            <div class="timeline-body"><p>Member access on intersection types is a pre-existing TODO that I did not solve in this PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-02-17 20:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/attributes.md</code>:1007 on 2025-02-17 20:22</div>
+            <div class="timeline-body"><p>So this change is probably unexpected, but I'm not sure it's important enough to fix just for this test. A static member lookup of <code>getattr_static(f, &quot;__defaults__&quot;)</code> still gives us <code>@Todo(full tuple[...] support) | None</code> like before, but when we now look up <code>__get__</code> on this type, we get <code>@Todo(…)</code> from the first element of the union, and <code>Symbol::Unbound</code> from the second element of the union (<code>None</code>). We then call <code>UnionType::map_with_boundness</code> to combine those into a single symbol, which ends up being a possibly-unbound <code>@Todo(…)</code> type. This is why the <code>None</code> has vanished from the union.</p>
+<p>A new TODO comment in <code>types.rs</code> mentions how this should/could be solved eventually (e.g. with a <code>Symbol::Union</code> variant), but I didn't want to include a <code>Symbol</code> refactor in this branch.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/descriptor_protocol.md</code>:25 on 2025-02-17 20:39</div>
+            <div class="timeline-body"><p>This change — and similar ones below — are not strictly needed, but I didn't want to see <code>Unknown</code> everywhere. We have a new test for undeclared descriptors further down below.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-02-17 20:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-02-17 20:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/scopes/moduletype_attrs.md</code>:12 on 2025-02-17 20:43</div>
+            <div class="timeline-body"><p>When we now look up <code>types.ModuleType.__loader__</code>, we try to access the <code>__get__</code> member on <code>LoaderProtocol | None</code>, which triggers this <code>@Todo</code>. I thought this wasn't important enough to fix this, but let me know if you think otherwise.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-02-18 08:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/attributes.md</code>:1009 on 2025-02-18 08:56</div>
+            <div class="timeline-body"><p>I didn't introduce any special handling of <code>__call__</code> in this PR, but we might want to model this as <code>&lt;method-wrapper '__call__' of 'f'&gt;</code>, similar to <code>__get__</code>, if we need any special-casing in <code>Type::call</code> for it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-02-18 09:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/descriptor_protocol.md</code>:132 on 2025-02-18 09:10</div>
+            <div class="timeline-body"><p>I didn't consider this high priority, so it's left as a TODO for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-02-18 11:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:4669 on 2025-02-18 11:18</div>
+            <div class="timeline-body"><p>This whole logic here was simply extracted into a function. The logic itself didn't change.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @sharkdp on 2025-02-18 11:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @sharkdp on 2025-02-18 11:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @sharkdp on 2025-02-18 11:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @sharkdp on 2025-02-18 11:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @sharkdp on 2025-02-18 19:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/attributes.md</code>:856 on 2025-02-19 01:00</div>
+            <div class="timeline-body"><p>Related to the discussion about descriptor protocol for unions in Discord, I suspect that handling this correctly (not in this PR) will require following the descriptor protocol separately for each member of the intersection and then intersecting the results, whether this is done manually in the descriptor protocol implementation or via some kind of generalized support that we add for this &quot;map some arbitrary, possibly composite, type operation over a union/intersection&quot; pattern.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/attributes.md</code>:1037 on 2025-02-19 01:07</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">bools are instances of that class:
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/descriptor_protocol.md</code>:232 on 2025-02-19 01:21</div>
+            <div class="timeline-body"><p>I haven't looked at the implementation yet, but this struck me as a TODO that might result in significant architecture changes if deferred? I could be wrong, though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/scopes/moduletype_attrs.md</code>:12 on 2025-02-19 01:23</div>
+            <div class="timeline-body"><p>We should of course fix this <code>@Todo</code> at some point, but I agree there's no need to do that in this PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:955 on 2025-02-19 03:44</div>
+            <div class="timeline-body"><p>I'm slightly concerned about how many of these type properties are being defined based on <code>Type::Callable</code> being a single-valued / singleton type, which will not be true of a more general <code>Type::Callable</code>. But I guess it makes sense to do this for now and leave it up to future work to decide how to change this, since it's not totally clear yet if we'll want to keep these single-valued variants or switch to a general callable type for bound methods and method wrappers. (We will need to keep the specific variants if we want to keep e.g. the fallbacks to <code>MethodType</code> and <code>WrapperDescriptorType</code>, and if we keep the specific variants, I'm not even sure they should be grouped under the same <code>Type</code> variant as general callable types, which would call into question the use of the <code>Type::Callable</code> name here.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff_benchmark/benches/red_knot.rs</code>:70 on 2025-02-19 03:45</div>
+            <div class="timeline-body"><p>This comment now seems misplaced.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff_benchmark/benches/red_knot.rs</code>:76 on 2025-02-19 03:46</div>
+            <div class="timeline-body"><p>I think it's fine to just have these as known false positives for now</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1910 on 2025-02-19 06:57</div>
+            <div class="timeline-body"><p>It would only make sense to emit a diagnostic if there's no default given, right?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:2602 on 2025-02-19 06:59</div>
+            <div class="timeline-body"><p>So if I understand correctly, these were added only so that we could special case them as &quot;not descriptors&quot; because they are relied on by our test suite?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1532 on 2025-02-19 07:07</div>
+            <div class="timeline-body"><p>I do think this describes what we need to do correctly, but I'm still not totally convinced that embedding this in <code>Symbol</code> is the best implementation approach, vs abstracting the concept of mapping an operation (expressed as a callback) over a type (which may be a union or intersection). This avoids having to package up a union or intersection of symbols inside <code>Symbol</code> (making it another representation of union or intersection outside Type).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1606 on 2025-02-19 07:12</div>
+            <div class="timeline-body"><p>Is there a reason we don't handle this the same as <code>Type::ClassLiteral</code>? Is that incorrect for a reason I'm missing, or does it result in some problems?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-02-19 07:26</div>
+            <div class="timeline-body"><p>This is looking pretty good to me! Left a few comments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-02-19 07:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:2602 on 2025-02-19 07:56</div>
+            <div class="timeline-body"><p>Yes. It's not even required for our current test cases. I saw uses of <code>memoryview</code> in our tests (probably just as a way to construct &quot;some&quot; distinct type different from <code>str</code>, <code>int</code>, …). And I wanted to avoid any sort of surprises if someone were to create a <code>memoryview</code> attribute somewhere, before we implement generics and protocols.</p>
+<p>I'm also fine with removing these again.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:955 on 2025-02-19 08:00</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm slightly concerned about how many of these type properties are being defined based on <code>Type::Callable</code> being a single-valued / singleton type, which will not be true of a more general <code>Type::Callable</code></p>
+</blockquote>
+<p>Yes, this is why I explicitly matched on these three variants, instead of a generic <code>Type::Callable(…)</code> pattern.</p>
+<blockquote>
+<p>and if we keep the specific variants, I'm not even sure they should be grouped under the same <code>Type</code> variant as general callable types, which would call into question the use of the <code>Type::Callable</code> name here.</p>
+</blockquote>
+<p>I'm fine with choosing another name for this <code>Type</code> variant right now, if we think that it avoids confusion once we add a generic <code>Callable</code> type.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-02-19 08:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1910 on 2025-02-19 08:00</div>
+            <div class="timeline-body"><p>Yes. I'll update the TODO comment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-02-19 08:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-02-19 08:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/descriptor_protocol.md</code>:232 on 2025-02-19 08:06</div>
+            <div class="timeline-body"><p>This TODO refers to the second &quot;limitation&quot; in the PR description:</p>
+<blockquote>
+<p>We currently distinguish between <code>Type::member</code> (with descriptor protocol) and <code>Type::static_member</code> (without descriptor protocol). The former corresponds to <code>obj.attr</code>, the latter corresponds to <code>getattr_static(obj, &quot;attr&quot;)</code>. However, to model some details correctly, we would also need to distinguish between a static member lookup <em>with</em> and <em>without</em> instance variables. The lookup without instance variables corresponds to <code>find_name_in_mro</code> <a href="https://docs.python.org/3/howto/descriptor.html#invocation-from-an-instance">here</a>. We currently approximate both using <code>member_static</code>, which leads to two open TODOs. Changing this would be a larger refactoring of <code>Type::own_instance_member</code>, so I chose to leave it out of this PR.</p>
+</blockquote>
+<blockquote>
+<p>might result in significant architecture changes if deferred</p>
+</blockquote>
+<p>Yes. I think it will require us to split <code>static_member</code> into two methods, a parametrized method, or something similar. I do not think that it requires any significant changes to the logic being added in this PR. Ideally, we would just replace one <code>.static_member(…)</code> lookup with a <code>.find_in_mro(…)</code> lookup, but I could be wrong.</p>
+<p>I can try to look into this today and potentially add it to this PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-02-19 13:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/attributes.md</code>:1007 on 2025-02-19 13:27</div>
+            <div class="timeline-body"><p>This change is now gone.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-02-19 13:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1532 on 2025-02-19 13:29</div>
+            <div class="timeline-body"><p>This comment is now removed, and we properly support unions by matching on them explicitly. This was implemented in a fraction of the time that it took me to write this comment :upside_down_face:.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-02-19 13:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1606 on 2025-02-19 13:32</div>
+            <div class="timeline-body"><blockquote>
+<p>Is there a reason we don't handle this the same as <code>Type::ClassLiteral</code>?</p>
+</blockquote>
+<p>Not really, except that I thought you mentioned something regarding <code>SubtypeOf</code> being slightly more complex (https://github.com/astral-sh/ruff/issues/15948?), and that it would be okay to leave it as a TODO. But I was now &quot;forced&quot; to move this pattern to the <code>ClassLiteral</code> branch due to some test failures, so your reasoning seems correct :+1:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-02-19 13:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/attributes.md</code>:856 on 2025-02-19 13:43</div>
+            <div class="timeline-body"><p>Ok, I added support for intersections now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @sharkdp on 2025-02-19 15:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/descriptor_protocol.md</code>:232 on 2025-02-19 16:11</div>
+            <div class="timeline-body"><p>I did look into this and got quite far, but I'd prefer to postpone this, and focus on what's in this PR first. There's also some interaction between this and <em>data</em> descriptors (because we would do a non-instance-member lookup, then check if <code>__set__</code> is available, and only fall back on an instance-member-lookup if it's not available), which are also not supported yet.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-02-19 16:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/display.rs</code>:99 on 2025-02-19 17:42</div>
+            <div class="timeline-body"><p>Nit: I would probably use <code>write!</code> here</p>
+<pre><code class="language-suggestion">                write!(
+                    f, 
+                    &quot;&lt;bound method `{method}` of `{instance}`&gt;`&quot;,
+                    method = bound_method.function(self.db).name(self.db),
+                    instance = bound_method.self_instance(self.db).display(self.db)
+                )?;
+</code></pre>
+<p>And the same for the other <code>Callable</code> handler</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1537 on 2025-02-19 17:48</div>
+            <div class="timeline-body"><p>I don't think this needs to be done but I've a slight preference if this method would already return a <code>Result</code> and
+that we instead add a <code>TODO</code> at the call sites that suppress the error handling. Doing this now also ensures that new call sites <em>have</em> to think about handling the error or it requires an explicit TODO comment if they can't (e.g. because it's a call in <code>.memeber</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1608 on 2025-02-19 17:49</div>
+            <div class="timeline-body"><p>Could we add a <code>TODO</code> here that it should return a <code>Result</code> instead of the <code>Symbol</code> directly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1798 on 2025-02-19 17:52</div>
+            <div class="timeline-body"><p>Should this error if the first argument is <code>None</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:2075 on 2025-02-19 17:53</div>
+            <div class="timeline-body"><p>Nit: It might be worth introducing a <code>CallArguments::emppy</code> or a static?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:3793 on 2025-02-19 17:54</div>
+            <div class="timeline-body"><p>Is this guaranteed to be an <code>InstanceType</code> or could it be something else? If not, should this be <code>InstanceTYpe</code> instead of <code>Type</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-02-19 17:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-02-19 19:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:2602 on 2025-02-19 19:15</div>
+            <div class="timeline-body"><p>I see the rationale for adding them, but I do worry that we'll forget to remove them again when they're no longer needed... <code>memoryview</code> in particular is kind of wacky, since it's pretty obscure relative to most other builtin classes 😆</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/call/getattr_static.md</code>:1 on 2025-02-19 19:24</div>
+            <div class="timeline-body"><p>is it worth also adding examples of what we infer when <code>inspect.getattr_static</code> is passed a dynamic string?</p>
+<pre><code class="language-py">class Foo:
+    attr: int
+
+def f(x: str, y: list):
+    reveal_type(getattr_static(Foo(), x)
+    reveal_type(getattr_static(Foo(), x, &quot;bar&quot;)
+    reveal_type(getattr_static(Foo(), x, y)
+</code></pre>
+<p>and when it is passed invalid arguments?</p>
+<pre><code class="language-py">class Foo:
+    attr: int
+
+def f(x: str):
+    reveal_type(getattr_static(Foo(), 42))
+    reveal_type(getattr_static(Foo(), &quot;attr&quot;, &quot;bar&quot;, &quot;baz&quot;))
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/call/methods.md</code>:22 on 2025-02-19 19:26</div>
+            <div class="timeline-body"><p>it could be useful to link to the Descriptor HOWTO somewhere from this first paragraph (and possibly Brent's blogpost unravelling attribute access too!)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-02-19 19:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:3793 on 2025-02-19 19:28</div>
+            <div class="timeline-body"><p>This can contain all kinds of types. For example, if we call <code>&quot;foo&quot;.find</code>, the bound method type contains a <code>Type::StringLiteral</code> instance. And I could imagine that this extra precision (over falling back to <code>str</code>) might be helpful later if a class method dispatches on the type of <code>self</code>, for example.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/call/methods.md</code>:26 on 2025-02-19 19:32</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">function attribute. The way the special `__get__` method *on functions* works is as follows. In
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/call/methods.md</code>:27 on 2025-02-19 19:32</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">the former case, if the `instance` argument is `None`, `__get__` simply returns the function itself. In
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/call/methods.md</code>:86 on 2025-02-19 19:39</div>
+            <div class="timeline-body"><p>Fun Python esoteric knowledge that is probably irrelevant here, but which you may find interesting: if there are extra attributes present in a function's instance <code>__dict__</code> (e.g. attributes that have been monkey-patched onto the function), those attributes are also accessible from a bound method derived from the function. E.g.</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; def foo(self): pass
+... 
+&gt;&gt;&gt; foo.bar = 42
+&gt;&gt;&gt; method = foo.__get__(object())
+&gt;&gt;&gt; method
+&lt;bound method foo of &lt;object object at 0x1022307b0&gt;&gt;
+&gt;&gt;&gt; method.bar
+42
+&gt;&gt;&gt; foo.bar = 56
+&gt;&gt;&gt; method.bar
+56
+</code></pre>
+<p>I'm not sure exactly whether attributes are first looked up in the underlying function's instance dictionary or the class dictionary of <code>types.MethodType</code>.</p>
+<p>Anyway, probably irrelevant for us here, as I say!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/descriptor_protocol.md</code>:88 on 2025-02-19 19:53</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">Descriptors that define `__set__` or `__delete__` are called *data descriptors*. An example
+of a data descriptor is a `property` with a setter and/or a deleter.
+Descriptors that only define `__get__`, meanwhile, are called *non-data descriptors*. Examples include
+functions, `classmethod` or `staticmethod`).
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-02-19 19:54</div>
+            <div class="timeline-body"><p>Just a partial review of the tests so far -- but I will continue reviewing tomorrow :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/attributes.md</code>:1048 on 2025-02-20 00:38</div>
+            <div class="timeline-body"><p>Not related to this PR, but just noticed it:</p>
+<pre><code class="language-suggestion">All attribute access on literal `bytes` types is currently delegated to `builtins.bytes`:
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/descriptor_protocol.md</code>:112 on 2025-02-20 00:43</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        # This explains why data descriptors come first in the precedence chain. If
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/descriptor_protocol.md</code>:232 on 2025-02-20 00:45</div>
+            <div class="timeline-body"><p>All makes sense, sounds good!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:955 on 2025-02-20 07:05</div>
+            <div class="timeline-body"><p>Eh, I'm not sure we're clear enough on what things will look like with a generic callable type to make such decisions now, so I think we should just leave it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1798 on 2025-02-20 07:09</div>
+            <div class="timeline-body"><p>No, first argument being <code>None</code> is the signal that the descriptor is being called on a class instead of an instance, it's not an error; returning the function itself is correct in that case (for a function <code>__get__</code>) and matches the runtime behavior.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:2602 on 2025-02-20 07:11</div>
+            <div class="timeline-body"><p>Yeah I would also be inclined to remove the <code>memoryview</code> one; <code>range</code> it seems plausible to me that we might want to special-case at some point, but <code>memoryview</code> not really. And I don't think it's likely that our tests will ever do more with it than they do today, which is use it as an opaque built-in type that's distinct from other builtin types. (Maybe those tests would be clearer and simpler, if a bit more verbose, if they just created classes <code>A</code>, <code>B</code>, <code>C</code> etc, instead of using a bunch of builtin types.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1606 on 2025-02-20 07:19</div>
+            <div class="timeline-body"><p>Oh, calling <code>SubclassOf</code> is more complex because <code>__init__</code> and <code>__new__</code> overrides aren't required to obey Liskov, so calling a <code>SubclassOf</code> type is inherently unsound. I don't think this applies to member access or descriptor handling, though. (Well, potentially it could apply to member access of <code>__init__</code> or <code>__new__</code> method on a <code>SubclassOf</code> type, since this would also be unsound. But that would be handled as a special case, doesn't need to affect anything in this PR.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-02-20 07:24</div>
+            <div class="timeline-body"><p>This looks really good to me! The cold-check regression (6% on tomllib, 1% on black) seems well within the range of expectations considering the added complexity we are modeling here and the extra work required to model it. (I do wonder whether making <code>try_call_dunder_get</code> a Salsa query might be a win here, if it means we don't have to repeatedly try to access <code>__get__</code> member on many types that don't even have it.</p>
+<p>Or if making <code>own_instance_member</code> a query (to fix https://github.com/astral-sh/ruff/issues/16172) could help -- did we already try that, or just discuss it on Discord? It definitely seems plausible that all the extra instance-member-getting we do here (of <code>__get__</code> methods) could be causing a new direct cross-module AST dependency in our benchmark.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-02-20 08:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1798 on 2025-02-20 08:41</div>
+            <div class="timeline-body"><p>Yes, thank you! I'm now modelling this much more precisely by creating a <code>Signature</code> dynamically, which let's us catch all kinds of call errors. This also revealed two minor mistakes in one of the descriptor tests where I was passing a function <code>f</code> as the <code>owner</code> argument, instead of <code>type(f)</code>. Check out the changes in this commit: 28e37cbbea957b03cafbebda761dba2815a61699</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-02-20 08:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1798 on 2025-02-20 08:45</div>
+            <div class="timeline-body"><blockquote>
+<p>No, first argument being <code>None</code> is the signal that the descriptor is being called on a class instead of an instance, it's not an error</p>
+</blockquote>
+<p>I think we need to distinguish Rust's <code>None</code> and Python's <code>None</code>. We handle a Python <code>None</code> correctly already. What @MichaReiser was referring to was probably a Rust <code>None</code>, i.e. that no parameter is passed at all. This was <em>not</em> handled correctly, but it is now fixed with the referenced commit.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-02-20 08:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:2602 on 2025-02-20 08:53</div>
+            <div class="timeline-body"><p>Ok. Removed <code>memoryview</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-02-20 08:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:2602 on 2025-02-20 08:54</div>
+            <div class="timeline-body"><blockquote>
+<p>Maybe those tests would be clearer and simpler, if a bit more verbose, if they just created classes A, B, C etc, instead of using a bunch of builtin types</p>
+</blockquote>
+<p>I agree; will note it down as a low-prio todo</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-02-20 09:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/call/methods.md</code>:22 on 2025-02-20 09:25</div>
+            <div class="timeline-body"><p>Brent? :stuck_out_tongue:</p>
+<p>I linked to <a href="https://docs.python.org/3/howto/descriptor.html#functions-and-methods">this section</a> in the descriptor guide now. We already refer to the full descriptor guide in <code>descriptor_protocol.md</code>, but this section is about <code>FunctionType.__get__</code> specifically.</p>
+<p>Brett's post doesn't mention bound methods at all, but I'll probably link to that as well when I work on the follow up which distinguishes between <code>getattr_static</code>/<code>Type::static_member</code> and <code>find_name_in_mro</code> :+1:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-02-20 09:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/call/methods.md</code>:86 on 2025-02-20 09:47</div>
+            <div class="timeline-body"><p>Yes. Bound methods simply keep a reference to the function in a <code>im_func</code> member …</p>
+<p>https://github.com/python/cpython/blob/10b32054ad6bce821e3b40101d4414d025be6e36/Objects/classobject.c#L124</p>
+<p>… which they expose via <code>bound_method.__func__</code> here …</p>
+<p>https://github.com/python/cpython/blob/10b32054ad6bce821e3b40101d4414d025be6e36/Objects/classobject.c#L161C32-L161C38</p>
+<p>… and they fall back to looking up attributes on the function in <code>getattr</code> here:</p>
+<p>https://github.com/python/cpython/blob/10b32054ad6bce821e3b40101d4414d025be6e36/Objects/classobject.c#L212</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/descriptor_protocol.md</code>:1 on 2025-02-20 10:50</div>
+            <div class="timeline-body"><p>Do we have any tests that demonstrate our behaviour when a non-data descriptor is overridden on an instance? This is another case where, while it works at runtime, I think it's questionable whether we want to allow it, as it's often indicative of a user mistake IMO. For example, you could have something like this, where a non-data descriptor is used to log all accesses of an underlying attribute:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; import datetime, pprint
+&gt;&gt;&gt; LOG = []
+&gt;&gt;&gt; class LoggedAccessList:
+...     def __set_name__(self, owner, name):
+...         self.public_name = name
+...         self._private_name = f&quot;_{name}&quot;
+...         setattr(owner, self._private_name, [])
+... 
+...     def __get__(self, instance, owner):
+...         if instance is None:
+...             return self
+...         LOG.append(f&quot;List {self.public_name!r} on {instance.__class__.__name__!r} object was accessed and possibly modified at {datetime.datetime.now().strftime('%d/%m/%y %H:%M:%S')}&quot;)
+...         return getattr(instance, self._private_name)
+...         
+&gt;&gt;&gt; class Foo:
+...     bar = LoggedAccessList()
+...     
+&gt;&gt;&gt; f = Foo()
+&gt;&gt;&gt; f.bar
+[]
+&gt;&gt;&gt; f.bar
+[]
+&gt;&gt;&gt; pprint.pp(LOG, width=100)
+[&quot;List 'bar' on 'Foo' object was accessed and possibly modified at 20/02/25 10:48:10&quot;,
+ &quot;List 'bar' on 'Foo' object was accessed and possibly modified at 20/02/25 10:48:11&quot;]
+</code></pre>
+<p>Since <code>LoggedAccessList</code> is a non-data descriptor here, it's possible to override it on instances... but now accesses to the underlying list are no longer logged:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; f.bar = []
+&gt;&gt;&gt; f.bar
+[]
+&gt;&gt;&gt; f.bar
+[]
+&gt;&gt;&gt; # there are no more log entries than there were before...
+&gt;&gt;&gt; LOG
+[&quot;List 'bar' on 'Foo' object was accessed and possibly modified at 20/02/25 10:48:10&quot;, &quot;List 'bar' on 'Foo' object was accessed and possibly modified at 20/02/25 10:48:11&quot;]
+</code></pre>
+<p>Since it works at runtime, perhaps this is too strict a rule to be enabled by default, but I'd love to have a disabled-by-default rule prohibiting non-data descriptors from being overridden in this way. If you want a descriptor to be overridable, you should really give it an explicit <code>__set__</code> method IMO.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/descriptor_protocol.md</code>:38 on 2025-02-20 10:53</div>
+            <div class="timeline-body"><pre><code class="language-suggestion"># TODO: This should be an error (as the wrong type is being implicitly passed to `Ten.__set__`),
+# but the error message is misleading.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/descriptor_protocol.md</code>:42 on 2025-02-20 10:53</div>
+            <div class="timeline-body"><pre><code class="language-suggestion"># TODO: same as above
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/descriptor_protocol.md</code>:143 on 2025-02-20 10:57</div>
+            <div class="timeline-body"><p>hmm... I suppose this is consistent behaviour, though I don't really love it. We should consider having an option which, when enabled, would cause us to disallow them to be overridden on the class object. If that option was enabled, we could just use the return type of <code>__get__</code> without the <code>Unknown |</code> union for the type of the attribute when accessed on instances or classes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/descriptor_protocol.md</code>:269 on 2025-02-20 10:59</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">attributes, since that attribute could be overwritten externally. Even a data descriptor with a
+`__set__` method can be overwritten when accessed through a class object.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/descriptor_protocol.md</code>:274 on 2025-02-20 11:02</div>
+            <div class="timeline-body"><p>I know this specific example is showing what happens if a descriptor is <em>set</em> on the class object. But the <code>__get__</code> signature here implies that if the attribute is <em>read</em> (rather than <em>set</em>) on the class, we should emit an error, since <code>None</code> would be passed as the first argument to <code>__get__</code> in that case. Is that correct?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/descriptor_protocol.md</code>:285 on 2025-02-20 11:03</div>
+            <div class="timeline-body"><p>should this have a TODO next to it about how this would change to <code>Literal[&quot;something else&quot;]</code> if we did local-scope narrowing of attributes based on assignments?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/descriptor_protocol.md</code>:391 on 2025-02-20 11:06</div>
+            <div class="timeline-body"><p>haha! Taking literate testing to the next level by integrating the assertion as part of a sentence 🤣</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-02-20 11:08</div>
+            <div class="timeline-body"><p>The tests are fantastic! Looking at the code now...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/call/methods.md</code>:86 on 2025-02-20 11:10</div>
+            <div class="timeline-body"><p>Ah yes, and of course that's visible from Python if you do something like this -- the attribute in the <code>MethodType</code> class dictionary takes precedence over the attribute in the function's instance dictionary!</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; def foo(): ...
+... 
+&gt;&gt;&gt; foo.__hash__ = 42
+&gt;&gt;&gt; method = foo.__get__(object())
+&gt;&gt;&gt; method.__hash__
+&lt;method-wrapper '__hash__' of method object at 0x102ed0a40&gt;
+</code></pre>
+<p>I was obviously lacking imagination last night 😄</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-02-20 11:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-02-20 11:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/descriptor_protocol.md</code>:1 on 2025-02-20 11:14</div>
+            <div class="timeline-body"><p>Another idea for a test: a non-callable <code>__set__</code> method:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; class Foo:
+...     def __get__(self, instance, owner):
+...         return 42
+...     __set__ = None
+...     
+&gt;&gt;&gt; class Bar:
+...     foo = Foo()
+...     
+&gt;&gt;&gt; b = Bar()
+&gt;&gt;&gt; b.foo
+42
+&gt;&gt;&gt; b.foo = 56
+Traceback (most recent call last):
+  File &quot;&lt;python-input-60&gt;&quot;, line 1, in &lt;module&gt;
+    b.foo = 56
+    ^^^^^
+TypeError: 'NoneType' object is not callable
+</code></pre>
+<p>Interestingly, the traceback range from CPython looks kind-of off there -- it should probably highlight the whole attribute assignment rather than just the left-hand side</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/signatures.rs</code>:76 on 2025-02-20 11:22</div>
+            <div class="timeline-body"><p>this makes me wonder whether we should implement <code>FromIterator</code> for <code>Parameters</code>. But I suppose we don't really need it right now; <code>new()</code> seems like it leads to more readable code for our current use cases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:636 on 2025-02-20 11:25</div>
+            <div class="timeline-body"><p>I assume you've checked that all the stable property tests pass with the changes to <code>Type::is_subtype_of()</code>, etc.? :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1500 on 2025-02-20 11:36</div>
+            <div class="timeline-body"><p>Should we have a TODO here about how we need to take the <code>LiteralString</code> overloads in the <code>str</code> methods if it's a method access on <code>LiteralString</code>, once we understand overloads? Or will that just naturally take care of itself?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1514 on 2025-02-20 11:39</div>
+            <div class="timeline-body"><p>While this isn't <em>wrong</em>, there might be some methods here where we could do quite a lot better than typeshed's stubs. Typeshed's stubs basically assume that <code>self</code> is a homogeneous tuple, but <code>Type::Tuple</code> in our model is a heterogeneous tuple.</p>
+<p>I don't know if it's actually worth it to add any special casing here; I haven't really spent that much time thinking about it... it might at least be worth a TODO comment to look into the question?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1537 on 2025-02-20 12:06</div>
+            <div class="timeline-body"><p>could you possibly add some doc-comments explaining what it means if this function returns <code>Ok(None)</code>, and how that differs from returning an <code>Err()</code> variant?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1417 on 2025-02-20 12:09</div>
+            <div class="timeline-body"><p>It looks like we now have this special case in both <code>Type::member()</code> and <code>Type::static_member()</code>. Do we <em>need</em> it on both?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1605 on 2025-02-20 12:19</div>
+            <div class="timeline-body"><p>Hmm, okay. I think the fun esoterics I was mentioning in https://github.com/astral-sh/ruff/pull/16121#discussion_r1962267062 <em>are</em> relevant here, actually! For example, typeshed declares a <code>__kwdefaults__</code> attribute on <code>types.FunctionType</code>, but not on <code>types.MethodType</code>. But the <code>__kwdefaults__</code> attribute can be accessed on methods too (it just delegates to the underlying function, as we discussed):</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; def f(self): ...
+... 
+&gt;&gt;&gt; method = f.__get__(object())
+&gt;&gt;&gt; method.__kwdefaults__ is None
+True
+</code></pre>
+<p>IDK if this is something we should model explicitly here or not, though. Typeshed's stubs appear to assume elsewhere that type checkers will <em>not</em> model this attribute delegation: it has these properties declared in the stub for <code>types.MethodType</code> even though they do not appear at runtime: https://github.com/python/typeshed/blob/ac8f2632ec37bb4a82ade0906e6ce9bdb33883d3/stdlib/types.pyi#L463-L468, because of the fact that accessing these properties on an instance of <code>types.MethodType</code> will always just grab the attribute from the underlying function object. So perhaps we could fix this issue by just adding some more properties to the typeshed stub, rather than accurately modeling the runtime semantics here. It might be more performant.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1866 on 2025-02-20 12:22</div>
+            <div class="timeline-body"><p>the construction of these parameter types looks like it could possibly be cached as a Salsa query? That <em>might</em> improve the perf here a bit?</p>
+<p>Simply cloning a short array of <code>Type</code>s might be more performant than constructing a new one from scratch each time, given that constructing a new one from scratch requires many Salsa db lookups, but cloning a <code>Type</code> should be cheap since most variants are just a u32</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:3745 on 2025-02-20 12:26</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">/// This type represents bound method objects that are created when a method is accessed
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-02-20 12:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:2067 on 2025-02-20 12:32</div>
+            <div class="timeline-body"><p>I think this gives us less-than-ideal behaviour for something like this:</p>
+<pre><code class="language-py">from inspect import getattr_static
+from typing import Any, reveal_type
+
+def _(x: Any):
+    reveal_type(getattr_static(x, &quot;foo&quot;, 42))
+</code></pre>
+<p>We reveal <code>Any</code> here on this branch, but a more precise type would be <code>Any | Literal[42]</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-02-20 12:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-02-20 12:32</div>
+            <div class="timeline-body"><p>This is fantastic -- great work!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-02-20 12:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/descriptor_protocol.md</code>:1 on 2025-02-20 12:37</div>
+            <div class="timeline-body"><blockquote>
+<p>the traceback range from CPython looks kind-of off there -- it should probably highlight the whole attribute assignment rather than just the left-hand side</p>
+</blockquote>
+<p>I guess you could argue that a mere access of that descriptor object <em>in store-context</em> is an error, as it would necessarily invoke a call to <code>__set__</code>? For example, if you had <code>for b.foo in iterable: ...</code>, it's reasonable to only highlight the <code>b.foo</code> as the loop variable (which is what CPython does for that case).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-02-20 12:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/descriptor_protocol.md</code>:1 on 2025-02-20 12:39</div>
+            <div class="timeline-body"><p>Yeah, fair point -- and I think you're right that that's probably why we end up with that range. It still looks odd to a user in this specific case IMO, though!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/descriptor_protocol.md</code>:285 on 2025-02-20 12:51</div>
+            <div class="timeline-body"><p>I added a comment without a TODO.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-02-20 12:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-02-20 12:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/descriptor_protocol.md</code>:143 on 2025-02-20 12:58</div>
+            <div class="timeline-body"><blockquote>
+<p>we could just use the return type of <strong>get</strong> without the Unknown | union for the type of the attribute when accessed on instances or classes.</p>
+</blockquote>
+<p>Yes. This is how I initially modeled it, but then Carl rightly pointed out that they can be overwritten on the class.</p>
+<blockquote>
+<p>consider having an option</p>
+</blockquote>
+<p>I can't really tell how much demand there would be for an option like this. I'm going to assume it's fine to defer this for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-02-20 12:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/descriptor_protocol.md</code>:143 on 2025-02-20 12:59</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm going to assume it's fine to defer this for now.</p>
+</blockquote>
+<p>of course</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-02-20 13:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/descriptor_protocol.md</code>:274 on 2025-02-20 13:01</div>
+            <div class="timeline-body"><blockquote>
+<p>But the <code>__get__</code> signature here implies that if the attribute is <em>read</em> (rather than <em>set</em>) on the class, we should emit an error, since <code>None</code> would be passed as the first argument to <code>__get__</code> in that case. Is that correct?</p>
+</blockquote>
+<p>I you access <code>C.descriptor</code> on the class itself, <code>None</code> would be passed as the <code>instance</code> argument, yes. But that should not produce an error. <code>None</code> is compatible with <code>object</code>. This <code>__get__</code> method here was not supposed to distinguish between class-based or instance-based access.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-02-20 13:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/descriptor_protocol.md</code>:274 on 2025-02-20 13:03</div>
+            <div class="timeline-body"><blockquote>
+<p><code>None</code> is compatible with <code>object</code></p>
+</blockquote>
+<p>duh, of course. Sorry, I guess I forgot this was the case :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-02-20 13:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:2067 on 2025-02-20 13:16</div>
+            <div class="timeline-body"><p>I suppose this would probably require some maybe-ugly special casing for dynamic types...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-02-20 13:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:636 on 2025-02-20 13:34</div>
+            <div class="timeline-body"><p>Ahem, yes, of course… <em>cough</em>.</p>
+<p>Completely forgot. But they do pass. Even after I now added <code>FunctionLiteral</code> and <code>Type::Callable(Callable::BoundMethod(…))</code> as new types.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-02-20 13:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1500 on 2025-02-20 13:37</div>
+            <div class="timeline-body"><blockquote>
+<p>Or will that just naturally take care of itself?</p>
+</blockquote>
+<p>I assume we're going to test on all kinds of types once we add support for overloads. And nothing would need to be changed in this particular place. We would grab the static member of <code>str</code> here, and it would be some overloaded <code>Callable</code> type. We would then bind an instance of <code>LiteralString</code> to it, and later dispatch on the type of <code>self</code> when calling that bound method.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1417 on 2025-02-20 13:54</div>
+            <div class="timeline-body"><p>Hm. In a previous iteration of my implementation, we needed both — but that does not seem to be the case anymore. In fact, the one in <code>static_member</code> is wrong! Because what we actually get from <code>getattr_static(x, &quot;__class__&quot;)</code> is a <code>getset_descriptor</code> (of type <code>GetSetDescriptorType</code>), i.e. a callable, and not a string. I'm going to assume it's not a high priority to model this precisely right now. I removed the branch in <code>static_member</code>, which means that we fall back to the <code>object.__class__</code> annotation from typeshed, which we do not understand yet.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-02-20 13:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-02-20 14:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:2067 on 2025-02-20 14:04</div>
+            <div class="timeline-body"><blockquote>
+<p>but a more precise type would be <code>Any | Literal[42]</code></p>
+</blockquote>
+<p>I don't think so. <code>Any</code> is the correct type for this example. If the attribute <code>foo</code> actually exists, it could literally be of <em>any</em> type:</p>
+<pre><code class="language-py">class C:
+    foo = True
+
+_(C())  # would reveal a type of `bool`, which is not gradual-equivalent to `Any | Literal[42]`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-02-20 14:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:2067 on 2025-02-20 14:09</div>
+            <div class="timeline-body"><blockquote>
+<p>I don't think so. <code>Any</code> is the correct type for this example. If the attribute <code>foo</code> actually exists, it could literally be of <em>any</em> type:</p>
+</blockquote>
+<p>Right... but if it doesn't exist, the returned value of <code>getattr_static(x, &quot;foo&quot;, 42)</code> will be <code>42</code>. By including <code>Literal[42]</code> in the union, we force the user to make sure that any operations they attempt on the returned value are valid for values of type <code>Literal[42]</code>.</p>
+<p>Anyway, this obviously shouldn't block merging; it's a pretty minor issue in the broader scheme of things.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-02-20 14:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1605 on 2025-02-20 14:23</div>
+            <div class="timeline-body"><p>Thanks for pointing it out once more. I simply modeled that fallback correctly now. See a7a6a2a0f10b63021716890b066d4d2ec4d5f4d4</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1619 on 2025-02-20 14:27</div>
+            <div class="timeline-body"><p>Does this work?</p>
+<pre><code class="language-suggestion">                    KnownClass::MethodType
+                        .to_instance(db)
+                        .member(db, name)
+                        .or_fall_back_to(db, || {
+                            // If an attribute is not available on the bound method object,
+                            // it will be looked up on the underlying function object:
+                            Type::FunctionLiteral(bound_method.function(db)).member(db, name)
+                        })
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/call/methods.md</code>:97 on 2025-02-20 14:30</div>
+            <div class="timeline-body"><p><code>__kwdefaults__</code> might be a better example here, since <a href="https://github.com/python/typeshed/blob/ac8f2632ec37bb4a82ade0906e6ce9bdb33883d3/stdlib/builtins.pyi#L102-L105">typeshed says</a> that <code>object</code> has a <code>__module__</code> attribute (even though it doesn't -- see https://github.com/python/typeshed/pull/8787, https://github.com/python/typeshed/pull/8789, and https://github.com/python/typeshed/issues/12128 for prior discussion...)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-02-20 14:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-02-20 14:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:2067 on 2025-02-20 14:45</div>
+            <div class="timeline-body"><p>You're right of course. Not sure what I was thinking. Attempted to solve this in e2d52a826c550128182d632f891137686b197e43</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/call/methods.md</code>:97 on 2025-02-20 14:47</div>
+            <div class="timeline-body"><p>Oops, thanks. And sorry for changing your original example. I wanted to choose something where we do not produce a <code>@Todo</code> type.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-02-20 14:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-02-20 15:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/descriptor_protocol.md</code>:1 on 2025-02-20 15:37</div>
+            <div class="timeline-body"><blockquote>
+<p>If you want a descriptor to be overridable, you should really give it an explicit <code>__set__</code> method IMO.</p>
+</blockquote>
+<p>But a descriptor can not really replace itself using <code>__set__</code>, can it? So it's probably a valid thing to do. I'd like to revisit this when I work on assignments to descriptors, which is not included in this PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/descriptor_protocol.md</code>:1 on 2025-02-20 16:10</div>
+            <div class="timeline-body"><blockquote>
+<p>But a descriptor can not really replace itself using <code>__set__</code>, can it?</p>
+</blockquote>
+<p>no, but if <code>__set__</code> is defined it means that the attribute can be set on <em>instances</em> without the descriptor object itself being entirely shadowed by an attribute in an instance dictionary</p>
+<blockquote>
+<p>I'd like to revisit this when I work on assignments to descriptors, which is not included in this PR.</p>
+</blockquote>
+<p>SGTM 👍</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-02-20 16:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @sharkdp on 2025-02-20 22:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-02-20 22:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-02-20 22:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-02-20 23:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:2602 on 2025-02-20 23:21</div>
+            <div class="timeline-body"><blockquote>
+<p>low-prio todo</p>
+</blockquote>
+<p>Apparently @sharkdp low-prio todos are the ones that are complete and landed the following morning 😆 You don't want to see how efficiently the high-pri ones get done!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-02-20 23:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/descriptor_protocol.md</code>:1 on 2025-02-20 23:40</div>
+            <div class="timeline-body"><p>Shadowing non-data descriptors with instance-dict attributes is a quite common and useful thing to do; it's the core of a widely-used technique for creating very efficient &quot;cached properties&quot;, which now also exists in the stdlib as <code>functools.cached_property</code>. I think enabling this use case is the reason why non-data descriptors work the way they do; otherwise it would have been simpler to just make all descriptors non-shadowable. So I do not think we should forbid this or emit a diagnostic on it. Maybe it could be an opt-in rule in the future as part of a type-aware linter if there's really demand for it, but definitely not something we should spend time on right now IMO.</p>
+<p>I would flip it around and say, if you don't want your descriptor to be shadowable, you should define a <code>__set__</code> method on it (even if it just raises an exception, like a <code>@property</code> without a setter does), and then it will be a data descriptor and not shadowable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-02-20 23:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/descriptor_protocol.md</code>:391 on 2025-02-20 23:43</div>
+            <div class="timeline-body"><p>Yes, I first noticed @sharkdp using this trick in the documentation/tests around our &quot;union with Unknown&quot; behavior.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-02-21 12:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/descriptor_protocol.md</code>:1 on 2025-02-21 12:01</div>
+            <div class="timeline-body"><blockquote>
+<p>I would flip it around and say, if you don't want your descriptor to be shadowable, you should define a <code>__set__</code> method on it (even if it just raises an exception, like a <code>@property</code> without a setter does), and then it will be a data descriptor and not shadowable.</p>
+</blockquote>
+<p>Yes, fair enough -- that's probably the better way to think about it. We can leave this for now, then. Thanks!</p>
+<p>I guess the way to signal to a type checker that a descriptor should be read-only might be to set <code>__set__</code> to <code>None</code>? Since annotating a <code>__set__</code> method as returning <code>Never</code> just leads to confusing diagnostics about dead code later on in the program, rather than an error when the descriptor attribute is actually assigned to.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-02-21 17:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/descriptor_protocol.md</code>:1 on 2025-02-21 17:28</div>
+            <div class="timeline-body"><p>Yeah, that could work. Though we can probably also special-case a return type of <code>Never</code> with a better diagnostic in some cases?</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:49:30 UTC
+    </footer>
+</body>
+</html>

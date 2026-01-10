@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] respect `TYPE_CHECKING` even if not imported from typing - astral-sh/ruff #16468</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] respect <code>TYPE_CHECKING</code> even if not imported from typing</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/16468">#16468</a>
+        opened by <a href="https://github.com/mtshiba">@mtshiba</a>
+        on 2025-03-03 04:14
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/mtshiba">@mtshiba</a> on 2025-03-03 04:14</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR closes #15722.</p>
+<p>The change is that if the variable <code>TYPE_CHECKING</code> is defined/imported, the type of the variable is interpreted as <code>Literal[True]</code> regardless of what the value is.
+This is compatible with the behavior of other type checkers (e.g. mypy, pyright).</p>
+<h2>Test Plan</h2>
+<p>I ran the tests with <code>cargo test -p red_knot_python_semantic</code> and confirmed that all tests passed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @mtshiba on 2025-03-03 04:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @mtshiba on 2025-03-03 04:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @mtshiba on 2025-03-03 04:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @mtshiba on 2025-03-03 04:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @MichaReiser on 2025-03-03 07:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-03-03 07:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2155 on 2025-03-03 07:48</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                if &amp;name.id == &quot;TYPE_CHECKING&quot; {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-03-03 18:17</div>
+            <div class="timeline-body"><p>Thank you! This looks really good. A few additional wrinkles occurred to me in reviewing it.</p>
+<ol>
+<li>Should we also support <code>TYPE_CHECKING: bool = False</code>? (That is, apply this special case also to an annotated assignment statement.)</li>
+<li>What should we do if something other than <code>False</code> is assigned to <code>TYPE_CHECKING</code>?</li>
+</ol>
+<p>After thinking about this for a bit, here's the behavior I would propose. The aim here is to avoid confusion by being very explicit up-front that the name <code>TYPE_CHECKING</code> is fully reserved for this purpose, rather than making it seem like it can be used as a normal variable, but then giving it unusual behavior in some contexts.</p>
+<ol>
+<li>The right-hand-side of any assignment to <code>TYPE_CHECKING</code> must be a literal <code>False</code>; anything else results in a diagnostic. We can use a new diagnostic code <code>invalid-type-checking-constant</code>, and a message like &quot;The name <code>TYPE_CHECKING</code> is reserved for use as a flag; only <code>False</code> can be assigned to it.&quot;</li>
+<li>We should also support <code>TYPE_CHECKING: bool = False</code>, or using <code>object</code> or <code>Any</code> as annotation; the rule should be that <code>bool</code> must be assignable to whatever the annotation is. But we should record both the declared and inferred type as <code>Literal[True]</code>.</li>
+<li>In a stub file, we should support <code>TYPE_CHECKING: bool</code> with no RHS, and still infer it as both a declaration and binding to <code>Literal[True]</code>.</li>
+</ol>
+<p>This will require adding support to <code>infer_annotated_assignment_definition</code>, in addition to the support you've already added to <code>infer_assignment_definition</code>. It will also require adding a new diagnostic code and emitting it.</p>
+<p>I think as a result of implementing these rules there (in particular rule 3), it will also mean we can eliminate the special case for <code>typing.TYPE_CHECKING</code> that currently exists in <code>symbol_impl</code>; we will already infer <code>typing.TYPE_CHECKING</code> and <code>type_extensions.TYPE_CHECKING</code> as <code>Literal[True]</code>, so we won't need a special case on symbol resolution.</p>
+<p>Let me know if this doesn't make sense, or if you disagree with any of the suggestions!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mtshiba">@mtshiba</a> on 2025-03-03 19:58</div>
+            <div class="timeline-body"><p>Thank you for your review. I've implemented the additional feature you suggested.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/known_constants.md</code>:50 on 2025-03-03 21:02</div>
+            <div class="timeline-body"><p>I think it would be clearer if we separate these lines (and the explanation paragraph above) into a separate test, so we can keep this test focused on the correct usage, without the reader wondering if there might be some interaction between the erroring lines and the correct line.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/known_constants.md</code>:52 on 2025-03-03 21:03</div>
+            <div class="timeline-body"><p>Similarly, let's have a separate test that does this, so we can show that both <code>TYPE_CHECKING = False</code> and <code>TYPE_CHECKING: object = False</code> result in a &quot;functional&quot; <code>TYPE_CHECKING</code> constant.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/known_constants.md</code>:61 on 2025-03-03 21:14</div>
+            <div class="timeline-body"><p>Similarly I think this would be clearer if split into two separate tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2154 on 2025-03-03 21:15</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                // `TYPE_CHECKING` is a special variable that should only be assigned `False`
+                // at runtime, but is always considered `True` in type checking.
+                // See mdtest/known_constants.md#user-defined-type_checking for details.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2234 on 2025-03-03 21:19</div>
+            <div class="timeline-body"><p>I think we should report this diagnostic also in a stub file, if we see e.g. <code>TYPE_CHECKING: object = &quot;str&quot;</code> (and add a test for this.) So I think we should check the RHS (if any) regardless of whether we are in a stub or not, but we should also allow a <code>...</code> RHS in a stub.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-03-03 21:20</div>
+            <div class="timeline-body"><p>I think this looks pretty close! Let's break up the tests, and I have one question about the logic for annotated assignments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-03-04 09:42</div>
+            <div class="timeline-body"><p>I'd recommend to make the extension for a new rule and supporting annotated assignments as a separate PR. It doesn't seem that supporting either drastically changes this PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mtshiba">@mtshiba</a> on 2025-03-04 13:19</div>
+            <div class="timeline-body"><p>I understand. I will complete this PR with commits up to 574253720367e10f5dc24be2d58fdb3268ef6764 for now, and create a new PR for the new rule.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-03-04 15:51</div>
+            <div class="timeline-body"><p>Thank you! Merging.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @carljm on 2025-03-04 15:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-03-04 15:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-03-04 16:16</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:49:31 UTC
+    </footer>
+</body>
+</html>

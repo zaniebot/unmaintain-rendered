@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Prevent cross-module query dependencies in `own_instance_member` - astral-sh/ruff #16268</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Prevent cross-module query dependencies in <code>own_instance_member</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/16268">#16268</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2025-02-20 09:51
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-20 09:51</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR fixes https://github.com/astral-sh/ruff/issues/16172 by using <code>infer_expression_type</code> (which is a salsa query) when evaluating visibility constraints. This should be sufficient to remove any AST reads from<code>symbol_from_declarations</code> and <code>symbol_from_bindings</code>.</p>
+<p>I did consider making a more local change in <code>own_instance_member</code> but I think that has two downsides:</p>
+<ul>
+<li>We pay the query cost even if the <code>symbol</code> has no visibility constraints (probably common for instance members?)</li>
+<li>It doesn't solve the problem that <code>symbol_from_declarations</code> and <code>symbol_from_bindings</code> are still cross-module, and it's very easy to forget to put the call behind a query because it isn't obvious that the method does cross-file analysis.</li>
+</ul>
+<h2>Performance</h2>
+<p>The cold benchmark improves by about 1%, the incremental benchmark by 3%</p>
+<p>I first considered removing the <code>#[salsa::tracked]</code> from <code>symbol_by_id</code> because it is no longer necessary for cross-module isolation. However, this PR showed that the version where <code>symbol_by_id</code> actually performs better https://github.com/astral-sh/ruff/pull/16279#issuecomment-2671925875</p>
+<h2>Test Plan</h2>
+<p>I added a new test for <code>own_instance_member</code> that assert that <code>own_instance_member</code> isn't re-executed if there's a no-op change in the module that declares the <code>Class</code>. All credit for that test goes to @sharkdp because I used his original test as a template and he helped me come up with an example that contains visibility constraints.</p>
+<p>I verified that the test fails on <code>main</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2025-02-20 09:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-20 09:58</div>
+            <div class="timeline-body"><p>Ha, this actually performs better and it also makes it harder to hold it wrong. I still haven't been able to construct a test case where <code>own_instance_member</code> unnecessarily recomputes...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/definition.rs</code>:53 on 2025-02-20 11:31</div>
+            <div class="timeline-body"><p>These accessors are footguns. They make it very easy to introduce dependencies on <code>kind</code>. That's why I removed them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2025-02-20 11:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @MichaReiser on 2025-02-20 11:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @MichaReiser on 2025-02-20 11:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @MichaReiser on 2025-02-20 11:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Untrack symbol_by_id" to "[red-knot] Untrack symbol_by_id" by @MichaReiser on 2025-02-20 11:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-20 11:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:6660 on 2025-02-20 12:35</div>
+            <div class="timeline-body"><p>this sentence feels... incomplete 😄</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:6663 on 2025-02-20 12:38</div>
+            <div class="timeline-body"><p>the amount of setup required here makes me think that we might want to prioritise adding support for incremental tests to mdtest, similar to mypy's test framework (take a look at https://github.com/python/mypy/blob/master/test-data/unit/check-incremental.test)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-02-20 12:40</div>
+            <div class="timeline-body"><p>I have not reviewed line-by-line in depth but this makes sense to me!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-20 12:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:6663 on 2025-02-20 12:42</div>
+            <div class="timeline-body"><p>Yeah, although copy pasting is fine, considering how few we have but it could be something to consider for a more scalable approach on how to avoid cross-file queries.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:6663 on 2025-02-20 12:45</div>
+            <div class="timeline-body"><p>yeah, it would only be worth it if we consider that it would be useful to have a lot more tests like this, and we want to make it easier to write those tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-02-20 12:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[red-knot] Untrack symbol_by_id" to "[red-knot] Remove cross-module query dependencies from `own_instance_member`" by @MichaReiser on 2025-02-20 17:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[red-knot] Remove cross-module query dependencies from `own_instance_member`" to "[red-knot] Prevent cross-module query dependencies in `own_instance_member`" by @MichaReiser on 2025-02-20 17:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-02-20 17:12</div>
+            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+
+<!-- __CODSPEED_INSTRUMENTATION_PERFORMANCE_REPORT_COMMENT__ -->
+
+<h2><a href="https://codspeed.io/astral-sh/ruff/branches/micha%2Funtrack-symbol-by-id">CodSpeed Performance Report</a></h2>
+<h3>Merging #16268 will <strong>improve performances by 5.46%</strong></h3>
+<p><sub>Comparing <code>micha/untrack-symbol-by-id</code> (c06af23) with <code>main</code> (b385c7d)</sub></p>
+<h3>Summary</h3>
+<p><code>⚡ 1</code> improvements<br />
+<code>✅ 31</code> untouched benchmarks</p>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Benchmark | <code>BASE</code> | <code>HEAD</code> | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| ⚡ | <code>red_knot_check_file[incremental]</code> | 5.7 ms | 5.4 ms | +5.46% |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-20 17:15</div>
+            <div class="timeline-body"><p>Okay, keeping the <code>symbol_by_id</code> is by far the best for incremental. A solid 5% perf improvement.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-20 17:46</div>
+            <div class="timeline-body"><p>@carljm said he liked it overall. So I'll go ahead and merge it. We may want to keep iterating on how we want to enforce cross-module boundaries. E.g. is it okay that <code>own_instance_members</code> reads a symbol table from another module?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2025-02-20 17:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-02-20 17:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-02-20 17:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-02-20 18:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:6663 on 2025-02-20 18:21</div>
+            <div class="timeline-body"><p>There was already a design for this in the original mdtest design (and it's in the README as a planned improvement), we just haven't implemented yet. (And the design probably needs to change a bit to avoid using non-rendering tag info strings on code blocks.)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:49:30 UTC
+    </footer>
+</body>
+</html>

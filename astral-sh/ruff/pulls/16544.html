@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[syntax-errors] Star expression in index before Python 3.11 - astral-sh/ruff #16544</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[syntax-errors] Star expression in index before Python 3.11</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/16544">#16544</a>
+        opened by <a href="https://github.com/ntBre">@ntBre</a>
+        on 2025-03-06 21:36
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ntBre">@ntBre</a> on 2025-03-06 21:36</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR detects tuple unpacking expressions in index/subscript expressions before Python 3.11.</p>
+<h2>Test Plan</h2>
+<p>New inline tests</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">parser</span> added by @ntBre on 2025-03-06 21:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @ntBre on 2025-03-06 21:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @ntBre on 2025-03-06 21:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @ntBre on 2025-03-06 21:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-03-06 21:45</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/error.rs</code>:700 on 2025-03-07 09:08</div>
+            <div class="timeline-body"><p>Nit: Maybe <em>in index operations</em> to align with the terminology used in the PEP</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/tests/snapshots/invalid_syntax@star_index_py310.py.snap</code>:361 on 2025-03-07 09:11</div>
+            <div class="timeline-body"><p>I'm not sure this is correct. I haven't checked if it is a parse or semantic error but Python 3.12 gives me:</p>
+<pre><code>&gt;&gt;&gt; [][*list]
+&lt;python-input-1&gt;:1: SyntaxWarning: list indices must be integers or slices, not tuple; perhaps you missed a comma?
+  [][*list]
+Traceback (most recent call last):
+  File &quot;&lt;python-input-1&gt;&quot;, line 1, in &lt;module&gt;
+    [][*list]
+    ~~^^^^^^^
+TypeError: list indices must be integers or slices, not tuple
+</code></pre>
+<p>Which is also what I read from the grammar change: It only allows star expressions for slices except the first</p>
+<pre><code>slices:
+    | slice !','
+    | ','.(slice | starred_expression)+ [',']
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-03-07 09:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/parser/expression.rs</code>:884 on 2025-03-07 10:20</div>
+            <div class="timeline-body"><p>As mentioned by Micha, I don't think this is the correct place for this check.</p>
+<p>As per the grammar, the parser converts a slice elements that's a starred expression into a single element tuple. This happens in the <code>else if</code> branch above. You can see this in the output AST as well.</p>
+<p>I think this check would need to go in the <code>if</code> branch which is a pure tuple case and, it's only in that position where the grammar was changed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/tests/snapshots/invalid_syntax@star_index_py310.py.snap</code>:361 on 2025-03-07 10:21</div>
+            <div class="timeline-body"><p>Yeah, I think the check needs to be moved up in the <code>if</code> branch which is a pure tuple case.</p>
+<p>This is a <code>TypeError</code> and is not relevant to the parser:</p>
+<pre><code class="language-console">$ bat _.py                         
+         File: _.py
+     1 ~ [][*data]
+
+$ uv run --python=3.12 --no-project python -m ast _.py
+Module(
+   body=[
+      Expr(
+         value=Subscript(
+            value=List(elts=[], ctx=Load()),
+            slice=Tuple(
+               elts=[
+                  Starred(
+                     value=Name(id='data', ctx=Load()),
+                     ctx=Load())],
+               ctx=Load()),
+            ctx=Load()))],
+   type_ignores=[])
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> requested changes on 2025-03-07 10:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-03-07 12:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_parser/tests/snapshots/invalid_syntax@star_index_py310.py.snap</code>:361 on 2025-03-07 12:48</div>
+            <div class="timeline-body"><p>I may have made this test case a bit misleading by naming the container <code>lst</code>, but as @dhruvmanila points out with the valid AST, this is <em>syntactically</em> valid, and it's <em>not</em> a type error for a container like a numpy array or another container that can be validly indexed by a tuple:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; import numpy as np
+&gt;&gt;&gt; a = np.array([[1, 2, 3], [4, 5, 6]])
+&gt;&gt;&gt; t = [1, 2]
+&gt;&gt;&gt; a[*t]
+np.int64(6)
+</code></pre>
+<p>It's not a parser or compiler error, it's only a runtime <code>TypeError</code> if the container doesn't support tuple indexing.</p>
+<p>I believe the grammar in the <a href="https://docs.python.org/3/reference/expressions.html#slicings">reference</a> also supports this, albeit with different terminology from the PEP:</p>
+<pre><code>slicing      ::= primary &quot;[&quot; slice_list &quot;]&quot;
+slice_list   ::= slice_item (&quot;,&quot; slice_item)* [&quot;,&quot;]
+slice_item   ::= expression | proper_slice
+proper_slice ::= [lower_bound] &quot;:&quot; [upper_bound] [ &quot;:&quot; [stride] ]
+lower_bound  ::= expression
+upper_bound  ::= expression
+stride       ::= expression
+</code></pre>
+<p><code>slice_item</code> is either an <code>expression</code> <em>or</em> a <code>proper_slice</code> with multiple parts.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-03-10 16:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/tests/snapshots/invalid_syntax@star_index_py310.py.snap</code>:361 on 2025-03-10 16:06</div>
+            <div class="timeline-body"><p>Sorry, I think I mis-understood the change here. I think what Brent has here is correct. The example and I and Micha have pointed out is a runtime error and should throw a syntax error for Python version older than 3.11.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-03-10 16:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/parser/expression.rs</code>:884 on 2025-03-10 16:10</div>
+            <div class="timeline-body"><p>The existing implementation is correct. I think I misunderstood the change as to be only limited to indexing operations i.e., <code>data[0]</code> but a tuple expression used is <em>also</em> an indexing operation (<code>data[0, 1]</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> approved on 2025-03-10 16:11</div>
+            <div class="timeline-body"><p>Looks good!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ntBre on 2025-03-14 14:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-03-14 14:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-03-14 14:51</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:49:32 UTC
+    </footer>
+</body>
+</html>

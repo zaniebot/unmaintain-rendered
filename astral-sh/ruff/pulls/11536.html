@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[redknot] unspecified-encoding lint rule - astral-sh/ruff #11536</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[redknot] unspecified-encoding lint rule</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/11536">#11536</a>
+        opened by <a href="https://github.com/plredmond">@plredmond</a>
+        on 2024-05-24 21:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/plredmond">@plredmond</a> on 2024-05-24 21:56</div>
+            <div class="timeline-body"><p>Implement an <a href="https://github.com/augustelalande/ruff/blob/e1029f1230e51ba75c746bbe5ad0c399e2afa39a/crates/ruff_linter/resources/test/fixtures/pylint/unspecified_encoding.py">unspecified_encoding.py</a> lint rule like the one in <a href="https://github.com/astral-sh/ruff/pull/11288">#11288</a>.</p>
+<pre><code class="language-python">import tempfile
+
+tempfile.TemporaryFile(&quot;w&quot;)  # error
+
+tempfile.TemporaryFile(&quot;w&quot;, encoding=&quot;utf-8&quot;)  # ok
+</code></pre>
+<p>This is still a draft.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-05-24 22:09</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/lint.rs</code>:203 on 2024-05-28 03:53</div>
+            <div class="timeline-body"><p>I'm not sure that iterating definitions is actually right for this lint rule. I don't think we really care if it's a definition or not, we'd want to detect all calls to e.g. <code>tempfile.TemporaryFile</code> that don't specify an encoding. So I think this lint rule is a better fit for an AST traversal (which we don't currently have an example of in the red-knot lint rules).</p>
+<p>I think the algorithm should be, walk all calls, infer type of the <code>.func</code> of the call, check if its <code>tempfile.TemporaryFile</code>, if so, check the arguments and see if an encoding is specified or not.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/types/infer.rs</code>:163 on 2024-05-28 03:54</div>
+            <div class="timeline-body"><p>I don't think we will need this for this lint rule (it doesn't require actually inferring type of an entire call expression). Of course we will need it eventually.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/types/infer.rs</code>:166 on 2024-05-28 03:55</div>
+            <div class="timeline-body"><p>I think our approach in inference-only mode in cases that should really be a type error should be to substitute <code>Unknown</code> type.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-05-28 03:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/plredmond">@plredmond</a> reviewed on 2024-05-28 22:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/plredmond">@plredmond</a> on <code>crates/red_knot/src/lint.rs</code>:203 on 2024-05-28 22:09</div>
+            <div class="timeline-body"><p>Yeah, thought this seemed awkward-- iterating over definitions is great for the type inference algorithm, but would have poor recall in this rule. Should I go ahead and use <code>ruff_python_ast::visitor</code> since the AST type used here in redknot is the same as that of ruff?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/plredmond">@plredmond</a> reviewed on 2024-05-28 22:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/plredmond">@plredmond</a> on <code>crates/red_knot/src/types/infer.rs</code>:163 on 2024-05-28 22:09</div>
+            <div class="timeline-body"><p>I'll remove it. Lmk if you decide I should keep it and I can revert.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-05-28 22:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/types/infer.rs</code>:163 on 2024-05-28 22:38</div>
+            <div class="timeline-body"><p>No I don't think it makes sense to add it in this PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2024-05-28 22:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/lint.rs</code>:203 on 2024-05-28 22:40</div>
+            <div class="timeline-body"><p>Yes, you can use <code>ruff_python_ast::visitor</code>. Longer term we will want to do something more efficient, e.g. where we do a single AST traversal that lint rules can register callbacks on. But for now given this is our first prototype lint rule doing an AST traversal, it's fine IMO to just traverse internal to the rule.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-05-29 08:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/lint.rs</code>:203 on 2024-05-29 08:14</div>
+            <div class="timeline-body"><p>I would build something similar to the <code>SyntaxLintVisitor</code> but for semantic rules where you can call into your lint rule for <code>CallExpressions</code>.</p>
+<p>https://github.com/astral-sh/ruff/blob/b6b4ad99497b65ebc6b8c21944fe41115c32477a/crates/red_knot/src/lint.rs#L239-L255</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-06-20 07:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-02-20 09:00</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:49:30 UTC
+    </footer>
+</body>
+</html>

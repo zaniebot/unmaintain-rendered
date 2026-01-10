@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[syntax-errors] Parenthesized keyword argument names after Python 3.8 - astral-sh/ruff #16482</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[syntax-errors] Parenthesized keyword argument names after Python 3.8</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/16482">#16482</a>
+        opened by <a href="https://github.com/ntBre">@ntBre</a>
+        on 2025-03-03 20:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ntBre">@ntBre</a> on 2025-03-03 20:28</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Unlike the other syntax errors detected so far, parenthesized keyword arguments are only allowed <em>before</em> 3.8. It sounds like they were only accidentally allowed before that <a href="https://github.com/python/cpython/issues/78822">^1</a>.</p>
+<p>As an aside, you get a pretty confusing error from Python for this, so it's nice that we can catch it:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; def f(**kwargs): ...
+... f((a)=1)
+...
+  File &quot;&lt;python-input-0&gt;&quot;, line 2
+    f((a)=1)
+       ^^^
+SyntaxError: expression cannot contain assignment, perhaps you meant &quot;==&quot;?
+&gt;&gt;&gt;
+</code></pre>
+<h2>Test Plan</h2>
+<p>Inline tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">parser</span> added by @ntBre on 2025-03-03 20:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @ntBre on 2025-03-03 20:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @ntBre on 2025-03-03 20:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @ntBre on 2025-03-03 20:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-03-03 20:37</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/error.rs</code>:452 on 2025-03-04 08:18</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    ParenthesizedKwargName,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/error.rs</code>:485 on 2025-03-04 08:22</div>
+            <div class="timeline-body"><p>This feels hacky and confusing.</p>
+<p>What you could do here is e.g change this to <code>changed_in</code> which returns a <code>ChangedIn</code> struct that has a <code>version</code> and <code>change</code> field where <code>change</code> is <code>added</code> or <code>removed</code>.</p>
+<p>I also suggest limiting the visibility of this method to <code>pub(crate)</code>.</p>
+<p>Another alternative is to remove the method and go for a bit more code repetition by:</p>
+<ul>
+<li>Using an explicit message for each kind</li>
+<li>Undo the changes that I proposed to inline the version check into <code>add_unsupported_syntax</code> and do the check at the call site.</li>
+</ul>
+<p>I'm sort of leaning for the second because it feels simpler.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/parser/expression.rs</code>:710 on 2025-03-04 08:27</div>
+            <div class="timeline-body"><p>Do we need to store the <code>parenthesized_range</code> (the downside of storing the range is that it probably made <code>ParsedExpr</code> larger?)? Isn't the range the same as using <code>start</code> and `</p>
+<p>Instead, I think you can get the location by calling <code>self.node_range(start)</code>, but I'm not a 100% sure about that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-03-04 08:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/error.rs</code>:452 on 2025-03-04 11:09</div>
+            <div class="timeline-body"><p>I think we should use &quot;Keyword&quot; instead of &quot;Kwarg&quot; as the latter is a convention used to describe variadic keyword argument (<code>**kwarg</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/error.rs</code>:485 on 2025-03-04 11:13</div>
+            <div class="timeline-body"><p>Yeah, I agree with that. Using an explicit message seems simpler and would also allow us to tailor each message. We do that for other parse errors as well https://github.com/astral-sh/ruff/blob/cb362f4b0a9116867e60e3f08d185ea73c40e452/crates/ruff_python_parser/src/error.rs#L210-L233</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/parser/expression.rs</code>:719 on 2025-03-04 11:16</div>
+            <div class="timeline-body"><p>Can we add some test cases with random whitespaces like <code>f((  a ) = 1)</code> mainly to verify the diagnostic range?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-03-04 11:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-03-04 20:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_parser/src/error.rs</code>:452 on 2025-03-04 20:10</div>
+            <div class="timeline-body"><p>I went for <code>ParenthesizedKeywordArgumentName</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-03-04 20:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_parser/src/error.rs</code>:485 on 2025-03-04 20:42</div>
+            <div class="timeline-body"><p>I agree that this is hacky and confusing and also that it's looking more and more like we should just use custom messages for each variant as they grow more different. However, I think the <code>add_unsupported_syntax</code> change is really convenient. It feels a lot nicer to keep the version in one place, next to the variants themselves, and not have to include <code>PythonVersion</code>s throughout the parser. I'm going to try using something like the <code>ChangedIn</code> approach for now, but I definitely won't mind moving all the way to the simple approach if it still looks awkward.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_parser/src/error.rs</code>:485 on 2025-03-04 21:16</div>
+            <div class="timeline-body"><p>I think it does still look awkward, but I'll let y'all have a look. If it doesn't look salvageable I'm happy to switch to the simple approach.</p>
+<p>I'll admit I'm also starting to miss my macro because I think this would look pretty neat as</p>
+<pre><code class="language-rust">syntax_errors! {
+    (Match, Added, PY310, &quot;Cannot use `match` statement&quot;),
+    (Walrus, Added, PY38, &quot;Cannot use named assignment expression (`:=`)&quot;),
+    (ExceptStar, Added, PY311, &quot;Cannot use `except*`&quot;),
+    (ParenthesizedKeywordArgumentName, Removed, PY38, &quot;Cannot use parenthesized keyword argument name&quot;),
+}
+</code></pre>
+<p>but I know this has the downsides we talked about before.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-03-04 21:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-03-04 21:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_parser/src/parser/expression.rs</code>:710 on 2025-03-04 21:42</div>
+            <div class="timeline-body"><p><code>self.node_range(start)</code> in the <code>parser.add_unsupported_syntax_error</code> call includes the <code>=</code>. I tried grabbing a second range before eating the <code>Token::Equal</code> and constructing it from there, but that includes a trailing space in a case like this:</p>
+<pre><code class="language-python">f((a) = 1)
+  ~~~^   # tildes are expected, ^ is the extra space
+</code></pre>
+<p>that might be preferable to making <code>ParsedExpr</code> larger, though. As an intermediate step, I've just included the end of the range in <code>ParsedExpr</code> to make it half as much larger. At least according to my LSP, the <code>Option&lt;TextSize&gt;</code> and the <code>bool</code> make <code>ParsedExpr</code> the same size (72 vs 80 with <code>TextRange</code>).</p>
+<p>I might be missing something here, though. It looks like part of your comment may have gotten cut off.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-03-05 07:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/error.rs</code>:524 on 2025-03-05 07:32</div>
+            <div class="timeline-body"><p>Wouldn't it be possible to implement this based on <code>changed_version</code>?</p>
+<pre><code class="language-rust">let (change, version) = self.changed_version();
+
+match change {
+	Change::Added =&gt; target_version &lt; version,
+	Change::Removed =&gt; target_version &gt;= version
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/error.rs</code>:484 on 2025-03-05 10:42</div>
+            <div class="timeline-body"><p>We could possibly include the <code>PythonVersion</code> where this change was added or removed:</p>
+<pre><code class="language-rs">enum Change {
+    Added(PythonVersion),  // added in Python ...
+    Removed(PythonVersion),  // removed in Python ...
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-03-05 10:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-03-05 13:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_parser/src/error.rs</code>:524 on 2025-03-05 13:20</div>
+            <div class="timeline-body"><p>Oh yes, thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_parser/src/error.rs</code>:484 on 2025-03-05 13:27</div>
+            <div class="timeline-body"><p>Nice, that is a little neater.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-03-05 13:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/error.rs</code>:569 on 2025-03-06 07:31</div>
+            <div class="timeline-body"><pre><code class="language-suggestion"></code></pre>
+<p>Future readers don't have the context on in which order you added those, so I'm not sure this paragraph is useful to them.</p>
+<p>We could document <code>Added</code> and <code>Removed</code> but I think it's mostly self explanatory when looking at the <code>Display</code> implementation</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/parser/expression.rs</code>:710 on 2025-03-06 07:38</div>
+            <div class="timeline-body"><p>This seems to work but I'm not sure if it's okay to access <code>prev_token_end</code> directly.</p>
+<p>@dhruvmanila do you have a preference here?</p>
+<pre><code class="language-patch">Subject: [PATCH] Change `iterate` to return a `Result`
+---
+Index: crates/ruff_python_parser/src/parser/expression.rs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+&lt;+&gt;UTF-8
+===================================================================
+diff --git a/crates/ruff_python_parser/src/parser/expression.rs b/crates/ruff_python_parser/src/parser/expression.rs
+--- a/crates/ruff_python_parser/src/parser/expression.rs	(revision c73a6a15f7b161d1bfa6ad512cad70b49265a4b2)
++++ b/crates/ruff_python_parser/src/parser/expression.rs	(date 1741246585551)
+@@ -672,6 +672,8 @@
+                 seen_keyword_unpacking = true;
+             } else {
+                 let start = parser.node_start();
++
++                let paren_start = parser.current_token_range().start();
+                 let mut parsed_expr = parser
+                     .parse_named_expression_or_higher(ExpressionContext::starred_conditional());
+ 
+@@ -701,6 +703,7 @@
+                     }
+                 }
+ 
++                let parens_end = parser.prev_token_end;
++                // or
++                let parens_end = parser.node_range(paren_start).end();
+                 if parser.eat(TokenKind::Equal) {
+                     seen_keyword_argument = true;
+                     let arg = if let ParsedExpr {
+@@ -721,7 +724,7 @@
+                         if let Some(end) = end_parenthesis {
+                             parser.add_unsupported_syntax_error(
+                                 UnsupportedSyntaxErrorKind::ParenthesizedKeywordArgumentName,
+-                                TextRange::new(start, end),
++                                TextRange::new(paren_start, parens_end),
+                             );
+                         }
+ 
+
+</code></pre>
+<p>(The variable naming could be better)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-03-06 07:40</div>
+            <div class="timeline-body"><p>I still slightly prefer to not store the parenthesized range to make this PR smaller and avoid storing information that can be retrieved from the parser already but I'm happy to go with what you / @dhruvmanila think is best</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-03-06 11:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/parser/expression.rs</code>:710 on 2025-03-06 11:31</div>
+            <div class="timeline-body"><p>We can just use <code>start</code> which is defined above <code>paren_start</code> in your diff as both are equivalent.</p>
+<p>I played around with using <code>prev_token_end</code> and couldn't really find any issues with it. I'd say it's fine to use <code>prev_token_end</code> or <code>node_range</code>.</p>
+<p>I think I'd just use something like <code>let arg_range = self.node_range(start)</code> before consuming the <code>=</code> token and then check if the parsed expression is parenthesized or not and use the <code>arg_range</code> for the error range.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> approved on 2025-03-06 11:33</div>
+            <div class="timeline-body"><p>Nice.</p>
+<p>As suggested https://github.com/astral-sh/ruff/pull/16482#discussion_r1983191200, I'd get the argument range locally using <code>node_range</code> and use that instead.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/T-256">@T-256</a> on <code>crates/ruff_python_parser/resources/inline/err/parenthesized_kwarg_py38.py</code>:1 on 2025-03-06 13:11</div>
+            <div class="timeline-body"><pre><code class="language-suggestion"># parse_options: {&quot;target-version&quot;: &quot;3.9&quot;}
+</code></pre>
+<p>It makes bellow tests better, and prevents show duplicated Python version on diagnostics message:
+<code>Syntax Error: Cannot use parenthesized keyword argument name on Python 3.8 (syntax was removed in Python 3.8)</code></p>
+<p>When I looked at it, I thought we could de-duplicate message to make it simple, but then I realized first <code>on Python 3.8</code> is actually for selected <code>target-version</code> Python.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/T-256">@T-256</a> reviewed on 2025-03-06 13:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-03-06 13:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_parser/resources/inline/err/parenthesized_kwarg_py38.py</code>:1 on 2025-03-06 13:19</div>
+            <div class="timeline-body"><p>I think it's important to test that we get the error on the earliest version for which we expect the error, which is 3.8.</p>
+<p>I agree the error looks redundant at first glance, but both 3.8s are conveying different information, like I think you said. The first one is the target version and the second is the time the error was added or removed. You need both if you want to avoid the error by updating your target Python version.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-03-06 13:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_parser/src/parser/expression.rs</code>:710 on 2025-03-06 13:22</div>
+            <div class="timeline-body"><p>I'm not sure what I was messing up before to get the extra space before <code>=</code> :facepalm:</p>
+<p><code>let arg_range = parser.node_range(start)</code> right before the <code>=</code> works perfectly. Thanks for the suggestions!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[syntax-errors] Parenthesized keyword arguments after Python 3.8" to "[syntax-errors] Parenthesized keyword argument names after Python 3.8" by @ntBre on 2025-03-06 17:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ntBre on 2025-03-06 17:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-03-06 17:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-03-06 17:18</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:49:31 UTC
+    </footer>
+</body>
+</html>

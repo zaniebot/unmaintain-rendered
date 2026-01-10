@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detect assignment expressions before Python 3.8 - astral-sh/ruff #16383</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Detect assignment expressions before Python 3.8</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/16383">#16383</a>
+        opened by <a href="https://github.com/ntBre">@ntBre</a>
+        on 2025-02-25 20:31
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ntBre">@ntBre</a> on 2025-02-25 20:31</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR is the first in a series derived from https://github.com/astral-sh/ruff/pull/16308, each of which add support
+for detecting one version-related syntax error from https://github.com/astral-sh/ruff/issues/6591. This one should be
+the largest because it also includes a couple of additional changes:</p>
+<ol>
+<li>the <code>syntax_errors!</code> macro, which makes adding more variants a bit easier</li>
+<li>the <code>Parser::add_unsupported_syntax_error</code> method</li>
+</ol>
+<p>Otherwise I think the general structure will be the same for each syntax error:</p>
+<ul>
+<li>Detecting the error in the parser</li>
+<li>Inline parser tests for the new error</li>
+<li>New ruff CLI tests for the new error</li>
+</ul>
+<p>Because of the second point here, this PR is currently stacked on https://github.com/astral-sh/ruff/pull/16357.</p>
+<h2>Test Plan</h2>
+<p>As noted above, there are new inline parser tests, as well as new ruff CLI
+tests. Once https://github.com/astral-sh/ruff/pull/16379 is resolved, there should also be new mdtests for red-knot,
+but this PR does not currently include those.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-02-25 20:40</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @ntBre on 2025-02-27 21:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @ntBre on 2025-02-27 21:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @ntBre on 2025-02-27 21:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @ntBre on 2025-02-27 21:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/error.rs</code>:478 on 2025-02-28 08:07</div>
+            <div class="timeline-body"><p>I think I prefer not to use a macro here because it makes the code much harder to read (I rather have some repetition) and more difficult to extend in the future.</p>
+<p>It also doesn't seem that the macro helps to avoid much repetition. Each information provided to the macro is only used once:</p>
+<pre><code class="language-rust">#[derive(Debug, PartialEq, Clone, Copy)]
+pub enum UnsupportedSyntaxErrorKind {
+    MatchBeforePy310,
+    WalrusBeforePy38,
+}
+
+impl Display for UnsupportedSyntaxError {
+    fn fmt(&amp;self, f: &amp;mut fmt::Formatter&lt;'_&gt;) -&gt; fmt::Result {
+        let kind = match self.kind {
+            UnsupportedSyntaxErrorKind::MatchBeforePy310 =&gt; &quot;`match` statement&quot;,
+            UnsupportedSyntaxErrorKind::WalrusBeforePy38 =&gt; &quot;named assignment expression (`:=`)&quot;,
+        };
+
+        write!(
+            f,
+            &quot;Cannot use {kind} on Python {} (syntax was added in Python {})&quot;,
+            self.target_version,
+            self.minimum_version(),
+        )
+    }
+}
+
+impl UnsupportedSyntaxError {
+    /// The earliest allowed version for the syntax associated with this error.
+    pub const fn minimum_version(&amp;self) -&gt; PythonVersion {
+        match self.kind {
+            UnsupportedSyntaxErrorKind::MatchBeforePy310 =&gt; PythonVersion::PY310,
+            UnsupportedSyntaxErrorKind::WalrusBeforePy38 =&gt; PythonVersion::PY38,
+        }
+    }
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/error.rs</code>:482 on 2025-02-28 08:08</div>
+            <div class="timeline-body"><p>I think I'd name the variants <code>Match</code> and <code>Walrus</code> because the <em>Before<Version></em> part is covered by the <code>minimum_version</code> method.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/parser/expression.rs</code>:2170 on 2025-02-28 08:09</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        // test_ok walrus_py38
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-02-28 08:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff/tests/lint.rs</code>:2639 on 2025-02-28 08:26</div>
+            <div class="timeline-body"><p>We can just use <code>(x := 1)</code> to avoid unrelated diagnostics in the snapshot. Same for other test cases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/error.rs</code>:478 on 2025-02-28 08:28</div>
+            <div class="timeline-body"><p>Additionally, not using a macro also has the possible benefit to customize the entire error message and not rely on a template.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> approved on 2025-02-28 08:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-02-28 18:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_parser/src/error.rs</code>:478 on 2025-02-28 18:28</div>
+            <div class="timeline-body"><p>That's fair. I liked the little table of errors at the bottom, but I've already been annoyed that my goto-definition was jumping into the macro. I'll revert this.</p>
+<p>Your variant name suggestions will also make them a bit less repetitive to begin with!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-02-28 18:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_parser/src/parser/expression.rs</code>:2170 on 2025-02-28 18:32</div>
+            <div class="timeline-body"><p>I changed the <code>test_err</code> version to <code>walrus_py37</code> too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ntBre on 2025-02-28 22:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-02-28 22:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-02-28 22:13</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:49:31 UTC
+    </footer>
+</body>
+</html>

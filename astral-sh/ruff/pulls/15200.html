@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] add call checking - astral-sh/ruff #15200</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] add call checking</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/15200">#15200</a>
+        opened by <a href="https://github.com/carljm">@carljm</a>
+        on 2024-12-30 08:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/carljm">@carljm</a> on 2024-12-30 08:22</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This implements checking of calls.</p>
+<p>I ended up following Micha's original suggestion from back when the signature representation was first introduced, and flattening it to a single array of parameters. This turned out to be easier to manage, because we can represent parameters using indices into that array, and represent the bound argument types as an array of the same length.</p>
+<p>Starred and double-starred arguments are still TODO; these won't be very useful until we have generics.</p>
+<p>The handling of diagnostics is just hacked into <code>return_ty_result</code>, which was already inconsistent about whether it emitted diagnostics or not; now it's even more inconsistent. This needs to be addressed, but could be a follow-up.</p>
+<p>The new benchmark errors here surface the need for intersection support in <code>is_assignable_to</code>.</p>
+<p>Fixes #14161.</p>
+<h2>Test Plan</h2>
+<p>Added mdtests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @carljm on 2024-12-30 08:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-12-30 08:31</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @carljm on 2025-01-06 17:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @carljm on 2025-01-06 17:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @carljm on 2025-01-06 17:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @carljm on 2025-01-06 17:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/call/function.md</code>:76 on 2025-01-06 18:28</div>
+            <div class="timeline-body"><p>I feel like the thing that's gone wrong here is that they're not allowed to pass an object of type <code>Literal[&quot;foo&quot;]</code> to the <code>x</code> parameter of the <code>f</code> function, and the reason why they're not allowed to do that is because <code>Literal[&quot;foo&quot;]</code> is not assignable to <code>int</code>. It feels like this error message jumps to the &quot;why&quot; before explaining the &quot;what&quot;. I feel like my ideal error message (when we have rich diagnostics) would be something like this:</p>
+<pre><code>error: [invalid-argument-type]
+
+Cannot pass object of type `Literal[&quot;foo&quot;]` to the `x` parameter of function `f`.
+
+Explanation: the `x` parameter expects a type assignable to `int`,
+  but `Literal[&quot;foo&quot;]` is not assignable to `int`.
+</code></pre>
+<p>I'm okay with something a bit more concise while we're restricted to having diagnostics all on the same line, but I <em>do</em> think we should definitely mention the name of the function in the error message (mypy, pyright and pyre all do)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/call/function.md</code>:86 on 2025-01-06 18:32</div>
+            <div class="timeline-body"><p>Is it also worth mentioning the index of the parameter if the parameter is positional-only?</p>
+<pre><code class="language-suggestion"># error: 15 [invalid-argument-type] &quot;Cannot pass object of type `Literal[&quot;foo&quot;]` to the first parameter (parameter `x`) of function `f`, which expects a type assignable to `int`&quot;
+</code></pre>
+<p>I ask this, because there are multiple stdlib functions which are documented as having a positional-only parameter with one name, but when you call <code>help()</code> on these functions in a Python REPL, <code>inspect.signature()</code> reports that the positional-only parameter has a totally different name. So the name that typeshed gives a parameter might not be the name a user is familiar with for that parameter for all functions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/call/function.md</code>:96 on 2025-01-06 18:34</div>
+            <div class="timeline-body"><p>do we want to refer to the parameter as <code>args</code> or as <code>*args</code> in the error message here? I sorta feel like <code>*args</code> is more intuitive</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/call/function.md</code>:126 on 2025-01-06 18:36</div>
+            <div class="timeline-body"><p>same question here, I'd find referring to the parameter as <code>**kwargs</code> rather than <code>kwargs</code> a bit more intuitive</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/call/function.md</code>:149 on 2025-01-06 18:37</div>
+            <div class="timeline-body"><p>Here as well, I think it's important to mention the name of the function in the error message</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/call/function.md</code>:259 on 2025-01-06 18:39</div>
+            <div class="timeline-body"><p>I feel like the error message at runtime for this is much clearer:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; def f(x: int) -&gt; int:
+...     return 1
+...     
+&gt;&gt;&gt; f(1, x=2)
+Traceback (most recent call last):
+  File &quot;&lt;python-input-2&gt;&quot;, line 1, in &lt;module&gt;
+    f(1, x=2)
+    ~^^^^^^^^
+TypeError: f() got multiple values for argument 'x'
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1686 on 2025-01-06 18:45</div>
+            <div class="timeline-body"><p>off-topic here (pre-existing issue), but we should emit a diagnostic if somebody tries to call <code>bool(x)</code> where <code>type(x).__bool__</code> is annotated as returning a type that's not assignable to <code>bool</code>, since it causes an exception to be raised at runtime:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; class Foo:
+...     def __bool__(self): return 42
+...     
+&gt;&gt;&gt; bool(Foo())
+Traceback (most recent call last):
+  File &quot;&lt;python-input-4&gt;&quot;, line 1, in &lt;module&gt;
+    bool(Foo())
+    ~~~~^^^^^^^
+TypeError: __bool__ should return bool, returned int
+</code></pre>
+<p>Maybe you could add a TODO comment, while we're here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1929 on 2025-01-06 18:48</div>
+            <div class="timeline-body"><p>I think this TODO is now done with this PR?</p>
+<pre><code class="language-suggestion"></code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/call.rs</code>:1 on 2025-01-06 18:49</div>
+            <div class="timeline-body"><p>everything passes for me locally if this is removed!</p>
+<pre><code class="language-suggestion"></code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/call/arguments.rs</code>:13 on 2025-01-06 18:52</div>
+            <div class="timeline-body"><p>If you implement the <code>FromIterator</code> trait for this struct, then you'll be able to just <code>.collect()</code> into a <code>CallArguments</code> instance. Here's an example of how I did this in <code>mro.rs</code>:</p>
+<p>https://github.com/astral-sh/ruff/blob/5e9259c96c910fe9031b7781867c8b82bffa0b26/crates/red_knot_python_semantic/src/types/mro.rs#L160-L164</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/call/bind.rs</code>:1 on 2025-01-06 18:58</div>
+            <div class="timeline-body"><p>there only seems to be one method in this file that is unused; I would apply this <code>allow()</code> attribute to that single method rather than to the whole file</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/call/arguments.rs</code>:42 on 2025-01-06 19:06</div>
+            <div class="timeline-body"><p>It's quite surprising to implement <code>IntoIterator</code> for <code>&amp;CallArguments</code> but not have a <code>CallArguments::iter()</code> method. If you add one, there's also a logic place you could use it elsewhere! I'd do this:</p>
+<pre><code class="language-diff">diff --git a/crates/red_knot_python_semantic/src/types/call/arguments.rs b/crates/red_knot_python_semantic/src/types/call/arguments.rs
+index 4341be43b..c4e0bc13b 100644
+--- a/crates/red_knot_python_semantic/src/types/call/arguments.rs
++++ b/crates/red_knot_python_semantic/src/types/call/arguments.rs
+@@ -27,6 +27,10 @@ impl&lt;'db&gt; CallArguments&lt;'db&gt; {
+     pub(crate) fn first_argument(&amp;self) -&gt; Option&lt;Type&lt;'db&gt;&gt; {
+         self.0.front().map(Argument::ty)
+     }
++
++    pub(crate) fn iter(&amp;self) -&gt; impl Iterator&lt;Item = &amp;Argument&lt;'db&gt;&gt; {
++        self.0.iter()
++    }
+ }
+ 
+ impl&lt;'db, 'a&gt; IntoIterator for &amp;'a CallArguments&lt;'db&gt; {
+diff --git a/crates/red_knot_python_semantic/src/types/call/bind.rs b/crates/red_knot_python_semantic/src/types/call/bind.rs
+index ba25393ce..37751d7d9 100644
+--- a/crates/red_knot_python_semantic/src/types/call/bind.rs
++++ b/crates/red_knot_python_semantic/src/types/call/bind.rs
+@@ -22,7 +22,7 @@ pub(crate) fn bind_call&lt;'db&gt;(
+     let mut errors = vec![];
+     let mut next_positional = 0;
+     let mut first_excess_positional = None;
+-    for (argument_index, argument) in arguments.into_iter().enumerate() {
++    for (argument_index, argument) in arguments.iter().enumerate() {
+         let (index, parameter, argument_ty) = match argument {
+             Argument::Positional(ty) =&gt; {
+                 let Some((index, parameter)) = signature
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/call/bind.rs</code>:91 on 2025-01-06 19:13</div>
+            <div class="timeline-body"><p>I wonder if this would be a slightly more ergonomic API for your <code>Signature</code> struct?</p>
+<pre><code class="language-diff">--- a/crates/red_knot_python_semantic/src/types/call/bind.rs
++++ b/crates/red_knot_python_semantic/src/types/call/bind.rs
+@@ -86,9 +86,7 @@ pub(crate) fn bind_call&lt;'db&gt;(
+     }
+     for (index, bound_ty) in parameter_tys.iter().enumerate() {
+         if bound_ty.is_none() {
+-            let param = signature
+-                .parameter_at_index(index)
+-                .expect(&quot;parameter_tys array should not be larger than number of parameters&quot;);
++            let param = &amp;signature.parameters()[index];
+             if param.is_variadic() || param.is_keywords() || param.default_ty().is_some() {
+                 // variadic/keywords and defaulted arguments are not required
+                 continue;
+diff --git a/crates/red_knot_python_semantic/src/types/signatures.rs b/crates/red_knot_python_semantic/src/types/signatures.rs
+index 319ec5db5..9e3ecbf4b 100644
+--- a/crates/red_knot_python_semantic/src/types/signatures.rs
++++ b/crates/red_knot_python_semantic/src/types/signatures.rs
+@@ -1,3 +1,5 @@
++use std::ops::Index;
++
+ use super::{definition_expression_ty, Type};
+ use crate::Db;
+ use crate::{semantic_index::definition::Definition, types::todo_type};
+@@ -70,6 +72,10 @@ impl&lt;'db&gt; Signature&lt;'db&gt; {
+             .count()
+     }
+ 
++    pub(super) fn parameters(&amp;self) -&gt; &amp;Parameters&lt;'db&gt; {
++        &amp;self.parameters
++    }
++
+     pub(crate) fn parameter_at_index(&amp;self, index: usize) -&gt; Option&lt;&amp;Parameter&lt;'db&gt;&gt; {
+         self.parameters.0.get(index)
+     }
+@@ -183,6 +189,14 @@ impl&lt;'db, 'a&gt; IntoIterator for &amp;'a Parameters&lt;'db&gt; {
+     }
+ }
+ 
++impl&lt;'db&gt; Index&lt;usize&gt; for Parameters&lt;'db&gt; {
++    type Output = Parameter&lt;'db&gt;;
++
++    fn index(&amp;self, index: usize) -&gt; &amp;Self::Output {
++        &amp;self.0[index]
++    }
++}
++
+ #[derive(Clone, Debug, PartialEq, Eq)]
+ pub(crate) enum Parameter&lt;'db&gt; {
+     /// Positional-only parameter, e.g. `def f(x, /): ...`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-01-06 19:14</div>
+            <div class="timeline-body"><p>haven't finished reviewing (or reading the diff), but here's what I have so far</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-01-06 19:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/call/function.md</code>:182 on 2025-01-06 19:19</div>
+            <div class="timeline-body"><p>If we have a function call with multiple missing arguments like</p>
+<pre><code class="language-py">def f(x, y, z) -&gt; int:
+    return 1
+
+f()
+</code></pre>
+<p>we currently emit three separate diagnostic messages compared to pyright/mypy, which both output a single message like <code>Missing positional arguments &quot;x&quot;, &quot;y&quot;, &quot;z&quot; in call to &quot;f</code>. Not sure if it's worth investing time into, but that seems a bit nicer in terms of UX?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-01-07 04:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1929 on 2025-01-07 04:08</div>
+            <div class="timeline-body"><p>The TODO is not done, because we aren't checking here whether there were argument type errors, and refusing to use the <code>__getitem__</code> return type as the iteration type if so.</p>
+<p>This PR certainly gets us much closer to being able to complete this TODO, but the PR is already big enough, I'd rather leave that as a separate follow-up.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-01-07 04:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/call/bind.rs</code>:1 on 2025-01-07 04:11</div>
+            <div class="timeline-body"><p>Good call; I just removed the unused method for now instead.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-01-07 05:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/call/bind.rs</code>:91 on 2025-01-07 05:10</div>
+            <div class="timeline-body"><p>I feel like it would be, except that we lose the parallel between <code>positional_at_index</code> and <code>parameter_at_index</code>, because <code>std::ops::Index</code> can only replace the latter, not the former. So it doesn't feel to me that overall it makes things clearer.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/call/function.md</code>:76 on 2025-01-07 06:51</div>
+            <div class="timeline-body"><p>&quot;Cannot assign&quot; is not supposed to be the &quot;why&quot;, it is the &quot;what&quot; -- &quot;assign&quot; is used here to mean &quot;match an argument to a parameter&quot;, similar to how you are using &quot;pass&quot;. Pyright uses similar terminology. The verb &quot;to pass&quot; here doesn't feel quite right to me for some reason; you pass an argument to a function, but passing an argument to a parameter sounds wrong to my ear. But there may not be any good reason for that, and I can get over it. Either way, I think the important thing at this point is to make sure we have the right context available to construct the message we want, so on that note I'll add the callable name to the messages.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-01-07 06:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-01-07 07:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/call/function.md</code>:76 on 2025-01-07 07:09</div>
+            <div class="timeline-body"><p>(Added)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-01-07 07:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/call/function.md</code>:182 on 2025-01-07 07:39</div>
+            <div class="timeline-body"><p>Good call, fixed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-01-07 07:50</div>
+            <div class="timeline-body"><p>Thanks for the reviews! I think I've addressed all comments so far.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/call/arguments.rs</code>:23 on 2025-01-07 09:42</div>
+            <div class="timeline-body"><p>The only call-site of <code>with_self</code> clones the <code>CallArguments</code>. That makes me think we should just use a <code>Vec</code> internally and instead take a <code>&amp;self</code> reference here</p>
+<pre><code class="language-suggestion">    pub(crate) fn with_self(&amp;self, self_ty: Type&lt;'db&gt;) -&gt; Self {
+        let mut arguments = Vec::with_capacity(self.0.len() + 1);
+        arguments.push(Argument::Positional(self_ty));
+        arguments.extend_from_slice(&amp;self.0);
+
+        Self(arguments)
+    }
+</code></pre>
+<p>It not only simplifies the call site, it also has the benefit that all read operations are simpler (it can't be much simpler than a vec)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/signatures.rs</code>:59 on 2025-01-07 09:46</div>
+            <div class="timeline-body"><p>Nit: <code>count</code> suggest that this operation is <code>O(n)</code></p>
+<pre><code class="language-suggestion">    pub(crate) fn parameter_len(&amp;self) -&gt; usize {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/signatures.rs</code>:75 on 2025-01-07 09:47</div>
+            <div class="timeline-body"><p>Nit: <code>get_parameter</code> similar to <code>Vec::get</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/signatures.rs</code>:87 on 2025-01-07 09:47</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    pub(crate) fn get_positional(&amp;self, index: usize) -&gt; Option&lt;&amp;Parameter&lt;'db&gt;&gt; {
+        if let Some(candidate) = self.parameter_at_index(index) {
+            if candidate.is_positional() {
+                return Some(candidate);
+            }
+        }
+        None
+    }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/signatures.rs</code>:57 on 2025-01-07 09:49</div>
+            <div class="timeline-body"><p>Could we use <code>rfind</code>, considering that <code>kwargs</code> arguments are normally at the end?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/signatures.rs</code>:107 on 2025-01-07 09:49</div>
+            <div class="timeline-body"><p>What happens if there's more than one parameter with the same name?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/signatures.rs</code>:14 on 2025-01-07 09:50</div>
+            <div class="timeline-body"><p>What happens if this order is no longer guaranteed, e.g. because there's invalid syntax?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/signatures.rs</code>:217 on 2025-01-07 09:51</div>
+            <div class="timeline-body"><p>To avoid creating a <code>Name</code> just for lookup</p>
+<pre><code class="language-suggestion">    pub(crate) fn callable_by_name(&amp;self, name: &amp;str) -&gt; bool {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/signatures.rs</code>:303 on 2025-01-07 09:53</div>
+            <div class="timeline-body"><p>Would it be useful to have this be an <code>Option&lt;Type&lt;'db&gt;&gt;</code> so that call sites can distinguish between an annotation was present vs the annotation is <code>Any</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/signatures.rs</code>:192 on 2025-01-07 09:54</div>
+            <div class="timeline-body"><p>The existence of having both <code>Parameter</code> and <code>Param</code> is somewhat confusing. Should this be <code>ParameterKind</code> or <code>AnyParameter</code> and <code>Param</code> gets renamed to <code>Parameter</code> (and <code>ParamWithDefault</code> to <code>ParameterWithDefault</code>)?</p>
+<p>The alternative is to change the representation to:</p>
+<pre><code class="language-rust">#[derive(Debug, Clone, PartialEq, Eq)]
+struct Paramter&lt;'db&gt; {
+    name: Option&lt;Name,
+    annotated_ty: Type&lt;'db&gt;,
+    kind: ParameterKind&lt;'db&gt;
+}
+
+#[derive(Debug, Copy, Clone, PartialEq, Eq)]
+enum ParameterKind&lt;'db&gt; {
+    PositionalOnly { default: Type&lt;'db&gt; },
+    PositionalOrKeyword { default: Type&lt;'db&gt; },
+    Variadic,
+    KeywordOnly { default: Type&lt;'db&gt; },
+    Keywords,
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1534 on 2025-01-07 09:59</div>
+            <div class="timeline-body"><p>It's unfortunate that we have to allocate a <code>Vec</code> for checking those calls. I guess they are infrequent enough that it doesn't matter.</p>
+<p>We could consider introducing a <code>CallArgumentsRef</code> or similar which wraps an <code>&amp;[Argument]</code> slice instead, similar to <code>IndexSlice</code> and <code>IndexVec</code> (may require some unsafe code to transmute between the two implementations).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/call/bind.rs</code>:48 on 2025-01-07 10:06</div>
+            <div class="timeline-body"><p>Nit: The <code>unknown</code> prefix feel a bit redundant. I'd just go with <code>argument_name</code> and <code>argument_index</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/call/bind.rs</code>:131 on 2025-01-07 10:08</div>
+            <div class="timeline-body"><p>I think using a <code>Vec</code> here is fine considering that errors shouldn't be that common. We could even consider boxing <code>errors</code> to reduce the stack size of <code>CallBinding</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/call/bind.rs</code>:179 on 2025-01-07 10:09</div>
+            <div class="timeline-body"><p>Can we add some documentation to this type (or better, come up with a better name). The name is fairly meaningless to me (I know it has something to do with parameter)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/call/bind.rs</code>:22 on 2025-01-07 10:12</div>
+            <div class="timeline-body"><p>Should this be named <code>argument_tys</code> considering that we push the argument (and not parameter) types?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-01-07 10:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/call/function.md</code>:76 on 2025-01-07 10:49</div>
+            <div class="timeline-body"><p>On further reflection, I wonder if we should mention the index whenever the <em>argument</em> is <em>passed</em> positionally, even if it's a positional-or-keyword <em>parameter</em>. Otherwise if you have lots of arguments (<code>foo(1, 2, 3, 4, 5)</code>) and the type checker complains about &quot;parameter <code>x</code>&quot;, you have to lookup the definition of <code>foo</code> to figure out what the type checker is complaining about.</p>
+<p>This issue is obviously partly obviated if we display the range as part of the diagnostic, eg.</p>
+<pre><code>foo(1, 2, 3, 4, 5)
+             ^
+error: [invalid-argument-type]
+</code></pre>
+<p>but that doesn't help users who use <code>--output-format=concise</code>. (I assume/hope we'll implement that option for red-knot in a similar way to how we already have it for Ruff. The verbose error format is fantastic if there's only a few errors, but it makes the errors much more overwhelming on the command line if there are many errors, e.g. if you're running Ruff or red-knot on a codebase for the first time.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/call/function.md</code>:180 on 2025-01-07 10:49</div>
+            <div class="timeline-body"><pre><code class="language-suggestion"># error: 13 [missing-argument] &quot;No argument provided for required parameter `x` of function `f`&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/call/function.md</code>:247 on 2025-01-07 10:50</div>
+            <div class="timeline-body"><pre><code class="language-suggestion"># error: 20 [unknown-argument] &quot;Argument `y` does not match any known parameter of function `f`&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/call/function.md</code>:257 on 2025-01-07 10:50</div>
+            <div class="timeline-body"><pre><code class="language-suggestion"># error: 18 [parameter-already-assigned] &quot;Multiple values provided for parameter `x` of function `f`&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/call/bind.rs</code>:91 on 2025-01-07 11:14</div>
+            <div class="timeline-body"><p>Right... but maybe you don't need that method either ;) here are the changes I think I'd make to the API:</p>
+<pre><code class="language-diff">diff --git a/crates/red_knot_python_semantic/src/types/call/bind.rs b/crates/red_knot_python_semantic/src/types/call/bind.rs
+index baa47b362..eb8f2ed93 100644
+--- a/crates/red_knot_python_semantic/src/types/call/bind.rs
++++ b/crates/red_knot_python_semantic/src/types/call/bind.rs
+@@ -18,7 +18,8 @@ pub(crate) fn bind_call&lt;'db&gt;(
+     signature: &amp;Signature&lt;'db&gt;,
+     callable_ty: Option&lt;Type&lt;'db&gt;&gt;,
+ ) -&gt; CallBinding&lt;'db&gt; {
+-    let param_count = signature.parameter_count();
++    let parameters = signature.parameters();
++    let param_count = parameters.len();
+     let mut parameter_tys = vec![None; param_count];
+     let mut errors = vec![];
+     let mut next_positional = 0;
+@@ -26,10 +27,11 @@ pub(crate) fn bind_call&lt;'db&gt;(
+     for (argument_index, argument) in arguments.iter().enumerate() {
+         let (index, parameter, argument_ty) = match argument {
+             Argument::Positional(ty) =&gt; {
+-                let Some((index, parameter)) = signature
+-                    .positional_at_index(next_positional)
++                let Some((index, parameter)) = parameters
++                    .positional_only()
++                    .nth(next_positional)
+                     .map(|param| (next_positional, param))
+-                    .or_else(|| signature.variadic_parameter())
++                    .or_else(|| parameters.variadic())
+                 else {
+                     first_excess_positional.get_or_insert(argument_index);
+                     next_positional += 1;
+@@ -39,9 +41,9 @@ pub(crate) fn bind_call&lt;'db&gt;(
+                 (index, parameter, ty)
+             }
+             Argument::Keyword { name, ty } =&gt; {
+-                let Some((index, parameter)) = signature
++                let Some((index, parameter)) = parameters
+                     .keyword_by_name(name)
+-                    .or_else(|| signature.keywords_parameter())
++                    .or_else(|| parameters.keyword_variadic())
+                 else {
+                     errors.push(CallBindingError::UnknownArgument {
+                         unknown_name: name.clone(),
+@@ -81,16 +83,14 @@ pub(crate) fn bind_call&lt;'db&gt;(
+     if let Some(first_excess_argument_index) = first_excess_positional {
+         errors.push(CallBindingError::TooManyPositionalArguments {
+             first_excess_argument_index,
+-            expected_positional_count: signature.positional_parameter_count(),
++            expected_positional_count: parameters.positional_only().count(),
+             provided_positional_count: next_positional,
+         });
+     }
+     let mut missing = vec![];
+     for (index, bound_ty) in parameter_tys.iter().enumerate() {
+         if bound_ty.is_none() {
+-            let param = signature
+-                .parameter_at_index(index)
+-                .expect(&quot;parameter_tys array should not be larger than number of parameters&quot;);
++            let param = &amp;parameters[index];
+             if param.is_variadic() || param.is_keywords() || param.default_ty().is_some() {
+                 // variadic/keywords and defaulted arguments are not required
+                 continue;
+diff --git a/crates/red_knot_python_semantic/src/types/signatures.rs b/crates/red_knot_python_semantic/src/types/signatures.rs
+index 3f23b5a3f..e8e52b4e9 100644
+--- a/crates/red_knot_python_semantic/src/types/signatures.rs
++++ b/crates/red_knot_python_semantic/src/types/signatures.rs
+@@ -1,3 +1,5 @@
++use std::ops::Index;
++
+ use super::{definition_expression_ty, Type};
+ use crate::Db;
+ use crate::{semantic_index::definition::Definition, types::todo_type};
+@@ -55,70 +57,15 @@ impl&lt;'db&gt; Signature&lt;'db&gt; {
+         }
+     }
+ 
+-    /// Return number of parameters in this signature.
+-    pub(crate) fn parameter_count(&amp;self) -&gt; usize {
+-        self.parameters.0.len()
+-    }
+-
+-    /// Return number of positional parameters this signature can accept.
+-    ///
+-    /// Doesn't account for variadic parameter.
+-    pub(crate) fn positional_parameter_count(&amp;self) -&gt; usize {
+-        self.parameters
+-            .into_iter()
+-            .take_while(|param| param.is_positional())
+-            .count()
+-    }
+-
+-    pub(crate) fn parameter_at_index(&amp;self, index: usize) -&gt; Option&lt;&amp;Parameter&lt;'db&gt;&gt; {
+-        self.parameters.0.get(index)
+-    }
+-
+-    /// Return positional parameter at given index, or `None` if `index` is out of range.
+-    ///
+-    /// Does not return variadic parameter.
+-    pub(crate) fn positional_at_index(&amp;self, index: usize) -&gt; Option&lt;&amp;Parameter&lt;'db&gt;&gt; {
+-        if let Some(candidate) = self.parameter_at_index(index) {
+-            if candidate.is_positional() {
+-                return Some(candidate);
+-            }
+-        }
+-        None
+-    }
+-
+-    /// Return the variadic parameter (`*args`), if any, and its index, or `None`.
+-    pub(crate) fn variadic_parameter(&amp;self) -&gt; Option&lt;(usize, &amp;Parameter&lt;'db&gt;)&gt; {
+-        self.parameters
+-            .into_iter()
+-            .enumerate()
+-            .find(|(_, parameter)| parameter.is_variadic())
+-    }
+-
+-    /// Return parameter (with index) for given name, or `None` if no such parameter.
+-    ///
+-    /// Does not return keywords (`**kwargs`) parameter.
+-    pub(crate) fn keyword_by_name(
+-        &amp;self,
+-        name: &amp;ast::name::Name,
+-    ) -&gt; Option&lt;(usize, &amp;Parameter&lt;'db&gt;)&gt; {
+-        self.parameters
+-            .into_iter()
+-            .enumerate()
+-            .find(|(_, parameter)| parameter.callable_by_name(name))
+-    }
+-
+-    /// Return the keywords parameter (`**kwargs`), if any, and its index, or `None`.
+-    pub(crate) fn keywords_parameter(&amp;self) -&gt; Option&lt;(usize, &amp;Parameter&lt;'db&gt;)&gt; {
+-        self.parameters
+-            .into_iter()
+-            .enumerate()
+-            .find(|(_, parameter)| parameter.is_keywords())
++    /// Return the parameters in this signature.
++    pub(crate) fn parameters(&amp;self) -&gt; &amp;Parameters&lt;'db&gt; {
++        &amp;self.parameters
+     }
+ }
+ 
+ // TODO: use SmallVec here once invariance bug is fixed
+ #[derive(Clone, Debug, PartialEq, Eq)]
+-pub(super) struct Parameters&lt;'db&gt;(Vec&lt;Parameter&lt;'db&gt;&gt;);
++pub(crate) struct Parameters&lt;'db&gt;(Vec&lt;Parameter&lt;'db&gt;&gt;);
+ 
+ impl&lt;'db&gt; Parameters&lt;'db&gt; {
+     /// Return todo parameters: (*args: Todo, **kwargs: Todo)
+@@ -172,6 +119,44 @@ impl&lt;'db&gt; Parameters&lt;'db&gt; {
+                 .collect(),
+         )
+     }
++
++    pub(crate) fn len(&amp;self) -&gt; usize {
++        self.0.len()
++    }
++
++    pub(crate) fn iter(&amp;self) -&gt; impl Iterator&lt;Item = &amp;Parameter&lt;'db&gt;&gt; {
++        self.0.iter()
++    }
++
++    pub(crate) fn positional_only(&amp;self) -&gt; impl Iterator&lt;Item = &amp;Parameter&lt;'db&gt;&gt; {
++        self.iter().filter(|param| param.is_positional())
++    }
++
++    /// Return the variadic parameter (`*args`), if any, and its index, or `None`.
++    pub(crate) fn variadic(&amp;self) -&gt; Option&lt;(usize, &amp;Parameter&lt;'db&gt;)&gt; {
++        self.iter()
++            .enumerate()
++            .find(|(_, parameter)| parameter.is_variadic())
++    }
++
++    /// Return parameter (with index) for given name, or `None` if no such parameter.
++    ///
++    /// Does not return keywords (`**kwargs`) parameter.
++    pub(crate) fn keyword_by_name(
++        &amp;self,
++        name: &amp;ast::name::Name,
++    ) -&gt; Option&lt;(usize, &amp;Parameter&lt;'db&gt;)&gt; {
++        self.iter()
++            .enumerate()
++            .find(|(_, parameter)| parameter.callable_by_name(name))
++    }
++
++    /// Return the keywords parameter (`**kwargs`), if any, and its index, or `None`.
++    pub(crate) fn keyword_variadic(&amp;self) -&gt; Option&lt;(usize, &amp;Parameter&lt;'db&gt;)&gt; {
++        self.iter()
++            .enumerate()
++            .find(|(_, parameter)| parameter.is_keywords())
++    }
+ }
+ 
+ impl&lt;'db, 'a&gt; IntoIterator for &amp;'a Parameters&lt;'db&gt; {
+@@ -183,6 +168,14 @@ impl&lt;'db, 'a&gt; IntoIterator for &amp;'a Parameters&lt;'db&gt; {
+     }
+ }
+ 
++impl&lt;'db&gt; Index&lt;usize&gt; for Parameters&lt;'db&gt; {
++    type Output = Parameter&lt;'db&gt;;
++
++    fn index(&amp;self, index: usize) -&gt; &amp;Self::Output {
++        &amp;self.0[index]
++    }
++}
++
+ #[derive(Clone, Debug, PartialEq, Eq)]
+ pub(crate) enum Parameter&lt;'db&gt; {
+     /// Positional-only parameter, e.g. `def f(x, /): ...`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-01-07 11:14</div>
+            <div class="timeline-body"><p>(Still not a full review)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-01-07 16:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/call/function.md</code>:86 on 2025-01-07 16:32</div>
+            <div class="timeline-body"><p>I think we should use 1-based indexing for the parameter number -- computers think of numbers as starting at 0, but that's not how humans think, and the error message is for humans</p>
+<pre><code class="language-suggestion"># error: 15 [invalid-argument-type] &quot;Object of type `Literal[&quot;foo&quot;]` cannot be assigned to parameter 1 (`x`) of function `f`; expected type `int`&quot;
+</code></pre>
+<p>This struct can help:</p>
+<p>https://github.com/astral-sh/ruff/blob/c75fb4a504513313fafa3fe6391a0cac1fec9a80/crates/ruff_source_file/src/line_index.rs#L338-L345</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-01-07 17:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/signatures.rs</code>:107 on 2025-01-07 17:17</div>
+            <div class="timeline-body"><p>That's an invalid signature, so I think the bar for what we do there is pretty low: I'd be happy with any semi-reasonable behavior that doesn't panic. Always assigning a keyword argument of that name to the first parameter with the name seems fine.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-01-07 17:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/signatures.rs</code>:14 on 2025-01-07 17:22</div>
+            <div class="timeline-body"><p>This comment isn't meant to imply that we can rely on the signature being valid, and I don't think we currently do. I can adjust the comment to clarify that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-01-07 17:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/call/bind.rs</code>:179 on 2025-01-07 17:25</div>
+            <div class="timeline-body"><p>Any better name suggestions? I had trouble coming up with a good name. It's &quot;the information we need to report an error regarding a particular parameter.&quot;</p>
+<p>I can add a doc comment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-01-07 17:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/call/bind.rs</code>:22 on 2025-01-07 17:26</div>
+            <div class="timeline-body"><p>I don't think so, because the most important fact about it is that each index in this vector corresponds to a parameter, in the order the parameters exist in the signature. There may be fewer arguments, in a different order (if keyword arguments are used). So these are the types assigned to each parameter, at this call site.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-01-07 17:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/call/bind.rs</code>:131 on 2025-01-07 17:32</div>
+            <div class="timeline-body"><p>Ok, I can remove the TODO comment.</p>
+<p>Not going to add the extra layer of indirection in this PR, I think that should be motivated separately by profiling showing it's a useful tradeoff.</p>
+<p>(If overall memory usage of <code>CallBinding</code> is an issue, we may want to consider limiting the assigned parameter types that we store, or only storing parameter types at all when the callable is a known-function. We only actually need the assigned parameter types in the binding when we are special-casing a known callable.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-01-07 17:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1534 on 2025-01-07 17:34</div>
+            <div class="timeline-body"><p>Makes sense; I'll leave this as a potential future optimization if we see this as a significant cost in profiling.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-01-07 17:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/call/bind.rs</code>:91 on 2025-01-07 17:50</div>
+            <div class="timeline-body"><p>I like just returning a reference to <code>Parameters</code> and exposing API there, rather than passing everything through methods on <code>Signature</code>; I thought about that when writing it but didn't get around to trying it.</p>
+<p>Still not sure about <code>positional_only</code> and how different it makes it from the caller side to <code>get_positional</code> vs just <code>get</code>. Also I think the semantics here are not right; it needs to be &quot;return the nth parameter, if it can be assigned positionally&quot; not &quot;return the nth positional parameter&quot;. These should be the same thing for a valid signature, but we can't assume a valid signature.</p>
+<p>I'll play with this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-01-07 17:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/call/bind.rs</code>:91 on 2025-01-07 17:52</div>
+            <div class="timeline-body"><blockquote>
+<p>These should be the same thing for a valid signature, but we can't assume a valid signature.</p>
+</blockquote>
+<p>Ah, I thought we had said that for invalid syntax we'd just assume something similar to what your <code>Parameters::todo()</code> method returns? Don't have a strong opinion on this though -- it was just what I was basing some of my suggestions on</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-01-07 18:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/signatures.rs</code>:75 on 2025-01-07 18:20</div>
+            <div class="timeline-body"><p>Following Alex's comment, I'm moving this to <code>signature.parameters().get()</code> instead of <code>signature.get_parameter()</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/signatures.rs</code>:107 on 2025-01-07 18:21</div>
+            <div class="timeline-body"><p>Clarified this behavior in the doc comment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-01-07 18:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-01-07 18:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/call/bind.rs</code>:91 on 2025-01-07 18:25</div>
+            <div class="timeline-body"><p>20d0851214a026f6c61ec23b22d74c9205d9233f</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-01-07 18:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/call/bind.rs</code>:91 on 2025-01-07 18:26</div>
+            <div class="timeline-body"><p>Thanks for the comments, this is definitely an improvement!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-01-07 18:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/signatures.rs</code>:59 on 2025-01-07 18:26</div>
+            <div class="timeline-body"><p>Fixed as part of 20d0851214a026f6c61ec23b22d74c9205d9233f</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/signatures.rs</code>:143 on 2025-01-07 18:29</div>
+            <div class="timeline-body"><p>to me this seems simple enough that I would just inline it at callsites :P but no strong opinion</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/signatures.rs</code>:159 on 2025-01-07 18:31</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        self.get(index)
+            .and_then(|candidate| candidate.is_positional().then_some(candidate))
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-01-07 18:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/signatures.rs</code>:303 on 2025-01-07 18:41</div>
+            <div class="timeline-body"><p>Not sure if it will ever be useful/needed, but it does seem better to preserve the more structured representation. 53b35ec0afee001b9ea6cf7371ac9197505da65e</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-01-07 18:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-01-07 18:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/call/function.md</code>:76 on 2025-01-07 18:56</div>
+            <div class="timeline-body"><p>Makes sense. 17adaa581077e0aa146200483d175282628425c2</p>
+<p>One edge case I noted is that if the argument was passed positionally, but matched to the variadic parameter, I don't think we should describe it using the parameter index, because that won't necessarily be the same as the argument index. E.g. <code>def f(*args: int): ...</code> and then <code>f(10, &quot;foo&quot;)</code> the error should just say &quot;cannot be assigned to parameter <code>*args</code>&quot; not &quot;cannot be assigned to parameter 1 (<code>*args</code>)&quot;, which is confusing since the error is about argument 2, not argument 1.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-01-07 19:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/signatures.rs</code>:143 on 2025-01-07 19:00</div>
+            <div class="timeline-body"><p>Ok, sure. I also noticed looking at this that the name <code>positional_only</code> for the iterator-returning method is bad, due to confusion with positional-only parameters. This method iterates only positional parameters, which is not the same thing as returning only positional-only parameters 😆 Renamed it to just <code>positional</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-01-07 19:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/signatures.rs</code>:159 on 2025-01-07 19:02</div>
+            <div class="timeline-body"><p>Not totally convinced this is more readable, but it is shorter, so sure :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-01-07 19:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/signatures.rs</code>:159 on 2025-01-07 19:03</div>
+            <div class="timeline-body"><p>hehe, I'm not wedded to it! You can ignore this if you don't like it :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-01-07 19:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/call/function.md</code>:86 on 2025-01-07 19:07</div>
+            <div class="timeline-body"><p>Done. I don't think there's any need for <code>OneIndexed</code> here, though -- I think it's less confusing if we continue to use exclusively zero-based indices in the code, and just <code>+ 1</code> at the display layer. At least for now; maybe this will change as the diagnostic system gets more sophisticated.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-01-07 19:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/call/function.md</code>:86 on 2025-01-07 19:08</div>
+            <div class="timeline-body"><p>b2e3bf1ae58ea9034d112a3cfd06fc85e56a207f</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-01-07 19:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/call/bind.rs</code>:22 on 2025-01-07 19:21</div>
+            <div class="timeline-body"><p>Added a comment to clarify this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-01-07 19:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/call/bind.rs</code>:179 on 2025-01-07 19:21</div>
+            <div class="timeline-body"><p>Doc comment added.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-01-07 20:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/signatures.rs</code>:192 on 2025-01-07 20:06</div>
+            <div class="timeline-body"><p>I went with the <code>ParameterKind</code> approach, I think it works out pretty well: e338e9900a2adbc876fef7f00ee4c9b3f9eb803f</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-01-07 20:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/signatures.rs</code>:107 on 2025-01-07 20:14</div>
+            <div class="timeline-body"><p>Also added a test for this case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-01-07 20:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/signatures.rs</code>:14 on 2025-01-07 20:29</div>
+            <div class="timeline-body"><p>Also added some tests to show we handle some invalid-syntax cases without panic.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-01-07 20:30</div>
+            <div class="timeline-body"><p>Thanks for all the great review comments! I think I've addressed them all, planning to land if CI is green.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @carljm on 2025-01-07 20:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-01-07 20:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-01-07 20:39</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:49:30 UTC
+    </footer>
+</body>
+</html>

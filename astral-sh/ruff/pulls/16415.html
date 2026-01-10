@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Don't use separate ID types for each alist - astral-sh/ruff #16415</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Don't use separate ID types for each alist</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/16415">#16415</a>
+        opened by <a href="https://github.com/dcreager">@dcreager</a>
+        on 2025-02-27 14:52
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dcreager">@dcreager</a> on 2025-02-27 14:52</div>
+            <div class="timeline-body"><p>Regardless of whether #16408 and #16311 pan out, this part is worth pulling out as a separate PR.</p>
+<p>Before, you had to define a new <code>IndexVec</code> index type for each type of association list you wanted to create.  Now there's a single index type that's internal to the alist implementation, and you use <code>List&lt;K, V&gt;</code> to store a handle to a particular list.</p>
+<p>This also adds some property tests for the alist implementation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @dcreager on 2025-02-27 14:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @dcreager on 2025-02-27 14:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @dcreager on 2025-02-27 14:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @dcreager on 2025-02-27 14:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @dcreager on 2025-02-27 14:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @dcreager on 2025-02-27 14:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ruff_index/src/list.rs</code>:133 on 2025-02-27 14:54</div>
+            <div class="timeline-body"><p><code>List</code> is <code>Copy</code>, so I'm not sure why clippy want us to always pass this around by value like we were before.  I guess the extra phantom fields increase the perceived complexity?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-02-27 14:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-02-27 15:01</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_index/src/list.rs</code>:84 on 2025-02-27 15:08</div>
+            <div class="timeline-body"><p>You can combine the two if you want. I also remember that derive macros sometimes struggle when using <code>PhantomData&lt;T&gt;</code> directly but using a fn that returns the types work fine.</p>
+<pre><code class="language-suggestion">    _type: PhantomData&lt;() -&gt; (K, V)&gt;,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_index/src/list.rs</code>:114 on 2025-02-27 15:10</div>
+            <div class="timeline-body"><p>Removing the <code>I</code> makes this type less a clear fit for the <code>ruff_index</code> crate because it's no longer an indexed type.</p>
+<p>What's the benefit of removing the <code>I</code> type other than just removing the need to define an index newtype wrapper type? Didn't it protect that you could pass a list for another <code>ListStorage</code> with the same <code>K</code>, <code>V</code> to a <code>ListStorage</code> for another index?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-27 15:11</div>
+            <div class="timeline-body"><p>It's not entirely clear to me what the benefit of removing the <code>Index</code> type is. Didn't it give us some added type safety that prevented mixing different list types?</p>
+<p>Edit: It's very likely that I simply don't understand the data structure enough to see the benefit of it. In that case, feel free to disregard this comment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ruff_index/src/list.rs</code>:84 on 2025-02-27 15:34</div>
+            <div class="timeline-body"><p>Good idea! Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ruff_index/src/list.rs</code>:114 on 2025-02-27 15:36</div>
+            <div class="timeline-body"><blockquote>
+<p>What's the benefit of removing the <code>I</code> type other than just removing the need to define an index newtype wrapper type? Didn't it protect that you could pass a list for another <code>ListStorage</code> with the same <code>K</code>, <code>V</code> to a <code>ListStorage</code> for another index?</p>
+</blockquote>
+<p>We weren't (and as far as I know, aren't planning on) creating any lists with the same <code>K, V</code> but different <code>I</code> types.  So I was viewing this as removing a redundancy.</p>
+<blockquote>
+<p>Removing the <code>I</code> makes this type less a clear fit for the <code>ruff_index</code> crate because it's no longer an indexed type.</p>
+</blockquote>
+<p>That's fair — would you want me to move this into a different crate if we keep the change?  Is there an existing crate that's a better fit, or would it deserve its own?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-02-27 15:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff_index/src/list.rs</code>:17 on 2025-02-27 15:37</div>
+            <div class="timeline-body"><p>This seems to describe the previous API?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-02-27 15:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-27 15:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_index/src/list.rs</code>:114 on 2025-02-27 15:41</div>
+            <div class="timeline-body"><blockquote>
+<p>We weren't (and as far as I know, aren't planning on) creating any lists with the same K, V but different I types. So I was viewing this as removing a redundancy.</p>
+</blockquote>
+<p>If there's value in having the separate index type than I think I'd prefer to keep it and instead have type aliases in <code>red_knot_python_semantic</code> or to move the types into <code>red_knot_python_semantic</code> if we don't intent to use it elsewhere.</p>
+<blockquote>
+<p>That's fair — would you want me to move this into a different crate if we keep the change? Is there an existing crate that's a better fit, or would it deserve its own?</p>
+</blockquote>
+<p>That's a tough question. I don't think there's a fitting crate for it but creating its own crate also feels somewhat overkill. I'm okay leaving it here or I'd move it into <code>red_knot_python_semantic</code>, considering it's the only place where we use the type.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-02-27 17:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ruff_index/src/list.rs</code>:17 on 2025-02-27 17:02</div>
+            <div class="timeline-body"><p>Yes, good catch, fixed!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-02-28 01:00</div>
+            <div class="timeline-body"><p>Discussed this briefly with @dcreager  in our 1:1. I don't think this really loses any type safety that we had previously. If you want to create two list arenas with the same <code>K</code> and <code>V</code> but whose lists are treated as different types, you can do that in the same way you would in the same scenario with any other collection type: wrap it in a newtype. This seems more ergonomic, more idiomatic, and just as type-safe as being forced to define a distinct newtype-index.</p>
+<p>The most likely mistake in our use of these lists is that we would mistakenly use a list from one scope's list arena with the arena from a different scope. But these arenas are all the same type (and use the same newtype-index today), so we already don't have protection from this. (It's no different than any of our per-scope IndexVec newtype indices, which are invalid if used across scopes, and we don't have compiler-level protection from this.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-02-28 01:01</div>
+            <div class="timeline-body"><p>This looks fine to me. No opposition to moving it into <code>red_knot_python_semantic</code>, at least until an external use case shows up.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-02-28 14:09</div>
+            <div class="timeline-body"><blockquote>
+<p>No opposition to moving it into <code>red_knot_python_semantic</code>, at least until an external use case shows up.</p>
+</blockquote>
+<p>Done.  That required removing some methods that aren't currently being used (union, list iterator), but we can always resurrect those from the git history if needed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dcreager on 2025-02-28 19:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dcreager on 2025-02-28 19:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-02-28 19:55</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:49:31 UTC
+    </footer>
+</body>
+</html>

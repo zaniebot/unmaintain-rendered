@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Support custom `__getattr__` methods - astral-sh/ruff #16668</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Support custom <code>__getattr__</code> methods</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/16668">#16668</a>
+        opened by <a href="https://github.com/sharkdp">@sharkdp</a>
+        on 2025-03-12 11:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-03-12 11:08</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Add support for calling custom <code>__getattr__</code> methods in case an attribute is not otherwise found. This allows us to get rid of many ecosystem false positives where we previously emitted errors when accessing attributes on <code>argparse.Namespace</code>.</p>
+<p>closes astral-sh/ruff#16614</p>
+<h2>Test Plan</h2>
+<ul>
+<li>New Markdown tests</li>
+<li>Observed expected ecosystem changes (the changes for <code>arrow</code> also look fine, since the <code>Arrow</code> class has a custom <a href="https://github.com/arrow-py/arrow/blob/1d70d0091980ea489a64fa95a48e99b45f29f0e7/arrow/arrow.py#L802-L815"><code>__getattr__</code> here</a>)</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @sharkdp on 2025-03-12 11:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-03-12 11:13</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">pyp (https://github.com/hauntsaninja/pyp)
+- error: lint:unresolved-attribute
+-    --&gt; /tmp/mypy_primer/projects/pyp/pyp.py:634:25
+-     |
+- 632 | def run_pyp(args: argparse.Namespace) -&gt; None:
+- 633 |     config = PypConfig()
+- 634 |     tree = PypTransform(args.before, args.code, args.after, args.define_pypprint, config).build()
+-     |                         ^^^^^^^^^^^ Type `Namespace` has no attribute `before`
+- 635 |     if args.explain:
+- 636 |         print(config.shebang)
+-     |
+- 
+- error: lint:unresolved-attribute
+-    --&gt; /tmp/mypy_primer/projects/pyp/pyp.py:634:38
+-     |
+- 632 | def run_pyp(args: argparse.Namespace) -&gt; None:
+- 633 |     config = PypConfig()
+- 634 |     tree = PypTransform(args.before, args.code, args.after, args.define_pypprint, config).build()
+-     |                                      ^^^^^^^^^ Type `Namespace` has no attribute `code`
+- 635 |     if args.explain:
+- 636 |         print(config.shebang)
+-     |
+- 
+- error: lint:unresolved-attribute
+-    --&gt; /tmp/mypy_primer/projects/pyp/pyp.py:634:49
+-     |
+- 632 | def run_pyp(args: argparse.Namespace) -&gt; None:
+- 633 |     config = PypConfig()
+- 634 |     tree = PypTransform(args.before, args.code, args.after, args.define_pypprint, config).build()
+-     |                                                 ^^^^^^^^^^ Type `Namespace` has no attribute `after`
+- 635 |     if args.explain:
+- 636 |         print(config.shebang)
+-     |
+- 
+- error: lint:unresolved-attribute
+-    --&gt; /tmp/mypy_primer/projects/pyp/pyp.py:634:61
+-     |
+- 632 | def run_pyp(args: argparse.Namespace) -&gt; None:
+- 633 |     config = PypConfig()
+- 634 |     tree = PypTransform(args.before, args.code, args.after, args.define_pypprint, config).build()
+-     |                                                             ^^^^^^^^^^^^^^^^^^^^ Type `Namespace` has no attribute `define_pypprint`
+- 635 |     if args.explain:
+- 636 |         print(config.shebang)
+-     |
+- 
+- error: lint:unresolved-attribute
+-    --&gt; /tmp/mypy_primer/projects/pyp/pyp.py:635:8
+-     |
+- 633 |     config = PypConfig()
+- 634 |     tree = PypTransform(args.before, args.code, args.after, args.define_pypprint, config).build()
+- 635 |     if args.explain:
+-     |        ^^^^^^^^^^^^ Type `Namespace` has no attribute `explain`
+- 636 |         print(config.shebang)
+- 637 |         print(unparse(tree))
+-     |
+- 
+- error: lint:unresolved-attribute
+-    --&gt; /tmp/mypy_primer/projects/pyp/pyp.py:686:12
+-     |
+- 684 |                 &quot;Perhaps you forgot to define something or PYP_CONFIG_PATH is set incorrectly?&quot;
+- 685 |             )
+- 686 |         if args.before and isinstance(e, NameError):
+-     |            ^^^^^^^^^^^ Type `Namespace` has no attribute `before`
+- 687 |             var = str(e)
+- 688 |             var = var[var.find(&quot;'&quot;) + 1 : var.rfind(&quot;'&quot;)]
+-     |
+- 
+- Found 27 diagnostics
++ Found 21 diagnostics
+
+git-revise (https://github.com/mystor/git-revise)
+-    --&gt; /tmp/mypy_primer/projects/git-revise/gitrevise/tui.py:124:8
+-     |
+- 122 |     assert head.target is not None
+- 123 |
+- 124 |     if args.target or args.root:
+-     |        ^^^^^^^^^^^ Type `Namespace` has no attribute `target`
+- 125 |         base = repo.get_commit(args.target) if args.target else None
+- 126 |         to_rebase = commit_range(base, head.target)
+-     |
+- 
+- error: lint:unresolved-attribute
+-    --&gt; /tmp/mypy_primer/projects/git-revise/gitrevise/tui.py:124:23
+-     |
+- 122 |     assert head.target is not None
+- 123 |
+- 124 |     if args.target or args.root:
+-     |                       ^^^^^^^^^ Type `Namespace` has no attribute `root`
+- 125 |         base = repo.get_commit(args.target) if args.target else None
+- 126 |         to_rebase = commit_range(base, head.target)
+-     |
+- 
+- error: lint:unresolved-attribute
+-    --&gt; /tmp/mypy_primer/projects/git-revise/gitrevise/tui.py:125:32
+-     |
+- 124 |     if args.target or args.root:
+- 125 |         base = repo.get_commit(args.target) if args.target else None
+-     |                                ^^^^^^^^^^^ Type `Namespace` has no attribute `target`
+- 126 |         to_rebase = commit_range(base, head.target)
+- 127 |     else:
+-     |
+- 
+- error: lint:unresolved-attribute
+-    --&gt; /tmp/mypy_primer/projects/git-revise/gitrevise/tui.py:125:48
+-     |
+- 124 |     if args.target or args.root:
+- 125 |         base = repo.get_commit(args.target) if args.target else None
+-     |                                                ^^^^^^^^^^^ Type `Namespace` has no attribute `target`
+- 126 |         to_rebase = commit_range(base, head.target)
+- 127 |     else:
+-     |
+- 
+- error: lint:unresolved-attribute
+-    --&gt; /tmp/mypy_primer/projects/git-revise/gitrevise/tui.py:136:8
+-     |
+- 134 |         todos = autosquash_todos(todos)
+- 135 |
+- 136 |     if args.interactive:
+-     |        ^^^^^^^^^^^^^^^^ Type `Namespace` has no attribute `interactive`
+- 137 |         todos = edit_todos(repo, todos, msgedit=args.edit)
+-     |
+- 
+- error: lint:unresolved-attribute
+-    --&gt; /tmp/mypy_primer/projects/git-revise/gitrevise/tui.py:137:49
+-     |
+- 136 |     if args.interactive:
+- 137 |         todos = edit_todos(repo, todos, msgedit=args.edit)
+-     |                                                 ^^^^^^^^^ Type `Namespace` has no attribute `edit`
+- 138 |
+- 139 |     if todos != original:
+-     |
+- 
+- error: lint:unresolved-attribute
+-    --&gt; /tmp/mypy_primer/projects/git-revise/gitrevise/tui.py:141:54
+-     |
+- 139 |     if todos != original:
+- 140 |         # Perform the todo list actions.
+- 141 |         new_head = apply_todos(base, todos, reauthor=args.reauthor)
+-     |                                                      ^^^^^^^^^^^^^ Type `Namespace` has no attribute `reauthor`
+- 142 |
+- 143 |         # Update the value of HEAD to the new state.
+-     |
+- 
+- error: lint:unresolved-attribute
+-    --&gt; /tmp/mypy_primer/projects/git-revise/gitrevise/tui.py:150:8
+-     |
+- 149 | def enable_autosquash(args: Namespace, repo: Repository) -&gt; bool:
+- 150 |     if args.autosquash:
+-     |        ^^^^^^^^^^^^^^^ Type `Namespace` has no attribute `autosquash`
+- 151 |         return True
+- 152 |     if args.no_autosquash:
+-     |
+- 
+- error: lint:unresolved-attribute
+-    --&gt; /tmp/mypy_primer/projects/git-revise/gitrevise/tui.py:152:8
+-     |
+- 150 |     if args.autosquash:
+- 151 |         return True
+- 152 |     if args.no_autosquash:
+-     |        ^^^^^^^^^^^^^^^^^^ Type `Namespace` has no attribute `no_autosquash`
+- 153 |         return False
+-     |
+- 
+- error: lint:unresolved-attribute
+-    --&gt; /tmp/mypy_primer/projects/git-revise/gitrevise/tui.py:166:8
+-     |
+- 164 |     assert head.target is not None
+- 165 |
+- 166 |     if args.root:
+-     |        ^^^^^^^^^ Type `Namespace` has no attribute `root`
+- 167 |         raise ValueError(
+- 168 |             &quot;Incompatible option: &quot;
+-     |
+- 
+- error: lint:unresolved-attribute
+-    --&gt; /tmp/mypy_primer/projects/git-revise/gitrevise/tui.py:172:8
+-     |
+- 170 |         )
+- 171 |
+- 172 |     if args.target is None:
+-     |        ^^^^^^^^^^^ Type `Namespace` has no attribute `target`
+- 173 |         raise ValueError(&quot;&lt;target&gt; is a required argument&quot;)
+-     |
+- 
+- error: lint:unresolved-attribute
+-    --&gt; /tmp/mypy_primer/projects/git-revise/gitrevise/tui.py:175:32
+-     |
+- 173 |         raise ValueError(&quot;&lt;target&gt; is a required argument&quot;)
+- 174 |
+- 175 |     head = repo.get_commit_ref(args.ref)
+-     |                                ^^^^^^^^ Type `Namespace` has no attribute `ref`
+- 176 |     if head.target is None:
+- 177 |         raise ValueError(&quot;Invalid target reference&quot;)
+-     |
+- 
+- error: lint:unresolved-attribute
+-    --&gt; /tmp/mypy_primer/projects/git-revise/gitrevise/tui.py:179:42
+-     |
+- 177 |         raise ValueError(&quot;Invalid target reference&quot;)
+- 178 |
+- 179 |     current = replaced = repo.get_commit(args.target)
+-     |                                          ^^^^^^^^^^^ Type `Namespace` has no attribute `target`
+- 180 |     to_rebase = commit_range(current, head.target)
+-     |
+- 
+- error: lint:unresolved-attribute
+-    --&gt; /tmp/mypy_primer/projects/git-revise/gitrevise/tui.py:179:42
+-     |
+- 177 |         raise ValueError(&quot;Invalid target reference&quot;)
+- 178 |
+- 179 |     current = replaced = repo.get_commit(args.target)
+-     |                                          ^^^^^^^^^^^ Type `Namespace` has no attribute `target`
+- 180 |     to_rebase = commit_range(current, head.target)
+-     |
+- 
+- error: lint:unresolved-attribute
+-    --&gt; /tmp/mypy_primer/projects/git-revise/gitrevise/tui.py:185:46
+-     |
+- 183 |     final = head.target.tree()
+- 184 |     if staged:
+- 185 |         print(f&quot;Applying staged changes to '{args.target}'&quot;)
+-     |                                              ^^^^^^^^^^^ Type `Namespace` has no attribute `target`
+- 186 |         current = current.update(tree=staged.rebase(current).tree())
+- 187 |         final = staged.rebase(head.target).tree()
+-     |
+- 
+- error: lint:unresolved-attribute
+-    --&gt; /tmp/mypy_primer/projects/git-revise/gitrevise/tui.py:190:8
+-     |
+- 189 |     # Update the commit message on the target commit if requested.
+- 190 |     if args.message:
+-     |        ^^^^^^^^^^^^ Type `Namespace` has no attribute `message`
+- 191 |         message = b&quot;\n&quot;.join(l.encode(&quot;utf-8&quot;) + b&quot;\n&quot; for l in args.message)
+- 192 |         current = current.update(message=message)
+-     |
+- 
+- error: lint:unresolved-attribute
+-    --&gt; /tmp/mypy_primer/projects/git-revise/gitrevise/tui.py:191:65
+-     |
+- 189 |     # Update the commit message on the target commit if requested.
+- 190 |     if args.message:
+- 191 |         message = b&quot;\n&quot;.join(l.encode(&quot;utf-8&quot;) + b&quot;\n&quot; for l in args.message)
+-     |                                                                 ^^^^^^^^^^^^ Type `Namespace` has no attribute `message`
+- 192 |         current = current.update(message=message)
+-     |
+- 
+- error: lint:unresolved-attribute
+-    --&gt; /tmp/mypy_primer/projects/git-revise/gitrevise/tui.py:195:8
+-     |
+- 194 |     # Prompt the user to edit the commit message if requested.
+- 195 |     if args.edit:
+-     |        ^^^^^^^^^ Type `Namespace` has no attribute `edit`
+- 196 |         current = edit_commit_message(current)
+-     |
+- 
+- error: lint:unresolved-attribute
+-    --&gt; /tmp/mypy_primer/projects/git-revise/gitrevise/tui.py:199:8
+-     |
+- 198 |     # Rewrite the author to match the current user if requested.
+- 199 |     if args.reauthor:
+-     |        ^^^^^^^^^^^^^ Type `Namespace` has no attribute `reauthor`
+- 200 |         current = current.update(author=repo.default_author)
+-     |
+- 
+- error: lint:unresolved-attribute
+-    --&gt; /tmp/mypy_primer/projects/git-revise/gitrevise/tui.py:203:8
+-     |
+- 202 |     # If the commit should be cut, prompt the user to perform the cut.
+- 203 |     if args.cut:
+-     |        ^^^^^^^^ Type `Namespace` has no attribute `cut`
+- 204 |         current = cut_commit(current)
+-     |
+- 
+- error: lint:unresolved-attribute
+-    --&gt; /tmp/mypy_primer/projects/git-revise/gitrevise/tui.py:231:8
+-     |
+- 229 |     # If '-a' or '-p' was specified, stage changes.
+- 230 |     # Note that stdout=None means &quot;inherit current stdout&quot;.
+- 231 |     if args.all:
+-     |        ^^^^^^^^ Type `Namespace` has no attribute `all`
+- 232 |         repo.git(&quot;add&quot;, &quot;-u&quot;, stdout=None)
+- 233 |     if args.patch:
+-     |
+- 
+- error: lint:unresolved-attribute
+-    --&gt; /tmp/mypy_primer/projects/git-revise/gitrevise/tui.py:233:8
+-     |
+- 231 |     if args.all:
+- 232 |         repo.git(&quot;add&quot;, &quot;-u&quot;, stdout=None)
+- 233 |     if args.patch:
+-     |        ^^^^^^^^^^ Type `Namespace` has no attribute `patch`
+- 234 |         repo.git(&quot;add&quot;, &quot;-p&quot;, stdout=None)
+-     |
+- 
+- error: lint:unresolved-attribute
+-    --&gt; /tmp/mypy_primer/projects/git-revise/gitrevise/tui.py:236:8
+-     |
+- 234 |         repo.git(&quot;add&quot;, &quot;-p&quot;, stdout=None)
+- 235 |
+- 236 |     if args.gpg_sign:
+-     |        ^^^^^^^^^^^^^ Type `Namespace` has no attribute `gpg_sign`
+- 237 |         repo.sign_commits = True
+- 238 |     if args.no_gpg_sign:
+-     |
+- 
+- error: lint:unresolved-attribute
+-    --&gt; /tmp/mypy_primer/projects/git-revise/gitrevise/tui.py:238:8
+-     |
+- 236 |     if args.gpg_sign:
+- 237 |         repo.sign_commits = True
+- 238 |     if args.no_gpg_sign:
+-     |        ^^^^^^^^^^^^^^^^ Type `Namespace` has no attribute `no_gpg_sign`
+- 239 |         repo.sign_commits = False
+-     |
+- 
+- error: lint:unresolved-attribute
+-    --&gt; /tmp/mypy_primer/projects/git-revise/gitrevise/tui.py:243:12
+-     |
+- 241 |     # Create a commit with changes from the index
+- 242 |     staged = None
+- 243 |     if not args.no_index:
+-     |            ^^^^^^^^^^^^^ Type `Namespace` has no attribute `no_index`
+- 244 |         staged = repo.index.commit(message=b&quot;&lt;git index&gt;&quot;)
+- 245 |         if staged.tree() == staged.parent_tree():
+-     |
+- 
+- error: lint:unresolved-attribute
+-    --&gt; /tmp/mypy_primer/projects/git-revise/gitrevise/tui.py:249:32
+-     |
+- 248 |     # Determine the HEAD reference which we're going to update.
+- 249 |     head = repo.get_commit_ref(args.ref)
+-     |                                ^^^^^^^^ Type `Namespace` has no attribute `ref`
+- 250 |     if head.target is None:
+- 251 |         raise ValueError(&quot;Head reference not found!&quot;)
+-     |
+- 
+- error: lint:unresolved-attribute
+-    --&gt; /tmp/mypy_primer/projects/git-revise/gitrevise/tui.py:254:8
+-     |
+- 253 |     # Either enter the interactive or non-interactive codepath.
+- 254 |     if args.interactive or args.autosquash:
+-     |        ^^^^^^^^^^^^^^^^ Type `Namespace` has no attribute `interactive`
+- 255 |         interactive(args, repo, staged, head)
+- 256 |     else:
+-     |
+- 
+- error: lint:unresolved-attribute
+-    --&gt; /tmp/mypy_primer/projects/git-revise/gitrevise/tui.py:254:28
+-     |
+- 253 |     # Either enter the interactive or non-interactive codepath.
+- 254 |     if args.interactive or args.autosquash:
+-     |                            ^^^^^^^^^^^^^^^ Type `Namespace` has no attribute `autosquash`
+- 255 |         interactive(args, repo, staged, head)
+- 256 |     else:
+-     |
+- 
+- error: lint:unresolved-attribute
+- Found 58 diagnostics
++ Found 30 diagnostics
+
+arrow (https://github.com/arrow-py/arrow)
+- error: lint:unresolved-attribute
+- 
+- error: lint:unresolved-attribute
+- 
+- error: lint:unresolved-attribute
+- 
+-      |
+-      |
+-      |
+-      |
+-      |
+-      |
+-     --&gt; /tmp/mypy_primer/projects/arrow/arrow/arrow.py:1869:26
+- 1867 |     def _is_last_day_of_month(date: &quot;Arrow&quot;) -&gt; bool:
+- 1868 |         &quot;&quot;&quot;Returns a boolean indicating whether the datetime is the last day of the month.&quot;&quot;&quot;
+- 1869 |         return cast(int, date.day) == calendar.monthrange(date.year, date.month)[1]
+-      |                          ^^^^^^^^ Type `Arrow` has no attribute `day`
+-     --&gt; /tmp/mypy_primer/projects/arrow/arrow/arrow.py:1869:59
+- 1867 |     def _is_last_day_of_month(date: &quot;Arrow&quot;) -&gt; bool:
+- 1868 |         &quot;&quot;&quot;Returns a boolean indicating whether the datetime is the last day of the month.&quot;&quot;&quot;
+- 1869 |         return cast(int, date.day) == calendar.monthrange(date.year, date.month)[1]
+-      |                                                           ^^^^^^^^^ Type `Arrow` has no attribute `year`
+-     --&gt; /tmp/mypy_primer/projects/arrow/arrow/arrow.py:1869:70
+- 1867 |     def _is_last_day_of_month(date: &quot;Arrow&quot;) -&gt; bool:
+- 1868 |         &quot;&quot;&quot;Returns a boolean indicating whether the datetime is the last day of the month.&quot;&quot;&quot;
+- 1869 |         return cast(int, date.day) == calendar.monthrange(date.year, date.month)[1]
+-      |                                                                      ^^^^^^^^^^ Type `Arrow` has no attribute `month`
+- Found 77 diagnostics
++ Found 74 diagnostics
+
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @sharkdp on 2025-03-12 12:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @sharkdp on 2025-03-12 12:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @sharkdp on 2025-03-12 12:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @sharkdp on 2025-03-12 12:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-03-12 12:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:2034 on 2025-03-12 12:14</div>
+            <div class="timeline-body"><p>We do this elsewhere, so I took the same approach here. I'm not 100% sure if this is justified here, though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:2045 on 2025-03-12 12:23</div>
+            <div class="timeline-body"><p>An interesting (and useful) behavior that I think falls out of this implementation, but isn't tested, is that if you annotate your <code>__getattr__</code> to accept e.g. a union of literal string types for the attribute name, then only those attribute names will fall back.</p>
+<p>A less-useful corollary of this implementation is that if you make a dumb mistake in the signature of your <code>__getattr__</code> method, the only feedback you will get is attributes failing to resolve. Not sure if or how this could be helped. We don't need to worry about it for this PR, I think.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-03-12 12:24</div>
+            <div class="timeline-body"><p>Looks good, and confirmed that ecosystem results look good as well. Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-03-12 12:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:2034 on 2025-03-12 12:28</div>
+            <div class="timeline-body"><p>Yes, I think this makes sense here. We use <code>ModuleType</code> to model attribute access fallbacks for known modules (&quot;module literals&quot;), and the typeshed definition of <code>ModuleType</code> is more geared towards &quot;arbitrary unknown module object.&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-03-12 12:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:2045 on 2025-03-12 12:37</div>
+            <div class="timeline-body"><blockquote>
+<p>An interesting (and useful) behavior that I think falls out of this implementation, but isn't tested, is that if you annotate your <code>__getattr__</code> to accept e.g. a union of literal string types for the attribute name, then only those attribute names will fall back.</p>
+</blockquote>
+<p>Added an example to demonstrate this — thanks!</p>
+<blockquote>
+<p>A less-useful corollary of this implementation is that if you make a dumb mistake in the signature of your <code>__getattr__</code> method, the only feedback you will get is attributes failing to resolve. Not sure if or how this could be helped. We don't need to worry about it for this PR, I think.</p>
+</blockquote>
+<p>I think those would show up as <code>try_call_dunder</code> errors (see TODO I added previously) and could potentially be transformed into <code>MemberLookup</code> errors once we implement #16298.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @sharkdp on 2025-03-12 12:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-03-12 12:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-03-12 12:44</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:49:32 UTC
+    </footer>
+</body>
+</html>

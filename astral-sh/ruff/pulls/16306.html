@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Use arena-allocated association lists for narrowing constraints - astral-sh/ruff #16306</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Use arena-allocated association lists for narrowing constraints</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/16306">#16306</a>
+        opened by <a href="https://github.com/dcreager">@dcreager</a>
+        on 2025-02-21 15:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dcreager">@dcreager</a> on 2025-02-21 15:30</div>
+            <div class="timeline-body"><p>This PR adds an implementation of <a href="https://en.wikipedia.org/wiki/Association_list">association lists</a>, and uses them to replace the previous <code>BitSet</code>/<code>SmallVec</code> representation for narrowing constraints.</p>
+<p>An association list is a linked list of key/value pairs. We additionally guarantee that the elements of an association list are sorted (by their keys), and that they do not contain any entries with duplicate keys.</p>
+<p>Association lists have fallen out of favor in recent decades, since you often need operations that are inefficient on them. In particular, looking up a random element by index is O(n), just like a linked list; and looking up an element by key is also O(n), since you must do a linear scan of the list to find the matching element. Luckily we don't need either of those operations for narrowing constraints!</p>
+<p>The typical implementation also suffers from poor cache locality and high memory allocation overhead, since individual list cells are typically allocated separately from the heap. We solve that last problem by storing the cells of an association list in an <code>IndexVec</code> arena.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-02-21 15:35</div>
+            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+
+<!-- __CODSPEED_INSTRUMENTATION_PERFORMANCE_REPORT_COMMENT__ -->
+
+<h2><a href="https://codspeed.io/astral-sh/ruff/branches/dcreager%2Frework-bindings">CodSpeed Performance Report</a></h2>
+<h3>Merging #16306 will <strong>improve performances by 5.6%</strong></h3>
+<p><sub>Comparing <code>dcreager/rework-bindings</code> (c6d0c5a) with <code>main</code> (5c007db)</sub></p>
+<h3>Summary</h3>
+<p><code>⚡ 1</code> improvements<br />
+<code>✅ 31</code> untouched benchmarks</p>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Benchmark | <code>BASE</code> | <code>HEAD</code> | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| ⚡ | <code>red_knot_check_file[cold]</code> | 88.9 ms | 84.2 ms | +5.6% |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-02-21 15:38</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @AlexWaygood on 2025-02-21 16:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2025-02-21 16:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_index/src/list.rs</code>:43 on 2025-02-21 20:29</div>
+            <div class="timeline-body"><p>I wonder if it would make sense to use an arena crate here that avoids moving the vec when resizing and instead simply allocates a new vec, considering that we aren't interested in accessing all items as a slice</p>
+<p>This is clever</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-21 20:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-02-21 20:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ruff_index/src/list.rs</code>:43 on 2025-02-21 20:58</div>
+            <div class="timeline-body"><p>Oh that's an interesting idea!  I'd prefer to experiment on that with a separate future PR, since this is already giving a nice performance gain without bringing on an extra dependency</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ruff_index/src/list.rs</code>:7 on 2025-02-21 21:06</div>
+            <div class="timeline-body"><blockquote>
+<p>key/value pairs</p>
+</blockquote>
+<p>Technically we don't need full key/value pairs for narrowing constraints (note that the value type is <code>()</code>).  But I plan on using this in a follow-on PR to also replace the <code>SmallVec</code>s of live bindings and declarations in <code>SymbolState</code>, which will have both keys and values to store.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/semantic_index/narrowing_constraints.rs</code>:56 on 2025-02-21 21:09</div>
+            <div class="timeline-body"><p>This might seem like an unnecessary extra wrapper, but I have hopes to move <code>is_positive</code> from <code>Constraint</code> to here, so I wanted to go ahead and have this type available as the place to move it to.  Also I think it adds clarity to the distinction between <em>constraints</em> (the expressions in the source code), and <em>narrowing/visibility constraints</em> (the two ways in which we're using those).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-02-21 21:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @dcreager on 2025-02-21 21:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @dcreager on 2025-02-21 21:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @dcreager on 2025-02-21 21:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @dcreager on 2025-02-21 21:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff_index/src/list.rs</code>:30 on 2025-02-21 21:45</div>
+            <div class="timeline-body"><p>This is great. One thing I noticed both in the PR summary and here is that we discuss limitations of this data structure that might mean it's not suitable for some tasks, and how this implementation mitigates some limitations, but we really don't discuss (apart from a brief mention of structural sharing) what the advantages of the data structure are (what kind of tasks <em>is</em> it particularly well-suited for), or (and this might not belong in the this comment here, but does belong somewhere) why it is well-suited for narrowing constraints in the use-def map.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff_index/src/list.rs</code>:50 on 2025-02-21 21:54</div>
+            <div class="timeline-body"><p>This doesn't seem to be used in this PR, and I wonder if we should even provide it, given that if you need it this might not be the data structure for you?</p>
+<p>Though IIRC maybe one of your future PRs will try using this for a case where we do sometimes need random access, but not too frequently and where cardinality shouldn't be too high, either? That's probably a good case for having it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff_index/src/list.rs</code>:149 on 2025-02-21 21:59</div>
+            <div class="timeline-body"><p>Maybe add a comment here about the reason for the &quot;unnecessary&quot; Option wrapping? (It looks to me like the reason is because otherwise we'd have to wrap many/all call sites of this method in <code>Some(...)</code>, but I had to think and read code for a bit to reach that conclusion.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff_index/src/list.rs</code>:127 on 2025-02-21 22:07</div>
+            <div class="timeline-body"><p>If we required values to implement <code>Eq</code>, then we could consider the case where the new key already exists in the list with the same value and no updates are needed, so we could avoid needlessly cloning all cells up to the matching key.</p>
+<p>This would require an internal recursive <code>insert</code> that returns an extra bit of information (&quot;did anything change&quot;) wrapped by the public <code>insert</code>.</p>
+<p>No idea if this would be worth it in practice for our uses. I guess for the case where we know all values are equal (because they are all <code>()</code>) we can just as well use <code>insert_if_needed</code> instead.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff_index/src/list.rs</code>:761 on 2025-02-21 22:14</div>
+            <div class="timeline-body"><p>Might not be a terrible idea to include some unit tests of the data structure itself?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/narrowing_constraints.rs</code>:20 on 2025-02-21 22:39</div>
+            <div class="timeline-body"><p>Similarly here I miss an explanation of not just why it's <em>ok</em> to use an alist (because its disadvantages don't apply in this case), but what advantages it has that mean we would <em>want</em> to.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/narrowing_constraints.rs</code>:11 on 2025-02-21 22:47</div>
+            <div class="timeline-body"><p>I think there's a bit of a terminology problem here. In this one sentence (and throughout the comments in this file, and code changes throughout this PR) we now have two distinct uses of the term &quot;constraint&quot; to refer to either a) a single test expression which may constrain the type of some binding, or b) a list of test expressions (&quot;clauses&quot;), all of which constrain the type of a binding at a certain point in control flow.</p>
+<p>I think we should make a clear decision about which one of these we will use the term &quot;constraint&quot; for, and stick to it. Prior to this PR, the intent was always that a &quot;constraint&quot; (represented by a Constraint) is a single test expression, and a binding at some point in control flow can be associated with multiple narrowing constraints, plural. I realize that's awkward because now you are introducing an arena which contains multiple sets of narrowing constraints, and you want to call <em>that</em> &quot;narrowing_constraints&quot;, which shifts all the plurals down one level :)</p>
+<p>I'm not opposed to shifting our use of terms such that we say that &quot;a narrowing constraint&quot; (singular) is a list of constraining test expressions, or clauses, or predicates. But if we do that, I think we need to be consistent about it, and IMO that means renaming the <code>Constraint</code> ingredient and the <code>ScopedConstraintId</code> index to use some other term (&quot;constraint clause&quot; or &quot;predicate&quot;?)</p>
+<p>(Open to doing this further rename pass as a separate PR, to minimize the need for re-review of this one.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/narrowing_constraints.rs</code>:44 on 2025-02-21 22:52</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">/// Note that those [`Constraint`]s are stored in [their own per-scope
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/narrowing_constraints.rs</code>:68 on 2025-02-21 22:58</div>
+            <div class="timeline-body"><p>This comment reads a bit like we intend to not store them in <code>UseDefMap</code> in future, or not have them be per-scope? But I'm not sure what the benefit would be; I don't think there would be any additional sharing permitted by not storing them per-scope, because a given constraint expression is only ever relevant in the scope in which it exists.</p>
+<p>If you do think there would be advantages to consolidating these for an entire file, maybe we should spell that out here?</p>
+<p>If that's not the intent, I suggest simply:</p>
+<pre><code class="language-suggestion">/// A collection of narrowing constraints for a given scope.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/narrow.rs</code>:38 on 2025-02-21 23:04</div>
+            <div class="timeline-body"><p>👍</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/symbol.rs</code>:545 on 2025-02-21 23:06</div>
+            <div class="timeline-body"><p>Coming back to the terminology problem: here we iterate over <code>narrowing_constraint</code>, and the iteration yields something we also call a <code>constraint</code>, which we then pass to a function named <code>infer_narrowing_constraint</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-02-21 23:24</div>
+            <div class="timeline-body"><p>This is really fantastic!! I have literally no notes on the actual implementation strategy, just on comments and terminology :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-22 08:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/narrowing_constraints.rs</code>:20 on 2025-02-22 08:03</div>
+            <div class="timeline-body"><p>I agree with this. The part that makes reviewing this PR difficult without deep knowledge of narrowing constraints is why associated lists are a good fit for this particular use case. What are the access patterns, how is the list built? I do think that the arena does help to reduce heap allocations, I'm not necessarily sure if it actually does help improve cache locality. I think that very much depends on how likely it is that nodes from the same list are insert in close proximity and I find it difficult to know if that's the case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-02-22 16:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/narrowing_constraints.rs</code>:20 on 2025-02-22 16:22</div>
+            <div class="timeline-body"><p>I think part of it is that this data structure allows representing a list as a single u32 (without fragmenting allocation as you would have to to represent it as a single pointer). This makes cloning flow states a lot cheaper, because we replace what used to be (for each and every binding) a smallvec of four u32, with a single u32.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Skylion007">@Skylion007</a> on 2025-02-23 16:31</div>
+            <div class="timeline-body"><p>As an aside, wow, an actual use case where linked lists are actually useful for once outside of memory management! And are actually more performant!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/narrowing_constraints.rs</code>:54 on 2025-02-24 08:41</div>
+            <div class="timeline-body"><p>The <code>#[inline]</code> attribute is mainly useful to inline function calls across crate boundaries (when LTO is disabled).
+I'd strongly suspect that LLVM inlines those calls even without the attribute being present. That's why I'd suggest removing them unless the benchmark show that they in fact do improve performance.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/narrowing_constraints.rs</code>:68 on 2025-02-24 08:43</div>
+            <div class="timeline-body"><p>Just a comment why having IDs per scopes can be useful: It ensures that changes are local to the affected scopes and that the IDs from other scopes shouldn't change. This helps to reduce unnecessary salsa recomputations because the ids still compare equal. However, that assumes that the IDs are used in places where are aren't relying on the AST already.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/narrowing_constraints.rs</code>:71 on 2025-02-24 08:45</div>
+            <div class="timeline-body"><p>Should we default the value (or is it the key?) to <code>()</code> in <code>ListStorage</code> and <code>ListBuilder</code> so that we can write</p>
+<pre><code class="language-suggestion">    lists: ListStorage&lt;ScopedNarrowingConstraintId, ScopedNarrowingConstraintClause&gt;,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_index/src/list.rs</code>:18 on 2025-02-24 08:52</div>
+            <div class="timeline-body"><p>I don't think that poor cache locality is fully solved by using an arena. A program that always inserts one element per list before inserting another element per list will lead to a similar level of fragementation but the arena now comes at the cost of an extra level of indirection.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_index/src/list.rs</code>:125 on 2025-02-24 08:55</div>
+            <div class="timeline-body"><p>I'd suggest calling out in the documentation when and why a key and value gets cloned. I'd find this rather surprising by an <code>insert</code> operation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_index/src/list.rs</code>:134 on 2025-02-24 08:57</div>
+            <div class="timeline-body"><p>Should we instead have an <code>entry</code> method similar to rust's hash map entry?</p>
+<p>If not, then I suggest renaming the method to <code>insert_if_vaccant</code> to at least use the hash map terminology (<em>needed</em> is very unclear about what it means. I expected that the method does some extra merging other than just dropping the values if the keys are missing)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_index/src/list.rs</code>:192 on 2025-02-24 08:58</div>
+            <div class="timeline-body"><p>Using recursion here could be problematic for long lists. Could we rewrite the function to use an iterator/loop instead?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_index/src/list.rs</code>:217 on 2025-02-24 08:59</div>
+            <div class="timeline-body"><p>Same as for intersection. Recursion is problematic for long lists.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-02-24 08:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-02-24 15:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ruff_index/src/list.rs</code>:761 on 2025-02-24 15:59</div>
+            <div class="timeline-body"><p>Details details... :joy:</p>
+<p>(j/k of course, yes that's a good idea)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ruff_index/src/list.rs</code>:127 on 2025-02-24 20:26</div>
+            <div class="timeline-body"><p>Good idea, done!  @MichaReiser's suggestion to add an entry API gave us the internal helper function that you mention</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ruff_index/src/list.rs</code>:134 on 2025-02-24 20:26</div>
+            <div class="timeline-body"><p>Done!  That let me get rid of some of the copy/pasta in the insert methods</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ruff_index/src/list.rs</code>:192 on 2025-02-24 20:28</div>
+            <div class="timeline-body"><p>Done.  Note that this required adding a scratch-space accumulator to the builder.  (Implementing these operations iteratively reverses the list, so we do that into a scratch vec, and which we then pop new entries off of in reverse to maintain the correct ordering)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ruff_index/src/list.rs</code>:217 on 2025-02-24 20:28</div>
+            <div class="timeline-body"><p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ruff_index/src/list.rs</code>:761 on 2025-02-24 20:28</div>
+            <div class="timeline-body"><p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ruff_index/src/list.rs</code>:149 on 2025-02-24 20:33</div>
+            <div class="timeline-body"><p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ruff_index/src/list.rs</code>:125 on 2025-02-24 20:35</div>
+            <div class="timeline-body"><p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ruff_index/src/list.rs</code>:18 on 2025-02-24 20:39</div>
+            <div class="timeline-body"><p>To make sure I understand: you're talking about a list whose cells don't appear consecutively in the arena, is that right?  I think you're right that that wouldn't give us <em>ideal</em> cache locality, but it should still be better than heap-allocated cells, since all of the cells are still in a single contiguous region of memory.</p>
+<p>If you're inserting elements into two different lists in an interleaving pattern, then the cells of those two lists will be interleaved, but I think iterating over either of them would still be faster — you'd just have a stride of 2 instead of 1.  (Actually -2 instead of -1, since the list cells will end up in the arena in reverse order)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/semantic_index/narrowing_constraints.rs</code>:11 on 2025-02-24 20:41</div>
+            <div class="timeline-body"><blockquote>
+<p>and you want to call <em>that</em> &quot;narrowing_constraints&quot;, which shifts all the plurals down one level</p>
+</blockquote>
+<p>Yes I agree with this completely.  In the commit history I think you can see the point where I realized I needed to name something <code>narrowing_constraintses</code> :joy:</p>
+<blockquote>
+<p>I'm not opposed to shifting our use of terms such that we say that &quot;a narrowing constraint&quot; (singular) is a list of constraining test expressions, or clauses, or predicates. But if we do that, I think we need to be consistent about it, and IMO that means renaming the <code>Constraint</code> ingredient and the <code>ScopedConstraintId</code> index to use some other term (&quot;constraint clause&quot; or &quot;predicate&quot;?)</p>
+<p>(Open to doing this further rename pass as a separate PR, to minimize the need for re-review of this one.)</p>
+</blockquote>
+<p>I like this suggestion of <code>Constraint</code> → <code>Predicate</code> — that would allow us to use them for things other than &quot;constraining&quot; in the future, should we need to.  (Or maybe put better, the name would suggest or remind us that we could do that)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/semantic_index/narrowing_constraints.rs</code>:68 on 2025-02-24 20:46</div>
+            <div class="timeline-body"><blockquote>
+<p>If that's not the intent, I suggest simply:</p>
+</blockquote>
+<p>Nope, that was not the intent.  Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/semantic_index/narrowing_constraints.rs</code>:44 on 2025-02-24 20:46</div>
+            <div class="timeline-body"><p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/semantic_index/narrowing_constraints.rs</code>:54 on 2025-02-24 20:46</div>
+            <div class="timeline-body"><p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/semantic_index/narrowing_constraints.rs</code>:71 on 2025-02-24 21:07</div>
+            <div class="timeline-body"><p>Done.  I also added several helper methods (that are only available when <code>V = ()</code>) that make it easier to work with set-like alists.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ruff_index/src/list.rs</code>:30 on 2025-02-24 21:52</div>
+            <div class="timeline-body"><p>Added a bit more text about this, lmkwyt</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/semantic_index/narrowing_constraints.rs</code>:20 on 2025-02-24 21:55</div>
+            <div class="timeline-body"><p>I added some more text here.  Carl is right about the single-u32 representation being a benefit.  Also, if you insert elements in order, then insertion (of each element) is constant time.  And merging is very fast, since zipping through two linked lists is fast.  (That is, the alist representing gives us a much faster implementation for <code>SymbolState::merge</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ruff_index/src/list.rs</code>:50 on 2025-02-24 21:57</div>
+            <div class="timeline-body"><p>Yes, that's a good point... it's also not currently being tested.  I went ahead and removed it, since I can add it back as part of that experiment to see if this will be fast enough for the per-symbol lists too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-02-24 21:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-02-24 22:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/symbol.rs</code>:546 on 2025-02-24 22:04</div>
+            <div class="timeline-body"><p>This was the easiest way to un-reverse the narrowing constraints.  I had tried adding a <code>reverse</code> to <code>IntersectionBuilder</code>, but that ran into problems where there were nested intersections — multiple narrowing constraint clauses some of which are themselves intersections.  It would end up reversing the combined result, when you really only want to (un)reverse the outer intersection.  In local testing, this didn't seem to affect performance even though we're collecting into a vec.  (Presumably because all of the type builders are themselves allocating a fair bit)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff_index/src/list.rs</code>:56 on 2025-02-24 22:22</div>
+            <div class="timeline-body"><p>Doctest doesn't seem to be listening to you here...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/symbol.rs</code>:546 on 2025-02-24 22:26</div>
+            <div class="timeline-body"><p>I think the previous version here was aiming to avoid the allocation for this collect? But benchmark suggests it's fine.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff_index/src/list.rs</code>:37 on 2025-02-24 22:27</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">/// - You should construct lists in key order; doing this lets you insert each value in constant time.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-02-24 22:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ruff_index/src/list.rs</code>:56 on 2025-02-25 15:23</div>
+            <div class="timeline-body"><p>Should be <code>ignore</code>, not <code>no_run</code>!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/symbol.rs</code>:546 on 2025-02-25 15:24</div>
+            <div class="timeline-body"><p>Yes that's right, see https://github.com/astral-sh/ruff/pull/16306/files#r1968481090.  (Two ~ships~ comments passing in the night!)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/symbol.rs</code>:546 on 2025-02-25 15:27</div>
+            <div class="timeline-body"><p>And to clarify, in a previous iteration of this PR, we were using cons lists, which meant that the iterator was returning elements in order, and so we didn't need to worry about reversing anything here.</p>
+<p>But that meant that you needed to <em>construct</em> lists in reverse order to get the best efficiency, and it seemed easier to figure out how to reverse the output here instead of how to process the constraints in reverse order during semantic index building.</p>
+<p>(Also, these, er, constraints are all mentioned in the doc comments)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-02-25 15:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-02-25 15:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/symbol.rs</code>:546 on 2025-02-25 15:42</div>
+            <div class="timeline-body"><p>I guess one last question here. If I'm understanding all this right, it suggests that in the previous version of this diff, we were constructing our lists in the most inefficient order (because we were doing a forward traversal of the IDs and constructing in-order, but using cons lists internally), so our construction was quadratic? But now it's linear.</p>
+<p>And yet this version of the PR has roughly the same performance impact as the previous version (around 5%). Does this mostly suggest that our constraint lists tend to be so small that quadratic vs linear doesn't even really show up?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-02-25 15:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/symbol.rs</code>:546 on 2025-02-25 15:53</div>
+            <div class="timeline-body"><blockquote>
+<p>And yet this version of the PR has roughly the same performance impact as the previous version (around 5%). Does this mostly suggest that our constraint lists tend to be so small that quadratic vs linear doesn't even really show up?</p>
+</blockquote>
+<p>Yes, I think that's the right conclusion.  I was testing locally on black, which I thought would be large enough for that quadratic difference to show up.  I haven't rebased #16311 onto this PR's updates yet, but my (completely unsubstantiated) hope is <em>that's</em> where we were seeing the performance difference.  Since it seems more possible that black and tomllib have larger lists of live bindings than lists of active narrowing constraints.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-02-25 15:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/symbol.rs</code>:546 on 2025-02-25 15:53</div>
+            <div class="timeline-body"><p>(I had added some printfs to verify that we are indeed visiting constraints in numeric order, and that we do produce a much smaller number of total list cells with the snoc list change)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dcreager on 2025-02-25 15:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dcreager on 2025-02-25 15:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-02-25 15:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-28 18:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_index/src/list.rs</code>:43 on 2025-02-28 18:37</div>
+            <div class="timeline-body"><p>I tried this and... it's very disappointing haha :D It shows no difference locally.</p>
+<pre><code class="language-patch">Subject: [PATCH] Change `iterate` to return a `Result`
+---
+Index: crates/ruff_index/src/slice.rs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+&lt;+&gt;UTF-8
+===================================================================
+diff --git a/crates/ruff_index/src/slice.rs b/crates/ruff_index/src/slice.rs
+--- a/crates/ruff_index/src/slice.rs	(revision b04413079859fd265817c67f184ba7f86e1e92a3)
++++ b/crates/ruff_index/src/slice.rs	(date 1740767606877)
+@@ -50,6 +50,11 @@
+         self.raw.len()
+     }
+ 
++    #[inline]
++    pub const fn capacity(&amp;self) -&gt; usize {
++        self.raw.len()
++    }
++
+     #[inline]
+     pub const fn is_empty(&amp;self) -&gt; bool {
+         self.raw.is_empty()
+Index: crates/red_knot_python_semantic/src/list.rs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+&lt;+&gt;UTF-8
+===================================================================
+diff --git a/crates/red_knot_python_semantic/src/list.rs b/crates/red_knot_python_semantic/src/list.rs
+--- a/crates/red_knot_python_semantic/src/list.rs	(revision b04413079859fd265817c67f184ba7f86e1e92a3)
++++ b/crates/red_knot_python_semantic/src/list.rs	(date 1740767857167)
+@@ -61,6 +61,7 @@
+ //!
+ //! [alist]: https://en.wikipedia.org/wiki/Association_list
+ 
++use std::cell::RefCell;
+ use std::cmp::Ordering;
+ use std::marker::PhantomData;
+ use std::ops::Deref;
+@@ -69,7 +70,7 @@
+ 
+ /// A handle to an association list. Use [`ListStorage`] to access its elements, and
+ /// [`ListBuilder`] to construct other lists based on this one.
+-#[derive(Clone, Copy, Debug, Eq, Ord, PartialEq, PartialOrd)]
++#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+ pub(crate) struct List&lt;K, V = ()&gt; {
+     last: Option&lt;ListCellId&gt;,
+     _phantom: PhantomData&lt;(K, V)&gt;,
+@@ -95,14 +96,82 @@
+ }
+ 
+ #[newtype_index]
+-#[derive(PartialOrd, Ord)]
++// #[derive(PartialOrd, Ord)]
+ struct ListCellId;
+ 
+ /// Stores one or more association lists. This type provides read-only access to the lists.  Use a
+ /// [`ListBuilder`] to create lists.
+ #[derive(Debug, Eq, PartialEq)]
+ pub(crate) struct ListStorage&lt;K, V = ()&gt; {
+-    cells: IndexVec&lt;ListCellId, ListCell&lt;K, V&gt;&gt;,
++    cells: ListChunk&lt;K, V&gt;,
++}
++
++impl&lt;K, V&gt; ListStorage&lt;K, V&gt; {
++    fn new() -&gt; Self {
++        Self {
++            cells: ListChunk {
++                current: Vec::with_capacity(16),
++                rest: Vec::new(),
++            },
++        }
++    }
++
++    fn push(&amp;mut self, cell: ListCell&lt;K, V&gt;) -&gt; ListCellId {
++        self.push_fast(cell)
++            .unwrap_or_else(|cell| self.push_slow(cell))
++    }
++
++    #[inline]
++    fn push_fast(&amp;mut self, cell: ListCell&lt;K, V&gt;) -&gt; Result&lt;ListCellId, ListCell&lt;K, V&gt;&gt; {
++        let len = self.cells.current.len();
++
++        if len &lt; self.cells.current.capacity() {
++            let list_len = self.cells.current.len();
++            self.cells.current.push(cell);
++            let chunk = self.cells.rest.len() &lt;&lt; 28;
++            Ok(ListCellId::from_usize(list_len | chunk))
++        } else {
++            Err(cell)
++        }
++    }
++
++    fn push_slow(&amp;mut self, cell: ListCell&lt;K, V&gt;) -&gt; ListCellId {
++        let mut next_vec = Vec::with_capacity(self.cells.current.capacity() * 2);
++        next_vec.push(cell);
++
++        let current = std::mem::replace(&amp;mut self.cells.current, next_vec);
++        self.cells.rest.push(current);
++
++        let chunk = self.cells.rest.len() &lt;&lt; 28;
++        ListCellId::from_usize(chunk)
++    }
++}
++
++impl&lt;K, V&gt; std::ops::Index&lt;ListCellId&gt; for ListStorage&lt;K, V&gt; {
++    type Output = ListCell&lt;K, V&gt;;
++
++    fn index(&amp;self, index: ListCellId) -&gt; &amp;Self::Output {
++        let offset = index.as_u32();
++
++        let chunk = offset &gt;&gt; 28;
++        let list_id = offset &amp; !(0b1111 &lt;&lt; 28);
++        let list = self
++            .cells
++            .rest
++            .get(chunk as usize)
++            .unwrap_or(&amp;self.cells.current);
++
++        &amp;list[list_id as usize]
++    }
++}
++
++#[newtype_index]
++struct ChunkId;
++
++#[derive(Debug, Eq, PartialEq, Default)]
++struct ListChunk&lt;K, V = ()&gt; {
++    current: Vec&lt;ListCell&lt;K, V&gt;&gt;,
++    rest: Vec&lt;Vec&lt;ListCell&lt;K, V&gt;&gt;&gt;,
+ }
+ 
+ /// Each association list is represented by a sequence of snoc cells. A snoc cell is like the more
+@@ -151,9 +220,7 @@
+ impl&lt;K, V&gt; Default for ListBuilder&lt;K, V&gt; {
+     fn default() -&gt; Self {
+         ListBuilder {
+-            storage: ListStorage {
+-                cells: IndexVec::default(),
+-            },
++            storage: ListStorage::new(),
+             scratch: Vec::default(),
+         }
+     }
+@@ -170,7 +237,8 @@
+     /// Finalizes a `ListBuilder`. After calling this, you cannot create any new lists managed by
+     /// this storage.
+     pub(crate) fn build(mut self) -&gt; ListStorage&lt;K, V&gt; {
+-        self.storage.cells.shrink_to_fit();
++        self.storage.cells.current.shrink_to_fit();
++        self.storage.cells.rest.shrink_to_fit();
+         self.storage
+     }
+ 
+@@ -182,7 +250,7 @@
+     /// list.
+     #[allow(clippy::unnecessary_wraps)]
+     fn add_cell(&amp;mut self, rest: Option&lt;ListCellId&gt;, key: K, value: V) -&gt; Option&lt;ListCellId&gt; {
+-        Some(self.storage.cells.push(ListCell { rest, key, value }))
++        Some(self.storage.push(ListCell { rest, key, value }))
+     }
+ 
+     /// Returns an entry pointing at where `key` would be inserted into a list.
+@@ -210,7 +278,7 @@
+         // (and any succeeding keys) onto.
+         let mut curr = list.last;
+         while let Some(curr_id) = curr {
+-            let cell = &amp;self.storage.cells[curr_id];
++            let cell = &amp;self.storage[curr_id];
+             match key.cmp(&amp;cell.key) {
+                 // We found an existing entry in the input list with the desired key.
+                 Ordering::Equal =&gt; {
+@@ -339,8 +407,8 @@
+         let mut a = a.last;
+         let mut b = b.last;
+         while let (Some(a_id), Some(b_id)) = (a, b) {
+-            let a_cell = &amp;self.storage.cells[a_id];
+-            let b_cell = &amp;self.storage.cells[b_id];
++            let a_cell = &amp;self.storage[a_id];
++            let b_cell = &amp;self.storage[b_id];
+             match a_cell.key.cmp(&amp;b_cell.key) {
+                 // Both lists contain this key; combine their values
+                 Ordering::Equal =&gt; {
+@@ -390,7 +458,7 @@
+     type Item = &amp;'a K;
+ 
+     fn next(&amp;mut self) -&gt; Option&lt;Self::Item&gt; {
+-        let cell = &amp;self.storage.cells[self.curr?];
++        let cell = &amp;self.storage[self.curr?];
+         self.curr = cell.rest;
+         Some(&amp;cell.key)
+     }
+@@ -531,7 +599,7 @@
+         type Item = (&amp;'a K, &amp;'a V);
+ 
+         fn next(&amp;mut self) -&gt; Option&lt;Self::Item&gt; {
+-            let cell = &amp;self.storage.cells[self.curr?];
++            let cell = &amp;self.storage[self.curr?];
+             self.curr = cell.rest;
+             Some((&amp;cell.key, &amp;cell.value))
+         }
+
+</code></pre>
+<p>I suspect that our lists just aren't big enough for it to matter</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:49:31 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Better handling of visibility constraint copies - astral-sh/ruff #16276</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Better handling of visibility constraint copies</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/16276">#16276</a>
+        opened by <a href="https://github.com/dcreager">@dcreager</a>
+        on 2025-02-20 14:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dcreager">@dcreager</a> on 2025-02-20 14:22</div>
+            <div class="timeline-body"><p>Two related changes.  For context:</p>
+<ol>
+<li><p>We were maintaining two separate arenas of <code>Constraint</code>s in each use-def map.  One was used for narrowing constraints, and the other for visibility constraints.  The visibility constraint arena was interned, ensuring that we always used the same ID for any particular <code>Constraint</code>.  The narrowing constraint arena was not interned.</p>
+</li>
+<li><p>The TDD code relies on <em>all</em> TDD nodes being interned and reduced.  This is an important requirement for TDDs to be a canonical form, which allows us to use a single int comparison to test for &quot;always true/false&quot; and to compare two TDDs for equivalence.  But we also need to support an individual <code>Constraint</code> having multiple values in a TDD evaluation (e.g. to handle a <code>while</code> condition having different values the first time it's evaluated vs later times).  Previously, we handled that by introducing a &quot;copy&quot; number, which was only there as a disambiguator, to allow an interned, deduplicated constraint ID to appear in the TDD formula multiple times.</p>
+</li>
+</ol>
+<p>A better way to handle (2) is to not intern the constraints in the visibility constraint arena!  The caller now gets to decide: if they add a <code>Constraint</code> to the arena more than once, they get distinct <code>ScopedConstraintId</code>s — which the TDD code will treat as distinct variables, allowing them to take on different values in the ternary function.</p>
+<p>With that in place, we can then consolidate on a single (non-interned) arena, which is shared for both narrowing and visibility constraints.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @dcreager on 2025-02-20 14:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @dcreager on 2025-02-20 14:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @dcreager on 2025-02-20 14:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @dcreager on 2025-02-20 14:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @dcreager on 2025-02-20 14:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @dcreager on 2025-02-20 14:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @MichaReiser removed by @MichaReiser on 2025-02-20 14:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/constraint.rs</code>:24 on 2025-02-20 22:53</div>
+            <div class="timeline-body"><p>This comment (the part about &quot;ensuring that we only store any particular constraint once&quot;) seems like it needs an update?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def.rs</code>:287 on 2025-02-20 22:56</div>
+            <div class="timeline-body"><p>If we're renaming this anyway, would it make sense to rename it to <code>narrowing_constraints</code> to better distinguish it from visibility constraints?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/symbol.rs</code>:513 on 2025-02-20 23:05</div>
+            <div class="timeline-body"><p>would <code>narrowing_constraints</code> also be a clearer name here, given that visibility constraints also apply to a binding?)</p>
+<p>(and if we used that name consistently, the unpack would be simpler too)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/visibility_constraints.rs</code>:356 on 2025-02-20 23:12</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    /// You can add a `Constraint` multiple times, yielding different `ScopedConstraintId`s, which
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/visibility_constraints.rs</code>:360 on 2025-02-20 23:13</div>
+            <div class="timeline-body"><p>Using <code>ScopedConstraintId</code> here means we have to be sure that a <code>VisibilityConstraints</code> is also scoped to a single... scope. This is the case, and there seems little chance it would ever not be the case... but it might be worth a doc comment mention anyway?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-02-20 23:17</div>
+            <div class="timeline-body"><p>This looks great, nice simplification.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/semantic_index/constraint.rs</code>:24 on 2025-02-21 13:45</div>
+            <div class="timeline-body"><p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def.rs</code>:287 on 2025-02-21 13:46</div>
+            <div class="timeline-body"><p>This arena stores the <code>Constraint</code> objects that are used for both narrowing and visibility constraints, so I don't think the more precise name is accurate.  (And in another PR I'm working on, I would add a new arena to store data that is specific to narrowing constraints (and therefore called <code>narrowing_constraints</code>), and this would remain here to hold the shared data)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/symbol.rs</code>:513 on 2025-02-21 13:48</div>
+            <div class="timeline-body"><p>For this one I agree with you! Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/visibility_constraints.rs</code>:360 on 2025-02-21 13:50</div>
+            <div class="timeline-body"><p>There is one:</p>
+<p>https://github.com/astral-sh/ruff/blob/7e6c1c2b4ae82316bf467f63fb6b93d056069246/crates/red_knot_python_semantic/src/visibility_constraints.rs#L284-L285</p>
+<p>I can reword it if you feel it's not worded strongly enough</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-02-21 13:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dcreager on 2025-02-21 14:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dcreager on 2025-02-21 14:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-02-21 14:16</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:49:30 UTC
+    </footer>
+</body>
+</html>

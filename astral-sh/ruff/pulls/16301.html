@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teach red-knot that `type(x)` is the same as `x.__class__` - astral-sh/ruff #16301</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Teach red-knot that <code>type(x)</code> is the same as <code>x.__class__</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/16301">#16301</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-02-21 12:21
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-02-21 12:21</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>I keep trying to write mdtests that use <code>type(x)</code> to get the type of <code>x</code>, and expecting red-knot to understand that <code>type(x)</code> should be inferred as the meta-type of <code>x</code>, the same as <code>x.__class__</code>. This PR adds the necessary special-casing so that red-knot will now understand this.</p>
+<h2>Test Plan</h2>
+<p>I added a couple of new assertions, integrated into the existing mdtest for <code>__class__</code> inference (since it's two ways of accessing the same type). We're also able to remove an existing TODO in an mdtest for <code>issubclass()</code> type narrowing as a result of this change.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2025-02-21 12:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @AlexWaygood on 2025-02-21 12:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @AlexWaygood on 2025-02-21 12:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @AlexWaygood on 2025-02-21 12:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-02-21 12:24</div>
+            <div class="timeline-body"><p>We already have test coverage for three-argument calls to <code>type</code> that would fail if we stopped inferring <code>builtins.type</code> for those calls, FWIW:</p>
+<p>https://github.com/astral-sh/ruff/blob/b3c5932fda77f3df33ad7a8a90133ca1081b7acc/crates/red_knot_python_semantic/resources/mdtest/narrow/isinstance.md?plain=1#L97-L110</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/attributes.md</code>:887 on 2025-02-21 20:49</div>
+            <div class="timeline-body"><p>&quot;always&quot; is a dangerous word 😆 pretty sure it's possible to break this invariant at runtime with a C extension type. But I also think it's reasonable for us to consider it an invariant.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/narrow/issubclass.md</code>:115 on 2025-02-21 20:50</div>
+            <div class="timeline-body"><p>I love these unexpected TODO fixes, where multiple features compose together and it just... does the right thing</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-02-21 20:51</div>
+            <div class="timeline-body"><p>Nice!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-02-21 20:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/attributes.md</code>:887 on 2025-02-21 20:52</div>
+            <div class="timeline-body"><p>Ugh, really?? I thought that was one of the Big Things that was fixed as part of the 2-to-3 transition 😆 but you probably know better than I!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-02-21 20:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/attributes.md</code>:887 on 2025-02-21 20:54</div>
+            <div class="timeline-body"><p>It's possible I'm wrong and this is no longer possible for C extension types either! Not going to go down the rabbit hole of experimenting with it to find out!!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-02-21 21:03</div>
+            <div class="timeline-body"><blockquote>
+<p>We already have test coverage for three-argument calls to <code>type</code> that would fail if we stopped inferring <code>builtins.type</code> for those calls, FWIW:</p>
+</blockquote>
+<p>I changed my mind about this and added a dedicated test. The pre-existing test only tested the three-argument form of <code>type()</code> because of the specific setup the test was using (which actually predated our support for parameter types, anyway). I simplified the existing test that used three-argument <code>type()</code> at the same time.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2025-02-21 21:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-02-21 21:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-02-21 21:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> reviewed on 2025-02-22 01:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on <code>crates/red_knot_python_semantic/resources/mdtest/attributes.md</code>:887 on 2025-02-22 01:41</div>
+            <div class="timeline-body"><p>This actually doesn't require any C code at all:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; class C:
+... 	__class__ = int
+...
+&gt;&gt;&gt; type(C())
+&lt;class '__main__.C'&gt;
+&gt;&gt;&gt; C().__class__
+&lt;class 'int'&gt;
+</code></pre>
+<pre><code class="language-pycon">&gt;&gt;&gt; class C:
+... 	def __getattribute__(self, attr):
+... 		if attr == '__class__':
+... 			return int
+... 		return super().__getattribute__(attr)
+...
+&gt;&gt;&gt; type(C())
+&lt;class '__main__.C'&gt;
+&gt;&gt;&gt; C().__class__
+&lt;class 'int'&gt;
+</code></pre>
+<p>Another edge case to watch for:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; class C: ...
+... class D: ...
+...
+&gt;&gt;&gt; c = C()
+&gt;&gt;&gt; c.__class__ = D
+&gt;&gt;&gt; type(c)
+&lt;class '__main__.D'&gt;
+&gt;&gt;&gt; c.__class__
+&lt;class '__main__.D'&gt;
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:49:31 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Add a test to ensure that `KnownClass::try_from_file_and_name()` is kept up to date - astral-sh/ruff #16326</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Add a test to ensure that <code>KnownClass::try_from_file_and_name()</code> is kept up to date</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/16326">#16326</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-02-23 21:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-02-23 21:49</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>We keep on adding new variants to the <code>KnownClass</code> enum but forgetting to update this method, because the Rust compiler only enforces exhaustiveness over enums when the enum variants appear on the left-hand side of the <code>match</code> statement:</p>
+<p>https://github.com/astral-sh/ruff/blob/b312b53c2eafd97a084f9f2961a99fbfa257f21a/crates/red_knot_python_semantic/src/types.rs#L3183-L3231</p>
+<p>That leads to subtle and confusing bugs that can be hard to debug, and that sometimes go unnoticed for several weeks.</p>
+<p>This PR adds a test that will fail if we add a variant to the <code>KnownClass</code> enum and forget to add a case to <code>KnownClass::try_from_file_and_name()</code>. It also adds tests for the similar methods on the <code>KnownModule</code> and <code>KnownFunction</code> enums.</p>
+<h2>How it works</h2>
+<p>~~<code>strum</code> and <code>strum_macros</code> are added as <em>test-only</em> dependencies for red-knot (they are added to the <code>dev-dependencies</code> table in the <code>red_knot_python_semantic</code> crate's <code>Cargo.toml</code>). If the <code>test</code> feature is enabled, we derive the <code>EnumIter</code> trait for the <code>KnownClass</code> enum. In the tests for <code>KnownClass</code>, we then use the generated <code>iter()</code> method to iterate over all <code>KnownClass</code> variants and verify that each variant has its own branch in the <code>KnownClass::try_from_file_and_name()</code> function.~~</p>
+<p>Following review, this has been changed:</p>
+<ul>
+<li><code>strum</code> and <code>strum_macros</code> are now just regular dependencies for red-knot, in production as well as if the <code>test</code> feature is enabled.</li>
+<li>For <code>KnownFunction</code> and <code>KnownModule</code>, we use the <code>EnumString</code> macro from <code>strum_macros</code> to simplify the deserialization constructors and ensure that they are exhaustive over the right-hand side. (This unfortunately doesn't work for <code>KnownClass</code> because of the fact that the <code>EllipsisType</code> branch deserializes dynamically depending on the target Python version.)</li>
+<li>For all three enums, we add tests to ensure that the deserialization functions are both exhaustive and correct. This is done using strum's <code>EnumIter</code> macro.</li>
+</ul>
+<h2>Limitations</h2>
+<p>Unfortunately, this approach doesn't work for the <code>KnownInstanceType</code> enum. <code>KnownInstanceType</code> is generic over a lifetime, and the <code>EnumIter</code> trait cannot be derived for enums generic over a lifetime. I therefore haven't touched that enum in this PR.</p>
+<p>This approach also necessitated some small refactoring of the <code>KnownFunction</code> enum. <code>EnumIter</code> and <code>EnumString</code> couldn't be derived for the enum as-is because of the fact that the <code>ConstraintFunction</code> variant wrapped inner data. I solved this by replacing the <code>ConstraintFunction</code> variant (which wrapped an inner enum) with two variants (<code>KnownFunction::IsSubclass</code> and <code>KnownFunction::IsInstance</code>), and slightly reworking the <code>KnownFunction::constraint_function()</code> method (which is renamed to <code>KnownFunction::into_constraint_function()</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">testing</span> added by @AlexWaygood on 2025-02-23 21:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2025-02-23 21:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @AlexWaygood on 2025-02-23 21:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @AlexWaygood on 2025-02-23 21:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @AlexWaygood on 2025-02-23 21:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-02-23 21:58</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-24 07:19</div>
+            <div class="timeline-body"><p>Could we use <code>strum::EnumString</code> https://github.com/Peternator7/strum/wiki/Derive-EnumString if we're adding a <code>strum</code> dependency anyway?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-02-24 07:52</div>
+            <div class="timeline-body"><blockquote>
+<p>Could we use <code>strum::EnumString</code> https://github.com/Peternator7/strum/wiki/Derive-EnumString if we're adding a <code>strum</code> dependency anyway?</p>
+</blockquote>
+<p>This PR currently only adds strum as a dev-dependency. But I can make that change if we're happy to have the extra dependency in production as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-02-24 07:57</div>
+            <div class="timeline-body"><blockquote>
+<p>Could we use <code>strum::EnumString</code> https://github.com/Peternator7/strum/wiki/Derive-EnumString if we're adding a <code>strum</code> dependency anyway?</p>
+</blockquote>
+<p>I also played around a bit with a solution to this TODO on the weekend. One thing that makes this more complicated are branches like this, where we have additional logic in the enum-&gt;string function:</p>
+<pre><code class="language-rs">            Self::EllipsisType =&gt; {
+                // Exposed as `types.EllipsisType` on Python &gt;=3.10;
+                // backported as `builtins.ellipsis` by typeshed on Python &lt;=3.9
+                if Program::get(db).python_version(db) &gt;= PythonVersion::PY310 {
+                    &quot;EllipsisType&quot;
+                } else {
+                    &quot;ellipsis&quot;
+                }
+            }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-24 07:58</div>
+            <div class="timeline-body"><blockquote>
+<p>This PR currently only adds strum as a dev-dependency. But I can make that change if we're happy to have the extra dependency in production as well.</p>
+</blockquote>
+<p>There shouldn't really be any difference. <code>strum</code> is 99% macros and traits only</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/narrow.rs</code>:92 on 2025-02-24 11:38</div>
+            <div class="timeline-body"><p>Hmm, I find this now much harder to read (I can see that it now matches the builtins name but I sort of prefer the old spelling)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-02-24 11:38</div>
+            <div class="timeline-body"><p>This is great. Thank you (and sorry for the merge conflict :()</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-02-24 11:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/narrow.rs</code>:92 on 2025-02-24 11:42</div>
+            <div class="timeline-body"><p>Bah! I'll switch it back and add a <code>#[strum(serialize = &quot;issubclass&quot;)]</code> attribute to the variant 😄</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2025-02-24 12:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-02-24 12:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-02-24 12:14</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:49:31 UTC
+    </footer>
+</body>
+</html>

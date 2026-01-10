@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`pyupgrade`] Do not offer fix when at least one target is `global`/`nonlocal` (`UP028`) - astral-sh/ruff #16451</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>pyupgrade</code>] Do not offer fix when at least one target is <code>global</code>/<code>nonlocal</code> (<code>UP028</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/16451">#16451</a>
+        opened by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a>
+        on 2025-03-01 16:33
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-03-01 16:33</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Resolves #16445.</p>
+<p><code>UP028</code> is now no longer always fixable: it will not offer a fix when at least one <code>ExprName</code> target is bound to either a <code>global</code> or a <code>nonlocal</code> declaration.</p>
+<h2>Test Plan</h2>
+<p><code>cargo nextest run</code> and <code>cargo insta test</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-03-01 16:40</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2025-03-03 09:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/resources/test/fixtures/pyupgrade/UP028_1.py</code>:129 on 2025-03-03 09:58</div>
+            <div class="timeline-body"><p>What's the motivation for moving this test?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pyupgrade/rules/yield_in_for_loop.rs</code>:146 on 2025-03-03 09:59</div>
+            <div class="timeline-body"><p>Does it make sense to even raise the diagnostic in the case of a non-local or global? How would a user rewrite the code in that case to preserve the existing semantics?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-03-03 10:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> reviewed on 2025-03-03 12:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on <code>crates/ruff_linter/resources/test/fixtures/pyupgrade/UP028_1.py</code>:129 on 2025-03-03 12:43</div>
+            <div class="timeline-body"><p>I added it there in #15543, but it should have been in the other file, since this one is for &quot;no error&quot; cases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> reviewed on 2025-03-03 12:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on <code>crates/ruff_linter/src/rules/pyupgrade/rules/yield_in_for_loop.rs</code>:146 on 2025-03-03 12:44</div>
+            <div class="timeline-body"><p>I would write something like this:</p>
+<pre><code class="language-python">global some_global
+
+for element in iterable:
+	some_global = element
+	yield some_global
+</code></pre>
+<p>The assignment makes it clear that this loop is not just reyielding: it has side effects.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-03-03 12:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pyupgrade/rules/yield_in_for_loop.rs</code>:146 on 2025-03-03 12:48</div>
+            <div class="timeline-body"><p>That makes sense. Thank you. And this should then not raise the rule. Should we add this as an example to the <code>no_errors</code> test or is it already covered by other examples?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-03-04 10:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2025-03-04 10:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-03-04 10:28</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:49:31 UTC
+    </footer>
+</body>
+</html>

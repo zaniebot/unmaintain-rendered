@@ -1,0 +1,1086 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Refactor `CallOutcome` to `Result` - astral-sh/ruff #16161</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Refactor <code>CallOutcome</code> to <code>Result</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/16161">#16161</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2025-02-14 12:59
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-14 12:59</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR refactors <code>Type::call</code> to better support the three main use cases:</p>
+<ul>
+<li>To check an <strong>explicit call</strong>, e.g. <code>a(1, 2)</code>: We want to warn about incorrect arguments.</li>
+<li>To check an <strong>implicit call</strong>, e.g. <code>a += 1</code>, <code>with a:</code>, <code>if a</code> (<code>__bool__</code>), <code>len(a)</code>: We want to test if the operation is supported or use a specific error message if the operation is not supported because the type doesn’t implement the expected Protocol or convention (“protocol”) but we don’t want to emit errors about missing or incorrect arguments</li>
+<li>To <strong>query</strong> the “best known” return type. This is, indirectly, used when evaluating visibility constraints (<code>__bool__</code>) but may also be used to test if a type implements a specific “protocol” or Protocol. We don’t want to emit any errors.</li>
+</ul>
+<p>The existing implementation already supported checking explicit calls well. However, it did emit diagnostics for implicit calls when the arguments didn't match the expected signature.</p>
+<pre><code class="language-py">class Manager:
+    def __enter__() -&gt; str:
+        return &quot;foo&quot;
+
+    def __exit__(self, exc_type, exc_value, traceback): ...
+
+context_expr = Manager()
+
+with context_expr as f:
+    reveal_type(f) 
+</code></pre>
+<p>Red Knot emitted a rather confusing error about incorrect arguments before:</p>
+<pre><code>crates/red_knot_python_semantic/resources/mdtest/with/sync.md:55 unexpected error: [too-many-positional-arguments] &quot;Too many positional arguments to function `__enter__`: expected 0, got 1&quot;
+</code></pre>
+<p>My main finding is that <code>Type::call</code> should consider the call as failed if there are any errors, including binding errors. This is important for implicit call checking as demonstrated by the error above or when probing if a <code>Class</code> implements a specific dunder method.</p>
+<p><code>Type::call</code> should return an <code>Err</code> if the call fails for any reason and leave the proper handling to the caller. However, it should retain enough information for the call site to create a useful diagnostic. There's a tension here because including very accurate information is expensive to collect and the work is wasted if the caller doesn't care about it (because it only wants to know if the call succeeded). I also think that collecting the appropriate information probably requires knowing the context in which the method was called. I don't have a concrete example but we may want to implement custom diagnostics for when an operator failed and I suspect that collecting the necessary information will be its own side-adventure (@BurntSushi told me that this is at least the case for Rustc).</p>
+<p>The main work of this PR is to change <code>Type::call</code>, <code>Type::dunder_call</code> and <code>Type::bound_call</code> to now return a <code>Result</code> and dealing with the fallout from downstream usages. I also had to implement a few workarounds where the new behavior is too accurate. E.g. I had to explicitly ignore binding errors in a few cases where we also did so before. We should tackle those TODOs in separate PRs (my goal was to preserve existing behavior in most places).</p>
+<p>Returning a <code>Result</code> is now often less ergonomic on the call site than the old <code>outcome.return_type</code>. This is intentional because using <code>return_type</code> is often wrong. I want to make the decision about what should happen if the call fails explicit: Do we have to emit a diagnostic? Can we ignore certain errors? What's the best recovery logic for this specific inference? That's why it's now necessary to match the variants and call <code>Ok(outcome) =&gt; outcome.return_type(db)</code>,  <code>Err(err) =&gt; err.unwrap_return_type(db)</code>, or <code>Err(err) =&gt; err.return_type(db)</code> to get the return type best suited for this call site.</p>
+<h2>What's next</h2>
+<p>We should refactor our other <code>Outcome</code> types to use <code>Result</code>. We should explore whether we can move some methods that take a <code>context</code> and node into <code>infer.rs</code>. We should also consider whether <code>bool</code>, <code>len</code>, and <code>member</code> (and even <code>to_instance</code>) should return a <code>Result</code>,.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @MichaReiser on 2025-02-14 12:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-14 13:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1566 on 2025-02-14 13:04</div>
+            <div class="timeline-body"><p>I moved this to <code>infer_call_expression</code> because those checks are only relevant when we perform an actual call (It would be surprising if an implicit call, e.g. from a <code>+=</code> emits a revealed diagnostic.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-14 13:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:2206 on 2025-02-14 13:04</div>
+            <div class="timeline-body"><p>I don't feel too confident about the unrolling of the inner call result here. I'd appreciate a careful review (it now moved into <code>CallOutcome::try_call</code> so that I can reuse it between <code>call</code> and <code>call_bound</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-14 13:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1782 on 2025-02-14 13:34</div>
+            <div class="timeline-body"><p>This is a small change but a not callable type error now takes precedence over a possibly unbound error.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-14 13:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:3725 on 2025-02-14 13:42</div>
+            <div class="timeline-body"><p>This should be easy now ;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-14 14:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1621 on 2025-02-14 14:05</div>
+            <div class="timeline-body"><p>We probably want to have more fine granular error handlers here but that's out of the scope of this PR (and the same applies for other implicit call sites).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:6075 on 2025-02-14 14:32</div>
+            <div class="timeline-body"><p>We can't use <code>call_dunder</code> here because <code>call_dunder</code> contains a <code>to_meta_type</code> call. Maybe we should consider removing it and let the call site deal with converting to the metatype first.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-14 14:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2025-02-14 14:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @MichaReiser on 2025-02-14 14:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @MichaReiser on 2025-02-14 14:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @MichaReiser on 2025-02-14 14:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/assignment/augmented.md</code>:44 on 2025-02-14 14:52</div>
+            <div class="timeline-body"><p>it might be good to also show the error message in this assertion. I think <code>unsupported-operator</code> is a better error code here, but I wouldn't want the error message to say &quot;you can't use the <code>-=</code> operator on instances of <code>C</code>&quot; (you can if you use the right type) -- it should be something like &quot;you can't use the <code>-=</code> operator with a <code>str</code> instance on instances of <code>C</code>&quot;.</p>
+<p>I'm not saying the error message needs to be perfect as a result of this PR (it doesn't), but it would be good to record what it is now (and add a TODO if it's not perfect yet)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/call/union.md</code>:97 on 2025-02-14 14:52</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">## Any non-callable variant
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/call/union.md</code>:107 on 2025-02-14 14:54</div>
+            <div class="timeline-body"><p>nit: I had to read this twice because <code>Literal[str]</code> is our current repr for &quot;the class object <code>str</code>&quot;, and I missed the fact that it was <code>Literal[&quot;str&quot;]</code> rather than <code>Literal[str]</code>. This might be a little clearer:</p>
+<pre><code class="language-suggestion">        f = &quot;some string&quot;
+
+    # error: [call-non-callable] &quot;Object of type `Literal[f1] | Literal[&quot;some string&quot;]` is not callable (due to union element `Literal[&quot;some string&quot;]`)&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/loops/for.md</code>:249 on 2025-02-14 15:01</div>
+            <div class="timeline-body"><p>not for this PR, but: I suppose ideally we'd highlight which union member is causing the error, the same as we do for calls that do not succeed</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/loops/for.md</code>:251 on 2025-02-14 15:02</div>
+            <div class="timeline-body"><p>excellent. I think this is possibly the last remaining inconsistency from #14012 (I'd need to double-check, though). IIRC @sharkdp fixed the original issues from that PR (that we weren't emitting diagnostics for possibly-not-iterable unions) but there was a lingering issue that we weren't necessarily inferring the best type in cases like this</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/loops/for.md</code>:249 on 2025-02-14 15:07</div>
+            <div class="timeline-body"><p>I guess this is linked to https://github.com/astral-sh/ruff/issues/13989</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/with/sync.md</code>:149 on 2025-02-14 15:08</div>
+            <div class="timeline-body"><p>this isn't quite correct. It <em>is</em> callable, but it has an invalid signature for Python's context manager protocol (the runtime expects to be able to pass <code>self</code> in as an argument, but that leads to <code>TypeError</code> because <code>__enter__</code> here accepts no arguments)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/with/sync.md</code>:151 on 2025-02-14 15:12</div>
+            <div class="timeline-body"><p>I think <code>str</code> is best here. We fallback to <code>Unknown</code> in cases where there either isn't a good fallback type, or where it's unclear what exactly cause the error. But in this case, I think it's pretty clear what caused the error. If there wasn't an <code>__enter__</code> method or there wasn't an <code>__exit__</code> method, we might wonder if they intended to use some other object in the <code>with</code> statement rather than <code>context_expr</code>. But since <code>context_expr</code> has both an <code>__enter__</code> method and an <code>__exit__</code> method, I think it's pretty clear that they're using the object they meant to use here -- it's just an invalid implementation of the context manager protocol.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-02-14 15:13</div>
+            <div class="timeline-body"><p>A review of the tests. Haven't looked at the code yet ;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-14 15:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/resources/mdtest/loops/for.md</code>:249 on 2025-02-14 15:15</div>
+            <div class="timeline-body"><p>Yes, we currently only handle the <code>PossiblyUnbound</code> error case but we don't handle unions at all (other than saying you can't call it)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-14 15:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/resources/mdtest/with/sync.md</code>:149 on 2025-02-14 15:16</div>
+            <div class="timeline-body"><p>That's fair. It requires improving the context manager error messages. I can add a TODO that we need to remove the catch all error handler and instead handle each error manually</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/with/sync.md</code>:149 on 2025-02-14 15:16</div>
+            <div class="timeline-body"><p>SGTM</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-02-14 15:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-14 15:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3256 on 2025-02-14 15:27</div>
+            <div class="timeline-body"><p>@carljm you might be disappointed by this but I don't think the diagnostics should be part of <code>CallOutcome</code> because they are only relevant if we perform an actual function call. Implicit calls want to use their own custom diagnostics, so it doesn't make sense to expose this call expression specific behavior on the generic <code>CallOutcome</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-14 17:24</div>
+            <div class="timeline-body"><p>One case that I'm not entirely sure yet how to handle is how to propagate the error for an incorrect <code>bool(argument)</code> call. It's the only case where we use <code>bool</code> today where we need to propagate an error. I expect <code>len</code> to be similar</p>
+<p>https://github.com/astral-sh/ruff/blob/6e4cd33f529999d736874cd296e123c83ace3051/crates/red_knot_python_semantic/src/types.rs#L2148-L2154</p>
+<p>I see two options:</p>
+<ul>
+<li>This is sort of a binding check. We could check the argument inside of <code>Type::call</code> and push a binding error if <code>bool(argument)</code> isn't a valid operation. The nice thing about that is that it integrates nicely into the rest of call checking.</li>
+<li>We move the checking out from <code>Type::call</code> (we only keep the narrowing of the return type) into <code>infer_expression_call</code> where we duplicate some of the logic.</li>
+</ul>
+<p>Edit: This is actually unrelated to <code>bool</code>. It seems we don't type check those constructors at all. So maybe this will automatically fall out from binding the calls?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-14 21:00</div>
+            <div class="timeline-body"><p>I now updated past @carljm changes regarding <code>float</code>, <code>int</code> and <code>complex</code> handling and removed the related hacks. However, there are now a few failing tests because we fail to bind the calls:</p>
+<pre><code>failures:
+
+---- mdtest__binary_instances stdout ----
+
+instances.md - Binary operations on instances - Callable instances as dunders
+
+  crates/red_knot_python_semantic/resources/mdtest/binary/instances.md:263 unmatched assertion: revealed: Unknown | int
+  crates/red_knot_python_semantic/resources/mdtest/binary/instances.md:263 unexpected error: 13 [unsupported-operator] &quot;Operator `+` is unsupported between objects of type `B` and `B`&quot;
+  crates/red_knot_python_semantic/resources/mdtest/binary/instances.md:263 unexpected error: 1 [revealed-type] &quot;Revealed type is `Unknown`&quot;
+
+To rerun this specific test, set the environment variable: MDTEST_TEST_FILTER=&quot;instances.md - Binary operations on instances - Callable instances as dunders&quot;
+MDTEST_TEST_FILTER=&quot;instances.md - Binary operations on instances - Callable instances as dunders&quot; cargo test -p red_knot_python_semantic --test mdtest -- mdtest__binary_instances
+
+--------------------------------------------------
+
+thread 'mdtest__binary_instances' panicked at crates/red_knot_test/src/lib.rs:98:5:
+Some tests failed.
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- mdtest__comparison_non_bool_returns stdout ----
+
+non_bool_returns.md - Comparison: Non boolean returns
+
+  crates/red_knot_python_semantic/resources/mdtest/comparison/non_bool_returns.md:36 unexpected error: [unsupported-operator] &quot;Operator `&lt;` is not supported for types `int` and `A`, in comparing `Literal[1]` with `A`&quot;
+  crates/red_knot_python_semantic/resources/mdtest/comparison/non_bool_returns.md:37 unmatched assertion: revealed: Literal[False] | A
+  crates/red_knot_python_semantic/resources/mdtest/comparison/non_bool_returns.md:37 unexpected error: 1 [revealed-type] &quot;Revealed type is `Unknown &amp; ~AlwaysTruthy | A`&quot;
+  crates/red_knot_python_semantic/resources/mdtest/comparison/non_bool_returns.md:39 unexpected error: [unsupported-operator] &quot;Operator `&lt;` is not supported for types `int` and `A`, in comparing `Literal[0]` with `A`&quot;
+
+To rerun this specific test, set the environment variable: MDTEST_TEST_FILTER=&quot;non_bool_returns.md - Comparison: Non boolean returns&quot;
+MDTEST_TEST_FILTER=&quot;non_bool_returns.md - Comparison: Non boolean returns&quot; cargo test -p red_knot_python_semantic --test mdtest -- mdtest__comparison_non_bool_returns
+
+--------------------------------------------------
+
+thread 'mdtest__comparison_non_bool_returns' panicked at crates/red_knot_test/src/lib.rs:98:5:
+Some tests failed.
+
+---- mdtest__comparison_intersections stdout ----
+
+intersections.md - Comparison: Intersections - Positive contributions
+
+  crates/red_knot_python_semantic/resources/mdtest/comparison/intersections.md:30 unmatched assertion: revealed: bool
+  crates/red_knot_python_semantic/resources/mdtest/comparison/intersections.md:30 unexpected error: 25 [unsupported-operator] &quot;Operator `&gt;` is not supported for types `Child1` and `int`, in comparing `Child1 &amp; Child2` with `Literal[1]`&quot;
+  crates/red_knot_python_semantic/resources/mdtest/comparison/intersections.md:30 unexpected error: 13 [revealed-type] &quot;Revealed type is `Unknown`&quot;
+
+To rerun this specific test, set the environment variable: MDTEST_TEST_FILTER=&quot;intersections.md - Comparison: Intersections - Positive contributions&quot;
+MDTEST_TEST_FILTER=&quot;intersections.md - Comparison: Intersections - Positive contributions&quot; cargo test -p red_knot_python_semantic --test mdtest -- mdtest__comparison_intersections
+
+--------------------------------------------------
+
+thread 'mdtest__comparison_intersections' panicked at crates/red_knot_test/src/lib.rs:98:5:
+Some tests failed.
+
+
+failures:
+    mdtest__binary_instances
+    mdtest__comparison_intersections
+    mdtest__comparison_non_bool_returns
+</code></pre>
+<p>The pattern for all tests is roughly the same:</p>
+<pre><code>from __future__ import annotations
+
+class A:
+    def __lt__(self, other) -&gt; A: ...
+
+class B:
+    def __lt__(self, other) -&gt; B: ...
+
+class C:
+    def __lt__(self, other) -&gt; C: ...
+
+x = A() &lt; B() &lt; C()
+reveal_type(x)  # revealed: A &amp; ~AlwaysTruthy | B
+
+y = 0 &lt; 1 &lt; A() &lt; 3
+reveal_type(y)  # revealed: Literal[False] | A
+
+z = 10 &lt; 0 &lt; A() &lt; B() &lt; C()
+reveal_type(z)  # revealed: Literal[False]
+</code></pre>
+<p>Binding the call results in a todo return type...</p>
+<pre><code>return_ty: Dynamic(
+        Todo(
+            Message(
+                &quot;Unsupported or invalid type in a type expression&quot;,
+            ),
+        ),
+    ),
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-14 21:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/resources/mdtest/comparison/intersections.md</code>:17 on 2025-02-14 21:33</div>
+            <div class="timeline-body"><p>@sharkdp I'm pretty sure I now changed the test in a way that it is no longer testing what it should but I'm not sure how to fix it without breaking the test itself.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/resources/mdtest/comparison/non_bool_returns.md</code>:26 on 2025-02-14 21:33</div>
+            <div class="timeline-body"><p>@sharkdp Same here. I'm not sure if the fix is in the &quot;spirit of the test&quot; but it was wrong before ;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-14 21:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-14 21:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/resources/mdtest/binary/instances.md</code>:263 on 2025-02-14 21:34</div>
+            <div class="timeline-body"><p>This is a &quot;regression&quot; in the sense that we need to understand that <code>__add__ = A</code> rebinds the <code>self</code> in <code>A.__call__</code> to <code>B</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-14 21:34</div>
+            <div class="timeline-body"><p>I'm pretty happy with the test improvements :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/binary/instances.md</code>:264 on 2025-02-15 00:09</div>
+            <div class="timeline-body"><p>I think you are right that this is a pre-existing issue in how we bind method calls, and it should probably just have a TODO here and not be fixed in this PR.</p>
+<p>But the current TODO comment is not right. At runtime in this scenario the <code>self</code> argument of <code>A.__call__</code> will always be an instance of <code>A</code> (the instance created by the constructor call <code>A()</code> in the class body of <code>B</code>), it will never be an instance of <code>B</code>. There's no such thing as a &quot;rebinding&quot; of <code>self</code> from <code>A</code> to <code>B</code>.</p>
+<p>A function object is a descriptor whose <code>__get__</code> method returns a bound method object, which wraps both the original function and the instance it was accessed from, and no longer has the first argument (<code>self</code>) in its signature, but instead, when called, provides this instance implicitly to the wrapped function as the first argument.</p>
+<p>Because a callable instance of <code>A</code> (unlike a normal function object) is not a descriptor that returns a bound-method, what happens here at runtime is that the instance of <code>B</code> on which <code>__add__</code> is called (that is, the left instance of <code>B</code> in the binary operation) simply disappears and is never passed to <code>A.__call__</code> at all. It is not passed explicitly by the binary-op machinery, because it is expected to be provided implicitly by the way bound methods work. But it isn't provided implicitly, either, because the instance of <code>A</code> is not a function object and does not have a <code>__get__</code> method that returns a bound method object. (If you do <code>some_method = A()</code> in the body of <code>class B:</code> instead, and then call <code>B().some_method(&quot;foo&quot;)</code>, the same thing will happen; the instance of <code>B()</code> you called it on will not appear anywhere in the arguments received by <code>A.__call__</code>.)</p>
+<p>Mostly what this reflects is that this scenario is silly and nobody would ever do this in reality (unless they also made <code>A</code> a descriptor by giving it a <code>__get__</code> method). But what I suspect <em>we</em> are doing wrong here is that we are always prepending the <code>self</code> arg when we access something &quot;as a method&quot;, regardless of whether the thing we are accessing is actually a method descriptor (like a function is). So we are probably trying to call the <code>A</code> instance with two arguments <code>(&lt;left B instance&gt;, &lt;right B instance&gt;)</code>, when at runtime it is called with just one argument <code>(&lt;right B instance&gt;)</code>. And so then we try to call <code>A.__call__</code> with three arguments <code>(&lt;A instance&gt;, &lt;left B instance&gt;, &lt;right B instance&gt;)</code>, when at runtime it would be called with just two arguments <code>(&lt;A instance&gt;, &lt;right B instance&gt;)</code>.</p>
+<p>I think that @sharkdp will probably end up fixing this in his descriptor work; if not, his descriptor work will enable us to fix it.</p>
+<pre><code class="language-suggestion"># TODO: Should not be an error: `A` instance is not a method descriptor, don't prepend `self` arg.
+#    Revealed type should be `Unknown | int`.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/binary/instances.md</code>:282 on 2025-02-15 00:12</div>
+            <div class="timeline-body"><p>Such a good sign for this PR that this fix just naturally fell out of forcing ourselves to actually pay attention to call binding errors.</p>
+<p>The motto for this whole PR should be that line from the Zen of Python: &quot;Errors should not pass silently, unless explicitly silenced.&quot; :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/binary/integers.md</code>:15 on 2025-02-15 00:15</div>
+            <div class="timeline-body"><p>Yes, this should emit an <code>unsupported-operator</code> diagnostic, because we can't successfully bind either <code>int.__add__(&lt;str&gt;)</code> or <code>str.__radd__(&lt;int&gt;)</code>. Doesn't necessarily need to be fixed in this PR, but we should just clarify the previous TODO comment (by adding &quot;Should emit <code>unsupported-operator</code> diagnostic&quot; to it) instead of adding a second TODO.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/call/union.md</code>:92 on 2025-02-15 00:19</div>
+            <div class="timeline-body"><p>Similar to another case below, this diagnostic message is not right.</p>
+<p>&quot;Not callable&quot; means something very specific in Python: the object does not implement the <code>tp_call</code> slot, or the call protocol, or however you want to name it. Both <code>f1</code> and <code>f2</code>, and the union <code>f1 | f2</code>, are definitely callable, and we should not say otherwise in our diagnostic or error code (so we should not use the <code>call-non-callable</code> rule code).</p>
+<p>The problem here is that we failed to bind the call arguments to one of the union elements, which is very different from one of them not being callable. The diagnostic here should ideally tell us what the argument binding error was, and for which union element (i.e. that <code>Literal[3]</code> is not assignable to <code>str</code>). (This is one of the cases where I think two separate &quot;chained&quot; diagnostics might make sense instead of trying to squeeze it all into one message.)</p>
+<p>If we want to delay providing this helpful diagnostic as a later improvement, then I think the message we use for now still should not use the words &quot;not callable&quot;, it should say something more vague like &quot;unable to call with the given arguments.&quot; (I think this vague message would still deserve a TODO comment to make sure we come back and make it useful, but at least it wouldn't be wrong.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/call/union.md</code>:94 on 2025-02-15 00:27</div>
+            <div class="timeline-body"><p>I think it would be worth putting return type annotations on <code>f1</code> and <code>f2</code> and testing what return type we infer here. (I think probably union of both return types.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/call/union.md</code>:107 on 2025-02-15 00:31</div>
+            <div class="timeline-body"><p>In this case, this is a correct use of the <code>call-non-callable</code> rule code, and the diagnostic message is correct.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/comparison/instances/membership_test.md</code>:26 on 2025-02-15 00:32</div>
+            <div class="timeline-body"><p>🎉</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/comparison/intersections.md</code>:17 on 2025-02-15 00:36</div>
+            <div class="timeline-body"><p>I think you should put this method on <code>Base</code> instead of <code>Child1</code> and <code>Child2</code>. Does that fix the test? As mentioned in the comment below, the point of that check is that it should fall back to the behavior of the base type that both <code>Child1</code> and <code>Child2</code> inherit.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/comparison/non_bool_returns.md</code>:26 on 2025-02-15 00:41</div>
+            <div class="timeline-body"><p>I think the way to preserve the spirit of this test is to make this <code>__gt__</code> method return <code>bool</code>, not <code>A</code>.</p>
+<p>The test was written assuming we'd use <code>int.__lt__</code>, which does return <code>bool</code>. Now with this PR, we don't use that because we have the wrong argument type for <code>int.__lt__</code>. But we'll then fall back to <code>A.__gt__</code>, so if we make that return <code>bool</code>, it will have the same effect.</p>
+<p>The point of the test below is that if <code>1 &lt; A()</code> is true, we won't ever see that <code>True</code> in the final result of the expression, because we'll go on to do the remainder of the checks (since chained comparisons are implicitly AND, and AND short-circuits only on <code>False</code>). And &quot;the remainder of the checks&quot; is <code>A() &lt; 3</code> which returns <code>A</code>. So the overall expression should be <code>Literal[False] | A</code>, reflecting that either <code>1 &lt; A()</code> returned <code>False</code> and we short-circuited, or it returned <code>True</code> and we continued and got <code>A</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/loops/for.md</code>:265 on 2025-02-15 00:47</div>
+            <div class="timeline-body"><p>In principle I would probably favor a TODO here and above, because I think it's pretty important that eventually we do implement a more informative diagnostic that tells you why its not iterable (because <code>int</code> has no <code>__next__</code> method). But this is a pre-existing problem, and we do have a GH issue tracking it, so no need to add TODOs in this PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/with/sync.md</code>:149 on 2025-02-15 00:48</div>
+            <div class="timeline-body"><p>Similar to above, I think the TODO is fine, but I think it is worth adjusting the error message in this PR so that it's at least not wrong. That could just be a matter of not using the phrase &quot;not callable&quot; in this diagnostic, replacing it with something like &quot;could not be called with expected arguments&quot; or something.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/with/sync.md</code>:151 on 2025-02-15 00:50</div>
+            <div class="timeline-body"><p>Yes, I agree with Alex, and would remove this TODO comment. If you call a function with the wrong arguments, we still infer the return type of that function as annotated, and this case is similar.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-02-15 00:54</div>
+            <div class="timeline-body"><p>I've only reviewed the tests so far, not the implementation. Submitting this just in case I don't make it through the implementation before I'm done for the day. It's great to see all those operator TODOs removed!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/call.rs</code>:26 on 2025-02-15 01:05</div>
+            <div class="timeline-body"><p>If this method is specific to calling unions, it seems like maybe it should clarify that in its name?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/call.rs</code>:38 on 2025-02-15 01:06</div>
+            <div class="timeline-body"><p>Let's use <code>call_errors</code> or some other terminology here, so as not to confuse the meaning of &quot;not callable&quot;, since it looks like we push binding errors here too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/call.rs</code>:47 on 2025-02-15 01:08</div>
+            <div class="timeline-body"><p>It looks like this may be a pervasive naming issue in the PR, so I won't comment it everywhere, but I think it's important that we ensure that we only use the term &quot;not callable&quot; to mean &quot;the object does not have the capability to be called&quot;, and never to mean &quot;I tried calling it with this specific set of argument types, and they failed to bind.&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/call.rs</code>:51 on 2025-02-15 01:10</div>
+            <div class="timeline-body"><p>I'm guessing it will become clearer as I read more of the PR, but just recording for posterity that the naming here was not sufficient for me to have any idea what this variant or any of its fields mean, the first time I encountered it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/call.rs</code>:52 on 2025-02-15 01:11</div>
+            <div class="timeline-body"><p>It looks like this is a binding? So why is it called <code>callable</code> or <code>inner_callable</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/call.rs</code>:58 on 2025-02-15 01:14</div>
+            <div class="timeline-body"><p>What does &quot;calling it would actually work because it ignores the possibly unboundness&quot; mean? Where is that ignored? Isn't here precisely the place where we are choosing whether to ignore it or not?</p>
+<p>I would say it should be an error because we should emit a diagnostic if we try to call something with a possibly unbound <code>__call__</code>. But that doesn't mean we won't also still have a best-guess return type we can use at the call site.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/call.rs</code>:75 on 2025-02-15 01:15</div>
+            <div class="timeline-body"><p>I don't think binding errors should be represented by something named <code>NotCallableVariant</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-02-17 10:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/comparison/intersections.md</code>:17 on 2025-02-17 10:07</div>
+            <div class="timeline-body"><blockquote>
+<p>I think you should put this method on <code>Base</code> instead of <code>Child1</code> and <code>Child2</code>.</p>
+</blockquote>
+<p>Yes. Reverting to the state on main and adding <code>__gt__</code> to <code>Base</code> keeps the original intention of the test and fixes the error. Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1666 on 2025-02-17 15:31</div>
+            <div class="timeline-body"><p>Oh, uh, we probably shouldn't be ignoring the second, third, etc. arguments to <code>str()</code> here. They can be important:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; str(b'\xff\xfef\x00o\x00o\x00')
+&quot;b'\\xff\\xfef\\x00o\\x00o\\x00'&quot;
+&gt;&gt;&gt; str(b'\xff\xfef\x00o\x00o\x00', encoding=&quot;utf-16&quot;)
+'foo'
+</code></pre>
+<p>I think this is a pre-existing problem that may be linked to this TODO:</p>
+<p>https://github.com/astral-sh/ruff/blob/b5cd4f2f70408b8ba2ebd32e554d0fef2472e9c2/crates/red_knot_python_semantic/src/types/call/arguments.rs#L28</p>
+<p>but it is probably worth adding a TODO here. And possibly also a failing test with a TODO.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:2327 on 2025-02-17 15:36</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">            // If `__iter__` exists but can't be called, return not iterable over falling back to `__getitem__`.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/call.rs</code>:26 on 2025-02-17 15:40</div>
+            <div class="timeline-body"><p>nit: maybe call this method <code>try_call_union</code>? It's obvious from the signature that it takes a <code>UnionType</code> but it wasn't obvious reading through the diff on GitHub ;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1638 on 2025-02-17 17:24</div>
+            <div class="timeline-body"><p>I think I'd prefer an exhaustive match here, since it seems like we special-case the return-type for a majority of the <code>KnownFunction</code> variants (at least right now):</p>
+<pre><code class="language-suggestion">                    // These remaining functions do not have the inferred return-type special-cased in any way.
+                    Some(
+                        KnownFunction::ConstraintFunction(_)
+                        | KnownFunction::Final
+                        | KnownFunction::RevealType
+                        | KnownFunction::NoTypeCheck
+                        | KnownFunction::StaticAssert
+                        | KnownFunction::AssertType,
+                    )
+                    | None =&gt; {}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/call.rs</code>:187 on 2025-02-17 17:43</div>
+            <div class="timeline-body"><p>I think I'd expect a function with <code>unwrap</code> in its name to panic if it contained an error. But this returns a fallback in the case of an error. And in fact, we know we have an error here, since this is a method on <code>CallError</code> 😄 Maybe something like</p>
+<pre><code class="language-suggestion">    pub(super) fn fallback_return_type(&amp;self, db: &amp;'db dyn Db) -&gt; Type&lt;'db&gt; {
+        self.return_type(db).unwrap_or(Type::unknown())
+    }
+</code></pre>
+<p>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/call.rs</code>:23 on 2025-02-17 17:48</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    /// Constructor that tries calling each union element using the provided `call` function.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/call.rs</code>:73 on 2025-02-17 17:50</div>
+            <div class="timeline-body"><p>I'm having trouble grappling with this question. Can you come up with a Python snippet where we'd change behaviour if we did this branch differently? It would help me think about the issue more clearly, I think</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/call.rs</code>:11 on 2025-02-17 17:54</div>
+            <div class="timeline-body"><p>Is this doc-comment accurate? Both variants of the <code>CallOutcome</code> enum appear to wrap one or more <code>CallBinding</code> instances, and it looks like <code>CallBinding</code> has an <code>errors</code> field:</p>
+<p>https://github.com/astral-sh/ruff/blob/b5cd4f2f70408b8ba2ebd32e554d0fef2472e9c2/crates/red_knot_python_semantic/src/types/call/bind.rs#L149-L150</p>
+<p>So it looks like a <code>CallOutcome</code> instance doesn't necessarily represent a call where <em>all arguments are valid</em>? I think it represents a call of an object that is definitely callable, but the arguments to the call were not necessarily of the correct type?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:6153 on 2025-02-17 17:57</div>
+            <div class="timeline-body"><p>is this TODO comment still valid?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-02-17 17:59</div>
+            <div class="timeline-body"><p>This looks excellent overall. There's definitely still a few outstanding issues but I'm overall leaning towards adding TODOs for the issues and landing this, then iterating. It's a big PR that is liable to accumulate merge conflicts, and it definitely seems like a big improvement over what we have now</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-17 18:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/call.rs</code>:11 on 2025-02-17 18:09</div>
+            <div class="timeline-body"><p>I decided not to split <code>CallOutcome</code> into two versions where one is statically known to not have any errors and one that has. Instead, guaranteeing that the <code>Ok</code> variant never contains errors is left to <code>Type::call</code>. I haven't explored how complicated it would be to split <code>CallBinding</code> but it is something we could look into as a follow up (e.g. <code>bind_call</code> could return a <code>Result</code> too? Although we still want to get a binding even if there are errors)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-17 18:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1666 on 2025-02-17 18:10</div>
+            <div class="timeline-body"><p>Yes. It's something that also comes up with <code>bool</code>. But it mainly comes down that we need to bind class constructor calls, which we currently don't. We should then get the signature check for free?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-02-17 18:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/call.rs</code>:11 on 2025-02-17 18:11</div>
+            <div class="timeline-body"><p>I'm not objecting to the code organisation. It seems like a reasonable split to me. I just think the docs need to be updated, because right now the doc comment seems to imply that the code is doing something slightly different to what it's actually doing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-02-17 18:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1666 on 2025-02-17 18:14</div>
+            <div class="timeline-body"><p>I think it's slightly different to <code>bool()</code>. For <code>bool()</code>, the signature only accepts a single argument, so either the call succeeds or it doesn't. For <code>str()</code>, there's all these optional keyword-only arguments which are valid to pass, such as <code>encoding=&quot;utf-16&quot;</code>. If the user passes one of those, the call will still be valid, so we shouldn't emit any errors. But we also shouldn't apply the special-casing here where we infer a literal-string type as the result. Because we could infer the wrong literal-string type if the user is passing a strange encoding or whatever.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-17 18:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1666 on 2025-02-17 18:18</div>
+            <div class="timeline-body"><p>That's fair. So we might need to do more but we also need to check that the argument passed to bool is correct (there's exactly one and it implements the bool convention)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-17 18:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1666 on 2025-02-17 18:19</div>
+            <div class="timeline-body"><p>I also only moved this code. So this isn't new</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-02-17 18:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1666 on 2025-02-17 18:20</div>
+            <div class="timeline-body"><blockquote>
+<p>I also only moved this code. So this isn't new</p>
+</blockquote>
+<p>I know, I said it was probably a pre-existing issue 😄 but it would still be good to add a TODO while we're here, and while I've noticed it</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/call.rs</code>:25 on 2025-02-18 01:05</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    /// Returns `Ok` if all variants can be called without error according to the callback and `Err` otherwise.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/call.rs</code>:132 on 2025-02-18 01:26</div>
+            <div class="timeline-body"><p>Some naming ideas to avoid confusion around what &quot;not callable&quot; means. Not tied to these particular ideas, but <code>CallError::Union</code> seems pretty reasonable (I would have understood it faster than &quot;CallError::NotCallableVariants&quot;).</p>
+<pre><code class="language-suggestion">
+    /// A call to a union failed because at least one element
+    /// can't be called with the given arguments or isn't callable at all.
+    Union {
+        /// The variants that can't be called with the given arguments.
+        error: Box&lt;[SingleCallAttempt&lt;'db&gt;]&gt;,
+
+        /// The variants that can be called with the given arguments.
+        success: Box&lt;[CallBinding&lt;'db&gt;]&gt;,
+
+        /// The union type that we tried calling.
+        called_ty: UnionType&lt;'db&gt;,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/call.rs</code>:212 on 2025-02-18 01:27</div>
+            <div class="timeline-body"><p>Given that the called type is always part of the <code>CallBinding</code>, could/should this be an enum (either a binding or a non-callable type) rather than a struct with two fields?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/call.rs</code>:211 on 2025-02-18 05:57</div>
+            <div class="timeline-body"><p>It may or may not be callable; if there is a binding, clearly it is callable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1739 on 2025-02-18 06:06</div>
+            <div class="timeline-body"><p>Is it worth aliasing this type as <code>CallResult</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1621 on 2025-02-18 06:11</div>
+            <div class="timeline-body"><p>Worth a TODO comment?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3256 on 2025-02-18 06:16</div>
+            <div class="timeline-body"><blockquote>
+<p>they are only relevant if we perform an actual function call. Implicit calls want to use their own custom diagnostics</p>
+</blockquote>
+<p>I'm just not convinced that this is universally true. I still think we will probably need some form of nested or chained diagnostics to provide adequate detailed debugging information to the user in a case where something like (for example) an &quot;object is not callable&quot; error is raised as part of an implicit call, e.g. because some non-callable object has been used as the value of some dunder. So I do expect that we will need the equivalent of some of the below diagnostics to be rendered as part of some errors on implicit calls. But it's possible that this could be done just by extracting the necessary diagnostics into standalone functions in <code>diagnostics.rs</code> and calling them from multiple callsites.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:6075 on 2025-02-18 06:23</div>
+            <div class="timeline-body"><p>I don't think we should do that, because &quot;looked up on the class, not the instance&quot; is part of the contract of calling a dunder method in general in Python. And it is true here as well: see the use of <code>left.class.class_member</code> below, which is equivalent (for an Instance type) on looking up a member on the meta type.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:6153 on 2025-02-18 06:23</div>
+            <div class="timeline-body"><p>Seems like this should have been fixed by my PR?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-02-18 06:28</div>
+            <div class="timeline-body"><p>This is great, I definitely think it's a major improvement over the status quo, thank you for digging into this area!</p>
+<p>I agree with Alex that I don't see substantive issues here that can't be TODOed and iterated on later. The main thing I would like to address before landing (mostly because I don't think it's hard to address) is some naming stuff, particularly being consistent about what &quot;not callable&quot; means, both in diagnostics and in code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-18 07:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1666 on 2025-02-18 07:32</div>
+            <div class="timeline-body"><p>Absolutely. It wasn't my intention to suggest otherwise.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-18 07:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/call.rs</code>:75 on 2025-02-18 07:35</div>
+            <div class="timeline-body"><p>Do you have any suggestions? It needs to be something generic because we otherwise end up with too many error variants that bloat the size, are hard to handle, and upstream code doesn't seem to care anyway.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-18 07:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/call.rs</code>:75 on 2025-02-18 07:36</div>
+            <div class="timeline-body"><p>Let's merge this into your comment below</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1739 on 2025-02-18 07:37</div>
+            <div class="timeline-body"><p>I prefer repeating types because I find it easier to read the code unless the type is used in many places, which isn't the case here (I think it's only three places today and David's about to remove <code>call_bound</code>, leaving only 2)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-18 07:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-18 07:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3256 on 2025-02-18 07:40</div>
+            <div class="timeline-body"><p>That's possible. Although it comes with its own challenges because we don't have a call node. So what do you pass as the node that the highlighting works as expected? Either way. My follow up PRs introduce a pattern where the <code>Err</code> type has methods to emit the corresponding diagnostics and get the return type.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-18 09:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/resources/mdtest/call/union.md</code>:92 on 2025-02-18 09:37</div>
+            <div class="timeline-body"><p>I'd prefer improving this for now because I get the impression that we may also want to rename the lint rule itself to something more generic? But I could see how this itself requires some discussion.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-18 09:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/call.rs</code>:73 on 2025-02-18 09:54</div>
+            <div class="timeline-body"><p>I think the example here would be:</p>
+<pre><code class="language-py">def outer(cond1: bool):
+	class Test:
+		if cond:
+			def __call__(self): ...
+	
+	class Other:
+		def __call__(self): ...
+	
+	def inner(cond: bool): 
+		if cond:
+			a = Test()
+		else:
+			a = Other()
+	
+		a()
+</code></pre>
+<p><code>a</code> resolves to <code>Test | Other</code>. Calling <code>Test</code> resolves to <code>PossiblyUnbound</code> and calling <code>Other</code> to <code>Ok</code> (let's ignore whether the <code>__call__</code> is actually correct).</p>
+<p>I do think what I have now is incorrect and I should push it to the error variant instead.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-18 10:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/call.rs</code>:73 on 2025-02-18 10:09</div>
+            <div class="timeline-body"><p>I added a test case for this (with a TODO to improve the error message)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-18 10:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/call.rs</code>:11 on 2025-02-18 10:11</div>
+            <div class="timeline-body"><p>I'm not sure what you mean. We only return <code>CallOutcome </code>if there are no binding errors (all arguments are valid).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-18 10:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:6153 on 2025-02-18 10:12</div>
+            <div class="timeline-body"><p>ah nice catch. This must have gotton lost somewhere.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-18 12:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/call.rs</code>:132 on 2025-02-18 12:24</div>
+            <div class="timeline-body"><p>I renamed it to <code>Union</code>, changed the <code>not_callable</code> field to <code>errors: Box&lt;[CallError&lt;'db&gt;]&gt;</code>, renamed <code>callable</code> to <code>bindings</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-18 12:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/call.rs</code>:212 on 2025-02-18 12:24</div>
+            <div class="timeline-body"><p>I deleted this type</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-18 12:27</div>
+            <div class="timeline-body"><p>Ha, less code, more tests and higher accuracy!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-18 12:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1683 on 2025-02-18 12:29</div>
+            <div class="timeline-body"><p>This patching of the <code>not_callable_ty</code> here seems hacky but we should address this separately</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-18 12:34</div>
+            <div class="timeline-body"><p>Thank you both for the excellent review.</p>
+<p>I'm sorry for deferring so many diagnostic improvements but I see my priority as solving an architectural problem and I should then get back to working on the CLI. I added the requested todos and pushed some improvements to the <code>NotCallable</code> that hopefully addresses all terminology concerns.</p>
+<p>There's one behavior change that I want to call out. We now only report the first error if a union variant isn't callable or has binding errors, similar to what TypeScript does (It's no longer &quot;X isn't callable (because of element reason)&quot; but is now &quot;element isn't callable&quot;). This improved some errors but I think we can do better. I added a todo in code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-18 12:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/call.rs</code>:11 on 2025-02-18 12:34</div>
+            <div class="timeline-body"><p>As discussed async. @AlexWaygood and I will follow up on this after landing this PR (if it still is an issue)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2025-02-18 12:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-02-18 12:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-02-18 12:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/binary/integers.md</code>:15 on 2025-02-18 17:11</div>
+            <div class="timeline-body"><p>This comment is now wrong, not in terms of what should happen (yes, there should be an unsupported-operator error), but the why. After this PR, we <em>do</em> now &quot;verify that the actual parameter to <code>int.__add__</code> matches the declared formal parameter type&quot;. So then we try to fall back to <code>str.__radd__</code>, but we think its type is <code>Unknown</code> because we don't understand the bases of <code>str</code> and so we think <code>str</code> inherits <code>Unknown</code>.</p>
+<p>Comment text here should instead read:</p>
+<blockquote>
+<p>TODO: Should emit <code>unsupported-operator</code> but we don't understand the bases of <code>str</code> so we think it inherits <code>Unknown</code>, so we think <code>str.__radd__</code> is <code>Unknown</code> instead of nonexistent.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-02-18 17:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-02-18 18:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/call/callable_instance.md</code>:55 on 2025-02-18 18:55</div>
+            <div class="timeline-body"><p>This seems to me like clearly a regression, not an improvement; it's not clear to me why this change was made. Are there other error messages where it resulted in an improvement?</p>
+<p>In any case, we can certainly follow up on this later; I can create an issue for it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-02-18 18:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/call/callable_instance.md</code>:55 on 2025-02-18 18:58</div>
+            <div class="timeline-body"><p>Ah, ok, I suspect it was made to improve cases where we need more detailed errors from &quot;inside&quot; the union (like argument-specific call binding errors). That makes sense, but I continue to feel like in the end we won't be able to get away with choosing just one or the other here (either the union-level info or the per-union-element details), we will ultimately need to be able to chain details.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/resources/mdtest/call/callable_instance.md</code>:55 on 2025-02-18 19:12</div>
+            <div class="timeline-body"><p>I think it is more useful in an editor context where you can just hover the type. But I agree it's not as useful in a CLI context. However, handling union errors is complicated because they're kind of recursive and you probably also don't want to list all errors (because that's overwhelming). This needs some design work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-18 19:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-18 19:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/resources/mdtest/call/callable_instance.md</code>:55 on 2025-02-18 19:55</div>
+            <div class="timeline-body"><p>It's probably worth tagging @BurntSushi because this might be a use case where we want sub-diagnostics (although we still need a way to truncate to avoid going too deep).</p>
+<p>@BurntSushi the diagnostic use case we have here is that we want to warn if a user tries to call a type that can't be called with the given arguments. The part where our current system (and what I did in this PR) falls short is if the called type is a union where only some of the variants can't be called (because it isn't a function or the arguments don't match its signature).</p>
+<p>I did look at how different type checker handle this case when I started working on this refactor:</p>
+<p><strong>Pyright</strong></p>
+<pre><code class="language-py">from ast import Call
+from typing import reveal_type
+
+
+class NotCallable:
+    pass
+
+class Callable:
+    def __call__(self):
+        pass
+
+
+def coinflip() -&gt; NotCallable | Callable:
+    return random.choice([NotCallable(), Callable()])
+
+a = coinflip()
+
+reveal_type(a)
+
+a()
+</code></pre>
+<p>It only reports an error for the not callable variant (similar to what I did in this PR). It does have some form of sub diagnostic.</p>
+<pre><code>Object of type &quot;NotCallable&quot; is not callable
+  Attribute &quot;__call__&quot; is unknownPylancereportCallIssue
+</code></pre>
+<p><strong>Typescript</strong></p>
+<pre><code class="language-ts">class NonCallable {
+
+}
+
+class AlsoNotCallable {
+
+}
+
+
+let x: NonCallable | AlsoNotCallable | (&lt;T&gt;(a: T) =&gt; T) | undefined = a =&gt; a;
+
+x(&quot;test&quot;)
+</code></pre>
+<pre><code>    This expression is not callable.
+      Not all constituents of type 'NonCallable | AlsoNotCallable | (&lt;T&gt;(a: T) =&gt; T)' are callable.
+        Type 'NonCallable' has no call signatures.
+</code></pre>
+<p>Similar to <code>Pyright</code> where it uses sub-diagnostics.</p>
+<p>But the quality of errors depends on the use case. E.g. there's no special union handling for iterable:</p>
+<pre><code class="language-ts">class MyIterable implements Iterable&lt;number&gt;  {
+    [Symbol.iterator](): Iterator&lt;number&gt; {
+        return [1, 2, 3, 4]
+    }
+}
+
+
+
+class NotIterable {
+
+}
+
+let a:MyIterable | NotIterable= new MyIterable();
+
+for (let i of a) {
+    console.log(i);
+}
+</code></pre>
+<pre><code>Type 'MyIterable | NotIterable' must have a '[Symbol.iterator]()' method that returns an iterator.ts(2488)
+</code></pre>
+<p>It doesn't tell you that <code>NotIterable</code> is the problematic element.</p>
+<p><strong>Flow</strong></p>
+<p>Same examples as for TypeScript</p>
+<pre><code>    12: x(&quot;test&quot;)
+        ^ Cannot call `x` because undefined [1] is not a function. [not-a-function]
+        References:
+        10: let x: NonCallable| (&lt;T&gt;(a: T) =&gt; T) | undefined = undefined;
+                                                   ^ [1]
+    12: x(&quot;test&quot;)
+        ^ Cannot call `x` because a call signature declaring the expected parameter / return type is missing in `NonCallable` [1]. [prop-missing]
+        References:
+        10: let x: NonCallable| (&lt;T&gt;(a: T) =&gt; T) | undefined = undefined;
+                   ^ [1]
+</code></pre>
+<pre><code>15: for (let i of a) {
+                  ^ property `@@iterator` is missing in `NotIterable` [1] but exists in `$Iterable` [2]. [prop-missing]
+
+    References:
+
+    13: let a:MyIterable | NotIterable= new MyIterable();
+                           ^ [1]
+
+    [LIB] ..//try-flow-website-js@0.260.0/flowlib/core.js:1865: interface $Iterable&lt;+Yield,+Return,-Next&gt;{                                                                      ^ [2]
+    
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/call.rs</code>:55 on 2025-02-18 20:33</div>
+            <div class="timeline-body"><p>Unless we would have an empty union (which is not possible), I don't see how we could ever have empty bindings and <code>not_callable</code> not also be true? In other words, why do we need the <code>not_callable</code> boolean? If I remove it (and leave this as just <code>else if bindings.is_empty()</code>), all tests pass.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-02-18 20:38</div>
+            <div class="timeline-body"><p>The updates look great, thank you! Reads much clearer to me now. And really appreciate all the TODOs for things we want to try to further improve.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/binary/integers.md</code>:15 on 2025-02-18 20:40</div>
+            <div class="timeline-body"><p>I'll put up a quick PR for this; it's minor but I don't want to waste the time I spent understanding what's happening.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-02-18 20:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-18 20:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/call.rs</code>:55 on 2025-02-18 20:42</div>
+            <div class="timeline-body"><p>Line 47 is important.</p>
+<p>You could have a case where one variant is <code>NotCallable</code> and the other variant has a <code>BindingError</code>. We don't want to return <code>NotCallable</code> in this case because we would loose information (and it's not true that the type isn't callable, it's not always callable)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-02-18 20:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/call/callable_instance.md</code>:55 on 2025-02-18 20:47</div>
+            <div class="timeline-body"><p>I filed https://github.com/astral-sh/ruff/issues/16241 just so we don't lose track of this discussion (and in particular this excellent comment which I linked to from the issue)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/binary/integers.md</code>:15 on 2025-02-18 20:48</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/ruff/pull/16242</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-02-18 20:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-02-18 20:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/call.rs</code>:55 on 2025-02-18 20:57</div>
+            <div class="timeline-body"><p>But I can remove the <code>not_callable</code> boolean, and every reference to it (including line 47), and all tests still pass. So if it's important, either we aren't currently handling it correctly or we are missing some needed test.</p>
+<p>In the case you describe, <code>bindings</code> will not be empty, so we won't enter this clause to return <code>NotCallable</code> anyway; we'll short-circuit this test and we won't even check the value of the <code>not_callable</code> boolean.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-18 21:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/call.rs</code>:55 on 2025-02-18 21:06</div>
+            <div class="timeline-body"><p>I don't think <code>bindings</code> will be empty because we only push to <code>bindings</code> if the call succeeded (without any binding errors). That we miss some tests is not unlikely</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-02-18 21:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/call.rs</code>:55 on 2025-02-18 21:10</div>
+            <div class="timeline-body"><p>Oh, I see! I missed that we don't push bindings with errors to <code>bindings</code>. Makes sense, I agree then it just looks like we don't have a test for the case where one union variant has a binding error and the other one is not callable (or we do have a test for that case but its assertions fail to distinguish?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-02-26 00:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/call.rs</code>:55 on 2025-02-26 00:50</div>
+            <div class="timeline-body"><p>I tried writing a test here and realized that the problem with this flag is that it was initialized to <code>true</code> and only updated with <code>|=</code>, meaning it could never become <code>false</code>. Follow-up PR in https://github.com/astral-sh/ruff/pull/16387</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:49:30 UTC
+    </footer>
+</body>
+</html>

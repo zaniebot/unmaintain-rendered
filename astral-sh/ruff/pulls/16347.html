@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rename `venv-path` to `python` - astral-sh/ruff #16347</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Rename <code>venv-path</code> to <code>python</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/16347">#16347</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2025-02-24 14:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-24 14:10</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Closes https://github.com/astral-sh/ruff/issues/15530</p>
+<p>This PR renames the CLI argument <code>--venv-path</code> and the <code>environment.venv-path</code> option to <code>--python</code> and <code>environment.python</code>
+to align with uv's python option.</p>
+<p>The Python option takes a path to a virtual environment or Python system installation (any directory that has a <code>lib/python3.x/site-packages</code> subdirectory on unix).</p>
+<p>This PR doesn't yet add support for:</p>
+<ul>
+<li>Specifying a path to a python executable</li>
+<li>Specifying a python version</li>
+</ul>
+<p>uv supports both (and more). The CLI proposal does mention that we should support python executables. I recommend to add support for this, if wanted, as a separate PR</p>
+<h2>Test plan</h2>
+<p>I ran Red Knot over Black and both main and this PR produce the same diagnostic when pointing it to a venv path.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/module_resolver/resolver.rs</code>:231 on 2025-02-24 14:12</div>
+            <div class="timeline-body"><p>I think we have to adjust the code here as well to support system python installations. I don't have a good sense for what's involved here. It might just be that we have to make the <code>pyvenv.cfg</code> step optional. I can tackle this with some guidance as part of this PR or create a follow up issue to add system python support.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2025-02-24 14:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/main.rs</code>:96 on 2025-02-24 14:28</div>
+            <div class="timeline-body"><p>I noticed while testing that relative path arguments on the CLI were incorrectly anchored to the project directory instead of the cwd. For example, the <code>python</code> path for <code>--project ../test --python ../test/venv</code> resolved to <code>../test/test/venv</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2025-02-24 14:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @MichaReiser on 2025-02-24 14:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @MichaReiser on 2025-02-24 14:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @MichaReiser on 2025-02-24 14:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-24 14:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> approved on 2025-02-24 14:42</div>
+            <div class="timeline-body"><p>Thank you.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/module_resolver/resolver.rs</code>:231 on 2025-02-24 14:47</div>
+            <div class="timeline-body"><p>I think probably best to defer this -- it seems like a separate issue</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-02-24 14:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/program.rs</code>:148 on 2025-02-24 14:49</div>
+            <div class="timeline-body"><p>nit: maybe call this variant <code>KnownSitePackages</code> now, since the meaning of the wrapped path is different to the meaning of the wrapped path in the other variant?</p>
+<p>And maybe document that this variant is only really for tests, where we want to skip having to resolve the <code>site-packages</code> from the <code>sys.prefix</code> path?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-02-24 14:50</div>
+            <div class="timeline-body"><p>Looks great, thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/main.rs</code>:71 on 2025-02-24 17:50</div>
+            <div class="timeline-body"><p>This comment seems out of date (or at least badly located) now?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-02-24 18:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-02-24 18:19</div>
+            <div class="timeline-body"><blockquote>
+<p>any directory that has a <code>site-packages</code> sub-directory</p>
+</blockquote>
+<p>This is from the PR summary, not the PR itself, but in case it represents an actual misunderstanding: <code>site-packages</code> is not a direct subdirectory of venvs or of system Python installations, it always lives under <code>lib/pythonX.X/site-packages</code>. (Or maybe you meant &quot;sub-directory&quot; in the transitive sense?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-24 18:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/main.rs</code>:71 on 2025-02-24 18:30</div>
+            <div class="timeline-body"><p>This is still true. We relativize the paths in <code>RelativePathBuf::absolute</code>. The main change here is that we don't use the project path as <code>cwd</code> when it is set (which is incorrect)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-24 18:33</div>
+            <div class="timeline-body"><blockquote>
+<p>This is from the PR summary, not the PR itself, but in case it represents an actual misunderstanding: site-packages is not a direct subdirectory of venvs or of system Python installations, it always lives under lib/pythonX.X/site-packages. (Or maybe you meant &quot;sub-directory&quot; in the transitive sense?</p>
+</blockquote>
+<p>You give me too much credit. I was just still confused by how the directory structure looks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2025-02-24 18:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-02-24 18:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-02-24 18:41</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:49:31 UTC
+    </footer>
+</body>
+</html>

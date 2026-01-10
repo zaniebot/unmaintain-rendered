@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] support empty TypeInference with fallback type - astral-sh/ruff #16510</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] support empty TypeInference with fallback type</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/16510">#16510</a>
+        opened by <a href="https://github.com/carljm">@carljm</a>
+        on 2025-03-05 00:14
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/carljm">@carljm</a> on 2025-03-05 00:14</div>
+            <div class="timeline-body"><p>This is split out of https://github.com/astral-sh/ruff/pull/14029, to reduce the size of that PR, and to validate that this &quot;fallback type&quot; support in <code>TypeInference</code> doesn't come with a performance cost. It also improves the reliability and debuggability of our current (temporary) cycle handling.</p>
+<p>In order to recover from a cycle, we have to be able to construct a &quot;default&quot; <code>TypeInference</code> where all expressions and definitions have some &quot;default&quot; type. In our current cycle handling, this &quot;default&quot; type is just unknown or a todo type. With fixpoint iteration, the &quot;default&quot; type will be <code>Type::Never</code>, which is the &quot;bottom&quot; type that fixpoint iteration starts from.</p>
+<p>Since it would be costly (both in space and time) to actually enumerate all expressions and definitions in a scope, just to insert the same default type for all of them, instead we add an optional &quot;missing type&quot; fallback to <code>TypeInference</code>, which (if set) is the fallback type for any expression or definition which doesn't have an explicit type set.</p>
+<p>With this change, cycles can no longer result in the dreaded &quot;Missing key&quot; errors looking up the type of some expression.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @carljm on 2025-03-05 00:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @carljm on 2025-03-05 00:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @carljm on 2025-03-05 00:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @carljm on 2025-03-05 00:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2025-03-05 06:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:303 on 2025-03-05 07:54</div>
+            <div class="timeline-body"><p>Should <code>try_expression_type</code> also have the fallback handling because <code>Never</code> is the expression's type while in a cycle.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:305 on 2025-03-05 07:56</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">            self.missing_ty
+                .expect(&quot;expression should belong to this type inference context and `TypeInferenceBuilder` should have inferred a type for it&quot;)
+</code></pre>
+<p>https://doc.rust-lang.org/std/result/enum.Result.html#recommended-message-style</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:318 on 2025-03-05 07:57</div>
+            <div class="timeline-body"><p>Nit: I'm pretty sure it results in the same generated LLVM code but you could avoid a function call in the <em>good</em> path this way</p>
+<pre><code class="language-suggestion">        self.bindings.get(&amp;definition).copied().or(self.missing_ty).unwrap_or_else(|| {
+            panic!(&quot;missing binding type and no missing_ty&quot;)
+        })
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:285 on 2025-03-05 07:59</div>
+            <div class="timeline-body"><p>We started to use <code>type</code> over <code>ty</code></p>
+<pre><code class="language-suggestion">    missing_type: Option&lt;Type&lt;'db&gt;&gt;,
+</code></pre>
+<p>I also suggest to use a more specific name than <code>missing_ty</code> that tells a reader more about why it is needed: <code>cycle_fallback_type</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:289 on 2025-03-05 08:00</div>
+            <div class="timeline-body"><p>NIT: I've a small preference to create a dedicated constructor method, e.g. <code>TypeInference::cycle_fallback(scope: ScopeId, type: Type)</code> that enforces a more strict API and may also allow us to have a stricter visibility (private?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-03-05 08:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-03-05 16:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:303 on 2025-03-05 16:15</div>
+            <div class="timeline-body"><p>Yeah, not sure it will ever matter in practice but that's probably better.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @carljm on 2025-03-05 17:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-03-05 17:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-03-05 17:12</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:49:32 UTC
+    </footer>
+</body>
+</html>

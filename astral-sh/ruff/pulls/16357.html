@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allow passing `ParseOptions` to inline tests - astral-sh/ruff #16357</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Allow passing <code>ParseOptions</code> to inline tests</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/16357">#16357</a>
+        opened by <a href="https://github.com/ntBre">@ntBre</a>
+        on 2025-02-24 19:50
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ntBre">@ntBre</a> on 2025-02-24 19:50</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR adds support for a pragma-style header for inline parser tests containing JSON-serialized <code>ParseOptions</code>. For example,</p>
+<pre><code class="language-python"># parse_options: { &quot;target-version&quot;: &quot;3.9&quot; }
+match 2:
+    case 1:
+        pass
+</code></pre>
+<p>The line must start with <code># parse_options: </code> and then the rest of the (trimmed) line is deserialized into <code>ParseOptions</code> used for parsing the the test.</p>
+<h2>Test Plan</h2>
+<p>Existing inline tests, plus two new inline tests for <code>match-before-py310</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @ntBre on 2025-02-24 19:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">parser</span> added by @ntBre on 2025-02-24 19:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @ntBre on 2025-02-24 19:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @ntBre on 2025-02-24 19:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-02-24 19:59</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/parser/statement.rs</code>:2272 on 2025-02-25 07:55</div>
+            <div class="timeline-body"><p>I find the options json files somewhat noisy. I know, we do the same for the formatter and maybe that was already a bad choice from my side.</p>
+<p>Should we use a pragma comment instead?</p>
+<pre><code class="language-python"># parserOptions: { target_version: &quot;3.10&quot; }
+</code></pre>
+<p>and they are only allowed on the first line of the test.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/tests/snapshots/invalid_syntax@match_before_py310.py.snap</code>:63 on 2025-02-25 07:56</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">  | |____________^ Syntax Error: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/Cargo.toml</code>:25 on 2025-02-25 07:57</div>
+            <div class="timeline-body"><p>We should make <code>serde</code> an optional dependency. Not all downstream users need serde serialization</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/Cargo.toml</code>:16 on 2025-02-25 07:57</div>
+            <div class="timeline-body"><p>We should only enable the <code>serde</code> feature for dev builds</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-25 07:57</div>
+            <div class="timeline-body"><p>This looks good. I do think I'd prefer a pragma comment over an external <code>options.json</code> file</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/tests/fixtures.rs</code>:123 on 2025-02-25 09:57</div>
+            <div class="timeline-body"><p>I think this is great and I'd also add this conditional check for <code>ParseError</code> so that we avoid adding an empty header in that case as well. Thus, I'd suggest to remove this TODO.</p>
+<p>What about using the same name as the field? Like &quot;Syntax Errors&quot; or &quot;Unsupported syntax errors&quot;?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/tests/fixtures.rs</code>:91 on 2025-02-25 10:03</div>
+            <div class="timeline-body"><p>I think it'll be useful to add the non-default options in the snapshot. We do this in the formatter:</p>
+<p>https://github.com/astral-sh/ruff/blob/aac79e453aeb77990bfcccc715a91870363523c3/crates/ruff_python_formatter/tests/snapshots/format%40statement__with_39.py.snap#L101-L115</p>
+<p>It doesn't necessarily need to be in a pretty format and can directly use <code>{:#?}</code> instead.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/parser/statement.rs</code>:2272 on 2025-02-25 10:07</div>
+            <div class="timeline-body"><p>Are you saying that the comment would be part of the source code? Like the following:</p>
+<pre><code class="language-py"># parse_options: { target_version: &quot;3.10&quot; }
+match 2:
+	case 1:
+		pass
+</code></pre>
+<p>That is a good alternative but then I would recommend (not in this PR) to add the file content (if it's not too noisy) in the snapshot to make sure that the snapshot contains all the necessary details (content, parse options) to validate it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-02-25 10:08</div>
+            <div class="timeline-body"><p>This is great! Thanks for taking this on quickly and implementing it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-02-25 10:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/tests/fixtures.rs</code>:91 on 2025-02-25 10:08</div>
+            <div class="timeline-body"><p>This won't be required if we go with the pragma comment instead of <code>.options.json</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_parser/tests/snapshots/invalid_syntax@match_before_py310.py.snap</code>:63 on 2025-02-25 15:27</div>
+            <div class="timeline-body"><p>I'm going to apply this one to #16090.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-02-25 15:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-02-25 15:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_parser/Cargo.toml</code>:16 on 2025-02-25 15:35</div>
+            <div class="timeline-body"><p>I tried this a couple of times, but making <code>serde</code> a <code>dev-dependency</code> led to errors like <code>Deserialize is not implemented</code> in the integration tests. From some searching online, I think integration tests don't activate the <code>test</code> feature, so <code>#[cfg_attr(test, derive(serde::Deserialize))]</code> doesn't work, for example.</p>
+<p>I'll give it another try in case I'm missing something here, though. I definitely agree that I'd rather not make it a full dependency. Maybe I can just add a <code>serde</code> feature to the parser?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-02-25 15:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_parser/src/parser/statement.rs</code>:2272 on 2025-02-25 15:36</div>
+            <div class="timeline-body"><p>I like this idea, I'll give it a try!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/Cargo.toml</code>:16 on 2025-02-25 16:18</div>
+            <div class="timeline-body"><p>I see. Yeah, a feature might work but you probably still need to enable that feature for the one integration test.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-25 16:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-02-25 18:08</div>
+            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+
+<!-- __CODSPEED_INSTRUMENTATION_PERFORMANCE_REPORT_COMMENT__ -->
+
+<h2><a href="https://codspeed.io/astral-sh/ruff/branches/brent%2Fparser-tests">CodSpeed Performance Report</a></h2>
+<h3>Merging #16357 will <strong>not alter performance</strong></h3>
+<p><sub>Comparing <code>brent/parser-tests</code> (62b43a7) with <code>main</code> (dd6f623)</sub></p>
+<h3>Summary</h3>
+<p><code>✅ 32</code> untouched benchmarks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-02-25 18:09</div>
+            <div class="timeline-body"><p>I rebased on #16090 to get the new <code>SyntaxError</code> name and switched to the pragma implementation. It seems quite nice and ended up being less code too. The only piece I might be missing is including the code file contents in the snapshot, but I wasn't quite sure if that was still needed. It sounds like that could be a follow-up either way.</p>
+<p>I made <code>serde</code> an optional dependency gated behind the <code>serde</code> feature in the parser. You have to pass <code>--features serde</code> to run the parser tests with something like <code>cargo test -p ruff_python_parser --features serde</code>, but I think CI runs everything with <code>--all-features</code>. This feels a bit hacky but maybe it's okay? I left that commit last so it would be easy to revert.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-02-25 18:24</div>
+            <div class="timeline-body"><p>My other branch must be missing Doug's alist changes, at least I assume that's where the codspeed failure is coming from. I expect that to go away when I change the base branch to <code>main</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-02-26 00:10</div>
+            <div class="timeline-body"><p>While trying to use this branch as a base for detecting some syntax errors, I realized that I forgot to actually check for the new errors in the <em>valid</em> syntax case. It's difficult to test this case because it requires a version-related syntax error in a <code>test_ok</code> inline test. I guess a <code>#[should_panic]</code> test calling <code>test_valid_syntax</code> directly could work, but I can also confirm that these changes now detect the false-positive I was debugging on the other branch.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @ntBre on 2025-02-26 04:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/lib.rs</code>:667 on 2025-02-26 07:23</div>
+            <div class="timeline-body"><p>We normally use kebab case everywhere</p>
+<pre><code class="language-suggestion">    serde(rename_all = &quot;kebab_case&quot;)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_server/src/lint.rs</code>:216 on 2025-02-26 07:26</div>
+            <div class="timeline-body"><p>I don't understand this change. Why are we appending the <code>unsupported_syntax_errors</code> on line 189 and here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-02-26 07:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/lib.rs</code>:667 on 2025-02-26 08:29</div>
+            <div class="timeline-body"><p>I think it's <code>kebab-case</code> (hyphen, not an underscore) (https://serde.rs/container-attrs.html#rename_all)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_server/src/lint.rs</code>:216 on 2025-02-26 08:31</div>
+            <div class="timeline-body"><p>I think this PR probably just needs to be rebased on <code>main</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/parser/options.rs</code>:24 on 2025-02-26 08:34</div>
+            <div class="timeline-body"><p>I'd use <code>#[serde(rename_all = &quot;kebab-case&quot;)]</code> for consistency</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> approved on 2025-02-26 08:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-02-26 13:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_server/src/lint.rs</code>:216 on 2025-02-26 13:39</div>
+            <div class="timeline-body"><p>Oh yes, I was using git too late last night!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-02-26 15:27</div>
+            <div class="timeline-body"><p>Based on a discussion with @MichaReiser on Discord, I backed out the <code>serde</code> feature changes and added <code>JsonParseOptions</code> and <code>JsonMode</code> types in <code>fixtures.rs</code> to keep <code>serde</code> as a <code>dev-dependency</code>.</p>
+<p>This avoids needing to run the parser integration tests with the <code>serde</code> feature enabled or requiring <code>serde</code> as a full dependency.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ntBre on 2025-02-27 15:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-02-27 15:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-02-27 15:23</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:49:31 UTC
+    </footer>
+</body>
+</html>

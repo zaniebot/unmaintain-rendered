@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ruff_db: add new diagnostic renderer - astral-sh/ruff #16711</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>ruff_db: add new diagnostic renderer</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/16711">#16711</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2025-03-13 16:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-03-13 16:30</div>
+            <div class="timeline-body"><p>This PR adds a new renderer using the new diagnostic type defined in
+#16503 and built on top of our vendored copy of <code>annotate-snippets</code>.</p>
+<p>It took me a fair bit of time to figure out how to arrange the types
+and what kind of data was needed during each phase of the rendering. In
+particular, there are a few different layers:</p>
+<p>At the top are the <code>Diagnostic</code>, <code>SubDiagnostic</code> and <code>Annotation</code>
+types. These encode the diagnostic data model and were added in #16503.</p>
+<p>Once rendering starts, the <code>Diagnostic</code> type is converted into
+&quot;resolved&quot; types that load any of the information we need to make
+rendering <em>decisions</em>. For example, it associates line numbers and file
+paths with annotations. This information is needed to group annotations
+into <em>snippets</em>, which are a concept that is specifically not exposed
+in the diagnostic data model. Instead, rendering is responsible for
+deciding how to turn a collection of annotations into one or more
+snippets.</p>
+<p>The result of those rendering decisions are &quot;renderable&quot; types. I'm not
+precisely sure how I'd best describe them, but I think it's fair to say
+that the define the data model of <em>rendering</em>. They are also the last
+stop before we convert them to <code>ruff_annotate_snippets</code> types and ask
+for the <em>actual</em> rendering of the diagnostics.</p>
+<p>This PR does <em>not</em> actually hook the new renderer up to anything.
+There's just a pile of unit tests on very simplified data so that we
+can test the various rendering logic at a very fine grained level.</p>
+<p>I do think there are likely some decisions I made here with regards to
+rendering that we will want to tweak in the future. For example, how
+the order of snippets/annotations is determined. I tried to choose a
+path that was sensible and simple for now, so that we can iterate on it
+once we get more practical experience with it.</p>
+<p>Closes #16506</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @BurntSushi on 2025-03-13 16:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @BurntSushi on 2025-03-13 16:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @BurntSushi on 2025-03-13 16:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @BurntSushi on 2025-03-13 16:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-03-13 16:46</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @MichaReiser on 2025-03-13 17:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/diagnostic/mod.rs</code>:114 on 2025-03-13 17:22</div>
+            <div class="timeline-body"><p>Nit: The convention is that <code>db</code> is always the first argument</p>
+<pre><code class="language-suggestion">        db: &amp;dyn Db,
+        config: &amp;DisplayDiagnosticConfig,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/diagnostic/mod.rs</code>:125 on 2025-03-13 17:23</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        // diagnostic. But we should not punish them if they
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/diagnostic/render.rs</code>:88 on 2025-03-13 17:26</div>
+            <div class="timeline-body"><p>Nit: Should this be <code>to_renderable</code> to communicate that it isn't a &quot;cheap&quot; operation?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/diagnostic/render.rs</code>:106 on 2025-03-13 17:27</div>
+            <div class="timeline-body"><p>Nit: It's internal, so I don't think it matters much but we tried to avoid abbreviation in the Red Knot code base and the non-renderable type is also called <code>Diagnostic</code>. That's why I would go with <code>ResolvedDiagnostic</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/diagnostic/render.rs</code>:263 on 2025-03-13 17:30</div>
+            <div class="timeline-body"><p>I'm sorry to break this to you... but Ruff supports <code>\r</code> line endings 😆</p>
+<pre><code class="language-suggestion">                if source.slice(range).ends_with(['\n', '\r']) {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/diagnostic/render.rs</code>:439 on 2025-03-13 17:33</div>
+            <div class="timeline-body"><p>Nit: Should we add an explicit assertion for this pre-condition instead of relying on the implicit <code>&amp;anns[0]</code> panicking.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/diagnostic/render.rs</code>:452 on 2025-03-13 17:34</div>
+            <div class="timeline-body"><p>I like how you managed to put my awful context fiddling from Ruff behind a nice API</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/diagnostic/render.rs</code>:518 on 2025-03-13 17:34</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        // an error (red) and coloring for secondary annotations that
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/diagnostic/render.rs</code>:552 on 2025-03-13 17:35</div>
+            <div class="timeline-body"><p>Oh yeah, the fact that Ruff uses <code>Path</code> might also be slightly annoying (and not <code>Utf8Path</code>). E.g. <code>file.path()</code> might not be able to return a <code>&amp;str</code> but only a <code>String</code> (by calling <code>Display</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/diagnostic/render.rs</code>:624 on 2025-03-13 17:37</div>
+            <div class="timeline-body"><p>Delete?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/diagnostic/render.rs</code>:2028 on 2025-03-13 17:39</div>
+            <div class="timeline-body"><p>I guess this works... <code>SystemVirtualPath</code> is a very specific path that is only used in LSPs when a user creates a new file but without giving it a name.</p>
+<p>I think what you want to use here is <code>self.db.write_file</code> which writes a regular file and tests the more common path. This is still &quot;cheap&quot; and won't write an actual file to disk because <code>TestDb</code> uses a memory file system by default.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/diagnostic/render.rs</code>:2047 on 2025-03-13 17:43</div>
+            <div class="timeline-body"><p>This is poking into internals that we should probably avoid. Salsa makes it somewhat hard to avoid this using visibility only.</p>
+<p>The recommended way to get a file for a given path is to use <code>system_path_to_file</code>, which also verifies that the file actually exists.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/diagnostic/render.rs</code>:2117 on 2025-03-13 17:44</div>
+            <div class="timeline-body"><p>I somewhat suspect that we might end up with something like this in non-test code 😆</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/diagnostic/render.rs</code>:667 on 2025-03-13 17:45</div>
+            <div class="timeline-body"><p>Would it make sense to have one non-ASCII test case or is this something you intentionally leave for later (e.g. easy to add in mdtests)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-03-13 17:47</div>
+            <div class="timeline-body"><p>This is, once more, excellent. I'm always impressed by the quality of your code!</p>
+<p>The separation between <code>Diagnostic</code> and <code>RenderableDiagnostic</code> does make sense to me where <code>Diagnostic</code> is the generic representation and <code>RenderableDiagnostic</code> (or <code>ResolvedDiagnostic</code>) is the ideal representation for this renderer and Ruff/Red Knot will have multiple different renderers (e.g. a concise format can skip almost all of that work and the github renderer needs other information).</p>
+<p>The separation between the <code>Resolved</code> and <code>RenderableDiagnostic</code>s is less clear to me and I'd probably have to play with the code to fully crasp the difference but I don't think this matters much -- they're both internal types.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-03-13 17:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_db/src/diagnostic/render.rs</code>:263 on 2025-03-13 17:50</div>
+            <div class="timeline-body"><p>Wait you mean like, only <code>\r</code> line endings and not just <code>\r\n</code>? Wow.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-03-13 17:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/diagnostic/render.rs</code>:263 on 2025-03-13 17:51</div>
+            <div class="timeline-body"><p>Yes :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-03-14 15:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_db/src/diagnostic/render.rs</code>:88 on 2025-03-14 15:29</div>
+            <div class="timeline-body"><p>I loosely agree. Fixed!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-03-14 15:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_db/src/diagnostic/render.rs</code>:106 on 2025-03-14 15:30</div>
+            <div class="timeline-body"><p>Happy to follow convention here. Fixed.</p>
+<p>Although I do like abbreviating things when it's &quot;clear&quot; what the abbreviation means. :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-03-14 15:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_db/src/diagnostic/render.rs</code>:439 on 2025-03-14 15:33</div>
+            <div class="timeline-body"><p>Fine by me. Although I did document it as a pre-condition. :P</p>
+<p>Fixed!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-03-14 15:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_db/src/diagnostic/render.rs</code>:452 on 2025-03-14 15:34</div>
+            <div class="timeline-body"><p>Yeah it took a few attempts. (You caught one aborted attempt in the commented out code.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-03-14 15:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_db/src/diagnostic/render.rs</code>:552 on 2025-03-14 15:36</div>
+            <div class="timeline-body"><p>Blech. We'll let future Andrew worry about that one haha.</p>
+<p>We should <em>at least</em> be able to manage a <code>Cow&lt;'a, str&gt;</code> though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-03-14 15:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_db/src/diagnostic/render.rs</code>:2117 on 2025-03-14 15:37</div>
+            <div class="timeline-body"><p>Plausibly. I tried hard to optimize for terseness though, and achieved that partially by filling in some test-only details.</p>
+<p>I suspect the proc macro will alleviate most of the pressure here? Maybe.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-03-14 15:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/diagnostic/render.rs</code>:2117 on 2025-03-14 15:40</div>
+            <div class="timeline-body"><blockquote>
+<p>I suspect the proc macro will alleviate most of the pressure here? Maybe.</p>
+</blockquote>
+<p>Possibly, or the proc macro wants something like this to simplify the macro code. Either way. Something we don't have to worry about today</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-03-14 18:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_db/src/diagnostic/render.rs</code>:667 on 2025-03-14 18:38</div>
+            <div class="timeline-body"><p>Done. Coverage could definitely be improved here in the future. I think most of the thorniness for this will be in <code>annotate-snippets</code> itself though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-03-14 18:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_db/src/diagnostic/render.rs</code>:2028 on 2025-03-14 18:52</div>
+            <div class="timeline-body"><p>Oh I was just copying this from other tests: https://github.com/astral-sh/ruff/blob/4f2851982ddd3e8dc7e8e8fcb228f86cae19ce4d/crates/ruff_db/src/parsed.rs#L133-L135</p>
+<p>It took me a bit to figure out how to fix this. I needed to use <code>self.db.test_system().write_file(..)</code> with the <code>WritableSystem</code> trait imported. Makes sense now (you need to skirt around things in order to get a &quot;writable&quot; system).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-03-14 18:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_db/src/diagnostic/render.rs</code>:2047 on 2025-03-14 18:53</div>
+            <div class="timeline-body"><p>Fixed this along with https://github.com/astral-sh/ruff/pull/16711#discussion_r1996114702</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @BurntSushi on 2025-03-14 18:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2025-03-14 18:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-03-14 18:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-03-14 19:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/diagnostic/render.rs</code>:2028 on 2025-03-14 19:06</div>
+            <div class="timeline-body"><p>Hmm, <code>write_file</code> should be available on <code>db</code> through the <code>DbWithWritableSystem</code> trait (which is implemented for every <code>Db</code> implementing <code>DbWithTestSystem</code> which <code>ruff_db::TestDb</code> implements)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-03-14 19:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/diagnostic/render.rs</code>:2028 on 2025-03-14 19:06</div>
+            <div class="timeline-body"><blockquote>
+<p>Oh I was just copying this from other tests:</p>
+</blockquote>
+<p>That makes sense. This specific tests is that we can handle virtual files correctly :)</p>
+<p>The test above does what's most commonly used:</p>
+<p>https://github.com/astral-sh/ruff/blob/4f2851982ddd3e8dc7e8e8fcb228f86cae19ce4d/crates/ruff_db/src/parsed.rs#L113-L125</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:49:32 UTC
+    </footer>
+</body>
+</html>

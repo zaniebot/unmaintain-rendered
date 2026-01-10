@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Disallow more invalid type expressions - astral-sh/ruff #16427</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Disallow more invalid type expressions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/16427">#16427</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-02-27 23:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-02-27 23:47</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>As part of working on https://github.com/astral-sh/ruff/issues/16302, I'm auditing all uses of <code>Type::to_instance()</code>. I noticed that one use in <code>Type::in_type_expression</code> has a pretty clear bug, in that it treats <code>Type::SubclassOf()</code> the same as <code>Type::ClassLiteral</code>. That's incorrect: an object can only have a <code>type[]</code> type if it's a dynamic variable of some kind, and we should reject such variables in type expressions. The practical effect of this is that on <code>main</code>, we have this incorrect behaviour, where we <em>should</em> be reject <code>y</code>'s type annotation altogether, but instead we accept it:</p>
+<pre><code class="language-py">def _(x: type[int]):
+    def f(y: x):
+        reveal_type(y)  # revealed: int
+</code></pre>
+<p>This PR fixes the bug by making <code>Type::in_type_expression()</code> exhaustive over all <code>Type</code> variants and rejecting most of them when they appear in type expressions. (The method is not yet exhaustive over all <code>KnownInstanceType</code> variants; some of these would require special error messages, and it seemed out of the scope of this bugfix PR.)</p>
+<h2>Test Plan</h2>
+<p>Added mdtests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2025-02-27 23:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @AlexWaygood on 2025-02-27 23:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @AlexWaygood on 2025-02-27 23:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @AlexWaygood on 2025-02-27 23:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/unsupported_special_forms.md</code>:21 on 2025-02-28 00:20</div>
+            <div class="timeline-body"><p>These assertions are failing in the release build, I think because <code>TODO_METADATA_REGEX</code> in the mdtests matcher can't handle a close parenthesis in the Todo message. Might not be easy to fix that in mdtest (a greedy match could fail if there are multiple Todo types in a union). Simplest fix is to remove the parens from this todo message.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:2869 on 2025-02-28 00:26</div>
+            <div class="timeline-body"><p>I'm not sure about this &quot;dynamic variable&quot; naming. I'd rather not introduce that concept/wording without a clear principled definition of what constitutes a &quot;dynamic variable&quot; and how we would distinguish one from a simple implicit type alias.</p>
+<p>What this PR actually implements is not any logic at all related to what is a &quot;dynamic variable&quot;, just logic about what types are valid in annotations. So we have no idea how &quot;dynamic&quot; the variable is or isn't, just that it was of a type that isn't valid in a type expression.</p>
+<p>(For example, an unconditional global <code>x = 1</code> is no more or less a &quot;dynamic variable&quot; than <code>x = int</code> is, but the former would raise this error if used in an annotation, while the latter is a valid implicit type alias. We aren't making any distinctions here based on &quot;how dynamic&quot;, just based on the type.)</p>
+<pre><code class="language-suggestion">    /// Some types are not allowed in type expressions
+    InvalidType(Type&lt;'db&gt;),
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:2896 on 2025-02-28 00:27</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                        &quot;Variable of type `{ty}` is not allowed in type expressions&quot;,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-02-28 00:28</div>
+            <div class="timeline-body"><p>Nice!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2025-02-28 10:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-02-28 10:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-02-28 10:04</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:49:31 UTC
+    </footer>
+</body>
+</html>

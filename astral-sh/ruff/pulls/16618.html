@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Callable member lookup, meta type impl - astral-sh/ruff #16618</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Callable member lookup, meta type impl</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/16618">#16618</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2025-03-11 08:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-03-11 08:47</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR is a follow-up to https://github.com/astral-sh/ruff/pull/16493 that implements member lookup for the general callable type.</p>
+<p>Based on the discussion around <a href="https://github.com/astral-sh/ruff/pull/16493#discussion_r1982041180">member lookup here</a> and <a href="https://github.com/astral-sh/ruff/pull/16493#discussion_r1985104664"><code>.to_meta_type()</code> here</a>.</p>
+<h2>Test Plan</h2>
+<p>Add a new test cases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @dhruvmanila on 2025-03-11 08:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @dhruvmanila on 2025-03-11 08:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @dhruvmanila on 2025-03-11 08:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @dhruvmanila on 2025-03-11 08:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @dhruvmanila on 2025-03-11 08:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-03-11 08:53</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1609 on 2025-03-11 20:06</div>
+            <div class="timeline-body"><p>I think this needs to be</p>
+<pre><code class="language-suggestion">                KnownClass::Object.to_instance(db).instance_member(db, name)
+</code></pre>
+<p>Probably doesn't matter since you special case general callable types in <code>member_lookup_with_policy</code> below, but it would matter if this function gains more call sites.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:3170 on 2025-03-11 20:34</div>
+            <div class="timeline-body"><p>This seems wrong to me. I don't think it's necessarily true that the meta-type of every callable is <code>type</code>. For example, a function is a callable, and it's meta-type is not <code>type</code>.</p>
+<p>It's a bit more difficult that this leads to incorrect behavior, since <code>member_lookup_with_policy</code> also special-cases general callables, but the following works.</p>
+<pre><code class="language-py">from inspect import getattr_static
+from typing import Callable, reveal_type
+
+def reveal(c: Callable[[], None]):
+    reveal_type(getattr_static(c, &quot;mro&quot;))  # Literal[mro], should not exist
+</code></pre>
+<p>This reveals <code>Literal[mro]</code> on your branch (which comes from class <code>type</code>), but the attribute should be non-existent (you would get an <code>AttributeError</code> at runtime).</p>
+<p>I think this should probably be changed to</p>
+<pre><code class="language-suggestion">            Type::Callable(CallableType::General(_)) =&gt; KnownClass::Object.to_class_literal(db),
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> approved on 2025-03-11 20:35</div>
+            <div class="timeline-body"><p>Thank you for working on this. I think two minor things need to be changed before merging this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-03-11 20:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:3170 on 2025-03-11 20:55</div>
+            <div class="timeline-body"><p>I think David is correct here that this is wrong but incorrect on the solution. I think it should be</p>
+<pre><code class="language-suggestion">            Type::Callable(CallableType::General(_)) =&gt; KnownClass::Type.instance(db),
+</code></pre>
+<p><code>KnownClass::Object.to_class_literal(db)</code> implies that the type of <code>x.__class__</code> can be accurately inferred as <code>Literal[object]</code> for any <code>x</code> where <code>x</code> is callable. But that's not true; there are lots of different callable classes and <code>x.__class__</code> will be different for all of them.</p>
+<p>The most we can say is that for any callable <code>x</code>, <code>x.__class__</code> will be an instance of <code>type</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:3170 on 2025-03-12 04:45</div>
+            <div class="timeline-body"><p>I think Alex is right, except its <code>to_instance</code> not <code>instance</code> :)</p>
+<pre><code class="language-suggestion">            Type::Callable(CallableType::General(_)) =&gt; KnownClass::Type.to_instance(db),
+</code></pre>
+<p>This is what I'd originally suggested in https://github.com/astral-sh/ruff/pull/16493#discussion_r1985104664, and is what we already do for the (effectively identical in this context) <code>AlwaysTruthy</code> and <code>AlwaysFalsy</code> types below. (It may even make sense to put these all together in the same branch.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-03-12 04:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-03-12 05:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1609 on 2025-03-12 05:52</div>
+            <div class="timeline-body"><p>Oh right, thanks for catching that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-03-12 06:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:3170 on 2025-03-12 06:02</div>
+            <div class="timeline-body"><p>Ugh, thanks for catching that. The main reason I avoided putting it with the mentioned types is that it seemed better to group it along with other callable variants. I'll keep that for now but should be easy to change if that's better.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2025-03-12 06:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2025-03-12 06:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-03-12 06:31</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:49:32 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Replace `tracing` log functions in `ruff server` with LSP-compliant logging functions - astral-sh/ruff #11169</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Replace <code>tracing</code> log functions in <code>ruff server</code> with LSP-compliant logging functions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/11169">#11169</a>
+        opened by <a href="https://github.com/snowsignal">@snowsignal</a>
+        on 2024-04-26 23:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/snowsignal">@snowsignal</a> on 2024-04-26 23:30</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Closes https://github.com/astral-sh/ruff/issues/10968.</p>
+<p>At the moment, the log level is always set to <code>Info</code>. Log level configuration will be implemented in a follow-up.</p>
+<h2>Test Plan</h2>
+<p>Add a series of logs, one for each level, to the definition of <code>Server::new</code>, after the logger is initialized:
+<img src="https://github.com/astral-sh/ruff/assets/19577865/36a75077-bc04-4d7e-86ea-da230c565c91" alt="Screenshot 2024-04-26 at 4 16 25 PM" /></p>
+<p>You should see the following logs in the output of the VS Code extension:
+<img width="621" alt="Screenshot 2024-04-26 at 4 21 23 PM" src="https://github.com/astral-sh/ruff/assets/19577865/d27ee582-5c3d-4105-9a7b-ef41e0dd1517"></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @snowsignal on 2024-04-26 23:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Ruff Server: Beta" by @snowsignal on 2024-04-26 23:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-04-26 23:42</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-27 01:37</div>
+            <div class="timeline-body"><p>Is there an alternate design whereby we wire up <code>tracing</code> to emit to the LSP client? I.e., some kind of <code>tracing</code> configuration that would let us continue to use <code>tracing::info!</code> and friends, but <em>also</em> emit to the client?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-04-27 07:06</div>
+            <div class="timeline-body"><p>@charliermarsh I think that should be possible by setting up our own subscriber that then forwards messages to the LSP.</p>
+<p>I think the problem this approach is that it only works for ruff_server, but we will use tracing in runes too and we don't have the luxury to change all tracing calls there.</p>
+<p>I think we need to explore an alternative approach that captures all tracing messages (subscriber) and forwards them correctly OR setup an alternative subscriber that writes e.g. to a file, although I would prefer seeing the tracing messages in vs code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-27 11:55</div>
+            <div class="timeline-body"><p>Yeah I would prefer trying to integrate this into tracing too (for those reasons, plus it's the API I would've naturally reached for if I went to write code in the LSP as a future editor / author). @snowsignal can you give it a shot?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/snowsignal">@snowsignal</a> on 2024-04-27 23:35</div>
+            <div class="timeline-body"><p>@charliermarsh Sure, I'll see what I can do!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @snowsignal on 2024-04-28 03:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_server/src/server.rs</code>:49 on 2024-05-01 08:54</div>
+            <div class="timeline-body"><p>We should ideally respect the log level configured in the VS Code settings or does VS code take care of filtering out log messages?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_server/src/trace.rs</code>:39 on 2024-05-01 08:55</div>
+            <div class="timeline-body"><p>Can we use a debug level instead of dropping these messages?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/commands/server.rs</code>:60 on 2024-05-01 08:58</div>
+            <div class="timeline-body"><p>I think we still want to have some form of filtering of log messages to avoid that tracing logs from third party libraries (trace and debug) show up in our LSP logs (they can be very noisy).</p>
+<p>The old implementation limited third-party logs to <code>info</code> level or higher for this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_server/src/trace.rs</code>:20 on 2024-05-01 09:00</div>
+            <div class="timeline-body"><p>I wonder what will happen now where <code>ClientSender</code> is a weakref. I suspect that we won't see the <code>Main loop stopped</code> message anymore because the logging sender is shut down by then.</p>
+<p>I think we should unset our tracing subscriber before dropping <code>Connection</code> and restore the old subscriber to ensure these messages don't get lost.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-05-01 09:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/snowsignal">@snowsignal</a> reviewed on 2024-05-02 03:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_server/src/server.rs</code>:49 on 2024-05-02 03:24</div>
+            <div class="timeline-body"><p>We don't have a log level configured in the VS Code settings at the moment. All we have is <code>ruff.trace.server</code>, but that's more a verbosity setting than something that controls the log level.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/ruff_server/src/trace.rs</code>:20 on 2024-05-02 03:25</div>
+            <div class="timeline-body"><blockquote>
+<p>I think we should unset our tracing subscriber before dropping <code>Connection</code> and restore the old subscriber to ensure these messages don't get lost.</p>
+</blockquote>
+<p>Good idea!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/snowsignal">@snowsignal</a> reviewed on 2024-05-02 03:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "Ruff Server: Beta" by @snowsignal on 2024-05-22 09:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/snowsignal">@snowsignal</a> on 2024-06-04 23:30</div>
+            <div class="timeline-body"><p>This PR is really outdated, especially with the major refactors we made to server initialization. I'll re-implement this feature in a new PR that's based off of the latest <code>main</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @snowsignal on 2024-06-04 23:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-02-20 09:00</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:49:30 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Understand `typing.Callable` - astral-sh/ruff #16493</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Understand <code>typing.Callable</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/16493">#16493</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2025-03-04 09:16
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-03-04 09:16</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Part of https://github.com/astral-sh/ruff/issues/15382</p>
+<p>This PR implements a general callable type that wraps around a <code>Signature</code> and it uses that new type to represent <code>typing.Callable</code>.</p>
+<p>It also implements <code>Display</code> support for <code>Callable</code>. The format is as:</p>
+<pre><code>([&lt;arg name&gt;][: &lt;arg type&gt;][ = &lt;default type&gt;], ...) -&gt; &lt;return type&gt;
+</code></pre>
+<p>The <code>/</code> and <code>*</code> separators are added at the correct boundary for positional-only and keyword-only parameters. Now, as <code>typing.Callable</code> only has positional-only parameters, the rendered signature would be:</p>
+<pre><code class="language-py">Callable[[int, str], None]
+# (int, str, /) -&gt; None
+</code></pre>
+<p>The <code>/</code> separator represents that all the arguments are positional-only.</p>
+<p>The relationship methods that check assignability, subtype relationship, etc. are not yet implemented and will be done so as a follow-up.</p>
+<h2>Test Plan</h2>
+<p>Add test cases for display support for <code>Signature</code> and various mdtest for <code>typing.Callable</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @dhruvmanila on 2025-03-04 09:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-03-05 10:44</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:5666 on 2025-03-05 12:59</div>
+            <div class="timeline-body"><p>This isn't related to this PR and I can separate it out if that's what is preferred.</p>
+<p>I think the literals in type expressions are possible only in <code>Literal</code> and <code>Annotated</code> which are handled in their respective logic. I mainly added this because this way we could raise diagnostic when it's being used in an invalid context i.e., in parameter types of <code>Callable</code> (e.g., <code>Callable[[int, 42], str]</code>).</p>
+<p>TODO: Update the comment that's above this code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:6079 on 2025-03-05 13:02</div>
+            <div class="timeline-body"><p>I'm still a bit torn on this. I'm not sure if this is useful as it's still an error case. My main hesitation against this would be that in this scenario if a callable is passed which accepts arguments, it will fail the assignability check. For example,</p>
+<pre><code class="language-py"># This is invalid, we fallback to using `() -&gt; Unknown`
+def foo(c: Callable[int]): ...
+
+foo(lambda x, y: None)  # not assignable
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:6119 on 2025-03-05 13:02</div>
+            <div class="timeline-body"><p>Same as above but with return type:</p>
+<pre><code class="language-py"># This is invalid, we fallback to using `() -&gt; str`
+def foo(c: Callable[int, str]): ...
+
+foo(lambda x, y: None)  # not assignable
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-03-05 13:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @dhruvmanila on 2025-03-05 17:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @dhruvmanila on 2025-03-05 17:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @dhruvmanila on 2025-03-05 17:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @dhruvmanila on 2025-03-05 17:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @dhruvmanila on 2025-03-05 17:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/callable.md</code>:22 on 2025-03-05 18:22</div>
+            <div class="timeline-body"><p>Pyright errors on this usage, mypy does not. The typing spec doesn't specify it, so I think it's fine for us to error on it.</p>
+<p>Both pyright and mypy infer it as equivalent to <code>Callable[..., Unknown]</code>, which I think is better than inferring it as <code>Unknown</code>. We don't have to do it in this PR, but I would add a TODO for it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/callable.md</code>:21 on 2025-03-05 18:24</div>
+            <div class="timeline-body"><p>One thing I noticed when experimenting in pyright is that apparently <code>typing.Callable</code> is deprecated, and <code>collections.abc.Callable</code> is now preferred.</p>
+<p>I think emitting a deprecation warning for <code>typing.Callable</code> is low priority, and we can't support <code>collections.abc.Callable</code> until we get star-import support. So I don't think there's any action item here other than to add a TODO for supporting <code>collections.abc.Callable</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/callable.md</code>:34 on 2025-03-05 18:30</div>
+            <div class="timeline-body"><p>I actually think inferring <code>Callable[int, str]</code> (or <code>Callable[42, str]</code> below, or any similar malformation) as equivalent to <code>Callable[..., str]</code> (and of course also emitting an error) is probably better, since it will minimize cascading false positives. If you meant to say <code>Callable[[int], str]</code> but you accidentally said <code>Callable[int, str]</code>, ideally we would not emit a false positive on every subsequent attempt to call that callable with one argument.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/callable.md</code>:35 on 2025-03-05 18:33</div>
+            <div class="timeline-body"><p>This should emit a diagnostic?</p>
+<p>Regarding &quot;knowing that <code>int</code> is not a paramspec&quot;, I think it would be simpler to just make that assumption for now (with a TODO in the code to be addressed when we add <code>ParamSpec</code> support), and allow these tests to pass without a TODO.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/callable.md</code>:40 on 2025-03-05 18:35</div>
+            <div class="timeline-body"><p>nit: &quot;ParamSpec&quot; is probably clearer than &quot;parameter specification&quot;, since it's a term that can be easily searched in the typing spec / docs -- the latter could be understand to have a broader meaning</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/callable.md</code>:49 on 2025-03-05 18:45</div>
+            <div class="timeline-body"><p>I don't think these error messages are ideal. Naming the <em>type</em> <code>Literal[42]</code> is confusing, because in the context of a type expression, <code>42</code> has no meaning at all, it does not spell the type <code>Literal[42]</code>.</p>
+<p>Also, I think the elements of a parameter list are simply type expressions -- anything valid in a type expression is valid as an item in a parameter list. So it's slightly confusing to say &quot;in parameter list&quot;, implying that there is something different about items in a parameter list.</p>
+<p>I think ideally we'd use the same error message here that we use if you have e.g. <code>x: 42</code>, and it should be something fairly generic that just highlights the invalid type expression and says &quot;[invalid-type-form] Invalid type expression&quot;.</p>
+<p>(It looks like we currently don't emit any diagnostic at all on <code>x: 42</code>, we just infer a declared type of Todo :/ So it may be that fully addressing this comment is out of scope for this PR.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/callable.md</code>:71 on 2025-03-05 18:49</div>
+            <div class="timeline-body"><p>Mypy reveals a <code>...</code> signature list like this, and Pyright reveals it as <code>(...)</code>. I can see arguments in both directions; this version is more explicit, the pyright version is much more concise, and matches the <code>Callable</code> syntax. Personally I think I would lean slightly toward the pyright version (so this signature would become <code>(...) -&gt; Unknown</code>), because I think it is intuitive and unambiguous and much shorter. But I don't feel strongly, would be curious what @AlexWaygood thinks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/callable.md</code>:84 on 2025-03-05 18:51</div>
+            <div class="timeline-body"><p>I think this is another case (similar to bare <code>Callable</code>) where inferring <code>(...) -&gt; Unknown</code> over simply <code>Unknown</code> would be an improvement with no downside.</p>
+<p>The reasoning here is that while clearly the parameters are a mistake, there's no reason to think the use of <code>Callable</code> itself was a mistake, so if we can continue to highlight subsequent uses that would not be valid for any <code>Callable</code>, those are likely useful and not false positives.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/callable.md</code>:165 on 2025-03-05 18:56</div>
+            <div class="timeline-body"><p>Nit: I would not describe these as &quot;explicitly&quot; and &quot;using generics&quot;, I would describe it as &quot;legacy&quot; and &quot;PEP 695 syntax&quot;. Though what I would actually do is just swap the order and consider the PEP 695 syntax as the default case, which doesn't require special comment. So I'd describe the first one as &quot;Using a ParamSpec in a Callable annotation:&quot; and the second one as &quot;And, using the legacy syntax:&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/callable.md</code>:185 on 2025-03-05 18:57</div>
+            <div class="timeline-body"><p>Similar to above, swap the order and describe the use of <code>typing_extensions.TypeVarTuple</code> as &quot;legacy syntax&quot; not &quot;explicitly&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/unsupported_special_forms.md</code>:32 on 2025-03-05 18:58</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    # TODO: no error
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/invalid_syntax.md</code>:107 on 2025-03-05 18:59</div>
+            <div class="timeline-body"><p>In line with previous comments:</p>
+<ul>
+<li>should probably be <code>(...) -&gt; Unknown</code>,  not <code>() -&gt; Unknown</code></li>
+<li>I think we can just make the &quot;not a ParamSpec&quot; assumption for now, until we implement support for <code>ParamSpec</code>, and have these TODOs in the code, not the tests</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1269 on 2025-03-05 19:03</div>
+            <div class="timeline-body"><p>I think this TODO comment belongs with the <code>Type::Tuple</code> clause above</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1332 on 2025-03-05 19:04</div>
+            <div class="timeline-body"><p>I don't think any general callable type is a singleton (for any given signature, there could be any number of distinct objects that are all callable with that signature), so <code>false</code> is correct here. We could add some tests for that and remove this TODO.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1379 on 2025-03-05 19:04</div>
+            <div class="timeline-body"><p>Similarly I don't think any general callable type is single-valued, so <code>false</code> is correct here; add a couple tests and remove the TODO.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1415 on 2025-03-05 19:06</div>
+            <div class="timeline-body"><p>It's ok to leave this as a todo in this PR, but I also think it's quite simple -- we can just defer to a lookup on <code>object</code>. The only attributes which can be known to exist on a general callable type are those that exist on <code>object</code>.</p>
+<p>(The one exception might be that a case could be made for special casing attribute access of <code>__call__</code> on a callable. But neither pyright nor mypy do this, so I think we can safely leave that as a TODO indefinitely.</p>
+<p>Mypy emits the delicious diagnostic message <code>error: &quot;Callable[[int], str]&quot; not callable</code> for this case 😆 )</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1624 on 2025-03-05 19:10</div>
+            <div class="timeline-body"><p>Same comment as above.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:3775 on 2025-03-05 19:13</div>
+            <div class="timeline-body"><p>As mentioned in comments on the tests, I think an &quot;unknown&quot; callable type should have <code>*args: Unknown, **kwargs: Unknown</code> parameters, not empty parameters.</p>
+<p>(I realize that above I said &quot;equivalent to <code>Callable[..., Unknown]</code> and that's subtly different from what I said here, due to <code>Any</code> vs <code>Unknown</code>. It should probably be <code>Unknown</code>.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/display.rs</code>:204 on 2025-03-05 19:41</div>
+            <div class="timeline-body"><p>could also use a <code>need_slash</code> flag that starts as <code>False</code>, switched to <code>True</code> if we see a positional-only, then if its <code>True</code> and we see a non-positional-only we emit the <code>, /</code> first. In case you think that's clearer. Wouldn't require peeking, and it's a bit more parallel to how you handle adding the <code>, *</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/display.rs</code>:556 on 2025-03-05 19:42</div>
+            <div class="timeline-body"><p>Should probably render this as <code>() -&gt; Unknown</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/display.rs</code>:601 on 2025-03-05 19:43</div>
+            <div class="timeline-body"><p>Might be worth also testing a case where the <code>/</code> doesn't go at the end?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/display.rs</code>:625 on 2025-03-05 19:43</div>
+            <div class="timeline-body"><p>And a case where the <code>*</code> does not go at the start?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:5666 on 2025-03-05 19:45</div>
+            <div class="timeline-body"><p>As discussed in my comment above about the error message, I think this is probably not how we should handle this. I think <code>Literal</code> and <code>Annotated</code> should be handled in their own way, and we should probably be emitting a diagnostic here immediately, not inferring a type and waiting for <code>in_type_expression()</code> to emit a diagnostic on that type.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:6079 on 2025-03-05 19:46</div>
+            <div class="timeline-body"><p>As discussed in other comments above, I agree with you that we shouldn't have that false positive, but I think the preferable solution is not fall back to fully <code>Unknown</code>, but rather that <code>GeneralCallableType::unknown</code> should have parameters <code>(*args: Unknown, **kwargs: Unknown)</code>, not empty parameters.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:6119 on 2025-03-05 20:04</div>
+            <div class="timeline-body"><p>Yes, this is the tradeoff we always have to evaluate when deciding what type to infer in error cases: how confident should we be in our interpretation of the apparently-not-wrong parts of the annotation?</p>
+<p>I think this case could go either way, since it's possible that <code>Callable[int, str]</code> was a typo for <code>Callable[[int, str], something]</code>. But that requires two mistakes (omitting brackets, omitting return type), so it seems more likely to me that it's a typo for <code>Callable[[int], str]</code>. So I'm comfortable with the current approach here, but open to arguments for changing it.</p>
+<p>(If we do change it, I would go for <code>(...) -&gt; Unknown</code>, not simply <code>Unknown</code> -- the use of <code>Callable</code> itself is very unlikely to be a typo.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/signatures.rs</code>:106 on 2025-03-05 20:14</div>
+            <div class="timeline-body"><p>Oh, yeah, maybe we should ideally omit the names here? Not sure how much fallout that change would have</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/type_ordering.rs</code>:33 on 2025-03-05 20:15</div>
+            <div class="timeline-body"><p>Any reason not to put this down next to the other <code>Type::Callable</code> entries?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-03-05 20:15</div>
+            <div class="timeline-body"><p>Very cool! Great work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-03-05 20:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/callable.md</code>:21 on 2025-03-05 20:44</div>
+            <div class="timeline-body"><blockquote>
+<p>One thing I noticed when experimenting in pyright is that apparently <code>typing.Callable</code> is deprecated, and <code>collections.abc.Callable</code> is now preferred.</p>
+</blockquote>
+<p>Yeah, that's the case for all symbols where the symbol is duplicated between the <code>typing</code> and <code>collections.abc</code> modules. See https://docs.python.org/3/library/typing.html#deprecated-aliases and https://docs.python.org/3/library/typing.html#typing.Callable and https://docs.python.org/3/library/typing.html#deprecation-timeline-of-major-features</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-03-05 20:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/callable.md</code>:22 on 2025-03-05 20:49</div>
+            <div class="timeline-body"><p>To me, mypy's behaviour seems more consistent with what the spec mandates for generics (bare list should be inferred as <code>list[Any]</code> or <code>list[Unknown]</code>) and special forms such as <code>typing.Tuple</code> (bare <code>Tuple</code> or <code>tuple</code> should be inferred as <code>tuple[Any, ...]</code>). I also think that going with mypy's behaviour here means it should mean that both former mypy users and pyright users can easily switch to red-knot, whereas if we go with pyright's behaviour then mypy users may have to rewrite some of their <code>Callable</code> annotations in order to switch</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-03-05 21:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:6119 on 2025-03-05 21:01</div>
+            <div class="timeline-body"><p>I feel like I'd generally prefer to just infer <code>Callable[..., Unknown]</code> for all (or nearly all) malformed <code>Callable</code> type expressions. It feels like it involves less guesswork about what the user probably intended. It also feels to me like consistently falling back to the same thing for malformed <code>Callable</code> expressions is likely to be much easier to explain to users. It could be pretty confusing if we have one fallback in one error case and another fallback in another case (that may or may not be more precise/accurate, depending on exactly what the mistake was that the user made)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/callable.md</code>:71 on 2025-03-05 21:11</div>
+            <div class="timeline-body"><p>I also prefer pyright's display here. The typing spec says that <code>...</code> is exactly equivalent to <code>*args: Unknown, **kwargs: Unknown</code>, so I suppose mypy's display here is not incorrect (https://typing.python.org/en/latest/spec/callables.html#meaning-of-in-callable). But I nonetheless like that the <code>...</code> emphasises that it's not a normal parameter specification — it's a gradual form. The conciseness of pyright's display is also nice</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-03-05 21:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-03-05 21:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/callable.md</code>:22 on 2025-03-05 21:13</div>
+            <div class="timeline-body"><p>I'm ok with not erroring on this for now. It could be an opt-in rule at some point.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-03-05 21:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/callable.md</code>:22 on 2025-03-05 21:15</div>
+            <div class="timeline-body"><p>Oh absolutely! I think we should have an opt-in rule that errors if any type arguments are omitted from any generic class or special form</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-03-05 21:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:6119 on 2025-03-05 21:16</div>
+            <div class="timeline-body"><p>I'm OK with that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-03-06 07:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:6119 on 2025-03-06 07:03</div>
+            <div class="timeline-body"><p>This now uses <code>(...) -&gt; Unknown</code> signature.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-03-06 07:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/callable.md</code>:22 on 2025-03-06 07:04</div>
+            <div class="timeline-body"><p>Makes sense. This now doesn't raise an error and I've added a TODO for the opt-in rule.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/callable.md</code>:21 on 2025-03-06 07:11</div>
+            <div class="timeline-body"><p>Added a TODO in markdown content instead of code snippet because it's valid for all <code>typing</code> imports.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-03-06 07:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-03-06 07:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/callable.md</code>:34 on 2025-03-06 07:21</div>
+            <div class="timeline-body"><p>Yeah, makes sense. Just want to confirm that we still do want to keep the return type intact i.e., use <code>Callable[..., str]</code> and not <code>Callable[..., Unknown]</code> which is what I've pushed but happy to change it back to using <code>Unknown</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-03-06 07:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/callable.md</code>:35 on 2025-03-06 07:22</div>
+            <div class="timeline-body"><p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-03-06 07:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/callable.md</code>:40 on 2025-03-06 07:23</div>
+            <div class="timeline-body"><p>Yeah, I did a quick search on typing and Python docs and it seems that &quot;parameter specification&quot; would not give users much useful information. I'll change it to use <code>typing.ParamSpec</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-03-06 07:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/callable.md</code>:40 on 2025-03-06 07:36</div>
+            <div class="timeline-body"><p>For context, I mainly used this because <code>ParamSpec</code> itself cannot be used directly as type expression similar to <code>TypeVar</code> so suggesting <code>ParamSpec</code> could be slightly confused by whether to directly use <code>ParamSpec</code> v/s a variable that represents the parameter specification.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:2703 on 2025-03-06 07:42</div>
+            <div class="timeline-body"><p>Can we add a small explanation of what needs to be done here or remove the comment if it's redundant to the todo_type description</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:4362 on 2025-03-06 07:43</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">		#[return_ref]
+    signature: Signature&lt;'db&gt;,
+</code></pre>
+<p>We plan to change the default to return a reference to make this less of a footgun but we have to add <code>return_ref</code> annotations for now for all fields that aren't <code>Copy</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/display.rs</code>:185 on 2025-03-06 07:45</div>
+            <div class="timeline-body"><p>I think @carljm added a <code>f.join(&quot;, &quot;)</code> helper that makes it easier to write this kind of formatting logic</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-03-06 07:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/callable.md</code>:49 on 2025-03-06 07:46</div>
+            <div class="timeline-body"><p>I've changed this to always error at source for bytes, number and boolean literals.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/display.rs</code>:237 on 2025-03-06 07:47</div>
+            <div class="timeline-body"><p>The <code>space</code> around the <code>=</code> should depend on whether there are type annotations to be consistent with the formatter</p>
+<pre><code class="language-py">def test(a=tes, b: int = 4):
+    pass
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-03-06 07:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/callable.md</code>:84 on 2025-03-06 07:47</div>
+            <div class="timeline-body"><p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-03-06 07:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-03-06 07:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/resources/mdtest/invalid_syntax.md</code>:107 on 2025-03-06 07:59</div>
+            <div class="timeline-body"><p>I've changed the signature but it would still raise an error because we can't differentiate between <code>int</code> and <code>P</code> (where <code>P</code> is a <code>ParamSpec</code>) so the TODO will also exists in tests. Let me know if I'm mis-understanding this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-03-06 08:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1269 on 2025-03-06 08:00</div>
+            <div class="timeline-body"><p>Yeah, earlier it was at the end with both tuple and callable mentioned but as the callable part it elsewhere, I can move it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-03-06 08:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:3775 on 2025-03-06 08:01</div>
+            <div class="timeline-body"><p>Yeah, I've used <code>Unknown</code> and kept <code>Any</code> only for the gradual form (<code>...</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-03-06 08:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types/display.rs</code>:204 on 2025-03-06 08:02</div>
+            <div class="timeline-body"><p>Yeah, I think that's better. We do need to check after the loop for something like <code>(int, str, /)</code> because we don't peek but that's ok.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-03-06 08:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types/display.rs</code>:556 on 2025-03-06 08:04</div>
+            <div class="timeline-body"><p>Yeah, I think that's reasonable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/callable.md</code>:34 on 2025-03-06 08:28</div>
+            <div class="timeline-body"><p>I would prefer <code>Callable[..., Unknown]</code> here for the same reasons I stated in https://github.com/astral-sh/ruff/pull/16493#discussion_r1982179486 — it just seems like a simpler policy that involves less guesswork and that will be much easier to explain to users</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-03-06 08:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-03-06 08:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:2703 on 2025-03-06 08:32</div>
+            <div class="timeline-body"><p>I'll expand the comment. I avoided here as it would be similar to <code>todo_type</code> but I still grep for <code>TODO</code> comments 😅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-03-06 08:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types/display.rs</code>:185 on 2025-03-06 08:34</div>
+            <div class="timeline-body"><p>Oh, thanks. I didn't see that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-03-06 08:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:5666 on 2025-03-06 08:55</div>
+            <div class="timeline-body"><p>I've updated this to error at source without inferring the types.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-03-06 08:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:6079 on 2025-03-06 08:56</div>
+            <div class="timeline-body"><p>Updated to use <code>(...) -&gt; Unknown</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-03-06 08:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/callable.md</code>:71 on 2025-03-06 08:58</div>
+            <div class="timeline-body"><p>Updated to use <code>...</code> for gradual form, we'll still show <code>*args, **kwargs</code> if they're explicitly provided.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-03-06 09:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types/type_ordering.rs</code>:33 on 2025-03-06 09:01</div>
+            <div class="timeline-body"><p>No reason, I missed this while removing the <code>todo!()</code> for the new variant. On that note, I've implemented this to follow the same ordering as other callable types.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-03-06 09:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types/signatures.rs</code>:106 on 2025-03-06 09:03</div>
+            <div class="timeline-body"><p>Now that we've decided to use <code>(...) -&gt; Unknown</code> I don't think this is relevant so I've avoided this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-03-06 11:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/callable.md</code>:49 on 2025-03-06 11:59</div>
+            <div class="timeline-body"><p>Actually, I reverted this back because it otherwise causes errors in other tests and I think it might be best to handle it separately. Sorry for the churn, I'll create an issue to track this.</p>
+<p>Edit: https://github.com/astral-sh/ruff/issues/16532</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-03-06 12:04</div>
+            <div class="timeline-body"><h3>Post review changes</h3>
+<ul>
+<li>Use <code>(...) -&gt; Unknown</code> consistently</li>
+<li>Display <code>...</code> for gradual form. This is done using an additional flag on <code>Parameters</code> to indicate the gradual form.</li>
+<li>Use <code>Any</code> for gradual form while <code>Unknown</code> for invalid forms</li>
+<li>Avoid special casing for param spec variable</li>
+<li>Don't error on bare <code>Callable</code>, infer it as <code>(...) -&gt; Unknown</code></li>
+<li>Remove various todos, add a couple more</li>
+<li>Improve display handling of <code>Signature</code></li>
+</ul>
+<p>~Regarding the relation implementation, I think I'd prefer to add it in a follow-up PR to keep the changes separate and easier to review.~ I implemented <code>is_single_valued</code> and <code>is_singleton</code> but not <code>member</code> and <code>static_member</code> yet.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-03-06 12:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/callable.md</code>:34 on 2025-03-06 12:09</div>
+            <div class="timeline-body"><p>Ok, I think I'll also use <code>Callable[..., Unknown]</code> for type forms with more than 2 arguments for similar reasons and the fact that we're at least sure that it's a callable object.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @dhruvmanila on 2025-03-06 15:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-03-07 05:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1415 on 2025-03-07 05:09</div>
+            <div class="timeline-body"><blockquote>
+<p>Mypy emits the delicious diagnostic message <code>error: &quot;Callable[[int], str]&quot; not callable</code> for this case 😆 )</p>
+</blockquote>
+<p>Huh, interesting. Even Pyright emits a diagnostics:</p>
+<pre><code>Pyright: Cannot access attribute &quot;__call__&quot; for class &quot;function&quot;
+      Attribute &quot;__call__&quot; is unknown [reportFunctionMemberAccess]
+</code></pre>
+<p>If I do a <code>KnownInstanceType::Callable.static_member(ty, &quot;__call__&quot;)</code>, I get the same error stating that <code>__call__</code> does not exists on the type. It does exists on <code>collections.abc.Callable</code> and for <code>typing.Callable</code> it goes to <code>_SpecialForm</code> where it exists as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-03-07 05:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1415 on 2025-03-07 05:13</div>
+            <div class="timeline-body"><p>Deferring it to <code>object</code> lookup also yields the same results that <code>__call__</code> is not an attribute.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-03-07 05:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1332 on 2025-03-07 05:24</div>
+            <div class="timeline-body"><p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-03-07 05:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1379 on 2025-03-07 05:24</div>
+            <div class="timeline-body"><p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/callable.md</code>:40 on 2025-03-07 11:45</div>
+            <div class="timeline-body"><p>I changed it to use ParamSpec directly including others as well. So, it now reads as:</p>
+<pre><code>The first argument to `Callable` must be either a list of types, ParamSpec, Concatenate, or `...`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-03-07 11:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/callable.md</code>:129 on 2025-03-07 13:35</div>
+            <div class="timeline-body"><p>I don't think a TODO comment belongs here if the results of the test are accurate and the test doesn't need to change. In other words, &quot;test passing correctly but for the wrong reason&quot; does not merit a TODO in the test, it merits a TODO somewhere in the code. The TODO in the test is just confusing, and is likely to be accidentally left in place even once the test starts passing for the right reason.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/invalid_syntax.md</code>:104 on 2025-03-07 13:36</div>
+            <div class="timeline-body"><p>I think this error should not be emitted here, just the previous one (and the syntax error)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1268 on 2025-03-07 13:37</div>
+            <div class="timeline-body"><p>Also if any parameter type or the return type is not fully static</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1415 on 2025-03-07 13:53</div>
+            <div class="timeline-body"><p>The <code>__call__</code> attribute on <code>collections.abc.Callable</code> or <code>typing.Callable</code> (or <code>_SpecialForm</code>) is not relevant at all here; that's just the behavior of the annotation special form object <code>Callable</code> itself, it doesn't have anything to do with the types represented by using <code>Callable</code> in an annotation. (This is the difference between <code>typing.Callable.__call__</code> vs <code>def f(c: Callable[..., int]): c.__call__</code> -- we are talking about the latter in this thread, which is totally different from the former, because <code>Callable</code> is a special form, not a regular class with instances.)</p>
+<blockquote>
+<p>Deferring it to <code>object</code> lookup also yields the same results that <code>__call__</code> is not an attribute.</p>
+</blockquote>
+<p>Yes, that's expected and correct, because not all Python objects are callable or have a <code>__call__</code> method.</p>
+<p>Let me try to clarify what I was trying to say in my initial comment here:</p>
+<ol>
+<li>We should just fall back to <code>object</code> members here, because in general there are no attributes that all callable types can be expected to have, except those that all objects have. (It's fine to do this in a separate PR.)</li>
+<li>The one possible exception to (1) is that we could reasonably say that all callable objects have a <code>__call__</code> method. If we implement this, it would <em>not</em> happen naturally as a result of delegating to <code>object</code>, it would be a special case we implement here to support <code>__call__</code> member on callable types, while delegating to <code>object</code> for every <em>other</em> attribute. (It would also be a special case because the signature for the <code>__call__</code> method we return would not be read from some general location in typeshed, it just would be the signature wrapped by the callable type itself. If we have a callable type <code>(int, str) -&gt; int</code>, its <code>__call__</code> method also has that same signature.) But this can be ignored and left as a TODO for now (and probably for some time to come); the fact that neither mypy nor pyright implement <code>__call__</code> as a member on callable types suggests that nobody really needs it.</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:3167 on 2025-03-07 13:57</div>
+            <div class="timeline-body"><p>Can be in a separate PR, but the right answer here is simply <code>KnownClass::Type.to_instance()</code>, same as for e.g. <code>AlwaysFalsy</code> and <code>AlwaysTruthy</code> below -- all three of these are very broad types that can include many different kinds of objects, so unless we are dealing with their one specific characteristic in common (callability, truthiness, falsiness), we don't know anything more about them than we know about <code>object</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:6420 on 2025-03-07 14:03</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                // TODO: Check whether `Expr::Name` is a ParamSpec
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/signatures.rs</code>:150 on 2025-03-07 14:06</div>
+            <div class="timeline-body"><p>If we give these parameters no name above in <code>gradual_form</code>, it seems like it would make sense to also give them no name here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/callable.md</code>:40 on 2025-03-07 14:09</div>
+            <div class="timeline-body"><p>Yeah, I see the potential confusion, where by <code>ParamSpec</code> here we mean &quot;a name referring to a ParamSpec&quot;, but by <code>Concatenate</code> we mean &quot;the actual special form <code>Concatenate</code> used here syntactically&quot;. I suspect this is fine, though, let's just go with the message as you have it now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-03-07 14:16</div>
+            <div class="timeline-body"><p>Looks good!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-03-08 03:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/callable.md</code>:129 on 2025-03-08 03:22</div>
+            <div class="timeline-body"><p>Yeah, thanks for catching that. I've decided to remove the <code>gradual_form(...)</code> calls for now as I think it should just go to it's own tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-03-08 03:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/resources/mdtest/invalid_syntax.md</code>:104 on 2025-03-08 03:31</div>
+            <div class="timeline-body"><p>This is the case for <code>Callable[]</code> where the type argument has a <code>Name</code> node but is invalid, it's a limitation on the parser's error recovery. It's similar to point (1) in https://github.com/astral-sh/ruff/issues/10653. So, my preference would be to fix it in the parser instead to avoid emitting the empty <code>ExprName</code> node which would then remove the error that's present here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-03-08 03:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/resources/mdtest/invalid_syntax.md</code>:104 on 2025-03-08 03:38</div>
+            <div class="timeline-body"><p>Hmm, looking at the <code>ast::ExprSubscript</code> node, it seems that <code>slice</code> field is required (<code>Box&lt;Expr&gt;</code>) which is why an empty slice still uses an <code>Expr</code> node.</p>
+<p>I think it might be ok to check for invalid node here. I'll update it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2025-03-08 03:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2025-03-08 03:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-03-08 03:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/display.rs</code>:175 on 2025-03-10 13:43</div>
+            <div class="timeline-body"><p>nit: it might be better for this just to be</p>
+<pre><code class="language-suggestion">    return_ty: Option&lt;Type&lt;'db&gt;&gt;,
+</code></pre>
+<p>since <code>Type</code> is <code>Copy</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/signatures.rs</code>:354 on 2025-03-10 13:49</div>
+            <div class="timeline-body"><p>nit</p>
+<pre><code class="language-suggestion">    pub(crate) const fn is_keyword_only(&amp;self) -&gt; bool {
+        matches!(self.kind, ParameterKind::KeywordOnly { .. })
+    }
+
+    pub(crate) const fn is_positional_only(&amp;self) -&gt; bool {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-03-10 14:23</div>
+            <div class="timeline-body"><p>two <em>tiny</em> nits I spotted that probably don't warrant their own PR, but could maybe be addressed if you're doing further followup work on Callable types</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-03-11 06:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1415 on 2025-03-11 06:08</div>
+            <div class="timeline-body"><p>This was really helpful. Thank you for the explanation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-03-11 06:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types/display.rs</code>:175 on 2025-03-11 06:18</div>
+            <div class="timeline-body"><p>Makes sense, thanks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-03-11 06:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types/signatures.rs</code>:354 on 2025-03-11 06:24</div>
+            <div class="timeline-body"><p>I might be wrong but I'm not sure if this is going to make any difference as we don't use any of these functions in the const context and I don't know we'll ever be able to (?) because parameters are always going to be dynamic i.e., we cannot statically determine during compile time whether a parameter is positional or not.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-03-11 09:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:3167 on 2025-03-11 09:08</div>
+            <div class="timeline-body"><p>Done in https://github.com/astral-sh/ruff/pull/16618</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-03-11 09:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1624 on 2025-03-11 09:08</div>
+            <div class="timeline-body"><p>Done in https://github.com/astral-sh/ruff/pull/16618</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-03-11 09:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1415 on 2025-03-11 09:08</div>
+            <div class="timeline-body"><p>Done in https://github.com/astral-sh/ruff/pull/16618</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-03-11 09:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types/display.rs</code>:175 on 2025-03-11 09:08</div>
+            <div class="timeline-body"><p>Done in https://github.com/astral-sh/ruff/pull/16618</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:49:31 UTC
+    </footer>
+</body>
+</html>

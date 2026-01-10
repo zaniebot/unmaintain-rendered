@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Stabilize `negation_reverses_subtype_order` property test - astral-sh/ruff #16764</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Stabilize <code>negation_reverses_subtype_order</code> property test</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/16764">#16764</a>
+        opened by <a href="https://github.com/mtshiba">@mtshiba</a>
+        on 2025-03-15 15:17
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/mtshiba">@mtshiba</a> on 2025-03-15 15:17</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>From #16641</p>
+<p>As stated in this comment (https://github.com/astral-sh/ruff/pull/16641#discussion_r1996153702), the current ordering implementation for intersection types is incorrect. So, I will introduce lexicographic ordering for intersection types.</p>
+<h2>Test Plan</h2>
+<p>As can be seen <a href="https://codspeed.io/astral-sh/ruff/branches/mtshiba%3A14899-gradual-type-assignability">here</a>, it appears that the execution time of <code>red_knot_check_file</code> will slow down by about 3% when this change is merged. The slow-down itself is unavoidable given that we have been skipping processes that should have been done, but please let me know if there is a better ordering algorithm or some sort of salsa query technique.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @mtshiba on 2025-03-15 15:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @mtshiba on 2025-03-15 15:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @mtshiba on 2025-03-15 15:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @mtshiba on 2025-03-15 15:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2025-03-15 15:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/type_ordering.rs</code>:28 on 2025-03-15 16:38</div>
+            <div class="timeline-body"><p>nit: for all other functions and methods in red-knot, <code>db</code> is always the first argument. We should do that here too, for consistency:</p>
+<pre><code class="language-suggestion">    db: &amp;'db dyn crate::Db,
+    left: &amp;Type&lt;'db&gt;,
+    right: &amp;Type&lt;'db&gt;,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-03-15 16:40</div>
+            <div class="timeline-body"><p>Thanks, this looks great! It looks like this change means that the <code>negation_reverses_subtype_order</code> property test now passes consistently; could you move it from the <code>flaky</code> submodule in <code>property_tests.rs</code> to the <code>stable</code> submodule?</p>
+<p>I verified that it now passes consistently by running <code>QUICKCHECK_TESTS=2000000 cargo test --release -p red_knot_python_semantic -- --ignored types::property_tests::flaky::negation_reverses_subtype_order</code>, which quickly fails on <code>main</code> but not on this PR branch.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-03-17 07:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @AlexWaygood on 2025-03-17 07:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-03-17 08:01</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-03-17 08:09</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-03-17 11:54</div>
+            <div class="timeline-body"><blockquote>
+<p>As can be seen <a href="https://codspeed.io/astral-sh/ruff/branches/mtshiba%3A14899-gradual-type-assignability">here</a>, it appears that the execution time of <code>red_knot_check_file</code> will slow down by about 3% when this change is merged. The slow-down itself is unavoidable given that we have been skipping processes that should have been done, but please let me know if there is a better ordering algorithm or some sort of salsa query technique.</p>
+</blockquote>
+<p>For this change on its own, the benchmarks are in fact <a href="https://codspeed.io/astral-sh/ruff/branches/mtshiba%3Afix-intersection-ordering">entirely neutral</a>. I think the slowdown observed on that earlier PR must come from somewhere else.</p>
+<p>Thanks for the PR, this is great!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "fix incorrect ordering of intersection" to "[red-knot] Stabilize `negation_reverses_subtype_order` property test" by @AlexWaygood on 2025-03-17 12:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-03-17 12:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-03-17 12:19</div>
+            <div class="timeline-body"><p>I'm so sorry -- I closed this meaning to close and reopen it, but now GitHub isn't letting me reopen it. I'll try to open a fresh PR from this branch.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-03-17 12:25</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/ruff/pull/16801. Sorry again; don't know why this happened :-(</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:49:32 UTC
+    </footer>
+</body>
+</html>

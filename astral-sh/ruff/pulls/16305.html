@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Add support for `@classmethod`s - astral-sh/ruff #16305</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Add support for <code>@classmethod</code>s</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/16305">#16305</a>
+        opened by <a href="https://github.com/sharkdp">@sharkdp</a>
+        on 2025-02-21 13:16
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-02-21 13:16</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Add support for <code>@classmethod</code>s.</p>
+<pre><code class="language-py">class C:
+    @classmethod
+    def f(cls, x: int) -&gt; str:
+        return &quot;a&quot;
+
+reveal_type(C.f(1))  # revealed: str
+</code></pre>
+<h2>Test Plan</h2>
+<p>New Markdown tests</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @sharkdp on 2025-02-21 13:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @sharkdp on 2025-02-21 13:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @sharkdp on 2025-02-21 13:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @sharkdp on 2025-02-21 13:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "David/classmethods" to "[red-knot] Add support for `@classmethod`s" by @sharkdp on 2025-02-21 13:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:3251 on 2025-02-21 13:17</div>
+            <div class="timeline-body"><p>It happened again. This was missing previously.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-02-21 13:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-02-21 13:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/call/methods.md</code>:274 on 2025-02-21 13:24</div>
+            <div class="timeline-body"><p>This could be <code>Literal[C]</code> instead of <code>type[C]</code>, but everything works anyway. This happens because we turn <code>Type::Instance(&quot;C&quot;)</code> into its meta type when a classmethod is called on an instance of <code>C</code>. This corresponds to the <code>type(obj)</code> call in this (pseudo) implementation:</p>
+<pre><code class="language-py">class classmethod:
+    # …
+    def __get__(self, obj, cls=None):
+        if cls is None:
+            cls = type(obj)
+        return MethodType(self.f, cls)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:3978 on 2025-02-21 13:37</div>
+            <div class="timeline-body"><p>Would it make sense to have a bitflag on <code>FunctionType</code> where we initialize well known decorators?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-21 13:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Skylion007">@Skylion007</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1952 on 2025-02-21 14:27</div>
+            <div class="timeline-body"><p>Isn't restricting the number of decorators to 1 overly restrictive? Like one wont be able to wrap them with relatively harmless decorators like deprecated or a noop decorator etc without breaking typing?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Skylion007">@Skylion007</a> reviewed on 2025-02-21 14:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1952 on 2025-02-21 14:30</div>
+            <div class="timeline-body"><blockquote>
+<p>Isn't restricting the number of decorators to 1 overly restrictive?</p>
+</blockquote>
+<p>Yes — of course. I put that in place because we do not understand decorators yet. So if a <code>@classmethod</code> is additionally decorated with something else, we don't support that yet (and will infer <code>@Todo(…)</code> types). I should probably add a TODO comment here to make the intention behind this check more apparent — thanks.</p>
+<blockquote>
+<p>Like one wont be able to wrap them with relatively harmless decorators like deprecated or a noop decorator etc without breaking typing?</p>
+</blockquote>
+<p>We certainly hope to support all of this eventually.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-02-21 14:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/call/methods.md</code>:332 on 2025-02-21 14:31</div>
+            <div class="timeline-body"><p>we will want to infer a more precise type at some point, I think. <code>classmethod</code> and <code>staticmethod</code> have additional attributes on Python 3.10+ that other descriptors do not have: https://github.com/python/typeshed/blob/ac8f2632ec37bb4a82ade0906e6ce9bdb33883d3/stdlib/builtins.pyi#L137-L168</p>
+<p>But this is fine for now!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:3251 on 2025-02-21 15:22</div>
+            <div class="timeline-body"><p>Time we took action on this comment, I think...</p>
+<p>https://github.com/astral-sh/ruff/blob/b9b094869ac6af590c910fde48b4fd3e01601236/crates/red_knot_python_semantic/src/types.rs#L2990-L2992</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/signatures.rs</code>:33 on 2025-02-21 15:24</div>
+            <div class="timeline-body"><p>I think this is going to lead to compiler warnings on release builds about unused arguments; we might need to do something similar to the <code>allow()</code> here:</p>
+<p>https://github.com/astral-sh/ruff/blob/3aa7ba31b135bfeeb73e009415e0debb4ca47b95/crates/red_knot_python_semantic/src/symbol.rs#L55-L58</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-02-21 15:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-21 15:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:3251 on 2025-02-21 15:26</div>
+            <div class="timeline-body"><p>We could derive iter for the enum and add a unit tests over a macro.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-02-21 16:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:3251 on 2025-02-21 16:00</div>
+            <div class="timeline-body"><p>I think deriving iter requires adding a red-knot dependency on <code>strum</code> and <code>strum_macros</code>? Not that I object to that if we think it's worth it</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-02-21 18:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/call/methods.md</code>:332 on 2025-02-21 18:44</div>
+            <div class="timeline-body"><blockquote>
+<p>we will want to infer a more precise type at some point, I think. <code>classmethod</code> and <code>staticmethod</code> have additional attributes on Python 3.10+ that other descriptors do not have</p>
+</blockquote>
+<p>Yes, that's why I noted it down. A previous version included (partial?) support for this, but it would require us to add one more special-case callable type, so I removed that again, as it didn't seem that important  (f273460696fbacb8b0f279b7fe52def97d5946ea), and because I think it might change again once we have more general callable types and support for decorators.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-21 18:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:3251 on 2025-02-21 18:47</div>
+            <div class="timeline-body"><p>A &quot;cheap&quot; version of this could be to add a comment before the first and after the last variant in <code>KnownClass</code>, both telling you that you absolutely have to make sure to add the variant to <code>try_from_file_and_name</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/call/methods.md</code>:274 on 2025-02-21 21:06</div>
+            <div class="timeline-body"><p>I think it might be useful to test accessing and calling a classmethod from a subclass that doesn't override it? This would ensure that we aren't placing an overly restrictive type on the <code>cls</code> arg.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/call/methods.md</code>:297 on 2025-02-21 21:09</div>
+            <div class="timeline-body"><p>I would expect this <code>D</code> name reference to fail to resolve, but somehow it doesn't? This isn't a stub file, and doesn't have <code>from __future__ import annotations</code>, so name references in annotations should resolve eagerly, and the name <code>D</code> should not be bound here yet.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:3978 on 2025-02-21 21:21</div>
+            <div class="timeline-body"><p>Maybe. I think this should wait until we have proper decorator support, at which point we won't track all decorators on <code>FunctionType</code> anymore at all. It may be that we still want to have a &quot;shortcut&quot; where we represent <code>classmethod(some_function)</code> as just a <code>FunctionType</code> with a flag on it, and similar for <code>staticmethod</code>. But that seems like the right time to optimize this representation, since all of this is temporary.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-02-21 21:29</div>
+            <div class="timeline-body"><p>Looks great!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-02-22 19:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/call/methods.md</code>:297 on 2025-02-22 19:35</div>
+            <div class="timeline-body"><blockquote>
+<p>I would expect this <code>D</code> name reference to fail to resolve, but somehow it doesn't?</p>
+</blockquote>
+<p>Ah, I was wondering about this, because one of my other examples failed when I ran it through CPython. I then added <code>from __future__ import annotations</code>, but forgot to write it down as a (pre existing?) issue. I'll do so.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-02-23 21:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:3251 on 2025-02-23 21:50</div>
+            <div class="timeline-body"><p>#16326 for a possible solution!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-02-24 08:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/call/methods.md</code>:297 on 2025-02-24 08:37</div>
+            <div class="timeline-body"><p>This particular test already includes <code>from __future__ import annotations</code> at the top.</p>
+<p>Reported as https://github.com/astral-sh/ruff/issues/16341</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-02-24 08:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1952 on 2025-02-24 08:47</div>
+            <div class="timeline-body"><p>Added a new test that shows that we do not support classmethods that are also wrapped with other decorators.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @sharkdp on 2025-02-24 08:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-02-24 08:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-02-24 08:55</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:49:31 UTC
+    </footer>
+</body>
+</html>

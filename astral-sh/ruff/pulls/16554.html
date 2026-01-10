@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Add 'mypy_primer' workflow - astral-sh/ruff #16554</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Add 'mypy_primer' workflow</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/16554">#16554</a>
+        opened by <a href="https://github.com/sharkdp">@sharkdp</a>
+        on 2025-03-07 14:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-03-07 14:22</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Run Red Knot on a small selection of ecosystem projects via a <a href="https://github.com/astral-sh/mypy_primer/tree/add-red-knot-support">forked version of <code>mypy_primer</code></a>. I think it's probably fine to run this from a fork as long as the red knot CLI is not stable, and as long as we're still experimenting with this?</p>
+<p>There's probably a lot still to do both on the <code>mypy_primer</code> side as well as on the pipeline side here (we might want to have it comment on PRs, for example), but maybe this is a good first step to have this as a non-blocking pipeline that simply runs on red knot PRs? For you to look at, if you're interested...</p>
+<p>Example output with a negative diff for a dummy change (commented out <code>unresolved-attribute</code> diagnostics):</p>
+<p><img src="https://github.com/user-attachments/assets/c6940d77-843f-4664-83af-5664436bbb77" alt="image" /></p>
+<h2>Test Plan</h2>
+<ul>
+<li>Successful run: https://github.com/astral-sh/ruff/actions/runs/13725319641/job/38390245552?pr=16554</li>
+<li>Intentially failed run where I commented out <code>unresolved-attribute</code> diagnostics reporting: https://github.com/astral-sh/ruff/actions/runs/13723777105/job/38385224144</li>
+</ul>
+<!-- How was it tested? -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @sharkdp on 2025-03-07 14:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @sharkdp on 2025-03-07 16:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-03-07 16:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>.github/workflows/mypy_primer.yaml</code>:61 on 2025-03-07 16:57</div>
+            <div class="timeline-body"><p>Just a few hand-selected projects that we don't panic on :upside_down_face:. I will look into extending this list.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-03-07 17:03</div>
+            <div class="timeline-body"><p>This is only an understanding question from my side: The check doesn't comment on the PR, unlike Ruff's ecosystem check. Anyone interested would have to &quot;actively&quot; check the results. Is that understanding correct?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-03-07 18:29</div>
+            <div class="timeline-body"><blockquote>
+<p>This is only an understanding question from my side: The check doesn't comment on the PR, unlike Ruff's ecosystem check. Anyone interested would have to &quot;actively&quot; check the results. Is that understanding correct?</p>
+</blockquote>
+<p>Yes, see PR description: <em>&quot;There's probably a lot still to do […] (we might want to have it comment on PRs, for example), but maybe this is a good first step to have this as a non-blocking pipeline that simply runs on red knot PRs? For you to look at, if you're interested...&quot;</em></p>
+<p>Mypy, pyright, and typeshed all have similar pipelines (see e.g. https://github.com/python/mypy/blob/master/.github/workflows/mypy_primer.yml and https://github.com/python/mypy/blob/master/.github/workflows/mypy_primer_comment.yml), so we should be able to set this up easily once we're confident that it has an actual benefit. I just thought it would make sense to run this &quot;in the background&quot; in the beginning to experiment with it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-03-07 20:40</div>
+            <div class="timeline-body"><p>Ruff's ecosystem also supports this. There are two parts to it:</p>
+<ul>
+<li>The ecosystem check itself. It <a href="https://github.com/astral-sh/ruff/blob/bb15c7653a358dda11cd590c57f7f5e9a8b9178d/.github/workflows/ci.yaml#L456-L461">writes the output</a> and <a href="https://github.com/astral-sh/ruff/blob/bb15c7653a358dda11cd590c57f7f5e9a8b9178d/.github/workflows/ci.yaml#L517-L525">the PR number</a> to a file</li>
+<li>There's a second job that <a href="https://github.com/astral-sh/ruff/blob/3a08570a684d28800163288ab53986534c9205a6/.github/workflows/pr-comment.yaml#L10">creates or updates the PR comment</a></li>
+</ul>
+<p>The main downside is that GitHub has an upper limit on the comment size :(</p>
+<p>Either way. I think this is useful as it is. It being invisible has the downside that it's unlikely that people will check it, unless we introduce a <em>I did review the red knot ecosystem changes</em> checkbox to the test plan</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-03-10 09:05</div>
+            <div class="timeline-body"><blockquote>
+<p>Either way. I think this is useful as it is. It being invisible has the downside that it's unlikely that people will check it, unless we introduce a <em>I did review the red knot ecosystem changes</em> checkbox to the test plan</p>
+</blockquote>
+<p>I mainly wanted to keep it in the background for a few days(?) to test it before we start commenting on everyone's PRs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>.github/workflows/mypy_primer.yaml</code>:8 on 2025-03-10 09:07</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">      - &quot;crates/red_knot*/**&quot;
+      - &quot;crates/ruff_db&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>.github/workflows/mypy_primer.yaml</code>:26 on 2025-03-10 09:08</div>
+            <div class="timeline-body"><p>We had issues in the past where GitHub up and downgraded our ubuntu runners which resulted in broken CI pipelines. I suggest fixing it to ubuntu 24 (which I think is the same as latest)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>.github/workflows/mypy_primer.yaml</code>:68 on 2025-03-10 09:10</div>
+            <div class="timeline-body"><p>This seems magic to me. How does mypy_primer setup the environment? Where does it install the dependencies? How does it configure the python version? How does it specify which files need checking?</p>
+<p>I'm asking because I'm wondering how it ensures that knot knows about third party dependencies.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-03-10 09:11</div>
+            <div class="timeline-body"><p>This is cool and a very nise surprise for the new month :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ci</span> added by @MichaReiser on 2025-03-10 09:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-03-10 09:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>.github/workflows/mypy_primer.yaml</code>:6 on 2025-03-10 09:12</div>
+            <div class="timeline-body"><p>Maybe consider moving it to the <code>ci.yaml</code>? It's where we have all (or the vast majority) of all jobs that run as part of pull requests and is the first place where I'd be looking for this job</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-03-10 09:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>.github/workflows/mypy_primer.yaml</code>:6 on 2025-03-10 09:20</div>
+            <div class="timeline-body"><p>I did consider moving it there, but kept it in a separate file for now because (1) I still consider it experimental; I'm not even sure if we want to go with <code>mypy_primer</code> for our ecosystem checks or build something of our own and (2) I wanted to keep it close to the existing <code>mypy_primer</code> pipelines that exist for mypy/pyright/typeshed.</p>
+<p>I would definitely be in favor of moving it to <code>ci.yaml</code> if this turns out to be the approach we want to take.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-03-10 09:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>.github/workflows/mypy_primer.yaml</code>:68 on 2025-03-10 09:28</div>
+            <div class="timeline-body"><blockquote>
+<p>How does mypy_primer setup the environment?</p>
+</blockquote>
+<p>mypy_primer has a large list of hard-coded projects. For example, here's the <a href="https://github.com/sharkdp/mypy_primer/blob/ce9b172ca91dbf4c2e582959f544525bfcdb3580/mypy_primer/projects.py#L90-L97">definition of <code>black</code></a>.</p>
+<p>For some of these projects, dependencies are specified in a <code>deps</code> list. This is very simplistic. There are no version constraints, for example. mypy_primer will then install those dependencies using <code>pip</code> (or <code>uv pip</code>) into a virtual environment <a href="https://github.com/sharkdp/mypy_primer/blob/ce9b172ca91dbf4c2e582959f544525bfcdb3580/mypy_primer/model.py#L154-L167">here</a>.</p>
+<p>Later, I am passing the path to the created venv to Red Knot <a href="https://github.com/sharkdp/mypy_primer/blob/ce9b172ca91dbf4c2e582959f544525bfcdb3580/mypy_primer/model.py#L298-L309">here</a>.</p>
+<blockquote>
+<p>How does it configure the python version?</p>
+</blockquote>
+<p>It is <a href="https://github.com/sharkdp/mypy_primer/blob/ce9b172ca91dbf4c2e582959f544525bfcdb3580/mypy_primer/model.py#L304-L305">hard-coded to 3.13</a> at the moment.</p>
+<blockquote>
+<p>How does it specify which files need checking?</p>
+</blockquote>
+<p>This is another thing that is very rudimentary. As you can see in the definition of <code>black</code>, mypy_primer passes the <code>src</code> directory as an explicit argument to mypy and pyright. For Red Knot, I added an optional <code>knot_paths</code> argument where we can pass directories, in case we don't want to run it from the project root.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>.github/workflows/mypy_primer.yaml</code>:61 on 2025-03-10 09:29</div>
+            <div class="timeline-body"><p>I did so now and went through the project list again. I chose a few projects without a lot of dependencies, because we do not understand <code>-stubs</code> imports yet.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-03-10 09:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-03-10 09:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>.github/workflows/mypy_primer.yaml</code>:68 on 2025-03-10 09:30</div>
+            <div class="timeline-body"><p>Ohhh... I didn't realize that you use your own fork. But that's on me for not reading your summary carefully.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @sharkdp on 2025-03-10 10:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-03-10 10:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-03-10 10:14</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:49:32 UTC
+    </footer>
+</body>
+</html>

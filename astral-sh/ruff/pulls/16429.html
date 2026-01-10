@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Check `LinterSettings::preview` for version-related syntax errors - astral-sh/ruff #16429</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Check <code>LinterSettings::preview</code> for version-related syntax errors</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/16429">#16429</a>
+        opened by <a href="https://github.com/ntBre">@ntBre</a>
+        on 2025-02-28 03:23
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ntBre">@ntBre</a> on 2025-02-28 03:23</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Fixes part of the report in https://github.com/astral-sh/ruff/issues/16417#issuecomment-2689600543 by checking <code>LinterSettings::preview</code> in both the language server and in the playground. That now covers all calls of <code>Parsed::unsupported_syntax_errors</code>.</p>
+<h2>Test Plan</h2>
+<p>Manual tests in both VS Code and the playground. I also added <code>preview = true</code> to the WASM test I added earlier.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-02-28 03:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-02-28 03:38</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-02-28 04:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_server/src/lint.rs</code>:180 on 2025-02-28 04:25</div>
+            <div class="timeline-body"><p>Should we move this into <code>check_path</code> as that seems like the common denominator for the server, WASM, and the command-line?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-02-28 04:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_server/src/lint.rs</code>:180 on 2025-02-28 04:26</div>
+            <div class="timeline-body"><p>Hmm, that might not be possible in the server because it needs to know whether the user has enabled <code>showSyntaxErrors</code> or not</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> approved on 2025-02-28 04:29</div>
+            <div class="timeline-body"><p>Thank you for taking this on quickly and fixing it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-02-28 04:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_server/src/lint.rs</code>:180 on 2025-02-28 04:44</div>
+            <div class="timeline-body"><p>Ah I think you're right. I kept putting it right next to the message/diagnostic generation code, but I think we could just truncate the vec inside of <code>check_path</code> because it's called right before each of these. I'll just have to add a new <code>Parsed</code> method because the field itself is private.</p>
+<p>I don't think we can move this exact code unless we return an additional <code>unsupported_syntax_errors</code> from <code>check_path</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-02-28 04:46</div>
+            <div class="timeline-body"><p>Thanks for the quick review! I'd also like to get https://github.com/astral-sh/ruff/pull/16425 merged and then we could probably do a release if you want. That should cover all of the (known) bugs with the version-related errors.</p>
+<p>I'm going to take a look at your suggestion in the morning, though. It's getting pretty late</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_server/src/lint.rs</code>:180 on 2025-02-28 05:12</div>
+            <div class="timeline-body"><blockquote>
+<p>Hmm, that might not be possible in the server because it needs to know whether the user has enabled <code>showSyntaxErrors</code> or not</p>
+</blockquote>
+<p>I think we could pass a <code>ShowSyntaxErrors</code> enum similar to <code>flags::Noqa</code> to <code>check_path</code> which in combination with the <code>settings.preview.is_enabled()</code> check be used to filter out syntax error diagnostics. But, <code>ShowSyntaxErrors</code> would need to be defined in <code>ruff_linter</code> as it can't be in <code>ruff_server</code> because otherwise it would create circular dependency.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-02-28 05:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-28 07:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_server/src/lint.rs</code>:180 on 2025-02-28 07:25</div>
+            <div class="timeline-body"><p>I like the idea of unifying the handling if it doesn't introduce a lot of complexity but I think we can ship the bug fix as is. That gives us more time to explore the refactor and allows us to ship the bugfix sooner.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-02-28 07:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2025-02-28 08:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-02-28 08:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-02-28 08:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-02-28 17:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_server/src/lint.rs</code>:180 on 2025-02-28 17:40</div>
+            <div class="timeline-body"><p>I think I might just leave this alone for now if it's okay with you both. I looked into it briefly today and realized that my <code>parsed.unsupported_syntax_errors.truncate()</code> idea would require a <code>&amp;mut Parsed</code>, which I didn't really want to add. There are four of these calls, which is annoying, but we'll also get to simply delete them all once the feature is out of preview.</p>
+<p>Another temporary option could be passing a <code>preview: bool</code> (or enum) argument to the <code>unsupported_syntax_errors</code> method to avoid duplicating the explicit <code>if</code>s.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-02-28 17:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_server/src/lint.rs</code>:180 on 2025-02-28 17:45</div>
+            <div class="timeline-body"><p>Thank you for looking into it. I think it's fine to leave it as is.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:49:31 UTC
+    </footer>
+</body>
+</html>

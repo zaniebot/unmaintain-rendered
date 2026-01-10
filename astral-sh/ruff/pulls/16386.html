@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[syntax-errors] Named expressions in decorators before Python 3.9 - astral-sh/ruff #16386</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[syntax-errors] Named expressions in decorators before Python 3.9</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/16386">#16386</a>
+        opened by <a href="https://github.com/ntBre">@ntBre</a>
+        on 2025-02-26 00:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ntBre">@ntBre</a> on 2025-02-26 00:46</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR detects the relaxed grammar for decorators proposed in <a href="https://peps.python.org/pep-0614/">PEP 614</a> on Python 3.8 and lower.</p>
+<p>The 3.8 grammar for decorators is <a href="https://docs.python.org/3.8/reference/compound_stmts.html#grammar-token-decorators">here</a>:</p>
+<pre><code>decorators                ::=  decorator+
+decorator                 ::=  &quot;@&quot; dotted_name [&quot;(&quot; [argument_list [&quot;,&quot;]] &quot;)&quot;] NEWLINE
+dotted_name               ::=  identifier (&quot;.&quot; identifier)*
+</code></pre>
+<p>in contrast to the current grammar <a href="https://docs.python.org/3/reference/compound_stmts.html#grammar-token-python-grammar-decorators">here</a></p>
+<pre><code>decorators                ::= decorator+
+decorator                 ::= &quot;@&quot; assignment_expression NEWLINE
+assignment_expression ::= [identifier &quot;:=&quot;] expression
+</code></pre>
+<h2>Test Plan</h2>
+<p>New inline parser tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-02-26 01:02</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-02-26 17:39</div>
+            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+
+<!-- __CODSPEED_INSTRUMENTATION_PERFORMANCE_REPORT_COMMENT__ -->
+
+<h2><a href="https://codspeed.io/astral-sh/ruff/branches/brent%2Fsyntax-decorators-39">CodSpeed Performance Report</a></h2>
+<h3>Merging #16386 will <strong>not alter performance</strong></h3>
+<p><sub>Comparing <code>brent/syntax-decorators-39</code> (0585337) with <code>main</code> (d062388)</sub></p>
+<h3>Summary</h3>
+<p><code>✅ 32</code> untouched benchmarks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Detect named expressions in decorators before Python 3.9" to "[syntax-errors] Named expressions in decorators before Python 3.9" by @ntBre on 2025-02-28 22:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @ntBre on 2025-02-28 22:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @ntBre on 2025-03-03 18:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @ntBre on 2025-03-03 18:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @ntBre on 2025-03-03 18:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">parser</span> added by @ntBre on 2025-03-03 18:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_parser/src/error.rs</code>:461 on 2025-03-03 21:43</div>
+            <div class="timeline-body"><p>Hmm, I think &quot;named expression&quot; generally refers specifically to walrus expressions (https://peps.python.org/pep-0572 uses the term several times), so I'm not sure it's the best term to use here</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-03-03 21:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-03-03 21:46</div>
+            <div class="timeline-body"><blockquote>
+<p>This was the trickiest one of these to detect yet. It seemed like the best approach was to attempt to parse the old version and fall back on the new grammar if anything goes wrong, but I'm not as confident in this approach since it required adding a new method to the parser.</p>
+</blockquote>
+<p>Is it possible that this one would be easier to detect using the &quot;greeter&quot; approach that you proposed for syntax errors emitted by the compiler?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-03-03 21:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_parser/src/error.rs</code>:461 on 2025-03-03 21:49</div>
+            <div class="timeline-body"><p>Yeah that makes sense, I was just following <a href="https://peps.python.org/pep-0614/#specification">PEP 614</a> and the AST <a href="https://docs.python.org/3.13/reference/compound_stmts.html#grammar-token-python-grammar-decorator">reference</a> (which I see now actually calls them <code>assignment_expression</code>s, but I think that's another synonym for the walrus operator?).</p>
+<p>Do you have any ideas for a replacement? I didn't think &quot;relaxed decorator&quot; was much more helpful, but that's closer to the PEP name and the &quot;What's new&quot; entry.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-03-03 22:15</div>
+            <div class="timeline-body"><blockquote>
+<p>Is it possible that this one would be easier to detect using the &quot;greeter&quot; approach that you proposed for syntax errors emitted by the compiler?</p>
+</blockquote>
+<p>Hmm, maybe it would be slightly easier. We could store state indicating that we're in a decorator and then check if each visited component of the expression is an attribute access, with an optional top-level <code>ExprCall</code>.</p>
+<p>Still, I think the approach here makes sense (at least to me :laughing:) and lets us keep the detection in the parser. It's just certainly trickier than some of the other errors like &quot;is this a walrus operator.&quot; And I wasn't sure if I wrote idiomatic parser code or if this is exactly what the checkpoint system is meant for.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_parser/src/error.rs</code>:461 on 2025-03-03 22:19</div>
+            <div class="timeline-body"><p>Maybe something like this?</p>
+<pre><code class="language-rs">impl Display for UnsupportedSyntaxError {
+    fn fmt(&amp;self, f: &amp;mut fmt::Formatter&lt;'_&gt;) -&gt; fmt::Result {
+        let kind = match self.kind {
+            UnsupportedSyntaxErrorKind::Match =&gt; &quot;`match` statement&quot;,
+            UnsupportedSyntaxErrorKind::Walrus =&gt; &quot;named assignment expression (`:=`)&quot;,
+            UnsupportedSyntaxErrorKind::ExceptStar =&gt; &quot;`except*`&quot;,
+            UnsupportedSyntaxErrorKind::RelaxedDecorator =&gt; {
+                let expression_kind = ...;
+                return write!(
+                    &quot;Cannot use {expression_kind} expressions in decorators on Python {} (syntax was added in Python 3.9)&quot;,
+                    self.target_version,
+               );   
+            }      
+        };
+        write!(
+            f,
+            &quot;Cannot use {kind} on Python {} (syntax was added in Python {})&quot;,
+            self.target_version,
+            self.kind.minimum_version(),
+        )
+    }
+}
+</code></pre>
+<p>Then if it was e.g. a subscript expression, the error message would be</p>
+<pre><code>Cannot use subscript expressions in decorators on Python 3.8 (syntax was added in Python 3.9)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-03-03 22:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-03-04 08:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/parser/statement.rs</code>:2629 on 2025-03-04 08:15</div>
+            <div class="timeline-body"><p>I'd prefer not to use checkpoints here. Checkpoints are expensive.</p>
+<p>I think I'd prefer to visit the parsed AST instead and check if any name isn't a named expression. One thing that might be challenging is that the outer-most expression can't be parenthesized, but that's something that we should be able to detect at the parse decorator function</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-03-04 08:37</div>
+            <div class="timeline-body"><p>It might be interesting to add a test that uses a walrus expression in a decorator with the target version set to py37</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-03-04 10:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/parser/statement.rs</code>:2629 on 2025-03-04 10:49</div>
+            <div class="timeline-body"><p>I don't think it's just named expression. As per the grammar and the tests show this as well, one other example is a subscript expression like <code>@foo[0]</code> (top-level expression is subscript) or <code>@foo[0].bar</code> (top-level expression is an attribute) as both are not allowed.</p>
+<p>I agree that it might be simplest to do this using a visitor instead of using speculative parsing.</p>
+<p>I quickly looked at what Pyright does and it seems to be doing a basic check on the parsed expression if the target version is &lt; 3.9: https://github.com/microsoft/pyright/blob/1d1b43c17a83927d422c9ff52f98fb595419e329/packages/pyright-internal/src/parser/parser.ts#L2401-L2417. I'm not sure if that covers the entire extent of the grammar but it might be worth exploring.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_parser/src/parser/statement.rs</code>:2629 on 2025-03-04 13:47</div>
+            <div class="timeline-body"><p>It looks like pyright's <a href="https://github.com/microsoft/pyright/blob/1d1b43c17a83927d422c9ff52f98fb595419e329/packages/pyright-internal/src/parser/parser.ts#L2429"><code>_isNameOrMemberAccessExpression</code></a> function called there is recursively checking the decorator expression. I guess that <em>is</em> a minimal visitor. When Alex mentioned the greeter approach, I was picturing holding off on this error until I start working on the separate greeter for compile-time/semantic errors. Should I just have a mini visitor directly in the parser like pyright instead?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-03-04 13:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-03-04 13:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/parser/statement.rs</code>:2629 on 2025-03-04 13:48</div>
+            <div class="timeline-body"><p>I don't mind a mini visitor in the parser, as long as it isn't a full <code>Visitor</code> based visitor (and only runs for &lt; 3.9)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-03-04 13:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_parser/src/parser/statement.rs</code>:2629 on 2025-03-04 13:50</div>
+            <div class="timeline-body"><p>Of course, I think I can pretty much follow pyright directly here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-03-04 16:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/parser/statement.rs</code>:2629 on 2025-03-04 16:00</div>
+            <div class="timeline-body"><p>Thanks for looking into it. I also think that's fine.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-03-05 16:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_parser/src/error.rs</code>:461 on 2025-03-05 17:05</div>
+            <div class="timeline-body"><p>I think I'll leave this nicer error reporting for a possible follow-up. It would complicate the code a fair amount to track the expression kind through the whole process just for the error message. Micha also pointed out on Discord that 3.9 is the oldest version receiving security updates, so this message will probably have a fairly limited audience.</p>
+<p>I did remove the confusing &quot;named expression&quot; part and went for something closer to pyright's &quot;Expression form not supported for decorator prior to Python 3.9&quot;:</p>
+<pre><code>Syntax Error: Unsupported expression in decorators on Python 3.8 (syntax was added in Python 3.9)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-03-05 17:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-03-05 17:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_parser/src/error.rs</code>:461 on 2025-03-05 17:06</div>
+            <div class="timeline-body"><p>Nice, thanks. I still think there's room for improvement but this is definitely good enough for now!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-03-05 17:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_parser/src/error.rs</code>:461 on 2025-03-05 17:08</div>
+            <div class="timeline-body"><p>Absolutely, I meant to say I think your suggestion would make for the ideal error message. Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ntBre on 2025-03-05 17:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-03-05 17:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-03-05 17:08</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:49:31 UTC
+    </footer>
+</body>
+</html>

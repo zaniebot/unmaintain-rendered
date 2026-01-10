@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Diagnostics for incorrect `bool` usages - astral-sh/ruff #16238</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Diagnostics for incorrect <code>bool</code> usages</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/16238">#16238</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2025-02-18 18:41
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-18 18:41</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>The diagnostic handling isn't ideal yet but I'd like to have some first feedback on the overall aproach (and maybe you've suggestions on how to improve the diagnostics).</p>
+<p>This PR introduces new <code>Type::try_iterate</code> and <code>Type::try_bool</code> methods that return a <code>Result</code> instead of always assuming that the operation was successful. ~~This PR also renames the existing <code>call</code> and <code>dunder_call</code> methods to <code>try_call</code> and <code>try_dunder_call</code> to match this pattern~~ (see https://github.com/astral-sh/ruff/pull/16261)</p>
+<p>This PR also introudces the new lint rule <code>unsupported-bool-conversion</code> that detects implicit <code>bool</code> conversions where the type doesn't implement <code>__bool__</code> correctly.</p>
+<h2>Performance</h2>
+<p>~~Codspeed shows a 4% perf regression on the cold benchmark. I suspect that this is due to Red Knot calling <code>bool</code> much more frequently than it used to.~~</p>
+<p>This is no longer the case, thanks to @sharkdp's performance improvement to <code>try_bool</code></p>
+<h2>Test Plan</h2>
+<p>There's more to do but there are some new tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @MichaReiser on 2025-02-18 18:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-18 18:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:3672 on 2025-02-18 18:42</div>
+            <div class="timeline-body"><p>Creating a multi-span diagnostic that shows the return type probably requires us to return an entire <code>binding</code> (or <code>CallOutcome</code>) here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-18 18:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/call.rs</code>:15 on 2025-02-18 18:42</div>
+            <div class="timeline-body"><p>I should revert this</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-02-18 18:46</div>
+            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+
+<!-- __CODSPEED_INSTRUMENTATION_PERFORMANCE_REPORT_COMMENT__ -->
+
+<h2><a href="https://codspeed.io/astral-sh/ruff/branches/micha%2Ftype-iterate-bool">CodSpeed Performance Report</a></h2>
+<h3>Merging #16238 will <strong>not alter performance</strong></h3>
+<p><sub>Comparing <code>micha/type-iterate-bool</code> (6311d81) with <code>main</code> (3aa7ba3)</sub></p>
+<h3>Summary</h3>
+<p><code>✅ 32</code> untouched benchmarks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-18 19:13</div>
+            <div class="timeline-body"><p>Huh, the perf regression is rather surprising.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-18 21:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1814 on 2025-02-18 21:00</div>
+            <div class="timeline-body"><p>I suspect that the regression comes from the fact that we no longer short-circuit if any union element inferred <code>Ambigious</code>.</p>
+<p>That would suggest that we might want to have a different API so that <code>Type::bool</code> knows whether it has to iterate over all types to produce accurate error messages or if it is fine to exit early.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-19 16:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/resources/mdtest/call/builtins.md</code>:9 on 2025-02-19 16:28</div>
+            <div class="timeline-body"><p>this is more something I noticed and considered worth adding a test. It isn't itself related to making <code>Type::bool</code> faliable</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/resources/mdtest/snapshots/membership_test.md_-_Comparison:_Membership_Test_-_Not-boolable_return_type.snap</code>:50 on 2025-02-19 16:30</div>
+            <div class="timeline-body"><p>The error messages here (and in other places where <code>bool</code> is called implicitly could be better but I'm not sure how they should look exactly. What makes them not very useful right now is that it's unclear where the <code>NotBoolable</code> comes from.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-19 16:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-19 16:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1454 on 2025-02-19 16:42</div>
+            <div class="timeline-body"><p>The main change here is that this now returns a <code>Result</code>. The other changes are  how <code>Type::Instnace</code> and <code>Union</code> are  handled.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2025-02-19 16:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @MichaReiser on 2025-02-19 16:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @MichaReiser on 2025-02-19 16:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @MichaReiser on 2025-02-19 16:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/diagnostic.rs</code>:496 on 2025-02-19 17:34</div>
+            <div class="timeline-body"><p>I don't find the <code>e.g.</code> clause very helpful here, and we give detailed examples below</p>
+<pre><code class="language-suggestion">    /// Checks for objects that can't be converted to a boolean but are used in boolean contexts.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/diagnostic.rs</code>:499 on 2025-02-19 17:36</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    /// If an exception is raised when you attempt to evaluate the truthiness of an object,
+    /// using the object in a boolean context will fail at runtime.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/diagnostic.rs</code>:512 on 2025-02-19 17:38</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    /// b1, b2 = NotBoolable(), NotBoolable()
+    ///
+    /// if b1:  # exception raised here
+    ///     pass
+    ///
+    /// b1 and b2  # exception raised here
+    /// not b1  # exception raised here
+    /// b1 &lt; b2 &lt; b1  # exception raised here
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:4898 on 2025-02-19 17:42</div>
+            <div class="timeline-body"><p>I almost wonder if these methods that don't return a <code>Result</code> should be <code>unsafe</code>... we probably want to encourage <code>SAFETY</code> methods like this next to them if they're used in <code>infer.rs</code>!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:3212 on 2025-02-19 17:44</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                            &quot;Object of type `{not_boolable}` cannot be converted to a bool because the return type of its `__bool__` method (`{return_type}`) isn't assignable to `bool&quot;,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:3203 on 2025-02-19 17:44</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                            &quot;Object of type `{}` cannot be converted to a bool&quot;,
+</code></pre>
+<p>I also don't love &quot;converted to a bool&quot; -- it could be confusing... with an expression like <code>a or b</code>, if <code>a == &quot;foo&quot;</code> and <code>b == &quot;&quot;</code>, <code>foo</code> has its truthiness evaluated (<code>bool()</code> is called on it and the result of that expression is inspected by the interpreter in order to evaluate the expression), but the result of the expression is not a boolean value (which is what would, to me, be implied by &quot;converted to a bool&quot;). The result of the expression is <code>&quot;foo&quot;</code>.</p>
+<p>&quot;Evaluted in a boolean context&quot; might be better than &quot;converted to a bool&quot;. That's obviously more verbose, though</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:3224 on 2025-02-19 17:53</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                        &quot;Object of type `{}` cannot be converted to a bool because its `__bool__` attribute isn't callable.&quot;,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:3234 on 2025-02-19 17:53</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                        &quot;Object of type `{}` cannot be converted to a bool.&quot;,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1731 on 2025-02-19 17:55</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                //   right signature and return a binding error.
+</code></pre>
+<p>Does this comment also maybe belong a bit lower down, closer to the <code>KnownClass::Bool</code> branch?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:3093 on 2025-02-19 17:59</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    /// The type isn't iterable because it doesn't implement the new-style or old-style iteration protocol
+    ///
+    /// The new-style iteration protocol requires a type being iterated over to have an `__iter__`
+    /// method that returns something with a `__next__` method. The old-style iteration
+    /// protocol requies a type being iterated over to have a `__getitem__` method that accepts
+    /// a positive-integer argument.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:3712 on 2025-02-19 18:09</div>
+            <div class="timeline-body"><p>hrm, I think I'd prefer to add a <code>Truthiness::from_bool_error()</code> function and use that</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2432 on 2025-02-19 18:10</div>
+            <div class="timeline-body"><p>this is a very nice API :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3398 on 2025-02-19 18:12</div>
+            <div class="timeline-body"><p>...did they remove it again? :P</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:4670 on 2025-02-19 18:14</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                                *ty,
+                                range,
+                            ).expect(&quot;infer_binary_type_comparison should never return None for `CmpOp::Eq`&quot;);
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/comparison/instances/membership_test.md</code>:180 on 2025-02-19 18:20</div>
+            <div class="timeline-body"><p>I think ideally the code and error message here would be something like</p>
+<pre><code class="language-suggestion"># error: [operator] &quot;Cannot use `in` operator on object of type `WithContains` as its `__contains__` method returns `NotBoolable`, which cannot be evaluated in a boolean context&quot;
+10 in WithContains() and True
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/comparison/instances/rich_comparison.md</code>:353 on 2025-02-19 18:21</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">Python implicitly calls `bool` on the comparison result of preceding elements (but not for the last
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/comparison/instances/rich_comparison.md</code>:370 on 2025-02-19 18:22</div>
+            <div class="timeline-body"><p>Could we also test that we <em>don't</em> emit a diagnostic if there are only two elements?</p>
+<pre><code class="language-suggestion">10 &lt; Comparable() &lt; Comparable()
+
+Comparable() &lt; Comparable()  # fine
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/comparison/tuples.md</code>:371 on 2025-02-19 18:23</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">a &lt; b &lt; b
+
+a &lt; b  # fine
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/expression/boolean.md</code>:126 on 2025-02-19 18:24</div>
+            <div class="timeline-body"><p>really nice error message :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/narrow/truthiness.md</code>:110 on 2025-02-19 18:25</div>
+            <div class="timeline-body"><p>not sure I understand the TODO comment here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-02-19 18:26</div>
+            <div class="timeline-body"><p>I have a bunch of nits but the overall approach looks great to me</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-19 18:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:4898 on 2025-02-19 18:31</div>
+            <div class="timeline-body"><p>I don't think we should use <code>unsafe</code> for this. <code>unsafe</code> signifies something different. There are also many uses cases where using <code>bool</code> is correct and requiring <code>unsafe</code> and a SAFETY comment would undo any ergonomics which this method brings.</p>
+<p>I'm not too much concerned about us using the correct method. My main confusion in the past was that there were 3 different methods that I could call on <code>CallOutcome</code> without any recommendation on when to use what. There are now only two methods and they have documentation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:3712 on 2025-02-19 18:31</div>
+            <div class="timeline-body"><p>I prefer it this way because it is consistent with <code>CallError</code>, <code>IterateError</code>, <code>CallDunderError</code> etc. They all have a method to get the fallback type.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-19 18:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-19 18:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3398 on 2025-02-19 18:33</div>
+            <div class="timeline-body"><p>Why am I so terrible lately with rebasing/stashing my changes. No, I figured out how to avoid the <code>Vec::from</code> but the change got lost. Thanks for catching this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-19 18:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/resources/mdtest/comparison/instances/membership_test.md</code>:180 on 2025-02-19 18:35</div>
+            <div class="timeline-body"><p>Slightly too long for my taste but certainly more helpful. Thank you</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-19 18:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/resources/mdtest/narrow/truthiness.md</code>:110 on 2025-02-19 18:36</div>
+            <div class="timeline-body"><p>Oh, this is outdated. That was a comment from before you helped me fix the <code>bool</code> implementation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/comparison/instances/membership_test.md</code>:180 on 2025-02-19 18:39</div>
+            <div class="timeline-body"><blockquote>
+<p>Slightly too long for my taste</p>
+</blockquote>
+<p>For me too... but once we have the ability to add notes to diagnostics, I'd imagine it could become something like</p>
+<pre><code>error: [operator] cannot use `in` operator on object of type `WithContains`
+    note: This is because the `in` operator implicitly calls `WithContains.__contains__`, but `WithContains.__contains__` is invalidly defined
+    note: `WithContains.__contains__` is invalidly defined because it returns an instance of `NotBoolable`, which cannot be evaluated in a boolean context
+    note: `NotBoolable` cannot be evaluated in a boolean context because its `__bool__` attribute is not callable
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-02-19 18:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-02-19 18:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:3712 on 2025-02-19 18:43</div>
+            <div class="timeline-body"><p>Yeah, I see the consistency argument... I still feel like I'd prefer something inconsistent here than having a method that &quot;pretends to be an instance method&quot; but doesn't actually use <code>self</code>. That said, I don't feel very strongly.</p>
+<p>Could we at least add a comment about why we're deliberately leaving <code>self</code> unused here, if we leave it as-is, though?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/comparison/instances/membership_test.md</code>:180 on 2025-02-19 22:40</div>
+            <div class="timeline-body"><p>I like @AlexWaygood 's suggested message, except that even in the absence of detailed notes about why the <code>__bool__</code> method is invalid, I'd rather say &quot;has an invalid <code>__bool__</code> method&quot; rather than &quot;cannot be evaluated in a boolean context&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/comparison/instances/rich_comparison.md</code>:354 on 2025-02-19 22:41</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">element) of a chained comparison.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/comparison/instances/rich_comparison.md</code>:349 on 2025-02-19 22:42</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">## Chained comparisons with not-boolable types
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/expression/boolean.md</code>:126 on 2025-02-19 22:45</div>
+            <div class="timeline-body"><p>It is, but it's unfortunate that we don't get this helpful message in lots of other cases above where it is equally true (e.g. with <code>__bool__ = 3</code>), I presume because of the union-with-Unknown</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/diagnostic.rs</code>:510 on 2025-02-19 22:49</div>
+            <div class="timeline-body"><p>I know we discussed <code>not-boolable</code> as an option, but after thinking it through more I would much prefer <code>invalid-bool-method</code> because it puts the focus on what is actually wrong (we've encountered an invalid definition of <code>__bool__</code>, which is an error) rather than suggesting that there is some legitimate category of &quot;not-boolable&quot; objects which can be modeled consistently and soundly in the type system (there isn't).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/diagnostic.rs</code>:511 on 2025-02-19 22:50</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        summary: &quot;detects calls to invalid definitions of the `__bool__` method&quot;,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/binary/instances.md</code>:354 on 2025-02-19 22:54</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">## Operations involving types with invalid `__bool__` method
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1504 on 2025-02-19 23:16</div>
+            <div class="timeline-body"><p>The descriptors PR already does this and will conflict here, but so it goes...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1539 on 2025-02-19 23:33</div>
+            <div class="timeline-body"><p>We are losing a lot of diagnostic message usefulness in the tests due to union-with-Unknown and the fact that we don't dig into unions here; let's at least add a TODO for that.</p>
+<pre><code class="language-suggestion">                                // TODO: better diagnostics, in particular for `Unknown | T` which comes up often
+                                | CallError::Union { .. },
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:2287 on 2025-02-19 23:39</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    /// Returns an `Err` if the dunder method can't be called, or the given arguments are not valid.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1809 on 2025-02-19 23:48</div>
+            <div class="timeline-body"><p>The <code>?</code> here and below doesn't seem right if <code>allow_short_circuit</code> is false. It will mean in a union case we emit a specific diagnostic related to just one arbitrary element of the union with bad <code>__bool__</code>, even if there are multiple.</p>
+<p>We don't necessarily need to fix that in this PR, but I think we should at least add a test for that case with a TODO on the incomplete diagnostic.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:3624 on 2025-02-19 23:53</div>
+            <div class="timeline-body"><p>If I'm reading the current implementation right, &quot;type is a union and not all variants support <code>__bool__</code>&quot; will not usually result in <code>BoolError::Other</code>, it will result in a specific error relating to <code>__bool__</code> of some arbitrary one of the union elements that has a bad <code>__bool__</code>.</p>
+<p><code>Other</code> mostly seems to occur in cases where a type has a <code>__bool__</code> method which itself resolves to a union (usually a union with <code>Unknown</code> because it's not declared).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:3212 on 2025-02-19 23:56</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                            &quot;Object of type `{not_boolable}` has an invalid `__bool__` method; its return type (`{return_type}`) isn't assignable to `bool`&quot;,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:3648 on 2025-02-19 23:57</div>
+            <div class="timeline-body"><p>Would it be worth separating <code>ArgumentsError</code> from <code>ReturnTypeError</code> variants so we don't have to repeat this assignability check when rendering diagnostics?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:3203 on 2025-02-19 23:59</div>
+            <div class="timeline-body"><p>I would prefer &quot;has an invalid <code>__bool__</code> method&quot; over either of &quot;cannot be converted to a bool&quot; or &quot;cannot be evaluated in a boolean context.&quot; It is less vague and points more directly at the real problem.</p>
+<p>Also, in this case don't we know the problem is argument binding, so we could at least say that? Of course in future we'll want to give more details, I think.</p>
+<pre><code class="language-suggestion">                            &quot;Object of type `{}` has an invalid `__bool__` method; it does not accept the correct arguments.&quot;,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:3234 on 2025-02-20 00:01</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                        &quot;Object of type `{}` has an invalid `__bool__` and cannot be converted to a bool.&quot;,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2377 on 2025-02-20 00:07</div>
+            <div class="timeline-body"><p>I think this isn't quite right, and there should be a TODO here (though a low-priority one). If the <code>for</code> statement is not a definition, because the target is not a <code>Name</code> (Python allows e.g. <code>for x.attr in ...</code> and <code>for x[i] in ...</code>, strange as they look), we will never call <code>infer_for_statement_definition</code>, and we should ideally check the iterable for iterability and emit a diagnostic if it's not iterable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3206 on 2025-02-20 00:10</div>
+            <div class="timeline-body"><p>This is a common pattern and it would be nice if it could be a bit less verbose, but I guess there's no obvious way to do that short of a custom <code>Result</code> like type.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:4173 on 2025-02-20 00:16</div>
+            <div class="timeline-body"><p>I think this logic and the match below could be adjusted so we can avoid the unnecessary <code>try_bool</code> call on the last comparison entirely, instead of just skipping the diagnostic from it. Skipping the diagnostic is a tell that we are calling <code>try_bool</code> when we shouldn't need to because runtime doesn't.</p>
+<p>If <code>is_last</code>, we always return <code>ty</code> and we don't actually care about <code>truthiness</code>.</p>
+<p>I haven't checked the surrounding logic to see whether we enter this path even on single (non chained) comparisons, but if we do, fixing this could result in significantly fewer useless <code>try_bool</code> calls in real codebases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:4898 on 2025-02-20 00:33</div>
+            <div class="timeline-body"><p>This comment is not right, we are mimicking a runtime <code>bool</code> call here:</p>
+<pre><code>&gt;&gt;&gt; class A:
+...     def __eq__(self, other):
+...         return B()
+...
+&gt;&gt;&gt; class B:
+...     def __bool__(self):
+...         raise RuntimeError(&quot;boom&quot;)
+...
+&gt;&gt;&gt; (A(),) == (A(),)
+Traceback (most recent call last):
+  File &quot;&lt;python-input-16&gt;&quot;, line 1, in &lt;module&gt;
+    (A(),) == (A(),)
+  File &quot;&lt;python-input-13&gt;&quot;, line 3, in __bool__
+    raise RuntimeError(&quot;boom&quot;)
+RuntimeError: boom
+</code></pre>
+<p>Because <code>__eq__</code> is allowed to return any object, Python at runtime has to check that object for truthiness, which could fail; just like we have to do here.</p>
+<p>(Not saying we have to fix this in this PR, just that the comment here should be a TODO instead of an incorrect rationale.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-02-20 00:33</div>
+            <div class="timeline-body"><p>This is great!! I left a lot of comments, but many of them are wording bikeshedding :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-02-20 07:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:3203 on 2025-02-20 07:47</div>
+            <div class="timeline-body"><blockquote>
+<p>I would prefer &quot;has an invalid <code>__bool__</code> method&quot; over either of &quot;cannot be converted to a bool&quot; or &quot;cannot be evaluated in a boolean context.&quot; It is less vague and points more directly at the real problem.</p>
+</blockquote>
+<p>But that wording implies that the only way for the user to resolve the diagnostic is to go and fix the invalid <code>__bool__</code> definition. It's not possible for the user to do that if it comes from some third-party library like numpy or pandas. I would say that in the majority of cases, the fix for the diagnostic is to stop using objects of that type in a boolean context rather than to go and fix the invalid <code>__bool__</code> method — and that's partly why we flag the usages of the method rather than the definition of the method with our diagnostics</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-02-20 07:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/comparison/instances/membership_test.md</code>:180 on 2025-02-20 07:54</div>
+            <div class="timeline-body"><p>See my comment at https://github.com/astral-sh/ruff/pull/16238#discussion_r1963014361. I think it's pretty important that we foreground <em>what's wrong with the specific code we're highlighting</em> in our diagnostic messages, and <em>what the user needs to do to resolve the error</em>. The invalid method definition is the underlying cause here, but the specific thing that's incorrect in the code we're highlighting with the diagnostic range is that the object with the invalid method is being used in a boolean context, and the specific way for the user to resolve that error is for them to stop doing that. Fixing the invalid method definition may be out of their power if it comes from a third-party library.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-20 09:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1809 on 2025-02-20 09:05</div>
+            <div class="timeline-body"><p>I'd argue it isn't incorrect, but the error is less helpful. <code>allow_short_circuit</code> is to return early on an ambiguous result (maybe I should rename the variable) but that could mean that the method returns <code>Ok</code> for a union even if one variant can't be booled.</p>
+<p>I agree, we should have a todo/test</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-20 09:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3206 on 2025-02-20 09:08</div>
+            <div class="timeline-body"><p>I had <code>fallback_element_type_with_diagnostic</code> but it just felt sooo long. I don't mind the repetitiveness here. It's simple and more flexible, e.g. you don't have to call <code>fallback_element_type</code> if you only want to report a diagnostic.</p>
+<p>Overall, I don't think we should spend much time on this: While repetitive, the call sites are very limited.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-20 09:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:4898 on 2025-02-20 09:09</div>
+            <div class="timeline-body"><p>Nice catch. I tried to come up with a code example where we have to emit a diagnostic here but wasn't able to. Let me revisit this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-02-20 09:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/comparison/instances/membership_test.md</code>:180 on 2025-02-20 09:26</div>
+            <div class="timeline-body"><p>To be clear: I don't think my disagreement with Carl should block this PR being merged. We can iterate on the error message and/or continue discussing this in an issue or on Discord.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-20 10:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/resources/mdtest/expression/boolean.md</code>:126 on 2025-02-20 10:49</div>
+            <div class="timeline-body"><p>Yes, the union with <code>Unknown</code> messes everything up.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-20 15:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/diagnostic.rs</code>:510 on 2025-02-20 15:02</div>
+            <div class="timeline-body"><p>I don't like the <code>invalid-bool-method</code> too much because I'd expect this diagnostic to be raised on the definition side and not where <code>__bool__</code> is used.</p>
+<p>For example, the following suppression comments feels out of place:</p>
+<pre><code>if NotBoolable(): # red-knot: ignore[invalid-bool-method]
+</code></pre>
+<p>I agree that there's a concern with <code>Boolable</code> not being a concept in typeshed.</p>
+<p>How about <code>bool-object-with-invalid-bool-method</code> or <code>call-invalid-bool-method</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-20 15:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/diagnostic.rs</code>:510 on 2025-02-20 15:15</div>
+            <div class="timeline-body"><p>I think this also comes back to our discussion here https://github.com/astral-sh/ruff/pull/16238#discussion_r1963014361 and I agree with @AlexWaygood that the most common fix is to not use this object in a bool context. Tricky</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-02-20 15:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/diagnostic.rs</code>:510 on 2025-02-20 15:19</div>
+            <div class="timeline-body"><p>I liked Carl's earlier suggestion on Discord of <code>invalid-boolean-conversion</code> for the error code (or I guess <code>invalid-bool-conversion</code> is a bit shorter?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-20 18:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/diagnostic.rs</code>:512 on 2025-02-20 18:28</div>
+            <div class="timeline-body"><p>Thanks. I didn't use the unpacking syntax to keep the example simple.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-20 18:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:3203 on 2025-02-20 18:29</div>
+            <div class="timeline-body"><p>I went with <em>Boolean conversion is unsupported for <code>{type}</code></em> in the spirit of our unary/binary etc messages</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-20 18:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:3093 on 2025-02-20 18:31</div>
+            <div class="timeline-body"><p>Nice!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-20 18:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:4670 on 2025-02-20 18:35</div>
+            <div class="timeline-body"><p>Hmm thanks. <code>infer</code> and <code>types.rs</code> are a bit much for Rustfmt.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:3568 on 2025-02-20 19:24</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    /// The new-style iteration protocol requires a type being iterated over to have an `__iter__`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:3570 on 2025-02-20 19:25</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    /// protocol requires a type being iterated over to have a `__getitem__` method that accepts
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/call/builtins.md</code>:12 on 2025-02-20 19:26</div>
+            <div class="timeline-body"><pre><code class="language-suggestion"># TODO: We should emit a `unsupported-bool-conversion` error here because the argument doesn't implement `__bool__` correctly.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/comparison/instances/membership_test.md</code>:182 on 2025-02-20 19:29</div>
+            <div class="timeline-body"><p>(I still think that <code>operator</code> might actually be a better error code here specifically -- the invalid <code>__bool__</code> definition here means that you can't use the <code>in</code> operator with the <code>WithContains</code> type)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/comparison/instances/rich_comparison.md</code>:1 on 2025-02-20 19:30</div>
+            <div class="timeline-body"><p>I agree with Carl's suggested changes in this file</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-02-20 19:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @MichaReiser on 2025-02-21 07:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-21 09:36</div>
+            <div class="timeline-body"><p>Putting this back to draft or Alex keeps reviewing faster than I can address the comments ;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-21 10:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/diagnostic.rs</code>:510 on 2025-02-21 10:03</div>
+            <div class="timeline-body"><p>I'll go with <code>unsupported-bool-conversion</code> for now. We had an extensive discussion on Discord and the TLDR is: We haven't found the best name yet but we can iterate on the exact naming in the future.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-21 11:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/resources/mdtest/comparison/instances/membership_test.md</code>:182 on 2025-02-21 11:09</div>
+            <div class="timeline-body"><p>Closing as duplicate</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-21 14:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1539 on 2025-02-21 14:04</div>
+            <div class="timeline-body"><p>I added some specific handling for unions where exactly one variant fails.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-21 14:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:3624 on 2025-02-21 14:06</div>
+            <div class="timeline-body"><p>That's correct. I updated the comment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-21 14:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/resources/mdtest/comparison/instances/membership_test.md</code>:180 on 2025-02-21 14:13</div>
+            <div class="timeline-body"><p>I agree that this would be much better.</p>
+<p>I'm leaning towards not implementing this now. A) This feels like a task on its own because it isn't sufficient to prepend a message to every diagnostic; making it sound natural requires repeating much of the diagnostic code, and b) ideally, we'd have support from the diagnostic system to do this correctly.</p>
+<p>I expect that the code for doing this right might look fairly different depending on what the diagnostic system support.</p>
+<p>CC: @BurntSushi for another use case where we need some form of chaining/inspection/enriching of diagnostics.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_test/src/parser.rs</code>:625 on 2025-02-21 14:28</div>
+            <div class="timeline-body"><p>Not that it really matters much, but one reason why it is quite nice to stick with only using <code>```py</code> or <code>```pyi</code> for Python code blocks is that currently all the tags we use exactly map to the file extension that the embedded file will be saved as in the <code>MemoryFileSystem</code>. If you use <code>```py</code>, it saves it with the <code>.py</code> file extension; if you use <code>```pyi</code>, it saves it with the <code>.pyi</code> file extension; if you use <code>```toml</code>, it saves it as a <code>.toml</code> file... but <code>```python</code> here isn't going to cause mdtest to save the snippet with a <code>.python</code> extension.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-02-21 14:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_test/src/parser.rs</code>:625 on 2025-02-21 14:32</div>
+            <div class="timeline-body"><p>Stop looking at my PR, it's in draft ;)</p>
+<p>I was told yesterday that this wouldn't be hard to change but I precisely haven't changed it before because I was afraid of the push back and discussions it involves.</p>
+<p>I can revert the change here and open a separate PR but I'm very used to writing <code>python</code> and <code>RustRover</code> suggestions <code>python</code> but never <code>py</code>, making it very annoying because tests always fail.</p>
+<p>I'd find this a quality-of-life improvement. I agree, it leads to less consistency but it's common that markdown editors/renderers support both: names and extension. So I don't think this would come at too much of a suprise.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-21 14:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-21 14:33</div>
+            <div class="timeline-body"><p>Okay, I think I addressed all feedback with the exception of special casing <code>in</code>. I decided to defer it because I suspect it's a fair bit of work and the right approach might depend on the functionality of our diagnostic system.</p>
+<p>I did improve the error messages for unions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2025-02-21 14:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-02-21 14:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_test/src/parser.rs</code>:625 on 2025-02-21 14:35</div>
+            <div class="timeline-body"><blockquote>
+<p>Stop looking at my PR, it's in draft ;)</p>
+</blockquote>
+<p>heh, you're one to talk ;) but, sorry!</p>
+<p>I honestly don't care that much about this, so if it's a big quality of life improvement for you then I'm fine for it to go in :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/binary/instances.md</code>:354 on 2025-02-21 14:37</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">## Operations involving types with invalid `__bool__` methods
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/call/builtins.md</code>:12 on 2025-02-21 14:37</div>
+            <div class="timeline-body"><pre><code class="language-suggestion"># TODO: We should emit an `unsupported-bool-conversion` error here because the argument doesn't implement `__bool__` correctly.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/comparison/instances/membership_test.md</code>:193 on 2025-02-21 14:40</div>
+            <div class="timeline-body"><p>I don't think we need the <code>and</code> and <code>or</code> here, do we? Just <code>10 in WithContains()</code> fails at runtime and should be enough to cause us to emit the error:</p>
+<pre><code class="language-suggestion">10 in WithContains()
+# error: [unsupported-bool-conversion]
+10 not in WithContains()
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/comparison/instances/membership_test.md</code>:179 on 2025-02-21 14:52</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">`in` and `not in` operations will fail at runtime if the object on the right-hand side of the
+operation has a `__contains__` method that returns a type which is not convertible to `bool`.
+This is because of the way these operations are handled by the Python interpreter at runtime. If we
+assume that `y` is an object that has a  `__contains__` method, the Python expression `x in y`
+desugars to a `contains(y, x)` call, where `contains` looks something like this:
+
+```ignore
+def contains(y, x):
+    return bool(type(y).__contains__(y, x))
+```
+
+where the `bool()` conversion itself implicitly calls `__bool__` under the hood.
+
+TODO: Ideally our message would explain to the user what's wrong here. E.g,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/comparison/tuples.md</code>:376 on 2025-02-21 15:00</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">## Tuple equality with elements that incorrectly implement `__bool__`
+
+Python does not generally attempt to coerce the result of `==` and `!=` operations between two
+arbitrary objects to a `bool`, but a comparison of tuples will fail if the result of comparing any
+pair of elements at equivalent positions cannot be converted to a `bool`:
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/conditional/if_expression.md</code>:45 on 2025-02-21 15:03</div>
+            <div class="timeline-body"><p>this should be &quot;its&quot; rather than &quot;it's&quot; because it's not a shortening of &quot;it is&quot;</p>
+<pre><code class="language-suggestion"># error: [unsupported-bool-conversion] &quot;Boolean conversion is unsupported for type `NotBoolable`; its `__bool__` method isn't callable&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/comparison/tuples.md</code>:338 on 2025-02-21 15:06</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">## Chained comparisons with elements that incorrectly implement `__bool_`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/comparison/tuples.md</code>:341 on 2025-02-21 15:13</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">
+For an operation `A() &lt; A()` to succeed at runtime, the `A.__lt__` method does not necessarily need
+to return an object that is convertible to a `bool`. However, the return type _does_ need to be
+convertible to a  `bool` for the operation `A() &lt; A() &lt; A()` (a *chained* comparison) to succeed.
+This is because `A() &lt; A() &lt; A()` desugars to something like this, which involves several implicit
+conversions to `bool`:
+
+```ignore
+def compute_chained_comparison():
+		a1 = A()
+		a2 = A()
+		first_comparison = a1 &lt; a2
+		return first_comparison and (a2 &lt; A())
+```
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-02-21 15:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/T-256">@T-256</a> reviewed on 2025-02-21 15:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/T-256">@T-256</a> on <code>crates/red_knot_python_semantic/resources/mdtest/comparison/tuples.md</code>:338 on 2025-02-21 15:26</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">## Chained comparisons with elements that incorrectly implement `__bool__`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/resources/mdtest/conditional/if_expression.md</code>:45 on 2025-02-21 18:08</div>
+            <div class="timeline-body"><p>uh, this will be annoying</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-21 18:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-21 18:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/resources/mdtest/comparison/tuples.md</code>:341 on 2025-02-21 18:10</div>
+            <div class="timeline-body"><p>I do like the examples but it makes me wonder if this is really the level we're aiming for or if re-writing the python specification is a bit beyond our immediate goal. But I do appreciate it and I do learn a lot from them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-21 18:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/resources/mdtest/comparison/tuples.md</code>:341 on 2025-02-21 18:10</div>
+            <div class="timeline-body"><p>And I can see, you're a fan of my <code>ignore</code> file type hehe</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-21 18:13</div>
+            <div class="timeline-body"><p>I'll merge this before we get this to over 100 comments ;) 97 is enough</p>
+<p>Thank you both for your excellent reviews.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2025-02-21 18:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-02-21 18:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-02-21 18:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-02-21 18:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/comparison/tuples.md</code>:341 on 2025-02-21 18:35</div>
+            <div class="timeline-body"><blockquote>
+<p>And I can see, you're a fan of my <code>ignore</code> file type hehe</p>
+</blockquote>
+<p>haha yes, it's a great idea!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:49:30 UTC
+    </footer>
+</body>
+</html>

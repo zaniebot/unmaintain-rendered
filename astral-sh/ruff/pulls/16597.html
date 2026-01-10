@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Add support for calling `type[…]` - astral-sh/ruff #16597</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Add support for calling <code>type[…]</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/16597">#16597</a>
+        opened by <a href="https://github.com/sharkdp">@sharkdp</a>
+        on 2025-03-10 10:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-03-10 10:34</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This fixes the non-diagnostics part of https://github.com/astral-sh/ruff/issues/15948, but is mostly an experiment to see if the new ecosystem checks work as intended (see failing <a href="https://github.com/astral-sh/ruff/actions/runs/13762732294/job/38482228022?pr=16597">mypy primer run here</a>). I saw a few false positives when expressions of type <code>type[&lt;dynamic base&gt;]</code> were called, so this seemed rather easy to fix.</p>
+<h2>Test Plan</h2>
+<p>New Markdown tests.</p>
+<p>Negative diff on the ecosystem checks:</p>
+<pre><code class="language-diff">zipp (https://github.com/jaraco/zipp)
+- error: lint:call-non-callable
+-    --&gt; /tmp/mypy_primer/projects/zipp/zipp/__init__.py:393:16
+-     |
+- 392 |     def _next(self, at):
+- 393 |         return self.__class__(self.root, at)
+-     |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Object of type `type[Unknown]` is not callable
+- 394 |
+- 395 |     def is_dir(self):
+-     |
+- 
+- Found 9 diagnostics
++ Found 8 diagnostics
+
+arrow (https://github.com/arrow-py/arrow)
++     |
++     |
++ warning: lint:unused-ignore-comment
++    --&gt; /tmp/mypy_primer/projects/arrow/arrow/arrow.py:576:66
++ 574 |                 values.append(1)
++ 575 |
++ 576 |             floor = self.__class__(*values, tzinfo=self.tzinfo)  # type: ignore[misc]
++     |                                                                  -------------------- Unused blanket `type: ignore` directive
++ 577 |
++ 578 |             if frame_absolute == &quot;week&quot;:
+- error: lint:call-non-callable
+-     --&gt; /tmp/mypy_primer/projects/arrow/arrow/arrow.py:1080:16
+-      |
+- 1078 |           dt = self._datetime.astimezone(tz)
+- 1079 |
+- 1080 |           return self.__class__(
+-      |  ________________^
+- 1081 | |             dt.year,
+- 1082 | |             dt.month,
+- 1083 | |             dt.day,
+- 1084 | |             dt.hour,
+- 1085 | |             dt.minute,
+- 1086 | |             dt.second,
+- 1087 | |             dt.microsecond,
+- 1088 | |             dt.tzinfo,
+- 1089 | |             fold=getattr(dt, &quot;fold&quot;, 0),
+- 1090 | |         )
+-      | |_________^ Object of type `type[Unknown]` is not callable
+- 1091 |
+- 1092 |       # string output and formatting
+-      |
+
+black (https://github.com/psf/black)
+- 
+-     |
+-     |
+- error: lint:call-non-callable
+-    --&gt; /tmp/mypy_primer/projects/black/src/blib2to3/pgen2/grammar.py:135:15
+- 133 |         Copy the grammar.
+- 134 |         &quot;&quot;&quot;
+- 135 |         new = self.__class__()
+-     |               ^^^^^^^^^^^^^^^^ Object of type `type[@Todo]` is not callable
+- 136 |         for dict_attr in (
+- 137 |             &quot;symbol2number&quot;,
+- Found 328 diagnostics
++ Found 327 diagnostics
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @sharkdp on 2025-03-10 10:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[red-knot] Add support for calling type[<dynamic base>]" to "[red-knot] Add support for calling `type[<dynamic base>]`" by @sharkdp on 2025-03-10 10:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @sharkdp on 2025-03-10 10:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @sharkdp on 2025-03-10 10:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @sharkdp on 2025-03-10 10:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @sharkdp on 2025-03-10 10:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:2685 on 2025-03-10 11:27</div>
+            <div class="timeline-body"><p>I think it's simpler just to fix all of #15948 at once? The behaviour we want to have when calling <code>type[Foo]</code> is simply to treat it exactly the same as calling <code>Literal[Foo]</code></p>
+<pre><code class="language-diff">diff --git a/crates/red_knot_python_semantic/src/types.rs b/crates/red_knot_python_semantic/src/types.rs
+index f47cdf360..9041af59e 100644
+--- a/crates/red_knot_python_semantic/src/types.rs
++++ b/crates/red_knot_python_semantic/src/types.rs
+@@ -2678,11 +2678,12 @@ impl&lt;'db&gt; Type&lt;'db&gt; {
+                 )))
+             }
+ 
+-            Type::SubclassOf(subclass_of) if subclass_of.is_dynamic() =&gt; {
+-                Ok(CallOutcome::Single(CallBinding::from_return_type(
+-                    Type::Dynamic(subclass_of.into_dynamic().expect(&quot;checked above&quot;)),
+-                )))
+-            }
++            Type::SubclassOf(subclass_of_type) =&gt; match subclass_of_type.subclass_of() {
++                ClassBase::Dynamic(dynamic_type) =&gt; Ok(CallOutcome::Single(
++                    CallBinding::from_return_type(Type::Dynamic(dynamic_type)),
++                )),
++                ClassBase::Class(class) =&gt; Type::class_literal(class).try_call(db, arguments),
++            },
+ 
+             instance_ty @ Type::Instance(_) =&gt; {
+                 instance_ty
+diff --git a/crates/red_knot_python_semantic/src/types/subclass_of.rs b/crates/red_knot_python_semantic/src/types/subclass_of.rs
+index ade6bac8c..8d0873a96 100644
+--- a/crates/red_knot_python_semantic/src/types/subclass_of.rs
++++ b/crates/red_knot_python_semantic/src/types/subclass_of.rs
+@@ -1,5 +1,4 @@
+ use crate::symbol::SymbolAndQualifiers;
+-use crate::types::DynamicType;
+ 
+ use super::{ClassBase, ClassLiteralType, Db, KnownClass, Type};
+ 
+@@ -63,13 +62,6 @@ impl&lt;'db&gt; SubclassOfType&lt;'db&gt; {
+         subclass_of.is_dynamic()
+     }
+ 
+-    pub fn into_dynamic(self) -&gt; Option&lt;DynamicType&gt; {
+-        match self.subclass_of {
+-            ClassBase::Dynamic(dynamic) =&gt; Some(dynamic),
+-            ClassBase::Class(_) =&gt; None,
+-        }
+-    }
+-
+     pub const fn is_fully_static(self) -&gt; bool {
+         !self.is_dynamic()
+     }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-03-10 11:27</div>
+            <div class="timeline-body"><p>The diff in the mypy_primer run looks great! It's unfortunate that it shows up as a &quot;failed check&quot; on the PR, though -- is that deliberate?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-03-10 12:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:2685 on 2025-03-10 12:04</div>
+            <div class="timeline-body"><p>Oh — Yes, thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-03-10 12:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:2685 on 2025-03-10 12:07</div>
+            <div class="timeline-body"><p>I guess this PR doesn't <em>quite</em> close #15948, since there's still this bit to do from the issue description:</p>
+<blockquote>
+<p>This is not actually sound, because Liskov compatibility is not enforced on type constructor methods (<code>__init__</code> and <code>__new__</code>) when subclassing, so you can't be sure that a constructor call that works for a class <code>C</code> will actually work for a subclass of <code>C</code>. But it's widely relied on, and we will have to support it.</p>
+<p>I would like to have an opt-in diagnostic emitted whenever you call an object of <code>type[C]</code>, so users who want to avoid this unsoundness have that option.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-03-10 12:07</div>
+            <div class="timeline-body"><blockquote>
+<p>It's unfortunate that it shows up as a &quot;failed check&quot; on the PR, though -- is that deliberate?</p>
+</blockquote>
+<p>Signalling a non-empty diff as a 'failure' (that you need to look at) seems fine to me? Once we add commenting on PRs, we could potentially turn that into a check that always succeeds.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-03-10 12:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/call/subclass_of.md</code>:1 on 2025-03-10 12:07</div>
+            <div class="timeline-body"><p>Could you also add a test or two for calling <code>type[&lt;class&gt;]</code>, now that we're doing that too?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[red-knot] Add support for calling `type[<dynamic base>]`" to "[red-knot] Add support for calling `type[…]`" by @sharkdp on 2025-03-10 12:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-03-10 12:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:2685 on 2025-03-10 12:09</div>
+            <div class="timeline-body"><p>Right, I just updated the PR description to say that as well :+1:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-03-10 12:10</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>It's unfortunate that it shows up as a &quot;failed check&quot; on the PR, though -- is that deliberate?</p>
+</blockquote>
+<p>Signalling a non-empty diff as a 'failure' (that you need to look at) seems fine to me? Once we add commenting on PRs, we could potentially turn that into a check that always succeeds.</p>
+</blockquote>
+<p>hmm, I suspect this will be quite confusing for new contributors. Though having said that, contributors have also been confused over at typeshed by the mypy_primer comments. (A &quot;sea of red&quot; in the comment can be a good thing, since it shows that diagnostics are going away! But red usually connotes &quot;bad&quot; 😄)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-03-10 12:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/call/subclass_of.md</code>:26 on 2025-03-10 12:14</div>
+            <div class="timeline-body"><p>These will be fixed by https://github.com/astral-sh/ruff/pull/16512</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-03-10 12:17</div>
+            <div class="timeline-body"><p>I think overall I'd much prefer a &quot;comment on the PR&quot; mypy_primer check rather than have the check fail. But the changes this PR makes look great!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-03-10 12:22</div>
+            <div class="timeline-body"><blockquote>
+<p>I think overall I'd much prefer a &quot;comment on the PR&quot; mypy_primer check rather than have the check fail</p>
+</blockquote>
+<p>Ok, I'll look into it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @sharkdp on 2025-03-10 12:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-03-10 12:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-03-10 12:24</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:49:32 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Handle requests received after shutdown message - astral-sh/ruff #16262</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Handle requests received after shutdown message</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/16262">#16262</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2025-02-19 17:38
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-02-19 17:38</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR should help in https://github.com/astral-sh/ruff-vscode/issues/676.</p>
+<p>There are two issues that this is trying to fix all related to the way shutdown should happen as per the protocol:</p>
+<ol>
+<li><p>After the server handled the <a href="https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#shutdown">shutdown request</a> and while waiting for the exit notification:</p>
+<blockquote>
+<p>If a server receives requests after a shutdown request those requests should error with <code>InvalidRequest</code>.</p>
+</blockquote>
+<p>But, we raised an error and exited. This PR fixes it by entering a loop which responds to any request during this period with <code>InvalidRequest</code></p>
+</li>
+<li><p>If the server received an <a href="https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#exit">exit notification</a> but the shutdown request was never received, the server handled that by logging and exiting with success but as per the spec:</p>
+<blockquote>
+<p>The server should exit with success code 0 if the shutdown request has been received before; otherwise with error code 1.</p>
+</blockquote>
+<p>So, this PR fixes that as well by raising an error in this case.</p>
+</li>
+</ol>
+<p>Closes: https://github.com/astral-sh/ruff-vscode/issues/676</p>
+<h2>Test Plan</h2>
+<p>I'm not sure how to go about testing this without using a mock server.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @dhruvmanila on 2025-02-19 17:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @dhruvmanila on 2025-02-19 17:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-02-19 17:44</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @dhruvmanila on 2025-02-20 09:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @dhruvmanila on 2025-02-20 09:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-02-20 09:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_server/src/server/connection.rs</code>:128 on 2025-02-20 09:49</div>
+            <div class="timeline-body"><p>Using <code>anyhow::bail</code> as a way to exit the server with failure but we could return an explicit <code>ExitStatus</code> instead as well</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-02-20 09:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_server/src/server/connection.rs</code>:95 on 2025-02-20 09:51</div>
+            <div class="timeline-body"><p>I'm not really a big fan of the loop here, but I also don't think it's likely that the infinite loop will happen because 2 branches below exits the loop while the one responds to the client.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-20 10:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_server/src/server/connection.rs</code>:115 on 2025-02-20 10:47</div>
+            <div class="timeline-body"><p>Should we also do some server side logging to get visibility if this is happening or do you consider the extension logging to be sufficient?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_server/src/server/connection.rs</code>:118 on 2025-02-20 10:48</div>
+            <div class="timeline-body"><p>The only other variant seems to be <code>Notification</code>. I think we should just discard the notification and log that the server did so.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_server/src/server/connection.rs</code>:95 on 2025-02-20 10:48</div>
+            <div class="timeline-body"><p>I don't mind the loop</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-02-20 10:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-02-20 10:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_server/src/server/connection.rs</code>:115 on 2025-02-20 10:48</div>
+            <div class="timeline-body"><p>Yes, I'll add it</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-02-20 11:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_server/src/server/connection.rs</code>:118 on 2025-02-20 11:01</div>
+            <div class="timeline-body"><p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2025-02-20 11:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2025-02-20 11:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-02-20 11:10</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:49:30 UTC
+    </footer>
+</body>
+</html>

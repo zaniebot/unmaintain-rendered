@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`flake8-pyi`] Mark `PYI030` fix unsafe when comments are deleted - astral-sh/ruff #16322</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>flake8-pyi</code>] Mark <code>PYI030</code> fix unsafe when comments are deleted</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/16322">#16322</a>
+        opened by <a href="https://github.com/VascoSch92">@VascoSch92</a>
+        on 2025-02-22 22:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/VascoSch92">@VascoSch92</a> on 2025-02-22 22:54</div>
+            <div class="timeline-body"><p>The PR addresses issue #16317</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @VascoSch92 on 2025-02-22 22:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-02-22 23:01</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/unnecessary_literal_union.rs</code>:145 on 2025-02-23 01:48</div>
+            <div class="timeline-body"><p>Could we just return the <code>Edit</code> from both branches of the <code>if other_exprs.is_empty()</code>? Then we could avoid duplicating the comment check. I'm picturing something like this truncated example:</p>
+<pre><code class="language-rust">let edit = if other_exprs.is_empty() {
+    Edit::range_replacement(checker.generator().expr(&amp;literal), expr.range())
+} else {
+    // ...
+    Edit::range_replacement(content, expr.range())
+};
+
+if checker.comment_ranges().intersects(expr.range()) {
+    Fix::unsafe_edit(edit)
+ } else {
+     Fix::safe_edit(edit)
+}
+</code></pre>
+<p>The code was already structured like this before your changes, but I also find it a bit weird to have this huge block inside of the <code>diagnostic.set_fix</code> call. That makes sense when using <code>Diagnostic::try_set_fix</code> with a closure but not so much here. For the sake of an easy-to-review diff, we might want to leave that alone for now, though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/unnecessary_literal_union.rs</code>:33 on 2025-02-23 01:54</div>
+            <div class="timeline-body"><p>I know I linked to TC006, which has this kind of phrasing, but I would probably phrase this more like &quot;This fix is marked unsafe if it would delete any comments within the replacement range.&quot;</p>
+<p>And if you want to go above and beyond you can include an example like <a href="https://docs.astral.sh/ruff/rules/split-static-string/#fix-safety">SIM905</a>. Maybe something like</p>
+<pre><code class="language-python">field26: (
+    # preserved comment
+        Literal[&quot;a&quot;, &quot;b&quot;]
+        # deleted comment
+        | Literal[&quot;c&quot;, &quot;d&quot;]  # preserved again
+)
+</code></pre>
+<p>(assuming I've identified where comments are preserved and deleted correctly)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/resources/test/fixtures/flake8_pyi/PYI030.py</code>:101 on 2025-02-23 02:02</div>
+            <div class="timeline-body"><p>It feels wrong for me to complain about having too many tests, but are any of these cases addressing particular subtleties here? They all look roughly the same to me, and I think they are all unsafe fixes? Maybe it would be more helpful if each comment were something like &quot;ok&quot; or &quot;preserved&quot; for any comments we preserve and &quot;deleted&quot; or &quot;not ok&quot; for deleted comments.</p>
+<p>Either that or trimming down the sheer number of cases would make this a little easier to review, at least for me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-02-23 02:07</div>
+            <div class="timeline-body"><p>Thanks for taking care of this so quickly! I have minor nits about the code and docs and one larger question about the number of tests, which I have not reviewed fully yet.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @ntBre on 2025-02-23 02:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @ntBre on 2025-02-23 02:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-02-23 14:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/resources/test/fixtures/flake8_pyi/PYI030.py</code>:101 on 2025-02-23 14:31</div>
+            <div class="timeline-body"><p>I agree with Brent -- I think just this first snippet would probably be sufficient to test this PR :-)</p>
+<p>This kind of thing is something we do in lots of rules, so I think we can be pretty confident that this patch works without testing every single edge case in this rule's fixtures. And having too many tests can be confusing for future readers of the fixture -- the reader could be left thinking that the rule is more complex than they thought it was, or they could be left wondering why there are so many snippets when they all seem to be testing the same thing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/VascoSch92">@VascoSch92</a> reviewed on 2025-02-23 19:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/VascoSch92">@VascoSch92</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/unnecessary_literal_union.rs</code>:145 on 2025-02-23 19:31</div>
+            <div class="timeline-body"><p>It makes sense. I changed ;-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/VascoSch92">@VascoSch92</a> reviewed on 2025-02-23 19:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/VascoSch92">@VascoSch92</a> on <code>crates/ruff_linter/resources/test/fixtures/flake8_pyi/PYI030.py</code>:101 on 2025-02-23 19:32</div>
+            <div class="timeline-body"><p>Ok, no problem. I just left the first two test-cases. I hope it is enough. Let me know</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ntBre by @VascoSch92 on 2025-02-23 19:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/VascoSch92">@VascoSch92</a> on 2025-02-23 20:37</div>
+            <div class="timeline-body"><p>About the <code>CI/mkdocs</code> failing: should I had a <code>KNOWN_FORMATTING_VIOLATIONS</code> ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-02-23 21:19</div>
+            <div class="timeline-body"><p>Thank you! I fixed the docs formatting issue :-) It was complaining that you didn't have enough spaces before an inline comment</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[PYI030] Mark fix unsafe when comments are deleted" to "[`flake8-pyi`] Mark `PYI030` fix unsafe when comments are deleted" by @AlexWaygood on 2025-02-23 21:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2025-02-23 21:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2025-02-23 21:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-02-23 21:22</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:49:31 UTC
+    </footer>
+</body>
+</html>

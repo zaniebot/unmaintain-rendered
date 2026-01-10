@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Assignments to attributes - astral-sh/ruff #16705</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Assignments to attributes</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/16705">#16705</a>
+        opened by <a href="https://github.com/sharkdp">@sharkdp</a>
+        on 2025-03-13 12:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-03-13 12:26</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This changeset adds proper support for assignments to attributes:</p>
+<pre><code class="language-py">obj.attr = value
+</code></pre>
+<p>In particular, the following new features are now available:</p>
+<ul>
+<li>We previously didn't raise any errors if you tried to assign to a non-existing attribute <code>attr</code>. This is now fixed.</li>
+<li>If <code>type(obj).attr</code> is a data descriptor, we now call its <code>__set__</code> method instead of trying to assign to the load-context type of <code>obj.attr</code>, which can be different for data descriptors.</li>
+<li>An initial attempt was made to support unions and intersections, as well as possibly-unbound situations. There are some remaining TODOs in tests, but they only affect edge cases. Having nested diagnostics would be one way that could help solve the remaining cases, I believe.</li>
+</ul>
+<h2>Follow ups</h2>
+<p>The following things are planned as follow-ups:</p>
+<ul>
+<li>Write a test suite with snapshot diagnostics for various attribute assignment errors</li>
+<li>Improve the diagnostics. An easy improvement would be to highlight the right hand side of the assignment as a secondary span (with the rhs type as additional information). Some other ideas are mentioned in TODO comments in this PR.</li>
+<li>Improve the union/intersection/possible-unboundness handling</li>
+<li>Add support for calling custom <code>__setattr__</code> methods (see new false positive in the ecosystem results)</li>
+</ul>
+<h2>Ecosystem changes</h2>
+<p>Some changes are related to assignments on attributes with a custom <code>__setattr__</code> method (see above). Since we didn't notice missing attributes at all in store context previously, these are new.</p>
+<p>The other changes are related to properties. We previously used their read-context type to test the assignment. That results in weird error messages, as we often see assignments to <code>self.property</code> and then we think that those are instance attributes <em>and</em> descriptors, leading to union types. Now we properly look them up on the meta type, see the decorated function, and try to overwrite it with the new value (as we don't understand decorators yet). Long story short: the errors are still weird, we need to understand decorators to make them go away.</p>
+<h2>Test Plan</h2>
+<p>New Markdown tests</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @sharkdp on 2025-03-13 12:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-03-13 12:32</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">zipp (https://github.com/jaraco/zipp)
++    |
++ 
++ error: lint:unresolved-attribute
++   --&gt; /tmp/mypy_primer/projects/zipp/zipp/compat/overlay.py:34:1
++    |
++ 33 | zipfile = HashableNamespace(**vars(importlib.import_module('zipfile')))
++ 34 | zipfile.Path = zipp.Path
++    | ^^^^^^^^^^^^ Unresolved attribute `Path` on type `HashableNamespace`.
++ 35 | zipfile._path = zipp
++    |
++ 
++ error: lint:unresolved-attribute
++   --&gt; /tmp/mypy_primer/projects/zipp/zipp/compat/overlay.py:35:1
++    |
++ 33 | zipfile = HashableNamespace(**vars(importlib.import_module('zipfile')))
++ 34 | zipfile.Path = zipp.Path
++ 35 | zipfile._path = zipp
++    | ^^^^^^^^^^^^^ Unresolved attribute `_path` on type `HashableNamespace`.
++ 36 |
++ 37 | sys.modules[__name__ + '.zipfile'] = zipfile  # type: ignore[assignment]
+- Found 8 diagnostics
++ Found 10 diagnostics
+
+black (https://github.com/psf/black)
++ 
++     |
++     |
+-     |             ^^^^^^^^^^^^^^ Object of type `Literal[&quot;&quot;]` is not assignable to attribute `prefix` of type `&lt;bound method `prefix` of `Leaf`&gt;`
++     |             ^^^^^^^^^^^^^^ Implicit shadowing of function `prefix`; annotate to make it explicit if this is intentional
+-     |             ^^^^^^^^^^^^^^ Object of type `Literal[&quot;&quot;]` is not assignable to attribute `prefix` of type `&lt;bound method `prefix` of `Leaf`&gt;`
++     |             ^^^^^^^^^^^^^^ Implicit shadowing of function `prefix`; annotate to make it explicit if this is intentional
+-     |                 ^^^^^^^^^^^^^^ Object of type `Literal[&quot;&quot;]` is not assignable to attribute `prefix` of type `&lt;bound method `prefix` of `Leaf`&gt;`
++     |                 ^^^^^^^^^^^^^^ Implicit shadowing of function `prefix`; annotate to make it explicit if this is intentional
++ error: lint:invalid-assignment
++     |         ^^^^^^^^^^^ Implicit shadowing of function `prefix`; annotate to make it explicit if this is intentional
++     |         ^^^^^^^^^^^ Implicit shadowing of function `prefix`; annotate to make it explicit if this is intentional
++    --&gt; /tmp/mypy_primer/projects/black/src/black/ranges.py:330:5
++ 328 |     # this is actually required to not break incremental reformatting.
++ 329 |     prefix = first.prefix
++ 330 |     first.prefix = &quot;&quot;
+-     |         ^^^^^^^^^^^ Object of type `Literal[&quot;&quot;]` is not assignable to attribute `prefix` of type `&lt;bound method `prefix` of `Leaf`&gt;`
++     |     ^^^^^^^^^^^^ Object of type `Literal[&quot;&quot;]` is not assignable to attribute `prefix` on type `Leaf &amp; ~AlwaysFalsy`
++ 331 |     index = node.remove()
++ 332 |     if index is not None:
+-     |         ^^^^^^^^^^^ Object of type `Literal[&quot;&quot;]` is not assignable to attribute `prefix` of type `&lt;bound method `prefix` of `Leaf`&gt;`
++    --&gt; /tmp/mypy_primer/projects/black/src/black/ranges.py:356:5
++ 354 |         return
++ 355 |     prefix = first.prefix
++ 356 |     first.prefix = &quot;&quot;
++     |     ^^^^^^^^^^^^ Object of type `Literal[&quot;&quot;]` is not assignable to attribute `prefix` on type `Leaf &amp; ~AlwaysFalsy`
++ 357 |     value = &quot;&quot;.join(str(node) for node in nodes)
++ 358 |     # The prefix comment on the NEWLINE leaf is the trailing comment of the statement.
++     |         ^^^^^^^^^^^^^^ Implicit shadowing of function `prefix`; annotate to make it explicit if this is intentional
+-     |         ^^^^^^^^^^^^^^ Object of type `Literal[&quot;&quot;]` is not assignable to attribute `prefix` of type `&lt;bound method `prefix` of `Leaf`&gt;`
+-    --&gt; /tmp/mypy_primer/projects/black/src/black/linegen.py:158:17
+- 157 |             if any_open_brackets:
+- 158 |                 node.prefix = &quot;&quot;
+-     |                 ^^^^^^^^^^^ Object of type `Literal[&quot;&quot;]` is not assignable to attribute `prefix` of type `@Todo &amp; &lt;bound method `prefix` of `Leaf`&gt;`
+- 159 |             if node.type not in WHITESPACE:
+- 160 |                 self.current_line.append(node)
+-     |             ^^^^^^^^^^^ Object of type `Literal[&quot;&quot;]` is not assignable to attribute `prefix` of type `&lt;bound method `prefix` of `Node`&gt; | Literal[prefix]`
++     |             ^^^^^^^^^^^ Implicit shadowing of function `prefix`; annotate to make it explicit if this is intentional
+-     |             ^^^^^^^^^^^ Object of type `&lt;bound method `prefix` of `Node`&gt; | Literal[prefix]` is not assignable to attribute `prefix` of type `&lt;bound method `prefix` of `Leaf`&gt;`
++     |             ^^^^^^^^^^^ Implicit shadowing of function `prefix`; annotate to make it explicit if this is intentional
+-     |                 ^^^^^^^^^^^ Object of type `Literal[&quot;&quot;]` is not assignable to attribute `prefix` of type `&lt;bound method `prefix` of `Node`&gt; | Literal[prefix]`
++     |                 ^^^^^^^^^^^ Implicit shadowing of function `prefix`; annotate to make it explicit if this is intentional
+- Found 298 diagnostics
++ Found 299 diagnostics
+
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[red-knot] Writes to attributes" to "[red-knot] Assignments to attributes" by @sharkdp on 2025-03-13 13:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2366 on 2025-03-13 20:04</div>
+            <div class="timeline-body"><p>There is quite a bit of unfortunate code duplication with the branch above. On the other hand, there's also quite a bit of special handling (e.g. dedicated diagnostics for <code>ClassVar</code>s above, improved error messages for accidental class-level assignments to instance attributes here) in the dedicated branches that would make it cumbersome to generalize this into a single method that is being parametrized. Happy to attempt to do this though if we think it's worth it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-03-13 20:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @sharkdp on 2025-03-13 20:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @sharkdp on 2025-03-13 20:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @sharkdp on 2025-03-13 20:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @sharkdp on 2025-03-13 20:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/descriptor_protocol.md</code>:38 on 2025-03-13 22:59</div>
+            <div class="timeline-body"><p>We will want this diagnostic (and others below) to name the expected type, but this is fine to leave as follow up for when we have the new diagnostics system.</p>
+<p>I think &quot;data descriptor attribute... with custom <code>__set__</code> method&quot; is perhaps redundant? But also fine for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/attributes.md</code>:1226 on 2025-03-13 23:00</div>
+            <div class="timeline-body"><p>&quot;possibly unbound&quot; is a weird phrasing for an attribute we are assigning to, but we can revisit this in future.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/descriptor_protocol.md</code>:533 on 2025-03-13 23:10</div>
+            <div class="timeline-body"><p>This still deserves a TODO like before -- the error has changed but its still wrong, pending property support.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2223 on 2025-03-13 23:18</div>
+            <div class="timeline-body"><p>This is off the top of my head, but I think we can treat all negative intersection elements as <code>object</code> for this purpose (I don't think a negative type ever gives us information about attributes.) And because any positive element must inherit <code>object</code>, I think we actually can totally ignore negative elements except in the case where there are zero positive elements, in which case we treat the entire intersection as implicitly <code>object</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2366 on 2025-03-13 23:21</div>
+            <div class="timeline-body"><p>This looks sufficiently different to me, both semantically and in the actual code, that it seems better to keep it separate.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-03-13 23:28</div>
+            <div class="timeline-body"><p>Looks great!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/descriptor_protocol.md</code>:38 on 2025-03-14 10:18</div>
+            <div class="timeline-body"><blockquote>
+<p>We will want this diagnostic (and others below) to name the expected type</p>
+</blockquote>
+<p>Yes, absolutely. I didn't attempt to do this here, as I think it would naturally fall out of a sub-diagnostic that would include the call binding error.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-03-14 10:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-03-14 10:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2223 on 2025-03-14 10:45</div>
+            <div class="timeline-body"><blockquote>
+<p>This is off the top of my head, but I think we can treat all negative intersection elements as <code>object</code> for this purpose (I don't think a negative type ever gives us information about attributes.)</p>
+</blockquote>
+<p>Let's consider two extreme cases. <code>~object = object &amp; ~object = Never</code> and <code>~Never = object &amp; ~Never = object</code>. In the former case, <em>every</em> attribute would exist (with type <code>Never</code>). So every attribute assignment to <code>~object</code> should succeed. In the latter case, only the attributes on <code>object</code> exist, so almost every attribute assignment to <code>~Never</code> should fail.</p>
+<p>So in this sense, negative intersection elements do seem to provide information about attributes? I think we have special handling for these cases and we would not end up in this branch, but I struggled to justify why we can completely neglect negative elements here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @sharkdp on 2025-03-14 11:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-03-14 11:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-03-14 11:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-03-14 23:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2223 on 2025-03-14 23:47</div>
+            <div class="timeline-body"><p>Yes, I was implicitly excluding from consideration <code>Not[object]</code>, since that will simplify to <code>Never</code>, and <code>Not[Never]</code> since that will simplify to <code>object</code> (if alone) or disappear from the intersection.</p>
+<p>In the realm of non-total negative elements that can actually exist in our intersection representation, I don't think that negative elements can contribute information about attributes, because the type system is not closed; there are always infinite possible objects with infinite possible attributes inhabiting a negation type.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:49:32 UTC
+    </footer>
+</body>
+</html>

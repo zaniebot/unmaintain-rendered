@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Check gradual equivalence between callable types - astral-sh/ruff #16634</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Check gradual equivalence between callable types</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/16634">#16634</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2025-03-11 16:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-03-11 16:29</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Part of #15382</p>
+<p>Add support for checking the gradual equivalence between callable types.</p>
+<p>A callable type is gradually equivalent to the other callable type:</p>
+<ul>
+<li>Both uses gradual form for the parameters. If not, then the number of parameters should be the same and the type at the a position in the first parameter list should be gradually equivalent the the type at the same position in the second parameter list</li>
+<li>Both the return types are either <code>None</code> or the some values are gradually equivalent to each other.</li>
+</ul>
+<h2>Test Plan</h2>
+<p>Update <code>is_gradual_equivalent_to.md</code> with callable type test cases.</p>
+<p>Note: I've an explicit goal of updating the property tests with the new callable types once all relations are implemented.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @dhruvmanila on 2025-03-11 16:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @dhruvmanila on 2025-03-11 16:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @dhruvmanila on 2025-03-11 16:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @dhruvmanila on 2025-03-11 16:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @dhruvmanila on 2025-03-11 16:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-03-11 16:37</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/type_properties/is_gradual_equivalent_to.md</code>:75 on 2025-03-11 19:06</div>
+            <div class="timeline-body"><p>Maybe use <code>Any</code> here on both sides to make the intent clearer?</p>
+<pre><code class="language-suggestion">static_assert(not is_gradual_equivalent_to(Callable[[int, Any], None], Callable[[Any, int], None]))
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:4609 on 2025-03-11 19:13</div>
+            <div class="timeline-body"><p>If I understand correctly, a <code>Callable</code> without a return type is basically treated as returning <code>Unknown</code>. So is this check here sufficient? Or should we consider an (invalid) <code>Callable[[int]]</code> to be equivalent to <code>Callable[[int], Unknown]</code>?</p>
+<p>(and same question below for parameters)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> approved on 2025-03-11 19:37</div>
+            <div class="timeline-body"><p>Apart for the one question I had, this looks good to me. Thank you.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-03-12 04:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:4609 on 2025-03-12 04:33</div>
+            <div class="timeline-body"><p>A <code>return_type</code> of <code>None</code> represents e.g. a function with no return type annotation. (We could just as well represent this with <code>Unknown</code>, as we ultimately will fall back to that, but I decided to explicitly represent the lack of annotation -- as opposed to e.g. a broken annotation -- in <code>Signature</code>. Not sure this distinction is necessary/useful.) A signature with <code>return_type</code> of <code>None</code> is not possible to construct with the <code>Callable</code> special form, not even with an invalid one.</p>
+<p>But I think your question is still a good one. I think we <em>should</em> consider a <code>return_type</code> of <code>None</code> equivalent to a dynamic return type, because it will fall back to <code>Unknown</code> in type inference; the abstracted callable type of the function <code>def f(): ...</code> should be gradual equivalent to <code>Callable[[], Any]</code>.</p>
+<p>This will be somewhat tricky to test currently, as we don't yet have a way to abstract a <code>Type::FunctionLiteral</code> to its <code>Type::Callable</code> supertype. I think this would be easy to add (it's just taking the signature from the function and putting it in a <code>Type::Callable</code>); we'd also need to expose it to tests through some kind of <code>CallableTypeFromFunction[...]</code> operator or similar.</p>
+<p>Once we have a way to test this equivalence, implementing it could either be via handling in <code>are_optional_types_gradually_equivalent</code>, or it could be a reason to reverse my earlier decision and always represent missing annotations as <code>Type::Unknown</code> in signatures. I think I'd still weakly prefer the former, it should be fairly simple to do it here? But I wouldn't be opposed if you want to just make types in Signature non-optional and use <code>Unknown</code> instead of <code>None</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-03-12 04:38</div>
+            <div class="timeline-body"><p>Looks good! I guess this (and the other similar PRs) will probably need some adjustment rebased on top of @dcreager's overload support.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-03-12 16:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:4609 on 2025-03-12 16:11</div>
+            <div class="timeline-body"><p>I've implemented the special form over at https://github.com/astral-sh/ruff/pull/16683, rebased this on top of that branch and added a couple of test cases related to this behavior.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-03-12 20:07</div>
+            <div class="timeline-body"><p>Looks great!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-03-13 02:28</div>
+            <div class="timeline-body"><p>I found one more case which we need to consider:</p>
+<pre><code class="language-py">def foo(*args: Any, **kwargs: Any) -&gt; Any:
+    pass
+
+static_assert(is_gradual_equivalent_to(CallableTypeFromFunction[foo], Callable[..., Any]))
+</code></pre>
+<p>Because, as per the spec:</p>
+<blockquote>
+<p>If the input signature in a function definition includes both a <code>*args</code> and <code>**kwargs</code> parameter and both are typed as <code>Any</code> (explicitly or implicitly because it has no annotation), a type checker should treat this as the equivalent of <code>...</code>.</p>
+<p>https://typing.python.org/en/latest/spec/callables.html#meaning-of-in-callable</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-03-13 02:33</div>
+            <div class="timeline-body"><p>Oh, that's simple to fix. I don't need to explicitly check whether both signatures has <code>is_gradual</code> flag as <code>true</code> because even in the case of <code>...</code>, the parameters is populated with <code>*Any, **Any</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2025-03-13 02:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2025-03-13 02:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-03-13 02:46</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:49:32 UTC
+    </footer>
+</body>
+</html>

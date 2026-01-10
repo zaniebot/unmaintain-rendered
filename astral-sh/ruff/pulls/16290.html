@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Restrict visibility of the `module_type_symbols` function - astral-sh/ruff #16290</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Restrict visibility of the <code>module_type_symbols</code> function</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/16290">#16290</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-02-20 20:39
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-02-20 20:39</div>
+            <div class="timeline-body"><p>(This PR is stacked on top of https://github.com/astral-sh/ruff/pull/16284; review that first.)</p>
+<h2>Summary</h2>
+<p>This function here is solely an implementation detail of <code>module_type_symbol()</code> (which #16284 renames to <code>module_type_implicit_global_symbol()</code>):</p>
+<p>https://github.com/astral-sh/ruff/blob/470f852f04f0e4284c78d15ce81637540e127558/crates/red_knot_python_semantic/src/symbol.rs#L661-L694</p>
+<p>In fact, not only is it an implementation detail -- it would be <em>wrong</em> for any other function in <code>symbol.rs</code> to use it. For example, this function also falls back to <code>types.ModuleType</code>, but in a slightly different way so that only <code>__getattr__</code> is excluded from the declared types on <code>types.ModuleType</code>. The fact that the other function does the fallback differently is deliberate, because the other function implements lookup in the global scope <em>from external-module scopes</em> whereas the callers of <code>module_type_implicit_global_symbol()</code> are implementing lookup in the global scope <em>from scopes in the same file</em>.</p>
+<p>This PR restricts the visibility of the <code>module_type_symbols()</code> by moving it into an inner module, so that only <code>module_type_implicit_global_symbol()</code> can use it. It also further improves the documentation so that it's clear how it differs from the other <code>ModuleType</code> fallback implemented in <code>symbol.rs</code>.</p>
+<p>My first idea here was to make <code>module_type_symbols()</code> an inner function nested inside <code>module_type_implicit_global_symbol()</code>. However, that would have required removing the unit test for <code>module_type_symbols</code>.</p>
+<h2>Test Plan</h2>
+<p><code>cargo test -p red_knot_python_semantic</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2025-02-20 20:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @AlexWaygood on 2025-02-20 20:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @AlexWaygood on 2025-02-20 20:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @AlexWaygood on 2025-02-20 20:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-02-20 21:33</div>
+            <div class="timeline-body"><p>Looks good!</p>
+<p>Not necessarily for this PR, but if it was such a performance win to have <code>module_type_implicit_global_symbol</code> with its cached check of the names, it makes me wonder whether it would be a win to do something similar for the fallback in <code>imported_symbol</code>.</p>
+<p>And I just think the subtle distinction between the fallback in <code>imported_symbol</code> and the one using <code>module_type_implicit_global_symbol</code> might be clearer if the structure was more similar, with parallel functions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-02-21 10:54</div>
+            <div class="timeline-body"><blockquote>
+<p>Not necessarily for this PR, but if it was such a performance win to have <code>module_type_implicit_global_symbol</code> with its cached check of the names, it makes me wonder whether it would be a win to do something similar for the fallback in <code>imported_symbol</code>.</p>
+<p>And I just think the subtle distinction between the fallback in <code>imported_symbol</code> and the one using <code>module_type_implicit_global_symbol</code> might be clearer if the structure was more similar, with parallel functions.</p>
+</blockquote>
+<p>It's a tempting idea, but unfortunately it would be incorrect if we just did in the same way as with <code>module_type_implicit_global_symbol</code>. When we do the global-scope lookup from external modules, we need to model the fact that attributes on supertypes of <code>types.ModuleType</code> are also available, as well as attributes on <code>types.ModuleType</code> itself. E.g.:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; from typing import __repr__
+&gt;&gt;&gt; __repr__
+&lt;method-wrapper '__repr__' of module object at 0x103cae660&gt;
+</code></pre>
+<p>So we cannot simply short-circuit if the name is not found in the list of symbols found in the <code>types.ModuleType</code> class body.</p>
+<p>Now, we <em>could</em> instead short-circuit if the name is not found in <em>either</em> the list of symbols found in the <code>types.ModuleType</code> class body <em>or</em> the <code>builtins.object</code> class body (since we know that <code>types.ModuleType</code> just inherits directly from <code>object</code>. I suppose that might work, and probably wouldn't be too complicated!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2025-02-21 10:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-02-21 10:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-02-21 10:55</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:49:30 UTC
+    </footer>
+</body>
+</html>

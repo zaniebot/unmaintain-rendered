@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[flake8-bugbear] Add async-lru and aiocache decorators to the B019 rule checker - astral-sh/ruff #16450</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[flake8-bugbear] Add async-lru and aiocache decorators to the B019 rule checker</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/16450">#16450</a>
+        opened by <a href="https://github.com/LuckySting">@LuckySting</a>
+        on 2025-03-01 16:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/LuckySting">@LuckySting</a> on 2025-03-01 16:03</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Resolves #16436.</p>
+<p>This change adds support for checking the <code>B019</code> rule against async cache decorators from the two most commonly used third-party libraries (<a href="https://github.com/aio-libs/aiocache">aiocache</a> and <a href="https://github.com/aio-libs/async-lru">async-lru</a>). It also updates the error message to clearly indicate which decorator was used.</p>
+<h2>Test Plan</h2>
+<p><code>cargo nextest run</code> and <code>cargo insta test</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-03-01 16:09</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">breaking</span> added by @MichaReiser on 2025-03-03 10:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_bugbear/rules/cached_instance_method.rs</code>:69 on 2025-03-03 10:20</div>
+            <div class="timeline-body"><p>Nit: I'd suggest using an enum here to avoid unnecessary <code>String</code> allocation</p>
+<pre><code class="language-rust">#[derive(Copy, Clone, Deubg)]
+enum LruDecorator {
+	FuncToolsLruCache,
+	FunctoolsCache,
+	AsyncLru,
+	AiocacheCached,
+	AiocacheCachedStampede,
+	AiocacheMultiCached
+}
+
+impl LruDecorator {
+	fn from_qualified_name(name: &amp;[str]) -&gt; Option&lt;Self&gt; {
+		match qualified_name.segments() {
+            [&quot;functools&quot;, &quot;lru_cache&quot;] =&gt; Some(Self::FunctoolsLruCache),
+						...
+            _ =&gt; None,
+	}
+}
+
+impl std::fmt::Display for LruDecorator {
+	fn fmt(f: &amp;mut std::fmt::Formatter) -&gt; std::fmt::Result {
+		match self {
+			Self::FuncToolsLruCache =&gt; f.write_str(&quot;functools.lru_cache&quot;),
+			...
+		}
+	}
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_bugbear/rules/cached_instance_method.rs</code>:168 on 2025-03-03 10:22</div>
+            <div class="timeline-body"><p>We have to gate this new behavior behind preview mode because it's a considerable extension of the rule's intent (<code>checker.settings().preview.is_enabled()</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-03-03 10:27</div>
+            <div class="timeline-body"><p>Thank you.</p>
+<p>I'm a bit hesitant to accept this change because it is for third party libraries. Most of our rules are limited to first-party modules or very popular first-party modules.</p>
+<p>I'm not sure <code>async-lru</code> meets that bar</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @MichaReiser on 2025-03-03 10:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/LuckySting">@LuckySting</a> on 2025-03-03 11:09</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm not sure <code>async-lru</code> meets that bar</p>
+</blockquote>
+<p>Hello! Here the download statistics for these two:
+<a href="https://pypistats.org/packages/async-lru">async-lru</a> More then 20kk downloads last month
+<a href="https://pypistats.org/packages/aiocache">aiocache</a> About 2kk downloads last month</p>
+<p>It seems that <code>async-lru</code> just a young lib, which is getting popular, and <code>aiocache</code> is old-but-gold one. What do you think, could we include them both now?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/LuckySting">@LuckySting</a> reviewed on 2025-03-03 11:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/LuckySting">@LuckySting</a> on <code>crates/ruff_linter/src/rules/flake8_bugbear/rules/cached_instance_method.rs</code>:69 on 2025-03-03 11:51</div>
+            <div class="timeline-body"><p>Oh, really, thanks!
+I used to think about allocation</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/LuckySting">@LuckySting</a> reviewed on 2025-03-03 11:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/LuckySting">@LuckySting</a> on <code>crates/ruff_linter/src/rules/flake8_bugbear/rules/cached_instance_method.rs</code>:168 on 2025-03-03 11:57</div>
+            <div class="timeline-body"><p>I don't understand how to write insta tests in this case, could you explain it to me or give an example?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-03-04 10:35</div>
+            <div class="timeline-body"><p>@zanieb, do you know how popular/recommended these libraries are in the Python ecosystem? E.g. are they as popular as <code>attrs</code>?</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:49:31 UTC
+    </footer>
+</body>
+</html>

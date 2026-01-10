@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Binary operator inference for union types - astral-sh/ruff #16601</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Binary operator inference for union types</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/16601">#16601</a>
+        opened by <a href="https://github.com/sharkdp">@sharkdp</a>
+        on 2025-03-10 14:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-03-10 14:27</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This fixes a bug I noticed while looking at ecosystem results. The MRE version of it is this:</p>
+<pre><code class="language-py">def sub(x: float, y: float):
+    # Red Knot: Operator `-` is unsupported between objects of type `int | float` and `int | float`
+    return x - y
+</code></pre>
+<p>It's yet another instance of the general problem that our way of representing union types does not prevent us from handling unions (and intersections) incorrectly. The pattern is usually this: we implement operation X by explicitly matching on some cases that we handle explicitly (e.g. literals). For all other types, we fall back to some generic behavior (calling some functions that work for every <code>Type</code>). That generic behavior also <em>compiles</em> for <code>Type::Union</code>/<code>Type::Intersection</code>, but what we really want is to recursively call X for each element, which also gives us that special behavior for elements of the union.</p>
+<p>For intersections, I'll open a ticket.</p>
+<h2>Test Plan</h2>
+<ul>
+<li>New Markdown tests.</li>
+<li>Expected diff in the ecosystem checks</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @sharkdp on 2025-03-10 14:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-03-10 14:33</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">mypy_primer (https://github.com/hauntsaninja/mypy_primer)
+- 
+-     |
+-     |
+- error: lint:unsupported-operator
+-    --&gt; /tmp/mypy_primer/projects/mypy_primer/mypy_primer/utils.py:114:79
+- 112 |     if check and proc.returncode:
+- 113 |         raise subprocess.CalledProcessError(proc.returncode, cmd, output=stdout, stderr=stderr)
+- 114 |     return subprocess.CompletedProcess(cmd, proc.returncode, stdout, stderr), end_t - start_t
+-     |                                                                               ^^^^^^^^^^^^^^^ Operator `-` is unsupported between objects of type `int | float` and `int | float`
+- Found 50 diagnostics
++ Found 49 diagnostics
+
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-03-10 14:34</div>
+            <div class="timeline-body"><blockquote>
+<pre><code class="language-diff">-     �[1m�[94m|�[0m
+-     �[1m�[94m|�[0m
+- �[1m�[91merror�[0m: �[1mlint:unsupported-operator�[0m
+</code></pre>
+</blockquote>
+<p>Ok, looks like I need the strip-ansi-codes step after all :smile:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-03-10 14:40</div>
+            <div class="timeline-body"><blockquote>
+<p>Ok, looks like I need the strip-ansi-codes step after all 😄</p>
+</blockquote>
+<p>Or you could ask @BurntSushi to implement the <code>color</code> terminal option or implement it yourself (see the CLI proposal, section <code>terminal</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-03-10 14:44</div>
+            <div class="timeline-body"><blockquote>
+<p>Or you could ask @BurntSushi to implement the <code>color</code> terminal option or implement it yourself (see the CLI proposal, section <code>terminal</code>)</p>
+</blockquote>
+<p>But I want the CLI output in the GitHub actions run to be with colors (https://github.com/astral-sh/ruff/actions/runs/13767111167/job/38496238179#step:6:108). And I don't want to run it twice. So if stripping ANSI codes works fine, that seems like an acceptable option?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-03-10 16:44</div>
+            <div class="timeline-body"><p>Oh, now the diff is duplicated. I need to fix my <code>tee</code> command line, but will have to shift that to tomorrow.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-03-11 21:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:4054 on 2025-03-11 21:19</div>
+            <div class="timeline-body"><p>Instead of short-circuiting here, we could probably also build a better diagnostic, telling you which exact element-combination didn't work. But it seems low priority and doesn't necessarily have to be included here, I think.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @sharkdp on 2025-03-11 21:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @sharkdp on 2025-03-11 21:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @sharkdp on 2025-03-11 21:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @sharkdp on 2025-03-11 21:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-03-11 23:44</div>
+            <div class="timeline-body"><p>Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @sharkdp on 2025-03-12 07:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-03-12 07:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-03-12 07:21</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:49:32 UTC
+    </footer>
+</body>
+</html>

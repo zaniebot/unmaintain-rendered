@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Case sensitive module resolver - astral-sh/ruff #16521</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Case sensitive module resolver</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/16521">#16521</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2025-03-05 17:14
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-03-05 17:14</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR implements the first part of https://github.com/astral-sh/ruff/discussions/16440. It ensures that Red Knot's module resolver is case sensitive on all systems.</p>
+<p>This PR combines a few approaches:</p>
+<ol>
+<li>It uses <code>canonicalize</code> on non-case-sensitive systems to get the real casing of a path. This works for as long as no symlinks or mapped network drives (the windows <code>E:\</code> is mapped to <code>\\server\share</code> thingy). This is the same as what Pyright does</li>
+<li>If 1. fails, fall back to recursively list the parent directory and test if the path's file name matches the casing exactly as listed in by list dir. This is the same approach as CPython takes in its module resolver. The main downside is that it requires more syscalls because, unlike CPython, we Red Knot needs to invalidate its caches if a file name gets renamed (CPython assumes that the folders are immutable).</li>
+</ol>
+<p>It's worth noting that the file watching test that I added that renames <code>lib.py</code> to <code>Lib.py</code> currently doesn't pass on case-insensitive systems. Making it pass requires some more involved changes to <code>Files</code>. I plan to work on this next. There's the argument that landing this PR on its own isn't worth it without this issue being addressed. I think it's still a good step in the right direction even when some of the details on how and where the path case sensitive comparison is implemented.</p>
+<h2>Test plan</h2>
+<p>I added multiple integration tests (including a failing one). I tested that the <code>case-sensitivity</code> detection works as expected on Windows, MacOS and Linux and that the fast-paths are taken accordingly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @MichaReiser on 2025-03-05 17:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-03-05 17:20</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2025-03-07 14:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @MichaReiser on 2025-03-07 14:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @MichaReiser on 2025-03-07 14:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @MichaReiser on 2025-03-07 14:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/module_resolver/resolver.rs</code>:1884 on 2025-03-07 20:16</div>
+            <div class="timeline-body"><p>This seems to rely on creating a parent directory, so why isn't it <code>write_file_all</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff_db/src/system/os.rs</code>:643 on 2025-03-08 00:45</div>
+            <div class="timeline-body"><p>Does this mean that if someone on a case-sensitive file system happens to run red-knot from an all-caps CWD, they may observe a significant slowdown?</p>
+<p>That's not likely to ever happen... but it's pretty weird/unpleasant behavior if it does happen.</p>
+<p>Would an alternative be to try lower-casing in that scenario? Either all-lower or all-upper should be different from the the original path.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-03-08 00:45</div>
+            <div class="timeline-body"><p>What a headache! Thank you for taking this on.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-03-08 18:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/system/os.rs</code>:643 on 2025-03-08 18:02</div>
+            <div class="timeline-body"><blockquote>
+<p>What a headache!</p>
+</blockquote>
+<p>I hope you referred to file systems and not my PR ;)</p>
+<p>Yes. Another example is if you run Red Knot from a directory named <code>/1234</code> where the upper and lower-case names are identical. The reason why I think this is extremely unlikely is because the code lower-cases the entire path and not just the last component. So <code>/Users/micha/1234</code> would be converted to <code>/USERS/MICHA/1234</code> and the test would still succeed.</p>
+<p>We could extend the logic to also try <code>current_exe</code> for which the casing should differ unless someone renames the <code>red_knot</code> binary to <code>1234</code>... 🤷 The only downside this has is that Red Knot might be installed in your home directory (let's say that's case sensitive) and your project runs on a case-insensitive network drive. However, I'm not sure how much we should worry about this case because the best we can do here ultimately is an approximation (or make everything slower than it has to be in most projects).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-03-11 00:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ruff_db/src/system/os.rs</code>:643 on 2025-03-11 00:20</div>
+            <div class="timeline-body"><blockquote>
+<p>I hope you referred to file systems and not my PR ;)</p>
+</blockquote>
+<p>Yes, file systems!</p>
+<blockquote>
+<p>We could extend the logic to also try <code>current_exe</code> for which the casing should differ unless someone renames the <code>red_knot</code> binary to <code>1234</code>... 🤷 The only downside this has is that Red Knot might be installed in your home directory (let's say that's case sensitive) and your project runs on a case-insensitive network drive.</p>
+</blockquote>
+<p>The same issue could occur if you run knot from a cwd on one filesystem and use <code>--project</code> to check files on another one. In theory you could even have your project on one filesystem and your venv/site-packages on a different one.</p>
+<p>Ultimately I am fine with however you want to handle this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-03-14 19:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/system/os.rs</code>:643 on 2025-03-14 19:14</div>
+            <div class="timeline-body"><p>I'll leave it as is for now and plan to revisit it as part of the file watching on case insensitive systems work because, depending on which approach we take, falling back to <code>Unknown</code> might no longer be an option (in which case a more precise inference is important).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2025-03-14 19:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-03-14 19:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-03-14 19:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-03-14 19:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/module_resolver/resolver.rs</code>:1884 on 2025-03-14 19:16</div>
+            <div class="timeline-body"><p>See https://github.com/astral-sh/ruff/pull/16518#discussion_r1981891383</p>
+<p>Happy to change the naming if you prefer the consistency of having the <code>_all</code> prefix everywhere.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-03-14 19:18</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:49:32 UTC
+    </footer>
+</body>
+</html>

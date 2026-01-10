@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Fix subtle detail in where the `types.ModuleType` attribute lookup should happen in `TypeInferenceBuilder::infer_name_load()` - astral-sh/ruff #16284</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Fix subtle detail in where the <code>types.ModuleType</code> attribute lookup should happen in <code>TypeInferenceBuilder::infer_name_load()</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/16284">#16284</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-02-20 19:06
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-02-20 19:06</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR fixes a &quot;bug&quot; where we got to the right answer... but for the wrong reasons 😄</p>
+<p>It is best reviewed commit by commit.:</p>
+<ol>
+<li>The first commit &quot;breaks&quot; things by removing the code that was allowing us to achieve the right answer for the wrong reasons.</li>
+<li>The second commit fixes things again by making us get to the right answer for the right reasons</li>
+<li>The third commit adds more unit tests</li>
+<li>The fourth commit makes the new unit tests pass by reverting the first commit</li>
+</ol>
+<h2>Description of the bug</h2>
+<p>In code like this, we were correctly inferring that the <code>__name__</code> symbol was bound:</p>
+<pre><code class="language-py">print(__name__)
+</code></pre>
+<p>However, we were only considering it bound because of the fact that the call <code>builtins_symbol(db, &quot;__name__&quot;)</code> (the <em>last</em> fallback in the chain of fallbacks in <code>TypeInferenceBuilder::infer_name_load()</code>) returns a bound symbol -- in other words, we were considering that <code>__name__</code> here was a builtin symbol. That's incorrect: every module has its own <code>__name__</code> symbol, meaning that although there <em>is</em> a <code>__name__</code> symbol in Python's builtins scope, it is almost always shadowed by the <code>__name__</code> symbol in other modules' global scopes. The reason why we were not understanding that there was a global-scope <code>__name__</code> symbol here is that although we have a <code>ModuleType</code>-attribute fallback in the <code>global_symbol</code> call at the last line here, we fail to get there if we exit early due to the <code>if file_scope_id.is_global()</code> early return at the start of the closure:</p>
+<p>https://github.com/astral-sh/ruff/blob/470f852f04f0e4284c78d15ce81637540e127558/crates/red_knot_python_semantic/src/types/infer.rs#L3576-L3592</p>
+<p>In other words, we only did the <code>ModuleType</code>-attribute fallback if we doing name lookup from an inner scope -- we were skipping it if we were doing name lookup from the global scope itself.</p>
+<p>(This bug has existed for a while -- it was already there in https://github.com/astral-sh/ruff/blob/4941975e744309972a03f7ee5a9a7b9083362c3c/crates/red_knot_python_semantic/src/types/infer.rs, for example.)</p>
+<h2>Does this matter?</h2>
+<p>Right now? Maybe not... but it might do later. For example, we don't yet model the effect of <code>del</code> statements on bindings. For a normal symbol in a global scope, once it's been deleted, you can't access it:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; FOO = 42
+&gt;&gt;&gt; del FOO
+&gt;&gt;&gt; FOO
+Traceback (most recent call last):
+  File &quot;&lt;python-input-2&gt;&quot;, line 1, in &lt;module&gt;
+    FOO
+NameError: name 'FOO' is not defined
+</code></pre>
+<p>But that's not true for <code>__name__</code>, because it exists as both a symbol in the current global scope and a symbol in the builtins scope:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; __name__
+'__main__'
+&gt;&gt;&gt; del __name__
+&gt;&gt;&gt; __name__
+'builtins'
+</code></pre>
+<p>I'd also just prefer to <em>get this right</em>. It's quite confusing to me that we currently only recognise these symbols as being bound because we erroneously consider them builtins even when they're shadowed by implicit globals. This PR fixes things so that we accurately model the semantics.</p>
+<h2>Implementation</h2>
+<p>The semantics are now modeled correctly by splitting the <code>global_symbol</code> function into two functions: <code>explicit_global_symbol</code> (which does <em>not</em> consider implicit globals such as <code>__name__</code>, <code>__doc__</code>, etc.) and <code>global_symbol</code>, which wraps <code>explicit_global_symbol</code> but adds the fallback to the implicit globals.</p>
+<p><code>global_symbol()</code> actually becomes test-only, because it is now unused in production code. <code>TypeInferenceBuilder::infer_name_load()</code> uses <code>explicit_global_symbol()</code> in the location it currently uses <code>global_symbol</code>, and we now, er, <em>explicitly</em> fallback to the <em>implicit</em> globals as a standalone step in <code>TypeInferenceBuilder::infer_name_load()</code>.</p>
+<h2>Test Plan</h2>
+<ul>
+<li>All existing tests pass</li>
+<li>New unit tests added to <code>symbol.rs</code></li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2025-02-20 19:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @AlexWaygood on 2025-02-20 19:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @AlexWaygood on 2025-02-20 19:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @AlexWaygood on 2025-02-20 19:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-02-20 19:13</div>
+            <div class="timeline-body"><p><a href="https://codspeed.io/astral-sh/ruff/branches/alex%2Fmoduletype-lookup">Neutral on codspeed</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[red-knot] Fix subtle detail in where the `types.ModuleType` lookup should happen in `TypeInferenceBuilder::infer_name_load()`" to "[red-knot] Fix subtle detail in where the `types.ModuleType` attribute lookup should happen in `TypeInferenceBuilder::infer_name_load()`" by @AlexWaygood on 2025-02-20 19:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3597 on 2025-02-20 21:28</div>
+            <div class="timeline-body"><p>Given that the fallback to an implicit global happens immediately after checking for an explicit global, which is the same thing <code>global_symbol</code> does, it's not clear to me why we can't just simplify this to use <code>global_symbol</code>, and then it wouldn't be test-only anymore. If I make this change (plus the necessary import change and making <code>global_symbol</code> not test-only) all tests pass:</p>
+<pre><code class="language-suggestion">                    global_symbol(db, self.file(), symbol_name)
+                })
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-02-20 21:29</div>
+            <div class="timeline-body"><p>Looks good, nice catch! Just one implementation question.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3597 on 2025-02-21 10:48</div>
+            <div class="timeline-body"><p>Hmm, isn't your suggestion here exactly what we do on <code>main</code>?</p>
+<blockquote>
+<p>it's not clear to me why we can't just simplify this to use <code>global_symbol</code>, and then it wouldn't be test-only anymore</p>
+</blockquote>
+<p>It's because we never get this far in the closure if the lookup is happening from elsewhere in the global scope. If we're already in the global scope, we early-return from the closure and therefore skip the <code>ModuleType</code> implicit-globals fallback that the <code>global_symbol()</code> call does as the last part of the closure:</p>
+<p>https://github.com/astral-sh/ruff/blob/c2b9fa84f7ffffca0ab173751f5dc2943e8b052d/crates/red_knot_python_semantic/src/types/infer.rs#L3576-L3592</p>
+<p>In order for us to fallback to <code>types.ModuleType</code> implicit globals <em>even when we're doing the lookup from elsewhere in the global scope</em>, the fallback must be its own closure in the fallback-closure chain.</p>
+<blockquote>
+<p>If I make this change (plus the necessary import change and making <code>global_symbol</code> not test-only) all tests pass</p>
+</blockquote>
+<p>Correct -- but just as on <code>main</code>, the tests would pass for the wrong reasons. If I make this change -- which is your suggestion here, plus removing the fallback to <code>types.ModuleType</code> from the <code>builtins_symbol()</code>:</p>
+<details>
+
+<pre><code class="language-diff">diff --git a/crates/red_knot_python_semantic/src/symbol.rs b/crates/red_knot_python_semantic/src/symbol.rs
+index 9cca8643f..74661f2f3 100644
+--- a/crates/red_knot_python_semantic/src/symbol.rs
++++ b/crates/red_knot_python_semantic/src/symbol.rs
+@@ -207,7 +207,6 @@ pub(crate) fn explicit_global_symbol&lt;'db&gt;(db: &amp;'db dyn Db, file: File, name: &amp;st
+ /// rather than being looked up as symbols explicitly defined/declared in the global scope.
+ ///
+ /// Use [`imported_symbol`] to perform the lookup as seen from outside the file (e.g. via imports).
+-#[cfg(test)]
+ pub(crate) fn global_symbol&lt;'db&gt;(db: &amp;'db dyn Db, file: File, name: &amp;str) -&gt; Symbol&lt;'db&gt; {
+     explicit_global_symbol(db, file, name)
+         .or_fall_back_to(db, || module_type_implicit_global_symbol(db, name))
+@@ -248,14 +247,7 @@ pub(crate) fn imported_symbol&lt;'db&gt;(db: &amp;'db dyn Db, module: &amp;Module, name: &amp;str)
+ /// (e.g. `from builtins import int`).
+ pub(crate) fn builtins_symbol&lt;'db&gt;(db: &amp;'db dyn Db, symbol: &amp;str) -&gt; Symbol&lt;'db&gt; {
+     resolve_module(db, &amp;KnownModule::Builtins.name())
+-        .map(|module| {
+-            external_symbol_impl(db, module.file(), symbol).or_fall_back_to(db, || {
+-                // We're looking up in the builtins namespace and not the module, so we should
+-                // do the normal lookup in `types.ModuleType` and not the special one as in
+-                // `imported_symbol`.
+-                module_type_implicit_global_symbol(db, symbol)
+-            })
+-        })
++        .map(|module| external_symbol_impl(db, module.file(), symbol))
+         .unwrap_or(Symbol::Unbound)
+ }
+ 
+@@ -863,12 +855,6 @@ mod tests {
+         assert_eq!(symbol.expect_type(), KnownClass::Str.to_instance(db));
+     }
+ 
+-    #[test]
+-    fn implicit_builtin_globals() {
+-        let db = setup_db();
+-        assert_bound_string_symbol(&amp;db, builtins_symbol(&amp;db, &quot;__name__&quot;));
+-    }
+-
+     #[test]
+     fn implicit_typing_globals() {
+         let db = setup_db();
+diff --git a/crates/red_knot_python_semantic/src/types/infer.rs b/crates/red_knot_python_semantic/src/types/infer.rs
+index 575a63143..5784a117c 100644
+--- a/crates/red_knot_python_semantic/src/types/infer.rs
++++ b/crates/red_knot_python_semantic/src/types/infer.rs
+@@ -50,9 +50,8 @@ use crate::semantic_index::semantic_index;
+ use crate::semantic_index::symbol::{FileScopeId, NodeWithScopeKind, NodeWithScopeRef, ScopeId};
+ use crate::semantic_index::SemanticIndex;
+ use crate::symbol::{
+-    builtins_module_scope, builtins_symbol, explicit_global_symbol,
+-    module_type_implicit_global_symbol, symbol, symbol_from_bindings, symbol_from_declarations,
+-    typing_extensions_symbol, LookupError,
++    builtins_module_scope, builtins_symbol, global_symbol, symbol, symbol_from_bindings,
++    symbol_from_declarations, typing_extensions_symbol, LookupError,
+ };
+ use crate::types::call::{Argument, CallArguments};
+ use crate::types::diagnostic::{
+@@ -3589,12 +3588,8 @@ impl&lt;'db&gt; TypeInferenceBuilder&lt;'db&gt; {
+                         }
+                     }
+ 
+-                    explicit_global_symbol(db, self.file(), symbol_name)
++                    global_symbol(db, self.file(), symbol_name)
+                 })
+-                // Not found in the module's explicitly declared global symbols?
+-                // Check the &quot;implicit globals&quot; such as `__doc__`, `__file__`, `__name__`, etc.
+-                // These are looked up as attributes on `types.ModuleType`.
+-                .or_fall_back_to(db, || module_type_implicit_global_symbol(db, symbol_name))
+                 // Not found in globals? Fallback to builtins
+                 // (without infinite recursion if we're already in builtins.)
+                 .or_fall_back_to(db, || {
+</code></pre>
+</details>
+
+<p>Then you get a <em>lot</em> of mdtest failures which <em>shouldn't</em> have been relying on us understanding that <code>__name__</code> is a builtin symbol (which <em>should</em> have been resilient to the <code>ModuleType</code> fallback in <code>builtins_symbol</code> being removed):</p>
+<details>
+
+<pre><code>failures:
+
+---- mdtest__scopes_moduletype_attrs stdout ----
+
+moduletype_attrs.md - Implicit globals from `types.ModuleType` - Implicit `ModuleType` globals
+
+  crates/red_knot_python_semantic/resources/mdtest/scopes/moduletype_attrs.md:10 unmatched assertion: revealed: str
+  crates/red_knot_python_semantic/resources/mdtest/scopes/moduletype_attrs.md:10 unexpected error: 13 [unresolved-reference] &quot;Name `__name__` used when not defined&quot;
+  crates/red_knot_python_semantic/resources/mdtest/scopes/moduletype_attrs.md:10 unexpected error: 1 [revealed-type] &quot;Revealed type is `Unknown`&quot;
+  crates/red_knot_python_semantic/resources/mdtest/scopes/moduletype_attrs.md:11 unmatched assertion: revealed: str | None
+  crates/red_knot_python_semantic/resources/mdtest/scopes/moduletype_attrs.md:11 unexpected error: 13 [unresolved-reference] &quot;Name `__file__` used when not defined&quot;
+  crates/red_knot_python_semantic/resources/mdtest/scopes/moduletype_attrs.md:11 unexpected error: 1 [revealed-type] &quot;Revealed type is `Unknown`&quot;
+  crates/red_knot_python_semantic/resources/mdtest/scopes/moduletype_attrs.md:12 unmatched assertion: revealed: LoaderProtocol | None
+  crates/red_knot_python_semantic/resources/mdtest/scopes/moduletype_attrs.md:12 unexpected error: 13 [unresolved-reference] &quot;Name `__loader__` used when not defined&quot;
+  crates/red_knot_python_semantic/resources/mdtest/scopes/moduletype_attrs.md:12 unexpected error: 1 [revealed-type] &quot;Revealed type is `Unknown`&quot;
+  crates/red_knot_python_semantic/resources/mdtest/scopes/moduletype_attrs.md:13 unmatched assertion: revealed: str | None
+  crates/red_knot_python_semantic/resources/mdtest/scopes/moduletype_attrs.md:13 unexpected error: 13 [unresolved-reference] &quot;Name `__package__` used when not defined&quot;
+  crates/red_knot_python_semantic/resources/mdtest/scopes/moduletype_attrs.md:13 unexpected error: 1 [revealed-type] &quot;Revealed type is `Unknown`&quot;
+  crates/red_knot_python_semantic/resources/mdtest/scopes/moduletype_attrs.md:14 unmatched assertion: revealed: str | None
+  crates/red_knot_python_semantic/resources/mdtest/scopes/moduletype_attrs.md:14 unexpected error: 13 [unresolved-reference] &quot;Name `__doc__` used when not defined&quot;
+  crates/red_knot_python_semantic/resources/mdtest/scopes/moduletype_attrs.md:14 unexpected error: 1 [revealed-type] &quot;Revealed type is `Unknown`&quot;
+  crates/red_knot_python_semantic/resources/mdtest/scopes/moduletype_attrs.md:18 unmatched assertion: revealed: Unknown | None
+  crates/red_knot_python_semantic/resources/mdtest/scopes/moduletype_attrs.md:18 unexpected error: 13 [unresolved-reference] &quot;Name `__spec__` used when not defined&quot;
+  crates/red_knot_python_semantic/resources/mdtest/scopes/moduletype_attrs.md:18 unexpected error: 1 [revealed-type] &quot;Revealed type is `Unknown`&quot;
+  crates/red_knot_python_semantic/resources/mdtest/scopes/moduletype_attrs.md:20 unmatched assertion: revealed: @Todo(generics)
+  crates/red_knot_python_semantic/resources/mdtest/scopes/moduletype_attrs.md:20 unexpected error: 13 [unresolved-reference] &quot;Name `__path__` used when not defined&quot;
+  crates/red_knot_python_semantic/resources/mdtest/scopes/moduletype_attrs.md:20 unexpected error: 1 [revealed-type] &quot;Revealed type is `Unknown`&quot;
+
+To rerun this specific test, set the environment variable: MDTEST_TEST_FILTER=&quot;moduletype_attrs.md - Implicit globals from `types.ModuleType` - Implicit `ModuleType` globals&quot;
+MDTEST_TEST_FILTER=&quot;moduletype_attrs.md - Implicit globals from `types.ModuleType` - Implicit `ModuleType` globals&quot; cargo test -p red_knot_python_semantic --test mdtest -- mdtest__scopes_moduletype_attrs
+
+moduletype_attrs.md - Implicit globals from `types.ModuleType` - Conditionally global or `ModuleType` attribute
+
+  crates/red_knot_python_semantic/resources/mdtest/scopes/moduletype_attrs.md:120 unmatched assertion: revealed: Literal[1] | str
+  crates/red_knot_python_semantic/resources/mdtest/scopes/moduletype_attrs.md:120 unexpected error: 13 [possibly-unresolved-reference] &quot;Name `__name__` used when possibly not defined&quot;
+  crates/red_knot_python_semantic/resources/mdtest/scopes/moduletype_attrs.md:120 unexpected error: 1 [revealed-type] &quot;Revealed type is `Literal[1]`&quot;
+
+To rerun this specific test, set the environment variable: MDTEST_TEST_FILTER=&quot;moduletype_attrs.md - Implicit globals from `types.ModuleType` - Conditionally global or `ModuleType` attribute&quot;
+MDTEST_TEST_FILTER=&quot;moduletype_attrs.md - Implicit globals from `types.ModuleType` - Conditionally global or `ModuleType` attribute&quot; cargo test -p red_knot_python_semantic --test mdtest -- mdtest__scopes_moduletype_attrs
+
+moduletype_attrs.md - Implicit globals from `types.ModuleType` - Conditionally global or `ModuleType` attribute, with annotation
+
+  crates/red_knot_python_semantic/resources/mdtest/scopes/moduletype_attrs.md:137 unmatched assertion: revealed: Literal[1] | str
+  crates/red_knot_python_semantic/resources/mdtest/scopes/moduletype_attrs.md:137 unexpected error: 13 [possibly-unresolved-reference] &quot;Name `__name__` used when possibly not defined&quot;
+  crates/red_knot_python_semantic/resources/mdtest/scopes/moduletype_attrs.md:137 unexpected error: 1 [revealed-type] &quot;Revealed type is `Literal[1]`&quot;
+
+To rerun this specific test, set the environment variable: MDTEST_TEST_FILTER=&quot;moduletype_attrs.md - Implicit globals from `types.ModuleType` - Conditionally global or `ModuleType` attribute, with annotation&quot;
+MDTEST_TEST_FILTER=&quot;moduletype_attrs.md - Implicit globals from `types.ModuleType` - Conditionally global or `ModuleType` attribute, with annotation&quot; cargo test -p red_knot_python_semantic --test mdtest -- mdtest__scopes_moduletype_attrs
+
+--------------------------------------------------
+
+thread 'mdtest__scopes_moduletype_attrs' panicked at crates/red_knot_test/src/lib.rs:98:5:
+Some tests failed.
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    mdtest__scopes_moduletype_attrs
+</code></pre>
+</details>
+
+<p>I don't know if there's a good way of testing that, when we resolve the symbol <code>__name__</code> in the global scope, we resolve it without looking the symbol up in <code>builtins</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-02-21 10:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2025-02-21 10:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-02-21 10:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-02-21 10:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-02-21 17:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3597 on 2025-02-21 17:37</div>
+            <div class="timeline-body"><blockquote>
+<p>I don't know if there's a good way of testing that, when we resolve the symbol <code>__name__</code> in the global scope, we resolve it without looking the symbol up in <code>builtins</code>?</p>
+</blockquote>
+<p>Might be able to use a non-mdtest with an assertion that some builtins-related query doesn't execute? (Would have to be careful to not use any builtins or any part of typeshed otherwise in the test.)</p>
+<p>Or actually -- what about a custom typeshed that has an explicit <code>__name__: int</code> in <code>builtins.pyi</code>? Then test that <code>__name__</code> referenced from global scope is <code>str</code> not <code>int</code>?</p>
+<blockquote>
+<p>It's because we never get this far in the closure if the lookup is happening from elsewhere in the global scope.</p>
+</blockquote>
+<p>Ah makes sense, I didn't realize the importance of that &quot;already in global scope&quot; bail-out.</p>
+<p>Could we instead replace <code>return Symbol::Unbound</code> in that bail-out clause with <code>return module_type_implicit_global_symbol(db, symbol_name)</code> and then make the change I suggested? Not 100% sure that's better, but for me (with an appropriate comment) I think it would have clarified the issue better (and also avoids the need for the test-only <code>global_symbol</code>.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-02-21 18:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3597 on 2025-02-21 18:48</div>
+            <div class="timeline-body"><blockquote>
+<p>Ah makes sense, I didn't realize the importance of that &quot;already in global scope&quot; bail-out.</p>
+<p>Could we instead replace <code>return Symbol::Unbound</code> in that bail-out clause with <code>return module_type_implicit_global_symbol(db, symbol_name)</code> and then make the change I suggested? Not 100% sure that's better, but for me (with an appropriate comment) I think it would have clarified the issue better (and also avoids the need for the test-only <code>global_symbol</code>.)</p>
+</blockquote>
+<p>This would mean that we'd need to account for the implicit-modules fallback three times in the same closure (since there's a second early return in this closure in case we're in an eager-nested scope). To me this makes the code structure harder to understand :(</p>
+<pre><code class="language-diff">diff --git a/crates/red_knot_python_semantic/src/symbol.rs b/crates/red_knot_python_semantic/src/symbol.rs
+index f3c2a33fc..ee98dd441 100644
+--- a/crates/red_knot_python_semantic/src/symbol.rs
++++ b/crates/red_knot_python_semantic/src/symbol.rs
+@@ -184,34 +184,22 @@ pub(crate) fn symbol&lt;'db&gt;(db: &amp;'db dyn Db, scope: ScopeId&lt;'db&gt;, name: &amp;str) -&gt; S
+     symbol_impl(db, scope, name, RequiresExplicitReExport::No)
+ }
+ 
+-/// Infers the public type of an explicit module-global symbol as seen from within the same file.
++/// Infers the public type of an explicit module-global symbol as seen from within a lazy scope
++/// in the same file.
+ ///
+-/// Note that all global scopes also include various &quot;implicit globals&quot; such as `__name__`,
+-/// `__doc__` and `__file__`. This function **does not** consider those symbols; it will return
+-/// `Symbol::Unbound` for them. Use the (currently test-only) `global_symbol` query to also include
+-/// those additional symbols.
++/// If the symbol is not found in the module's explicit globals, this function will fall back to
++/// various &quot;implicit globals&quot; such as `__doc__`, `__name__`, and `__file__`. These are looked up
++/// as attributes on `types.ModuleType`.
+ ///
+ /// Use [`imported_symbol`] to perform the lookup as seen from outside the file (e.g. via imports).
+-pub(crate) fn explicit_global_symbol&lt;'db&gt;(db: &amp;'db dyn Db, file: File, name: &amp;str) -&gt; Symbol&lt;'db&gt; {
++pub(crate) fn global_symbol&lt;'db&gt;(db: &amp;'db dyn Db, file: File, name: &amp;str) -&gt; Symbol&lt;'db&gt; {
+     symbol_impl(
+         db,
+         global_scope(db, file),
+         name,
+         RequiresExplicitReExport::No,
+     )
+-}
+-
+-/// Infers the public type of an explicit module-global symbol as seen from within the same file.
+-///
+-/// Unlike [`explicit_global_symbol`], this function also considers various &quot;implicit globals&quot;
+-/// such as `__name__`, `__doc__` and `__file__`. These are looked up as attributes on `types.ModuleType`
+-/// rather than being looked up as symbols explicitly defined/declared in the global scope.
+-///
+-/// Use [`imported_symbol`] to perform the lookup as seen from outside the file (e.g. via imports).
+-#[cfg(test)]
+-pub(crate) fn global_symbol&lt;'db&gt;(db: &amp;'db dyn Db, file: File, name: &amp;str) -&gt; Symbol&lt;'db&gt; {
+-    explicit_global_symbol(db, file, name)
+-        .or_fall_back_to(db, || module_type_implicit_global_symbol(db, name))
++    .or_fall_back_to(db, || module_type_implicit_global_symbol(db, name))
+ }
+ 
+ /// Infers the public type of an imported symbol.
+diff --git a/crates/red_knot_python_semantic/src/types/infer.rs b/crates/red_knot_python_semantic/src/types/infer.rs
+index 5265597f1..051d59be0 100644
+--- a/crates/red_knot_python_semantic/src/types/infer.rs
++++ b/crates/red_knot_python_semantic/src/types/infer.rs
+@@ -50,9 +50,8 @@ use crate::semantic_index::semantic_index;
+ use crate::semantic_index::symbol::{FileScopeId, NodeWithScopeKind, NodeWithScopeRef, ScopeId};
+ use crate::semantic_index::SemanticIndex;
+ use crate::symbol::{
+-    builtins_module_scope, builtins_symbol, explicit_global_symbol,
+-    module_type_implicit_global_symbol, symbol, symbol_from_bindings, symbol_from_declarations,
+-    typing_extensions_symbol, LookupError,
++    builtins_module_scope, builtins_symbol, global_symbol, module_type_implicit_global_symbol,
++    symbol, symbol_from_bindings, symbol_from_declarations, typing_extensions_symbol, LookupError,
+ };
+ use crate::types::call::{Argument, CallArguments, UnionCallError};
+ use crate::types::diagnostic::{
+@@ -3624,7 +3623,10 @@ impl&lt;'db&gt; TypeInferenceBuilder&lt;'db&gt; {
+                 // Avoid infinite recursion if `self.scope` already is the module's global scope.
+                 .or_fall_back_to(db, || {
+                     if file_scope_id.is_global() {
+-                        return Symbol::Unbound;
++                        // Not found in the module's explicitly declared global symbols?
++                        // Check the &quot;implicit globals&quot; such as `__doc__`, `__file__`, `__name__`, etc.
++                        // These are looked up as attributes on `types.ModuleType`.
++                        return module_type_implicit_global_symbol(db, symbol_name);
+                     }
+ 
+                     if !self.is_deferred() {
+@@ -3633,16 +3635,19 @@ impl&lt;'db&gt; TypeInferenceBuilder&lt;'db&gt; {
+                             symbol_name,
+                             file_scope_id,
+                         ) {
+-                            return symbol_from_bindings(db, bindings);
++                            // Lookup the symbol as it existed when this eager scope was defined, since the scope is
++                            // eagerly executed.
++                            // Fallback to the &quot;implicit globals&quot; such as `__doc__`, `__file__`, `__name__`, etc.
++                            // These are looked up as attributes on `types.ModuleType`.
++                            return symbol_from_bindings(db, bindings).or_fall_back_to(db, || {
++                                module_type_implicit_global_symbol(db, symbol_name)
++                            });
+                         }
+                     }
+ 
+-                    explicit_global_symbol(db, self.file(), symbol_name)
++                    // This function falls back to &quot;implicit globals&quot; in the same way as the two early returns above
++                    global_symbol(db, self.file(), symbol_name)
+                 })
+-                // Not found in the module's explicitly declared global symbols?
+-                // Check the &quot;implicit globals&quot; such as `__doc__`, `__file__`, `__name__`, etc.
+-                // These are looked up as attributes on `types.ModuleType`.
+-                .or_fall_back_to(db, || module_type_implicit_global_symbol(db, symbol_name))
+                 // Not found in globals? Fallback to builtins
+                 // (without infinite recursion if we're already in builtins.)
+                 .or_fall_back_to(db, || {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-02-21 18:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3597 on 2025-02-21 18:51</div>
+            <div class="timeline-body"><blockquote>
+<p>Or actually -- what about a custom typeshed that has an explicit <code>__name__: int</code> in <code>builtins.pyi</code>? Then test that <code>__name__</code> referenced from global scope is <code>str</code> not <code>int</code>?</p>
+</blockquote>
+<p>Oh, that's a great idea!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-02-21 19:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3597 on 2025-02-21 19:03</div>
+            <div class="timeline-body"><p>That's fair! Definitely not clearly better.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:49:30 UTC
+    </footer>
+</body>
+</html>

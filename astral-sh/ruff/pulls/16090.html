@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Start detecting version-related syntax errors in the parser - astral-sh/ruff #16090</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Start detecting version-related syntax errors in the parser</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/16090">#16090</a>
+        opened by <a href="https://github.com/ntBre">@ntBre</a>
+        on 2025-02-11 00:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ntBre">@ntBre</a> on 2025-02-11 00:19</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR builds on the changes in #16220 to pass a target Python version to the parser. It also adds the <code>Parser::syntax_errors</code> field, which collects version-related syntax errors while parsing. These syntax errors are then turned into <code>Message</code>s in ruff (in preview mode) or <code>SyntaxDiagnostic</code>s in red-knot.</p>
+<p>This PR only detects one syntax error (<code>match</code> statement before Python 3.10), but it has been pretty quick to extend to several other simple errors (see #16308 for example).</p>
+<h2>Test Plan</h2>
+<p>The current tests are CLI tests in the linter crate, but these could be supplemented with inline parser tests after #16357.</p>
+<p>I also tested the display of these syntax errors in VS Code:</p>
+<p><img src="https://github.com/user-attachments/assets/062b4441-740e-46c3-887c-a954049ef26e" alt="image" />
+<img src="https://github.com/user-attachments/assets/101f55b8-146c-4d59-b6b0-922f19bcd0fa" alt="image" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-02-11 00:35</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-11 21:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/diagnostic.rs</code>:76 on 2025-02-11 21:44</div>
+            <div class="timeline-body"><p>We shouldn't use <code>LintName</code> here. The idea of the other error codes is to be mainly static.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-11 21:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/settings/types.rs</code>:68 on 2025-02-11 21:46</div>
+            <div class="timeline-body"><p>I guess we could really just move <code>PythonVersion</code> to the parser and use that type everywhere. But that's a good separate refactor</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-11 21:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/lib.rs</code>:332 on 2025-02-11 21:47</div>
+            <div class="timeline-body"><p>I think we should instead parametrize the parser to take a <code>PythonVersion</code> argument and only emit relevant errors because creating errors is sort of expensive.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-11 21:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/parser/mod.rs</code>:48 on 2025-02-11 21:48</div>
+            <div class="timeline-body"><p>My suggestion here is to only handle version specific syntax errors in the parser. I'd still recommend handling semantic (compiler errors) in a separate pass outside the parser.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_parser/src/lib.rs</code>:332 on 2025-02-12 14:44</div>
+            <div class="timeline-body"><p>Oh yes, I should have noted that in the summary. I have a stashed version locally where I passed a <code>target_version</code> to all of the parser functions, and it became a bit of a mess and a huge diff. This is definitely a hack I would not want to preserve in a real implementation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-02-12 14:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-12 14:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/lib.rs</code>:332 on 2025-02-12 14:49</div>
+            <div class="timeline-body"><p>You can store the version on the <code>Parser</code> struct. We may also need to pass it to the <code>Lexer</code> (and store it there?) to warn about unsupported fstring syntax.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-02-12 14:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_parser/src/lib.rs</code>:332 on 2025-02-12 14:56</div>
+            <div class="timeline-body"><p>I'm probably missing something here, but the problem I was having is that the <code>Parser</code> is only <code>pub(crate)</code> and the public interface is through the <code>parse_module</code>, <code>parse_expression</code>, etc functions. So to store it in the <code>Parser</code>, I had to modify the signature of all those functions instead of adding something like <code>Parser::with_python_version</code>, which would be closer to ideal I think.</p>
+<p>What I thought of later, but haven't tried, is instead adding a new <code>parse_module_with_version</code> function, for example, that I can call in the few places I want it to at least avoid having to change every call site immediately. The existing functions would just set a default version on the <code>Parser</code> in this case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-12 14:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/lib.rs</code>:332 on 2025-02-12 14:59</div>
+            <div class="timeline-body"><p>We probably want to introduce some <code>ParserOptions</code> struct that stores the version and could also store the parse mode and possibly offset. I'd have to go through all the signatures to see what makes the most sense.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-02-12 17:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/lib.rs</code>:332 on 2025-02-12 17:12</div>
+            <div class="timeline-body"><p>Should we add something like <code>JsFileSource</code> in Biome (https://github.com/biomejs/biome/blob/bca10f5198a6afaeffdcf7116f65444f9e11f674/crates/biome_js_syntax/src/file_source.rs#L142-L153) which will allow us to include the <code>PySourceType</code> and possibly <code>Mode</code> value as well?</p>
+<p>I think we talked about this earlier but decided not to introduce anything new just for a single parameter <code>PySourceType</code>. The APIs would then be simplified to take <code>source: &amp;str, source_type: PyFileSource</code> and sometimes a <code>TextRange</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-02-13 14:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/settings/types.rs</code>:68 on 2025-02-13 14:51</div>
+            <div class="timeline-body"><p>Do you think it fits better in the parser or in <code>ruff_db</code>? I think that could be a good separate refactor like you said.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-02-13 14:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_db/src/diagnostic.rs</code>:76 on 2025-02-13 14:56</div>
+            <div class="timeline-body"><p>Do you mean this should be <code>Option&lt;&amp;'static str&gt;</code>, for example, or that I should use a new enum variant entirely?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-02-13 16:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/settings/types.rs</code>:68 on 2025-02-13 16:44</div>
+            <div class="timeline-body"><p>Ah, I guess it has to go in the parser since <code>ruff_db</code> depends on the parser, or we'd get a circular import. I'll push the PR I was working on then.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-13 17:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/settings/types.rs</code>:68 on 2025-02-13 17:05</div>
+            <div class="timeline-body"><p>Yes, hmm. I thought I replied but it seems I didn't. whoops. Yes, that's exactly the reason why the parser is probably the best case (the parser is also the minimum denominator for what Python versions we can support ;))</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-13 17:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/settings/types.rs</code>:68 on 2025-02-13 17:06</div>
+            <div class="timeline-body"><p>The only downside of this is that crates that don't call into parsing themself will need to depend on the parser. So yet another possibility is the AST crate. But moving it should be easy once we have a PR that unifies them :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-02-14 23:54</div>
+            <div class="timeline-body"><p>Just rebased onto main to get the <code>PythonVersion</code> and <code>Span</code> changes. I still need to work in the <code>PyFileSource</code> or <code>ParserOptions</code> idea ~~and remove the semantic error detection~~, but my hope is that this branch will eventually be the usable prototype for version-specific errors.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-21 18:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/diagnostic.rs</code>:76 on 2025-02-21 18:00</div>
+            <div class="timeline-body"><p>That's probably no longer relevant. But the idea is that the <code>ErrorCode</code>s struct explicitly lists all error codes. The one exception to this are lint rules, because we want to define them in different crates.</p>
+<p>So what I'm suggesting is that you change this to <code>ParenthesizedWithItemsPre310</code> (or whatever the error code should be). But I think this is no longer necessary, now that we map all version related syntax error to syntax error.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @ntBre on 2025-02-24 14:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Detect more syntax errors in the parser" to "Start detecting version-related syntax errors in the parser" by @ntBre on 2025-02-24 14:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-02-24 17:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_parser/src/error.rs</code>:435 on 2025-02-24 17:53</div>
+            <div class="timeline-body"><p><code>VersionError</code> or something similar might be a better name for this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @ntBre on 2025-02-24 19:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @ntBre on 2025-02-24 19:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @ntBre on 2025-02-24 19:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @ntBre on 2025-02-24 19:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-02-24 20:11</div>
+            <div class="timeline-body"><p>This is awesome!</p>
+<p>I would love to have red-knot mdtests demonstrating whatever syntax errors we have support for here (using the mdtest support for setting the python version to show that the error is python version dependent), so as to verify the red-knot-specific support added here (and that we don't break it with future changes.) I would want this, to verify the support in red-knot, even if the main tests for this are moved into the parser crate.</p>
+<p>I realize this is maybe a bit painful as it means double-testing everything you add in this area. If necessary maybe someone from red-knot team could take it on as a separate follow-up PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-02-24 20:25</div>
+            <div class="timeline-body"><p>Thank you!</p>
+<p>I think you're right that it's good to have the ruff and red-knot integration tests even with inline parser tests. I'll try writing my first mdtests. I've been curious to learn more about them anyway!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-02-24 21:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/red_knot_python_semantic/resources/mdtest/diagnostics/version_related_syntax_errors.md</code>:19 on 2025-02-24 21:32</div>
+            <div class="timeline-body"><p>I think this relates to @MichaReiser's comment about <code>LintName</code> (or I'm doing something dumb). I tried using <code># error: [match-before-python-310]</code> but kept getting this very confusing error:</p>
+<pre><code>  crates/red_knot_python_semantic/resources/mdtest/diagnostics/version_related_syntax_errors.md:19 unmatched assertion: error: [match-before-python-310]
+  crates/red_knot_python_semantic/resources/mdtest/diagnostics/version_related_syntax_errors.md:19 unexpected error: 1 [match-before-python-310] &quot;Cannot use `match` statement on Python 3.9 (syntax was new in Python 3.10)&quot;
+</code></pre>
+<p>until I switched to the contains-text assertion.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-24 21:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/diagnostic.rs</code>:76 on 2025-02-24 21:48</div>
+            <div class="timeline-body"><p>I haven't reviewed the rest of the PR but I'd be interested to understand what the motivation is for <code>InvalidSyntax(Option&lt;LintName&gt;)</code> over just using <code>SyntaxError</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-24 21:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/resources/mdtest/diagnostics/version_related_syntax_errors.md</code>:19 on 2025-02-24 21:49</div>
+            <div class="timeline-body"><p>Yes, it's probably related. Let's revisit the error codes first.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-02-24 22:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_db/src/diagnostic.rs</code>:76 on 2025-02-24 22:29</div>
+            <div class="timeline-body"><p>I don't really remember the motivation, which is probably not a good sign :sweat_smile: I think I just needed a <code>DiagnosticId</code> to implement <code>Diagnostic</code> for <code>SyntaxDiagnostic</code> and this looked like the best way to go. I think I was still picturing giving each one a name/rule code when I wrote this originally like in some of the other prototypes.</p>
+<p>Should I just reuse the original, unit <code>InvalidSyntax</code> variant? Or did you mean something else by &quot;over just using <code>SyntaxError</code>?&quot;</p>
+<p>This has been confusing to me for some reason, sorry about that. I guess I don't fully understand what these are used for, or at least I certainly didn't understand when I wrote this initially. Seeing the mdtest errors helped to clear that up a bit, I think.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-25 08:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/diagnostic.rs</code>:76 on 2025-02-25 08:00</div>
+            <div class="timeline-body"><p>I would just use <code>SyntaxError</code> unless we have reasons not to (e.g., we want to use a dedicated error code for each diagnostic). Reusing <code>SyntaxError</code> has the advantage that you get the correct handling in the extension for free (Ruff VS code has a setting to disable syntax errors). I think we also have some other places with extra handling for syntax errors.</p>
+<p>The alternative is (but I'm not convinced we should do this) is to add a <code>parenthesized-with-items-pre-310</code> variant to <code>ErrorCode</code> (not using <code>LintName</code>, just add the variant ;)).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/parsed.rs</code>:24 on 2025-02-25 08:02</div>
+            <div class="timeline-body"><p>We should avoid adding new arguments to <code>parsed_module</code>. Salsa uses an optimized storage for queries that have exactly one argument other than <code>db</code>. It's probably not that big of a deal here because we only call this query once per file (it's not a hot query like<code> infer_expression_types</code>). However, it does make it more cumbersome to use the method and I don't see a use case today for parsing the same file with different python versions (we don't call it <code>target-version</code> in red knot).</p>
+<p>Ideally, you'd use <code>ProgramSettings</code> right in <code>parsed_module</code> but you can't because it's defined in <code>red_knot_python_semantic</code>. What I'd do for now is add a new <code>python_version</code> method to the <code>ruff_db::Db</code> trait. All DBs above <code>red_knot_pyton_semantic</code> will return <code>ProgramSettings::get(db).python_version(db)</code>. Other `DBs can use a hard-coded value.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/linter.rs</code>:397 on 2025-02-25 08:03</div>
+            <div class="timeline-body"><p>I suspect we're now resolving the <code>target_version</code> multiple times. Once here and then somewhere inside <code>check_path</code>? I guess that's probably fine but I wonder how much work it would be to avoid it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/linter.rs</code>:512 on 2025-02-25 08:04</div>
+            <div class="timeline-body"><p>The <code>target_version</code> shouldn't change between loops. We can move that out</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/error.rs</code>:461 on 2025-02-25 08:07</div>
+            <div class="timeline-body"><p>Should this use <code>minimum_version</code> or should we remove that method?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/error.rs</code>:478 on 2025-02-25 08:07</div>
+            <div class="timeline-body"><p>What do we use the <code>as_str</code> implementation for?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/error.rs</code>:435 on 2025-02-25 08:08</div>
+            <div class="timeline-body"><p>Maybe <code>UnsupportedSyntaxError</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/lib.rs</code>:310 on 2025-02-25 08:09</div>
+            <div class="timeline-body"><p>We should rename this to <code>unsupported_syntax_errors</code> or similar. All errors in this struct are syntax errors.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/parser/statement.rs</code>:2271 on 2025-02-25 08:10</div>
+            <div class="timeline-body"><p>I'm unsure if highlighting the entire match statement here is the best choice. Although it's not wrong. I'm just worried that it could lead to very long code frames</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> requested changes on 2025-02-25 08:13</div>
+            <div class="timeline-body"><p>Thanks. I suggest splitting the Red Knot integration out of this PR. There are some bigger design questions that should be discussed separately (e.g., how to pass the target version to <code>parsed_module</code>, what error code to use). Having a separate PR unblocks your work on Ruff and should also reduce the need for stacking new-syntax-error PRs because you can test them on the Ruff version.</p>
+<p>This otherwise looks good to me, except that using the term <code>SyntaxError</code> for version-related syntax errors is confusing. All parse errors are syntax errors. I suggest we use something like <code>UnsupportedSyntax</code> and update all structs/fields accordingly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/lib.rs</code>:310 on 2025-02-25 09:20</div>
+            <div class="timeline-body"><p>Yeah, I think we should rename this to something else, I like Micha's suggestion. I also want to point out that the <code>syntax_errors</code> method should be renamed as well otherwise it could be confused with <code>errors</code> method that currently exists on <code>Parsed</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/parser/statement.rs</code>:2271 on 2025-02-25 09:23</div>
+            <div class="timeline-body"><p>Maybe we could highlight the <code>match</code> token instead? That's what Pyright do as well: https://pyright-play.net/?pythonVersion=3.8&amp;strict=true&amp;code=LYQwLgxgFgBAjALgFA1TCIDOBTey0EwB0JQA</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/lib.rs</code>:330 on 2025-02-25 09:27</div>
+            <div class="timeline-body"><p>There's a <code>is_valid</code> method down below which checks whether the <code>Parsed</code> has any <code>ParseError</code>.</p>
+<p>I don't think it should account for the <code>SyntaxError</code>s because otherwise it would change the behavior of downstream tools but I would update the documentation of <code>is_valid</code> to add this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_project/src/lib.rs</code>:349 on 2025-02-25 09:45</div>
+            <div class="timeline-body"><p>What's the motivation for extending the syntax errors only if there were no parse errors? Shouldn't we extend it unconditionally?</p>
+<p>This might not require to be handled in this PR if we decide to move out red-knot related changes in a separate PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-02-25 09:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-02-25 09:53</div>
+            <div class="timeline-body"><p>@ntBre Can you update the test plan by testing this out in an editor context (VS Code extension) along with setting <a href="https://docs.astral.sh/ruff/editors/settings/#showsyntaxerrors"><code>showSyntaxErrors</code></a> as <code>on</code> and <code>off</code>? Feel free to message me on Discord if you need help in setting up a local development version of VS Code. The <a href="https://github.com/astral-sh/ruff-vscode/blob/main/CONTRIBUTING.md">contributing guide</a> will be useful here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-25 10:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/diagnostic.rs</code>:76 on 2025-02-25 10:29</div>
+            <div class="timeline-body"><p>Looking through the other changes, I understand that you use the <code>syntax-error</code> code for Ruff. It's unclear to me why we'd then use dedicated error codes in Red Knot over also just using <code>invalid-syntax</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-02-25 13:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_db/src/diagnostic.rs</code>:76 on 2025-02-25 13:28</div>
+            <div class="timeline-body"><p>That makes sense, thank you! I put it back to <code>InvalidSyntax</code> for the sake of the red-knot follow-up PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-25 13:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/diagnostic.rs</code>:76 on 2025-02-25 13:31</div>
+            <div class="timeline-body"><p>We could also have one <code>UnsupportedSyntax</code> error code. It's a bit inconsistent with Ruff but I do find it somewhat appealing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-02-25 13:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_parser/src/error.rs</code>:435 on 2025-02-25 13:33</div>
+            <div class="timeline-body"><p>I like that, thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-02-25 13:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_db/src/parsed.rs</code>:24 on 2025-02-25 13:39</div>
+            <div class="timeline-body"><p>Ah that makes sense. I definitely wanted to call <code>Program::get(db).python_version(db)</code> inside of <code>parsed_module</code> until I realized that <code>Program</code> wasn't available. I will keep this in mind for the separate PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-02-25 13:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/linter.rs</code>:512 on 2025-02-25 13:42</div>
+            <div class="timeline-body"><p>Oops, good catch.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-02-25 13:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_db/src/diagnostic.rs</code>:76 on 2025-02-25 13:43</div>
+            <div class="timeline-body"><p>One reason why we might want to have different error codes for different syntax errors is so that we can provide more detailed documentation for some syntax errors. This isn't <em>much</em> of a concern with the specific syntax error that @ntBre is adding here, as there's not much more to say than &quot;you can't use the <code>match</code> statement on Python &lt;3.10&quot;.[^1]. However, as we discussed on Brent's design proposal, it will be a concern with other syntax errors that we'll want to detect in the future -- for example, we have very nice docs for <a href="https://docs.astral.sh/ruff/rules/late-future-import/#late-future-import-f404"><code>F404</code></a> currently in Ruff, and it would be a shame to provide worse docs for red-knot users when we start detecting that syntax error in our brand new tool.</p>
+<p>Some errors that we may want to provide per-error docs for are errors that only appear on older or newer Python versions. For example, the details around when you're able to parenthesize context managers on Python &lt;3.9 are pretty subtle. So are the details on when <code>match</code> patterns are considered <a href="https://peps.python.org/pep-0634/#irrefutable-case-blocks">irrefutable</a> (it's a syntax error to have more than one irrefutable pattern in a <code>match</code> statement on Python 3.10+).</p>
+<p>@MichaReiser also pointed out in the comments on Brent's design doc that there are existing syntax errors the parser detects that probably might also benefit from better docs.</p>
+<p>(To be clear, I'm not saying that we <em>have</em> to have multiple error codes for these syntax errors. And there are obviously costs as well as benefits, which Micha outlined well. But this is one possible motivation for why it might help to have different error codes for different syntax errors: it would allow users to easily look them up in our documentation.)</p>
+<p>[^1]: That said, I actually don't think it would <em>hurt</em> to have a documentation page that links to the relevant PEPs that introduced the <code>match</code> statement, and/or the Python docs for the <code>match</code> statement.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-02-25 13:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_parser/src/error.rs</code>:461 on 2025-02-25 13:46</div>
+            <div class="timeline-body"><p>I made this use <code>minimum_version</code> for now. We could still probably just remove the method, though. I started generating these methods in a macro in #16308 anyway.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-02-25 13:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_parser/src/error.rs</code>:478 on 2025-02-25 13:47</div>
+            <div class="timeline-body"><p>It was used in the <code>LintName</code> construction, but I removed it now!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-02-25 13:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_parser/src/parser/statement.rs</code>:2271 on 2025-02-25 13:52</div>
+            <div class="timeline-body"><p>Good idea, it did look pretty bad in the red-knot snapshot.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-02-25 13:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_parser/src/lib.rs</code>:330 on 2025-02-25 13:58</div>
+            <div class="timeline-body"><p>Good catch! I also updated the docs for <code>Parsed::as_result</code> and <code>Parsed::into_result</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-02-25 13:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/red_knot_project/src/lib.rs</code>:349 on 2025-02-25 13:59</div>
+            <div class="timeline-body"><p>I was trying to mirror the type errors, but I guess it does make more sense to treat them more like the other parse errors. I'll still make the change so that the follow-up is easier!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-25 14:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/diagnostic.rs</code>:76 on 2025-02-25 14:05</div>
+            <div class="timeline-body"><p>yeah, that's one reason I'd see benefits in using different codes. But I think we should do so consistently between Ruff and Red Knot.</p>
+<p>The nice thing about the errors not being suppressable or configurable is that splitting syntax error into more codes in the future isn't a breaking change. I'm leaning towards using a single (or two) error codes for a first version, considering that Ruff doesn't support documenting error codes other than rules (and Red Knot doesn't have the infrastructure but it's at least designed so that we could)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-02-25 14:09</div>
+            <div class="timeline-body"><p>Good call @dhruvmanila. I think I must have missed wiring this up in the LSP because I'm not getting any errors with a <code>match</code> with a target version of 3.8 in my <code>ruff.toml</code>. I'll take a look at that now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-02-25 14:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_db/src/diagnostic.rs</code>:76 on 2025-02-25 14:09</div>
+            <div class="timeline-body"><p>Providing good documentation for the more complex syntax errors (for both Ruff and red-knot) is quite important to me. I'm happy to leave it out of this first PR, but I do think we should make sure that we have a solution for this before stabilising these rules.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-25 14:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/diagnostic.rs</code>:76 on 2025-02-25 14:20</div>
+            <div class="timeline-body"><p>Makes sense. It would probably be good to create an issue for this so that we can explore different options on how we can accomplish this (e.g. a non-error-code specific solution could be to maintain the documentation on our website and link to them from the diagnostic)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-02-25 14:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/linter.rs</code>:397 on 2025-02-25 14:41</div>
+            <div class="timeline-body"><p>Ooh good catch. I was able to remove the resolution in <code>check_path</code> by passing the version to it everywhere. The other three resolutions in the linter are in <code>add_noqa_to_path</code>, <code>lint_only</code>, and <code>lint_fix</code> and right before <code>parse_unchecked</code> calls, so I think those are needed.</p>
+<p>This is probably a separate issue, but do we need to re-parse (and re-resolve) in <code>add_noqa_to_path</code>? I guess it gets called before we know what else we're doing with the files.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-02-25 16:13</div>
+            <div class="timeline-body"><p>I think I've addressed all of the feedback here, but one thing Micha and I discussed in our 1:1 is checking on resetting diagnostics on speculative parsing. I have not done that yet.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-02-25 16:23</div>
+            <div class="timeline-body"><p>Thanks for addressing the feedback.</p>
+<p>One last thing that I missed in my last review. We need to ensure that we handle version related syntax errors correctly when doing speculative parsing -- that means, we have to drop them if it turns out that the parser took the wrong branch.</p>
+<p>You can do this by capturing the length of the unsupported syntax errors vec in the <code>checkpoint</code> method and truncate the errors in the <code>rewind</code> method</p>
+<p>https://github.com/astral-sh/ruff/blob/97d0659ce3e3977245ca202770078a9df60849dd/crates/ruff_python_parser/src/parser/mod.rs#L657-L682</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-25 16:56</div>
+            <div class="timeline-body"><p>I hope the checkpointing doesn't regress performance... No, it all looks green. Nice</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-02-25 17:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_db/src/diagnostic.rs</code>:76 on 2025-02-25 17:29</div>
+            <div class="timeline-body"><p>I opened an issue with Alex's comment above: https://github.com/astral-sh/ruff/issues/16377</p>
+<p>I don't have strong feelings either way right now, but I think it's a good idea to keep this in mind, especially as we get to the more complicated errors.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-02-25 17:31</div>
+            <div class="timeline-body"><p>Thanks again everyone for the reviews! I'll leave this open until tomorrow or so in case @dhruvmanila wants to have another look, but as far as I know this is ready to merge!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_server/src/lint.rs</code>:205 on 2025-02-26 03:01</div>
+            <div class="timeline-body"><p>nit: I think we can merge this into the above chain of <code>parsed.errors()</code> as we've already checked the <code>show_syntax_errors</code> flag. Like:</p>
+<pre><code class="language-rs">parsed.errors().iter().map(...).chain(parsed.unsupported_syntax_errors().iter().map(...))
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> approved on 2025-02-26 03:02</div>
+            <div class="timeline-body"><p>This is great. Thank you for waiting on me and I like the updated test plan with the editor screenshots. Just a minor nit, feel free to ignore it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-02-26 03:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_server/src/lint.rs</code>:205 on 2025-02-26 03:25</div>
+            <div class="timeline-body"><p>Nice catch!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ntBre on 2025-02-26 04:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-02-26 04:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-02-26 04:03</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:49:30 UTC
+    </footer>
+</body>
+</html>
