@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Implement `--user` flag and user scheme support for `uv pip` - astral-sh/uv #2352</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Implement <code>--user</code> flag and user scheme support for <code>uv pip</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/pull/2352">#2352</a>
+        opened by <a href="https://github.com/imfing">@imfing</a>
+        on 2024-03-11 08:06
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/imfing">@imfing</a> on 2024-03-11 08:06</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to uv! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+<p>Hi team, excited for your awesome work of <code>uv</code>.</p>
+<p>This PR attempts to implement <code>--user</code> flag for <code>uv pip</code> subcommands: <code>install</code>, <code>freeze</code>, <code>list</code> and <code>show</code>.</p>
+<p>Closes #2077</p>
+<p>also #1584</p>
+<p>Per <a href="https://peps.python.org/pep-0370/">PEP 370 – Per user site-packages directory</a>, <code>pip</code> supports <a href="https://pip.pypa.io/en/stable/user_guide/#user-installs">user scheme package installation</a> which would be useful for multi-user environment or CI use cases without the need of virtual environment or breaking system Python packages.</p>
+<p>Example usage:</p>
+<pre><code class="language-shell">export PYTHONUSERBASE=~/.local/myappenv
+uv pip install --user SomePackage
+# SomePackage is available under ~/.local/myappenv
+</code></pre>
+<h4>Implementation details</h4>
+<p>The implementation aims to bring minimal changes to the existing functionalities of <code>uv pip</code>, as well as supporting <code>--user</code> for pip compatibility.</p>
+<p>Here are some breakdowns of the implementation:</p>
+<ul>
+<li>add <a href="https://github.com/pypa/pip/blob/ae5fff36b0aad6e5e0037884927eaa29163c0611/src/pip/_internal/locations/_sysconfig.py#L86"><code>_infer_user()</code></a> to <code>crates/uv-interpreter/src/get_interpreter_info.py</code> which returns the user scheme if specified</li>
+<li>add <code>PythonEnvironment::from_user_scheme()</code> which queries the interpreter info with user scheme, thus the <code>platlib</code>, <code>purelib</code>, <code>scripts</code>, <code>data</code> and <code>include</code> should point to the user site</li>
+<li>use the user scheme Python environment for <code>uv pip</code> subcommands when the <code>--user</code> flag is present, making the subcommands use <em>only</em> the user site for package search and installation.</li>
+</ul>
+<p>Right now the implementation doesn't include the global packages mentioned in <a href="https://pip.pypa.io/en/stable/user_guide/#user-installs">User Installs</a> since we only consider site packages from the <code>scheme.purelib</code>. I'm thinking about adding that later for better compatibility with <code>pip install</code>.</p>
+<p>I am new to <code>uv</code>, looking forward to the team's feedback and suggestions :)</p>
+<h2>Test Plan</h2>
+<!-- How was it tested? -->
+
+<p>May need some advice and guidance on what's the best practice on testing this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">compatibility</span> added by @konstin on 2024-03-11 08:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @konstin on 2024-03-11 08:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-interpreter/src/python_environment.rs</code>:100 on 2024-03-11 08:50</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                fs_err::create_dir_all(path)?;
+</code></pre>
+<p>We use <code>fs_err</code> over <code>std::fs</code> so errors have paths attach</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-03-11 08:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-11 17:54</div>
+            <div class="timeline-body"><p>This looks like a nice PR! The main blocker is that I need to decide if we want to support <code>--user</code>. I think it leads to some limitations in <code>pip</code> but I just haven't had time to investigate it. For example, it was suggested elsewhere that <code>--user</code> and <code>--editable</code> are no longer supported in <code>pip</code> -- is that true?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-11 21:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-interpreter/src/interpreter.rs</code>:455 on 2024-03-11 21:20</div>
+            <div class="timeline-body"><p>Does this intentionally <em>not</em> cache?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-11 21:21</div>
+            <div class="timeline-body"><p>Again, just want to say: this is very nice work! In fact I'm more inclined to support this now that we have a nice PR for it. But I do want to understand the implications a little more first.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-11 21:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/pip_install.rs</code>:152 on 2024-03-11 21:21</div>
+            <div class="timeline-body"><p>Can we use <code>is_some_and</code> or <code>unwrap_or</code> here instead of unwrapping?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/imfing">@imfing</a> on 2024-03-12 07:43</div>
+            <div class="timeline-body"><p>Thank you for the comments 😄</p>
+<blockquote>
+<p>For example, it was suggested elsewhere that <code>--user</code> and <code>--editable</code> are no longer supported in <code>pip</code> -- is that true?</p>
+</blockquote>
+<p>It seems there might be some confusion stemming from an issue discussed here: https://github.com/astral-sh/uv/issues/2077#issuecomment-1971579880</p>
+<blockquote>
+<p>One of the problems is that you cannot run --user and --editable any more with pip.</p>
+</blockquote>
+<p>As far as i know, both <code>--user</code> and <code>--editable</code> are still supported in the latest <a href="https://pip.pypa.io/en/stable/cli/pip_install/#options">pip install options</a>.
+There appears to be no intention from the pip developers to deprecate these flags. I couldn't find any discussion about this either.</p>
+<p>I don't have the full context so the complexity might arise specifically in the context of using Airflow. It would be great if the author of that comment could provide some further details.</p>
+<p>For reference, I conducted a quick local test combining the <code>--user</code> and <code>--editable</code> flags:</p>
+<pre><code>❯ python3 -m venv venv --system-site-packages
+❯ source venv/bin/activate
+❯ pip install --user -e sampleproject/
+Obtaining
+  Installing build dependencies ... 
+...
+Successfully built sampleproject
+Installing collected packages: peppercorn, sampleproject
+...
+Successfully installed peppercorn-0.6 sampleproject-3.0.0
+
+❯ pip list --user
+Package       Version Editable project location
+------------- ------- -----------------------------------------
+peppercorn    0.6
+sampleproject 3.0.0   /Users/me/sampleproject
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/imfing">@imfing</a> on <code>crates/uv-interpreter/src/interpreter.rs</code>:455 on 2024-03-12 08:09</div>
+            <div class="timeline-body"><p>I've noticed that <code>query_cached</code> uses <code>the executable's last modified time</code> as a cache key. In the case of user scheme, the interpreter may remain the same, e.g. the system Python interpreter, but the <code>InterpreterInfo.scheme</code> changes to the user site, e.g. <code>~/.local</code>.</p>
+<p>I will take a further look into using <code>uv_cache</code> to cache the script execution here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/imfing">@imfing</a> reviewed on 2024-03-12 08:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-05-17 13:46</div>
+            <div class="timeline-body"><p>There's some more discussion on this active in https://github.com/astral-sh/uv/issues/2077</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-17 14:16</div>
+            <div class="timeline-body"><p>I may expand the section on <code>--user</code> in <code>PIP_COMPATIBILITY.md</code> in the interim.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Malix-Labs">@Malix-Labs</a> on 2024-06-05 12:04</div>
+            <div class="timeline-body"><p>Is there any blocker that requires some help to merge this PR?
+We are waiting for that feature to be merged to migrate every devcontainer we have to use <code>uv</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/imfing">@imfing</a> on 2024-06-05 13:18</div>
+            <div class="timeline-body"><blockquote>
+<p>Is there any blocker that requires some help to merge this PR? We are waiting for that feature to be merged to migrate every devcontainer we have to use <code>uv</code></p>
+</blockquote>
+<p>In #2077, there were extensive discussions, and from what I gathered, it seemed the <code>uv</code> team prefer advocating for the adoption of virtual environments in <code>uv</code>.</p>
+<p>I kept this PR open in case things change, and if the <code>uv</code> team is okay with adding the flag, I will update the PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Malix-Labs">@Malix-Labs</a> on 2024-06-05 13:21</div>
+            <div class="timeline-body"><p>Well then, <a href="https://github.com/astral-sh/uv/issues/2077#issuecomment-2098624319">installing in immutable containers (such as codespaces) would require an useless venv, as <code>--system</code> doesn't work</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-06-05 13:44</div>
+            <div class="timeline-body"><p>@Malix-off can you please discuss this on the issue instead of this pull request? I'd prefer to keep the discussion here focused on implementation details. Thanks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Malix-Labs">@Malix-Labs</a> on 2024-06-05 13:47</div>
+            <div class="timeline-body"><p>@zanieb absolutely, good practice btw and sorry about those annoyances</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/imfing">@imfing</a> on 2024-06-05 14:00</div>
+            <div class="timeline-body"><p>Noticed that <code>--target</code> flag was added in https://github.com/astral-sh/uv/pull/3257, which can be used as a workaround for <code>--user</code> by providing the user-specific <a href="https://docs.python.org/3/library/site.html#site.getusersitepackages">site-packages directory</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @imfing on 2024-06-15 11:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-06-15 11:43</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:54:20 UTC
+    </footer>
+</body>
+</html>

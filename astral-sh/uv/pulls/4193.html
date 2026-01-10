@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Initial implementation of `uv add` and `uv remove` - astral-sh/uv #4193</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Initial implementation of <code>uv add</code> and <code>uv remove</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/4193">#4193</a>
+        opened by <a href="https://github.com/ibraheemdev">@ibraheemdev</a>
+        on 2024-06-10 11:36
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2024-06-10 11:36</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Basic implementation of <code>uv add</code> and <code>uv remove</code> that supports writing PEP508 requirements to <code>project.dependencies</code>.</p>
+<p>First step for https://github.com/astral-sh/uv/issues/3959 and https://github.com/astral-sh/uv/issues/3960.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @ibraheemdev on 2024-06-10 11:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2024-06-10 11:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/uv/src/commands/project/remove.rs</code>:55 on 2024-06-10 11:40</div>
+            <div class="timeline-body"><p>I'm not sure if this is correct? Should dev dependencies ever be synced even if they weren't modified?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-06-10 12:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/project/remove.rs</code>:55 on 2024-06-10 12:30</div>
+            <div class="timeline-body"><p>It's possible that the dev dependencies <em>could</em> change by adding a non-dev dependency, because they're all locked together. (E.g., maybe the dep you add has a transitive dep on one of the dev deps, so now it's more constrained.) So, I guess we do have the include them? But it's not really right to sync them unconditionally. The same problem exists with extras. We shouldn't be syncing them unconditionally. We need to know which extras the user wants activated.</p>
+<p>I'm wondering if <code>add</code> should imply <code>lock</code>, but not <code>sync</code>? Since locking is much simpler: we lock everything.</p>
+<p>(I think there is a general problem here that exists as long as <code>add</code> implies <code>lock</code> or <code>sync</code>. (Rye has this problem too). Any arguments that are typically passed to <code>lock</code> or <code>sync</code> to guide resolution or installation now need to be passed to <code>add</code> too... So, e.g., we might need <code>exclude-newer</code> too.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-06-10 12:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/project/remove.rs</code>:35 on 2024-06-10 12:31</div>
+            <div class="timeline-body"><p>What happens if you <code>uv remove anyio</code>, without including the specifier?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-06-10 12:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/project/add.rs</code>:34 on 2024-06-10 12:32</div>
+            <div class="timeline-body"><p>I think we should enumerate some of the TODOs that aren't tackled yet. For example:</p>
+<ul>
+<li>We should accept unnamed URLs, and resolve them to named requirements.</li>
+<li>We need to figure out how this interacts with <code>tool.uv.sources</code>. When do we add data to <code>tool.uv.sources</code> rather than <code>project.dependencies</code>? \cc @konstin, you two should discuss this.</li>
+<li>Editable requirements?</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-06-10 12:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/cli.rs</code>:1957 on 2024-06-10 12:34</div>
+            <div class="timeline-body"><p>I wonder if this should be <code>Requirement</code> as long as we're parsing these directly. But, I think what you have here is probably better.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-06-10 12:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/cli.rs</code>:1932 on 2024-06-10 12:35</div>
+            <div class="timeline-body"><p>Nit: for consistency...</p>
+<pre><code>/// The packages to remove, as PEP 508 requirements (e.g., `flask==2.2.3`).
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-06-10 12:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-distribution/src/workspace.rs</code>:37 on 2024-06-10 12:35</div>
+            <div class="timeline-body"><p>Where does this requirement come from? Any way we can avoid it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-06-10 12:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-distribution/src/pyproject_mut.rs</code>:80 on 2024-06-10 12:36</div>
+            <div class="timeline-body"><p>What if a dep is included multiple times? E.g.:</p>
+<pre><code class="language-toml">dependencies = [
+  &quot;flask &gt; 2 ; python_version &gt;= '3.6'&quot;,
+  &quot;flask &lt; 2 ; python_version &lt; '3.6'&quot;,
+]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-06-10 12:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-distribution/src/pyproject_mut.rs</code>:92 on 2024-06-10 12:37</div>
+            <div class="timeline-body"><p>Nit: can we use descriptive names, like <code>req</code> or over <code>x</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-distribution/src/pyproject.rs</code>:35 on 2024-06-11 07:27</div>
+            <div class="timeline-body"><p>This can be a <code>toml::de::Error</code> result</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-06-11 07:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/uv-distribution/src/pyproject_mut.rs</code>:92 on 2024-06-11 10:22</div>
+            <div class="timeline-body"><p>Fixed, some of this code was copy-pasted from Rye and I didn't edit it too carefully.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2024-06-11 10:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2024-06-11 10:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/uv/src/commands/project/remove.rs</code>:35 on 2024-06-11 10:39</div>
+            <div class="timeline-body"><p><code>remove_dependency</code> removes by package name, so that works.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2024-06-11 10:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/uv/src/commands/project/remove.rs</code>:55 on 2024-06-11 10:40</div>
+            <div class="timeline-body"><p>Made <code>add</code> and <code>remove</code> do an unconditional full sync for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2024-06-11 10:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/uv-distribution/src/pyproject_mut.rs</code>:80 on 2024-06-11 10:41</div>
+            <div class="timeline-body"><p>Hmm it would only remove the first occurrence then. I think Rye has this bug as well?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2024-06-11 11:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/uv-distribution/src/pyproject_mut.rs</code>:80 on 2024-06-11 11:00</div>
+            <div class="timeline-body"><p>Updated to remove all occurrences. Also changed <code>uv remove</code> to take package names, not full requirements, because otherwise <code>uv remove flask&gt;2</code> becomes more complicated. I think package names make more sense anyways? Unless we want to support e.g. removing unnamed requirements by URL?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @ibraheemdev on 2024-06-11 11:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2024-06-11 12:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/uv/src/commands/project/add.rs</code>:34 on 2024-06-11 12:02</div>
+            <div class="timeline-body"><p>Tracking in https://github.com/astral-sh/uv/issues/3959.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-06-11 12:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-distribution/src/pyproject_mut.rs</code>:24 on 2024-06-11 12:17</div>
+            <div class="timeline-body"><p>Nit: wrap pyproject.toml in backticks for consistency with the other error variant.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-06-11 12:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-distribution/src/pyproject_mut.rs</code>:48 on 2024-06-11 12:18</div>
+            <div class="timeline-body"><p><code>eq_ignore_ascii_case</code> isn't quite right here. These should be <code>ProjectName</code> which are already normalized.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-06-11 12:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-distribution/src/pyproject_mut.rs</code>:57 on 2024-06-11 12:19</div>
+            <div class="timeline-body"><p>What should happen if there are multiple occurrences? My guess is we replace them all.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-06-11 12:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-distribution/src/pyproject_mut.rs</code>:118 on 2024-06-11 12:20</div>
+            <div class="timeline-body"><p>Unnecessary <code>pub</code>, I think.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-06-11 12:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/project/add.rs</code>:34 on 2024-06-11 12:22</div>
+            <div class="timeline-body"><p>I think we should just use <code>pep508_rs::Requirement::from_str</code> instead of <code>LenientRequirement</code>... We are a little inconsistent about it, but in general, <code>LenientRequirement</code> is really intended for third-party metadata over which the user has no control. We shouldn't let them add invalid requirements here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/project/add.rs</code>:34 on 2024-06-11 12:23</div>
+            <div class="timeline-body"><p>This also applies to the modification code in <code>crates/uv-distribution/src/pyproject_mut.rs</code>. What do you think?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-06-11 12:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-06-11 12:26</div>
+            <div class="timeline-body"><p>A few more comments. I am happy to re-review but also trust you to address them and merge when you think they're closed out.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2024-06-11 12:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/uv-distribution/src/pyproject_mut.rs</code>:57 on 2024-06-11 12:38</div>
+            <div class="timeline-body"><p>Replace them all with the single new requirement? i.e. replace the first occurrence and remove the rest?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2024-06-11 12:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/uv/src/commands/project/add.rs</code>:34 on 2024-06-11 12:53</div>
+            <div class="timeline-body"><p>That makes sense to me, I removed the use of  <code>LenientRequirement</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2024-06-11 13:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/uv-distribution/src/pyproject_mut.rs</code>:57 on 2024-06-11 13:20</div>
+            <div class="timeline-body"><p>Implemented it that way, I think that makes the most sense, although it might be good to warn/log because this whole scenario is a bit questionable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ibraheemdev on 2024-06-11 13:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ibraheemdev on 2024-06-11 13:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @zanieb on 2024-06-11 20:52</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:54:21 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Load configuration options from workspace root - astral-sh/uv #4295</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Load configuration options from workspace root</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/4295">#4295</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-06-13 02:01
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-13 02:01</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>In a workspace, we now read configuration from the workspace root. Previously, we read configuration from the first <code>pyproject.toml</code> or <code>uv.toml</code> file in path -- but in a workspace, that would often be the <em>project</em> rather than the workspace configuration.</p>
+<p>We need to read configuration from the workspace root, rather than its members, because we lock the workspace globally, so all configuration applies to the workspace globally.</p>
+<p>As part of this change, the <code>uv-workspace</code> crate has been renamed to <code>uv-settings</code> and its purpose has been narrowed significantly (it no longer discovers a workspace; instead, it just reads the settings from a directory).</p>
+<p>If a user has a <code>uv.toml</code> in their directory or in a parent directory but is <em>not</em> in a workspace, we will still respect that use-case as before.</p>
+<p>Closes #4249.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-06-13 02:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/main.rs</code>:126 on 2024-06-13 02:03</div>
+            <div class="timeline-body"><p>Rules are explained here, in more detail.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-13 02:05</div>
+            <div class="timeline-body"><p>It's a bit confusing that configuration in a workspace member will effectively be ignored. Something to revisit in the future, I think.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @charliermarsh on 2024-06-13 02:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2024-06-13 02:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @charliermarsh on 2024-06-13 02:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @charliermarsh on 2024-06-13 02:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-06-13 13:51</div>
+            <div class="timeline-body"><blockquote>
+<p>It's a bit confusing that configuration in a workspace member will effectively be ignored. Something to revisit in the future, I think.</p>
+</blockquote>
+<p>That seems pretty problematic :D</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-06-13 13:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/pip_compile.rs</code>:3209 on 2024-06-13 13:52</div>
+            <div class="timeline-body"><p>Is this behavior change intentional?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2024-06-13 13:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-06-13 13:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/tests/pip_compile.rs</code>:3209 on 2024-06-13 13:53</div>
+            <div class="timeline-body"><p>Yes, if you have an error in your <code>override-dependencies</code> we should fail. The previous behavior was wrong IMO.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-13 13:54</div>
+            <div class="timeline-body"><p>I know it's a hard question, but what do you think the semantics should be? None of the options are enforceable on a per-package basis.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-06-13 15:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/pip_compile.rs</code>:3209 on 2024-06-13 15:34</div>
+            <div class="timeline-body"><p>Makes sense to me</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-06-13 15:38</div>
+            <div class="timeline-body"><p>I'm not sure yet. I think I need to play with a real workspace setup first. I think we'd need to be able to map a tree of dependencies to their source project in the workspace to be able to enforce things, right? It seems like it would require a lot of changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-06-14 01:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-06-14 01:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-06-14 01:26</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:54:21 UTC
+    </footer>
+</body>
+</html>

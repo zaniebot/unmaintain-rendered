@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pre-fetch dependencies when resolving from a lockfile - astral-sh/uv #1246</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Pre-fetch dependencies when resolving from a lockfile</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/pull/1246">#1246</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-02-04 19:50
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-04 19:50</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Surprisingly, this makes incremental resolution... consistently slower? So seems like we shouldn't merge this?</p>
+<pre><code class="language-text">❯ python -m scripts.bench --puffin-path ./target/release/main --puffin-path ./target/release/puffin scripts/requirements/home-assistant.in --benchmark resolve-incremental --min-runs 50
+Benchmark 1: ./target/release/main (resolve-incremental)
+  Time (mean ± σ):     174.8 ms ±   6.3 ms    [User: 270.8 ms, System: 702.4 ms]
+  Range (min … max):   158.1 ms … 191.4 ms    50 runs
+
+Benchmark 2: ./target/release/puffin (resolve-incremental)
+  Time (mean ± σ):     183.3 ms ±   9.0 ms    [User: 276.1 ms, System: 794.8 ms]
+  Range (min … max):   168.2 ms … 217.6 ms    50 runs
+
+Summary
+  './target/release/main (resolve-incremental)' ran
+    1.05 ± 0.06 times faster than './target/release/puffin (resolve-incremental)'
+</code></pre>
+<p>Closes #1206.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2024-02-04 19:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @charliermarsh on 2024-02-04 19:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-04 19:51</div>
+            <div class="timeline-body"><p>My guess is that this means we end up prioritizing random package metadata requests over distribution metadata requests that are on the critical path for resolution. Perhaps there's a way to do better prioritization on the channels here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-22 17:08</div>
+            <div class="timeline-body"><p>Closing for now, can always revisit.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-02-22 17:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2024-06-11 11:29</div>
+            <div class="timeline-body"><p>Tried this again after the resolver improvements, still seems to be slower:</p>
+<pre><code>$ python -m scripts.bench \
+--uv-path ./target/profiling/uv \
+--uv-path ./target/profiling/baseline \
+--benchmark resolve-incremental \
+./scripts/requirements/home-assistant.in 
+Benchmark 1: ./target/profiling/uv (resolve-incremental)
+  Time (mean ± σ):     274.7 ms ±   9.3 ms    [User: 211.0 ms, System: 180.7 ms]
+  Range (min … max):   263.9 ms … 296.7 ms    11 runs
+ 
+Benchmark 2: ./target/profiling/baseline (resolve-incremental)
+  Time (mean ± σ):     263.0 ms ±  16.2 ms    [User: 220.7 ms, System: 185.1 ms]
+  Range (min … max):   242.0 ms … 291.2 ms    11 runs
+ 
+Summary
+  ./target/profiling/baseline (resolve-incremental) ran
+    1.04 ± 0.07 times faster than ./target/profiling/uv (resolve-incremental)
+</code></pre>
+<p>Agree the problem is probably around prefetch prioritization.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:54:20 UTC
+    </footer>
+</body>
+</html>

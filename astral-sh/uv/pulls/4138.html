@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Implement `Toolchain::find_or_fetch` and use in `uv venv --preview` - astral-sh/uv #4138</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Implement <code>Toolchain::find_or_fetch</code> and use in <code>uv venv --preview</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/4138">#4138</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2024-06-07 17:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/zanieb">@zanieb</a> on 2024-06-07 17:53</div>
+            <div class="timeline-body"><p>Extends https://github.com/astral-sh/uv/pull/4121
+Part of #2607</p>
+<p>Adds support for managed toolchain fetching to <code>uv venv</code>, e.g.</p>
+<pre><code>❯ cargo run -q -- venv --python 3.9.18 --preview -v
+DEBUG Searching for Python 3.9.18 in search path or managed toolchains
+DEBUG Searching for managed toolchains at `/Users/zb/Library/Application Support/uv/toolchains`
+DEBUG Found CPython 3.12.3 at `/opt/homebrew/bin/python3` (search path)
+DEBUG Found CPython 3.9.6 at `/usr/bin/python3` (search path)
+DEBUG Found CPython 3.12.3 at `/opt/homebrew/bin/python3` (search path)
+DEBUG Requested Python not found, checking for available download...
+DEBUG Using registry request timeout of 30s
+INFO Fetching requested toolchain...
+DEBUG Downloading https://github.com/indygreg/python-build-standalone/releases/download/20240224/cpython-3.9.18%2B20240224-aarch64-apple-darwin-pgo%2Blto-full.tar.zst to temporary location /Users/zb/Library/Application Support/uv/toolchains/.tmpgohKwp
+DEBUG Extracting cpython-3.9.18%2B20240224-aarch64-apple-darwin-pgo%2Blto-full.tar.zst
+DEBUG Moving /Users/zb/Library/Application Support/uv/toolchains/.tmpgohKwp/python to /Users/zb/Library/Application Support/uv/toolchains/cpython-3.9.18-macos-aarch64-none
+Using Python 3.9.18 interpreter at: /Users/zb/Library/Application Support/uv/toolchains/cpython-3.9.18-macos-aarch64-none/install/bin/python3
+Creating virtualenv at: .venv
+INFO Removing existing directory
+Activate with: source .venv/bin/activate
+</code></pre>
+<p>The preview flag is required. The fetch is performed if we can't find an interpreter that satisfies the request. Once fetched, the toolchain will be available for later invocations that include the <code>--preview</code> flag. There will be follow-ups to improve toolchain management in general, there is still outstanding work from the initial implementation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @zanieb on 2024-06-07 17:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-06-07 17:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-dev/src/fetch_python.rs</code>:126 on 2024-06-07 17:56</div>
+            <div class="timeline-body"><p>This whole thing is no longer necessary, we've been discovering managed toolchains via their directories instead of executables for a while now</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @zanieb on 2024-06-07 18:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @zanieb on 2024-06-07 23:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @zanieb on 2024-06-07 23:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-06-09 17:49</div>
+            <div class="timeline-body"><p>Will review, but while it's on my mind: should there be a way to force a project to use managed toolchains? Like, fetch and install even if you have some non-managed thing on your PATH?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-toolchain/src/downloads.rs</code>:56 on 2024-06-09 18:09</div>
+            <div class="timeline-body"><p>It looks like all the individual parts implement display. Consider just knocking it out in this PR?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-toolchain/src/downloads.rs</code>:144 on 2024-06-09 18:09</div>
+            <div class="timeline-body"><p>Not: use a single match arm for these cases?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-toolchain/src/downloads.rs</code>:135 on 2024-06-09 18:09</div>
+            <div class="timeline-body"><p>Stray newline.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-06-09 18:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-06-09 21:50</div>
+            <div class="timeline-body"><blockquote>
+<p>Will review, but while it's on my mind: should there be a way to force a project to use managed toolchains? Like, fetch and install even if you have some non-managed thing on your PATH?</p>
+</blockquote>
+<p>There's a hidden environment variable right now (<code>UV_FORCE_MANAGED_PYTHON</code>) but yeah I think more holistically we're going to have to expose some enum option that more clearly describes the allowed toolchain. Managed toolchains are grouped in with &quot;system&quot; Python installations right now which isn't very clear.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-toolchain/src/downloads.rs</code>:132 on 2024-06-10 08:34</div>
+            <div class="timeline-body"><p>Nit: <code>result</code> does not need to be mutable, either with</p>
+<pre><code class="language-rust">        let result = Self::default();
+        Ok(match request {
+</code></pre>
+<p>or with</p>
+<pre><code>        let result = Self::default();
+        let result = match request {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-toolchain/src/downloads.rs</code>:174 on 2024-06-10 08:35</div>
+            <div class="timeline-body"><p>You can <code>#[derive(Default)]</code> this</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-toolchain/src/managed.rs</code>:57 on 2024-06-10 08:39</div>
+            <div class="timeline-body"><p>Nit: Should this be pub (will there be future usages where there are outside calls to <code>InstalledToolchains::from_path</code> directly)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-toolchain/src/managed.rs</code>:65 on 2024-06-10 08:40</div>
+            <div class="timeline-body"><p>With the <code>#[error(transparent)]</code> on <code>Error</code>, i think the callsites of <code>from_settings</code> should have context that the error comes from toolchain discovery.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2024-06-10 08:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-06-10 13:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-toolchain/src/managed.rs</code>:65 on 2024-06-10 13:59</div>
+            <div class="timeline-body"><p>I'm not sure what the action item is here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2024-06-10 14:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-06-10 14:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-06-10 14:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-06-10 14:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-toolchain/src/managed.rs</code>:65 on 2024-06-10 14:27</div>
+            <div class="timeline-body"><p>I think the suggestion is that if you're using transparent IO errors, there will be no indication of why the IO error occurred. Like, if we fail to read or write a file, the entire error trace would just be &quot;Failed to write the file&quot;. Using context, you can say that we failed during toolchain discovery.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-06-10 14:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-toolchain/src/managed.rs</code>:65 on 2024-06-10 14:29</div>
+            <div class="timeline-body"><p>Ah interesting, thanks. I'll look into that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-06-10 15:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-toolchain/src/managed.rs</code>:65 on 2024-06-10 15:40</div>
+            <div class="timeline-body"><p>There's two kinds of adding context to errors: One would be replacing something like</p>
+<pre><code class="language-rust">#[error(transparent)]
+ManagedToolchain(#[from] crate::managed::Error),
+</code></pre>
+<p>with</p>
+<pre><code class="language-rust">#[error(&quot;Something about what this error is, maybe a {python version}&quot;)]
+ManagedToolchain(#[from] crate::managed::Error),
+</code></pre>
+<p>The other is replacing <code>InstalledToolchains::from_settings()?.init()?</code> with</p>
+<pre><code class="language-rust">let toolchains = InstalledToolchains::from_settings()?.init()?;
+</code></pre>
+<pre><code class="language-rust">let toolchains = InstalledToolchains::from_settings()
+    .context(&quot;Failed to load installed toolchains&quot;)?
+    .init()
+    .context(&quot;Failed to initialize toolchain discovery&quot;)?;
+</code></pre>
+<p>This requires some manual auditing of who adds the context, e.g. if you're asking for a specific python version, either the caller or the callee should be responsible for reporting the python version.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-06-10 15:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-toolchain/src/managed.rs</code>:65 on 2024-06-10 15:45</div>
+            <div class="timeline-body"><p>Thanks again!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:54:21 UTC
+    </footer>
+</body>
+</html>

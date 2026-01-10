@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Log transient network request failures - astral-sh/uv #3933</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Log transient network request failures</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/3933">#3933</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2024-05-31 09:48
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2024-05-31 09:48</div>
+            <div class="timeline-body"><p>We retry several kinds of network request failures, but it's often unclear whether a request was retried or not (https://github.com/astral-sh/uv/issues/3514#issuecomment-2105485773). This PR adds a small intermediary layer that logs all transient request failures, adding the <code>DEBUG Transient request failure</code> lines:</p>
+<pre><code>DEBUG Searching for Python interpreter in virtual environments
+DEBUG Found CPython 3.12.3 at `/home/konsti/projects/uv/.venv/bin/python3` (active virtual environment)
+DEBUG Using Python 3.12.3 environment at .venv/bin/python3
+DEBUG Acquired lock for `.venv`
+DEBUG At least one requirement is not satisfied: tqdm
+DEBUG Using registry request timeout of 30s
+DEBUG Solving with target Python version 3.12.3
+DEBUG Adding direct dependency: tqdm*
+DEBUG No cache entry for: https://pypi.org/simple/tqdm/
+DEBUG Transient request failure for https://pypi.org/simple/tqdm/, retrying: Request error: error sending request for url (https://pypi.org/simple/tqdm/)
+  Caused by: error sending request for url (https://pypi.org/simple/tqdm/)
+  Caused by: client error (Connect)
+  Caused by: dns error: failed to lookup address information: Name or service not known
+  Caused by: failed to lookup address information: Name or service not known
+DEBUG Transient request failure for https://pypi.org/simple/tqdm/, retrying: Request error: error sending request for url (https://pypi.org/simple/tqdm/)
+  Caused by: error sending request for url (https://pypi.org/simple/tqdm/)
+  Caused by: client error (Connect)
+  Caused by: dns error: failed to lookup address information: Name or service not known
+  Caused by: failed to lookup address information: Name or service not known
+DEBUG Transient request failure for https://pypi.org/simple/tqdm/, retrying: Request error: error sending request for url (https://pypi.org/simple/tqdm/)
+  Caused by: error sending request for url (https://pypi.org/simple/tqdm/)
+  Caused by: client error (Connect)
+  Caused by: dns error: failed to lookup address information: Name or service not known
+  Caused by: failed to lookup address information: Name or service not known
+DEBUG Transient request failure for https://pypi.org/simple/tqdm/, retrying: Request error: error sending request for url (https://pypi.org/simple/tqdm/)
+  Caused by: error sending request for url (https://pypi.org/simple/tqdm/)
+  Caused by: client error (Connect)
+  Caused by: dns error: failed to lookup address information: Name or service not known
+  Caused by: failed to lookup address information: Name or service not known
+error: Could not connect, are you offline?
+  Caused by: error sending request for url (https://pypi.org/simple/tqdm/)
+  Caused by: client error (Connect)
+  Caused by: dns error: failed to lookup address information: Name or service not known
+  Caused by: failed to lookup address information: Name or service not known
+</code></pre>
+<p>I decided for multi-line logging to show the complete error trace since only <code>Transient request failure for https://pypi.org/simple/tqdm/, retrying: Request error: error sending request for url (https://pypi.org/simple/tqdm/)</code> doesn't tell you the actual problem (a dns error).</p>
+<p>Note that running with <code>-v</code> will not show messages about retry backoff timing, but running with <code>RUST_LOG=debug</code> now shows a complete picture:</p>
+<pre><code>DEBUG starting new connection: https://pypi.org/
+DEBUG resolving host=&quot;pypi.org&quot;
+DEBUG Transient request failure for https://pypi.org/simple/tqdm/, retrying: Request error: error sending request for url (https://pypi.org/simple/tqdm/)
+  Caused by: error sending request for url (https://pypi.org/simple/tqdm/)
+  Caused by: client error (Connect)
+  Caused by: dns error: failed to lookup address information: Name or service not known
+  Caused by: failed to lookup address information: Name or service not known
+WARN Retry attempt #2. Sleeping 528.728192ms before the next attempt
+</code></pre>
+<p>Fixes #3572</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">error messages</span> added by @konstin on 2024-05-31 09:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2024-06-04 13:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">tracing</span> added by @zanieb on 2024-06-04 13:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @konstin on 2024-06-04 13:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2024-06-04 13:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-06-04 13:39</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:54:20 UTC
+    </footer>
+</body>
+</html>

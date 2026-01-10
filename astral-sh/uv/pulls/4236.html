@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Refactor `uv-toolchain::platform` to use `target-lexicon` - astral-sh/uv #4236</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Refactor <code>uv-toolchain::platform</code> to use <code>target-lexicon</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/4236">#4236</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2024-06-11 16:16
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/zanieb">@zanieb</a> on 2024-06-11 16:16</div>
+            <div class="timeline-body"><p>Closes https://github.com/astral-sh/uv/issues/3857</p>
+<p>Instead of using custom <code>Arch</code>, <code>Os</code>, and <code>Libc</code> types I just use <code>target-lexicon</code>'s which enumerate way more variants and implement display and parsing. We use a wrapper type to represent a couple special cases to support the &quot;x86&quot; alias for &quot;i686&quot; and &quot;macos&quot; for &quot;darwin&quot;. Alternatively we could try to use our <code>platform-tags</code> types but those capture more information (like operating system versions) that we don't have for downloads.</p>
+<p>As discussed in https://github.com/astral-sh/uv/pull/4160, this is not sufficient for proper libc detection but that work is larger and will be handled separately.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @zanieb on 2024-06-11 16:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-06-11 16:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-toolchain/fetch-download-metadata.py</code>:133 on 2024-06-11 16:24</div>
+            <div class="timeline-body"><p>Just keeping this for consistency for now</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @zanieb on 2024-06-11 16:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @zanieb on 2024-06-11 16:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-toolchain/src/downloads.inc</code>:1 on 2024-06-11 17:05</div>
+            <div class="timeline-body"><p>This file is one huge block, do we know if this affects compilation times?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-toolchain/src/downloads.rs</code>:269 on 2024-06-11 17:10</div>
+            <div class="timeline-body"><p>This type has a key of the same name, what's their relationship?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-toolchain/src/platform.rs</code>:29 on 2024-06-11 17:13</div>
+            <div class="timeline-body"><p>I would go with glibc as default on linux target for the start, otherwise the statically linked builds will behave differently than the glibc builds (and the python-build-standalone builds are currently unusable on musl anyway)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-toolchain/src/platform.rs</code>:104 on 2024-06-11 17:16</div>
+            <div class="timeline-body"><p>Can you add a comment about the different <code>i?86</code> arches?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2024-06-11 17:17</div>
+            <div class="timeline-body"><p>Setting the right default libc on linux is critical, the rest looks good</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-06-11 17:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-toolchain/src/downloads.rs</code>:269 on 2024-06-11 17:30</div>
+            <div class="timeline-body"><p>Sorry that was stale, fixed. I had to remove the static field because we don't map the operating system or architecture in the template anymore.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-06-11 17:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-toolchain/src/platform.rs</code>:29 on 2024-06-11 17:31</div>
+            <div class="timeline-body"><p>Our statically linked builds, you mean?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-06-11 17:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-toolchain/src/downloads.inc</code>:1 on 2024-06-11 17:31</div>
+            <div class="timeline-body"><p>No clue, is there a good way to measure?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-06-11 17:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-toolchain/src/platform.rs</code>:104 on 2024-06-11 17:45</div>
+            <div class="timeline-body"><p>Actually.. What do you want me to say? We just alias the i686 variant in parse and display for users.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-toolchain/src/platform.rs</code>:29 on 2024-06-11 17:46</div>
+            <div class="timeline-body"><p>Yes, <code>uv-x86_64-unknown-linux-gnu.tar.gz</code> and <code>uv-x86_64-unknown-linux-musl.tar.gz</code> would behave differently on the same machine since one has been compile with glibc and thinks that current os and the other has been compile with musl and thinks that's the current os (or libc none because it's statically compiled, i haven't checked)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-06-11 17:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-06-11 17:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-toolchain/src/platform.rs</code>:29 on 2024-06-11 17:49</div>
+            <div class="timeline-body"><p>I guess I feel like that's more reasonable behavior for now than <em>always</em> forcing download of GNU Python builds? Like if we can't determine what your system is using you think we should always fallback to GNU?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-06-11 17:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-toolchain/src/platform.rs</code>:29 on 2024-06-11 17:58</div>
+            <div class="timeline-body"><p>For actually shipping this as stable, we need libc detection and some kind of handling of the musl python-build-standalone situation.</p>
+<p>For the preview phase, most linux users are on glibc (it's more like everyone is on glibc except when deploying in an alpine container) and musl python-build-standalone is broken, so assuming glibc works.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-06-11 18:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-toolchain/src/platform.rs</code>:29 on 2024-06-11 18:11</div>
+            <div class="timeline-body"><blockquote>
+<p>We need libc detection</p>
+</blockquote>
+<p>This can still fail and I think we should have a reasonable fallback behavior. Matching the distribution's target seems more intuitive than falling back to glibc in that case?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-06-12 11:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-toolchain/src/platform.rs</code>:29 on 2024-06-12 11:07</div>
+            <div class="timeline-body"><p>I don't think we can make a reasonable guess when libc detection fails, and in the old <code>detect_linux_libc</code> we would error if we couldn't detect a libc.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-06-12 11:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-toolchain/src/platform.rs</code>:104 on 2024-06-12 11:08</div>
+            <div class="timeline-body"><p>In this case just that it doesn't matter which of those we pick</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-06-12 11:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-toolchain/src/downloads.inc</code>:1 on 2024-06-12 11:09</div>
+            <div class="timeline-body"><p>We could compare compile times with a dummy, but there aren't any good tools around.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2024-06-12 14:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-06-12 14:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-06-12 14:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-06-12 14:12</div>
+            <div class="timeline-body"><p>See https://github.com/astral-sh/uv/issues/4242 for proper musl support.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:54:21 UTC
+    </footer>
+</body>
+</html>

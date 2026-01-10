@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avoid work-stealing in bytecode compilation - astral-sh/uv #4004</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Avoid work-stealing in bytecode compilation</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/4004">#4004</a>
+        opened by <a href="https://github.com/ibraheemdev">@ibraheemdev</a>
+        on 2024-06-04 00:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2024-06-04 00:11</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Avoid using work-stealing Tokio workers for bytecode compilation, favoring instead dedicated threads. Tokio's work-stealing does not really benefit us because we're spawning Python workers and scheduling tasks ourselves — we don't want Tokio to re-balance our workers. Because we're doing scheduling ourselves and compilation is a primarily compute-bound task, we can also create dedicated runtimes for each worker and avoid some synchronization overhead.</p>
+<p>This is part of a general desire to avoid relying on Tokio's work-stealing scheduler and be smarter about our workload. In this case we already had the custom scheduler in place, Tokio was just getting in the way (though the overhead is very minor).</p>
+<h2>Test Plan</h2>
+<p>This improves performance by ~5% on my machine.</p>
+<pre><code>$ hyperfine --warmup 1 --prepare &quot;target/profiling/uv-dev clear-compile .venv&quot; &quot;target/profiling/uv-dev compile .venv&quot; &quot;target/profiling/uv-dev-dedicated compile .venv&quot;
+Benchmark 1: target/profiling/uv-dev compile .venv
+  Time (mean ± σ):      1.279 s ±  0.011 s    [User: 13.803 s, System: 2.998 s]
+  Range (min … max):    1.261 s …  1.296 s    10 runs
+ 
+Benchmark 2: target/profiling/uv-dev-dedicated compile .venv
+  Time (mean ± σ):      1.220 s ±  0.021 s    [User: 13.997 s, System: 3.330 s]
+  Range (min … max):    1.198 s …  1.272 s    10 runs
+
+Summary
+  target/profiling/uv-dev-dedicated compile .venv ran
+    1.05 ± 0.02 times faster than target/profiling/uv-dev compile .venv
+
+$ hyperfine --warmup 1 --prepare &quot;target/profiling/uv-dev clear-compile .venv&quot; &quot;target/profiling/uv-dev compile .venv&quot; &quot;target/profiling/uv-dev-dedicated compile .venv&quot;
+Benchmark 1: target/profiling/uv-dev compile .venv
+  Time (mean ± σ):      3.631 s ±  0.078 s    [User: 47.205 s, System: 4.996 s]
+  Range (min … max):    3.564 s …  3.832 s    10 runs
+ 
+Benchmark 2: target/profiling/uv-dev-dedicated compile .venv
+  Time (mean ± σ):      3.521 s ±  0.024 s    [User: 48.201 s, System: 5.392 s]
+  Range (min … max):    3.484 s …  3.566 s    10 runs
+ 
+Summary
+  target/profiling/uv-dev-dedicated compile .venv ran
+    1.03 ± 0.02 times faster than target/profiling/uv-dev compile .venv
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @ibraheemdev on 2024-06-04 00:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @ibraheemdev on 2024-06-04 00:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-06-04 00:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-installer/src/compile.rs</code>:108 on 2024-06-04 08:49</div>
+            <div class="timeline-body"><p>Does it still makes sense for the worker to be async? We're not really using any async-specific features there except for timeouts.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-installer/src/compile.rs</code>:114 on 2024-06-04 08:49</div>
+            <div class="timeline-body"><p>Nit: Can we give this a message with <code>.expect()</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2024-06-04 08:50</div>
+            <div class="timeline-body"><p>Cool find, i didn't realize we were paying a premium for work-stealing!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @konstin on 2024-06-04 08:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-installer/src/compile.rs</code>:103 on 2024-06-04 10:50</div>
+            <div class="timeline-body"><p>I'm probably missing something silly here, but why the <code>catch_unwind</code>? You have a thread boundary here, so you should be able to just extract the panic from the result of joining the thread?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2024-06-04 10:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2024-06-04 14:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/uv-installer/src/compile.rs</code>:103 on 2024-06-04 14:32</div>
+            <div class="timeline-body"><p>We wait on the threads asynchronously, which is why we use the oneshot channel instead of blocking on <code>join</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2024-06-04 14:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/uv-installer/src/compile.rs</code>:108 on 2024-06-04 14:33</div>
+            <div class="timeline-body"><p>I looked into making them non-async very briefly, but getting the timeouts to work with synchronous I/O is not trivial so I left it for now. I don't think it's a huge deal because most of the work is run on a separate process anyways, but we could probably get some minor gains from stripping out the async.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-06-04 14:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-installer/src/compile.rs</code>:103 on 2024-06-04 14:39</div>
+            <div class="timeline-body"><p>Hmmm okay, I think that makes sense to me. Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ibraheemdev on 2024-06-04 14:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ibraheemdev on 2024-06-04 14:48</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:54:20 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avoid race condition in `OnceMap` - astral-sh/uv #3987</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Avoid race condition in <code>OnceMap</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/3987">#3987</a>
+        opened by <a href="https://github.com/ibraheemdev">@ibraheemdev</a>
+        on 2024-06-03 15:23
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2024-06-03 15:23</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Fixes a race condition in <code>OnceMap::wait_blocking</code> where the inserted value could potentially be missed, leading to a deadlock. Fairly certain this will resolve https://github.com/astral-sh/uv/issues/3724.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @ibraheemdev on 2024-06-03 15:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-03 15:29</div>
+            <div class="timeline-body"><p>So the race here is that the value could be filled between the time we fetch it from the map and set up the notifier?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @ibraheemdev on 2024-06-03 15:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @konstin on 2024-06-03 15:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2024-06-03 15:34</div>
+            <div class="timeline-body"><p>@charliermarsh yes, checking the map again after setting up the notifier is the crucial bit. If the value hasn't been inserted yet, the thread is already in the waiter list ready to be notified. This is a pretty standard algorithm for blocking in a concurrent data-structure (check, register waiter, check again, wait).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-06-03 15:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/once-map/src/lib.rs</code>:49 on 2024-06-03 15:50</div>
+            <div class="timeline-body"><p>I'm trying to reason through how a deadlock could happen here. My understanding is that <code>entry</code> here is actually a <a href="https://docs.rs/dashmap/latest/dashmap/mapref/one/struct.Ref.html"><code>dashmap::mapref::one::Ref</code></a>, and that in turn holds a lock while it's alive. (The <code>dashmap</code> docs are woefully incomplete, but it's what the implementation suggests.) If that's true, then once a <code>get</code> happens, then it shouldn't be possible for a <code>done</code> call to insert anything before the case analysis below, right?</p>
+<p>Oh... wait... OK. I now see the <code>drop(entry)</code> below just before the <code>notify.notified().await</code>. So the deadlock is that between <code>drop(entry)</code> and <code>notify.notified().await</code>, a <code>done</code> call inserts a filled entry for the given key and notifies waiters <em>before</em> <code>notify.notified()</code> has a chance to register the waiter.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/once-map/src/lib.rs</code>:60 on 2024-06-03 15:52</div>
+            <div class="timeline-body"><p>Are we sure this is necessary? We are using <a href="https://docs.rs/tokio/latest/tokio/sync/struct.Notify.html#method.notify_waiters"><code>Notify::notify_waiters</code></a>, and it seems like that doesn't benefit from <code>Notified::enable</code>, since <code>notify_waiters</code> doesn't &quot;store&quot; permits.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/once-map/src/lib.rs</code>:60 on 2024-06-03 15:53</div>
+            <div class="timeline-body"><p>That is, I'm wondering if its superfluous (not deleterious).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/once-map/src/lib.rs</code>:67 on 2024-06-03 15:55</div>
+            <div class="timeline-body"><p>OK, I buy this, because acquiring the <code>Notification</code> has been de-coupled from <code>await</code>ing on the <code>Notification</code>. And <code>notify_waiters</code> specifically says:</p>
+<blockquote>
+<p>The purpose of this method is to notify all already registered waiters. Registering for notification is done by acquiring an instance of the Notified future via calling notified().</p>
+</blockquote>
+<p>But my reading here is still that <code>notification.as_mut().enable()</code> is not needed here. Not unless we're using <code>notify_{one,last}</code> somewhere.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2024-06-03 15:56</div>
+            <div class="timeline-body"><p>I buy what you're selling here. Great find. <code>Notify</code> is quite a bit more subtle than I had thought.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2024-06-03 15:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/once-map/src/lib.rs</code>:49 on 2024-06-03 15:58</div>
+            <div class="timeline-body"><blockquote>
+<p>a done call inserts a filled entry for the given key and notifies waiters before notify.notified() has a chance to register the waiter.</p>
+</blockquote>
+<p>Yes, exactly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2024-06-03 16:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/once-map/src/lib.rs</code>:60 on 2024-06-03 16:00</div>
+            <div class="timeline-body"><p>It is necessary, calling <code>notify.notified()</code> does nothing but construct the future lazily. <code>enable</code> is what actually registers the waiter.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2024-06-03 16:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/once-map/src/lib.rs</code>:60 on 2024-06-03 16:02</div>
+            <div class="timeline-body"><p>Actually I might be wrong on that, from the docs:</p>
+<blockquote>
+<p>The Notified future is guaranteed to receive wakeups from notify_waiters() as soon as it has been created, even if it has not yet been polled.</p>
+</blockquote>
+<p>But looking <a href="https://docs.rs/tokio/latest/src/tokio/sync/notify.rs.html#531">at the source code</a> I'm not sure how that is guaranteed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-06-03 16:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/once-map/src/lib.rs</code>:60 on 2024-06-03 16:04</div>
+            <div class="timeline-body"><p>Yeah but the docs for <code>Notify::notify_waiters</code> suggests otherwise. And, specifically, <em>not</em> <code>Notify::notify_{one,last}</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-06-03 16:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/once-map/src/lib.rs</code>:60 on 2024-06-03 16:04</div>
+            <div class="timeline-body"><blockquote>
+<p>The Notified future is guaranteed to receive wakeups from notify_waiters() as soon as it has been created, even if it has not yet been polled.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-06-03 16:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/once-map/src/lib.rs</code>:60 on 2024-06-03 16:07</div>
+            <div class="timeline-body"><p>Ah whoops, my comments came in after your last two, but I hadn't seen those.</p>
+<p>Yeah I'm just going on docs. Not on implementation.</p>
+<p>I'd be inclined to leave out superfluous things because it can make things more confusing, but if we don't know it's superfluous we could leave it out and see whether the deadlocks re-appear. Or if you're feeling more conservative, add a comment explaining why it's there even though a read of the docs suggests it isn't needed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2024-06-03 16:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/once-map/src/lib.rs</code>:60 on 2024-06-03 16:08</div>
+            <div class="timeline-body"><p>Ah okay, Tokio pulls a little trick here by tracking how many times <code>notify_waiters</code> has been called. I missed that, you're correct in that we don't need the <code>enable</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2024-06-03 16:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/once-map/src/lib.rs</code>:60 on 2024-06-03 16:12</div>
+            <div class="timeline-body"><p>I updated the comments to make it clear this only works with <code>notify_waiters</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2024-06-03 16:18</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/uv/branches/ibraheemdev:deadlock">CodSpeed Performance Report</a></h2>
+<h3>Merging #3987 will <strong>improve performances by 6.72%</strong></h3>
+<p><sub>Comparing <code>ibraheemdev:deadlock</code> (8ea913b) with <code>main</code> (29ea5d5)</sub></p>
+<h3>Summary</h3>
+<p><code>⚡ 1</code> improvements
+<code>✅ 12</code> untouched benchmarks</p>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Benchmark | <code>main</code> | <code>ibraheemdev:deadlock</code> | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| ⚡ | <code>wheelname_tag_compatibility[flyte-short-incompatible]</code> | 926.7 ns | 868.3 ns | +6.72% |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ibraheemdev on 2024-06-03 16:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ibraheemdev on 2024-06-03 16:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-06-04 13:39</div>
+            <div class="timeline-body"><p>Awesome!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:54:20 UTC
+    </footer>
+</body>
+</html>

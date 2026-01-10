@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>filter dependencies by tracking markers on resolver forks - astral-sh/uv #4339</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>filter dependencies by tracking markers on resolver forks</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/4339">#4339</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2024-06-15 14:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-06-15 14:08</div>
+            <div class="timeline-body"><p>This PR adds the tracking of marker expressions across forked resolver
+states. These marker expressions are then used to exlcude dependencies
+with non-overlapping marker expressions from consideration in
+corresponding forks only.</p>
+<p>This PR also fixes a bug I found in marker disjoint checking as part of
+testing this change.</p>
+<p>Lots of packse tests were added here:
+https://github.com/astral-sh/packse/pull/194</p>
+<p>Closes #4194</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @BurntSushi on 2024-06-15 14:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @zanieb on 2024-06-15 14:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2024-06-15 14:40</div>
+            <div class="timeline-body"><p>The implementation looks good to me; I didn't review the lock snapshots.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:1553 on 2024-06-17 10:57</div>
+            <div class="timeline-body"><p>That needs some additional context about the intermediary step, where any marker <code>A</code> on a requirement is never disjoint with an empty marker tree (the default here), so we consider the marker tree here truthy</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:1892 on 2024-06-17 11:00</div>
+            <div class="timeline-body"><p>Can multiple dependencies of the same name also exist without forking, e.g. when foo has:</p>
+<pre><code>Requires-Dist: bar &gt;= 1
+Requires-Dist: bar &lt; 2
+</code></pre>
+<p>These cases exist e.g. with extras, but sometimes also with non-conflicting environment markers.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:2012 on 2024-06-17 11:03</div>
+            <div class="timeline-body"><p>Nit: missing article(?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2024-06-17 11:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-06-17 12:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:1553 on 2024-06-17 12:26</div>
+            <div class="timeline-body"><p>Hmmm. Doesn't that immediately follow from the fact that the marker tree is always true for any possible marker environment?</p>
+<p>Also, I'm not using &quot;empty marker tree&quot; because there are two conceivable variants of an empty marker tree: <code>MarkerTree::And(vec![])</code> and <code>MarkerTree::Or(vec![])</code>. The former is always true (which is what matters here) while the latter is always false.</p>
+<p>I'll try to add something to the docs here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-06-17 12:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:1553 on 2024-06-17 12:28</div>
+            <div class="timeline-body"><p>OK, I added a paragraph. Hopefully it makes its use a little clearer:</p>
+<pre><code class="language-rust">    /// The marker expression that created this state.
+    ///
+    /// The root state always corresponds to a marker expression that is always
+    /// `true` for every `MarkerEnvironment`.
+    ///
+    /// In non-universal mode, forking never occurs and so this marker
+    /// expression is always `true`.
+    ///
+    /// Whenever dependencies are fetched, all requirement specifications
+    /// are checked for disjointness with the marker expression of the fork
+    /// in which those dependencies were fetched. If a requirement has a
+    /// completely disjoint marker expression (i.e., it can never be true given
+    /// that the marker expression that provoked the fork is true), then that
+    /// dependency is completely ignored.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:1892 on 2024-06-17 13:25</div>
+            <div class="timeline-body"><p>Yeah great question. I was careful to make <code>Dependencies::fork</code> infallible so that it didn't try to be too eager about reporting errors. The idea is that if there aren't any requirements with the same package with non-overlapping markers, then the result returned by <code>Dependencies::fork</code> is unchanged from what it was. It's just a flat list of requirements. That is, no forks. So something like the scenario you outlined will work just as it always has.</p>
+<p>One hiccup here though is if you have this:</p>
+<pre><code>Requires-Dist: bar &gt;= 1 ; sys_platform == 'linux'
+Requires-Dist: bar &lt; 2 ; sys_platform == 'darwin'
+</code></pre>
+<p>Even though the version constraints are non-conflicting, because the marker expressions are non-overlapping, this will actually provoke a fork. The fork means that the <code>bar &gt;= 1</code> requirement is free to choose, say, <code>bar==2.0.0</code> if it's available because the fork exists in isolation from the <code>bar &lt; 2</code> requirement. However, if no fork were to happen, then both the <code>bar &gt;= 1</code> and <code>bar &lt; 2</code> requirements would be active simultaneously such that <code>bar==2.0.0</code> couldn't be chosen. So in this case, there exists a resolution without forking, but it is distinct from the resolution we get if we fork.</p>
+<p>I think we could detect this case by looking at whether the version constraints themselves are conflicting. That is, if there exists an overlap in the version constraints, then we don't fork even if the marker expressions are non-overlapping. I think a decision like that would be predicated on the idea that it could be <em>possible</em> to find one resolution that works across multiple platforms. But it might not be possible. It feels like forking in this case, even if it isn't always necessary, results in more freedom for the resolver to find a resolution. But... maybe it's surprising to users in real cases. I'm not sure.</p>
+<p>I added tests for some of these cases here: https://github.com/astral-sh/packse/pull/196</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-06-17 13:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-06-17 13:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:1892 on 2024-06-17 13:29</div>
+            <div class="timeline-body"><p>I created an issue for the non-conflicting requirements with non-overlapping markers scenario: https://github.com/astral-sh/uv/issues/4357</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @BurntSushi on 2024-06-17 13:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2024-06-17 13:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-06-17 13:30</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:54:21 UTC
+    </footer>
+</body>
+</html>

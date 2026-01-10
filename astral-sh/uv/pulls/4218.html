@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Improve handling of missing interpreters during discovery - astral-sh/uv #4218</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Improve handling of missing interpreters during discovery</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/4218">#4218</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2024-06-10 21:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/zanieb">@zanieb</a> on 2024-06-10 21:29</div>
+            <div class="timeline-body"><p>Cherry-picked from https://github.com/astral-sh/uv/pull/4214</p>
+<p>The first commit gets us some context on an IO error during queries:</p>
+<p>Previously:</p>
+<pre><code>failed to canonicalize path `[VENV]/bin/python3`
+    Caused by: No such file or directory (os error 2)
+</code></pre>
+<p>Now:</p>
+<pre><code>Failed to query Python interpreter
+    Caused by: failed to canonicalize path `[VENV]/bin/python3`
+    Caused by: No such file or directory (os error 2)
+</code></pre>
+<p>but really we shouldn't attempt to query a missing interpreter during discovery anyway, so we improve handling of that too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2024-06-10 21:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-06-10 21:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/pip_compile.rs</code>:142 on 2024-06-10 21:50</div>
+            <div class="timeline-body"><p>Oh hey this is way better, why would we fail here anyway?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-06-10 21:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/pip_sync.rs</code>:130 on 2024-06-10 21:51</div>
+            <div class="timeline-body"><p>Now this isn't amazing, I guess with <code>-v</code> you'd see why your <code>VIRTUAL_ENV</code> was ignored. We could add some sort of hint in the future?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-06-10 21:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/tests/pip_compile.rs</code>:142 on 2024-06-10 21:51</div>
+            <div class="timeline-body"><p>Yeah I'm actually not sure.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-06-10 21:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/pip_sync.rs</code>:130 on 2024-06-10 21:52</div>
+            <div class="timeline-body"><p>Since it literally doesn't exist this seems okay for now though</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-06-10 21:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-toolchain/src/interpreter.rs</code>:649 on 2024-06-10 21:52</div>
+            <div class="timeline-body"><p>Can we instead match on <code>uv_fs::canonicalize_executable(executable)</code>, and just do this in the <code>NotFound</code> branch of the error? Otherwise, we're doing another fs operation that we can avoid.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-06-10 21:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/pip_compile.rs</code>:142 on 2024-06-10 21:55</div>
+            <div class="timeline-body"><p>Well I know why we did but yeah there's no reason to</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-06-10 21:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-toolchain/src/interpreter.rs</code>:649 on 2024-06-10 21:56</div>
+            <div class="timeline-body"><p>Sure, I was worried that wasn't future proof but it <em>is</em> faster...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-06-10 22:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2024-06-10 22:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-06-10 22:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-06-10 22:26</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:54:21 UTC
+    </footer>
+</body>
+</html>

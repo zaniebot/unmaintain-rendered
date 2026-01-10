@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv-resolver: use Requires-Python to filter dependencies during universal resolution - astral-sh/uv #4273</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv-resolver: use Requires-Python to filter dependencies during universal resolution</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/4273">#4273</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2024-06-12 14:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-06-12 14:19</div>
+            <div class="timeline-body"><p>In the time before universal resolving, we would always pass a
+<code>MarkerEnvironment</code>, and this environment would capture any relevant
+<code>Requires-Python</code> specifier (including if <code>-p/--python</code> was provided on
+the CLI).</p>
+<p>But in universal resolution, we very specifically do not use a
+<code>MarkerEnvironment</code> because we want to produce a resolution that is
+compatible across potentially multiple environments. This in turn meant
+that we lost <code>Requires-Python</code> filtering.</p>
+<p>This PR adds it back. We do this by converting our <code>PythonRequirement</code>
+into a <code>MarkerTree</code> that encodes the version specifiers in a
+<code>Requires-Python</code> specifier. We then ask whether that <code>MarkerTree</code> is
+disjoint with a dependency specification's <code>MarkerTree</code>. If it is, then
+we know it's impossible for that dependency specification to every be
+true, and we can completely ignore it.</p>
+<p>Packse tests were added in this PR: https://github.com/astral-sh/packse/pull/187</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-resolver/src/pubgrub/dependencies.rs</code>:102 on 2024-06-12 14:22</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        // If the requirement would not be selected with any Python version supported by the root, skip it.
+</code></pre>
+<p>(same below)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2024-06-12 14:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-06-12 15:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:200 on 2024-06-12 15:04</div>
+            <div class="timeline-body"><p>Should this evaluate to <code>None</code> if <code>requires_python</code> is empty? What's the thinking behind <code>MarkerTree::And(vec![])</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-06-12 15:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/requires_python.rs</code>:196 on 2024-06-12 15:04</div>
+            <div class="timeline-body"><p>I'm having trouble reasoning about whether we should be using both of these (i.e., both <code>python_version</code> and <code>python_full_version</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-06-12 15:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/requires_python.rs</code>:196 on 2024-06-12 15:11</div>
+            <div class="timeline-body"><p>Trying to talk it out... Let's say you have <code>Requires-Python = &quot;&gt;= 3.10.1&quot;</code>...</p>
+<p>Then we'd add <code>python_version &gt;= &quot;3.10.1&quot;</code> and <code>python_full_version &gt;= &quot;3.10.1&quot;</code>.</p>
+<p>Then let's say we see a marker on a dependency <code>python_version == &quot;3.10&quot;</code>.</p>
+<p>That actually <em>does</em> intersect with <code>Requires-Python = &quot;&gt;= 3.10.1&quot;</code>, because by definition in <code>python_version</code> we only capture the major and minor (it's computed as: <code>'.'.join(platform.python_version_tuple()[:2])</code>). But here we would consider it disjoint from <code>python_version &gt;= &quot;3.10.1&quot;</code>.</p>
+<p>So, really, we want <code>python_version &gt;= &quot;3.10&quot;</code>, not <code>python_version &gt;= &quot;3.10.1&quot;</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-06-12 15:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/requires_python.rs</code>:196 on 2024-06-12 15:12</div>
+            <div class="timeline-body"><p>Ok, to simplify things, I might suggest this: use <code>self.bound</code> rather than <code>self.specifiers</code>. And add <code>&gt;= self.bound</code>, and only include the major and minor release for the <code>MarkerValueVersion::PythonVersion</code> segment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-06-12 15:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:200 on 2024-06-12 15:18</div>
+            <div class="timeline-body"><p>I believe it would be correct for this to be <code>None</code>. But that's <em>only</em> because we treat <code>None</code> and &quot;marker expression is always true&quot; as equivalent. It just makes the contract a little nicer I guess:</p>
+<pre><code class="language-rust">    /// This is derived from `PythonRequirement` once at initialization
+    /// time. It's used in universal mode to filter our dependencies with
+    /// a `python_version` marker expression that has no overlap with the
+    /// `Requires-Python` specifier.
+    ///
+    /// This is non-None if and only if the resolver is operating in
+    /// universal mode. (i.e., when `markers` is `None`.)
+    requires_python: Option&lt;MarkerTree&gt;,
+</code></pre>
+<p>If we used <code>None</code> here then this would need to be rephrased.</p>
+<p>I don't have a strong opinion here or anything, but this just made the most sense to me at the time.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-06-12 15:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:200 on 2024-06-12 15:19</div>
+            <div class="timeline-body"><p>(I sometimes wonder if we could get away with not having <code>Option&lt;MarkerTree&gt;</code> anywhere.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:200 on 2024-06-12 15:21</div>
+            <div class="timeline-body"><p>I guess I was hoping to avoid ever allowing <code>And(vec![])</code> or <code>Or(vec![])</code>. Ideally that would be impossible in the future...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-06-12 15:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-06-12 15:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-resolver/src/requires_python.rs</code>:196 on 2024-06-12 15:22</div>
+            <div class="timeline-body"><p>The way I see it is if you have <code>foo ; python_full_version == '3.9'</code> and <code>Requires-Python: &gt;=3.10</code>, then <code>foo</code> should be ignored.</p>
+<p>That work by transforming <code>Requires-Python: &gt;=3.10</code> to <code>python_version &gt;= '3.10' and python_full_version &gt;= '3.10'</code>. That marker expression in turn has zero overlap with <code>python_full_version == '3.9'</code>, so it is excluded. But if we instead had <code>bar ; python_full_version == '3.11'</code>, then there is possible overlap and thus they aren't considered disjoint.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-06-12 15:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:200 on 2024-06-12 15:41</div>
+            <div class="timeline-body"><p>Yeah I had similar hopes for <code>regex</code> initially (e.g., banning <code>&quot;&quot;</code> and <code>[^\s\S]</code>), and it just turns out that it's useful to have types like this be able to represent &quot;always match&quot; and &quot;never match.&quot; For example, you <em>might</em> be able to ban <code>And(vec![])</code>, but 1) you'll have to juggle it with <code>Option&lt;MarkerTree&gt;</code> which is annoying and 2) there an infinite number of <code>MarkerTree</code> values that have the same truth table as <code>And(vec![])</code>. Because of (2), you kinda need to deal with &quot;always true&quot; (and also, &quot;never true&quot;) expressions anyway. So you might as well allow the trivial examples of them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-06-12 15:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-resolver/src/requires_python.rs</code>:196 on 2024-06-12 15:43</div>
+            <div class="timeline-body"><p>(Oops, when I wrote the above comment, I didn't see your two most recent comments. The GitHub UI is maybe slow to update.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-06-12 15:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/requires_python.rs</code>:196 on 2024-06-12 15:47</div>
+            <div class="timeline-body"><p>Yeah, the basic problem is that <code>python_version</code> is definitionally truncated, and I worry that could lead to incorrect reasoning here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-06-12 15:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-resolver/src/requires_python.rs</code>:196 on 2024-06-12 15:49</div>
+            <div class="timeline-body"><p>Yeah I'm going to use your example above to write a regression test.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-06-12 17:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-resolver/src/requires_python.rs</code>:196 on 2024-06-12 17:01</div>
+            <div class="timeline-body"><p>All righty, this should be fixed now! I added a regression test here: https://github.com/astral-sh/packse/pull/193</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @BurntSushi on 2024-06-12 17:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-06-12 17:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/requires_python.rs</code>:226 on 2024-06-12 17:14</div>
+            <div class="timeline-body"><p>Why can this one unwrap?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-06-12 17:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-06-12 17:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-resolver/src/requires_python.rs</code>:226 on 2024-06-12 17:20</div>
+            <div class="timeline-body"><p>Same reason as the one above. I duplicated the comment to make this clearer.</p>
+<p>Although I suppose the constructor of <code>RequiresPython</code> permits any <code>Version</code> which means it could technically have a local segment. Likely a logic error, but I added <code>without_local()</code> to strip it from the version anyway.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @BurntSushi on 2024-06-12 17:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2024-06-12 17:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-06-12 17:30</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:54:21 UTC
+    </footer>
+</body>
+</html>

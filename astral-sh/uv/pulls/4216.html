@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Refactor project interpreter request for `requires-python` specifiers - astral-sh/uv #4216</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Refactor project interpreter request for <code>requires-python</code> specifiers</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/4216">#4216</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2024-06-10 20:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/zanieb">@zanieb</a> on 2024-06-10 20:11</div>
+            <div class="timeline-body"><p>Refactor following #4214 to avoid parsing the specifiers again</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @zanieb on 2024-06-10 20:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @zanieb on 2024-06-10 20:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @zanieb on 2024-06-10 23:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Fix project interpreter support for `requires-python` specifiers" to "Refactor project interpreter request for `requires-python` specifiers" by @zanieb on 2024-06-10 23:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-06-10 23:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/project/mod.rs</code>:140 on 2024-06-10 23:22</div>
+            <div class="timeline-body"><p>Guess I might want to make <code>find</code> take a <code>Option&lt;ToolchainRequest&gt;</code> as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-06-11 01:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/project/mod.rs</code>:140 on 2024-06-11 01:25</div>
+            <div class="timeline-body"><p>Personally find it a little easier to read as:</p>
+<pre><code class="language-rust">let interpreter = python
+    .map(ToolchainRequest::parse)
+    .or(requires_python
+        .map(|specifiers| ToolchainRequest::Version(VersionRequest::Range(specifiers.clone()))))
+    .map_or_else(
+        || {
+            Toolchain::find(
+                None,
+                // Otherwise we'll try to use the venv we just deleted.
+                SystemPython::Required,
+                preview,
+                cache,
+            )
+        },
+        |request| {
+            Toolchain::find_requested(
+                &amp;request,
+                // Otherwise we'll try to use the venv we just deleted.
+                SystemPython::Required,
+                preview,
+                cache,
+            )
+        },
+    )?
+    .into_interpreter();
+</code></pre>
+<p>But totally subjective.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-06-11 01:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-06-11 01:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/project/mod.rs</code>:140 on 2024-06-11 01:31</div>
+            <div class="timeline-body"><p>Oooh that's really nice haha but... I think I still want to refactor <code>Toolchain::find</code> to just not take strings anymore so I'll probably just merge and change it later.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2024-06-11 01:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-06-11 01:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-06-11 01:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-06-11 01:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/project/mod.rs</code>:140 on 2024-06-11 01:41</div>
+            <div class="timeline-body"><p>Wow...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-06-11 01:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/project/mod.rs</code>:140 on 2024-06-11 01:53</div>
+            <div class="timeline-body"><p>I want it in the release and it's after work hours! hehe</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-06-11 01:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/project/mod.rs</code>:140 on 2024-06-11 01:53</div>
+            <div class="timeline-body"><p>I do really like it actually &lt;3</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:54:21 UTC
+    </footer>
+</body>
+</html>
