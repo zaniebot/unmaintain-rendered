@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Limit hack in protocol satisfiability to only apply to subtyping (not assignability) - astral-sh/ruff #20569</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Limit hack in protocol satisfiability to only apply to subtyping (not assignability)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/20569">#20569</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-09-25 10:35
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-09-25 10:35</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Following https://github.com/astral-sh/ruff/commit/742f8a4ee6d0730c7eaec081c80babdabc62a8c6, we now do sometimes consider <code>Type::TypeVar</code>s to be assignable to other types, and other types to be assignable to <code>Type::TypeVar</code>s. That means that this hack in our protocol satisfiability logic is needed <em>less</em> than it used to be: all tests (including some new ones) continue to pass if we apply the hack <em>only</em> when the <code>relation</code> passed is <code>TypeRelation::Subtyping</code></p>
+<h2>Test Plan</h2>
+<p><code>cargo test -p ty_python_semantic</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @AlexWaygood on 2025-09-25 10:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-09-25 10:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-09-25 10:37</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a></h2>
+<details>
+<summary>Changes were detected when running ty on typing conformance tests</summary>
+
+<pre><code class="language-diff">--- old-output.txt	2025-09-25 11:10:05.624991134 +0000
++++ new-output.txt	2025-09-25 11:10:08.788015435 +0000
+@@ -430,6 +430,7 @@
+ generics_self_basic.py:75:5: error[type-assertion-failure] Argument does not have asserted type `Container[str]`
+ generics_self_basic.py:83:5: error[type-assertion-failure] Argument does not have asserted type `Container[T@object_with_generic_type]`
+ generics_self_protocols.py:48:5: error[type-assertion-failure] Argument does not have asserted type `ShapeProtocol`
++generics_self_protocols.py:61:19: error[invalid-argument-type] Argument to function `accepts_shape` is incorrect: Expected `ShapeProtocol`, found `BadReturnType`
+ generics_self_usage.py:73:14: error[invalid-type-form] Variable of type `typing.Self` is not allowed in a type expression
+ generics_self_usage.py:73:23: error[invalid-type-form] Variable of type `typing.Self` is not allowed in a type expression
+ generics_self_usage.py:76:6: error[invalid-type-form] Variable of type `typing.Self` is not allowed in a type expression
+@@ -860,5 +861,5 @@
+ typeddicts_usage.py:28:17: error[missing-typed-dict-key] Missing required key 'name' in TypedDict `Movie` constructor
+ typeddicts_usage.py:28:18: error[invalid-key] Invalid key access on TypedDict `Movie`: Unknown key &quot;title&quot;
+ typeddicts_usage.py:40:24: error[invalid-type-form] The special form `typing.TypedDict` is not allowed in type expressions. Did you mean to use a concrete TypedDict or `collections.abc.Mapping[str, object]` instead?
+-Found 861 diagnostics
++Found 862 diagnostics
+ WARN A fatal error occurred while checking some files. Not all project files were analyzed. See the diagnostics list above for details.
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-09-25 10:37</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">antidote (https://github.com/Finistere/antidote)
++ src/antidote/lib/interface_ext/_internal.py:132:27: error[invalid-argument-type] Argument to bound method `append` is incorrect: Expected `Predicate[Weight@create_conditions] | Weight@create_conditions | NeutralWeight | None | bool`, found `QualifiedBy`
++ src/antidote/lib/interface_ext/_internal.py:134:27: error[invalid-argument-type] Argument to bound method `append` is incorrect: Expected `Predicate[Weight@create_conditions] | Weight@create_conditions | NeutralWeight | None | bool`, found `QualifiedBy`
+- Found 304 diagnostics
++ Found 306 diagnostics
+
+jax (https://github.com/google/jax)
++ jax/experimental/pallas/ops/gpu/attention_mgpu.py:461:9: error[invalid-argument-type] Argument to function `emit_pipeline_warp_specialized` is incorrect: Expected `ComputeContext | None`, found `def _compute_thread(pipeline_callback) -&gt; Unknown`
++ jax/experimental/pallas/ops/gpu/attention_mgpu.py:568:7: error[invalid-argument-type] Argument to function `emit_pipeline_warp_specialized` is incorrect: Expected `ComputeContext | None`, found `def _compute_thread(pipeline_callback) -&gt; Unknown`
++ jax/experimental/pallas/ops/gpu/attention_mgpu.py:755:9: error[invalid-argument-type] Argument to function `emit_pipeline_warp_specialized` is incorrect: Expected `ComputeContext | None`, found `def _compute_thread(pipeline_callback) -&gt; Unknown`
+- Found 2251 diagnostics
++ Found 2254 diagnostics
+
+</code></pre>
+</details>
+No memory usage changes detected ✅
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @AlexWaygood on 2025-09-25 10:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-09-25 10:51</div>
+            <div class="timeline-body"><!-- generated-comment ty ecosystem-analyzer -->
+
+<h2><code>ecosystem-analyzer</code> results</h2>
+<p>| Lint rule | Added | Removed | Changed |
+|-----------|------:|--------:|--------:|
+| <code>invalid-argument-type</code> | 5 | 0 | 0 |
+| <code>no-matching-overload</code> | 0 | 1 | 0 |
+| <strong>Total</strong> | <strong>5</strong> | <strong>1</strong> | <strong>0</strong> |</p>
+<p><strong><a href="https://alex-proto-hack-reduce.ecosystem-663.pages.dev/diff">Full report with detailed diff</a></strong></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-09-25 11:01</div>
+            <div class="timeline-body"><p>It took me quite a bit of time (and your help) to understand what was going on on the type-of-self PR, so I would be in favor of a solution that <em>completely</em> removes this hack (https://github.com/astral-sh/ruff/pull/20568). The ecosystem impact seems to be the same.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @AlexWaygood on 2025-09-25 11:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @AlexWaygood on 2025-09-25 11:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-09-25 11:14</div>
+            <div class="timeline-body"><blockquote>
+<p>It took me quite a bit of time (and your help) to understand what was going on on the type-of-self PR, so I would be in favor of a solution that <em>completely</em> removes this hack (#20568). The ecosystem impact seems to be the same.</p>
+</blockquote>
+<p>I'm okay with that. Would you mind copying over the test additions from this version? (Explicit tests that assignability is not affected by the removal of the hack (only subtyping), and a couple of new regression tests for the fixed issue in the typing conformance suite)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-09-25 11:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-09-25 11:19</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:40:54 UTC
+    </footer>
+</body>
+</html>

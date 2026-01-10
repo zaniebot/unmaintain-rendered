@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update dependency vite to v7.0.7 - astral-sh/ruff #20323</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Update dependency vite to v7.0.7</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/20323">#20323</a>
+        opened by <a href="https://github.com/renovate">@renovate</a>
+        on 2025-09-10 02:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/renovate">@renovate</a> on 2025-09-10 02:03</div>
+            <div class="timeline-body"><p>This PR contains the following updates:</p>
+<p>| Package | Change | Age | Confidence |
+|---|---|---|---|
+| <a href="https://vite.dev">vite</a> (<a href="https://redirect.github.com/vitejs/vite/tree/HEAD/packages/vite">source</a>) | <a href="https://renovatebot.com/diffs/npm/vite/7.0.6/7.0.7"><code>7.0.6</code> -&gt; <code>7.0.7</code></a> | <a href="https://docs.renovatebot.com/merge-confidence/"><img src="https://developer.mend.io/api/mc/badges/age/npm/vite/7.0.7?slim=true" alt="age" /></a> | <a href="https://docs.renovatebot.com/merge-confidence/"><img src="https://developer.mend.io/api/mc/badges/confidence/npm/vite/7.0.6/7.0.7?slim=true" alt="confidence" /></a> |</p>
+<hr />
+<blockquote>
+<p>[!WARNING]
+Some dependencies could not be looked up. Check the Dependency Dashboard for more information.</p>
+</blockquote>
+<h3>GitHub Vulnerability Alerts</h3>
+<h4><a href="https://redirect.github.com/vitejs/vite/security/advisories/GHSA-jqfw-vq24-v9c3">CVE-2025-58752</a></h4>
+<h3>Summary</h3>
+<p>Any HTML files on the machine were served regardless of the <code>server.fs</code> settings.</p>
+<h3>Impact</h3>
+<p>Only apps that match the following conditions are affected:</p>
+<ul>
+<li>explicitly exposes the Vite dev server to the network (using --host or <a href="https://vitejs.dev/config/server-options.html#server-host">server.host config option</a>)</li>
+<li><code>appType: 'spa'</code> (default) or <code>appType: 'mpa'</code> is used</li>
+</ul>
+<p>This vulnerability also affects the preview server. The preview server allowed HTML files not under the output directory to be served.</p>
+<h3>Details</h3>
+<p>The <a href="https://redirect.github.com/vitejs/vite/blob/9719497adec4ad5ead21cafa19a324bb1d480194/packages/vite/src/node/server/middlewares/static.ts#L123">serveStaticMiddleware</a> function is in charge of serving static files from the server. It returns the <a href="https://redirect.github.com/vitejs/vite/blob/9719497adec4ad5ead21cafa19a324bb1d480194/packages/vite/src/node/server/middlewares/static.ts#L136">viteServeStaticMiddleware</a> function which runs the needed tests and serves the page. The viteServeStaticMiddleware function <a href="https://redirect.github.com/vitejs/vite/blob/9719497adec4ad5ead21cafa19a324bb1d480194/packages/vite/src/node/server/middlewares/static.ts#L144">checks if the extension of the requested file is &quot;.html&quot;</a>. If so, it doesn't serve the page. Instead, the server will go on to the next middlewares, in this case <a href="https://redirect.github.com/vitejs/vite/blob/9719497adec4ad5ead21cafa19a324bb1d480194/packages/vite/src/node/server/middlewares/htmlFallback.ts#L14">htmlFallbackMiddleware</a>, and then to <a href="https://redirect.github.com/vitejs/vite/blob/9719497adec4ad5ead21cafa19a324bb1d480194/packages/vite/src/node/server/middlewares/indexHtml.ts#L438">indexHtmlMiddleware</a>. These middlewares don't perform any test against allow or deny rules, and they don't make sure that the accessed file is in the root directory of the server. They just find the file and send back its contents to the client.</p>
+<h3>PoC</h3>
+<p>Execute the following shell commands:</p>
+<pre><code>npm  create  vite@latest
+cd vite-project/
+echo  &quot;secret&quot; &gt; /tmp/secret.html
+npm install
+npm run dev
+</code></pre>
+<p>Then, in a different shell, run the following command:</p>
+<p><code>curl  -v  --path-as-is  'http://localhost:5173/../../../../../../../../../../../tmp/secret.html'</code></p>
+<p>The contents of /tmp/secret.html will be returned.</p>
+<p>This will also work for HTML files that are in the root directory of the project, but are in the deny list (or not in the allow list). Test that by stopping the running server (CTRL+C), and running the following commands in the server's shell:</p>
+<pre><code>echo  'import path from &quot;node:path&quot;; import { defineConfig } from &quot;vite&quot;; export default defineConfig({server: {fs: {deny: [path.resolve(__dirname, &quot;secret_files/*&quot;)]}}})'  &gt;  [vite.config.js](http://vite.config.js)
+mkdir secret_files
+echo &quot;secret txt&quot; &gt; secret_files/secret.txt
+echo &quot;secret html&quot; &gt; secret_files/secret.html
+npm run dev
+
+</code></pre>
+<p>Then, in a different shell, run the following command:</p>
+<p><code>curl  -v  --path-as-is  'http://localhost:5173/secret_files/secret.txt'</code></p>
+<p>You will receive a 403 HTTP Response,  because everything in the secret_files directory is denied.</p>
+<p>Now in the same shell run the following command:</p>
+<p><code>curl  -v  --path-as-is  'http://localhost:5173/secret_files/secret.html'</code></p>
+<p>You will receive the contents of secret_files/secret.html.</p>
+<h4><a href="https://redirect.github.com/vitejs/vite/security/advisories/GHSA-g4jq-h2w9-997c">CVE-2025-58751</a></h4>
+<h3>Summary</h3>
+<p>Files starting with the same name with the public directory were served bypassing the <code>server.fs</code> settings.</p>
+<h3>Impact</h3>
+<p>Only apps that match the following conditions are affected:</p>
+<ul>
+<li>explicitly exposes the Vite dev server to the network (using --host or <a href="https://vitejs.dev/config/server-options.html#server-host"><code>server.host</code> config option</a>)</li>
+<li>uses <a href="https://vite.dev/guide/assets.html#the-public-directory">the public directory feature</a> (enabled by default)</li>
+<li>a symlink exists in the public directory</li>
+</ul>
+<h3>Details</h3>
+<p>The <a href="https://redirect.github.com/vitejs/vite/blob/9719497adec4ad5ead21cafa19a324bb1d480194/packages/vite/src/node/server/middlewares/static.ts#L79">servePublicMiddleware</a> function is in charge of serving public files from the server. It returns the <a href="https://redirect.github.com/vitejs/vite/blob/9719497adec4ad5ead21cafa19a324bb1d480194/packages/vite/src/node/server/middlewares/static.ts#L106">viteServePublicMiddleware</a> function which runs the needed tests and serves the page. The viteServePublicMiddleware function <a href="https://redirect.github.com/vitejs/vite/blob/9719497adec4ad5ead21cafa19a324bb1d480194/packages/vite/src/node/server/middlewares/static.ts#L111">checks if the publicFiles variable is defined</a>, and then uses it to determine if the requested page is public. In the case that the publicFiles is undefined, the code will treat the requested page as a public page, and go on with the serving function. <a href="https://redirect.github.com/vitejs/vite/blob/9719497adec4ad5ead21cafa19a324bb1d480194/packages/vite/src/node/publicDir.ts#L21">publicFiles may be undefined if there is a symbolic link anywhere inside the public directory</a>. In that case, every requested page will be passed to the public serving function. The serving function is based on the <a href="https://redirect.github.com/lukeed/sirv">sirv</a> library. Vite patches the library to add the possibility to test loading access to pages, but when the public page middleware <a href="https://redirect.github.com/vitejs/vite/blob/9719497adec4ad5ead21cafa19a324bb1d480194/packages/vite/src/node/server/middlewares/static.ts#L89">disables this functionality</a> since public pages are meant to be available always, regardless of whether they are in the allow or deny list.</p>
+<p>In the case of public pages, the serving function is <a href="https://redirect.github.com/vitejs/vite/blob/9719497adec4ad5ead21cafa19a324bb1d480194/packages/vite/src/node/server/middlewares/static.ts#L85">provided with the path to the public directory</a> as a root directory. The code of the sirv library <a href="https://redirect.github.com/lukeed/sirv/blob/d061616827dd32d53b61ec9530c9445c8f592620/packages/sirv/index.mjs#L42">uses the join function to get the full path to the requested file</a>. For example, if the public directory is &quot;/www/public&quot;, and the requested file is &quot;myfile&quot;, the code will join them to the string &quot;/www/public/myfile&quot;. The code will then pass this string to the normalize function. Afterwards, the code will <a href="https://redirect.github.com/lukeed/sirv/blob/d061616827dd32d53b61ec9530c9445c8f592620/packages/sirv/index.mjs#L43">use the string's startsWith function</a> to determine whether the created path is within the given directory or not. Only if it is, it will be served.</p>
+<p>Since <a href="https://redirect.github.com/lukeed/sirv/blob/d061616827dd32d53b61ec9530c9445c8f592620/packages/sirv/index.mjs#L119">sirv trims the trailing slash of the public directory</a>, the string's startsWith function may return true even if the created path is not within the public directory. For example, if the server's root is at &quot;/www&quot;, and the public directory is at &quot;/www/p&quot;, if the created path will be &quot;/www/private.txt&quot;, the startsWith function will still return true, because the string &quot;/www/private.txt&quot; starts with  &quot;/www/p&quot;. To achieve this, the attacker will use &quot;..&quot; to ask for the file &quot;../private.txt&quot;. The code will then join it to the &quot;/www/p&quot; string, and will receive &quot;/www/p/../private.txt&quot;. Then, the normalize function will return &quot;/www/private.txt&quot;, which will then be passed to the startsWith function, which will return true, and the processing of the page will continue without checking the deny list (since this is the public directory middleware which doesn't check that).</p>
+<h3>PoC</h3>
+<p>Execute the following shell commands:</p>
+<pre><code>npm  create  vite@latest
+cd vite-project/
+mkdir p
+cd p
+ln -s a b
+cd ..
+echo  'import path from &quot;node:path&quot;; import { defineConfig } from &quot;vite&quot;; export default defineConfig({publicDir: path.resolve(__dirname, &quot;p/&quot;), server: {fs: {deny: [path.resolve(__dirname, &quot;private.txt&quot;)]}}})' &gt; vite.config.js
+echo  &quot;secret&quot; &gt; private.txt
+npm install
+npm run dev
+</code></pre>
+<p>Then, in a different shell, run the following command:</p>
+<p><code>curl -v --path-as-is 'http://localhost:5173/private.txt'</code></p>
+<p>You will receive a 403 HTTP Response,  because private.txt is denied.</p>
+<p>Now in the same shell run the following command:</p>
+<p><code>curl -v --path-as-is 'http://localhost:5173/../private.txt'</code></p>
+<p>You will receive the contents of private.txt.</p>
+<h3>Related links</h3>
+<ul>
+<li>https://github.com/lukeed/sirv/commit/f0113f3f8266328d804ee808f763a3c11f8997eb</li>
+</ul>
+<hr />
+<h3>Release Notes</h3>
+<details>
+<summary>vitejs/vite (vite)</summary>
+
+<h3><a href="https://redirect.github.com/vitejs/vite/releases/tag/v7.0.7"><code>v7.0.7</code></a></h3>
+<p><a href="https://redirect.github.com/vitejs/vite/compare/v7.0.6...v7.0.7">Compare Source</a></p>
+<p>Please refer to <a href="https://redirect.github.com/vitejs/vite/blob/v7.0.7/packages/vite/CHANGELOG.md">CHANGELOG.md</a> for details.</p>
+</details>
+
+<hr />
+<h3>Configuration</h3>
+<p>📅 <strong>Schedule</strong>: Branch creation - &quot;&quot; (UTC), Automerge - At any time (no schedule defined).</p>
+<p>🚦 <strong>Automerge</strong>: Disabled by config. Please merge this manually once you are satisfied.</p>
+<p>♻ <strong>Rebasing</strong>: Whenever PR becomes conflicted, or you tick the rebase/retry checkbox.</p>
+<p>🔕 <strong>Ignore</strong>: Close this PR and you won't be reminded about this update again.</p>
+<hr />
+<ul>
+<li>[ ] <!-- rebase-check -->If you want to rebase/retry this PR, check this box</li>
+</ul>
+<hr />
+<p>This PR was generated by <a href="https://mend.io/renovate/">Mend Renovate</a>. View the <a href="https://developer.mend.io/github/astral-sh/ruff">repository job log</a>.</p>
+<!--renovate-debug:eyJjcmVhdGVkSW5WZXIiOiI0MS45Ny4xMCIsInVwZGF0ZWRJblZlciI6IjQxLjk3LjEwIiwidGFyZ2V0QnJhbmNoIjoibWFpbiIsImxhYmVscyI6WyJpbnRlcm5hbCIsInNlY3VyaXR5Il19-->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @renovate[bot] on 2025-09-10 02:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">security</span> added by @renovate[bot] on 2025-09-10 02:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2025-09-15 09:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-09-15 09:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-09-15 09:57</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:40:53 UTC
+    </footer>
+</body>
+</html>

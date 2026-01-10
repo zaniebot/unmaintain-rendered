@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`docs`] Clarify inheritance/overridding rules of Ruff settings (#18641) - astral-sh/ruff #19236</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>docs</code>] Clarify inheritance/overridding rules of Ruff settings (#18641)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19236">#19236</a>
+        opened by <a href="https://github.com/pakal">@pakal</a>
+        on 2025-07-09 15:18
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/pakal">@pakal</a> on 2025-07-09 15:18</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>As per https://github.com/astral-sh/ruff/issues/18641 , the goal is to clarify that default settings are not &quot;replaced&quot; at any moment by custom config files, they are always used as fallbacks ; only custom config files exclude each other (unless &quot;extend&quot; is used).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">documentation</span> added by @ntBre on 2025-07-09 19:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-07-10 08:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>docs/configuration.md</code>:274 on 2025-07-10 08:58</div>
+            <div class="timeline-body"><p>I find the new text slightly less clear because it omits what happens if no configuration file is found at all (including the user configuration)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/pakal">@pakal</a> reviewed on 2025-07-15 10:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/pakal">@pakal</a> on <code>docs/configuration.md</code>:274 on 2025-07-15 10:13</div>
+            <div class="timeline-body"><p>I found the &quot;Ruff's default settings are equivalent to:&quot; part sufficient on this, but indeed it can be good to restate it here, I'll tweak it asap</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @MichaReiser on 2025-07-16 09:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pakal">@pakal</a> on 2025-07-21 09:09</div>
+            <div class="timeline-body"><p>Added a comment about select/extend-select inheritance too, sence it can be confusing</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @pakal on 2025-07-21 09:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-07-28 12:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>docs/configuration.md</code>:307 on 2025-07-28 12:34</div>
+            <div class="timeline-body"><p>sorry for my late response. I like the changes above but I think this part is a bit misleading. Whether <code>extend-select</code> and <code>select</code> are merged depends on how they're used:</p>
+<ul>
+<li><code>ruff.toml</code>: Uses <code>select</code></li>
+<li><code>pyproject.toml</code> that extends <code>ruff.toml</code>: Uses <code>extend-select</code>. In this case, the settings are merged</li>
+</ul>
+<p>But the settings aren't merged for</p>
+<ul>
+<li><code>ruff.toml</code>: Uses <code>extend-select</code></li>
+<li><code>pyproject.toml</code> that extends <code>ruff.toml</code>: Uses <code>select</code>.</li>
+</ul>
+<p>Because <code>select</code> always overrides <code>extend-select</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/pakal">@pakal</a> reviewed on 2025-07-28 15:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/pakal">@pakal</a> on <code>docs/configuration.md</code>:307 on 2025-07-28 15:25</div>
+            <div class="timeline-body"><p>Ah, it's not what I was trying to say ; what I meant is that in a SAME CONFIG FILE, <code>select</code> and <code>extend-select</code> behave as if they were merged (into a full <code>select</code> setting) <strong>BEFORE</strong> they are inherited by the more specific config file (so the <code>extend-select</code> settings of ancestor config files disappear in the process).</p>
+<p>Thus :</p>
+<ul>
+<li>if the &quot;(child) pyproject.toml that extends the (parent) ruff.toml&quot; doesn't define these settings at alls, it behave as if it inherited the addition of both parent's settings ;</li>
+<li>if it defines only <code>select</code>, or both <code>select</code> and <code>extend-select</code>, this RESETS,  OVERRIDES the inherited full <code>select</code> and <code>extend-select</code> settings ;</li>
+<li>if it defines only <code>extend-select</code>, the final list of rules is the addition of add (parent's select + parent's extend-select + child's extend-select) ;</li>
+</ul>
+<p>This is the behaviour I've observed, do we agree that it's how it was designed ?</p>
+<p>If so, I have to find a clear way of expressing how the <code>extend-select</code> of each parent configuration is pre-merged into the total config, BEFORE the child config can continue to 'extend-select' (or, on the opposite, entirely override with a 'select') this rule selection.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/pakal">@pakal</a> reviewed on 2025-08-06 14:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/pakal">@pakal</a> on <code>docs/configuration.md</code>:307 on 2025-08-06 14:02</div>
+            <div class="timeline-body"><p>I attempted a more detailed explanation of how select/extend-select behave when inherited from a parent config file, I hope it's clearer and not too verbose  :?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>docs/configuration.md</code>:310 on 2025-08-08 10:03</div>
+            <div class="timeline-body"><p>Thanks for trying to clarify this. I'm afraid, I think it's more complicated than this.</p>
+<p>The logic is here</p>
+<p>https://github.com/astral-sh/ruff/blob/e917d309f1d37887a9f5ea11698389caa6c76b11/crates/ruff_workspace/src/configuration.rs#L907-L932</p>
+<p>What that means is that Ruff merges <code>extend-selects</code> across file whereas <code>select</code> overrides any previous selection.</p>
+<ul>
+<li>a: <code>select</code> -&gt; Easy, the rule selection is what's in <code>select</code></li>
+<li>b: extends <code>a</code>, <code>extend-select</code> -&gt; Enables all rules in <code>select</code> and <code>extend-select</code></li>
+<li>c: extends <code>b</code> select -&gt; Only enables the rules in <code>c</code>'s <code>select</code></li>
+<li>d: extends <code>c</code>: <code>extend-select</code> -&gt; Enables the rules from <code>c</code>'s <code>select</code> and <code>d</code>'s extend select</li>
+<li>e: extends <code>d</code>: <code>extend-select</code>, Enables the rules form <code>c</code>'s <code>select</code> and <code>d</code>'s and <code>e</code>'s <code>extend-select</code>.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-08-08 10:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/pakal">@pakal</a> reviewed on 2025-08-22 07:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/pakal">@pakal</a> on <code>docs/configuration.md</code>:310 on 2025-08-22 07:14</div>
+            <div class="timeline-body"><p>Alright thanks for the explanation, I shall asap update the PR with this new description !</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/pakal">@pakal</a> reviewed on 2025-08-22 09:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/pakal">@pakal</a> on <code>docs/configuration.md</code>:310 on 2025-08-22 09:09</div>
+            <div class="timeline-body"><p>PS: is this behaviour the same for all &quot;setting &lt;-&gt; extend-setting&quot; pairs ?
+For the file selection, the rule selection, etc. ? Or are there different subtleties for other pairs of similar settings?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/pakal">@pakal</a> reviewed on 2025-09-17 08:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/pakal">@pakal</a> on <code>docs/configuration.md</code>:310 on 2025-09-17 08:21</div>
+            <div class="timeline-body"><p>I've done some testing, I now see that the &quot;exclude&quot; and &quot;extend-include&quot; do not work that way : the inherited &quot;extend-include&quot; settings are always aggregated to the mix, there is no reset of this chain of settings via a child config's &quot;exclude&quot;. Is this difference of behavior between file-selection and rule-selection wanted ?</p>
+<p>With the &quot;include&quot; and &quot;extend-include&quot; settings, it becomes even more complicated, for now I don't understand how they combine with exclusion settings along inheritance chain.... it'd really be worth a doc section if somebody has it all in mind and can explain it to me   ^^'</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/pakal">@pakal</a> reviewed on 2025-09-17 08:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/pakal">@pakal</a> on <code>docs/configuration.md</code>:310 on 2025-09-17 08:22</div>
+            <div class="timeline-body"><p>Maybe I shall remove this aspect from the PR so that we can already merge what is sure and clear ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/pakal">@pakal</a> reviewed on 2025-10-01 14:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/pakal">@pakal</a> on <code>docs/configuration.md</code>:307 on 2025-10-01 14:56</div>
+            <div class="timeline-body"><p>I de-scope this part of the documentation for a subsequent PR</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/pakal">@pakal</a> reviewed on 2025-10-01 14:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/pakal">@pakal</a> on <code>docs/configuration.md</code>:310 on 2025-10-01 14:57</div>
+            <div class="timeline-body"><p>I de-scope this part of the documentation for a subsequent PR, the behaviours of these &quot;extend&quot; settings are not all the same so it'll need more testing and explanation in the docs, later  ^^</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pakal">@pakal</a> on 2025-10-01 15:11</div>
+            <div class="timeline-body"><p>I simplified the PR to only included &quot;simple&quot; clarifications ; select/extend-select and similar will be treated in another PR later    ^^</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:40:52 UTC
+    </footer>
+</body>
+</html>

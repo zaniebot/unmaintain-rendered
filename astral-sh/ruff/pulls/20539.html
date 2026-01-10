@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update import path to ruff-wasm-web - astral-sh/ruff #20539</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Update import path to ruff-wasm-web</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/20539">#20539</a>
+        opened by <a href="https://github.com/ShikChen">@ShikChen</a>
+        on 2025-09-23 16:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ShikChen">@ShikChen</a> on 2025-09-23 16:44</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Update import statement to match the correct package name.</p>
+<h2>Test Plan</h2>
+<p>Verified using a local unit test as follows:</p>
+<p>ruff.ts:</p>
+<pre><code class="language-ts">import initRuff, { Workspace } from &quot;@astral-sh/ruff-wasm-web&quot;;
+
+function noConsoleLog&lt;T&gt;(fn: () =&gt; T): T {
+  const originalConsoleLog = console.log;
+  console.log = () =&gt; {
+    /* no-op */
+  };
+  try {
+    return fn();
+  } finally {
+    console.log = originalConsoleLog;
+  }
+}
+
+let initPromise: Promise&lt;Workspace&gt; | null = null;
+
+function getWorkspace(): Promise&lt;Workspace&gt; {
+  if (initPromise === null) {
+    initPromise = (async () =&gt; {
+      await initRuff();
+      const workspace = noConsoleLog(() =&gt; new Workspace({}));
+      return workspace;
+    })();
+  }
+  return initPromise;
+}
+
+export async function format(code: string): Promise&lt;string&gt; {
+  const workspace = await getWorkspace();
+  const result = noConsoleLog(() =&gt; workspace.format(code));
+  return result;
+}
+</code></pre>
+<p>ruff.test.ts:</p>
+<pre><code class="language-ts">import { expect, test } from &quot;bun:test&quot;;
+import { format } from &quot;./ruff&quot;;
+
+test(&quot;format ok&quot;, async () =&gt; {
+  const code = 'print(1+2)'
+  const formatted = await format(code);
+  expect(formatted).toBe('print(1 + 2)\n');
+});
+</code></pre>
+<h3>Notes</h3>
+<p>The <code>noConsoleLog()</code> wrapper is used to suppress verbose and unnecessary debug logs such as:</p>
+<pre><code>built glob set; 25 literals, 0 basenames, 0 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+built glob set; 0 literals, 1 basenames, 3 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+</code></pre>
+<p>These logs also appear on the official Ruff playground (https://play.ruff.rs/), originating from the upstream Rust dependency <a href="https://github.com/BurntSushi/globset/blob/5001475e8230f6e79b43b1d1821b6fa75f1add04/src/lib.rs#L425-L435">globset</a>.</p>
+<p>Maybe we could consider disabling debug-level logging in future WASM builds?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-09-23 16:53</div>
+            <div class="timeline-body"><p>Thank you</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">documentation</span> added by @MichaReiser on 2025-09-23 16:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2025-09-23 16:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-09-23 16:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-09-23 17:01</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-09-23 17:08</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:40:54 UTC
+    </footer>
+</body>
+</html>

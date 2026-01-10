@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`flake8-simplify`] Fix incorrect fix for positive `maxsplit` without separator (`SIM905`) - astral-sh/ruff #20056</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>flake8-simplify</code>] Fix incorrect fix for positive <code>maxsplit</code> without separator (<code>SIM905</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/20056">#20056</a>
+        opened by <a href="https://github.com/RazerM">@RazerM</a>
+        on 2025-08-23 15:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/RazerM">@RazerM</a> on 2025-08-23 15:03</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title? (Please prefix with `[ty]` for ty pull
+  requests.)
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>Resolves #20033</p>
+<h2>Test Plan</h2>
+<p>unit tests added to the new split function, existing snapshot test updated.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-23 15:15</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_simplify/rules/split_static_string.rs</code>:364 on 2025-08-26 18:33</div>
+            <div class="timeline-body"><p>I don't think this is safe to do. <code>rfind</code> returns the byte offset of the first character of the <code>match</code>. I tried a case like this:</p>
+<pre><code class="language-rust">const fn py_unicode_is_whitespace(ch: char) -&gt; bool {
+    matches!(ch, '\u{3000}')
+}
+
+fn main() {
+    let text = &quot;\u{3000}next&quot;;
+    let start = text.rfind(py_unicode_is_whitespace).unwrap();
+    dbg!(&amp;text[start + 1..]);
+}
+</code></pre>
+<p>in the Rust <a href="https://play.rust-lang.org/?version=stable&amp;mode=debug&amp;edition=2024&amp;gist=1b8ef1c7637312c09da7ed90f5bb40f5">playground</a>, and it panics with a <code>byte index is not a char boundary error</code>. This would be the case for any of the multi-byte whitespace characters in our real <code>py_unicode_is_whitespace</code> function.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_simplify/rules/split_static_string.rs</code>:190 on 2025-08-26 18:40</div>
+            <div class="timeline-body"><p>I'm kind of on the fence here because the iterator is cool, but I'd also rather not rewrite the <code>Ordering::Equal</code> case, which was already working and pretty simple to begin with. Would something like <code>string_val.split(py_unicode_is_whitespace).filter(|s| !s.is_empty()).take(max_split + 1)</code> and then manually joining the rest of the iterator as the remainder work? I think <code>itertools</code> should provide a <code>join</code> method we can use on an iterator of <code>&amp;str</code> items. It's a bit wasteful because that will allocate a <code>String</code>, but it seems much simpler if it works.</p>
+<p>Then we could also restore the TODO about using <a href="https://doc.rust-lang.org/std/str/struct.Split.html#method.remainder"><code>std::str::Split::remainder</code></a> in the future, which would be the ideal solution instead of joining them ourselves.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-08-26 18:42</div>
+            <div class="timeline-body"><p>Thanks for jumping on this!</p>
+<p>I'm kind of leaning away from defining our own iterator, if we can avoid it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/RazerM">@RazerM</a> on <code>crates/ruff_linter/src/rules/flake8_simplify/rules/split_static_string.rs</code>:190 on 2025-08-26 18:53</div>
+            <div class="timeline-body"><p>We can't join the remaining parts because the character that was split is lost.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/RazerM">@RazerM</a> on <code>crates/ruff_linter/src/rules/flake8_simplify/rules/split_static_string.rs</code>:364 on 2025-08-26 18:54</div>
+            <div class="timeline-body"><p>Right, I need to increment by <code>char::len_utf8</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/RazerM">@RazerM</a> reviewed on 2025-08-26 19:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/RazerM">@RazerM</a> on 2025-08-26 19:08</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm kind of leaning away from defining our own iterator, if we can avoid it.</p>
+</blockquote>
+<p>Depending how you feel about it we could just remove the fix, since it wasn't spotted in #19851 by me or in review. The iterator is a bit verbose but I think the logic is ok.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/RazerM">@RazerM</a> reviewed on 2025-08-26 19:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/RazerM">@RazerM</a> on <code>crates/ruff_linter/src/rules/flake8_simplify/rules/split_static_string.rs</code>:190 on 2025-08-26 19:14</div>
+            <div class="timeline-body"><blockquote>
+<p>I'd also rather not rewrite the Ordering::Equal case, which was already working and pretty simple to begin with.</p>
+</blockquote>
+<p>I almost left it as is, but then I thought for maxsplit=0 the iterator looks trivially correct: initial trim, then yields at most 1 item if non-empty.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_simplify/rules/split_static_string.rs</code>:363 on 2025-09-09 14:57</div>
+            <div class="timeline-body"><p>What do you think about something like this? I think this accomplishes the same thing and we can avoid having to do any index arithmetic, if I understand correctly.</p>
+<pre><code class="language-suggestion">        self.splits += 1;
+        match self.direction {
+            Direction::Left =&gt; match self.remaining.split_once(py_unicode_is_whitespace) {
+                Some((s, remaining)) =&gt; {
+                    self.remaining = remaining.trim_start_matches(py_unicode_is_whitespace);
+                    Some(s)
+                }
+                None =&gt; Some(std::mem::take(&amp;mut self.remaining)),
+            },
+            Direction::Right =&gt; match self.remaining.rsplit_once(py_unicode_is_whitespace) {
+                Some((remaining, s)) =&gt; {
+                    self.remaining = remaining.trim_end_matches(py_unicode_is_whitespace);
+                    Some(s)
+                }
+                None =&gt; Some(std::mem::take(&amp;mut self.remaining)),
+            },
+        }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_simplify/rules/split_static_string.rs</code>:190 on 2025-09-09 14:58</div>
+            <div class="timeline-body"><p>Ah you're right, I see now!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-09-09 15:14</div>
+            <div class="timeline-body"><p>Thanks! I think you're right, I was being overly scared of the iterator. This looks good to me overall, just one idea for simplifying a bit by using <code>(r)split_once</code>. It seemed to work well for me locally, but let me know if I'm still missing something.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-09-09 15:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @ntBre on 2025-09-09 15:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/RazerM">@RazerM</a> reviewed on 2025-09-12 21:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/RazerM">@RazerM</a> on <code>crates/ruff_linter/src/rules/flake8_simplify/rules/split_static_string.rs</code>:363 on 2025-09-12 21:19</div>
+            <div class="timeline-body"><p><code>split_once</code> doesn't work as it only splits one matching character instead of all consecutive whitespace</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-09-12 21:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_simplify/rules/split_static_string.rs</code>:363 on 2025-09-12 21:22</div>
+            <div class="timeline-body"><p>That's why I kept the trim calls afterward. I believe I tried this patch locally, and it passed all of the tests in the PR. But I could still be wrong, I'd welcome a test case with a counterexample!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/RazerM">@RazerM</a> reviewed on 2025-09-12 21:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/RazerM">@RazerM</a> on <code>crates/ruff_linter/src/rules/flake8_simplify/rules/split_static_string.rs</code>:363 on 2025-09-12 21:23</div>
+            <div class="timeline-body"><p>ah, sorry for not looking more closely, I'll take a deeper look</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/RazerM">@RazerM</a> on <code>crates/ruff_linter/src/rules/flake8_simplify/rules/split_static_string.rs</code>:363 on 2025-09-12 21:44</div>
+            <div class="timeline-body"><p>Works well indeed, and is much more elegant than the index twiddling. I've rebased to fix the conflicts and included your suggestion</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/RazerM">@RazerM</a> reviewed on 2025-09-12 21:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> approved on 2025-09-18 20:35</div>
+            <div class="timeline-body"><p>Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-09-18 20:53</div>
+            <div class="timeline-body"><p>I took care of the merge conflicts. It looks like <code>Direction</code> mostly just got renamed to <code>Method</code> in #20459.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[`flake8-simplify`] Fix incorrect fix for positive maxsplit without separator (`SIM905`)" to "[`flake8-simplify`] Fix incorrect fix for positive `maxsplit` without separator (`SIM905`)" by @ntBre on 2025-09-18 20:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ntBre on 2025-09-18 20:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-09-18 20:56</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:40:52 UTC
+    </footer>
+</body>
+</html>

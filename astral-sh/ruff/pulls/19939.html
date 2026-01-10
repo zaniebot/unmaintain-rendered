@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add warning for using R and S as selectors - astral-sh/ruff #19939</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add warning for using R and S as selectors</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/19939">#19939</a>
+        opened by <a href="https://github.com/GDYendell">@GDYendell</a>
+        on 2025-08-16 15:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/GDYendell">@GDYendell</a> on 2025-08-16 15:40</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title? (Please prefix with `[ty]` for ty pull
+  requests.)
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>Following on from discussion in https://github.com/astral-sh/ruff/pull/17896, this change adds a user deprecation warning for selectors that currently work, but are not included in the schema. I believe R and S are the only ones.</p>
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+<h2>Test Plan</h2>
+<p>I have tested this locally with</p>
+<pre><code>ruff check --select R
+</code></pre>
+<p>However it does not display the warning. If I change to <code>println!</code> it does. Is there something I am not understanding about the <code>warn_user*</code> macros?</p>
+<!-- How was it tested? -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-08-20 19:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rule_selector.rs</code>:15 on 2025-08-20 19:04</div>
+            <div class="timeline-body"><p>Do you think it would make more sense to put this const and the warning in <code>rule_redirects.rs</code> next to the <code>REDIRECTS</code> hash map? Then the warning could be in <code>get_redirect</code> and possibly also <code>get_redirect_target</code>, which are where the redirects are looked up. That seems like a better fit to me than in the <code>FromStr</code> implementation.</p>
+<p>I also mentioned the IC -&gt; ICN redirect in my <a href="https://github.com/astral-sh/ruff/pull/17896/files#r2078434064">comment</a> on the other PR. Should we add that here too? And there are several other <code>REDIRECTS</code> with TODO comments. I think it makes sense to try to cover them all in one PR. I think we can emit a warning for any redirect not present in the schema, as I also mention in the comment, based on the initial issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @ntBre on 2025-08-20 19:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-08-20 19:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/GDYendell">@GDYendell</a> reviewed on 2025-08-21 00:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/GDYendell">@GDYendell</a> on <code>crates/ruff_linter/src/rule_selector.rs</code>:15 on 2025-08-21 00:04</div>
+            <div class="timeline-body"><blockquote>
+<p>Do you think it would make more sense to put this const and the warning in rule_redirects.rs next to the REDIRECTS hash map? Then the warning could be in get_redirect and possibly also get_redirect_target, which are where the redirects are looked up. That seems like a better fit to me than in the FromStr implementation.</p>
+</blockquote>
+<p>Yep this makes much more sense!</p>
+<blockquote>
+<p>I also mentioned the IC -&gt; ICN redirect in my <a href="https://github.com/astral-sh/ruff/pull/17896/files#r2078434064">comment</a> on the other PR. Should we add that here too? And there are several other REDIRECTS with TODO comments. I think it makes sense to try to cover them all in one PR. I think we can emit a warning for any redirect not present in the schema, as I also mention in the comment, based on the initial issue.</p>
+</blockquote>
+<p>Ah yes sorry, I was only checking the single letter redirects initially. So, any redirect that is not in the schema should be deprecated? That is quite a few of them!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-08-21 12:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rule_selector.rs</code>:15 on 2025-08-21 12:37</div>
+            <div class="timeline-body"><p>We might want to move this into <code>LintConfiguration</code>. It seems to be where we have all other deprecation warnings:</p>
+<p>https://github.com/astral-sh/ruff/blob/e917d309f1d37887a9f5ea11698389caa6c76b11/crates/ruff_workspace/src/configuration.rs#L1044-L1052</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-08-21 12:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rule_selector.rs</code>:15 on 2025-08-21 12:55</div>
+            <div class="timeline-body"><blockquote>
+<p>So, any redirect that is not in the schema should be deprecated? That is quite a few of them!</p>
+</blockquote>
+<p>I think this is true, that's how I was checking before, but maybe Micha can confirm.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-08-21 13:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rule_selector.rs</code>:15 on 2025-08-21 13:02</div>
+            <div class="timeline-body"><p>Do any of them appear in the schema?</p>
+<p>I'd focus on rules that are prefixes of other groups, because that can be confusing (e.g. <code>R</code> is a prefix of both <code>RET</code> and <code>RUF</code> but it only enables <code>RET</code>). I don't see much harm in supporting redirects that don't overlap with any other rule code and deprecating them does cause some churn for our users that I'd avoid unless we have good reason for it</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-08-21 13:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rule_selector.rs</code>:15 on 2025-08-21 13:16</div>
+            <div class="timeline-body"><p>I just spot-checked a few more, and I don't think any of them appear in the schema, so it's fine with me to focus on the confusing ones. The original issue (https://github.com/astral-sh/ruff/issues/17890) mentioned that the mismatch with the schema was causing errors in IDEs (in the pyproject.toml?), which I think is where I got the schema idea.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-08-21 13:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rule_selector.rs</code>:15 on 2025-08-21 13:20</div>
+            <div class="timeline-body"><blockquote>
+<p>mentioned that the mismatch with the schema was causing errors in IDEs (in the pyproject.toml?)</p>
+</blockquote>
+<p>That's something we can solve separately by including those names in the schema (but mark them as deprecated)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/GDYendell">@GDYendell</a> reviewed on 2025-08-30 17:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/GDYendell">@GDYendell</a> on <code>crates/ruff_linter/src/rule_selector.rs</code>:15 on 2025-08-30 17:38</div>
+            <div class="timeline-body"><blockquote>
+<p>We might want to move this into LintConfiguration. It seems to be where we have all other deprecation warnings:</p>
+</blockquote>
+<p>I think this would be too late. It is currently checking just before the redirect is applied during clap parsing</p>
+<pre><code>ruff_linter::rule_redirects::get_redirect (/home/gdy/development/ruff/crates/ruff_linter/src/rule_redirects.rs:26)
+&lt;ruff_linter::rule_selector::RuleSelector as core::str::traits::FromStr&gt;::from_str (/home/gdy/development/ruff/crates/ruff_linter/src/rule_selector.rs:68)
+...
+clap_builder::derive::Parser::parse_from (/home/gdy/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/clap_builder-4.5.43/src/derive.rs:56)
+ruff::main (/home/gdy/development/ruff/crates/ruff/src/main.rs:44)
+</code></pre>
+<p>after which &quot;R&quot; is converted to &quot;RET&quot;. Unless it is possible to get the original command line arguments somehow? The map of redirects is empty here if I run with <code>check --select R</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-09-16 07:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rule_selector.rs</code>:15 on 2025-09-16 07:57</div>
+            <div class="timeline-body"><p>Hmm I see. It would require validating the clap arguments (and probably options too?) to when we resolve the settings but that's obviously a much larger change.</p>
+<p>The main downside I see of the current solution is that it isn't obvious to users where they used the deprecated code, making it difficult for them to act on the error.</p>
+<p>Could we either:</p>
+<ul>
+<li>Add an argument to <code>get_redirect</code> which tells where the redirect is used (e.g. CLI, Config(Path)) so that we can display the source as part of the error message</li>
+<li>Change the return type to <code>Redirect::To(String)</code>/<code>Redirect::Deprecated(String)</code> depending on whether the redirect is deprecated and use custom errors at each call site</li>
+</ul>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:40:52 UTC
+    </footer>
+</body>
+</html>

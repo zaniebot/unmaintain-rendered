@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Patch `Self` for fallback-methods on `NamedTuple`s and `TypedDict`s - astral-sh/ruff #20328</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Patch <code>Self</code> for fallback-methods on <code>NamedTuple</code>s and <code>TypedDict</code>s</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/20328">#20328</a>
+        opened by <a href="https://github.com/sharkdp">@sharkdp</a>
+        on 2025-09-10 12:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-09-10 12:44</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>We use classes like <a href="https://github.com/python/typeshed/blob/d9c76e1d9f0c0000c1971c3e936a69dd55f49ce1/stdlib/_typeshed/_type_checker_internals.pyi#L54-L75"><code>_typeshed._type_checker_internals.NamedTupleFallback</code></a> to tack on additional attributes/methods to instances of user-defined <code>NamedTuple</code>s (or <code>TypedDict</code>s), even though these classes are not present in the MRO of those types.</p>
+<p>The problem is that those classes use implicit and explicit <code>Self</code> annotations which refer to <code>NamedTupleFallback</code> itself, instead of to the actual type that we're adding those methods to:</p>
+<pre><code class="language-py">class NamedTupleFallback(tuple[Any, ...]):
+    # […]
+    def _replace(self, **kwargs: Any) -&gt; typing_extensions.Self: ...
+</code></pre>
+<p>In effect, when we access <code>_replace</code> on an instance of a custom <code>NamedTuple</code> instance, its <code>self</code> parameter and return type refer to the wrong <code>Self</code>. This leads to incorrect <em>&quot;Argument to bound method <code>_replace</code> is incorrect: Argument type <code>Person</code> does not satisfy upper bound <code>NamedTupleFallback</code> of type variable <code>Self</code>&quot;</em> errors on #18007. It would also lead to similar errors on <code>TypedDict</code>s, if they would already implement assignability properly.</p>
+<h2>Test Plan</h2>
+<p>I applied the following patch to typeshed and verified that no errors appear anymore.</p>
+<details>
+
+<pre><code class="language-diff">diff --git a/crates/ty_vendored/vendor/typeshed/stdlib/_typeshed/_type_checker_internals.pyi b/crates/ty_vendored/vendor/typeshed/stdlib/_typeshed/_type_checker_internals.pyi
+index feb22aae00..8e41034f19 100644
+--- a/crates/ty_vendored/vendor/typeshed/stdlib/_typeshed/_type_checker_internals.pyi
++++ b/crates/ty_vendored/vendor/typeshed/stdlib/_typeshed/_type_checker_internals.pyi
+@@ -29,27 +29,27 @@ class TypedDictFallback(Mapping[str, object], metaclass=ABCMeta):
+         __readonly_keys__: ClassVar[frozenset[str]]
+         __mutable_keys__: ClassVar[frozenset[str]]
+ 
+-    def copy(self) -&gt; typing_extensions.Self: ...
++    def copy(self: typing_extensions.Self) -&gt; typing_extensions.Self: ...
+     # Using Never so that only calls using mypy plugin hook that specialize the signature
+     # can go through.
+-    def setdefault(self, k: Never, default: object) -&gt; object: ...
++    def setdefault(self: typing_extensions.Self, k: Never, default: object) -&gt; object: ...
+     # Mypy plugin hook for 'pop' expects that 'default' has a type variable type.
+-    def pop(self, k: Never, default: _T = ...) -&gt; object: ...  # pyright: ignore[reportInvalidTypeVarUse]
+-    def update(self, m: typing_extensions.Self, /) -&gt; None: ...
+-    def __delitem__(self, k: Never) -&gt; None: ...
+-    def items(self) -&gt; dict_items[str, object]: ...
+-    def keys(self) -&gt; dict_keys[str, object]: ...
+-    def values(self) -&gt; dict_values[str, object]: ...
++    def pop(self: typing_extensions.Self, k: Never, default: _T = ...) -&gt; object: ...  # pyright: ignore[reportInvalidTypeVarUse]
++    def update(self: typing_extensions.Self, m: typing_extensions.Self, /) -&gt; None: ...
++    def __delitem__(self: typing_extensions.Self, k: Never) -&gt; None: ...
++    def items(self: typing_extensions.Self) -&gt; dict_items[str, object]: ...
++    def keys(self: typing_extensions.Self) -&gt; dict_keys[str, object]: ...
++    def values(self: typing_extensions.Self) -&gt; dict_values[str, object]: ...
+     @overload
+-    def __or__(self, value: typing_extensions.Self, /) -&gt; typing_extensions.Self: ...
++    def __or__(self: typing_extensions.Self, value: typing_extensions.Self, /) -&gt; typing_extensions.Self: ...
+     @overload
+-    def __or__(self, value: dict[str, Any], /) -&gt; dict[str, object]: ...
++    def __or__(self: typing_extensions.Self, value: dict[str, Any], /) -&gt; dict[str, object]: ...
+     @overload
+-    def __ror__(self, value: typing_extensions.Self, /) -&gt; typing_extensions.Self: ...
++    def __ror__(self: typing_extensions.Self, value: typing_extensions.Self, /) -&gt; typing_extensions.Self: ...
+     @overload
+-    def __ror__(self, value: dict[str, Any], /) -&gt; dict[str, object]: ...
++    def __ror__(self: typing_extensions.Self, value: dict[str, Any], /) -&gt; dict[str, object]: ...
+     # supposedly incompatible definitions of __or__ and __ior__
+-    def __ior__(self, value: typing_extensions.Self, /) -&gt; typing_extensions.Self: ...  # type: ignore[misc]
++    def __ior__(self: typing_extensions.Self, value: typing_extensions.Self, /) -&gt; typing_extensions.Self: ...  # type: ignore[misc]
+ 
+ # Fallback type providing methods and attributes that appear on all `NamedTuple` types.
+ class NamedTupleFallback(tuple[Any, ...]):
+@@ -61,18 +61,18 @@ class NamedTupleFallback(tuple[Any, ...]):
+         __orig_bases__: ClassVar[tuple[Any, ...]]
+ 
+     @overload
+-    def __init__(self, typename: str, fields: Iterable[tuple[str, Any]], /) -&gt; None: ...
++    def __init__(self: typing_extensions.Self, typename: str, fields: Iterable[tuple[str, Any]], /) -&gt; None: ...
+     @overload
+     @typing_extensions.deprecated(
+         &quot;Creating a typing.NamedTuple using keyword arguments is deprecated and support will be removed in Python 3.15&quot;
+     )
+-    def __init__(self, typename: str, fields: None = None, /, **kwargs: Any) -&gt; None: ...
++    def __init__(self: typing_extensions.Self, typename: str, fields: None = None, /, **kwargs: Any) -&gt; None: ...
+     @classmethod
+     def _make(cls, iterable: Iterable[Any]) -&gt; typing_extensions.Self: ...
+-    def _asdict(self) -&gt; dict[str, Any]: ...
+-    def _replace(self, **kwargs: Any) -&gt; typing_extensions.Self: ...
++    def _asdict(self: typing_extensions.Self) -&gt; dict[str, Any]: ...
++    def _replace(self: typing_extensions.Self, **kwargs: Any) -&gt; typing_extensions.Self: ...
+     if sys.version_info &gt;= (3, 13):
+-        def __replace__(self, **kwargs: Any) -&gt; typing_extensions.Self: ...
++        def __replace__(self: typing_extensions.Self, **kwargs: Any) -&gt; typing_extensions.Self: ...
+ 
+ # Non-default variations to accommodate couroutines, and `AwaitableGenerator` having a 4th type parameter.
+ _S = TypeVar(&quot;_S&quot;)
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @sharkdp on 2025-09-10 12:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-09-10 12:46</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-09-10 12:49</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅
+No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-09-10 12:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-09-10 12:54</div>
+            <div class="timeline-body"><!-- generated-comment ty ecosystem-analyzer -->
+
+<h2><code>ecosystem-analyzer</code> results</h2>
+<p>No diagnostic changes detected ✅
+<strong><a href="https://david-patch-self-on-fallback.ecosystem-663.pages.dev/diff">Full report with detailed diff</a></strong></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @sharkdp on 2025-09-12 12:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-09-12 12:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[ty] Patch (implicit) `Self` on fallback types" to "[ty] Patch `Self` on fallback types" by @sharkdp on 2025-09-12 12:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[ty] Patch `Self` on fallback types" to "[ty] Patch `Self` for fallback-methods on `NamedTuple`s and `TypedDict`s" by @sharkdp on 2025-09-12 13:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @sharkdp on 2025-09-12 13:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @sharkdp on 2025-09-12 13:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @sharkdp on 2025-09-12 13:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @sharkdp on 2025-09-12 13:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types.rs</code>:10907 on 2025-09-12 14:01</div>
+            <div class="timeline-body"><p>I think you can use <code>take_while</code> to simplify this:</p>
+<pre><code class="language-suggestion">    let upper_bound = class_literal
+        .iter_mro(db, specialization)
+        .take_while(|base| !is_known_base(base))
+        .filter_map(ClassBase::into_class)
+        .last()
+        .unwrap_or_else(|| class_literal.unknown_specialization(db));
+    Type::instance(db, upper_bound)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/resources/mdtest/named_tuple.md</code>:273 on 2025-09-12 14:09</div>
+            <div class="timeline-body"><p>This loses the <code>@_replace</code> suffix because you give the newly synthesized typevar a binding context of <code>BindingContext::Synthesized</code>. I think it would be better to copy the binding context over from the <code>NamedTupleFallback</code> method. (The binding context is primarily used to differentiate between different uses of the same legacy typevar, so I don't think anything will <em>break</em> without this change, but I think it's (a) more correct and (b) not substantially more difficult to implement, so I think it's worth doing.)</p>
+<p>To do this, you'd need to update your new <code>TypeMapping::ReplaceSelf</code> to take in the new upper bound, rather than a fully constructed <code>BoundTypeVarInstance</code>, so that you could copy over all of the other fields from the typevar being replaced.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/signatures.rs</code>:492 on 2025-09-12 14:11</div>
+            <div class="timeline-body"><p>:+1: You might consider a new <code>TypeMapping::updates_generic_context</code> method or similar (which would currently only return true for <code>ReplaceSelf</code>), and use that in the <code>if</code> check. That would hopefully make it more obvious how to add any future type mappings that also need to engage this new logic.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-09-12 14:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-09-12 14:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types/signatures.rs</code>:492 on 2025-09-12 14:24</div>
+            <div class="timeline-body"><p>Yes, good suggestion. There might be a second type mapping that also needs to modify the generic context (as you mentioned in one of our chats, <code>BindSelf</code> should remove <code>Self</code> from the generic context, see https://github.com/astral-sh/ruff/pull/20364).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @carljm removed by @carljm on 2025-09-12 21:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @sharkdp on 2025-09-15 11:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-09-15 14:21</div>
+            <div class="timeline-body"><p>I will merge this without approval, because I want to have an easier way of rebasing https://github.com/astral-sh/ruff/pull/18007 on this. Happy to address any post-merge comments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @sharkdp on 2025-09-15 14:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-09-15 14:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-09-15 14:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-09-15 14:38</div>
+            <div class="timeline-body"><blockquote>
+<p>I will merge this without approval</p>
+</blockquote>
+<p>:+1: Looks good!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:40:53 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Apply type mappings to functions eagerly - astral-sh/ruff #20596</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Apply type mappings to functions eagerly</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/20596">#20596</a>
+        opened by <a href="https://github.com/dcreager">@dcreager</a>
+        on 2025-09-26 19:20
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dcreager">@dcreager</a> on 2025-09-26 19:20</div>
+            <div class="timeline-body"><p><code>TypeMapping</code> is no longer cow-shaped.</p>
+<p>Before, <code>TypeMapping</code> defined a <code>to_owned</code> method, which would make an owned copy of the type mapping. This let us apply type mappings to function literals lazily. The primary part of a function that you have to apply the type mapping to is its signature. The hypothesis was that doing this lazily would prevent us from constructing the signature of a function just to apply a type mapping; if you never ended up needed the updated function signature, that would be extraneous work.</p>
+<p>But looking at the CI for this PR, it looks like that hypothesis is wrong! And this definitely cleans up the code quite a bit. It also means that over time we can consider replacing all of these <code>TypeMapping</code> enum variants with separate <code>TypeTransformer</code> impls.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @dcreager on 2025-09-26 19:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @dcreager on 2025-09-26 19:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-09-26 19:22</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-09-26 19:23</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">psycopg (https://github.com/psycopg/psycopg)
+- psycopg_pool/psycopg_pool/_acompat.py:185:12: error[invalid-return-type] Return type does not match returned value: expected `T@ensure_async`, found `object`
+- Found 699 diagnostics
++ Found 698 diagnostics
+
+scikit-build-core (https://github.com/scikit-build/scikit-build-core)
+- src/scikit_build_core/build/_wheelfile.py:51:22: error[no-matching-overload] No overload of function `field` matches arguments
+- Found 53 diagnostics
++ Found 52 diagnostics
+
+</code></pre>
+</details>
+<details>
+<summary>Memory usage changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">trio (https://github.com/python-trio/trio)
+-     struct fields = ~8MB
++     struct fields = ~9MB
+
+sphinx (https://github.com/sphinx-doc/sphinx)
+-     struct metadata = ~13MB
++     struct metadata = ~12MB
+-     struct fields = ~12MB
++     struct fields = ~13MB
+
+prefect (https://github.com/PrefectHQ/prefect)
+-     struct fields = ~30MB
++     struct fields = ~33MB
+
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-09-26 19:33</div>
+            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+
+<!-- __CODSPEED_WALLTIME_PERFORMANCE_REPORT_COMMENT__ -->
+
+<h2><a href="https://codspeed.io/astral-sh/ruff/branches/dcreager%2Fstop-being-lazy?runnerMode=WallTime">CodSpeed WallTime Performance Report</a></h2>
+<h3>Merging #20596 will <strong>improve performances by 6.85%</strong></h3>
+<p><sub>Comparing <code>dcreager/stop-being-lazy</code> (5fb5cc6) with <code>main</code> (3f640da)</sub></p>
+<h3>Summary</h3>
+<p><code>⚡ 1</code> improvement<br />
+<code>✅ 7</code> untouched</p>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Benchmark | <code>BASE</code> | <code>HEAD</code> | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| ⚡ | <code>large[sympy]</code> | 42.9 s | 40.1 s | +6.85% |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-09-26 19:33</div>
+            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+
+<!-- __CODSPEED_INSTRUMENTATION_PERFORMANCE_REPORT_COMMENT__ -->
+
+<h2><a href="https://codspeed.io/astral-sh/ruff/branches/dcreager%2Fstop-being-lazy?runnerMode=Instrumentation">CodSpeed Instrumentation Performance Report</a></h2>
+<h3>Merging #20596 will <strong>not alter performance</strong></h3>
+<p><sub>Comparing <code>dcreager/stop-being-lazy</code> (5fb5cc6) with <code>main</code> (3f640da)</sub></p>
+<h3>Summary</h3>
+<p><code>✅ 13</code> untouched<br />
+<code>⏩ 30</code> skipped[^skipped]</p>
+<p>[^skipped]: 30 benchmarks were skipped, so the baseline results were used instead. If they were deleted from the codebase, <a href="https://codspeed.io/astral-sh/ruff/branches/dcreager%2Fstop-being-lazy?runnerMode=Instrumentation&amp;sectionId=benchmark-comparison-section-baseline-result-skipped">click here and archive them to remove them from the performance reports</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/function.rs</code>:673 on 2025-09-26 19:44</div>
+            <div class="timeline-body"><p>We might also consider consolidating <code>FunctionType</code> and <code>FunctionLiteral</code> into a single type now. (<code>FunctionLiteral</code> would have the extra fields that hold the updated signatures.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-09-26 19:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @dcreager on 2025-09-26 19:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @dcreager on 2025-09-26 19:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @dcreager on 2025-09-26 19:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @dcreager on 2025-09-26 19:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-09-26 19:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/function.rs</code>:629 on 2025-09-26 19:46</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    fn signature(self, db: &amp;'db dyn Db) -&gt; CallableSignature&lt;'db&gt; {
+</code></pre>
+<p>(Surprised Clippy didn't complain about this!)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-09-26 19:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/function.rs</code>:660 on 2025-09-26 19:47</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    fn last_definition_signature(self, db: &amp;'db dyn Db) -&gt; Signature&lt;'db&gt; {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-09-26 19:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/function.rs</code>:707 on 2025-09-26 19:49</div>
+            <div class="timeline-body"><p>do we not need to walk the new fields here (<code>updated_signature</code> and <code>updated_last_definition_signature</code>)? Would it be worth adding a comment about why that's not necessary?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-09-26 19:49</div>
+            <div class="timeline-body"><blockquote>
+<pre><code class="language-diff">psycopg (https://github.com/psycopg/psycopg)
+- psycopg_pool/psycopg_pool/_acompat.py:185:12: error[invalid-return-type] Return type does not match returned value: expected `T@ensure_async`, found `object`
+- Found 699 diagnostics
++ Found 698 diagnostics
+</code></pre>
+</blockquote>
+<p>Is this ecosystem change correct? If so, can we add an mdtest making sure it doesn't regress?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/function.rs</code>:677 on 2025-09-26 20:28</div>
+            <div class="timeline-body"><p>Maybe some doc comments here explaining what these fields are and when/how they become populated?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-09-26 20:28</div>
+            <div class="timeline-body"><p>This looks great! (Modulo existing inline comments.) Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-09-29 07:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-09-29 07:38</div>
+            <div class="timeline-body"><!-- generated-comment ty ecosystem-analyzer -->
+
+<h2><code>ecosystem-analyzer</code> results</h2>
+<p>| Lint rule | Added | Removed | Changed |
+|-----------|------:|--------:|--------:|
+| <code>invalid-return-type</code> | 0 | 1 | 0 |
+| <strong>Total</strong> | <strong>0</strong> | <strong>1</strong> | <strong>0</strong> |</p>
+<p><strong><a href="https://dcreager-stop-being-lazy.ecosystem-663.pages.dev/diff">Full report with detailed diff</a></strong> (<a href="https://dcreager-stop-being-lazy.ecosystem-663.pages.dev/timing">timing results</a>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-09-29 07:53</div>
+            <div class="timeline-body"><p>Glad I looked at my notifications this morning before continuing to work on https://github.com/astral-sh/ty/issues/1261! The lazy application of type mappings to functions (and the application of type mappings to those lazy type mappings) seemed to be the root cause of that issue, and applying type-mappings eagerly would have been one of the attempts to solve that bug. And indeed, the problem is completely solved with this PR!</p>
+<p>| Command | Mean [s] | Min [s] | Max [s] | Relative |
+|:---|---:|---:|---:|---:|
+| <code>./ty_main check /home/shark/playground</code> | 11.185 ± 0.064 | 11.117 | 11.245 | 385.74 ± 24.39 |
+| <code>./ty_20596 check /home/shark/playground</code> | 0.029 ± 0.002 | 0.027 | 0.031 | 1.00 |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-09-29 09:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types/function.rs</code>:707 on 2025-09-29 09:03</div>
+            <div class="timeline-body"><p>Took me quite a bit of time to construct an example where this would have any observable effects, since you first need to apply a type mapping to the function literal and then have a type-visitor walk over it:</p>
+<pre><code class="language-py">from typing import cast
+from ty_extensions import TypeOf, Unknown
+
+
+class C[T]:
+    def f(self, t: T) -&gt; T | Unknown:
+        raise NotImplementedError
+
+
+cast(TypeOf[C[int]().f], C[int]().f)
+</code></pre>
+<p>I'm first applying a specialization type mapping through <code>C[int]().f</code>, and then a type visitor via <code>any_over_type(..., contains_unknown_or_todo, ..)</code> by attempting a <code>cast</code>. Without walking over the <code>updated_*</code> fields, we get a</p>
+<pre><code>Value is already of type `bound method C[int].f(t: int) -&gt; int | Unknown`
+</code></pre>
+<p>diagnostic (which shouldn't happen, if <code>Unknown</code> is part of the type). After applying the following patch, the diagnostic is gone.</p>
+<pre><code class="language-diff">@@ -692,6 +692,14 @@ pub(super) fn walk_function_type&lt;'db, V: super::visitor::TypeVisitor&lt;'db&gt; + ?Siz
+     visitor: &amp;V,
+ ) {
+     walk_function_literal(db, function.literal(db), visitor);
++    if let Some(callable_signature) = function.updated_signature(db) {
++        for signature in &amp;callable_signature.overloads {
++            walk_signature(db, signature, visitor);
++        }
++    }
++    if let Some(signature) = function.updated_last_definition_signature(db) {
++        walk_signature(db, signature, visitor);
++    }
+ }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-09-29 11:09</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<pre><code class="language-diff">psycopg (https://github.com/psycopg/psycopg)
+- psycopg_pool/psycopg_pool/_acompat.py:185:12: error[invalid-return-type] Return type does not match returned value: expected `T@ensure_async`, found `object`
+- Found 699 diagnostics
++ Found 698 diagnostics
+</code></pre>
+</blockquote>
+<p>Is this ecosystem change correct? If so, can we add an mdtest making sure it doesn't regress?</p>
+</blockquote>
+<pre><code class="language-py">from typing import Any, ParamSpec, TypeVar
+from inspect import isawaitable
+from collections.abc import Callable, Coroutine
+
+T = TypeVar(&quot;T&quot;)
+P = ParamSpec(&quot;P&quot;)
+
+async def ensure_async(
+    f: Callable[P, T] ,
+    *args: P.args,
+    **kwargs: P.kwargs,
+) -&gt; T:
+    rv = f(*args, **kwargs)
+    if isawaitable(rv):
+        rv = await rv
+    return rv
+</code></pre>
+<p>Yes, this is a false positive that shouldn't be there. I invested quite a bit of time trying to track it down, and while I haven't fully understood what is going on, it feels like it's not worth pursuing further (given that the behavior arguably improves). First of all, it took me a while to even reproduce it, because it only happens when checking on 3.12, not on 3.13 (which I use by default for testing locally). There are a lot of <code>@Todo</code> types involved, both because we create an intersection type in the <code>if isawaitable(rv)</code> narrowing, and because <code>ParamSpec</code> is involved (which we look for via <code>any_over_type</code>, which is affected by this PR). The correct return type from the <code>await rv</code> expression should be <code>T@ensure_async</code>, but for some reason we infer <code>object</code> on <code>main</code>. And we do infer <code>object</code> on this branch, when checking with 3.13. It might also have to do with normalization, because everything works fine when the seemingly irrelevant <code>Callable[P, T]</code> is removed from union in the <code>f</code> parameter annotation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-09-29 11:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types/function.rs</code>:677 on 2025-09-29 11:15</div>
+            <div class="timeline-body"><p>I added some doc comments and made those fields non-public. @dcreager please feel free to change them in a follow-up, if something seems wrong/missing. I'd like to merge this PR to fix https://github.com/astral-sh/ty/issues/1261.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-09-29 11:18</div>
+            <div class="timeline-body"><p>Thank you!</p>
+<p>I wondered if we should add tests for https://github.com/astral-sh/ruff/pull/20596#discussion_r2387217365 and/or https://github.com/astral-sh/ruff/pull/20596#issuecomment-3346353710, but they both seem obscure/strange enough that it would probably be quite low-value to do so :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @sharkdp on 2025-09-29 11:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-09-29 11:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-09-29 11:24</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:40:54 UTC
+    </footer>
+</body>
+</html>

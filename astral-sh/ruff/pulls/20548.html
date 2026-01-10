@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`flake8-simplify`] Improve help message clarity (`SIM105`) - astral-sh/ruff #20548</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>flake8-simplify</code>] Improve help message clarity (<code>SIM105</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/20548">#20548</a>
+        opened by <a href="https://github.com/mgiovani">@mgiovani</a>
+        on 2025-09-24 11:37
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/mgiovani">@mgiovani</a> on 2025-09-24 11:37</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Improve the SIM105 rule message to prevent user confusion about how to properly use <code>contextlib.suppress</code>.</p>
+<p>The previous message &quot;Replace with <code>contextlib.suppress(ValueError)</code>&quot; was ambiguous and led users to incorrectly use <code>contextlib.suppress(ValueError)</code> as a statement inside except blocks instead of replacing the entire try-except-pass block with <code>with contextlib.suppress(ValueError):</code>.</p>
+<p>This change makes the message more explicit:</p>
+<ul>
+<li><strong>Before</strong>: <code>&quot;Use \</code>contextlib.suppress({exception})` instead of `try`-`except`-`pass`&quot;`</li>
+<li><strong>After</strong>: <code>&quot;Replace \</code>try`-`except`-`pass` block with `with contextlib.suppress({exception})`&quot;`</li>
+</ul>
+<p>The fix title is also updated to be more specific:</p>
+<ul>
+<li><strong>Before</strong>: <code>&quot;Replace with \</code>contextlib.suppress({exception})`&quot;`</li>
+<li><strong>After</strong>: <code>&quot;Replace \</code>try`-`except`-`pass` with `with contextlib.suppress({exception})`&quot;`</li>
+</ul>
+<p>Fixes #20462</p>
+<h2>Test Plan</h2>
+<ul>
+<li>✅ All existing SIM105 tests pass with updated snapshots</li>
+<li>✅ Cargo clippy passes without warnings</li>
+<li>✅ Full test suite passes</li>
+<li>✅ The new messages clearly indicate that the entire try-except-pass block should be replaced with a <code>with</code> statement, preventing the misuse described in the issue</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_simplify/rules/suppressible_exception.rs</code>:56 on 2025-09-24 14:34</div>
+            <div class="timeline-body"><p>Hmm, I think the <code>message</code> might actually be okay as it was. This part wasn't included in the snippet in the issue, so I didn't realize it already mentioned try-except-pass. I think I would revert this change and keep your new <code>fix_title</code>, just to keep some variety in the phrasing since users will often see both.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_simplify/rules/suppressible_exception.rs</code>:62 on 2025-09-24 14:37</div>
+            <div class="timeline-body"><p>I don't really love the &quot;with with,&quot; but it also makes sense. I kind of wish we could make it even more clear that you need to put the code from <code>try</code> in the context manager, but we need to keep this as a single line. Do you think something like this would be helpful or also confusing?</p>
+<pre><code class="language-suggestion">            &quot;Replace `try`-`except`-`pass` with `with contextlib.suppress({exception}): ...`&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-09-24 14:39</div>
+            <div class="timeline-body"><p>Thank you! Just a couple of nits/ideas about the phrasing, but this looks great overall.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">diagnostics</span> added by @ntBre on 2025-09-24 14:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mgiovani">@mgiovani</a> reviewed on 2025-09-25 10:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/mgiovani">@mgiovani</a> on <code>crates/ruff_linter/src/rules/flake8_simplify/rules/suppressible_exception.rs</code>:56 on 2025-09-25 10:40</div>
+            <div class="timeline-body"><p>Thank you for the feedback!
+You're right. I've reverted the main message back to the original and kept only the <code>fix_title</code> improvement, which addresses the core confusion from the issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mgiovani">@mgiovani</a> reviewed on 2025-09-25 10:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/mgiovani">@mgiovani</a> on <code>crates/ruff_linter/src/rules/flake8_simplify/rules/suppressible_exception.rs</code>:62 on 2025-09-25 10:40</div>
+            <div class="timeline-body"><p>I agree with the &quot;with with&quot; awkwardness, but I think it's clear.
+I've also implemented your idea with the ellipsis, it's a good one to keep it as a single line</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> approved on 2025-09-25 14:35</div>
+            <div class="timeline-body"><p>This looks great, thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[flake8-simplify] Improve SIM105 message clarity (SIM105)" to "[`flake8-simplify`] Improve help message clarity (`SIM105`)" by @ntBre on 2025-09-25 14:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-09-25 14:44</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ntBre on 2025-09-25 15:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-09-25 15:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-09-25 19:22</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:40:54 UTC
+    </footer>
+</body>
+</html>

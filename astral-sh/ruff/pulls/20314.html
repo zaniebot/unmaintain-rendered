@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Allow protocols to participate in nominal subtyping as well as structural subtyping - astral-sh/ruff #20314</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Allow protocols to participate in nominal subtyping as well as structural subtyping</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/20314">#20314</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-09-09 12:16
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-09-09 12:16</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>(Stacked on top of https://github.com/astral-sh/ruff/pull/20284; review that PR first.)</p>
+<p>Currently our implementation of subtyping and assignability checks against protocols only checks whether a given type is <em>structurally</em> a subtype of/assignable to a given protocol. Other type checkers, however, allow protocols to participate in nominal subtyping <em>as well as</em> structural subtyping. The most common example where this comes up is that all other type checkers consider <code>str</code> to be a subtype of <code>Container[str]</code> even though <code>str.__contains__</code> is less permissive in the types it accepts than <code>Container.__contains__</code>; the reason they consider it a subtype nonetheless is that <code>str</code> has <code>Container[str]</code> in its MRO. We currently also consider <code>str</code> to be a subtype of <code>Container[str]</code>, but this is because we still do not look at the types of method members when doing subtyping/assignability checks for protocols; an early version of https://github.com/astral-sh/ruff/pull/20165 revealed many ecosystem false positives due to our failure to understand <code>str</code> as being a subtype of <code>Container[str]</code>.</p>
+<p>This PR therefore updates our subtyping/assignability logic for protocols so that, for a given class-based protocol, we also check whether a given other type could be considered a nominal subtype of that protocol before concluding that there exists no subtype relation between the other type and the protocol.</p>
+<p>The implication of this is that one of our property tests must be removed: <code>all_type_assignable_to_iterable_are_iterable</code>. Just because a type can be assignable to <code>Iterable</code> does not mean it is necessarily iterable -- it could be a Liskov-uncompliant subclass of <code>Iterable</code>! I don't think we have any Liskov-uncompliant classes in our property-test generation right now, but this still seems like a potential cause for confusion if we added one (deliberately or not) in the future. As such, I've removed the property test as part of this PR.</p>
+<h2>Test Plan</h2>
+<p>Mdtests added.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-09-09 12:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-09-09 12:18</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-09-09 12:21</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅
+No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @AlexWaygood on 2025-09-09 12:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @AlexWaygood on 2025-09-09 12:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @AlexWaygood on 2025-09-09 12:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @AlexWaygood on 2025-09-09 12:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/property_tests.rs</code>:327 on 2025-09-09 21:28</div>
+            <div class="timeline-body"><p>I'm not convinced by the rationale given in the PR description for removing this property test. I think there are many type properties that we want to verify for valid types, that can be invalidated by an invalid type (e.g. a type that violates Liskov), and we probably should never introduce such types into our type generation for the property tests. Or if we do, we should still keep some property tests with a pre-condition that they only apply to valid types.</p>
+<p>Especially if there's no <em>current</em> problem, I would not remove this property test. If anything, I'd just add a note to its docstring that it is not true for types which explicitly inherit <code>Iterable</code> but violate LSP on its interface.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-09-09 21:31</div>
+            <div class="timeline-body"><p>👍</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-09-09 21:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/property_tests.rs</code>:327 on 2025-09-09 21:38</div>
+            <div class="timeline-body"><p>hmm, I suppose we also have property tests that guarantee that subtyping is intransitive, and they would also be broken by Liskov-uncompliant classes interacting with protocols.</p>
+<p>I still worry a bit that this could cause confusion for us at some point... there are a lot of Liskov-uncompliant classes in the standard library! Let's hope we're vigilant about keeping them out of our property tests...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/call/bind.rs</code>:1070 on 2025-09-09 21:39</div>
+            <div class="timeline-body"><p>I should add an mdtest here for calling <code>tuple()</code> on a Liskov-uncompliant subclass of <code>Iterable</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-09-09 21:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2025-09-10 11:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-09-10 11:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-09-10 11:05</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:40:53 UTC
+    </footer>
+</body>
+</html>

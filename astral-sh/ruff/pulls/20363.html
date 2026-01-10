@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Fix subtyping/assignability of function- and class-literal types to callback protocols - astral-sh/ruff #20363</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Fix subtyping/assignability of function- and class-literal types to callback protocols</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/20363">#20363</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-09-12 10:58
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-09-12 10:58</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Fixes https://github.com/astral-sh/ty/issues/377.</p>
+<p>We were treating any function as being assignable to any callback protocol, because we were trying to figure out a type's <code>Callable</code> supertype by looking up the <code>__call__</code> attribute on the type's meta-type. But a function-literal's meta-type is <code>types.FunctionType</code>, and <code>types.FunctionType.__call__</code> is <code>(...) -&gt; Any</code>, which is not very helpful!</p>
+<p>While working on this PR, I also realised that assignability between class-literals and callback protocols was somewhat broken too, so I fixed that at the same time.</p>
+<h2>Test Plan</h2>
+<p>Added mdtests</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-09-12 10:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-09-12 11:00</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a></h2>
+<details>
+<summary>Changes were detected when running ty on typing conformance tests</summary>
+
+<pre><code class="language-diff">--- old-output.txt	2025-09-12 12:44:28.523759463 +0000
++++ new-output.txt	2025-09-12 12:44:31.537763957 +0000
+@@ -112,9 +112,23 @@
+ callables_kwargs.py:62:5: error[missing-argument] No argument provided for required parameter `v3` of function `func2`
+ callables_kwargs.py:64:11: error[invalid-argument-type] Argument to function `func2` is incorrect: Expected `str`, found `Literal[1]`
+ callables_kwargs.py:65:5: error[missing-argument] No argument provided for required parameter `v3` of function `func2`
++callables_kwargs.py:103:1: error[invalid-assignment] Object of type `def func1(**kwargs: @Todo(`Unpack[]` special form)) -&gt; None` is not assignable to `TDProtocol5`
++callables_kwargs.py:134:1: error[invalid-assignment] Object of type `def func7(*, v1: int, v3: str, v2: str = Literal[&quot;&quot;]) -&gt; None` is not assignable to `TDProtocol6`
++callables_protocol.py:35:1: error[invalid-assignment] Object of type `def cb1_bad1(*vals: bytes, *, max_items: int | None) -&gt; list[bytes]` is not assignable to `Proto1`
++callables_protocol.py:36:1: error[invalid-assignment] Object of type `def cb1_bad2(*vals: bytes) -&gt; list[bytes]` is not assignable to `Proto1`
++callables_protocol.py:37:1: error[invalid-assignment] Object of type `def cb1_bad3(*vals: bytes, *, max_len: str | None) -&gt; list[bytes]` is not assignable to `Proto1`
++callables_protocol.py:67:1: error[invalid-assignment] Object of type `def cb2_bad1(*a: bytes) -&gt; Unknown` is not assignable to `Proto2`
++callables_protocol.py:68:1: error[invalid-assignment] Object of type `def cb2_bad2(*a: str, **b: str) -&gt; Unknown` is not assignable to `Proto2`
++callables_protocol.py:69:1: error[invalid-assignment] Object of type `def cb2_bad3(*a: bytes, **b: bytes) -&gt; Unknown` is not assignable to `Proto2`
++callables_protocol.py:70:1: error[invalid-assignment] Object of type `def cb2_bad4(**b: str) -&gt; Unknown` is not assignable to `Proto2`
+ callables_protocol.py:97:1: error[invalid-assignment] Object of type `def cb4_bad1(x: int) -&gt; None` is not assignable to `Proto4`
+ callables_protocol.py:121:1: error[invalid-assignment] Object of type `def cb6_bad1(*vals: bytes, *, max_len: int | None = None) -&gt; list[bytes]` is not assignable to `NotProto6`
++callables_protocol.py:169:1: error[invalid-assignment] Object of type `def cb8_bad1(x: int) -&gt; Any` is not assignable to `Proto8`
+ callables_protocol.py:179:62: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `R@__call__`
++callables_protocol.py:238:1: error[invalid-assignment] Object of type `def cb11_bad1(x: int, y: str, /) -&gt; Any` is not assignable to `Proto11`
++callables_protocol.py:260:1: error[invalid-assignment] Object of type `def cb12_bad1(*args: Any, *, kwarg0: Any) -&gt; None` is not assignable to `Proto12`
++callables_protocol.py:284:1: error[invalid-assignment] Object of type `def cb13_no_default(path: str) -&gt; str` is not assignable to `Proto13_Default`
++callables_protocol.py:311:1: error[invalid-assignment] Object of type `def cb14_no_default(*, path: str) -&gt; str` is not assignable to `Proto14_Default`
+ callables_subtyping.py:26:5: error[invalid-assignment] Object of type `(int, /) -&gt; int` is not assignable to `(int | float, /) -&gt; int | float`
+ callables_subtyping.py:29:5: error[invalid-assignment] Object of type `(int | float, /) -&gt; int | float` is not assignable to `(int, /) -&gt; int`
+ classes_classvar.py:38:11: error[invalid-type-form] Type qualifier `typing.ClassVar` expected exactly 1 argument, got 2
+@@ -675,6 +689,7 @@
+ narrowing_typeis.py:92:9: error[type-assertion-failure] Argument does not have asserted type `B`
+ narrowing_typeis.py:96:9: error[type-assertion-failure] Argument does not have asserted type `B`
+ narrowing_typeis.py:132:20: error[invalid-argument-type] Argument to function `takes_callable_str` is incorrect: Expected `(object, /) -&gt; str`, found `def simple_typeguard(val: object) -&gt; TypeIs[int]`
++narrowing_typeis.py:152:26: error[invalid-argument-type] Argument to function `takes_callable_str_proto` is incorrect: Expected `CallableStrProto`, found `def simple_typeguard(val: object) -&gt; TypeIs[int]`
+ narrowing_typeis.py:191:18: error[invalid-argument-type] Argument to function `takes_int_typeis` is incorrect: Expected `(object, /) -&gt; TypeIs[int]`, found `def bool_typeis(val: object) -&gt; TypeIs[bool]`
+ overloads_basic.py:39:1: error[invalid-argument-type] Method `__getitem__` of type `Overload[(__i: int, /) -&gt; int, (__s: slice[Any, Any, Any], /) -&gt; bytes]` cannot be called with key of type `Literal[&quot;&quot;]` on object of type `Bytes`
+ overloads_definitions.py:20:5: error[invalid-overload] Overloaded function `func1` requires at least two overloads
+@@ -854,5 +869,5 @@
+ typeddicts_usage.py:28:1: error[missing-typed-dict-key] Missing required key 'name' in TypedDict `Movie` constructor
+ typeddicts_usage.py:28:18: error[invalid-key] Invalid key access on TypedDict `Movie`: Unknown key &quot;title&quot;
+ typeddicts_usage.py:40:24: error[invalid-type-form] The special form `typing.TypedDict` is not allowed in type expressions. Did you mean to use a concrete TypedDict or `collections.abc.Mapping[str, object]` instead?
+-Found 855 diagnostics
++Found 870 diagnostics
+ WARN A fatal error occurred while checking some files. Not all project files were analyzed. See the diagnostics list above for details.
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-09-12 11:02</div>
+            <div class="timeline-body"><p>The conformance suite diff looks excellent -- the new diagnostics are all on lines that have <code># E</code> next to them!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-09-12 11:03</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">antidote (https://github.com/Finistere/antidote)
+- tests/lib/interface/test_custom.py:434:45: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- tests/lib/interface/test_custom.py:437:45: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- tests/lib/interface/test_custom.py:440:45: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- tests/lib/interface/test_custom.py:443:45: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- tests/lib/interface/test_custom.py:446:45: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- tests/lib/interface/test_custom.py:449:45: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 316 diagnostics
++ Found 310 diagnostics
+
+werkzeug (https://github.com/pallets/werkzeug)
++ tests/test_formparser.py:437:45: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `TStreamFactory | None`, found `def stream_factory() -&gt; Unknown`
+- Found 370 diagnostics
++ Found 371 diagnostics
+
+psycopg (https://github.com/psycopg/psycopg)
++ tests/typing_example.py:100:21: error[invalid-argument-type] Argument to bound method `connect` is incorrect: Expected `RowFactory[tuple[Any, ...]] | None`, found `def int_row_factory(cursor: Cursor[Any] | AsyncCursor[Any]) -&gt; (Sequence[int], /) -&gt; int`
++ tests/typing_example.py:110:21: error[invalid-argument-type] Argument to bound method `connect` is incorrect: Expected `RowFactory[tuple[Any, ...]] | None`, found `bound method &lt;class 'Person'&gt;.row_factory(cursor: Cursor[Any] | AsyncCursor[Any]) -&gt; (Sequence[str], /) -&gt; Person`
++ tests/typing_example.py:134:43: error[invalid-argument-type] Argument to bound method `connect` is incorrect: Expected `AsyncRowFactory[tuple[Any, ...]] | None`, found `def int_row_factory(cursor: Cursor[Any] | AsyncCursor[Any]) -&gt; (Sequence[int], /) -&gt; int`
++ tests/typing_example.py:144:43: error[invalid-argument-type] Argument to bound method `connect` is incorrect: Expected `AsyncRowFactory[tuple[Any, ...]] | None`, found `bound method &lt;class 'Person'&gt;.row_factory(cursor: Cursor[Any] | AsyncCursor[Any]) -&gt; (Sequence[str], /) -&gt; Person`
+- Found 690 diagnostics
++ Found 694 diagnostics
+
+pandas-stubs (https://github.com/pandas-dev/pandas-stubs)
++ tests/test_styler.py:63:21: error[no-matching-overload] No overload of bound method `apply` matches arguments
++ tests/test_styler.py:259:9: error[type-assertion-failure] Argument does not have asserted type `Styler`
++ tests/test_styler.py:260:26: error[invalid-argument-type] Argument to bound method `map` is incorrect: Expected `_MapCallable`, found `def color_negative(v: @Todo(Support for `typing.TypeAlias`), /, color: str) -&gt; str | None`
+- Found 4964 diagnostics
++ Found 4967 diagnostics
+
+</code></pre>
+</details>
+No memory usage changes detected ✅
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[ty] Fix false negatives when attempting to assign functions to callback protocols" to "[ty] Fix subtyping/assignability of functions and classes to callback protocols" by @AlexWaygood on 2025-09-12 12:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[ty] Fix subtyping/assignability of functions and classes to callback protocols" to "[ty] Fix subtyping/assignability of function- and class-literal types to callback protocols" by @AlexWaygood on 2025-09-12 12:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-09-12 16:34</div>
+            <div class="timeline-body"><h1>Mypy_primer analysis</h1>
+<h2>psycopg</h2>
+<pre><code class="language-diff">psycopg (https://github.com/psycopg/psycopg)
++ tests/typing_example.py:100:21: error[invalid-argument-type] Argument to bound method `connect` is incorrect: Expected `RowFactory[tuple[Any, ...]] | None`, found `def int_row_factory(cursor: Cursor[Any] | AsyncCursor[Any]) -&gt; (Sequence[int], /) -&gt; int`
++ tests/typing_example.py:110:21: error[invalid-argument-type] Argument to bound method `connect` is incorrect: Expected `RowFactory[tuple[Any, ...]] | None`, found `bound method &lt;class 'Person'&gt;.row_factory(cursor: Cursor[Any] | AsyncCursor[Any]) -&gt; (Sequence[str], /) -&gt; Person`
++ tests/typing_example.py:134:43: error[invalid-argument-type] Argument to bound method `connect` is incorrect: Expected `AsyncRowFactory[tuple[Any, ...]] | None`, found `def int_row_factory(cursor: Cursor[Any] | AsyncCursor[Any]) -&gt; (Sequence[int], /) -&gt; int`
++ tests/typing_example.py:144:43: error[invalid-argument-type] Argument to bound method `connect` is incorrect: Expected `AsyncRowFactory[tuple[Any, ...]] | None`, found `bound method &lt;class 'Person'&gt;.row_factory(cursor: Cursor[Any] | AsyncCursor[Any]) -&gt; (Sequence[str], /) -&gt; Person`
+</code></pre>
+<p>This is pretty interesting. Here's a minimal repro of what's going on here:</p>
+<pre><code class="language-py">from __future__ import annotations
+from typing import Protocol, Any
+
+def int_maker() -&gt; int:
+    raise NotImplementedError
+
+class RowMaker[Row = tuple[Any, ...]](Protocol):
+    def __call__(self) -&gt; Row: ...
+
+class Connection[Row = tuple[Any, ...]]:
+    @classmethod
+    def connect(cls, factory: RowMaker[Row]) -&gt; Row:
+        raise NotImplementedError
+
+connect = Connection.connect
+reveal_type(connect(int_maker))
+</code></pre>
+<p>Mypy issues no complaints on this code and reveals <code>int</code> on the last line. Pyright, however, says:</p>
+<pre><code>Argument of type &quot;() -&gt; int&quot; cannot be assigned to parameter &quot;factory&quot; of type &quot;RowMaker[tuple[Any, ...]]&quot; in function &quot;connect&quot;
+  Type &quot;() -&gt; int&quot; is not assignable to type &quot;() -&gt; tuple[Any, ...]&quot;
+    Function return type &quot;int&quot; is incompatible with type &quot;tuple[Any, ...]&quot;
+      &quot;int&quot; is not assignable to &quot;tuple[Any, ...]&quot;  (reportArgumentType)
+Type of &quot;connect(int_maker)&quot; is &quot;tuple[Any, ...]&quot;
+</code></pre>
+<p>And with this PR, ty would match pyright's behaviour. The difference comes down to what the inferred type of <code>connect</code> is after the <code>connect = Connection.connect</code> assignment. Both ty and pyright specialize the method as a result of the binding, and they use the TypeVar default to specialize the method since no explicit specialization was provided for the <code>Connect</code> class. This then causes the <code>connect(int_maker)</code> call to fail, since <code>int</code> is not assignable to <code>tuple[Any, ...]</code>, the default specialization of <code>Connection</code>. But mypy appears to defer solving the TypeVar somehow, which means that it is able to solve the type variable to <code>int</code>.</p>
+<p>Anyway, I think the fact that we are emulating pyright's behaviour here means that this is pretty defensible behaviour from us!</p>
+<h2>werkzeug</h2>
+<pre><code class="language-diff">werkzeug (https://github.com/pallets/werkzeug)
++ tests/test_formparser.py:437:45: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `TStreamFactory | None`, found `def stream_factory() -&gt; Unknown`
+</code></pre>
+<p>This seems like a clear true positive. <a href="https://github.com/pallets/werkzeug/blob/504a8c4fbda9b8b2fd09e817544ffd228f23458e/src/werkzeug/formparser.py#L40-L47"><code>TStreamFactory</code></a> has a <code>__call__</code> method with 3 required parameters, and <a href="https://github.com/pallets/werkzeug/blob/504a8c4fbda9b8b2fd09e817544ffd228f23458e/tests/test_formparser.py#L434-L435"><code>stream_factory</code></a> will fail at runtime if you provide any parameters to it.</p>
+<hr />
+<p>Not sure I have the energy on a Friday evening to trawl through the pandas codebase figuring out what the new diagnostics there are about...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @AlexWaygood on 2025-09-12 16:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @AlexWaygood on 2025-09-12 16:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @AlexWaygood on 2025-09-12 16:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @AlexWaygood on 2025-09-12 16:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-09-12 21:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2025-09-12 21:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-09-12 21:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-09-12 21:20</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:40:54 UTC
+    </footer>
+</body>
+</html>

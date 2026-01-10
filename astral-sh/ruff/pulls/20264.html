@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`flake8-async`] Implement `blocking-path-method` (`ASYNC240`) - astral-sh/ruff #20264</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>flake8-async</code>] Implement <code>blocking-path-method</code> (<code>ASYNC240</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/20264">#20264</a>
+        opened by <a href="https://github.com/PieterCK">@PieterCK</a>
+        on 2025-09-05 10:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/PieterCK">@PieterCK</a> on 2025-09-05 10:08</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Adds a new rule to find and report use of <code>os.path</code> or <code>pathlib.Path</code> in
+async functions.</p>
+<p>Issue: #8451</p>
+<h2>Test Plan</h2>
+<p>Using <code>cargo insta test</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @PieterCK on 2025-09-05 10:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-09-05 12:52</div>
+            <div class="timeline-body"><p>Thanks! We're pretty focused on the minor release this week, so I may not get a chance to review until next week. But this looks really good from a quick skim :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2025-09-05 12:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @ntBre on 2025-09-05 12:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ntBre by @ntBre on 2025-09-05 12:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-09-05 13:03</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/amyreese">@amyreese</a> on <code>crates/ruff_linter/src/rules/flake8_async/rules/blocking_path_methods.rs</code>:132 on 2025-09-05 15:54</div>
+            <div class="timeline-body"><p>I'm not sure what the upstream rule does, but IMO this should also have either an allow list or an exclusion list, because there are a number of methods on Path objects that aren't blocking — at the very least, we should allow use <a href="https://docs.python.org/3/library/pathlib.html#methods-and-properties">PurePath methods</a> or functions like <code>os.path.join</code> that don't care about the actual filesystem.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/amyreese">@amyreese</a> on <code>crates/ruff_linter/src/rules/flake8_async/rules/blocking_path_methods.rs</code>:188 on 2025-09-05 15:55</div>
+            <div class="timeline-body"><p>IIRC, the creation of a Path object itself isn't blocking, so this entire function can probably just be <code>false</code>;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/amyreese">@amyreese</a> reviewed on 2025-09-05 15:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/amyreese">@amyreese</a> reviewed on 2025-09-05 16:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/amyreese">@amyreese</a> on <code>crates/ruff_linter/src/rules/flake8_async/rules/blocking_path_methods.rs</code>:188 on 2025-09-05 16:01</div>
+            <div class="timeline-body"><p>Although on second thought that might not catch calls like <code>os.path.exists(thing)</code>, so maybe instead make sure that eg, <code>pathlib.Path(...)</code> is allowed while <code>pathlib.Path(...).exists()</code> isn't.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-09-05 18:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_async/rules/blocking_path_methods.rs</code>:188 on 2025-09-05 18:10</div>
+            <div class="timeline-body"><p>I think this is only used within the <code>check_type</code> infrastructure to check that the type of a variable (<code>p</code> in this case) is a <code>pathlib.Path</code> in a method call like:</p>
+<pre><code class="language-py">p = Path(&quot;.&quot;)
+p.exists()
+</code></pre>
+<p>There's no diagnostic on line 49 of the test file, for example. So I think this is implemented correctly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_async/rules/blocking_path_methods.rs</code>:188 on 2025-09-05 18:14</div>
+            <div class="timeline-body"><p>Oh, I see what you mean. Yeah, I don't think we need to call <code>is_blocking_path_method</code> inside this method. We just need to check that it's a <code>Path</code>, which I think we might already have a <code>TypeChecker</code> for:</p>
+<p>https://github.com/astral-sh/ruff/blob/16d674e63264acdf640349c81ec6263e813a3234/crates/ruff_python_semantic/src/analyze/typing.rs#L914-L917</p>
+<p>This checks some sub/supeclasses too, we just need to double-check if we want that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-09-05 18:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @PieterCK on 2025-09-08 15:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/PieterCK">@PieterCK</a> on <code>crates/ruff_linter/src/rules/flake8_async/rules/blocking_path_methods.rs</code>:132 on 2025-09-09 09:11</div>
+            <div class="timeline-body"><p>The rule only mentions <code>os.path</code>, but yeah this makes sense. (I haven't looked into how they actually implemented it, though)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/PieterCK">@PieterCK</a> reviewed on 2025-09-09 09:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/PieterCK">@PieterCK</a> reviewed on 2025-09-09 09:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/PieterCK">@PieterCK</a> on <code>crates/ruff_linter/src/rules/flake8_async/rules/blocking_path_methods.rs</code>:132 on 2025-09-09 09:15</div>
+            <div class="timeline-body"><p>I've added an allow list for this (see <code>maybe_calling_io_operation</code>). It's probably not complete, but safer than an incomplete exclusion list of I/O methods.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/PieterCK">@PieterCK</a> reviewed on 2025-09-09 09:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/PieterCK">@PieterCK</a> on <code>crates/ruff_linter/src/rules/flake8_async/rules/blocking_path_methods.rs</code>:188 on 2025-09-09 09:23</div>
+            <div class="timeline-body"><p>Ok! Switched to using <code>PathlibPathChecker</code>:</p>
+<pre><code class="language-diff">@@ -130,7 +168,14 @@ pub(crate) fn blocking_os_path(checker: &amp;Checker, call: &amp;ExprCall) {
+         return;
+     };
+ 
+-    if check_type::&lt;PathMethodInAsyncChecker&gt;(binding, semantic) {
+-        checker.report_diagnostic(BlockingPathMethodInAsyncFunction, call.func.range());
++    if check_type::&lt;PathlibPathChecker&gt;(binding, semantic) {
++        if maybe_calling_io_operation(attr.id.as_str()) {
++            checker.report_diagnostic(
++                BlockingPathMethodInAsyncFunction {
++                    path_library: &quot;pathlib.Path&quot;.to_string(),
++                },
++                call.func.range(),
++            );
++        }
+     }
+</code></pre>
+<p>Its <code>match_annotation</code> is missing a logic that checks if <code>Path</code> is in union and optional. Added that logic in this commit: <strong><code>Update PathlibPathChecker to check nested annotation.</code></strong></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/PieterCK">@PieterCK</a> on <code>crates/ruff_linter/src/rules/flake8_async/rules/blocking_path_methods.rs</code>:188 on 2025-09-09 09:42</div>
+            <div class="timeline-body"><blockquote>
+<p>This checks some sub/supeclasses too, we just need to double-check if we want that.</p>
+</blockquote>
+<p>There are some classes in that check that aren't relevant for checking <code>ASYNC240</code>; <code>PurePath</code>, <code>PurePosixPath</code> and <code>PureWindowsPath</code>. They all don't have I/O related methods.</p>
+<p>Not excluding them from that check shouldn't be a problem though, expressions calling those objects methods will still be filtered out by <code>maybe_calling_io_operation</code> since they have exactly the same method as <code>PurePath</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/PieterCK">@PieterCK</a> reviewed on 2025-09-09 09:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/PieterCK">@PieterCK</a> reviewed on 2025-09-09 09:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/PieterCK">@PieterCK</a> on <code>crates/ruff_linter/src/rules/flake8_async/rules/blocking_path_methods.rs</code>:100 on 2025-09-09 09:49</div>
+            <div class="timeline-body"><p>I've manually inspected these methods. They only do basic computation and don’t use any functions that <code>join</code> doesn’t use, so they’re probably safe.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/PieterCK">@PieterCK</a> reviewed on 2025-09-09 09:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/PieterCK">@PieterCK</a> on <code>crates/ruff_linter/src/rules/flake8_async/rules/blocking_path_methods.rs</code>:90 on 2025-09-09 09:54</div>
+            <div class="timeline-body"><p>This list is generated using a simple python (3.10.12) script:</p>
+<pre><code class="language-python">for attr in dir(pathlib.PurePath):
+    if not attr.startswith(&quot;_&quot;):
+        print(f'&quot;{attr}&quot;,')
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[flake8-async] Implement `blocking-path-method` (ASYNC240)." to "wip [flake8-async] Implement `blocking-path-method` (ASYNC240)." by @PieterCK on 2025-09-09 11:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/PieterCK">@PieterCK</a> reviewed on 2025-09-09 12:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/PieterCK">@PieterCK</a> on <code>crates/ruff_linter/src/rules/flake8_async/rules/blocking_path_methods.rs</code>:188 on 2025-09-09 12:15</div>
+            <div class="timeline-body"><blockquote>
+<p>Although on second thought that might not catch calls like <code>os.path.exists(thing)</code>, so maybe instead make sure that eg, <code>pathlib.Path(...)</code> is allowed while <code>pathlib.Path(...).exists()</code> isn't.</p>
+</blockquote>
+<p>The linter should be able to handle these cases now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @PieterCK on 2025-09-09 13:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/PieterCK">@PieterCK</a> on 2025-09-09 13:04</div>
+            <div class="timeline-body"><p>Thanks for reviewing this! Marking this as ready for review again. What's the best way to show new PR changes here? I've updated the existing commit this time.</p>
+<p>The main changes are around how the linter determines whether an expression is an <code>os.path</code> or <code>pathlib.Path</code> method call that performs I/O. Previously, even constructing a <code>Path</code> object in async function triggers violation. Comment thread: https://github.com/astral-sh/ruff/pull/20264#discussion_r2325468204</p>
+<details>
+
+<summary>
+
+<p>git diff of the <code>blocking_path_methods.rs</code> file:</summary></p>
+<pre><code class="language-diff">git diff be73d44f8b10 c2125edbbb8d -- crates/ruff_linter/src/rules/flake8_async/rules/blocking_path_methods.rs
+diff --git a/crates/ruff_linter/src/rules/flake8_async/rules/blocking_path_methods.rs b/crates/ruff_linter/src/rules/flake8_async/rules/blocking_path_methods.rs
+index c67ce67a8..50e7059bc 100644
+--- a/crates/ruff_linter/src/rules/flake8_async/rules/blocking_path_methods.rs
++++ b/crates/ruff_linter/src/rules/flake8_async/rules/blocking_path_methods.rs
+@@ -1,8 +1,8 @@
+ use crate::Violation;
+ use crate::checkers::ast::Checker;
+ use ruff_macros::{ViolationMetadata, derive_message_formats};
+-use ruff_python_ast::{self as ast, Expr, ExprCall};
+-use ruff_python_semantic::analyze::typing::{TypeChecker, check_type, traverse_union_and_optional};
++use ruff_python_ast::{self as ast, ExprCall};
++use ruff_python_semantic::analyze::typing::{PathlibPathChecker, check_type};
+ use ruff_text_size::Ranged;
+ 
+ /// ## What it does
+@@ -35,68 +35,70 @@ use ruff_text_size::Ranged;
+ ///     file_exists = await path.exists()
+ /// ```
+ #[derive(ViolationMetadata)]
+-pub(crate) struct BlockingPathMethodInAsyncFunction;
++pub(crate) struct BlockingPathMethodInAsyncFunction {
++    path_library: String,
++}
+ 
+ impl Violation for BlockingPathMethodInAsyncFunction {
+     #[derive_message_formats]
+     fn message(&amp;self) -&gt; String {
+-        &quot;Async functions should not use pathlib.Path or os.path methods, use trio.Path or anyio.path&quot;.to_string()
++        format!(
++            &quot;Async functions should not use {path_library} methods, use trio.Path or anyio.path&quot;,
++            path_library = self.path_library
++        )
+     }
+ }
+ 
+-const OS_PATH: [&amp;str; 2] = [&quot;os&quot;, &quot;path&quot;];
+-const PATHLIB_PATH: [&amp;str; 2] = [&quot;pathlib&quot;, &quot;Path&quot;];
+-
+-fn is_blocking_path_method(segments: &amp;[&amp;str]) -&gt; bool {
+-    segments.starts_with(&amp;OS_PATH) || segments.starts_with(&amp;PATHLIB_PATH)
+-}
+-
+-struct PathMethodInAsyncChecker;
+-
+-impl TypeChecker for PathMethodInAsyncChecker {
+-    fn match_annotation(
+-        annotation: &amp;ruff_python_ast::Expr,
+-        semantic: &amp;ruff_python_semantic::SemanticModel,
+-    ) -&gt; bool {
+-        // match base annotation directly
+-        if semantic
+-            .resolve_qualified_name(annotation)
+-            .is_some_and(|qualified_name| is_blocking_path_method(qualified_name.segments()))
+-        {
+-            return true;
+-        }
+-
+-        // otherwise traverse any union or optional annotation
+-        let mut found = false;
+-        traverse_union_and_optional(
+-            &amp;mut |inner_expr, _| {
+-                if semantic
+-                    .resolve_qualified_name(inner_expr)
+-                    .is_some_and(|qualified_name| {
+-                        is_blocking_path_method(qualified_name.segments())
+-                    })
+-                {
+-                    found = true;
+-                }
+-            },
+-            semantic,
+-            annotation,
+-        );
+-        found
++fn is_calling_os_path_method(segments: &amp;[&amp;str]) -&gt; bool {
++    if segments.len() != 3 {
++        return false;
+     }
++    let Some(symbol_name) = segments.get(..2) else {
++        return false;
++    };
++    matches!(symbol_name, [&quot;os&quot;, &quot;path&quot;])
++}
+ 
+-    fn match_initializer(
+-        initializer: &amp;ruff_python_ast::Expr,
+-        semantic: &amp;ruff_python_semantic::SemanticModel,
+-    ) -&gt; bool {
+-        let Expr::Call(ExprCall { func, .. }) = initializer else {
+-            return false;
+-        };
+-
+-        semantic
+-            .resolve_qualified_name(func)
+-            .is_some_and(|qualified_name| is_blocking_path_method(qualified_name.segments()))
+-    }
++fn maybe_calling_io_operation(attr: &amp;str) -&gt; bool {
++    !matches!(
++        attr,
++        // Pure path objects provide path-handling operations which don’t actually
++        // access a filesystem.
++        // https://docs.python.org/3/library/pathlib.html#pure-paths
++        // pathlib.PurePath methods and properties:
++        &quot;anchor&quot;
++            | &quot;as_posix&quot;
++            | &quot;as_uri&quot;
++            | &quot;drive&quot;
++            | &quot;is_absolute&quot;
++            | &quot;is_relative_to&quot;
++            | &quot;is_reserved&quot;
++            | &quot;joinpath&quot;
++            | &quot;match&quot;
++            | &quot;name&quot;
++            | &quot;parent&quot;
++            | &quot;parents&quot;
++            | &quot;parts&quot;
++            | &quot;relative_to&quot;
++            | &quot;root&quot;
++            | &quot;stem&quot;
++            | &quot;suffix&quot;
++            | &quot;suffixes&quot;
++            | &quot;with_name&quot;
++            | &quot;with_segments&quot;
++            | &quot;with_stem&quot;
++            | &quot;with_suffix&quot;
++            // Non I/O pathlib.Path or os.path methods:
++            | &quot;join&quot;
++            | &quot;dirname&quot;
++            | &quot;basename&quot;
++            | &quot;splitroot&quot;
++            | &quot;splitdrive&quot;
++            | &quot;splitext&quot;
++            | &quot;split&quot;
++            | &quot;isabs&quot;
++            | &quot;normcase&quot;
++    )
+ }
+ 
+ /// ASYNC240
+@@ -106,22 +108,53 @@ pub(crate) fn blocking_os_path(checker: &amp;Checker, call: &amp;ExprCall) {
+         return;
+     }
+ 
+-    // Check if an expression is directly calling one of the blocking `path`
+-    // objects.
++    // Check if an expression is calling I/O related os.path method.
++    // Just intializing pathlib.Path object is OK, we can return
++    // early in that scenario.
+     if let Some(qualified_name) = semantic.resolve_qualified_name(call.func.as_ref()) {
+         let segments = qualified_name.segments();
+-        if is_blocking_path_method(segments) {
+-            checker.report_diagnostic(BlockingPathMethodInAsyncFunction, call.func.range());
++        if !is_calling_os_path_method(segments) {
++            return;
++        }
++
++        let Some(os_path_method) = segments.last() else {
++            return;
++        };
++
++        if maybe_calling_io_operation(os_path_method) {
++            checker.report_diagnostic(
++                BlockingPathMethodInAsyncFunction {
++                    path_library: &quot;os.path&quot;.to_string(),
++                },
++                call.func.range(),
++            );
+         }
+         return;
+     }
+ 
+-    // Past this, we're checking if a variable contains one of the blocking
+-    // `path` objects.
+-    let Some(ast::ExprAttribute { value, .. }) = call.func.as_attribute_expr() else {
++    // Check if an expression is a pathlib.Path constructor that directly
++    // calls an I/O method.
++    let Some(ast::ExprAttribute { value, attr, .. }) = call.func.as_attribute_expr() else {
+         return;
+     };
+ 
++    if let Some(ExprCall { func, .. }) = value.as_call_expr() {
++        if !PathlibPathChecker::is_pathlib_path_constructor(semantic, func) {
++            return;
++        }
++        if maybe_calling_io_operation(attr.id.as_str()) {
++            checker.report_diagnostic(
++                BlockingPathMethodInAsyncFunction {
++                    path_library: &quot;pathlib.Path&quot;.to_string(),
++                },
++                call.func.range(),
++            );
++        }
++        return;
++    }
++
++    // Lastly, check if a variable is a pathlib.Path instance and it's
++    // calling an I/O method.
+     let Some(name) = value.as_name_expr() else {
+         return;
+     };
+@@ -130,7 +163,14 @@ pub(crate) fn blocking_os_path(checker: &amp;Checker, call: &amp;ExprCall) {
+         return;
+     };
+ 
+-    if check_type::&lt;PathMethodInAsyncChecker&gt;(binding, semantic) {
+-        checker.report_diagnostic(BlockingPathMethodInAsyncFunction, call.func.range());
++    if check_type::&lt;PathlibPathChecker&gt;(binding, semantic) {
++        if maybe_calling_io_operation(attr.id.as_str()) {
++            checker.report_diagnostic(
++                BlockingPathMethodInAsyncFunction {
++                    path_library: &quot;pathlib.Path&quot;.to_string(),
++                },
++                call.func.range(),
++            );
++        }
+     }
+ }
+
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "wip [flake8-async] Implement `blocking-path-method` (ASYNC240)." to "[flake8-async] Implement `blocking-path-method` (ASYNC240)." by @PieterCK on 2025-09-09 13:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @amyreese by @PieterCK on 2025-09-10 06:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jakkdl">@jakkdl</a> reviewed on 2025-09-10 10:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jakkdl">@jakkdl</a> on <code>crates/ruff_linter/src/rules/flake8_async/rules/blocking_path_methods.rs</code>:132 on 2025-09-10 10:48</div>
+            <div class="timeline-body"><p>The upstream implementation is not very fancy: https://github.com/python-trio/flake8-async/blob/d4c412ecc2ec2d4bdcd3908e0769adf60c1054ed/flake8_async/visitors/visitor2xx.py#L338</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/PieterCK">@PieterCK</a> on 2025-09-17 05:51</div>
+            <div class="timeline-body"><p>Bumping this PR for review again.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-09-17 16:24</div>
+            <div class="timeline-body"><blockquote>
+<p>What's the best way to show new PR changes here?</p>
+</blockquote>
+<p>I usually just push additional commits. That works better with GitHub's &quot;Changes since your last review&quot; button than comparing rebased commits. We always squash and merge PRs anyway. But it's not too big of a deal either way :)</p>
+<p>I'll give this another look now!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_async/rules/blocking_path_methods.rs</code>:59 on 2025-09-17 16:31</div>
+            <div class="timeline-body"><p>I think we can combine these three checks into one pattern match:</p>
+<pre><code class="language-suggestion">    matches!(segments, [&quot;os&quot;, &quot;path&quot;, _])
+</code></pre>
+<p>If we wanted to accept more than 3 components we could just use <code>..</code> instead of <code>_</code>. I don't think that helps here, just another neat trick.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_async/rules/blocking_path_methods.rs</code>:9 on 2025-09-17 16:33</div>
+            <div class="timeline-body"><p>I think we should clarify here and in the <code>Violation::message</code> implementation that only blocking functions are disallowed now that the modules as a whole aren't flagged.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_async/rules/blocking_path_methods.rs</code>:65 on 2025-09-17 16:34</div>
+            <div class="timeline-body"><p>nit: We usually put the main rule implementation function just below the <code>Violation</code> stuff and then helper functions after it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_async/rules/blocking_path_methods.rs</code>:63 on 2025-09-17 16:39</div>
+            <div class="timeline-body"><p>Are all of these shared between both <code>os.path</code> and <code>pathlib.Path</code>? I know sometimes those two modules have different names for similar functionality, but I didn't check all of these myself so it could be correct.</p>
+<p>I'm also wondering if a deny list might be shorter than this allow list. If they're of comparable length, this is fine, just an idea.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_async/rules/blocking_path_methods.rs</code>:144 on 2025-09-17 16:51</div>
+            <div class="timeline-body"><p>It looks like if you use <code>PathlibPathChecker::match_initializer</code> instead of <code>is_pathlib_path_constructor</code>, it will handle the <code>ExprCall</code> check for you too:</p>
+<p>https://github.com/astral-sh/ruff/blob/cb3c3ba94d329083abf430072d740acf2aa476c7/crates/ruff_python_semantic/src/analyze/typing.rs#L919-L925</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_async/rules/blocking_path_methods.rs</code>:167 on 2025-09-17 16:52</div>
+            <div class="timeline-body"><p>This is the same <code>attr</code> as above right? I think we could do this check once before both the constructor and <code>check_type</code> checks, returning early if it's not one of the known attributes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/resources/test/fixtures/flake8_async/ASYNC240.py</code>:78 on 2025-09-17 17:06</div>
+            <div class="timeline-body"><p>I think we need to exclude <code>open</code> because it's covered by <a href="https://docs.astral.sh/ruff/rules/blocking-open-call-in-async-function/#blocking-open-call-in-async-function-async230">blocking-open-call-in-async-function (ASYNC230)</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_semantic/src/analyze/typing.rs</code>:929 on 2025-09-17 17:13</div>
+            <div class="timeline-body"><p>I do like having this check like in #20091, but I'm a little bit hesitant to add it here since it will affect other rules too. I would probably either revert this and accept that we miss option/union annotations for now, until we possibly update the <code>TypeChecker</code> infrastructure more generally in the future, or move this check into the rule itself, as @amyreese did for <code>ASYNC212</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-09-17 17:16</div>
+            <div class="timeline-body"><p>Thank you! This looks great to me overall, I just had a few minor comments. I especially liked the tests. They were really easy to read and review 😄</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/PieterCK">@PieterCK</a> reviewed on 2025-09-18 09:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/PieterCK">@PieterCK</a> on <code>crates/ruff_linter/src/rules/flake8_async/rules/blocking_path_methods.rs</code>:63 on 2025-09-18 09:46</div>
+            <div class="timeline-body"><p>The deny list version looks like this (excluding <code>open</code>):</p>
+<pre><code>rglob
+abspath
+isjunction
+isdir
+stat
+lstat
+relpath
+normpath
+is_fifo
+mkdir
+iterdir
+getmtime
+islink
+hardlink_to
+samefile
+absolute
+walk
+is_junction
+realpath
+is_symlink
+getsize
+is_socket
+getctime
+read_bytes
+is_file
+owner
+is_dir
+symlink_to
+rmdir
+sameopenfile
+_path_normpath
+isfile
+chmod
+resolve
+is_block_device
+is_mount
+unlink
+ismount
+rename
+glob
+write_text
+group
+lexists
+expanduser
+readlink
+cwd
+replace
+home
+exists
+is_char_device
+lchmod
+open
+read_text
+touch
+getatime
+write_bytes
+_joinrealpath
+</code></pre>
+<p>Length = 57 methods</p>
+<p>This is a list of combined async versions of <code>pathlib.Path</code> IO methods listed in trio and anyio documentation  + the <a href="https://github.com/python-trio/flake8-async/blob/d4c412ecc2ec2d4bdcd3908e0769adf60c1054ed/flake8_async/visitors/visitor2xx.py#L338">deny list from upstream</a>. I ran this through a Python script to make sure <code>pathlib.Path</code> or <code>os.path</code> have methods with the same names.</p>
+<p>Reversing that and iterating over <code>pathlib.Path</code> + <code>os.path</code> methods to find non I/O methods (methods that aren't in the deny list and aren't private class methods)  yields about 50 methods, so a &quot;complete&quot; allow list would probably about the same length as the deny list.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/PieterCK">@PieterCK</a> on <code>crates/ruff_linter/src/rules/flake8_async/rules/blocking_path_methods.rs</code>:63 on 2025-09-18 09:50</div>
+            <div class="timeline-body"><p>How I got the list:</p>
+<ul>
+<li><p>anyio neatly listed all I/O methods that they support on their website: https://anyio.readthedocs.io/en/latest/api.html#anyio.Path</p>
+</li>
+<li><p>for trio, I had to grep it from their website and clean up abit. <code>grep -oP '(?&lt;=Like ).*(?=, but async)'</code>. website: https://trio.readthedocs.io/en/stable/reference-io.html</p>
+</li>
+</ul>
+<p>And the python script I used:</p>
+<details>
+
+<pre><code class="language-python">from pathlib import Path
+
+methods_to_check = {
+    &quot;absolute&quot;,
+    &quot;chmod&quot;,
+    &quot;cwd&quot;,
+    &quot;exists&quot;,
+    &quot;expanduser&quot;,
+    &quot;glob&quot;,
+    &quot;group&quot;,
+    &quot;hardlink_to&quot;,
+    &quot;home&quot;,
+    &quot;is_block_device&quot;,
+    &quot;is_char_device&quot;,
+    &quot;is_dir&quot;,
+    &quot;is_fifo&quot;,
+    &quot;is_file&quot;,
+    &quot;is_junction&quot;,
+    &quot;is_mount&quot;,
+    &quot;is_socket&quot;,
+    &quot;is_symlink&quot;,
+    &quot;iterdir&quot;,
+    &quot;lchmod&quot;,
+    &quot;link_to&quot;,
+    &quot;lstat&quot;,
+    &quot;mkdir&quot;,
+    &quot;open&quot;,
+    &quot;owner&quot;,
+    &quot;read_bytes&quot;,
+    &quot;read_text&quot;,
+    &quot;readlink&quot;,
+    &quot;rename&quot;,
+    &quot;replace&quot;,
+    &quot;resolve&quot;,
+    &quot;rglob&quot;,
+    &quot;rmdir&quot;,
+    &quot;samefile&quot;,
+    &quot;stat&quot;,
+    &quot;symlink_to&quot;,
+    &quot;touch&quot;,
+    &quot;unlink&quot;,
+    &quot;walk&quot;,
+    &quot;write_bytes&quot;,
+    &quot;write_text&quot;,
+}
+
+os_path_methods = {
+    &quot;_path_normpath&quot;,
+    &quot;normpath&quot;,
+    &quot;_joinrealpath&quot;,
+    &quot;islink&quot;,
+    &quot;lexists&quot;,
+    &quot;ismount&quot;,
+    &quot;realpath&quot;,
+    &quot;exists&quot;,
+    &quot;isdir&quot;,
+    &quot;isfile&quot;,
+    &quot;getatime&quot;,
+    &quot;getctime&quot;,
+    &quot;getmtime&quot;,
+    &quot;getsize&quot;,
+    &quot;samefile&quot;,
+    &quot;sameopenfile&quot;,
+    &quot;relpath&quot;,
+}
+import os
+
+path_methods = dir(Path)
+deny_list = []
+for method in methods_to_check | os_path_methods:
+    if method in path_methods or hasattr(os.path, method):
+        deny_list.append(method)
+
+print(len(deny_list))
+non_blocking_list = []
+os_methods = dir(os.path)
+for method in set(path_methods) | set(os_methods):
+    if method not in deny_list and not method.startswith(&quot;_&quot;):
+        non_blocking_list.append(method)
+
+print(len(non_blocking_list))
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/PieterCK">@PieterCK</a> reviewed on 2025-09-18 09:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/PieterCK">@PieterCK</a> reviewed on 2025-09-18 10:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/PieterCK">@PieterCK</a> on <code>crates/ruff_linter/src/rules/flake8_async/rules/blocking_path_methods.rs</code>:63 on 2025-09-18 10:20</div>
+            <div class="timeline-body"><p>Poking around <code>os.path</code> methods that doesn't match the deny list, I found a couple more suspects: <code>isjunction</code> and <code>abspath</code>.</p>
+<p>Both methods look like they perform I/O and probably are <code>os.path</code> counterpart for <code>is_junction</code> and <code>absolute</code> (which are <code>pathlib</code> I/O methods). Might miss a few though since I only check suspicious looking ones, so here's the list:</p>
+<pre><code>['ALLOW_MISSING', 'altsep', 'basename', 'commonpath', 'commonprefix', 'curdir', 'defpath', 'devnull', 'dirname', 'expandvars', 'extsep', 'genericpath', 'isabs', 'join', 'normcase', 'os', 'pardir', 'pathsep', 'samestat', 'sep', 'split', 'splitdrive', 'splitext', 'splitroot', 'supports_unicode_filenames', 'sys']
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/PieterCK">@PieterCK</a> reviewed on 2025-09-18 11:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/PieterCK">@PieterCK</a> on <code>crates/ruff_linter/src/rules/flake8_async/rules/blocking_path_methods.rs</code>:59 on 2025-09-18 11:24</div>
+            <div class="timeline-body"><p>Neat! Implemented this version</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/PieterCK">@PieterCK</a> reviewed on 2025-09-18 11:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/PieterCK">@PieterCK</a> on <code>crates/ruff_linter/src/rules/flake8_async/rules/blocking_path_methods.rs</code>:9 on 2025-09-18 11:24</div>
+            <div class="timeline-body"><p>Okay, I've added another example using non-blocking methods in async function too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/PieterCK">@PieterCK</a> on <code>crates/ruff_linter/resources/test/fixtures/flake8_async/ASYNC240.py</code>:78 on 2025-09-18 11:26</div>
+            <div class="timeline-body"><p>Ok! Now <code>open</code> passes <code>maybe_calling_io_operation</code>. There is a new test for this too</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/PieterCK">@PieterCK</a> reviewed on 2025-09-18 11:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/PieterCK">@PieterCK</a> reviewed on 2025-09-18 11:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/PieterCK">@PieterCK</a> on <code>crates/ruff_linter/src/rules/flake8_async/rules/blocking_path_methods.rs</code>:144 on 2025-09-18 11:27</div>
+            <div class="timeline-body"><p>Great! Updated to use <code>match_initializer</code> for this check.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/PieterCK">@PieterCK</a> reviewed on 2025-09-18 11:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/PieterCK">@PieterCK</a> on <code>crates/ruff_linter/src/rules/flake8_async/rules/blocking_path_methods.rs</code>:167 on 2025-09-18 11:29</div>
+            <div class="timeline-body"><p>Aha, good catch. I moved this a few checks above to just before the constructor check.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/PieterCK">@PieterCK</a> reviewed on 2025-09-18 11:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/PieterCK">@PieterCK</a> on <code>crates/ruff_python_semantic/src/analyze/typing.rs</code>:929 on 2025-09-18 11:31</div>
+            <div class="timeline-body"><p>Makes sense, for now I added a copy of <code>PathlibPathChecker</code> that has the traversing logic to this rule.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @PieterCK on 2025-09-18 11:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[flake8-async] Implement `blocking-path-method` (ASYNC240)." to "[wip] [flake8-async] Implement `blocking-path-method` (ASYNC240)." by @PieterCK on 2025-09-18 11:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/PieterCK">@PieterCK</a> on 2025-09-18 11:42</div>
+            <div class="timeline-body"><p>Thank you for doing another pass on this! Will post another comment once this is ready for review again.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-09-18 13:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_async/rules/blocking_path_methods.rs</code>:63 on 2025-09-18 13:10</div>
+            <div class="timeline-body"><p>Thanks for checking this so thoroughly! I'll defer to you on the allow vs deny list, whichever you think is easier.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/amyreese">@amyreese</a> reviewed on 2025-09-18 15:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/amyreese">@amyreese</a> on <code>crates/ruff_linter/src/rules/flake8_async/rules/blocking_path_methods.rs</code>:63 on 2025-09-18 15:11</div>
+            <div class="timeline-body"><p>IMO I think an allowlist is &quot;better&quot; because any new methods added in the future couldn't silently slip by unnoticed by the linter.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/PieterCK">@PieterCK</a> reviewed on 2025-09-22 15:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/PieterCK">@PieterCK</a> on <code>crates/ruff_linter/src/rules/flake8_async/rules/blocking_path_methods.rs</code>:63 on 2025-09-22 15:28</div>
+            <div class="timeline-body"><p>Ok! Updated it to an allow list</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[wip] [flake8-async] Implement `blocking-path-method` (ASYNC240)." to "[flake8-async] Implement `blocking-path-method` (ASYNC240)." by @PieterCK on 2025-09-22 15:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @PieterCK on 2025-09-22 15:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/PieterCK">@PieterCK</a> on 2025-09-22 15:35</div>
+            <div class="timeline-body"><p>@ntBre -- Marking this as ready for you to take a look again!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/amyreese">@amyreese</a> approved on 2025-09-22 18:21</div>
+            <div class="timeline-body"><p>looks good to me!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_semantic/src/analyze/typing.rs</code>:919 on 2025-09-22 18:35</div>
+            <div class="timeline-body"><p>I think it's good to record this TODO somewhere, but I'm kind of leaning toward opening a separate issue and deleting this comment. I feel like we should probably either always traverse unions or never traverse unions and apply that decision to all of our <code>TypeChecker</code>s rather than keep a mix of them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> approved on 2025-09-22 18:36</div>
+            <div class="timeline-body"><p>Thank you, this looks good to me too! I just had one comment about moving the todo comment to a separate issue for a follow-up discussion.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/PieterCK">@PieterCK</a> on <code>crates/ruff_python_semantic/src/analyze/typing.rs</code>:919 on 2025-09-23 05:13</div>
+            <div class="timeline-body"><p>Okay. This commit removes the comment, <code>Remove comment on PathlibPathChecker.</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/PieterCK">@PieterCK</a> reviewed on 2025-09-23 05:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/PieterCK">@PieterCK</a> reviewed on 2025-09-23 06:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/PieterCK">@PieterCK</a> on <code>crates/ruff_python_semantic/src/analyze/typing.rs</code>:919 on 2025-09-23 06:23</div>
+            <div class="timeline-body"><p>And opened https://github.com/astral-sh/ruff/issues/20529 to keep track of this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> approved on 2025-09-23 12:30</div>
+            <div class="timeline-body"><p>Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[flake8-async] Implement `blocking-path-method` (ASYNC240)." to "[`flake8-async`] Implement `blocking-path-method` (`ASYNC240`)" by @ntBre on 2025-09-23 12:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ntBre on 2025-09-23 12:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-09-23 12:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/PieterCK">@PieterCK</a> on 2025-09-23 14:42</div>
+            <div class="timeline-body"><p>Awesome! Thank you</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:40:52 UTC
+    </footer>
+</body>
+</html>

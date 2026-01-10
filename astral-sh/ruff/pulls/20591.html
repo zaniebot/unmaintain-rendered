@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Use `Top` materializations for `TypeIs` special form - astral-sh/ruff #20591</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Use <code>Top</code> materializations for <code>TypeIs</code> special form</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/20591">#20591</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-09-26 11:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-09-26 11:40</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Typeshed has many functions that return <code>TypeIs[SomeCovariantGeneric[Any]]</code>. This is somewhat unfortunate for ty, because for our purposes it's almost always better to intersect with <code>CovariantGeneric[object]</code> for the purposes of type narrowing, but it's <a href="https://github.com/python/typeshed/pull/14784">somewhat hard</a> to change these in typeshed without creating false-positive diagnostics for users of other type checkers. This PR therefore introduces a workaround for the typeshed issue: under the hood, we convert the type argument passed to <code>TypeIs</code> to its top materialization before intersecting with that type.</p>
+<h2>Test Plan</h2>
+<p>I added an mdtest that fails on <code>main</code> without this change. It's similar to the false-positive diagnostics relating to the use of <a href="https://github.com/python/typeshed/blob/6af8f287bb3eae6c6d8839c69c39f07ee7057517/stdlib/asyncio/coroutines.pyi#L28"><code>asyncio.iscoroutine</code></a> that we see going away on <code>homeassistant/core</code> in the mypy_primer report.</p>
+<p>Some more ecosystem analysis is found in https://github.com/astral-sh/ruff/pull/20591#issuecomment-3338847554.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-09-26 11:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-09-26 11:42</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-09-26 11:43</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">spack (https://github.com/spack/spack)
+- lib/spack/spack/llnl/util/filesystem.py:330:21: warning[possibly-missing-attribute] Attribute `replace` on type `(str &amp; ~((...) -&gt; object)) | (((Match[Unknown], /) -&gt; str) &amp; ~((...) -&gt; object))` may be missing
++ lib/spack/spack/llnl/util/filesystem.py:330:21: warning[possibly-missing-attribute] Attribute `replace` on type `(str &amp; ~(() -&gt; object)) | (((Match[Unknown], /) -&gt; str) &amp; ~(() -&gt; object))` may be missing
+- lib/spack/spack/vendor/jinja2/runtime.py:734:17: error[invalid-assignment] Object of type `(Unknown &amp; ~((...) -&gt; object)) | bool | (((str | None, /) -&gt; bool) &amp; ~((...) -&gt; object))` is not assignable to `bool | None`
++ lib/spack/spack/vendor/jinja2/runtime.py:734:17: error[invalid-assignment] Object of type `(Unknown &amp; ~(() -&gt; object)) | bool | (((str | None, /) -&gt; bool) &amp; ~(() -&gt; object))` is not assignable to `bool | None`
+
+jinja (https://github.com/pallets/jinja)
+- src/jinja2/runtime.py:690:17: error[invalid-assignment] Object of type `(Unknown &amp; ~((...) -&gt; object)) | bool | (((str | None, /) -&gt; bool) &amp; ~((...) -&gt; object))` is not assignable to `bool | None`
++ src/jinja2/runtime.py:690:17: error[invalid-assignment] Object of type `(Unknown &amp; ~(() -&gt; object)) | bool | (((str | None, /) -&gt; bool) &amp; ~(() -&gt; object))` is not assignable to `bool | None`
+
+pytest (https://github.com/pytest-dev/pytest)
+- src/_pytest/fixtures.py:1236:29: error[unresolved-attribute] Type `FixtureFunction@__call__ &amp; ~type[Any] &amp; ~FixtureFunctionDefinition` has no attribute `__name__`
++ src/_pytest/fixtures.py:1236:29: error[unresolved-attribute] Type `FixtureFunction@__call__ &amp; ~type &amp; ~FixtureFunctionDefinition` has no attribute `__name__`
++ src/_pytest/fixtures.py:1383:9: error[invalid-argument-type] Argument is incorrect: Expected `tuple[object, ...] | ((Any, /) -&gt; object) | None`, found `None | (Sequence[object] &amp; (() -&gt; object)) | (((Any, /) -&gt; object) &amp; (() -&gt; object)) | Unknown`
+- src/_pytest/fixtures.py:1383:70: error[invalid-argument-type] Argument to class `tuple` is incorrect: Expected `Iterable[object]`, found `(Sequence[object] &amp; ~((...) -&gt; object)) | (((Any, /) -&gt; object) &amp; ~((...) -&gt; object))`
++ src/_pytest/fixtures.py:1383:70: error[invalid-argument-type] Argument to class `tuple` is incorrect: Expected `Iterable[object]`, found `(Sequence[object] &amp; ~(() -&gt; object)) | (((Any, /) -&gt; object) &amp; ~(() -&gt; object))`
+- src/_pytest/fixtures.py:1658:24: error[invalid-return-type] Return type does not match returned value: expected `Scope`, found `Scope | (Unknown &amp; ~None &amp; ~((...) -&gt; object) &amp; ~str) | (((str, Config, /) -&gt; Unknown) &amp; ~((...) -&gt; object) &amp; ~str) | (Unknown &amp; ~str)`
++ src/_pytest/fixtures.py:1658:24: error[invalid-return-type] Return type does not match returned value: expected `Scope`, found `Scope | (Unknown &amp; ~None &amp; ~(() -&gt; object) &amp; ~str) | (((str, Config, /) -&gt; Unknown) &amp; ~(() -&gt; object) &amp; ~str) | (Unknown &amp; ~str)`
++ src/_pytest/python.py:1389:13: error[invalid-argument-type] Argument is incorrect: Expected `((Any, /) -&gt; object) | None`, found `None | (Iterable[object] &amp; (() -&gt; object)) | (((Any, /) -&gt; object) &amp; (() -&gt; object))`
+- Found 485 diagnostics
++ Found 487 diagnostics
+
+beartype (https://github.com/beartype/beartype)
+- beartype/_check/metadata/metadecor.py:523:34: error[unresolved-attribute] Type `((...) -&gt; Unknown) &amp; ((...) -&gt; object)` has no attribute `__name__`
++ beartype/_check/metadata/metadecor.py:523:34: error[unresolved-attribute] Type `((...) -&gt; Unknown) &amp; (() -&gt; object)` has no attribute `__name__`
+- beartype/_util/cache/utilcachecall.py:180:34: error[unresolved-attribute] Type `CallableT@callable_cached &amp; ((...) -&gt; object)` has no attribute `__name__`
++ beartype/_util/cache/utilcachecall.py:180:34: error[unresolved-attribute] Type `CallableT@callable_cached &amp; (() -&gt; object)` has no attribute `__name__`
+- beartype/_util/cache/utilcachecall.py:417:34: error[unresolved-attribute] Type `CallableT@method_cached_arg_by_id &amp; ((...) -&gt; object)` has no attribute `__name__`
++ beartype/_util/cache/utilcachecall.py:417:34: error[unresolved-attribute] Type `CallableT@method_cached_arg_by_id &amp; (() -&gt; object)` has no attribute `__name__`
+- beartype/_util/cache/utilcachecall.py:568:44: error[unresolved-attribute] Type `CallableT@property_cached &amp; ((...) -&gt; object)` has no attribute `__name__`
++ beartype/_util/cache/utilcachecall.py:568:44: error[unresolved-attribute] Type `CallableT@property_cached &amp; (() -&gt; object)` has no attribute `__name__`
+- beartype/_util/func/utilfuncscope.py:261:29: error[unresolved-attribute] Type `((...) -&gt; Unknown) &amp; ((...) -&gt; object)` has no attribute `__name__`
++ beartype/_util/func/utilfuncscope.py:261:29: error[unresolved-attribute] Type `((...) -&gt; Unknown) &amp; (() -&gt; object)` has no attribute `__name__`
+- beartype/_util/func/utilfuncscope.py:320:16: error[unresolved-attribute] Type `((...) -&gt; Unknown) &amp; ((...) -&gt; object)` has no attribute `__qualname__`
++ beartype/_util/func/utilfuncscope.py:320:16: error[unresolved-attribute] Type `((...) -&gt; Unknown) &amp; (() -&gt; object)` has no attribute `__qualname__`
+- beartype/_util/func/utilfuncscope.py:334:16: error[unresolved-attribute] Type `((...) -&gt; Unknown) &amp; ((...) -&gt; object)` has no attribute `__qualname__`
++ beartype/_util/func/utilfuncscope.py:334:16: error[unresolved-attribute] Type `((...) -&gt; Unknown) &amp; (() -&gt; object)` has no attribute `__qualname__`
+- beartype/_util/func/utilfunctest.py:907:16: error[unresolved-attribute] Type `((...) -&gt; Unknown) &amp; ~((...) -&gt; Unknown)` has no attribute `__qualname__`
++ beartype/_util/func/utilfunctest.py:907:16: error[unresolved-attribute] Type `((...) -&gt; Unknown) &amp; ~(() -&gt; object)` has no attribute `__qualname__`
+- beartype/_util/func/utilfunctest.py:1100:16: warning[possibly-missing-attribute] Attribute `__name__` on type `(Any &amp; ~MethodType) | ((...) -&gt; Unknown)` may be missing
++ beartype/_util/func/utilfunctest.py:1100:16: error[unresolved-attribute] Type `(...) -&gt; Unknown` has no attribute `__name__`
+- beartype/typing/_typingcache.py:87:34: error[unresolved-attribute] Type `((...) -&gt; Unknown) &amp; ((...) -&gt; object)` has no attribute `__name__`
++ beartype/typing/_typingcache.py:87:34: error[unresolved-attribute] Type `((...) -&gt; Unknown) &amp; (() -&gt; object)` has no attribute `__name__`
+
+werkzeug (https://github.com/pallets/werkzeug)
+- src/werkzeug/utils.py:508:12: error[unsupported-operator] Operator `&gt;` is not supported for types `(str | None, /) -&gt; int | None` and `Literal[0]`, in comparing `(int &amp; ~((...) -&gt; object)) | (((str | None, /) -&gt; int | None) &amp; ~((...) -&gt; object)) | (@Todo &amp; ~None)` with `Literal[0]`
++ src/werkzeug/utils.py:508:12: error[unsupported-operator] Operator `&gt;` is not supported for types `(str | None, /) -&gt; int | None` and `Literal[0]`, in comparing `(int &amp; ~(() -&gt; object)) | (((str | None, /) -&gt; int | None) &amp; ~(() -&gt; object)) | (@Todo &amp; ~None)` with `Literal[0]`
+- src/werkzeug/utils.py:512:9: error[invalid-assignment] Object of type `(int &amp; ~((...) -&gt; object)) | (((str | None, /) -&gt; int | None) &amp; ~((...) -&gt; object)) | (@Todo &amp; ~None)` is not assignable to attribute `max_age` of type `int | None`
++ src/werkzeug/utils.py:512:9: error[invalid-assignment] Object of type `(int &amp; ~(() -&gt; object)) | (((str | None, /) -&gt; int | None) &amp; ~(() -&gt; object)) | (@Todo &amp; ~None)` is not assignable to attribute `max_age` of type `int | None`
+- src/werkzeug/wsgi.py:246:30: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `Iterable[Unknown]`, found `((() -&gt; None) &amp; ~((...) -&gt; object)) | (Iterable[() -&gt; None] &amp; ~((...) -&gt; object))`
+- Found 367 diagnostics
++ Found 366 diagnostics
+
+starlette (https://github.com/encode/starlette)
++ starlette/routing.py:67:5: error[invalid-assignment] Object of type `((Request, /) -&gt; Awaitable[Response] | Response) | partial[Unknown]` is not assignable to `(Request, /) -&gt; Awaitable[Response]`
+- Found 146 diagnostics
++ Found 147 diagnostics
+
+ignite (https://github.com/pytorch/ignite)
+- ignite/handlers/base_logger.py:52:29: error[not-iterable] Object of type `(list[str] &amp; ~((...) -&gt; object)) | (((str, Unknown, /) -&gt; bool) &amp; ~((...) -&gt; object))` may not be iterable
++ ignite/handlers/base_logger.py:52:29: error[not-iterable] Object of type `(list[str] &amp; ~(() -&gt; object)) | (((str, Unknown, /) -&gt; bool) &amp; ~(() -&gt; object))` may not be iterable
+
+poetry (https://github.com/python-poetry/poetry)
+- src/poetry/utils/cache.py:149:16: error[invalid-return-type] Return type does not match returned value: expected `T@FileCache`, found `(Unknown &amp; ~None) | @Todo | (T@FileCache &amp; ~((...) -&gt; object)) | ((() -&gt; T@FileCache) &amp; ~((...) -&gt; object))`
+- Found 986 diagnostics
++ Found 985 diagnostics
+
+tornado (https://github.com/tornadoweb/tornado)
+- tornado/escape.py:336:30: warning[possibly-missing-attribute] Attribute `strip` on type `(str &amp; ~AlwaysFalsy &amp; ~((...) -&gt; object)) | (((str, /) -&gt; str) &amp; ~AlwaysFalsy &amp; ~((...) -&gt; object))` may be missing
++ tornado/escape.py:336:30: warning[possibly-missing-attribute] Attribute `strip` on type `(str &amp; ~AlwaysFalsy &amp; ~(() -&gt; object)) | (((str, /) -&gt; str) &amp; ~AlwaysFalsy &amp; ~(() -&gt; object))` may be missing
+
+vision (https://github.com/pytorch/vision)
+- test/datasets_utils.py:835:52: error[invalid-argument-type] Argument to function `create_image_file` is incorrect: Expected `Sequence[int] | int`, found `@Todo | (Sequence[int] &amp; ~((...) -&gt; object)) | (int &amp; ~((...) -&gt; object)) | (((int, /) -&gt; Sequence[int] | int) &amp; ~((...) -&gt; object))`
++ test/datasets_utils.py:835:52: error[invalid-argument-type] Argument to function `create_image_file` is incorrect: Expected `Sequence[int] | int`, found `@Todo | (Sequence[int] &amp; ~(() -&gt; object)) | (int &amp; ~(() -&gt; object)) | (((int, /) -&gt; Sequence[int] | int) &amp; ~(() -&gt; object))`
++ torchvision/transforms/v2/_utils.py:149:16: error[invalid-return-type] Return type does not match returned value: expected `(Any, /) -&gt; Any`, found `(str &amp; (() -&gt; object)) | (((Any, /) -&gt; Any) &amp; (() -&gt; object))`
+- Found 1473 diagnostics
++ Found 1474 diagnostics
+
+psycopg (https://github.com/psycopg/psycopg)
++ psycopg_pool/psycopg_pool/_acompat.py:185:12: error[invalid-return-type] Return type does not match returned value: expected `T@ensure_async`, found `object`
+- Found 698 diagnostics
++ Found 699 diagnostics
+
+operator (https://github.com/canonical/operator)
++ ops/charm.py:1639:55: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 99 diagnostics
++ Found 100 diagnostics
+
+cki-lib (https://gitlab.com/cki-project/cki-lib)
+- cki_lib/messagequeue.py:373:36: error[invalid-type-form] Variable of type `def callable(obj: object, /) -&gt; TypeIs[(...) -&gt; object]` is not allowed in a type expression
++ cki_lib/messagequeue.py:373:36: error[invalid-type-form] Variable of type `def callable(obj: object, /) -&gt; TypeIs[() -&gt; object]` is not allowed in a type expression
+
+sphinx (https://github.com/sphinx-doc/sphinx)
+- sphinx/environment/__init__.py:393:13: error[invalid-assignment] Object of type `(str &amp; ((...) -&gt; object)) | (((Node, /) -&gt; bool) &amp; ((...) -&gt; object))` is not assignable to `Literal[False] | ((Node, /) -&gt; bool)`
++ sphinx/environment/__init__.py:393:13: error[invalid-assignment] Object of type `(str &amp; (() -&gt; object)) | (((Node, /) -&gt; bool) &amp; (() -&gt; object))` is not assignable to `Literal[False] | ((Node, /) -&gt; bool)`
+- sphinx/environment/__init__.py:397:25: error[invalid-argument-type] Method `__getitem__` of type `bound method dict[str, Literal[False] | ((Node, /) -&gt; bool)].__getitem__(key: str, /) -&gt; Literal[False] | ((Node, /) -&gt; bool)` cannot be called with key of type `(str &amp; ~((...) -&gt; object)) | (((Node, /) -&gt; bool) &amp; ~((...) -&gt; object))` on object of type `dict[str, Literal[False] | ((Node, /) -&gt; bool)]`
++ sphinx/environment/__init__.py:397:25: error[invalid-argument-type] Method `__getitem__` of type `bound method dict[str, Literal[False] | ((Node, /) -&gt; bool)].__getitem__(key: str, /) -&gt; Literal[False] | ((Node, /) -&gt; bool)` cannot be called with key of type `(str &amp; ~(() -&gt; object)) | (((Node, /) -&gt; bool) &amp; ~(() -&gt; object))` on object of type `dict[str, Literal[False] | ((Node, /) -&gt; bool)]`
+
+trio (https://github.com/python-trio/trio)
++ src/trio/_core/_tests/test_ki.py:685:43: error[invalid-argument-type] Argument to function `_consume_async_generator` is incorrect: Expected `AsyncGenerator[None, None]`, found `AsyncGeneratorType[object, Never]`
++ src/trio/_core/_tests/test_ki.py:690:25: error[invalid-argument-type] Argument to bound method `send` is incorrect: Expected `Never`, found `None`
++ src/trio/_core/_tests/test_ki.py:690:25: error[invalid-argument-type] Argument to bound method `send` is incorrect: Expected `Never`, found `None`
+- Found 665 diagnostics
++ Found 668 diagnostics
+
+schemathesis (https://github.com/schemathesis/schemathesis)
+- src/schemathesis/hooks.py:297:16: error[unresolved-attribute] Type `(str &amp; ((...) -&gt; object)) | (((...) -&gt; Unknown) &amp; ((...) -&gt; object))` has no attribute `__name__`
++ src/schemathesis/hooks.py:297:16: error[unresolved-attribute] Type `(str &amp; (() -&gt; object)) | (((...) -&gt; Unknown) &amp; (() -&gt; object))` has no attribute `__name__`
+
+freqtrade (https://github.com/freqtrade/freqtrade)
+- freqtrade/strategy/informative_decorator.py:147:21: warning[possibly-missing-attribute] Attribute `format` on type `(str &amp; ~AlwaysFalsy &amp; ~((...) -&gt; object)) | (((Any, /) -&gt; str) &amp; ~AlwaysFalsy &amp; ~((...) -&gt; object))` may be missing
++ freqtrade/strategy/informative_decorator.py:147:21: warning[possibly-missing-attribute] Attribute `format` on type `(str &amp; ~AlwaysFalsy &amp; ~(() -&gt; object)) | (((Any, /) -&gt; str) &amp; ~AlwaysFalsy &amp; ~(() -&gt; object))` may be missing
+
+prefect (https://github.com/PrefectHQ/prefect)
+- src/prefect/concurrency/v1/sync.py:63:58: error[invalid-argument-type] Argument to function `emit_concurrency_acquisition_events` is incorrect: Expected `list[MinimalConcurrencyLimitResponse]`, found `(Unknown &amp; ~Coroutine[Any, Any, Any]) | (Coroutine[Any, Any, Unknown] &amp; ~Coroutine[Any, Any, Any])`
+- src/prefect/concurrency/v1/sync.py:72:41: error[invalid-argument-type] Argument to function `emit_concurrency_release_events` is incorrect: Expected `list[MinimalConcurrencyLimitResponse]`, found `(Unknown &amp; ~Coroutine[Any, Any, Any]) | (Coroutine[Any, Any, Unknown] &amp; ~Coroutine[Any, Any, Any])`
+- src/prefect/flows.py:288:34: warning[possibly-missing-attribute] Attribute `__name__` on type `(((...) -&gt; R@__init__) &amp; ((...) -&gt; object) &amp; ~classmethod &amp; ~staticmethod) | (@Todo &amp; ((...) -&gt; object) &amp; ~classmethod &amp; ~staticmethod) | (((...) -&gt; R@__init__) &amp; ((...) -&gt; object) &amp; ~staticmethod) | (((...) -&gt; R@__init__) &amp; ((...) -&gt; object))` may be missing
++ src/prefect/flows.py:288:34: warning[possibly-missing-attribute] Attribute `__name__` on type `(((...) -&gt; R@__init__) &amp; (() -&gt; object) &amp; ~classmethod &amp; ~staticmethod) | (@Todo &amp; (() -&gt; object) &amp; ~classmethod &amp; ~staticmethod) | (((...) -&gt; R@__init__) &amp; (() -&gt; object) &amp; ~staticmethod) | (((...) -&gt; R@__init__) &amp; (() -&gt; object))` may be missing
+- src/prefect/flows.py:405:68: warning[possibly-missing-attribute] Attribute `__name__` on type `(((...) -&gt; R@__init__) &amp; ((...) -&gt; object) &amp; ~classmethod &amp; ~staticmethod) | (@Todo &amp; ((...) -&gt; object) &amp; ~classmethod &amp; ~staticmethod) | (((...) -&gt; R@__init__) &amp; ((...) -&gt; object) &amp; ~staticmethod) | (((...) -&gt; R@__init__) &amp; ((...) -&gt; object))` may be missing
++ src/prefect/flows.py:405:68: warning[possibly-missing-attribute] Attribute `__name__` on type `(((...) -&gt; R@__init__) &amp; (() -&gt; object) &amp; ~classmethod &amp; ~staticmethod) | (@Todo &amp; (() -&gt; object) &amp; ~classmethod &amp; ~staticmethod) | (((...) -&gt; R@__init__) &amp; (() -&gt; object) &amp; ~staticmethod) | (((...) -&gt; R@__init__) &amp; (() -&gt; object))` may be missing
++ src/prefect/runner/submit.py:174:35: error[invalid-argument-type] Argument to bound method `append` is incorrect: Expected `FlowRun`, found `object`
+- Found 3082 diagnostics
++ Found 3081 diagnostics
+
+hydra-zen (https://github.com/mit-ll-responsible-ai/hydra-zen)
++ src/hydra_zen/structured_configs/_implementations.py:2252:47: error[invalid-argument-type] Argument to function `get_target_path` is incorrect: Expected `HasTarget`, found `(() -&gt; object) &amp; type`
+- Found 567 diagnostics
++ Found 568 diagnostics
+
+xarray (https://github.com/pydata/xarray)
++ xarray/core/dataarray.py:5269:35: error[too-many-positional-arguments] Too many positional arguments: expected 0, got 1
++ xarray/core/dataset.py:8080:35: error[too-many-positional-arguments] Too many positional arguments: expected 0, got 1
+- Found 1619 diagnostics
++ Found 1621 diagnostics
+
+jax (https://github.com/google/jax)
+- jax/_src/interpreters/batching.py:1008:37: error[invalid-argument-type] Argument to function `safe_zip` is incorrect: Expected `Iterable[Unknown]`, found `@Todo | ((() -&gt; Sequence[int | None]) &amp; ~((...) -&gt; object))`
+- jax/_src/interpreters/batching.py:1010:39: error[invalid-argument-type] Argument to function `safe_zip` is incorrect: Expected `Iterable[Unknown]`, found `@Todo | ((() -&gt; Sequence[int | None]) &amp; ~((...) -&gt; object))`
+- jax/_src/xla_bridge.py:532:5: error[no-matching-overload] No overload of bound method `update` matches arguments
+- Found 2267 diagnostics
++ Found 2264 diagnostics
+
+aiohttp (https://github.com/aio-libs/aiohttp)
++ aiohttp/web.py:307:9: error[invalid-assignment] Object of type `object` is not assignable to `Application | Awaitable[Application]`
+- Found 160 diagnostics
++ Found 161 diagnostics
+
+setuptools (https://github.com/pypa/setuptools)
+- setuptools/_vendor/typeguard/_decorators.py:209:29: error[invalid-assignment] Method `__setitem__` of type `bound method dict[str, (@Todo &amp; str) | (@Todo &amp; None)].__setitem__(key: str, value: (@Todo &amp; str) | (@Todo &amp; None), /) -&gt; None` cannot be called with a key of type `Literal[&quot;fset&quot;, &quot;fget&quot;, &quot;fdel&quot;]` and a value of type `FunctionType` on object of type `dict[str, (@Todo &amp; str) | (@Todo &amp; None)]`
++ setuptools/_vendor/typeguard/_decorators.py:209:29: error[invalid-assignment] Method `__setitem__` of type `bound method dict[str, (Unknown &amp; str) | (Unknown &amp; None)].__setitem__(key: str, value: (Unknown &amp; str) | (Unknown &amp; None), /) -&gt; None` cannot be called with a key of type `Literal[&quot;fset&quot;, &quot;fget&quot;, &quot;fdel&quot;]` and a value of type `FunctionType` on object of type `dict[str, (Unknown &amp; str) | (Unknown &amp; None)]`
+- setuptools/_vendor/typeguard/_importhook.py:211:33: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `MetaPathFinder`, found `MetaPathFinderProtocol &amp; type[Any]`
++ setuptools/_vendor/typeguard/_importhook.py:211:33: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `MetaPathFinder`, found `MetaPathFinderProtocol &amp; type`
+- setuptools/_vendor/typing_extensions.py:2855:17: error[invalid-assignment] Object of type `Unknown` is not assignable to attribute `__deprecated__` on type `_T@__call__ &amp; ((...) -&gt; object) &amp; ~type`
++ setuptools/_vendor/typing_extensions.py:2855:17: error[invalid-assignment] Object of type `Unknown` is not assignable to attribute `__deprecated__` on type `_T@__call__ &amp; (() -&gt; object) &amp; ~type`
+- setuptools/config/_apply_pyprojecttoml.py:124:31: error[invalid-argument-type] Argument to function `_set_config` is incorrect: Expected `str`, found `(Unknown &amp; ~((...) -&gt; object)) | (partial[Unknown] &amp; ~((...) -&gt; object))`
++ setuptools/config/_apply_pyprojecttoml.py:124:31: error[invalid-argument-type] Argument to function `_set_config` is incorrect: Expected `str`, found `(Unknown &amp; ~(() -&gt; object)) | (partial[Unknown] &amp; ~(() -&gt; object))`
+
+bokeh (https://github.com/bokeh/bokeh)
+- src/bokeh/core/property/bases.py:184:20: error[invalid-return-type] Return type does not match returned value: expected `T@Property`, found `((() -&gt; T@Property) &amp; ~((...) -&gt; object)) | (T@Property &amp; ~((...) -&gt; object))`
+- src/bokeh/core/property/bases.py:187:24: error[invalid-return-type] Return type does not match returned value: expected `T@Property`, found `((() -&gt; T@Property) &amp; ((...) -&gt; object)) | (T@Property &amp; ((...) -&gt; object))`
++ src/bokeh/core/property/bases.py:187:24: error[invalid-return-type] Return type does not match returned value: expected `T@Property`, found `(() -&gt; T@Property) | (T@Property &amp; (() -&gt; object))`
+- Found 467 diagnostics
++ Found 466 diagnostics
+
+pandas (https://github.com/pandas-dev/pandas)
+- pandas/core/groupby/numba_.py:61:57: error[unresolved-attribute] Type `((...) -&gt; Unknown) &amp; ((...) -&gt; object)` has no attribute `__name__`
++ pandas/core/groupby/numba_.py:61:57: error[unresolved-attribute] Type `((...) -&gt; Unknown) &amp; (() -&gt; object)` has no attribute `__name__`
+- pandas/io/parsers/base_parser.py:991:12: error[invalid-return-type] Return type does not match returned value: expected `SequenceT@evaluate_callable_usecols | set[int]`, found `(((Hashable, /) -&gt; object) &amp; ~((...) -&gt; object)) | (SequenceT@evaluate_callable_usecols &amp; ~((...) -&gt; object))`
++ pandas/io/parsers/base_parser.py:991:12: error[invalid-return-type] Return type does not match returned value: expected `SequenceT@evaluate_callable_usecols | set[int]`, found `(((Hashable, /) -&gt; object) &amp; ~(() -&gt; object)) | (SequenceT@evaluate_callable_usecols &amp; ~(() -&gt; object))`
+- pandas/util/_decorators.py:199:41: warning[possibly-missing-attribute] Attribute `get` on type `(Mapping[Any, Any] &amp; ~((...) -&gt; object)) | (((Any, /) -&gt; Any) &amp; &lt;Protocol with members 'get'&gt; &amp; ~((...) -&gt; object)) | (((Any, /) -&gt; Any) &amp; ((...) -&gt; object) &amp; ~((...) -&gt; object))` may be missing
+- Found 3320 diagnostics
++ Found 3319 diagnostics
+
+ibis (https://github.com/ibis-project/ibis)
+- ibis/backends/tests/conftest.py:9:35: error[invalid-type-form] Variable of type `def callable(obj: object, /) -&gt; TypeIs[(...) -&gt; object]` is not allowed in a type expression
++ ibis/backends/tests/conftest.py:9:35: error[invalid-type-form] Variable of type `def callable(obj: object, /) -&gt; TypeIs[() -&gt; object]` is not allowed in a type expression
+- ibis/expr/types/relations.py:4433:13: warning[possibly-missing-attribute] Attribute `setdefault` on type `(((str, /) -&gt; Value) &amp; Top[Mapping[Unknown, object]]) | Mapping[str, (str, /) -&gt; Value] | Unknown | dict[Unknown, ((str, /) -&gt; Value) &amp; ((...) -&gt; object) &amp; ~Top[Mapping[Unknown, object]]]` may be missing
++ ibis/expr/types/relations.py:4433:13: warning[possibly-missing-attribute] Attribute `setdefault` on type `(((str, /) -&gt; Value) &amp; Top[Mapping[Unknown, object]]) | Mapping[str, (str, /) -&gt; Value] | Unknown | dict[Unknown, ((str, /) -&gt; Value) &amp; (() -&gt; object) &amp; ~Top[Mapping[Unknown, object]]]` may be missing
+
+zulip (https://github.com/zulip/zulip)
+- zerver/lib/rest.py:110:20: error[invalid-return-type] Return type does not match returned value: expected `tuple[(...) -&gt; HttpResponse, set[str]] | HttpResponse`, found `tuple[(...) -&gt; object, Top[set[Unknown]]]`
++ zerver/lib/rest.py:110:20: error[invalid-return-type] Return type does not match returned value: expected `tuple[(...) -&gt; HttpResponse, set[str]] | HttpResponse`, found `tuple[() -&gt; object, Top[set[Unknown]]]`
+- zerver/lib/rest.py:112:16: error[invalid-return-type] Return type does not match returned value: expected `tuple[(...) -&gt; HttpResponse, set[str]] | HttpResponse`, found `tuple[((...) -&gt; object) &amp; ~tuple[object, ...], set[Unknown]]`
++ zerver/lib/rest.py:112:16: error[invalid-return-type] Return type does not match returned value: expected `tuple[(...) -&gt; HttpResponse, set[str]] | HttpResponse`, found `tuple[(() -&gt; object) &amp; ~tuple[object, ...], set[Unknown]]`
+- zerver/tests/test_openapi.py:588:38: error[not-iterable] Object of type `((...) -&gt; Unknown) &amp; ~((...) -&gt; object)` is not iterable
++ zerver/tests/test_openapi.py:588:38: error[not-iterable] Object of type `((...) -&gt; Unknown) &amp; ~(() -&gt; object)` is not iterable
+- zerver/tests/test_openapi.py:600:58: warning[possibly-missing-attribute] Attribute `__name__` on type `(Unknown &amp; ((...) -&gt; object) &amp; ~(def get_events(request: HttpRequest, user_profile: UserProfile) -&gt; HttpResponse)) | (((...) -&gt; Unknown) &amp; ((...) -&gt; object) &amp; ~(def get_events(request: HttpRequest, user_profile: UserProfile) -&gt; HttpResponse)) | (Unknown &amp; ~(def get_events(request: HttpRequest, user_profile: UserProfile) -&gt; HttpResponse)) | ((...) -&gt; Unknown)` may be missing
++ zerver/tests/test_openapi.py:600:58: warning[possibly-missing-attribute] Attribute `__name__` on type `(Unknown &amp; (() -&gt; object) &amp; ~(def get_events(request: HttpRequest, user_profile: UserProfile) -&gt; HttpResponse)) | (((...) -&gt; Unknown) &amp; (() -&gt; object) &amp; ~(def get_events(request: HttpRequest, user_profile: UserProfile) -&gt; HttpResponse)) | (Unknown &amp; ~(def get_events(request: HttpRequest, user_profile: UserProfile) -&gt; HttpResponse)) | ((...) -&gt; Unknown)` may be missing
+
+sympy (https://github.com/sympy/sympy)
+- sympy/utilities/tests/test_pickling.py:72:17: warning[possibly-missing-attribute] Attribute `loads` on type `(Unknown &amp; ModuleType &amp; ~((...) -&gt; object)) | (((x: _T@copy) -&gt; _T@copy) &amp; ModuleType &amp; ~((...) -&gt; object)) | (((x: _T@deepcopy, memo: dict[int, Any] | None = None, _nil: Any = list[Unknown]) -&gt; _T@deepcopy) &amp; ModuleType &amp; ~((...) -&gt; object))` may be missing
++ sympy/utilities/tests/test_pickling.py:72:17: warning[possibly-missing-attribute] Attribute `loads` on type `(Unknown &amp; ModuleType &amp; ~(() -&gt; object)) | (((x: _T@copy) -&gt; _T@copy) &amp; ModuleType &amp; ~(() -&gt; object)) | (((x: _T@deepcopy, memo: dict[int, Any] | None = None, _nil: Any = list[Unknown]) -&gt; _T@deepcopy) &amp; ModuleType &amp; ~(() -&gt; object))` may be missing
+- sympy/utilities/tests/test_pickling.py:72:32: warning[possibly-missing-attribute] Attribute `dumps` on type `(Unknown &amp; ModuleType &amp; ~((...) -&gt; object)) | (((x: _T@copy) -&gt; _T@copy) &amp; ModuleType &amp; ~((...) -&gt; object)) | (((x: _T@deepcopy, memo: dict[int, Any] | None = None, _nil: Any = list[Unknown]) -&gt; _T@deepcopy) &amp; ModuleType &amp; ~((...) -&gt; object))` may be missing
++ sympy/utilities/tests/test_pickling.py:72:32: warning[possibly-missing-attribute] Attribute `dumps` on type `(Unknown &amp; ModuleType &amp; ~(() -&gt; object)) | (((x: _T@copy) -&gt; _T@copy) &amp; ModuleType &amp; ~(() -&gt; object)) | (((x: _T@deepcopy, memo: dict[int, Any] | None = None, _nil: Any = list[Unknown]) -&gt; _T@deepcopy) &amp; ModuleType &amp; ~(() -&gt; object))` may be missing
+- sympy/utilities/tests/test_pickling.py:74:46: error[invalid-argument-type] Argument to function `dumps` is incorrect: Expected `int | None`, found `(Unknown &amp; ~((...) -&gt; object) &amp; ~ModuleType) | (int &amp; ~((...) -&gt; object)) | (((x: _T@copy) -&gt; _T@copy) &amp; ~((...) -&gt; object) &amp; ~ModuleType) | (((x: _T@deepcopy, memo: dict[int, Any] | None = None, _nil: Any = list[Unknown]) -&gt; _T@deepcopy) &amp; ~((...) -&gt; object) &amp; ~ModuleType)`
++ sympy/utilities/tests/test_pickling.py:74:46: error[invalid-argument-type] Argument to function `dumps` is incorrect: Expected `int | None`, found `(Unknown &amp; ~(() -&gt; object) &amp; ~ModuleType) | (int &amp; ~(() -&gt; object)) | (((x: _T@copy) -&gt; _T@copy) &amp; ~(() -&gt; object) &amp; ~ModuleType) | (((x: _T@deepcopy, memo: dict[int, Any] | None = None, _nil: Any = list[Unknown]) -&gt; _T@deepcopy) &amp; ~(() -&gt; object) &amp; ~ModuleType)`
+
+dd-trace-py (https://github.com/DataDog/dd-trace-py)
+- ddtrace/internal/datadog/profiling/ddup/test/interface.py:53:20: error[invalid-type-form] Variable of type `def callable(obj: object, /) -&gt; TypeIs[(...) -&gt; object]` is not allowed in a type expression
++ ddtrace/internal/datadog/profiling/ddup/test/interface.py:53:20: error[invalid-type-form] Variable of type `def callable(obj: object, /) -&gt; TypeIs[() -&gt; object]` is not allowed in a type expression
+
+core (https://github.com/home-assistant/core)
+- homeassistant/components/tomorrowio/sensor.py:349:18: error[unsupported-operator] Operator `*` is unsupported between objects of type `float` and `(((int | float, /) -&gt; int | float) &amp; ~((...) -&gt; object)) | (int &amp; ~((...) -&gt; object)) | (float &amp; ~((...) -&gt; object))`
++ homeassistant/components/tomorrowio/sensor.py:349:18: error[unsupported-operator] Operator `*` is unsupported between objects of type `float` and `(((int | float, /) -&gt; int | float) &amp; ~(() -&gt; object)) | (int &amp; ~(() -&gt; object)) | (float &amp; ~(() -&gt; object))`
+- homeassistant/core.py:596:65: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `(...) -&gt; Unknown`, found `(((...) -&gt; Any) &amp; ~Coroutine[Any, Any, Any]) | (Coroutine[Any, Any, Any] &amp; ~Coroutine[Any, Any, Any])`
+- homeassistant/core.py:661:49: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `(...) -&gt; Unknown`, found `(((...) -&gt; Coroutine[Any, Any, _R@async_add_job] | _R@async_add_job) &amp; ~Coroutine[Any, Any, Any]) | (Coroutine[Any, Any, _R@async_add_job] &amp; ~Coroutine[Any, Any, Any])`
+- homeassistant/core.py:988:48: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `(...) -&gt; Unknown`, found `(((...) -&gt; Coroutine[Any, Any, _R@async_run_job] | _R@async_run_job) &amp; ~Coroutine[Any, Any, Any]) | (Coroutine[Any, Any, _R@async_run_job] &amp; ~Coroutine[Any, Any, Any])`
+- homeassistant/data_entry_flow.py:1042:25: error[invalid-argument-type] Argument to bound method `async_show_progress` is incorrect: Expected `Mapping[str, str] | None`, found `None | @Todo | (dict[str, str] &amp; ~((...) -&gt; object)) | (((Any, /) -&gt; dict[str, str]) &amp; ~((...) -&gt; object))`
++ homeassistant/data_entry_flow.py:1042:25: error[invalid-argument-type] Argument to bound method `async_show_progress` is incorrect: Expected `Mapping[str, str] | None`, found `None | @Todo | (dict[str, str] &amp; ~(() -&gt; object)) | (((Any, /) -&gt; dict[str, str]) &amp; ~(() -&gt; object))`
+- homeassistant/helpers/schema_config_entry_flow.py:258:13: error[invalid-assignment] Object of type `(((dict[str, Any], /) -&gt; Coroutine[Any, Any, str | None]) &amp; ~((...) -&gt; object)) | (str &amp; ~((...) -&gt; object)) | None` is not assignable to `str | None`
++ homeassistant/helpers/schema_config_entry_flow.py:258:13: error[invalid-assignment] Object of type `(((dict[str, Any], /) -&gt; Coroutine[Any, Any, str | None]) &amp; ~(() -&gt; object)) | (str &amp; ~(() -&gt; object)) | None` is not assignable to `str | None`
+- homeassistant/helpers/service.py:807:9: error[invalid-argument-type] Argument to function `_get_permissible_entity_candidates` is incorrect: Expected `dict[str, Entity]`, found `@Todo | (dict[str, Entity] &amp; ~((...) -&gt; object)) | ((() -&gt; dict[str, Entity]) &amp; ~((...) -&gt; object))`
+- Found 13731 diagnostics
++ Found 13727 diagnostics
+
+</code></pre>
+</details>
+No memory usage changes detected ✅
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @AlexWaygood on 2025-09-26 13:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-09-26 13:20</div>
+            <div class="timeline-body"><!-- generated-comment ty ecosystem-analyzer -->
+
+<h2><code>ecosystem-analyzer</code> results</h2>
+<p>| Lint rule | Added | Removed | Changed |
+|-----------|------:|--------:|--------:|
+| <code>invalid-argument-type</code> | 7 | 9 | 7 |
+| <code>unresolved-attribute</code> | 1 | 0 | 12 |
+| <code>possibly-missing-attribute</code> | 0 | 2 | 9 |
+| <code>invalid-assignment</code> | 2 | 0 | 7 |
+| <code>invalid-return-type</code> | 2 | 2 | 5 |
+| <code>invalid-type-form</code> | 0 | 0 | 3 |
+| <code>not-iterable</code> | 0 | 0 | 2 |
+| <code>too-many-positional-arguments</code> | 2 | 0 | 0 |
+| <code>unsupported-operator</code> | 0 | 0 | 2 |
+| <code>no-matching-overload</code> | 0 | 1 | 0 |
+| <code>unused-ignore-comment</code> | 1 | 0 | 0 |
+| <strong>Total</strong> | <strong>15</strong> | <strong>14</strong> | <strong>47</strong> |</p>
+<p><strong><a href="https://alex-typeis-top.ecosystem-663.pages.dev/diff">Full report with detailed diff</a></strong> (<a href="https://alex-typeis-top.ecosystem-663.pages.dev/timing">timing results</a>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-09-26 13:55</div>
+            <div class="timeline-body"><h1>Ecosystem analysis</h1>
+<p>Overall this PR adds about as many diagnostics as it removes, but I think it makes our narrowing behaviour for <code>TypeIs</code> more consistent with our narrowing behaviour elsewhere, and therefore easier to reason about.</p>
+<p>There are several hits that look like true positives: we're now inferring less dynamic types which is allowing us to highlight places where the code arguably is unsound (<code>aiohttp</code>, <code>beartype</code>, <code>prefect</code>, <code>psycopg</code>, <code>trio</code>). I worry that some of these will seem pedantic, overly strict, and possibly confusing to users. But it makes our <code>TypeIs</code> narrowing behaviour more consistent with our <code>isinstance()</code> narrowing behaviour, which will be especially beneficial when https://github.com/astral-sh/ruff/pull/20368 lands.</p>
+<p>The new diagnostic on <code>hydra-zen</code> is caused by missing support for <code>TypeGuard</code>.</p>
+<p>We have some new false positives in <code>pytest</code>, <code>vision</code> and <code>xarray</code> that are caused by this TODO here, which causes us to incorrectly think that <code>Top[Callable[..., Any]]</code> -&gt; <code>Callable[[], object]</code> (it should really be <code>Callable[Top[...], object]</code>, I suppose?</p>
+<p>https://github.com/astral-sh/ruff/blob/57e1ff8294d630b0f265d875caad80e32c8ee6b6/crates/ty_python_semantic/src/types/signatures.rs#L1286-L1291</p>
+<p>We have a new false positive on <code>starlette</code> which is caused by missing support for <code>functools.partial</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @AlexWaygood on 2025-09-26 16:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @AlexWaygood on 2025-09-26 16:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @AlexWaygood on 2025-09-26 16:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @AlexWaygood on 2025-09-26 16:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @AlexWaygood on 2025-09-26 16:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @AlexWaygood on 2025-09-26 16:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-09-26 16:55</div>
+            <div class="timeline-body"><blockquote>
+<p>it should really be <code>Callable[Top[...], object]</code>, I suppose?</p>
+</blockquote>
+<p>No, it should be <code>Callable[Bottom[...], object]</code> due to contravariance of arguments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-09-26 16:56</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>it should really be <code>Callable[Top[...], object]</code>, I suppose?</p>
+</blockquote>
+<p>No, it should be <code>Callable[Bottom[...], object]</code> due to contravariance of arguments.</p>
+</blockquote>
+<p>Right, yes, sorry</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Use `Top` materializations for `TypeIs` special form" to "[ty] Use `Top` materializations for `TypeIs` special form" by @AlexWaygood on 2025-09-26 17:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-09-26 17:12</div>
+            <div class="timeline-body"><p>I don't love implicitly transforming a type explicitly written by the user :/ but I do feel like this practically improves the results, given the way <code>TypeIs</code> is currently used in typeshed. Narrowing with a gradual type is just not really very useful, if it's handled precisely (as we do).</p>
+<p>I feel like the user intent expressed by <code>-&gt; TypeIs[Foo[Any]]</code> is &quot;the type is some kind of <code>Foo</code>, I don't know which kind&quot; (this is accurately modeled by taking the top materialization), but also then &quot;treat the contained type of <code>Foo</code> as dynamic if I end up using it&quot; -- and this latter part is what we don't do.</p>
+<p>I wonder what it would look like if, instead of doing this, we simplified <code>Foo[Any] &amp; Foo[Bar]</code> to <code>Foo[Bar &amp; Any]</code>? I think that's a correct simplification? And I think that would give the same benefits as this PR, but with fewer false positives -- it would better respect the user's intent in writing <code>TypeIs[Foo[Any]]</code>. WDYT?</p>
+<p>Edit: I guess then we'd have false negatives compared to other type checkers, who are happy to simplify <code>Foo[Any] &amp; Foo[Bar]</code> to just <code>Foo[Bar]</code>. Which is not correct, but is maybe practically what users expect.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-09-26 17:16</div>
+            <div class="timeline-body"><p>Going ahead and approving this -- I don't <em>love</em> it, but it seems like a net improvement for now, and it's easy to reverse if we come up with a better idea.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-09-26 17:16</div>
+            <div class="timeline-body"><blockquote>
+<p>I wonder what it would look like if, instead of doing this, we simplified <code>Foo[Any] &amp; Foo[Bar]</code> to <code>Foo[Bar &amp; Any]</code>? I think that's a correct simplification?</p>
+</blockquote>
+<p>That's only a correct simplification if <code>Foo</code> is covariant, I think? I don't think it's true, for example, that <code>list[Any] &amp; list[int]</code> can be simplified to <code>list[int &amp; Any]</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-09-26 17:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/infer/builder/type_expression.rs</code>:1297 on 2025-09-26 17:19</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                    // N.B. Using the top materialization here is a pragmatic decision
+                    // that makes us produce more intuitive results given how
+                    // `TypeIs` is used in the real world (in particular, in typeshed).
+                    // However, there's some debate about whether this is really
+                    // fully correct. See &lt;https://github.com/astral-sh/ruff/pull/20591&gt;
+                    // for more discussion.
+                    self.infer_type_expression(arguments_slice)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2025-09-26 17:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-09-26 17:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-09-26 17:24</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:40:54 UTC
+    </footer>
+</body>
+</html>

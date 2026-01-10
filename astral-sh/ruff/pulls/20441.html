@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Search PYTHONPATH to find modules - astral-sh/ruff #20441</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Search PYTHONPATH to find modules</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/20441">#20441</a>
+        opened by <a href="https://github.com/mmlb">@mmlb</a>
+        on 2025-09-16 20:07
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/mmlb">@mmlb</a> on 2025-09-16 20:07</div>
+            <div class="timeline-body"><p>This brings ty in line with other type checkers and python interpreters, including on by default and no options to disable. Can be disabled by clearing the PYTHONPATH environment variable.</p>
+<!--
+Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title? (Please prefix with `[ty]` for ty pull
+  requests.)
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>Prepend PYTHONPATH to extra_paths so ty behaves similar to other type checkers and the interpreters. Fixes https://github.com/astral-sh/ty/issues/547</p>
+<h2>Test Plan</h2>
+<p>I built ty locally and ran it in nix-shell environment that sets PYTHONPATH, without this PR ty errors with <code>unresolved-attribute</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @mmlb on 2025-09-16 20:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @mmlb on 2025-09-16 20:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @mmlb on 2025-09-16 20:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @mmlb on 2025-09-16 20:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mmlb">@mmlb</a> on 2025-09-16 20:10</div>
+            <div class="timeline-body"><p>This is modification of #20016, I dropped the namespace package logic and opt-in as requested. Instead of opt-out via flag I went with opt-out by clearing PYTHONPATH as I think that makes sense but would be happy to add an explicit cli arg. Thanks to @natelust for the initial code/PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Teach TY to search PYTHONPATH to find modules" to "[ty] Search PYTHONPATH to find modules" by @mmlb on 2025-09-16 20:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @ntBre on 2025-09-16 20:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-09-16 20:48</div>
+            <div class="timeline-body"><p>This looks reasonable to me. Not sure if it's feasible to test this, or if we should have a CLI flag to disable reading <code>PYTHONPATH</code> (just unsetting <code>PYTHONPATH</code> does seem like a reasonable alternative.). Would prefer for @MichaReiser or @AlexWaygood to review.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-09-16 20:51</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-09-16 20:53</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅
+No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/natelust">@natelust</a> on 2025-09-16 20:54</div>
+            <div class="timeline-body"><p>Thanks for picking this up, I just have been underwater dealing with things lately, I really appreciate it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_project/src/metadata/options.rs</code>:287 on 2025-09-17 09:51</div>
+            <div class="timeline-body"><p>As reported by clippy, we should use <code>system::env_var</code> here instead. This ensures proper test isolation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_project/src/metadata/options.rs</code>:318 on 2025-09-17 09:54</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                .filter_map(|str_path| {
+                    let possible_path = SystemPathBuf::from(str_path);
+                    system.path_exists(&amp;possible_path).then_some(possible_path)
+                })
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_project/src/metadata/options.rs</code>:318 on 2025-09-17 09:56</div>
+            <div class="timeline-body"><p>Same here, we should use <code>system.path_exists</code> over <code>path.exists</code> to properly support in-memory file systems and WASM.  Or even better, use <code>is_directory</code> because adding a file would later fail</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_project/src/metadata/options.rs</code>:298 on 2025-09-17 10:01</div>
+            <div class="timeline-body"><p>It's not really necessary to collect before calling <code>extend</code>. You can pass the iterator directly. However, as mentioned by @carljm on the issue, we should inform users that ty's adding paths from <code>PYTHONPATH</code>.</p>
+<p>That's why I would rewrite this as:</p>
+<pre><code class="language-rust">for path in python_path.split(':') {
+	let possible_path = SystemPathBuf::from(str_path);
+
+	if system.path_exists(&amp;possible_path) {
+		tracing::debug!(&quot;Adding `{possible_path}` from the `PYTHONPATH` environment variable to `extra_paths`);
+		extra_paths.push(possible_path);
+	} else {
+		tracing::debug!(&quot;Skipping `{possible_path}` listed in `PYTHONPATH` because the path doesn't exist)&quot;
+	}
+}
+</code></pre>
+<p>We may even want</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_project/src/metadata/options.rs</code>:299 on 2025-09-17 10:01</div>
+            <div class="timeline-body"><p>I think we should only add <code>PYTHONPATH</code> if the user didn't explicitly set <code>extra_paths</code> (when <code>extra_paths</code> is <code>None</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_project/src/metadata/options.rs</code>:331 on 2025-09-17 10:02</div>
+            <div class="timeline-body"><p>@AlexWaygood any thoughts on whether we should move this logic into <code>SearchPaths::from_settings</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> requested changes on 2025-09-17 10:03</div>
+            <div class="timeline-body"><p>Thank you. I left a few comments. We should also add a CLI test for this in https://github.com/astral-sh/ruff/blob/1d2128f918a2315a5fc81042b5417f9d8cf34282/crates/ty/tests/cli/python_environment.rs#L9</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @MichaReiser on 2025-09-17 10:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @sharkdp removed by @sharkdp on 2025-09-17 10:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-09-17 14:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_project/src/metadata/options.rs</code>:299 on 2025-09-17 14:04</div>
+            <div class="timeline-body"><p>I'm not sure about this. I think I would find it surprising for extra paths option on CLI to override <code>PYTHONPATH</code> entirely, since they aren't named the same. I think if we want a way to disable respecting <code>PYTHONPATH</code> it should be its own separate option.  There may be use cases for respecting <code>PYTHONPATH</code> and setting unrelated additional extra paths in config or CLI.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mmlb">@mmlb</a> reviewed on 2025-09-17 14:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/mmlb">@mmlb</a> on <code>crates/ty_project/src/metadata/options.rs</code>:287 on 2025-09-17 14:09</div>
+            <div class="timeline-body"><p>fixed</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/mmlb">@mmlb</a> on <code>crates/ty_project/src/metadata/options.rs</code>:318 on 2025-09-17 14:10</div>
+            <div class="timeline-body"><p>fixed, also converted to <code>is_directory</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mmlb">@mmlb</a> reviewed on 2025-09-17 14:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mmlb">@mmlb</a> reviewed on 2025-09-17 14:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/mmlb">@mmlb</a> on <code>crates/ty_project/src/metadata/options.rs</code>:298 on 2025-09-17 14:11</div>
+            <div class="timeline-body"><p>you cut off there at the end, but I did grab from your re-write.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mmlb">@mmlb</a> reviewed on 2025-09-17 14:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/mmlb">@mmlb</a> on <code>crates/ty_project/src/metadata/options.rs</code>:299 on 2025-09-17 14:12</div>
+            <div class="timeline-body"><p>fixed, I also added a log message for when both --extra-paths and PYTHONPATH are set</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mmlb">@mmlb</a> on 2025-09-17 14:16</div>
+            <div class="timeline-body"><blockquote>
+<p>Thank you. I left a few comments. We should also add a CLI test for this in</p>
+<p>https://github.com/astral-sh/ruff/blob/1d2128f918a2315a5fc81042b5417f9d8cf34282/crates/ty/tests/cli/python_environment.rs#L9</p>
+</blockquote>
+<p>I'll take a look at this and give it a go.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-09-17 14:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_project/src/metadata/options.rs</code>:299 on 2025-09-17 14:39</div>
+            <div class="timeline-body"><p>Hmm, I agree with @carljm though -- I'm not sure I understand why we should ignore <code>PYTHONPATH</code> just because <code>extra-_paths</code> has been set</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-09-17 14:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_project/src/metadata/options.rs</code>:331 on 2025-09-17 14:42</div>
+            <div class="timeline-body"><p>No strong opinion really!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mmlb">@mmlb</a> reviewed on 2025-09-17 15:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/mmlb">@mmlb</a> on <code>crates/ty_project/src/metadata/options.rs</code>:299 on 2025-09-17 15:02</div>
+            <div class="timeline-body"><p>Hmm yeah I can see that. I was going off of cli-args &gt; env vars but it can be confusing if the names don't match. I think the intention was that PYTHONPATH and --extra-paths both set extra_paths. I can see it either way, though I think I do prefer avoiding the implentation leakage and instead just allow both PYTHONPATH and --extra-paths, the <code>extra</code> part is pretty telling.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-09-17 15:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_project/src/metadata/options.rs</code>:299 on 2025-09-17 15:04</div>
+            <div class="timeline-body"><p>Yes -- for me, using <code>extra-paths</code> internally to implement respecting <code>PYTHONPATH</code> is an implementation detail, just because the behavior of the paths happens to be the same. It doesn't mean that <code>PYTHONPATH</code> is simply an alias of the extra-paths configuration; they are separate features.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mmlb">@mmlb</a> reviewed on 2025-09-17 15:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/mmlb">@mmlb</a> on <code>crates/ty_project/src/metadata/options.rs</code>:299 on 2025-09-17 15:06</div>
+            <div class="timeline-body"><p>I think I'll go back to respecting both PYTHONPATH and --extra-paths, PYTHONPATH first --extra-paths second. I want to continue avoiding adding an argument to ignore PYTHONPATH, I think it'll be confusing and you can wait until someone shows a need for it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mmlb">@mmlb</a> reviewed on 2025-09-17 15:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/mmlb">@mmlb</a> on <code>crates/ty_project/src/metadata/options.rs</code>:299 on 2025-09-17 15:40</div>
+            <div class="timeline-body"><p>Back to taking both PYTHONPATH and --extra-paths.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-09-17 15:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_project/src/metadata/options.rs</code>:313 on 2025-09-17 15:47</div>
+            <div class="timeline-body"><p>Let's make <code>possible_path</code> absolute here (or on line 289), similar to what we do on line 310.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/mmlb">@mmlb</a> on <code>crates/ty_project/src/metadata/options.rs</code>:313 on 2025-09-17 16:24</div>
+            <div class="timeline-body"><p>done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mmlb">@mmlb</a> reviewed on 2025-09-17 16:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-09-18 08:24</div>
+            <div class="timeline-body"><p>Thank you. This looks good now and we can merge it once there's a CLI test.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mmlb">@mmlb</a> on 2025-09-19 21:28</div>
+            <div class="timeline-body"><blockquote>
+<p>Thank you. This looks good now and we can merge it once there's a CLI test.</p>
+</blockquote>
+<p>Done!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @mmlb on 2025-09-19 21:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-09-20 11:15</div>
+            <div class="timeline-body"><p>Perfect, thank you</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2025-09-20 11:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-09-20 11:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-09-22 13:47</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:40:54 UTC
+    </footer>
+</body>
+</html>

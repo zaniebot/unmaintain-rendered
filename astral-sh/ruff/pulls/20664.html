@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] No union with `Unknown` for module-global symbols - astral-sh/ruff #20664</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] No union with <code>Unknown</code> for module-global symbols</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/20664">#20664</a>
+        opened by <a href="https://github.com/sharkdp">@sharkdp</a>
+        on 2025-10-01 08:59
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-10-01 08:59</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Quoting from the newly added comment:</p>
+<p>Module-level globals can be mutated externally. A <code>MY_CONSTANT = 1</code> global might be changed to <code>&quot;some string&quot;</code> from code outside of the module that we're looking at, and so from a gradual-guarantee perspective, it makes sense to infer a type of <code>Literal[1] | Unknown</code> for global symbols. This allows the code that does the mutation to type check correctly, and for code that uses the global, it accurately reflects the lack of knowledge about the type.</p>
+<p>External modifications (or modifications through <code>global</code> statements) that would require a wider type are relatively rare. From a practical perspective, we can therefore achieve a better user experience by trusting the inferred type. Users who need the external mutation to work can always annotate the global with the wider type. And everyone else benefits from more precise type inference.</p>
+<p>I initially implemented this by applying literal promotion to the type of the unannotated module globals (as suggested in https://github.com/astral-sh/ty/issues/1069), but the ecosystem impact showed a lot of problems (https://github.com/astral-sh/ruff/pull/20643). I fixed/patched some of these problems, but this PR seems like a good first step, and it seems sensible to apply the literal promotion change in a second step that can be evaluated separately.</p>
+<p>closes https://github.com/astral-sh/ty/issues/1069</p>
+<h2>Ecosystem impact</h2>
+<p>This seems like an (unexpectedly large) net positive with 650 fewer diagnostics overall.. even though this change will certainly catch more true positives.</p>
+<ul>
+<li><p>There are 666 removed <code>type-assertion-failure</code> diagnostics, where we were previously used the correct type already, but removing the <code>Unknown</code> now leads to an &quot;exact&quot; match.</p>
+</li>
+<li><p>1464 of the 1805 total new diagnostics are <code>unresolved-attribute</code> errors, most (1365) of which were previously <code>possibly-missing-attribute</code> errors. So they could also be counted as &quot;changed&quot; diagnostics.</p>
+</li>
+<li><p>For code that uses constants like</p>
+<pre><code class="language-py">IS_PYTHON_AT_LEAST_3_10 = sys.version_info &gt;= (3, 10)
+</code></pre>
+<p>where we would have previously inferred a type of <code>Literal[True/False] | Unknown</code>, removing the <code>Unknown</code> now allows us to do reachability analysis on branches that use these constants, and so we get a lot of favorable ecosystem changes because of that.</p>
+</li>
+<li><p>There is code like the following, where we previously emitted <code>conflicting-argument-forms</code> diagnostics on calls to the aliased <code>assert_type</code>, because its type was <code>Unknown | def …</code> (and the call to <code>Unknown</code> &quot;used&quot; the type form argument in a non type-form way):</p>
+<pre><code class="language-py">if sys.version_info &gt;= (3, 11):
+    import typing
+
+    assert_type = typing.assert_type
+else:
+    import typing_extensions
+
+    assert_type = typing_extensions.assert_type
+</code></pre>
+</li>
+<li><p>~100 new <code>invalid-argument-type</code> false positives, due to missing <code>**kwargs</code> support (https://github.com/astral-sh/ty/issues/247)</p>
+</li>
+</ul>
+<h2>Typing conformance</h2>
+<pre><code class="language-diff">+protocols_modules.py:25:1: error[invalid-assignment] Object of type `&lt;module '_protocols_modules1'&gt;` is not assignable to `Options1`
+</code></pre>
+<p>This diagnostic should apparently not be there, but it looks like we also fail other tests in that file, so it seems to be a limitation that was previously hidden by <code>Unknown</code> somehow.</p>
+<h2>Test Plan</h2>
+<p>Updated tests and relatively thorough ecosystem analysis.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @sharkdp on 2025-10-01 08:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @sharkdp on 2025-10-01 08:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @sharkdp on 2025-10-01 08:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @sharkdp on 2025-10-01 08:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-10-01 08:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-10-01 09:01</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a></h2>
+<details>
+<summary>Changes were detected when running ty on typing conformance tests</summary>
+
+<pre><code class="language-diff">--- old-output.txt	2025-10-01 14:28:45.546118497 +0000
++++ new-output.txt	2025-10-01 14:28:48.745147662 +0000
+@@ -373,7 +373,7 @@
+ generics_defaults_specialization.py:30:1: error[non-subscriptable] Cannot subscript object of type `&lt;class 'SomethingWithNoDefaults[int, typing.TypeVar]'&gt;` with no `__class_getitem__` method
+ generics_defaults_specialization.py:45:1: error[type-assertion-failure] Argument does not have asserted type `@Todo(unsupported nested subscript in type[X])`
+ generics_paramspec_basic.py:27:38: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `int`
+-generics_paramspec_components.py:49:20: error[invalid-argument-type] Argument expression after ** must be a mapping type: Found `tuple[Unknown, ...]`
++generics_paramspec_components.py:49:20: error[invalid-argument-type] Argument expression after ** must be a mapping type: Found `tuple[@Todo(Support for `typing.ParamSpec`), ...]`
+ generics_paramspec_components.py:83:18: error[parameter-already-assigned] Multiple values provided for parameter 1 (`x`) of function `foo`
+ generics_paramspec_semantics.py:13:56: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `(...) -&gt; str`
+ generics_paramspec_semantics.py:17:40: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `int`
+@@ -731,6 +731,7 @@
+ protocols_merging.py:54:1: error[invalid-assignment] Object of type `SCConcrete2` is not assignable to `SizedAndClosable3`
+ protocols_merging.py:67:16: error[invalid-protocol] Protocol class `BadProto` cannot inherit from non-protocol class `SizedAndClosable3`
+ protocols_merging.py:83:1: error[invalid-assignment] Object of type `SCConcrete1` is not assignable to `SizedAndClosable4`
++protocols_modules.py:25:1: error[invalid-assignment] Object of type `&lt;module '_protocols_modules1'&gt;` is not assignable to `Options1`
+ protocols_modules.py:26:1: error[invalid-assignment] Object of type `&lt;module '_protocols_modules1'&gt;` is not assignable to `Options2`
+ protocols_modules.py:47:1: error[invalid-assignment] Object of type `&lt;module '_protocols_modules2'&gt;` is not assignable to `Reporter1`
+ protocols_modules.py:48:1: error[invalid-assignment] Object of type `&lt;module '_protocols_modules2'&gt;` is not assignable to `Reporter2`
+@@ -855,5 +856,5 @@
+ typeddicts_usage.py:28:17: error[missing-typed-dict-key] Missing required key 'name' in TypedDict `Movie` constructor
+ typeddicts_usage.py:28:18: error[invalid-key] Invalid key access on TypedDict `Movie`: Unknown key &quot;title&quot;
+ typeddicts_usage.py:40:24: error[invalid-type-form] The special form `typing.TypedDict` is not allowed in type expressions. Did you mean to use a concrete TypedDict or `collections.abc.Mapping[str, object]` instead?
+-Found 856 diagnostics
++Found 857 diagnostics
+ WARN A fatal error occurred while checking some files. Not all project files were analyzed. See the diagnostics list above for details.
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-10-01 09:02</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">pegen (https://github.com/we-like-parsers/pegen)
++ src/pegen/grammar_parser.py:160:20: error[invalid-return-type] Return type does not match returned value: expected `tuple[str, str] | None`, found `tuple[Unknown, None]`
+- Found 46 diagnostics
++ Found 47 diagnostics
+
+attrs (https://github.com/python-attrs/attrs)
+- src/attr/_make.py:801:23: error[unresolved-attribute] Type `&lt;module 'abc'&gt;` has no attribute `update_abstractmethods`
++ tests/test_config.py:32:9: error[invalid-assignment] Object of type `Literal[False]` is not assignable to attribute `_run_validators` of type `Literal[True]`
++ tests/test_make.py:1818:9: error[invalid-assignment] Object of type `Literal[False]` is not assignable to attribute `_run_validators` of type `Literal[True]`
+- Found 555 diagnostics
++ Found 556 diagnostics
+
+aioredis (https://github.com/aio-libs/aioredis)
+- aioredis/client.py:3430:13: error[invalid-assignment] Object of type `KeysView[object]` is not assignable to `Sequence[Unknown] | AbstractSet[AnyKeyT@_zaggregate]`
++ aioredis/client.py:3430:13: error[invalid-assignment] Object of type `KeysView[object]` is not assignable to `Sequence[@Todo] | AbstractSet[AnyKeyT@_zaggregate]`
+- aioredis/connection.py:289:41: error[unresolved-attribute] Type `BaseException` has no attribute `errno`
+- aioredis/connection.py:517:41: error[unresolved-attribute] Type `BaseException` has no attribute `errno`
+- Found 18 diagnostics
++ Found 16 diagnostics
+
+pyinstrument (https://github.com/joerick/pyinstrument)
+- pyinstrument/vendor/appdirs.py:489:14: error[unresolved-import] Cannot resolve imported module `_winreg`
++ pyinstrument/vendor/appdirs.py:497:11: error[unresolved-attribute] Type `&lt;module 'winreg'&gt;` has no attribute `OpenKey`
++ pyinstrument/vendor/appdirs.py:498:9: error[unresolved-attribute] Type `&lt;module 'winreg'&gt;` has no attribute `HKEY_CURRENT_USER`
++ pyinstrument/vendor/appdirs.py:501:17: error[unresolved-attribute] Type `&lt;module 'winreg'&gt;` has no attribute `QueryValueEx`
+- pyinstrument/vendor/appdirs.py:497:11: warning[possibly-missing-attribute] Attribute `OpenKey` on type `&lt;module 'winreg'&gt; | Unknown` may be missing
+- pyinstrument/vendor/appdirs.py:498:9: warning[possibly-missing-attribute] Attribute `HKEY_CURRENT_USER` on type `&lt;module 'winreg'&gt; | Unknown` may be missing
+- pyinstrument/vendor/appdirs.py:501:17: warning[possibly-missing-attribute] Attribute `QueryValueEx` on type `&lt;module 'winreg'&gt; | Unknown` may be missing
+- Found 43 diagnostics
++ Found 42 diagnostics
+
+spack (https://github.com/spack/spack)
+- lib/spack/spack/llnl/util/tty/pty.py:75:15: warning[possibly-missing-attribute] Attribute `tcgetattr` on type `Unknown | None | &lt;module 'termios'&gt;` may be missing
++ lib/spack/spack/llnl/util/tty/pty.py:75:15: warning[possibly-missing-attribute] Attribute `tcgetattr` on type `None | &lt;module 'termios'&gt;` may be missing
+- lib/spack/spack/llnl/util/tty/pty.py:76:31: warning[possibly-missing-attribute] Attribute `ICANON` on type `Unknown | None | &lt;module 'termios'&gt;` may be missing
++ lib/spack/spack/llnl/util/tty/pty.py:76:31: warning[possibly-missing-attribute] Attribute `ICANON` on type `None | &lt;module 'termios'&gt;` may be missing
+- lib/spack/spack/llnl/util/tty/pty.py:76:62: warning[possibly-missing-attribute] Attribute `ECHO` on type `Unknown | None | &lt;module 'termios'&gt;` may be missing
++ lib/spack/spack/llnl/util/tty/pty.py:76:62: warning[possibly-missing-attribute] Attribute `ECHO` on type `None | &lt;module 'termios'&gt;` may be missing
+- lib/spack/spack/test/llnl/util/lock.py:176:19: warning[possibly-missing-attribute] Attribute `rank` on type `Unknown | None` may be missing
++ lib/spack/spack/test/llnl/util/lock.py:176:19: warning[possibly-missing-attribute] Attribute `rank` on type `None | Unknown` may be missing
+- lib/spack/spack/test/llnl/util/lock.py:179:19: warning[possibly-missing-attribute] Attribute `bcast` on type `Unknown | None` may be missing
++ lib/spack/spack/test/llnl/util/lock.py:179:19: warning[possibly-missing-attribute] Attribute `bcast` on type `None | Unknown` may be missing
+- lib/spack/spack/test/llnl/util/lock.py:188:9: warning[possibly-missing-attribute] Attribute `barrier` on type `Unknown | None` may be missing
++ lib/spack/spack/test/llnl/util/lock.py:188:9: warning[possibly-missing-attribute] Attribute `barrier` on type `None | Unknown` may be missing
+- lib/spack/spack/test/llnl/util/lock.py:190:19: warning[possibly-missing-attribute] Attribute `rank` on type `Unknown | None` may be missing
++ lib/spack/spack/test/llnl/util/lock.py:190:19: warning[possibly-missing-attribute] Attribute `rank` on type `None | Unknown` may be missing
+- lib/spack/spack/test/llnl/util/lock.py:203:30: warning[possibly-missing-attribute] Attribute `rank` on type `Unknown | None` may be missing
++ lib/spack/spack/test/llnl/util/lock.py:203:30: warning[possibly-missing-attribute] Attribute `rank` on type `None | Unknown` may be missing
+- lib/spack/spack/test/llnl/util/lock.py:258:16: warning[possibly-missing-attribute] Attribute `size` on type `Unknown | None` may be missing
++ lib/spack/spack/test/llnl/util/lock.py:258:16: warning[possibly-missing-attribute] Attribute `size` on type `None | Unknown` may be missing
+- lib/spack/spack/test/llnl/util/lock.py:261:5: warning[possibly-missing-attribute] Attribute `Barrier` on type `Unknown | None` may be missing
++ lib/spack/spack/test/llnl/util/lock.py:261:5: warning[possibly-missing-attribute] Attribute `Barrier` on type `None | Unknown` may be missing
+- lib/spack/spack/test/llnl/util/lock.py:263:15: warning[possibly-missing-attribute] Attribute `rank` on type `Unknown | None` may be missing
++ lib/spack/spack/test/llnl/util/lock.py:263:15: warning[possibly-missing-attribute] Attribute `rank` on type `None | Unknown` may be missing
+- lib/spack/spack/test/llnl/util/lock.py:264:15: warning[possibly-missing-attribute] Attribute `Split` on type `Unknown | None` may be missing
++ lib/spack/spack/test/llnl/util/lock.py:264:15: warning[possibly-missing-attribute] Attribute `Split` on type `None | Unknown` may be missing
+- lib/spack/spack/test/llnl/util/lock.py:281:13: warning[possibly-missing-attribute] Attribute `Abort` on type `Unknown | None` may be missing
++ lib/spack/spack/test/llnl/util/lock.py:281:13: warning[possibly-missing-attribute] Attribute `Abort` on type `None | Unknown` may be missing
+- lib/spack/spack/test/llnl/util/lock.py:284:5: warning[possibly-missing-attribute] Attribute `Barrier` on type `Unknown | None` may be missing
++ lib/spack/spack/test/llnl/util/lock.py:284:5: warning[possibly-missing-attribute] Attribute `Barrier` on type `None | Unknown` may be missing
+- lib/spack/spack/vendor/pyrsistent/_field_common.py:69:42: warning[deprecated] The function `getargspec` is deprecated: Deprecated since Python 3.0; removed in Python 3.11. Use `inspect.signature()` instead.
+- Found 7518 diagnostics
++ Found 7517 diagnostics
+
+asynq (https://github.com/quora/asynq)
+- asynq/async_task.py:213:20: warning[possibly-missing-attribute] Attribute `KEEP_DEPENDENCIES` on type `Unknown | DebugOptions` may be missing
++ asynq/async_task.py:213:20: error[unresolved-attribute] Type `DebugOptions` has no attribute `KEEP_DEPENDENCIES`
+- asynq/debug.py:324:5: error[invalid-assignment] Object of type `Unknown | None` is not assignable to attribute `excepthook` of type `(type[BaseException], BaseException, TracebackType | None, /) -&gt; Any`
+- asynq/scheduler.py:93:35: warning[possibly-missing-attribute] Attribute `MAX_TASK_STACK_SIZE` on type `Unknown | DebugOptions` may be missing
++ asynq/scheduler.py:93:35: error[unresolved-attribute] Type `DebugOptions` has no attribute `MAX_TASK_STACK_SIZE`
+- Found 140 diagnostics
++ Found 139 diagnostics
+
+websockets (https://github.com/aaugustin/websockets)
++ src/websockets/legacy/auth.py:163:37: warning[redundant-cast] Value is already of type `Iterable[tuple[str, str]]`
+- src/websockets/server.py:110:17: error[unresolved-attribute] Type `(ServerProtocol, Sequence[Unknown], /) -&gt; Unknown | None` has no attribute `__get__`
++ src/websockets/server.py:110:17: error[unresolved-attribute] Type `(ServerProtocol, Sequence[@Todo], /) -&gt; @Todo | None` has no attribute `__get__`
+- Found 41 diagnostics
++ Found 42 diagnostics
+
+werkzeug (https://github.com/pallets/werkzeug)
+- tests/live_apps/run.py:20:30: warning[possibly-missing-attribute] Attribute `app` on type `Unknown | ModuleType` may be missing
++ tests/live_apps/run.py:20:30: error[unresolved-attribute] Type `ModuleType` has no attribute `app`
+
+yarl (https://github.com/aio-libs/yarl)
+- yarl/_url.py:565:44: error[index-out-of-bounds] Index 1 is out of bounds for tuple `tuple[Unknown | tuple[str, str, str, str, str]]` with length 1
++ yarl/_url.py:565:44: error[index-out-of-bounds] Index 1 is out of bounds for tuple `tuple[tuple[str, str, str, str, str]]` with length 1
+- yarl/_url.py:567:19: error[index-out-of-bounds] Index 1 is out of bounds for tuple `tuple[Unknown | tuple[str, str, str, str, str]]` with length 1
++ yarl/_url.py:567:19: error[index-out-of-bounds] Index 1 is out of bounds for tuple `tuple[tuple[str, str, str, str, str]]` with length 1
+
+paasta (https://github.com/yelp/paasta)
+- paasta_tools/utils.py:1480:12: warning[possibly-missing-attribute] Attribute `log` on type `Unknown | None` may be missing
++ paasta_tools/utils.py:1480:12: error[unresolved-attribute] Type `None` has no attribute `log`
+- paasta_tools/utils.py:1503:12: warning[possibly-missing-attribute] Attribute `log_audit` on type `Unknown | None` may be missing
++ paasta_tools/utils.py:1503:12: error[unresolved-attribute] Type `None` has no attribute `log_audit`
+
+boostedblob (https://github.com/hauntsaninja/boostedblob)
+- boostedblob/cli.py:664:45: error[invalid-argument-type] Argument to bound method `add_argument` is incorrect: Expected `str | type[Action]`, found `&lt;class 'int'&gt; | str | Unknown | int`
++ boostedblob/cli.py:664:45: error[invalid-argument-type] Argument to bound method `add_argument` is incorrect: Expected `str | type[Action]`, found `&lt;class 'int'&gt; | str | int`
+- boostedblob/cli.py:664:45: error[invalid-argument-type] Argument to bound method `add_argument` is incorrect: Expected `int | str | None`, found `&lt;class 'int'&gt; | str | Unknown | int`
++ boostedblob/cli.py:664:45: error[invalid-argument-type] Argument to bound method `add_argument` is incorrect: Expected `int | str | None`, found `&lt;class 'int'&gt; | str | int`
+- boostedblob/cli.py:664:45: error[invalid-argument-type] Argument to bound method `add_argument` is incorrect: Expected `Iterable[Unknown] | None`, found `&lt;class 'int'&gt; | str | Unknown | int`
++ boostedblob/cli.py:664:45: error[invalid-argument-type] Argument to bound method `add_argument` is incorrect: Expected `Iterable[Unknown] | None`, found `&lt;class 'int'&gt; | str | int`
+- boostedblob/cli.py:664:45: error[invalid-argument-type] Argument to bound method `add_argument` is incorrect: Expected `bool`, found `&lt;class 'int'&gt; | str | Unknown | int`
++ boostedblob/cli.py:664:45: error[invalid-argument-type] Argument to bound method `add_argument` is incorrect: Expected `bool`, found `&lt;class 'int'&gt; | str | int`
+- boostedblob/cli.py:664:45: error[invalid-argument-type] Argument to bound method `add_argument` is incorrect: Expected `str | None`, found `&lt;class 'int'&gt; | str | Unknown | int`
++ boostedblob/cli.py:664:45: error[invalid-argument-type] Argument to bound method `add_argument` is incorrect: Expected `str | None`, found `&lt;class 'int'&gt; | str | int`
+- boostedblob/cli.py:664:45: error[invalid-argument-type] Argument to bound method `add_argument` is incorrect: Expected `str | tuple[str, ...] | None`, found `&lt;class 'int'&gt; | str | Unknown | int`
++ boostedblob/cli.py:664:45: error[invalid-argument-type] Argument to bound method `add_argument` is incorrect: Expected `str | tuple[str, ...] | None`, found `&lt;class 'int'&gt; | str | int`
+- boostedblob/cli.py:664:45: error[invalid-argument-type] Argument to bound method `add_argument` is incorrect: Expected `str | None`, found `&lt;class 'int'&gt; | str | Unknown | int`
++ boostedblob/cli.py:664:45: error[invalid-argument-type] Argument to bound method `add_argument` is incorrect: Expected `str | None`, found `&lt;class 'int'&gt; | str | int`
+- boostedblob/cli.py:664:45: error[invalid-argument-type] Argument to bound method `add_argument` is incorrect: Expected `str`, found `&lt;class 'int'&gt; | str | Unknown | int`
++ boostedblob/cli.py:664:45: error[invalid-argument-type] Argument to bound method `add_argument` is incorrect: Expected `str`, found `&lt;class 'int'&gt; | str | int`
+- boostedblob/cli.py:676:45: error[invalid-argument-type] Argument to bound method `add_argument` is incorrect: Expected `str | type[Action]`, found `&lt;class 'int'&gt; | str | Unknown | int`
++ boostedblob/cli.py:676:45: error[invalid-argument-type] Argument to bound method `add_argument` is incorrect: Expected `str | type[Action]`, found `&lt;class 'int'&gt; | str | int`
+- boostedblob/cli.py:676:45: error[invalid-argument-type] Argument to bound method `add_argument` is incorrect: Expected `int | str | None`, found `&lt;class 'int'&gt; | str | Unknown | int`
++ boostedblob/cli.py:676:45: error[invalid-argument-type] Argument to bound method `add_argument` is incorrect: Expected `int | str | None`, found `&lt;class 'int'&gt; | str | int`
+- boostedblob/cli.py:676:45: error[invalid-argument-type] Argument to bound method `add_argument` is incorrect: Expected `Iterable[Unknown] | None`, found `&lt;class 'int'&gt; | str | Unknown | int`
++ boostedblob/cli.py:676:45: error[invalid-argument-type] Argument to bound method `add_argument` is incorrect: Expected `Iterable[Unknown] | None`, found `&lt;class 'int'&gt; | str | int`
+- boostedblob/cli.py:676:45: error[invalid-argument-type] Argument to bound method `add_argument` is incorrect: Expected `bool`, found `&lt;class 'int'&gt; | str | Unknown | int`
++ boostedblob/cli.py:676:45: error[invalid-argument-type] Argument to bound method `add_argument` is incorrect: Expected `bool`, found `&lt;class 'int'&gt; | str | int`
+- boostedblob/cli.py:676:45: error[invalid-argument-type] Argument to bound method `add_argument` is incorrect: Expected `str | None`, found `&lt;class 'int'&gt; | str | Unknown | int`
++ boostedblob/cli.py:676:45: error[invalid-argument-type] Argument to bound method `add_argument` is incorrect: Expected `str | None`, found `&lt;class 'int'&gt; | str | int`
+- boostedblob/cli.py:676:45: error[invalid-argument-type] Argument to bound method `add_argument` is incorrect: Expected `str | tuple[str, ...] | None`, found `&lt;class 'int'&gt; | str | Unknown | int`
++ boostedblob/cli.py:676:45: error[invalid-argument-type] Argument to bound method `add_argument` is incorrect: Expected `str | tuple[str, ...] | None`, found `&lt;class 'int'&gt; | str | int`
+- boostedblob/cli.py:676:45: error[invalid-argument-type] Argument to bound method `add_argument` is incorrect: Expected `str | None`, found `&lt;class 'int'&gt; | str | Unknown | int`
++ boostedblob/cli.py:676:45: error[invalid-argument-type] Argument to bound method `add_argument` is incorrect: Expected `str | None`, found `&lt;class 'int'&gt; | str | int`
+- boostedblob/cli.py:676:45: error[invalid-argument-type] Argument to bound method `add_argument` is incorrect: Expected `str`, found `&lt;class 'int'&gt; | str | Unknown | int`
++ boostedblob/cli.py:676:45: error[invalid-argument-type] Argument to bound method `add_argument` is incorrect: Expected `str`, found `&lt;class 'int'&gt; | str | int`
+- boostedblob/cli.py:689:45: error[invalid-argument-type] Argument to bound method `add_argument` is incorrect: Expected `str | None`, found `&lt;class 'int'&gt; | str | Unknown | int`
++ boostedblob/cli.py:689:45: error[invalid-argument-type] Argument to bound method `add_argument` is incorrect: Expected `str | None`, found `&lt;class 'int'&gt; | str | int`
+- boostedblob/cli.py:689:45: error[invalid-argument-type] Argument to bound method `add_argument` is incorrect: Expected `int | str | None`, found `&lt;class 'int'&gt; | str | Unknown | int`
++ boostedblob/cli.py:689:45: error[invalid-argument-type] Argument to bound method `add_argument` is incorrect: Expected `int | str | None`, found `&lt;class 'int'&gt; | str | int`
+- boostedblob/cli.py:689:45: error[invalid-argument-type] Argument to bound method `add_argument` is incorrect: Expected `Iterable[Unknown] | None`, found `&lt;class 'int'&gt; | str | Unknown | int`
++ boostedblob/cli.py:689:45: error[invalid-argument-type] Argument to bound method `add_argument` is incorrect: Expected `Iterable[Unknown] | None`, found `&lt;class 'int'&gt; | str | int`
+- boostedblob/cli.py:689:45: error[invalid-argument-type] Argument to bound method `add_argument` is incorrect: Expected `bool`, found `&lt;class 'int'&gt; | str | Unknown | int`
++ boostedblob/cli.py:689:45: error[invalid-argument-type] Argument to bound method `add_argument` is incorrect: Expected `bool`, found `&lt;class 'int'&gt; | str | int`
+- boostedblob/cli.py:689:45: error[invalid-argument-type] Argument to bound method `add_argument` is incorrect: Expected `str | type[Action]`, found `&lt;class 'int'&gt; | str | Unknown | int`
++ boostedblob/cli.py:689:45: error[invalid-argument-type] Argument to bound method `add_argument` is incorrect: Expected `str | type[Action]`, found `&lt;class 'int'&gt; | str | int`
+- boostedblob/cli.py:689:45: error[invalid-argument-type] Argument to bound method `add_argument` is incorrect: Expected `str | tuple[str, ...] | None`, found `&lt;class 'int'&gt; | str | Unknown | int`
++ boostedblob/cli.py:689:45: error[invalid-argument-type] Argument to bound method `add_argument` is incorrect: Expected `str | tuple[str, ...] | None`, found `&lt;class 'int'&gt; | str | int`
+- boostedblob/cli.py:689:45: error[invalid-argument-type] Argument to bound method `add_argument` is incorrect: Expected `str | None`, found `&lt;class 'int'&gt; | str | Unknown | int`
++ boostedblob/cli.py:689:45: error[invalid-argument-type] Argument to bound method `add_argument` is incorrect: Expected `str | None`, found `&lt;class 'int'&gt; | str | int`
+- boostedblob/cli.py:689:45: error[invalid-argument-type] Argument to bound method `add_argument` is incorrect: Expected `str`, found `&lt;class 'int'&gt; | str | Unknown | int`
++ boostedblob/cli.py:689:45: error[invalid-argument-type] Argument to bound method `add_argument` is incorrect: Expected `str`, found `&lt;class 'int'&gt; | str | int`
+- boostedblob/cli.py:710:45: error[invalid-argument-type] Argument to bound method `add_argument` is incorrect: Expected `str | type[Action]`, found `&lt;class 'int'&gt; | str | Unknown | int`
++ boostedblob/cli.py:710:45: error[invalid-argument-type] Argument to bound method `add_argument` is incorrect: Expected `str | type[Action]`, found `&lt;class 'int'&gt; | str | int`
+- boostedblob/cli.py:710:45: error[invalid-argument-type] Argument to bound method `add_argument` is incorrect: Expected `int | str | None`, found `&lt;class 'int'&gt; | str | Unknown | int`
++ boostedblob/cli.py:710:45: error[invalid-argument-type] Argument to bound method `add_argument` is incorrect: Expected `int | str | None`, found `&lt;class 'int'&gt; | str | int`
+- boostedblob/cli.py:710:45: error[invalid-argument-type] Argument to bound method `add_argument` is incorrect: Expected `Iterable[Unknown] | None`, found `&lt;class 'int'&gt; | str | Unknown | int`
++ boostedblob/cli.py:710:45: error[invalid-argument-type] Argument to bound method `add_argument` is incorrect: Expected `Iterable[Unknown] | None`, found `&lt;class 'int'&gt; | str | int`
+- boostedblob/cli.py:710:45: error[invalid-argument-type] Argument to bound method `add_argument` is incorrect: Expected `bool`, found `&lt;class 'int'&gt; | str | Unknown | int`
++ boostedblob/cli.py:710:45: error[invalid-argument-type] Argument to bound method `add_argument` is incorrect: Expected `bool`, found `&lt;class 'int'&gt; | str | int`
+- boostedblob/cli.py:710:45: error[invalid-argument-type] Argument to bound method `add_argument` is incorrect: Expected `str | None`, found `&lt;class 'int'&gt; | str | Unknown | int`
++ boostedblob/cli.py:710:45: error[invalid-argument-type] Argument to bound method `add_argument` is incorrect: Expected `str | None`, found `&lt;class 'int'&gt; | str | int`
+- boostedblob/cli.py:710:45: error[invalid-argument-type] Argument to bound method `add_argument` is incorrect: Expected `str | tuple[str, ...] | None`, found `&lt;class 'int'&gt; | str | Unknown | int`
++ boostedblob/cli.py:710:45: error[invalid-argument-type] Argument to bound method `add_argument` is incorrect: Expected `str | tuple[str, ...] | None`, found `&lt;class 'int'&gt; | str | int`
+- boostedblob/cli.py:710:45: error[invalid-argument-type] Argument to bound method `add_argument` is incorrect: Expected `str | None`, found `&lt;class 'int'&gt; | str | Unknown | int`
++ boostedblob/cli.py:710:45: error[invalid-argument-type] Argument to bound method `add_argument` is incorrect: Expected `str | None`, found `&lt;class 'int'&gt; | str | int`
+- boostedblob/cli.py:710:45: error[invalid-argument-type] Argument to bound method `add_argument` is incorrect: Expected `str`, found `&lt;class 'int'&gt; | str | Unknown | int`
++ boostedblob/cli.py:710:45: error[invalid-argument-type] Argument to bound method `add_argument` is incorrect: Expected `str`, found `&lt;class 'int'&gt; | str | int`
+- boostedblob/cli.py:722:45: error[invalid-argument-type] Argument to bound method `add_argument` is incorrect: Expected `str | type[Action]`, found `&lt;class 'int'&gt; | str | Unknown | int`
++ boostedblob/cli.py:722:45: error[invalid-argument-type] Argument to bound method `add_argument` is incorrect: Expected `str | type[Action]`, found `&lt;class 'int'&gt; | str | int`
+- boostedblob/cli.py:722:45: error[invalid-argument-type] Argument to bound method `add_argument` is incorrect: Expected `int | str | None`, found `&lt;class 'int'&gt; | str | Unknown | int`
++ boostedblob/cli.py:722:45: error[invalid-argument-type] Argument to bound method `add_argument` is incorrect: Expected `int | str | None`, found `&lt;class 'int'&gt; | str | int`
+- boostedblob/cli.py:722:45: error[invalid-argument-type] Argument to bound method `add_argument` is incorrect: Expected `Iterable[Unknown] | None`, found `&lt;class 'int'&gt; | str | Unknown | int`
++ boostedblob/cli.py:722:45: error[invalid-argument-type] Argument to bound method `add_argument` is incorrect: Expected `Iterable[Unknown] | None`, found `&lt;class 'int'&gt; | str | int`
+- boostedblob/cli.py:722:45: error[invalid-argument-type] Argument to bound method `add_argument` is incorrect: Expected `bool`, found `&lt;class 'int'&gt; | str | Unknown | int`
++ boostedblob/cli.py:722:45: error[invalid-argument-type] Argument to bound method `add_argument` is incorrect: Expected `bool`, found `&lt;class 'int'&gt; | str | int`
+- boostedblob/cli.py:722:45: error[invalid-argument-type] Argument to bound method `add_argument` is incorrect: Expected `str | None`, found `&lt;class 'int'&gt; | str | Unknown | int`
++ boostedblob/cli.py:722:45: error[invalid-argument-type] Argument to bound method `add_argument` is incorrect: Expected `str | None`, found `&lt;class 'int'&gt; | str | int`
+- boostedblob/cli.py:722:45: error[invalid-argument-type] Argument to bound method `add_argument` is incorrect: Expected `str | tuple[str, ...] | None`, found `&lt;class 'int'&gt; | str | Unknown | int`
++ boostedblob/cli.py:722:45: error[invalid-argument-type] Argument to bound method `add_argument` is incorrect: Expected `str | tuple[str, ...] | None`, found `&lt;class 'int'&gt; | str | int`
+- boostedblob/cli.py:722:45: error[invalid-argument-type] Argument to bound method `add_argument` is incorrect: Expected `str | None`, found `&lt;class 'int'&gt; | str | Unknown | int`
++ boostedblob/cli.py:722:45: error[invalid-argument-type] Argument to bound method `add_argument` is incorrect: Expected `str | None`, found `&lt;class 'int'&gt; | str | int`
+- boostedblob/cli.py:722:45: error[invalid-argument-type] Argument to bound method `add_argument` is incorrect: Expected `str`, found `&lt;class 'int'&gt; | str | Unknown | int`
++ boostedblob/cli.py:722:45: error[invalid-argument-type] Argument to bound method `add_argument` is incorrect: Expected `str`, found `&lt;class 'int'&gt; | str | int`
+- boostedblob/cli.py:754:45: error[invalid-argument-type] Argument to bound method `add_argument` is incorrect: Expected `str | type[Action]`, found `&lt;class 'int'&gt; | str | Unknown | int`
++ boostedblob/cli.py:754:45: error[invalid-argument-type] Argument to bound method `add_argument` is incorrect: Expected `str | type[Action]`, found `&lt;class 'int'&gt; | str | int`
+- boostedblob/cli.py:754:45: error[invalid-argument-type] Argument to bound method `add_argument` is incorrect: Expected `int | str | None`, found `&lt;class 'int'&gt; | str | Unknown | int`
++ boostedblob/cli.py:754:45: error[invalid-argument-type] Argument to bound method `add_argument` is incorrect: Expected `int | str | None`, found `&lt;class 'int'&gt; | str | int`
+- boostedblob/cli.py:754:45: error[invalid-argument-type] Argument to bound method `add_argument` is incorrect: Expected `Iterable[Unknown] | None`, found `&lt;class 'int'&gt; | str | Unknown | int`
++ boostedblob/cli.py:754:45: error[invalid-argument-type] Argument to bound method `add_argument` is incorrect: Expected `Iterable[Unknown] | None`, found `&lt;class 'int'&gt; | str | int`
+- boostedblob/cli.py:754:45: error[invalid-argument-type] Argument to bound method `add_argument` is incorrect: Expected `bool`, found `&lt;class 'int'&gt; | str | Unknown | int`
++ boostedblob/cli.py:754:45: error[invalid-argument-type] Argument to bound method `add_argument` is incorrect: Expected `bool`, found `&lt;class 'int'&gt; | str | int`
+- boostedblob/cli.py:754:45: error[invalid-argument-type] Argument to bound method `add_argument` is incorrect: Expected `str | None`, found `&lt;class 'int'&gt; | str | Unknown | int`
++ boostedblob/cli.py:754:45: error[invalid-argument-type] Argument to bound method `add_argument` is incorrect: Expected `str | None`, found `&lt;class 'int'&gt; | str | int`
+- boostedblob/cli.py:754:45: error[invalid-argument-type] Argument to bound method `add_argument` is incorrect: Expected `str | tuple[str, ...] | None`, found `&lt;class 'int'&gt; | str | Unknown | int`
++ boostedblob/cli.py:754:45: error[invalid-argument-type] Argument to bound method `add_argument` is incorrect: Expected `str | tuple[str, ...] | None`, found `&lt;class 'int'&gt; | str | int`
+- boostedblob/cli.py:754:45: error[invalid-argument-type] Argument to bound method `add_argument` is incorrect: Expected `str | None`, found `&lt;class 'int'&gt; | str | Unknown | int`
++ boostedblob/cli.py:754:45: error[invalid-argument-type] Argument to bound method `add_argument` is incorrect: Expected `str | None`, found `&lt;class 'int'&gt; | str | int`
+- boostedblob/cli.py:754:45: error[invalid-argument-type] Argument to bound method `add_argument` is incorrect: Expected `str`, found `&lt;class 'int'&gt; | str | Unknown | int`
++ boostedblob/cli.py:754:45: error[invalid-argument-type] Argument to bound method `add_argument` is incorrect: Expected `str`, found `&lt;class 'int'&gt; | str | int`
+
+pytest (https://github.com/pytest-dev/pytest)
++ src/_pytest/doctest.py:247:9: error[unknown-argument] Argument `continue_on_failure` does not match any known parameter of bound method `__init__`
+- src/_pytest/fixtures.py:1658:24: error[invalid-return-type] Return type does not match returned value: expected `Scope`, found `Scope | (Unknown &amp; ~None &amp; ~(() -&gt; object) &amp; ~str) | (((str, Config, /) -&gt; Unknown) &amp; ~(() -&gt; object) &amp; ~str) | (Unknown &amp; ~str)`
++ src/_pytest/fixtures.py:1658:24: error[invalid-return-type] Return type does not match returned value: expected `Scope`, found `Scope | (@Todo &amp; ~None &amp; ~(() -&gt; object) &amp; ~str) | (((str, Config, /) -&gt; @Todo) &amp; ~(() -&gt; object) &amp; ~str) | (@Todo &amp; ~str)`
++ src/_pytest/junitxml.py:372:9: error[invalid-assignment] Implicit shadowing of function `record_func`
+- src/_pytest/pastebin.py:43:13: error[invalid-assignment] Method `__setitem__` of type `Unknown | (bound method Stash.__setitem__[T](key: StashKey[T@__setitem__], value: T@__setitem__) -&gt; None)` cannot be called with a key of type `Unknown | StashKey[IO[bytes]]` and a value of type `TextIOWrapper[_WrappedBuffer]` on object of type `Unknown | Stash`
++ src/_pytest/pastebin.py:43:13: error[invalid-assignment] Method `__setitem__` of type `Unknown | (bound method Stash.__setitem__[T](key: StashKey[T@__setitem__], value: T@__setitem__) -&gt; None)` cannot be called with a key of type `StashKey[IO[bytes]]` and a value of type `TextIOWrapper[_WrappedBuffer]` on object of type `Unknown | Stash`
+- src/_pytest/pytester.py:1129:21: error[invalid-assignment] Method `__setitem__` of type `Unknown | (bound method Stash.__setitem__[T](key: StashKey[T@__setitem__], value: T@__setitem__) -&gt; None)` cannot be called with a key of type `Unknown | StashKey[int]` and a value of type `Literal[0]` on object of type `Unknown | Stash`
+- src/_pytest/python.py:1096:13: error[invalid-argument-type] Argument is incorrect: Expected `Sequence[str]`, found `Unknown | list[Unknown | str | _HiddenParam]`
+
+dulwich (https://github.com/dulwich/dulwich)
++ dulwich/diff_tree.py:402:26: error[invalid-argument-type] Argument to function `_all_eq` is incorrect: Expected `(@Todo, /) -&gt; Literal[&quot;delete&quot;]`, found `def change_type(c: TreeChange) -&gt; str`
+- dulwich/diff_tree.py:177:70: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- dulwich/diff_tree.py:178:70: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- dulwich/notes.py:626:16: error[invalid-return-type] Return type does not match returned value: expected `bytes`, found `bytes | None | Unknown`
++ dulwich/notes.py:626:16: error[invalid-return-type] Return type does not match returned value: expected `bytes`, found `bytes | None`
++ dulwich/walk.py:146:21: error[invalid-argument-type] Argument to function `tree_changes` is incorrect: Expected `bytes | None`, found `None | Unknown | list[Unknown]`
+- dulwich/worktree.py:918:28: error[invalid-argument-type] Method `__getitem__` of type `bound method DiskRefsContainer.__getitem__(name: bytes) -&gt; Unknown | bytes` cannot be called with key of type `str | bytes` on object of type `DiskRefsContainer`
++ dulwich/worktree.py:918:28: error[invalid-argument-type] Method `__getitem__` of type `bound method DiskRefsContainer.__getitem__(name: bytes) -&gt; bytes` cannot be called with key of type `str | bytes` on object of type `DiskRefsContainer`
+- dulwich/worktree.py:918:28: error[invalid-argument-type] Method `__getitem__` of type `bound method ReftableRefsContainer.__getitem__(name: bytes) -&gt; Unknown | bytes` cannot be called with key of type `str | bytes` on object of type `ReftableRefsContainer`
++ dulwich/worktree.py:918:28: error[invalid-argument-type] Method `__getitem__` of type `bound method ReftableRefsContainer.__getitem__(name: bytes) -&gt; bytes` cannot be called with key of type `str | bytes` on object of type `ReftableRefsContainer`
+
+starlette (https://github.com/encode/starlette)
++ tests/test_formparsers.py:297:9: error[invalid-argument-type] Argument to bound method `post` is incorrect: Expected `Mapping[str, Iterable[str]] | None`, found `Literal[b'--a7f7ac8d4e2e437c877bb7b8d7cc549c\r\nContent-Disposition: form-data; name=&quot;field0&quot;\r\n\r\nvalue0\r\n--a7f7ac8d4e2e437c877bb7b8d7cc549c\r\nContent-Disposition: form-data; name=&quot;file&quot;; filename=&quot;file.txt&quot;\r\nContent-Type: text/plain\r\n\r\n&lt;file content&gt;\r\n--a7f7ac8d4e2e437c877bb7b8d7cc549c\r\nContent-Disposition: form-data; name=&quot;field1&quot;\r\n\r\nvalue1\r\n--a7f7ac8d4e2e437c877bb7b8d7cc549c--\r\n']`
++ tests/test_formparsers.py:372:9: error[invalid-argument-type] Argument to bound method `post` is incorrect: Expected `Mapping[str, Iterable[str]] | None`, found `Literal[b'--a7f7ac8d4e2e437c877bb7b8d7cc549c\r\nContent-Disposition: form-data; name=&quot;file&quot;; filename=&quot;\xe6\x96\x87\xe6\x9b\xb8.txt&quot;\r\nContent-Type: text/plain\r\n\r\n&lt;file content&gt;\r\n--a7f7ac8d4e2e437c877bb7b8d7cc549c--\r\n']`
++ tests/test_formparsers.py:396:9: error[invalid-argument-type] Argument to bound method `post` is incorrect: Expected `Mapping[str, Iterable[str]] | None`, found `Literal[b'--a7f7ac8d4e2e437c877bb7b8d7cc549c\r\nContent-Disposition: form-data; name=&quot;file&quot;; filename=&quot;\xe7\x94\xbb\xe5\x83\x8f.jpg&quot;\r\nContent-Type: image/jpeg\r\n\r\n&lt;file content&gt;\r\n--a7f7ac8d4e2e437c877bb7b8d7cc549c--\r\n']`
++ tests/test_formparsers.py:420:9: error[invalid-argument-type] Argument to bound method `post` is incorrect: Expected `Mapping[str, Iterable[str]] | None`, found `Literal[b'--20b303e711c4ab8c443184ac833ab00f\r\nContent-Disposition: form-data; name=&quot;value&quot;\r\n\r\nTransf\xc3\xa9rer\r\n--20b303e711c4ab8c443184ac833ab00f--\r\n']`
++ tests/test_formparsers.py:494:13: error[invalid-argument-type] Argument to bound method `post` is incorrect: Expected `Mapping[str, Iterable[str]] | None`, found `Literal[b'Content-Disposition: form-data; name=&quot;file&quot;; filename=&quot;\xe6\x96\x87\xe6\x9b\xb8.txt&quot;\r\nContent-Type: text/plain\r\n\r\n&lt;file content&gt;\r\n']`
++ tests/test_formparsers.py:522:13: error[invalid-argument-type] Argument to bound method `post` is incorrect: Expected `Mapping[str, Iterable[str]] | None`, found `Literal[b'--a7f7ac8d4e2e437c877bb7b8d7cc549c\r\nContent-Disposition: form-data; =&quot;field0&quot;\r\n\r\nvalue0\r\n']`
+- tests/test_formparsers.py:554:25: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- tests/test_formparsers.py:581:25: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- tests/test_formparsers.py:610:25: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- tests/test_formparsers.py:638:25: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- tests/test_formparsers.py:668:25: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- tests/test_formparsers.py:698:25: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- tests/test_formparsers.py:715:21: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- tests/test_formparsers.py:761:76: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- tests/test_requests.py:97:46: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- tests/test_requests.py:118:46: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- tests/test_requests.py:160:46: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- tests/test_requests.py:179:46: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- tests/test_requests.py:479:52: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- tests/test_responses.py:258:38: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- tests/test_responses.py:366:38: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- tests/test_websockets.py:477:43: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 147 diagnostics
++ Found 137 diagnostics
+
+rich (https://github.com/Textualize/rich)
++ rich/_windows_renderer.py:7:60: error[invalid-type-form] Variable of type `Never` is not allowed in a type expression
+- rich/table.py:359:5: error[invalid-argument-type] Argument to bound method `setter` is incorrect: Expected `(Any, Any, /) -&gt; None`, found `def padding(self, padding: Unknown) -&gt; Table`
++ rich/table.py:359:5: error[invalid-argument-type] Argument to bound method `setter` is incorrect: Expected `(Any, Any, /) -&gt; None`, found `def padding(self, padding: @Todo) -&gt; Table`
++ tests/test_syntax.py:169:38: error[invalid-argument-type] Argument to bound method `get_style_for_token` is incorrect: Expected `tuple[str, ...]`, found `Literal[&quot;abc&quot;]`
+- Found 309 diagnostics
++ Found 311 diagnostics
+
+graphql-core (https://github.com/graphql-python/graphql-core)
+- tests/execution/test_defer.py:463:55: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[Unknown] | None`, found `Any | bool | list[Unknown | PendingResult] | list[Unknown] | list[Unknown | CompletedResult] | dict[Unknown | str, Unknown | int]`
++ tests/execution/test_defer.py:463:55: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[@Todo] | None`, found `Any | bool | list[Unknown | PendingResult] | list[Unknown] | list[Unknown | CompletedResult] | dict[Unknown | str, Unknown | int]`
+- tests/execution/test_defer.py:464:63: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[Unknown] | None`, found `Any | bool | list[Unknown | PendingResult] | list[Unknown] | list[Unknown | CompletedResult] | dict[Unknown | str, Unknown | int]`
++ tests/execution/test_defer.py:464:63: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[@Todo] | None`, found `Any | bool | list[Unknown | PendingResult] | list[Unknown] | list[Unknown | CompletedResult] | dict[Unknown | str, Unknown | int]`
++ tests/type/test_validation.py:1071:9: error[invalid-assignment] Object of type `tuple[None]` is not assignable to attribute `interfaces` of type `CachedProperty`
+- Found 423 diagnostics
++ Found 424 diagnostics
+
+alerta (https://github.com/alerta/alerta)
+- alerta/database/backends/mongodb/base.py:1609:59: warning[possibly-missing-attribute] Attribute `DEFAULT_INFORM_SEVERITY` on type `Unknown | AlarmModel` may be missing
++ alerta/database/backends/mongodb/base.py:1609:59: error[unresolved-attribute] Type `AlarmModel` has no attribute `DEFAULT_INFORM_SEVERITY`
+- alerta/database/backends/postgres/base.py:1540:57: warning[possibly-missing-attribute] Attribute `DEFAULT_INFORM_SEVERITY` on type `Unknown | AlarmModel` may be missing
++ alerta/database/backends/postgres/base.py:1540:57: error[unresolved-attribute] Type `AlarmModel` has no attribute `DEFAULT_INFORM_SEVERITY`
+- alerta/views/alerts.py:310:13: warning[possibly-missing-attribute] Attribute `alerts` on type `Unknown | QueryBuilder` may be missing
+- alerta/views/alerts.py:358:13: warning[possibly-missing-attribute] Attribute `alerts` on type `Unknown | QueryBuilder` may be missing
+- alerta/views/alerts.py:385:13: warning[possibly-missing-attribute] Attribute `alerts` on type `Unknown | QueryBuilder` may be missing
+- alerta/views/alerts.py:406:13: warning[possibly-missing-attribute] Attribute `alerts` on type `Unknown | QueryBuilder` may be missing
+- alerta/views/alerts.py:433:13: warning[possibly-missing-attribute] Attribute `alerts` on type `Unknown | QueryBuilder` may be missing
+- alerta/views/alerts.py:460:13: warning[possibly-missing-attribute] Attribute `alerts` on type `Unknown | QueryBuilder` may be missing
+- alerta/views/alerts.py:486:13: warning[possibly-missing-attribute] Attribute `alerts` on type `Unknown | QueryBuilder` may be missing
+- alerta/views/alerts.py:511:13: warning[possibly-missing-attribute] Attribute `alerts` on type `Unknown | QueryBuilder` may be missing
+- alerta/views/alerts.py:536:13: warning[possibly-missing-attribute] Attribute `alerts` on type `Unknown | QueryBuilder` may be missing
+- alerta/views/alerts.py:561:13: warning[possibly-missing-attribute] Attribute `alerts` on type `Unknown | QueryBuilder` may be missing
++ alerta/views/alerts.py:310:13: error[unresolved-attribute] Type `QueryBuilder` has no attribute `alerts`
++ alerta/views/alerts.py:358:13: error[unresolved-attribute] Type `QueryBuilder` has no attribute `alerts`
++ alerta/views/alerts.py:385:13: error[unresolved-attribute] Type `QueryBuilder` has no attribute `alerts`
++ alerta/views/alerts.py:406:13: error[unresolved-attribute] Type `QueryBuilder` has no attribute `alerts`
++ alerta/views/alerts.py:433:13: error[unresolved-attribute] Type `QueryBuilder` has no attribute `alerts`
++ alerta/views/alerts.py:460:13: error[unresolved-attribute] Type `QueryBuilder` has no attribute `alerts`
++ alerta/views/alerts.py:486:13: error[unresolved-attribute] Type `QueryBuilder` has no attribute `alerts`
++ alerta/views/alerts.py:511:13: error[unresolved-attribute] Type `QueryBuilder` has no attribute `alerts`
++ alerta/views/alerts.py:536:13: error[unresolved-attribute] Type `QueryBuilder` has no attribute `alerts`
++ alerta/views/alerts.py:561:13: error[unresolved-attribute] Type `QueryBuilder` has no attribute `alerts`
+- alerta/views/blackouts.py:66:13: warning[possibly-missing-attribute] Attribute `blackouts` on type `Unknown | QueryBuilder` may be missing
++ alerta/views/blackouts.py:66:13: error[unresolved-attribute] Type `QueryBuilder` has no attribute `blackouts`
+- alerta/views/bulk.py:43:13: warning[possibly-missing-attribute] Attribute `alerts` on type `Unknown | QueryBuilder` may be missing
+- alerta/views/bulk.py:85:13: warning[possibly-missing-attribute] Attribute `alerts` on type `Unknown | QueryBuilder` may be missing
+- alerta/views/bulk.py:105:13: warning[possibly-missing-attribute] Attribute `alerts` on type `Unknown | QueryBuilder` may be missing
+- alerta/views/bulk.py:120:13: warning[possibly-missing-attribute] Attribute `alerts` on type `Unknown | QueryBuilder` may be missing
+- alerta/views/bulk.py:135:13: warning[possibly-missing-attribute] Attribute `alerts` on type `Unknown | QueryBuilder` may be missing
+- alerta/views/bulk.py:147:13: warning[possibly-missing-attribute] Attribute `alerts` on type `Unknown | QueryBuilder` may be missing
++ alerta/views/bulk.py:43:13: error[unresolved-attribute] Type `QueryBuilder` has no attribute `alerts`
++ alerta/views/bulk.py:85:13: error[unresolved-attribute] Type `QueryBuilder` has no attribute `alerts`
++ alerta/views/bulk.py:105:13: error[unresolved-attribute] Type `QueryBuilder` has no attribute `alerts`
++ alerta/views/bulk.py:120:13: error[unresolved-attribute] Type `QueryBuilder` has no attribute `alerts`
++ alerta/views/bulk.py:135:13: error[unresolved-attribute] Type `QueryBuilder` has no attribute `alerts`
++ alerta/views/bulk.py:147:13: error[unresolved-attribute] Type `QueryBuilder` has no attribute `alerts`
+- alerta/views/customers.py:58:13: warning[possibly-missing-attribute] Attribute `customers` on type `Unknown | QueryBuilder` may be missing
++ alerta/views/customers.py:58:13: error[unresolved-attribute] Type `QueryBuilder` has no attribute `customers`
+- alerta/views/groups.py:83:13: warning[possibly-missing-attribute] Attribute `groups` on type `Unknown | QueryBuilder` may be missing
++ alerta/views/groups.py:83:13: error[unresolved-attribute] Type `QueryBuilder` has no attribute `groups`
+- alerta/views/heartbeats.py:62:13: warning[possibly-missing-attribute] Attribute `heartbeats` on type `Unknown | QueryBuilder` may be missing
++ alerta/views/heartbeats.py:62:13: error[unresolved-attribute] Type `QueryBuilder` has no attribute `heartbeats`
+- alerta/views/keys.py:81:13: warning[possibly-missing-attribute] Attribute `keys` on type `Unknown | QueryBuilder` may be missing
++ alerta/views/keys.py:81:13: error[unresolved-attribute] Type `QueryBuilder` has no attribute `keys`
+- alerta/views/oembed.py:35:21: warning[possibly-missing-attribute] Attribute `alerts` on type `Unknown | QueryBuilder` may be missing
++ alerta/views/oembed.py:35:21: error[unresolved-attribute] Type `QueryBuilder` has no attribute `alerts`
+- alerta/views/permissions.py:71:13: warning[possibly-missing-attribute] Attribute `perms` on type `Unknown | QueryBuilder` may be missing
++ alerta/views/permissions.py:71:13: error[unresolved-attribute] Type `QueryBuilder` has no attribute `perms`
+- alerta/views/permissions.py:77:9: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[Scope]`, found `Unknown | list[Unknown | str]`
++ alerta/views/permissions.py:77:9: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[Scope]`, found `list[Unknown | str]`
+- alerta/views/users.py:133:13: warning[possibly-missing-attribute] Attribute `users` on type `Unknown | QueryBuilder` may be missing
++ alerta/views/users.py:133:13: error[unresolved-attribute] Type `QueryBuilder` has no attribute `users`
+- alerta/webhooks/grafana.py:116:25: warning[possibly-missing-attribute] Attribute `alerts` on type `Unknown | QueryBuilder` may be missing
++ alerta/webhooks/grafana.py:116:25: error[unresolved-attribute] Type `QueryBuilder` has no attribute `alerts`
+- tests/test_search.py:59:25: warning[possibly-missing-attribute] Attribute `alerts` on type `Unknown | QueryBuilder` may be missing
+- tests/test_search.py:98:25: warning[possibly-missing-attribute] Attribute `alerts` on type `Unknown | QueryBuilder` may be missing
+- tests/test_search.py:116:21: warning[possibly-missing-attribute] Attribute `alerts` on type `Unknown | QueryBuilder` may be missing
+- tests/test_search.py:131:21: warning[possibly-missing-attribute] Attribute `alerts` on type `Unknown | QueryBuilder` may be missing
+- tests/test_search.py:165:25: warning[possibly-missing-attribute] Attribute `blackouts` on type `Unknown | QueryBuilder` may be missing
+- tests/test_search.py:192:25: warning[possibly-missing-attribute] Attribute `blackouts` on type `Unknown | QueryBuilder` may be missing
+- tests/test_search.py:212:21: warning[possibly-missing-attribute] Attribute `blackouts` on type `Unknown | QueryBuilder` may be missing
+- tests/test_search.py:245:25: warning[possibly-missing-attribute] Attribute `heartbeats` on type `Unknown | QueryBuilder` may be missing
+- tests/test_search.py:266:25: warning[possibly-missing-attribute] Attribute `heartbeats` on type `Unknown | QueryBuilder` may be missing
+- tests/test_search.py:283:21: warning[possibly-missing-attribute] Attribute `heartbeats` on type `Unknown | QueryBuilder` may be missing
+- tests/test_search.py:313:25: warning[possibly-missing-attribute] Attribute `keys` on type `Unknown | QueryBuilder` may be missing
+- tests/test_search.py:334:25: warning[possibly-missing-attribute] Attribute `keys` on type `Unknown | QueryBuilder` may be missing
+- tests/test_search.py:356:21: warning[possibly-missing-attribute] Attribute `keys` on type `Unknown | QueryBuilder` may be missing
+- tests/test_search.py:388:25: warning[possibly-missing-attribute] Attribute `users` on type `Unknown | QueryBuilder` may be missing
+- tests/test_search.py:411:25: warning[possibly-missing-attribute] Attribute `users` on type `Unknown | QueryBuilder` may be missing
+- tests/test_search.py:428:21: warning[possibly-missing-attribute] Attribute `users` on type `Unknown | QueryBuilder` may be missing
+- tests/test_search.py:451:25: warning[possibly-missing-attribute] Attribute `groups` on type `Unknown | QueryBuilder` may be missing
+- tests/test_search.py:465:25: warning[possibly-missing-attribute] Attribute `groups` on type `Unknown | QueryBuilder` may be missing
+- tests/test_search.py:481:21: warning[possibly-missing-attribute] Attribute `groups` on type `Unknown | QueryBuilder` may be missing
+- tests/test_search.py:504:25: warning[possibly-missing-attribute] Attribute `perms` on type `Unknown | QueryBuilder` may be missing
+- tests/test_search.py:517:25: warning[possibly-missing-attribute] Attribute `perms` on type `Unknown | QueryBuilder` may be missing
+- tests/test_search.py:534:21: warning[possibly-missing-attribute] Attribute `perms` on type `Unknown | QueryBuilder` may be missing
+- tests/test_search.py:557:25: warning[possibly-missing-attribute] Attribute `customers` on type `Unknown | QueryBuilder` may be missing
+- tests/test_search.py:570:25: warning[possibly-missing-attribute] Attribute `customers` on type `Unknown | QueryBuilder` may be missing
+- tests/test_search.py:588:21: warning[possibly-missing-attribute] Attribute `customers` on type `Unknown | QueryBuilder` may be missing
++ tests/test_search.py:59:25: error[unresolved-attribute] Type `QueryBuilder` has no attribute `alerts`
++ tests/test_search.py:98:25: error[unresolved-attribute] Type `QueryBuilder` has no attribute `alerts`
++ tests/test_search.py:116:21: error[unresolved-attribute] Type `QueryBuilder` has no attribute `alerts`
++ tests/test_search.py:131:21: error[unresolved-attribute] Type `QueryBuilder` has no attribute `alerts`
++ tests/test_search.py:165:25: error[unresolved-attribute] Type `QueryBuilder` has no attribute `blackouts`
++ tests/test_search.py:192:25: error[unresolved-attribute] Type `QueryBuilder` has no attribute `blackouts`
++ tests/test_search.py:212:21: error[unresolved-attribute] Type `QueryBuilder` has no attribute `blackouts`
++ tests/test_search.py:245:25: error[unresolved-attribute] Type `QueryBuilder` has no attribute `heartbeats`
++ tests/test_search.py:266:25: error[unresolved-attribute] Type `QueryBuilder` has no attribute `heartbeats`
++ tests/test_search.py:283:21: error[unresolved-attribute] Type `QueryBuilder` has no attribute `heartbeats`
++ tests/test_search.py:313:25: error[unresolved-attribute] Type `QueryBuilder` has no attribute `keys`
++ tests/test_search.py:334:25: error[unresolved-attribute] Type `QueryBuilder` has no attribute `keys`
++ tests/test_search.py:356:21: error[unresolved-attribute] Type `QueryBuilder` has no attribute `keys`
++ tests/test_search.py:388:25: error[unresolved-attribute] Type `QueryBuilder` has no attribute `users`
++ tests/test_search.py:411:25: error[unresolved-attribute] Type `QueryBuilder` has no attribute `users`
++ tests/test_search.py:428:21: error[unresolved-attribute] Type `QueryBuilder` has no attribute `users`
++ tests/test_search.py:451:25: error[unresolved-attribute] Type `QueryBuilder` has no attribute `groups`
++ tests/test_search.py:465:25: error[unresolved-attribute] Type `QueryBuilder` has no attribute `groups`
++ tests/test_search.py:481:21: error[unresolved-attribute] Type `QueryBuilder` has no attribute `groups`
++ tests/test_search.py:504:25: error[unresolved-attribute] Type `QueryBuilder` has no attribute `perms`
++ tests/test_search.py:517:25: error[unresolved-attribute] Type `QueryBuilder` has no attribute `perms`
++ tests/test_search.py:534:21: error[unresolved-attribute] Type `QueryBuilder` has no attribute `perms`
++ tests/test_search.py:557:25: error[unresolved-attribute] Type `QueryBuilder` has no attribute `customers`
++ tests/test_search.py:570:25: error[unresolved-attribute] Type `QueryBuilder` has no attribute `customers`
++ tests/test_search.py:588:21: error[unresolved-attribute] Type `QueryBuilder` has no attribute `customers`
+
+pip (https://github.com/pypa/pip)
+- src/pip/_internal/utils/misc.py:491:12: error[invalid-return-type] Return type does not match returned value: expected `tuple[str, tuple[str, tuple[str | None, str | None]]]`, found `tuple[Literal[b&quot;&quot;], Unknown | tuple[str, tuple[str | None, str | None]]]`
++ src/pip/_internal/utils/misc.py:491:12: error[invalid-return-type] Return type does not match returned value: expected `tuple[str, tuple[str, tuple[str | None, str | None]]]`, found `tuple[Literal[b&quot;&quot;], tuple[str, tuple[str | None, str | None]]]`
+- src/pip/_internal/vcs/git.py:512:19: error[unsupported-operator] Operator `+` is unsupported between objects of type `Unknown | str` and `Unknown | Literal[b&quot;&quot;]`
++ src/pip/_internal/vcs/git.py:512:19: error[unsupported-operator] Operator `+` is unsupported between objects of type `str` and `Literal[b&quot;&quot;]`
+- src/pip/_vendor/distlib/resources.py:356:9: error[invalid-assignment] Object of type `PathEntryFinderProtocol | None` is not assignable to attribute `__loader__` on type `Unknown | ModuleType`
++ src/pip/_vendor/distlib/resources.py:356:9: error[invalid-assignment] Object of type `PathEntryFinderProtocol | None` is not assignable to attribute `__loader__` of type `LoaderProtocol | None`
+- src/pip/_vendor/idna/core.py:341:89: error[invalid-argument-type] Argument to function `bisect_left` is incorrect: Expected `SupportsLenAndGetItem[tuple[int, Literal[&quot;Z&quot;]]]`, found `Unknown | tuple[tuple[int, str] | tuple[int, str, str], ...]`
++ src/pip/_vendor/idna/core.py:341:89: error[invalid-argument-type] Argument to function `bisect_left` is incorrect: Expected `SupportsLenAndGetItem[tuple[int, Literal[&quot;Z&quot;]]]`, found `tuple[tuple[int, str] | tuple[int, str, str], ...]`
+- src/pip/_vendor/requests/__init__.py:123:9: error[invalid-assignment] Object of type `None` is not assignable to `&lt;module 'ssl'&gt;`
+- src/pip/_vendor/requests/__init__.py:131:14: error[unresolved-import] Cannot resolve imported module `cryptography`
+- src/pip/_vendor/requests/models.py:72:5: warning[possibly-missing-attribute] Attribute `moved` on type `Unknown | LookupDict` may be missing
+- src/pip/_vendor/requests/models.py:73:5: warning[possibly-missing-attribute] Attribute `found` on type `Unknown | LookupDict` may be missing
+- src/pip/_vendor/requests/models.py:74:5: warning[possibly-missing-attribute] Attribute `other` on type `Unknown | LookupDict` may be missing
+- src/pip/_vendor/requests/models.py:75:5: warning[possibly-missing-attribute] Attribute `temporary_redirect` on type `Unknown | LookupDict` may be missing
+- src/pip/_vendor/requests/models.py:76:5: warning[possibly-missing-attribute] Attribute `permanent_redirect` on type `Unknown | LookupDict` may be missing
+- src/pip/_vendor/requests/models.py:780:13: warning[possibly-missing-attribute] Attribute `moved_permanently` on type `Unknown | LookupDict` may be missing
+- src/pip/_vendor/requests/models.py:781:13: warning[possibly-missing-attribute] Attribute `permanent_redirect` on type `Unknown | LookupDict` may be missing
+- src/pip/_vendor/requests/sessions.py:225:17: warning[possibly-missing-attribute] Attribute `temporary_redirect` on type `Unknown | LookupDict` may be missing
+- src/pip/_vendor/requests/sessions.py:226:17: warning[possibly-missing-attribute] Attribute `permanent_redirect` on type `Unknown | LookupDict` may be missing
+- src/pip/_vendor/requests/sessions.py:340:36: warning[possibly-missing-attribute] Attribute `see_other` on type `Unknown | LookupDict` may be missing
+- src/pip/_vendor/requests/sessions.py:345:36: warning[possibly-missing-attribute] Attribute `found` on type `Unknown | LookupDict` may be missing
+- src/pip/_vendor/requests/sessions.py:350:36: warning[possibly-missing-attribute] Attribute `moved` on type `Unknown | LookupDict` may be missing
++ src/pip/_vendor/requests/models.py:72:5: error[unresolved-attribute] Type `LookupDict` has no attribute `moved`
++ src/pip/_vendor/requests/models.py:73:5: error[unresolved-attribute] Type `LookupDict` has no attribute `found`
++ src/pip/_vendor/requests/models.py:74:5: error[unresolved-attribute] Type `LookupDict` has no attribute `other`
++ src/pip/_vendor/requests/models.py:75:5: error[unresolved-attribute] Type `LookupDict` has no attribute `temporary_redirect`
++ src/pip/_vendor/requests/models.py:76:5: error[unresolved-attribute] Type `LookupDict` has no attribute `permanent_redirect`
++ src/pip/_vendor/requests/models.py:780:13: error[unresolved-attribute] Type `LookupDict` has no attribute `moved_permanently`
++ src/pip/_vendor/requests/models.py:781:13: error[unresolved-attribute] Type `LookupDict` has no attribute `permanent_redirect`
++ src/pip/_vendor/requests/sessions.py:225:17: error[unresolved-attribute] Type `LookupDict` has no attribute `temporary_redirect`
++ src/pip/_vendor/requests/sessions.py:226:17: error[unresolved-attribute] Type `LookupDict` has no attribute `permanent_redirect`
++ src/pip/_vendor/requests/sessions.py:340:36: error[unresolved-attribute] Type `LookupDict` has no attribute `see_other`
++ src/pip/_vendor/requests/sessions.py:345:36: error[unresolved-attribute] Type `LookupDict` has no attribute `found`
++ src/pip/_vendor/requests/sessions.py:350:36: error[unresolved-attribute] Type `LookupDict` has no attribute `moved`
++ src/pip/_vendor/rich/_windows_renderer.py:7:60: error[invalid-type-form] Variable of type `Never` is not allowed in a type expression
+- src/pip/_vendor/rich/table.py:359:5: error[invalid-argument-type] Argument to bound method `setter` is incorrect: Expected `(Any, Any, /) -&gt; None`, found `def padding(self, padding: Unknown) -&gt; Table`
++ src/pip/_vendor/rich/table.py:359:5: error[invalid-argument-type] Argument to bound method `setter` is incorrect: Expected `(Any, Any, /) -&gt; None`, found `def padding(self, padding: @Todo) -&gt; Table`
+- src/pip/_vendor/urllib3/_collections.py:179:20: error[unresolved-attribute] Type `&lt;class 'MutableMapping'&gt;` has no attribute `iterkeys`
+- src/pip/_vendor/urllib3/_collections.py:180:22: error[unresolved-attribute] Type `&lt;class 'MutableMapping'&gt;` has no attribute `itervalues`
++ src/pip/_vendor/urllib3/contrib/pyopenssl.py:139:5: error[invalid-assignment] Object of type `Literal[True]` is not assignable to attribute `IS_PYOPENSSL` of type `Literal[False]`
++ src/pip/_vendor/urllib3/contrib/securetransport.py:196:5: error[invalid-assignment] Object of type `Literal[True]` is not assignable to attribute `IS_SECURETRANSPORT` of type `Literal[False]`
+- src/pip/_vendor/urllib3/fields.py:61:17: error[unresolved-attribute] Type `str` has no attribute `decode`
+- src/pip/_vendor/urllib3/response.py:111:25: warning[possibly-missing-attribute] Attribute `Decompressor` on type `Unknown | None` may be missing
+- src/pip/_vendor/urllib3/util/queue.py:8:12: error[unresolved-import] Cannot resolve imported module `Queue`
+- src/pip/_vendor/urllib3/util/url.py:325:19: warning[possibly-missing-attribute] Attribute `groups` on type `Unknown | Match[str] | None` may be missing
++ src/pip/_vendor/urllib3/util/url.py:325:19: warning[possibly-missing-attribute] Attribute `groups` on type `Match[str] | None` may be missing
+- src/pip/_vendor/urllib3/util/url.py:364:52: warning[possibly-missing-attribute] Attribute `groups` on type `Unknown | Match[str] | None` may be missing
++ src/pip/_vendor/urllib3/util/url.py:364:52: warning[possibly-missing-attribute] Attribute `groups` on type `Match[str] | None` may be missing
+- src/pip/_vendor/urllib3/util/url.py:373:26: warning[possibly-missing-attribute] Attribute `groups` on type `Unknown | Match[str] | None` may be missing
++ src/pip/_vendor/urllib3/util/url.py:373:26: warning[possibly-missing-attribute] Attribute `groups` on type `Match[str] | None` may be missing
+- Found 471 diagnostics
++ Found 467 diagnostics
+
+ignite (https://github.com/pytorch/ignite)
+- examples/notebooks/HandlersTimeProfiler_MNIST.ipynb:cell 14:25:5: error[invalid-assignment] Object of type `Literal[0]` is not assignable to attribute `n` on type `Unknown | ProgressBar`
+- examples/notebooks/HandlersTimeProfiler_MNIST.ipynb:cell 14:25:14: error[invalid-assignment] Object of type `Literal[0]` is not assignable to attribute `last_print_n` on type `Unknown | ProgressBar`
++ examples/notebooks/HandlersTimeProfiler_MNIST.ipynb:cell 14:25:5: error[unresolved-attribute] Unresolved attribute `n` on type `ProgressBar`.
++ examples/notebooks/HandlersTimeProfiler_MNIST.ipynb:cell 14:25:14: error[unresolved-attribute] Unresolved attribute `last_print_n` on type `ProgressBar`.
+- examples/notebooks/TextCNN.ipynb:cell 61:19:5: error[invalid-assignment] Object of type `Literal[0]` is not assignable to attribute `n` on type `Unknown | ProgressBar`
++ examples/notebooks/TextCNN.ipynb:cell 61:19:5: error[unresolved-attribute] Unresolved attribute `n` on type `ProgressBar`.
+- examples/notebooks/TextCNN.ipynb:cell 61:19:14: error[invalid-assignment] Object of type `Literal[0]` is not assignable to attribute `last_print_n` on type `Unknown | ProgressBar`
++ examples/notebooks/TextCNN.ipynb:cell 61:19:14: error[unresolved-attribute] Unresolved attribute `last_print_n` on type `ProgressBar`.
+- tests/ignite/distributed/check_idist_parallel.py:28:16: warning[possibly-missing-attribute] Attribute `_init_method` on type `Unknown | _SerialModel` may be missing
++ tests/ignite/distributed/check_idist_parallel.py:28:16: error[unresolved-attribute] Type `_SerialModel` has no attribute `_init_method`
+- tests/ignite/distributed/test_launcher.py:222:16: warning[possibly-missing-attribute] Attribute `_init_method` on type `Unknown | _SerialModel` may be missing
++ tests/ignite/distributed/test_launcher.py:222:16: error[unresolved-attribute] Type `_SerialModel` has no attribute `_init_method`
+- tests/ignite/distributed/utils/__init__.py:49:20: warning[possibly-missing-attribute] Attribute `_init_method` on type `Unknown | _SerialModel` may be missing
++ tests/ignite/distributed/utils/__init__.py:49:20: error[unresolved-attribute] Type `_SerialModel` has no attribute `_init_method`
+
+mypy-protobuf (https://github.com/dropbox/mypy-protobuf)
+- test/test_generated_mypy.py:486:5: error[type-assertion-failure] Argument does not have asserted type `ScalarMap[Unknown, Email]`
++ test/test_generated_mypy.py:486:5: error[type-assertion-failure] Argument does not have asserted type `ScalarMap[@Todo, Email]`
+- test/test_generated_mypy.py:497:5: error[type-assertion-failure] Argument does not have asserted type `ScalarMap[Unknown, Email]`
++ test/test_generated_mypy.py:497:5: error[type-assertion-failure] Argument does not have asserted type `ScalarMap[@Todo, Email]`
+
+sockeye (https://github.com/awslabs/sockeye)
++ sockeye/model.py:183:20: warning[deprecated] The function `warn` is deprecated: Deprecated since Python 3.3. Use `Logger.warning()` instead.
++ sockeye/model.py:187:24: warning[deprecated] The function `warn` is deprecated: Deprecated since Python 3.3. Use `Logger.warning()` instead.
+- sockeye/train.py:445:16: error[invalid-return-type] Return type does not match returned value: expected `tuple[BaseParallelSampleIter, BaseParallelSampleIter, DataConfig, list[Unknown], list[Unknown]]`, found `tuple[BaseParallelSampleIter, BaseParallelSampleIter | None, DataConfig, list[Any], list[Any]]`
++ sockeye/train.py:445:16: error[invalid-return-type] Return type does not match returned value: expected `tuple[BaseParallelSampleIter, BaseParallelSampleIter, DataConfig, list[Any], list[Any]]`, found `tuple[BaseParallelSampleIter, BaseParallelSampleIter | None, DataConfig, list[Any], list[Any]]`
++ sockeye/utils.py:843:20: warning[deprecated] The function `warn` is deprecated: Deprecated since Python 3.3. Use `Logger.warning()` instead.
+- test/unit/test_inference.py:53:51: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[Unknown]`, found `None`
++ test/unit/test_inference.py:53:51: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[Any]`, found `None`
+- test/unit/test_inference.py:54:51: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[Unknown]`, found `None`
++ test/unit/test_inference.py:54:51: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `list[Any]`, found `None`
+- test/unit/test_loss.py:93:17: warning[possibly-missing-attribute] Attribute `sum` on type `Unknown | bool` may be missing
++ test/unit/test_loss.py:93:17: error[unresolved-attribute] Type `bool` has no attribute `sum`
+- Found 316 diagnostics
++ Found 319 diagnostics
+
+PyGithub (https://github.com/PyGithub/PyGithub)
+- github/MainClass.py:548:39: warning[possibly-missing-attribute] Attribute `strftime` on type `@Todo | _NotSetType` may be missing
++ github/MainClass.py:548:39: warning[possibly-missing-attribute] Attribute `strftime` on type `_NotSetType | (@Todo &amp; datetime)` may be missing
+- github/MainClass.py:910:42: warning[possibly-missing-attribute] Attribute `_identity` on type `@Todo | _NotSetType` may be missing
++ github/MainClass.py:910:42: warning[possibly-missing-attribute] Attribute `_identity` on type `_NotSetType | @Todo` may be missing
+- github/Milestone.py:202:41: warning[possibly-missing-attribute] Attribute `strftime` on type `@Todo | _NotSetType` may be missing
++ github/Milestone.py:202:41: warning[possibly-missing-attribute] Attribute `strftime` on type `_NotSetType | (@Todo &amp; date)` may be missing
+- github/NamedUser.py:444:39: warning[possibly-missing-attribute] Attribute `strftime` on type `@Todo | _NotSetType` may be missing
++ github/NamedUser.py:444:39: warning[possibly-missing-attribute] Attribute `strftime` on type `_NotSetType | (@Todo &amp; datetime)` may be missing
+- tests/GithubIntegration.py:150:59: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `int | str | None`, found `AppAuth | str | Unknown | int`
++ tests/GithubIntegration.py:150:59: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `int | str | None`, found `AppAuth | str | int`
+- tests/GithubIntegration.py:150:59: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `str | None`, found `AppAuth | str | Unknown | int`
++ tests/GithubIntegration.py:150:59: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `str | None`, found `AppAuth | str | int`
+- tests/GithubIntegration.py:150:59: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `str`, found `AppAuth | str | Unknown | int`
++ tests/GithubIntegration.py:150:59: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `str`, found `AppAuth | str | int`
+- tests/GithubIntegration.py:150:59: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `int`, found `AppAuth | str | Unknown | int`
++ tests/GithubIntegration.py:150:59: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `int`, found `AppAuth | str | int`
+- tests/GithubIntegration.py:150:59: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `str`, found `AppAuth | str | Unknown | int`
++ tests/GithubIntegration.py:150:59: error[invalid-argument-type] Argument to bound method `__init__` is incorre...*[Comment body truncated]*
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @sharkdp on 2025-10-01 09:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-10-01 09:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-10-01 09:18</div>
+            <div class="timeline-body"><!-- generated-comment ty ecosystem-analyzer -->
+
+<h2><code>ecosystem-analyzer</code> results</h2>
+<p>| Lint rule | Added | Removed | Changed |
+|-----------|------:|--------:|--------:|
+| <code>unsupported-operator</code> | 15 | 13 | 2,597 |
+| <code>possibly-missing-attribute</code> | 3 | 1,365 | 150 |
+| <code>unresolved-attribute</code> | 1,464 | 24 | 24 |
+| <code>invalid-argument-type</code> | 169 | 63 | 481 |
+| <code>type-assertion-failure</code> | 12 | 666 | 9 |
+| <code>invalid-assignment</code> | 53 | 65 | 73 |
+| <code>unsupported-base</code> | 0 | 0 | 191 |
+| <code>unused-ignore-comment</code> | 32 | 84 | 0 |
+| <code>invalid-context-manager</code> | 0 | 0 | 65 |
+| <code>invalid-return-type</code> | 27 | 6 | 31 |
+| <code>unresolved-import</code> | 1 | 48 | 0 |
+| <code>conflicting-argument-forms</code> | 0 | 36 | 0 |
+| <code>possibly-unresolved-reference</code> | 0 | 29 | 0 |
+| <code>non-subscriptable</code> | 0 | 1 | 20 |
+| <code>invalid-type-form</code> | 7 | 5 | 3 |
+| <code>possibly-missing-import</code> | 0 | 14 | 0 |
+| <code>index-out-of-bounds</code> | 0 | 9 | 2 |
+| <code>invalid-exception-caught</code> | 0 | 2 | 9 |
+| <code>call-non-callable</code> | 0 | 8 | 0 |
+| <code>deprecated</code> | 7 | 1 | 0 |
+| <code>possibly-missing-implicit-call</code> | 0 | 4 | 4 |
+| <code>unresolved-reference</code> | 4 | 3 | 0 |
+| <code>no-matching-overload</code> | 1 | 5 | 0 |
+| <code>not-iterable</code> | 1 | 1 | 2 |
+| <code>invalid-parameter-default</code> | 0 | 0 | 3 |
+| <code>redundant-cast</code> | 3 | 0 | 0 |
+| <code>invalid-super-argument</code> | 0 | 0 | 2 |
+| <code>invalid-syntax-in-forward-annotation</code> | 0 | 2 | 0 |
+| <code>invalid-attribute-access</code> | 1 | 0 | 0 |
+| <code>invalid-key</code> | 1 | 0 | 0 |
+| <code>invalid-raise</code> | 1 | 0 | 0 |
+| <code>missing-argument</code> | 1 | 0 | 0 |
+| <code>too-many-positional-arguments</code> | 1 | 0 | 0 |
+| <code>unknown-argument</code> | 1 | 0 | 0 |
+| <code>unsupported-bool-conversion</code> | 0 | 1 | 0 |
+| <strong>Total</strong> | <strong>1,805</strong> | <strong>2,455</strong> | <strong>3,666</strong> |</p>
+<p><strong><a href="https://david-no-unknown-union-no-pr.ecosystem-663.pages.dev/diff">Full report with detailed diff</a></strong> (<a href="https://david-no-unknown-union-no-pr.ecosystem-663.pages.dev/timing">timing results</a>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[ty] No union with `Unknown` for module-global symbols (no promotion)" to "[ty] No union with `Unknown` for module-global symbols" by @sharkdp on 2025-10-01 09:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @sharkdp on 2025-10-01 09:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @sharkdp on 2025-10-01 12:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @sharkdp on 2025-10-01 12:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-10-01 12:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/place.rs</code>:844 on 2025-10-01 12:38</div>
+            <div class="timeline-body"><p>I noticed that we can now remove this exception here, but we'll evaluate that in a separate PR, to make sure it does not have any effects on the ecosystem.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @sharkdp on 2025-10-01 12:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-01 13:07</div>
+            <div class="timeline-body"><blockquote>
+<h2>Typing conformance</h2>
+<pre><code class="language-diff">+protocols_modules.py:25:1: error[invalid-assignment] Object of type `&lt;module '_protocols_modules1'&gt;` is not assignable to `Options1`
+</code></pre>
+<p>This diagnostic should apparently not be there, but it looks like we also fail other tests in that file, so it seems to be a limitation that was previously hidden by <code>Unknown</code> somehow.</p>
+</blockquote>
+<p>That's... an interesting test. Conceptually it seems to me to be the same as this, where we (correctly, I think) state that <code>Nominal</code> should not be considered assignable to <code>Proto</code>, since mutable instance attributes must be treated invariantly:</p>
+<pre><code class="language-py">from typing import Protocol, Literal, reveal_type
+from ty_extensions import is_assignable_to
+
+class Nominal:
+    x: Literal[True]
+
+class Proto(Protocol):
+    x: bool
+
+reveal_type(is_assignable_to(Nominal, Proto))  # revealed: ConstraintSet[never]
+</code></pre>
+<p><a href="https://pyright-play.net/?pyrightVersion=1.1.405&amp;strict=true&amp;code=GYJw9gtgBALgngBwJYDsDmUkQWEMoAK4MYAxmADYA0UAMkjAKYgCGFAsAFBekUsDO-KADlIqNgC4uUGVAAeEug2ZsA2gBUQAV0YBdLjz6DCxMAAoiYEuQoBKKZ1nzFAIzCUDnACaNgUYGYKJlZg9lAAdJGePn5ogYqiEOJ2Dk4BcrZcQA">Pyright</a>, <a href="https://mypy-play.net/?mypy=latest&amp;python=3.12&amp;gist=b353f59de514ef4283a968aa09197583">mypy</a> and <a href="https://pyrefly.org/sandbox/?project=N4IgZglgNgpgziAXKOBDAdgEwEYHsAeAdAA4CeS4ATrgLYAEALqcROgOZ0Q3G6UN0AFag1wBjXFAA0dADIQGMSqigAddGtFRUcOHQBytVssRq6ZuvkSz5i5QG0AKpQCuMALpqNWnYOG4AFEK4IuJQAJQm6OYWVngSnlgwYHRg-pa%2BwbgRdIS5CZhJdGxpVgY0RuGR0an4YWogkiDODNBwJOSIIADEdACqLVDypCnO6KItuOhw%2BYVgvDSoDAD66M402IolnOgMYXQAtAB8dHAMlFXmlDAMzpRRYCogemsb53TA%2BAC%2Bj-WfjajjCAANxgADFoDAKGgsHgiGQQJ8gA&amp;version=3.12">pyrefly</a> all agree with us on the class example, so I wonder why the spec appears to assert that modules should be treated differently here</p>
+<p><a href="https://pyrefly.org/sandbox/?project=N4IgZglgNgpgziAXKOBDAdgEwEYHsAeAdAA4CeS4ATrgLYAEALqcROgOZ0Q3G6UN0AFag1wBjXFAA66aVx586NXJgCusadNFRUcOIOG4AFENwjxUAJSJpdW3XyI6eCRqwwwddDBiY4AfWIDQwd9U1wrOkIo1y8ff0CwwyVVWAtpEAAaEGS1GBJyRBB8OgBeOgAVShUYdIBfLNRRBggANxgAMWgYCjQsPCIyEFqgA&amp;version=3.12">Pyrefly also agrees with us</a> that the module should not be considered an instance of this protocol.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-10-01 13:27</div>
+            <div class="timeline-body"><p>Okay, both mypy and pyright do have internally consistent behaviour here. They both consider the module to inhabit the protocol because they do both promote the type of the module constant to <code>bool</code> rather than <code>Literal[True]</code> when viewed from external scopes.</p>
+<p>I don't think the purpose of the test here is to assert that type checkers must promote the types of module constants when viewed from external scopes, however. I think it just wasn't considered that other type checkers might have different behaviour here, because the two established type checkers had the same behaviour when the test was written. I think this is easily addressed by adding type annotations to the global-scope attributes in <code>_protocols_module_1.py</code> <a href="https://github.com/python/typing/blob/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance/tests/_protocols_modules1.py">here</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/import/dunder_all.md</code>:786 on 2025-10-01 13:48</div>
+            <div class="timeline-body"><p>we could keep this TODO -- we might still want to consider infering <code>__all__</code> in the module scope as being &quot;implicitly declared&quot; as <code>list[str] | tuple[str, ...]</code>, since it's a very special symbol that's bestowed special semantics by Python at runtime</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-10-01 13:58</div>
+            <div class="timeline-body"><blockquote>
+<p>I think this is easily addressed by adding type annotations to the global-scope attributes in <code>_protocols_module_1.py</code> <a href="https://github.com/python/typing/blob/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance/tests/_protocols_modules1.py">here</a></p>
+</blockquote>
+<p>Hm. This does sound very much like &quot;adding a type annotation to get rid of a type check error&quot;. So maybe there is something that we should do about it. Do you think it's something that can wait until after this PR has been merged? (I might want to do the literal-promotion analysis anyway)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/place.rs</code>:832 on 2025-10-01 14:07</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">            // However, external modifications (or modifications through `global` statements) that would
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-10-01 14:22</div>
+            <div class="timeline-body"><p>Great work, thank you! I agree that it makes sense to do the literal-promotion experiments as a followup. This clearly reduces our false positives on user code as it is, so it's clearly a worthwhile change by itself, even without any literal-promotion behaviour.</p>
+<blockquote>
+<p>Hm. This does sound very much like &quot;adding a type annotation to get rid of a type check error&quot;. So maybe there is something that we should do about it. Do you think it's something that can wait until after this PR has been merged? (I might want to do the literal-promotion analysis anyway)</p>
+</blockquote>
+<p>Yes, I agree that, strictly speaking, this shows that we're introducing a new violation of the gradual guarantee here. I think our options are:</p>
+<ol>
+<li>Promote all module constants to non-literal types if they're unannotated (this is what mypy does)</li>
+<li>Same as (1), but treat <code>ALL_CAPS_CONSTANT</code>s as implicitly <code>Final</code>, and therefore exclude them from <code>Literal</code> promotions (this is what pyright does)</li>
+<li>Accept this violation of the gradual guarantee as an instance where the costs of fixing it would outweigh the benefits</li>
+<li>Some kind of ad-hoc special-casing for module-to-protocol assignability? TBH I'd really rather not do this, but we might need it anyway for https://github.com/astral-sh/ty/issues/931. Though it's interesting that that issue has no upvotes so far (it doesn't seem to be affecting <em>many</em> users that our module-to-protocol subtyping is already stricter than other type checkers for method members)</li>
+</ol>
+<p>I think any of these options would be defensible. The gradual guarantee isn't an iron-clad law; it's a guiding principle. It's okay to accept violations of it where we think fixing the violation would have detrimental impacts in other respects for our users.</p>
+<p>FWIW: I intend anyway to work at some point on improving our <code>Protocol</code> assignability diagnostics so that we explain <em>why</em> we do not consider a certain type assignable to a given <code>Protocol</code>. Pyright's and mypy's diagnostics (especially mypy's) are really nice here; we can and should do much better than what we currently do.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @sharkdp on 2025-10-01 14:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-10-01 14:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-10-01 14:40</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:40:55 UTC
+    </footer>
+</body>
+</html>

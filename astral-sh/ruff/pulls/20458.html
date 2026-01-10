@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>include `.pyw` files by default when linting and formatting - astral-sh/ruff #20458</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>include <code>.pyw</code> files by default when linting and formatting</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/20458">#20458</a>
+        opened by <a href="https://github.com/amyreese">@amyreese</a>
+        on 2025-09-18 00:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/amyreese">@amyreese</a> on 2025-09-18 00:22</div>
+            <div class="timeline-body"><ul>
+<li>Adds test cases exercising file selection by extension with <code>--preview</code> enabled and disabled.</li>
+<li>Adds <code>INCLUDE_PREVIEW</code> with file patterns including <code>*.pyw</code>.</li>
+<li>In global preview mode, default configuration selects patterns from <code>INCLUDE_PREVIEW</code>.</li>
+<li>Manually tested ruff server with local vscode for both formatting and linting of a <code>.pyw</code> file.</li>
+</ul>
+<p>Closes https://github.com/astral-sh/ruff/issues/13246</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @amyreese on 2025-09-18 00:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @amyreese on 2025-09-18 00:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-09-18 00:34</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[ruff] include `.pyw` files by default when linting and formatting" to "include `.pyw` files by default when linting and formatting" by @MichaReiser on 2025-09-18 07:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-09-18 07:36</div>
+            <div class="timeline-body"><p>The basics here look good, but there are a few more places we have to account for <code>pyw</code> files.</p>
+<p>One such place is <code>PySourceType</code>. It's heavily used internally to query whether a file is a Python file, a stub file, or a notebook. We need to decide if we need to add a new variant or if it's okay to add <code>pyw</code> to <code>py</code> (might not be okay if <code>PySourceType</code> is used in any module resolution logic as <code>pyw</code> files aren't importable as far as I know). This will require reviewing where <code>PySourceType</code> is used (and how).</p>
+<p>It might also be good to do a quick search for &quot;.py&quot; (or &quot;pyi&quot; because there are fewer instances) to see if there are other places where we check for the extension that need updating.</p>
+<p>This is related to https://github.com/astral-sh/ruff/issues/13691</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/amyreese">@amyreese</a> on 2025-09-19 03:55</div>
+            <div class="timeline-body"><blockquote>
+<p>One such place is <code>PySourceType</code>. It's heavily used internally to query whether a file is a Python file, a stub file, or a notebook. We need to decide if we need to add a new variant or if it's okay to add <code>pyw</code> to <code>py</code> (might not be okay if <code>PySourceType</code> is used in any module resolution logic as <code>pyw</code> files aren't importable as far as I know). This will require reviewing where <code>PySourceType</code> is used (and how).</p>
+</blockquote>
+<p>I tried looking through various places where this is used, but there really is an overwhelming number of places where it's used that I don't have context on, but what I've looked at so far usually seems reasonable.</p>
+<p>I went ahead and added the mapping to the existing <code>Python</code> enum, and tests are passing, but I don't have a good idea what sort of tests I could add to help give signal on whether that is sufficient, or how to compare that with the alternative of adding a new enum type.</p>
+<p>That said, I'm also not sure what you mean by &quot;module resolution logic&quot;, so if you can suggest specific crates/files to look at more closely, I'd be happy to dig further.</p>
+<blockquote>
+<p>It might also be good to do a quick search for &quot;.py&quot; (or &quot;pyi&quot; because there are fewer instances) to see if there are other places where we check for the extension that need updating.</p>
+</blockquote>
+<p>I did do that originally, though I searched for <code>ipynb</code> instead, but apparently I missed the exact one place that <code>PySourceType</code> showed up in the gigantic list of results. 😅🫠</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-09-19 06:49</div>
+            <div class="timeline-body"><blockquote>
+<p>I tried looking through various places where this is used, but there really is an overwhelming number of places where it's used that I don't have context on,</p>
+</blockquote>
+<p>Yeah, same here. We don't need to study each line for a very long time. It's okay if we miss something.</p>
+<p>I only did a quick search. Most usages indeed do look good. The one I think we need to take a closer look is</p>
+<p>https://github.com/astral-sh/ruff/blob/b0279265e82903b57bb32f8bf04a2962740c5a8f/crates/ruff_linter/src/rules/flake8_no_pep420/rules/implicit_namespace_package.rs#L72-L73</p>
+<p>because it tries to resemble python's module resolution at runtime.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-09-24 07:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @amyreese on 2025-09-24 15:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @amyreese on 2025-09-24 15:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-09-24 15:39</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:40:54 UTC
+    </footer>
+</body>
+</html>

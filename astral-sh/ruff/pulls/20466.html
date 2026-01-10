@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Swap `detail` and `description` fields for `CompletionItemLabelDetails` - astral-sh/ruff #20466</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Swap <code>detail</code> and <code>description</code> fields for <code>CompletionItemLabelDetails</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/20466">#20466</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2025-09-18 12:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-09-18 12:30</div>
+            <div class="timeline-body"><p>This seems to be more consistent with how other LSPs work (like
+<code>rust-analyzer</code>), and also I think is more consistent with how
+<code>CompletionItem.detail</code> is itself rendered. Namely, in VS Code, it
+is right-aligned. And it's also where we put the type signature.
+But <code>CompletionItemLabelDetails.detail</code> is left-aligned where as
+<code>CompletionItemLabelDetails.description</code> is right-aligned. So let's
+swap them such that type signatures go in the latter and not the
+former.</p>
+<p>Fixes https://github.com/astral-sh/ty/issues/1200</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @BurntSushi on 2025-09-18 12:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @BurntSushi on 2025-09-18 12:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @BurntSushi on 2025-09-18 12:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @BurntSushi on 2025-09-18 12:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @dcreager removed by @BurntSushi on 2025-09-18 12:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @carljm removed by @BurntSushi on 2025-09-18 12:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @MichaReiser removed by @BurntSushi on 2025-09-18 12:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-09-18 12:31</div>
+            <div class="timeline-body"><p>Demo:</p>
+<p>https://github.com/user-attachments/assets/f0f1a5bd-332f-4009-ae0b-da98e683331d</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-09-18 12:32</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-09-18 12:36</div>
+            <div class="timeline-body"><p>Thanks for looking into this.</p>
+<p>It now seems unfortunate that the module name comes directly (without any space) after the completion text which seems expected acording to the LSP specification</p>
+<pre><code class="language-ts">/**
+ * Additional details for a completion item label.
+ *
+ * @since 3.17.0
+ */
+export interface [CompletionItemLabelDetails](https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#completionItemLabelDetails) {
+
+	/**
+	 * An optional string which is rendered less prominently directly after
+	 * {@link CompletionItem.label label}, without any spacing. Should be
+	 * used for function signatures or type annotations.
+	 */
+	detail?: string;
+
+	/**
+	 * An optional string which is rendered less prominently after
+	 * {@link CompletionItemLabelDetails.detail}. Should be used for fully qualified
+	 * names or file path.
+	 */
+	description?: string;
+}
+</code></pre>
+<p>I think we should at least insert a space at the front of <code>detail</code> if we want to use that field.</p>
+<p>Or we keep using <code>detail</code> for the type but change the syntax to <code>: {type}</code>, similar to what we show in inlay hints. Wdyt?</p>
+<p>Edit: I only just now saw your detailed write-up on the issue. I think what you did makes sense. I'm only wondering if we should introduce a space to make this look less squeezed together</p>
+<p>Edit2: It seems that r-a solves this visual issue by using <code>(use &lt;module name&gt;)</code> for the left aligned content which helps a bit.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-09-18 12:42</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅
+No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-09-18 12:49</div>
+            <div class="timeline-body"><p>Yeah and r-a inserts a leading space too.</p>
+<p>I added the leading space and added <code>(import &lt;name&gt;)</code>, which I think also helps (similar r-a's <code>(use &lt;name&gt;)</code>).</p>
+<p>Demo:</p>
+<p>https://github.com/user-attachments/assets/6e6a4019-6552-4b7a-b787-416695b2692f</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2025-09-18 12:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @MichaReiser on 2025-09-18 12:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-09-18 12:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> approved on 2025-09-18 13:11</div>
+            <div class="timeline-body"><p>Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @BurntSushi on 2025-09-18 13:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2025-09-18 13:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-09-18 13:11</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:40:54 UTC
+    </footer>
+</body>
+</html>

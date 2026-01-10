@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Remove the `Constraints` trait - astral-sh/ruff #20355</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Remove the <code>Constraints</code> trait</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/20355">#20355</a>
+        opened by <a href="https://github.com/dcreager">@dcreager</a>
+        on 2025-09-11 18:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dcreager">@dcreager</a> on 2025-09-11 18:46</div>
+            <div class="timeline-body"><p>This PR removes the <code>Constraints</code> trait. We removed the <code>bool</code> implementation several weeks back, and are using <code>ConstraintSet</code> everywhere. There have been discussions about trying to include the reason for an assignability failure as part of the result, but that there are no concrete plans to do so soon, and it's not clear that we'll need the <code>Constraints</code> trait to do that. (We can ideally just update the <code>ConstraintSet</code> type directly.)</p>
+<p>In the meantime, this just complicates the code for no good reason.</p>
+<p>This PR is a pure refactoring, and contains no behavioral changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @dcreager on 2025-09-11 18:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @dcreager on 2025-09-11 18:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-09-11 18:48</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-09-11 18:52</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅
+No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:119 on 2025-09-11 19:09</div>
+            <div class="timeline-body"><p>These methods (and by extension, <code>from_bool</code>) didn't actually use their <code>db</code> parameter, so I've simplified the API a bit.  <code>from_bool</code> is now replaced with a <code>From&lt;bool&gt;</code> impl, and these two constructors are replaced with <code>ConstraintSet::from(true)</code> and <code>from(false)</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:249 on 2025-09-11 19:11</div>
+            <div class="timeline-body"><p>There's now an annoying difference here, where <code>union</code> takes in an owned <code>other</code>, while <code>intersect</code> takes in a reference. This is purely due to internal details about when we can/cannot reuse the existing storage. This didn't exist before, because clippy couldn't see through the trait to trip the &quot;you can pass this by reference&quot; lint. I decided to go ahead and accept clippy's recommendation. If folks prefer, I would be equally happy putting an <code>#[expect]</code> here so that both methods take in an owned <code>other</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-09-11 19:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @dcreager on 2025-09-11 19:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @dcreager on 2025-09-11 19:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @dcreager on 2025-09-11 19:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @dcreager on 2025-09-11 19:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:46 on 2025-09-11 19:34</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">//! NOTE: This module is currently in a transitional state. We've added the DNF [`ConstraintSet`]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:119 on 2025-09-11 19:35</div>
+            <div class="timeline-body"><p>In terms of readability, I think I weakly prefer the old spelling, actually! <code>ConstraintSet::unsatisfiable()</code> seems clearer to me about what it means than <code>ConstraintSet::from(false)</code>, even if the constructor is strictly-speaking redundant with the new <code>From&lt;bool&gt;</code> implementation. Same for <code>ConstraintSet::always_satisfiable</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:249 on 2025-09-11 19:36</div>
+            <div class="timeline-body"><p>I'm happy to genuflect to Clippy here!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-09-11 19:38</div>
+            <div class="timeline-body"><p>Nice!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @carljm removed by @carljm on 2025-09-11 21:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-09-11 21:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:119 on 2025-09-11 21:32</div>
+            <div class="timeline-body"><p>If it's a weak preference, I'll put in a vote in favor of the new spelling (or at least, in favor of not taking time to reintroduce the old methods and updating the PR to use them everywhere.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-09-11 22:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:119 on 2025-09-11 22:58</div>
+            <div class="timeline-body"><blockquote>
+<p>or at least, in favor of not taking time to reintroduce the old methods and updating the PR to use them everywhere</p>
+</blockquote>
+<p>I did that change in a separate commit, so the cost of reverting it would be ~zero if that sways your vote</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-09-11 23:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:119 on 2025-09-11 23:27</div>
+            <div class="timeline-body"><p>I don't feel strongly either, but I think the new spelling is pretty clear, and I like that it generalizes well to cases where we already have a boolean value, not literal <code>true</code> or <code>false</code> (e.g. <code>ConstraintSet::from_bool(relation.is_assignability)</code>). So it seems like we will need to have (and be able to read and understand the concept of) <code>ConstraintSet::from_bool</code> anyway, which makes me dis-inclined to pad the API with special-case methods for literal <code>true</code> and <code>false</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dcreager on 2025-09-12 00:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dcreager on 2025-09-12 00:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-09-12 00:55</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:40:53 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Track t-strings and f-strings for token-based rules and suppression comments - astral-sh/ruff #20357</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Track t-strings and f-strings for token-based rules and suppression comments</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/20357">#20357</a>
+        opened by <a href="https://github.com/dylwil3">@dylwil3</a>
+        on 2025-09-11 21:05
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-09-11 21:05</div>
+            <div class="timeline-body"><p>Our token-based rules and <code>noqa</code> extraction used an <code>Indexer</code> that kept track of f-string ranges but not t-strings. We've updated the <code>Indexer</code> and downstream uses thereof to handle both f-strings and t-strings.</p>
+<p>Most of the diff is renaming and adding tests.</p>
+<p>Note that much of the &quot;new&quot; logic gets to be naive because the lexer has already ensured that f and t-string &quot;starts&quot; are paired with their respective &quot;ends&quot;, even amidst nesting and so on.</p>
+<p>Finally: one could imagine wanting to know if a given interpolated string range corresponds to an f-string or a t-string, but I didn't find a place where we actually needed this.</p>
+<p>Closes #20310</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @dylwil3 on 2025-09-11 21:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @dylwil3 on 2025-09-11 21:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">suppression</span> added by @dylwil3 on 2025-09-11 21:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">python314</span> added by @dylwil3 on 2025-09-11 21:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-09-11 21:18</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_implicit_str_concat/rules/implicit.rs</code>:146 on 2025-09-12 16:06</div>
+            <div class="timeline-body"><p>I think you addressed this in the summary, and it sounds like it should be okay, but it would feel slightly more natural to me to write it as:</p>
+<pre><code class="language-suggestion">            (TokenKind::FStringEnd, TokenKind::FStringStart)
+             | (TokenKind::TStringEnd, TokenKind::TStringStart) =&gt; {
+</code></pre>
+<p>or can they actually be mixed?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/directives.rs</code>:518 on 2025-09-12 16:12</div>
+            <div class="timeline-body"><p>This looks like a test for an f-string in a t-string then a t-string in an f-string. Do we need one for a t-string in a t-string? These are probably the trickier cases, just an idea</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_index/src/indexer.rs</code>:21 on 2025-09-12 16:13</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    /// The range of all interpolated strings in the source document.
+</code></pre>
+<p>I guess we might as well fix an existing typo while we're here</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_implicit_str_concat/snapshots/ruff_linter__rules__flake8_implicit_str_concat__tests__multiline_ISC001_ISC.py.snap</code>:564 on 2025-09-12 16:23</div>
+            <div class="timeline-body"><p>Just curious, why is this the only case with a fix? I'm assuming that's an existing feature of the rule, but I hadn't noticed it before.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> approved on 2025-09-12 16:26</div>
+            <div class="timeline-body"><p>Nice, thank you! This looks good to me, I just had a few questions for my understanding and a couple of very minor nits.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dylwil3">@dylwil3</a> reviewed on 2025-09-12 17:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dylwil3">@dylwil3</a> on <code>crates/ruff_linter/src/rules/flake8_implicit_str_concat/snapshots/ruff_linter__rules__flake8_implicit_str_concat__tests__multiline_ISC001_ISC.py.snap</code>:564 on 2025-09-12 17:40</div>
+            <div class="timeline-body"><p>Oh good catch! Fixed</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dylwil3">@dylwil3</a> reviewed on 2025-09-12 17:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dylwil3">@dylwil3</a> on <code>crates/ruff_linter/src/rules/flake8_implicit_str_concat/rules/implicit.rs</code>:146 on 2025-09-12 17:40</div>
+            <div class="timeline-body"><p>Your way is better (but they are equivalent on valid code because of the explanation in the PR summary)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dylwil3 on 2025-09-12 18:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dylwil3 on 2025-09-12 18:00</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:40:53 UTC
+    </footer>
+</body>
+</html>

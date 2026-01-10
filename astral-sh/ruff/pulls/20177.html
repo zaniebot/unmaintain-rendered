@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`flake8-bandit`] Fix truthiness: dict-only `**` displays not truthy for `shell` (`S602`, `S604`, `S609`) - astral-sh/ruff #20177</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>flake8-bandit</code>] Fix truthiness: dict-only <code>**</code> displays not truthy for <code>shell</code> (<code>S602</code>, <code>S604</code>, <code>S609</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/20177">#20177</a>
+        opened by <a href="https://github.com/danparizher">@danparizher</a>
+        on 2025-08-31 14:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/danparizher">@danparizher</a> on 2025-08-31 14:40</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Fixes #19927</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-31 14:53</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dscorbett">@dscorbett</a> on 2025-08-31 18:20</div>
+            <div class="timeline-body"><p>With this change, <code>{**{}}</code> is considered falsey; what about <code>{**{**{}}}</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danparizher">@danparizher</a> on 2025-08-31 19:08</div>
+            <div class="timeline-body"><blockquote>
+<p>With this change, <code>{**{}}</code> is considered falsey; what about <code>{**{**{}}}</code>?</p>
+</blockquote>
+<p>Good call, I had nested dict displays as truthy. I just pushed a change to have them checked recursively.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-09-09 18:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2025-09-09 18:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_ast/src/helpers.rs</code>:1297 on 2025-09-09 18:37</div>
+            <div class="timeline-body"><p>Thanks for diving deep here, but I think I'd kind of lean towards just considering any starred mapping to be of unknown truthiness (so just removing the <code>Expr::Name</code> requirement from <code>matches!</code>). I don't think nested, unpacked, empty dict literals are very common, so it seems like a nicer trade-off between implementation complexity and accuracy. That's also what we do for lists, sets, and tuples just above this. <code>Expr::is_starred_expr</code> for those elements is analogous to <code>matches!(item, DictItem { key: None, ... })</code> for dicts.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/resources/test/fixtures/flake8_bandit/S602.py</code>:24 on 2025-09-09 18:38</div>
+            <div class="timeline-body"><p>It might also be nice to add a test case for a more common version of this problem like <code>{**self.shell_defaults, **self.fetch_shell_config(self.username)}</code> mentioned <a href="https://github.com/astral-sh/ruff/issues/19927#issuecomment-3194809639">here</a>. But the code fix should be the same anyway.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-09-09 18:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ntBre by @danparizher on 2025-09-09 20:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danparizher">@danparizher</a> on 2025-09-09 20:49</div>
+            <div class="timeline-body"><p>The CI failures seem to be unrelated to my changes, wondering if the one for <code>cargo fuzz build</code> was introduced elsewhere</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-09-09 20:59</div>
+            <div class="timeline-body"><p>Yeah no worries about the fuzz build. There was a breaking libcst release that we need to handle.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> approved on 2025-09-10 20:50</div>
+            <div class="timeline-body"><p>Thank you! I'll probably close and reopen to re-trigger CI, but this looks ready to go once it passes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-09-10 20:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @ntBre on 2025-09-10 20:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ntBre on 2025-09-10 21:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-09-10 21:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-09-10 21:45</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:40:52 UTC
+    </footer>
+</body>
+</html>

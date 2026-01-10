@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deduplicate input paths - astral-sh/ruff #20105</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Deduplicate input paths</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/20105">#20105</a>
+        opened by <a href="https://github.com/TaKO8Ki">@TaKO8Ki</a>
+        on 2025-08-26 19:42
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/TaKO8Ki">@TaKO8Ki</a> on 2025-08-26 19:42</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title? (Please prefix with `[ty]` for ty pull
+  requests.)
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+<p>Fixes #20035, fixes #19395</p>
+<p>This is for deduplicating input paths to avoid processing the same file multiple times.</p>
+<p>This is my first contribution, so I'm sorry if I miss something. Please tell me if this is needed for this feature.</p>
+<h2>Test Plan</h2>
+<!-- How was it tested? -->
+
+<p>I just added a test <code>find_python_files_deduplicated</code> in https://github.com/TaKO8Ki/ruff/blob/eee1020e322e693bf977d91bf3edd03b45420254/crates/ruff_workspace/src/resolver.rs#L1017
+. This pull request adds changes to <code>WalkPythonFilesState::finish</code>, which is used in <code>python_files_in_path</code>, so they affect some commands such as <code>analyze</code>, <code>format</code>, <code>check</code> and so on. I will add snapshot tests for them if necessary.</p>
+<p>I’ve already confirmed that the same thing happens with ruff check as well.</p>
+<pre><code>$ echo &quot;x   = 1&quot; &gt; example/foo.py
+$ uvx ruff check example example/foo.py
+I002 [*] Missing required import: `from __future__ import annotations`
+--&gt; /path/to/example/foo.py:1:1
+help: Insert required import: `from __future__ import annotations`
+
+I002 [*] Missing required import: `from __future__ import annotations`
+--&gt; /path/to/example/foo.py:1:1
+help: Insert required import: `from __future__ import annotations`
+
+Found 2 errors.
+[*] 2 fixable with the `--fix` option.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/TaKO8Ki">@TaKO8Ki</a> on 2025-08-27 03:17</div>
+            <div class="timeline-body"><p>I need to handle this cause <code>Explicitly pass test.py, should be linted regardless of it being excluded by lint.exclude</code>, so I will.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Deduplicate input paths" to "[`ruff`] Deduplicate input paths" by @TaKO8Ki on 2025-08-27 04:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/TaKO8Ki">@TaKO8Ki</a> on 2025-08-28 00:39</div>
+            <div class="timeline-body"><p>@ntBre Thank you for reviewing another pull request of mine. Could you approve the workflow and review this pull request if possible?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-08-28 01:28</div>
+            <div class="timeline-body"><p>No problem! I'll get to this soon, it's on my todo list :) I'll kick off the workflow now</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-08-28 01:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @ntBre on 2025-08-28 01:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ntBre by @ntBre on 2025-08-28 01:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-08-28 01:40</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/TaKO8Ki">@TaKO8Ki</a> on 2025-08-28 02:27</div>
+            <div class="timeline-body"><p>@ntBre Thank you. I fixed clippy errors on CI.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_workspace/src/resolver.rs</code>:538 on 2025-08-28 19:02</div>
+            <div class="timeline-body"><p>Did you run into this situation when testing this out? This is my first time looking at this code, but it seems like we will have already applied exclusion rules in <code>python_files_in_path</code> here:</p>
+<p>https://github.com/astral-sh/ruff/blob/e42006ece8c53f5e4196849af5c0b3d6c6fadfd2/crates/ruff_workspace/src/resolver.rs#L470-L476</p>
+<p>and in <code>PythonFilesVisitorBuilder</code>:</p>
+<p>https://github.com/astral-sh/ruff/blob/e42006ece8c53f5e4196849af5c0b3d6c6fadfd2/crates/ruff_workspace/src/resolver.rs#L574-L581</p>
+<p>which will both run before <code>WalkPythonFileState::finish</code>.</p>
+<p>It makes sense to me to favor <code>Root</code> nodes over <code>Nested</code> ones when deduplicating, but I'm not sure if it actually affects exclusions. It might be good to add a test for that case, if it does.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_workspace/src/resolver.rs</code>:1047 on 2025-08-28 19:04</div>
+            <div class="timeline-body"><p>I think I would kind of prefer a CLI test or two. Maybe one in <a href="https://github.com/astral-sh/ruff/blob/e42006ece8c53f5e4196849af5c0b3d6c6fadfd2/crates/ruff/tests/lint.rs#L5863"><code>lint.rs</code></a> and one in <a href="https://github.com/astral-sh/ruff/blob/e42006ece8c53f5e4196849af5c0b3d6c6fadfd2/crates/ruff/tests/format.rs#L2329"><code>format.rs</code></a> to make sure it works for both cases?</p>
+<p>I guess both of the bug reports were about formatting, but the linter shows the same behavior in my local testing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_workspace/src/resolver.rs</code>:539 on 2025-08-28 19:07</div>
+            <div class="timeline-body"><p>I think if we take an owned <code>ResolvedFiles</code> here we could avoid some clones. That makes sense anyway since we're &quot;consuming&quot; the input <code>files</code> and returning a new version.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_workspace/src/resolver.rs</code>:543 on 2025-08-28 19:20</div>
+            <div class="timeline-body"><p>Would it be simpler just to sort the <code>files</code> and then deduplicate them? Something like this:</p>
+<pre><code class="language-rust">fn deduplicate_files(mut files: ResolvedFiles) -&gt; ResolvedFiles {
+    files.sort();
+    files.dedup_by_key(|result| result.map(|file| file.path()));
+    files
+</code></pre>
+<p>If we derive <code>PartialOrd</code> on <code>ResolvedFile</code>, I think this will automatically sort <code>Root</code> files before <code>Nested</code> files, and then the dedup call will take the first element with a given path.</p>
+<p>I think this would also deduplicate the <code>Error</code>s, which could be a good thing or a bad thing. I'm not really sure.</p>
+<p>Another idea, which seems like it could be cheaper overall, would be to filter out duplicates as we're walking the file system. Did you give that a try? It seems a bit more intuitive to me and avoids having to sort or filter anything at the end. I think if <code>PythonFilesVisitor::local_files</code> were an <code>FxHashMap</code> of path -&gt; <code>Result&lt;ResolvedFile&gt;</code>, it might be pretty straightforward.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-08-28 19:28</div>
+            <div class="timeline-body"><p>Thanks for working on this! I left more detailed comments inline, but I think it would be good to add CLI tests for this, and I'm also quite interested in an approach where we deduplicate as we visit the files.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/TaKO8Ki">@TaKO8Ki</a> reviewed on 2025-08-30 13:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/TaKO8Ki">@TaKO8Ki</a> on <code>crates/ruff_workspace/src/resolver.rs</code>:538 on 2025-08-30 13:51</div>
+            <div class="timeline-body"><p>Yes. They don't deduplicate input paths in this situation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/TaKO8Ki">@TaKO8Ki</a> reviewed on 2025-08-30 13:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/TaKO8Ki">@TaKO8Ki</a> on <code>crates/ruff_workspace/src/resolver.rs</code>:1047 on 2025-08-30 13:53</div>
+            <div class="timeline-body"><p>Yes. You're right. As I said pull request description, ruff check show the same result.</p>
+<blockquote>
+<p>I’ve already confirmed that the same thing happens with ruff check as well.</p>
+</blockquote>
+<p>So I will add CLI tests too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ntBre by @TaKO8Ki on 2025-09-01 22:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/TaKO8Ki">@TaKO8Ki</a> on 2025-09-02 17:13</div>
+            <div class="timeline-body"><p>@ntBre Thank you for the review. I have addressed your comments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-09-15 13:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_workspace/src/resolver.rs</code>:538 on 2025-09-15 13:29</div>
+            <div class="timeline-body"><p>I'm not entirely sure I follow why this logic is important. If the paths are identical, why does it matter that we return the root path first?</p>
+<p>Can you add an example why this is important? If it isn't important, should we use a <code>Set</code> instead of a <code>Vec</code> to avoid this collecting step altogether? Or could we do better and deduplicate the input paths instead?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/TaKO8Ki">@TaKO8Ki</a> reviewed on 2025-09-16 13:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/TaKO8Ki">@TaKO8Ki</a> on <code>crates/ruff_workspace/src/resolver.rs</code>:538 on 2025-09-16 13:27</div>
+            <div class="timeline-body"><p>It's important and related to: https://github.com/astral-sh/ruff/blob/9edbeb44dd5869a32200cbb442221041ce4ace1a/crates/ruff/tests/lint.rs#L252</p>
+<p>Root has to be prioritized because <code>ResolvedFile::Root</code> means “explicitly passed on the CLI,” and excludes only apply to non‑root entries unless --force-exclude is set.</p>
+<p>Dropping the root entry means that the explicitly passed path may be unintentionally ignored, since it is treated as nested and can be excluded despite being requested.</p>
+<p>Concretely, with <code>lint.exclude = [&quot;foo.py&quot;]</code> and <code>ruff check . foo.</code>py, we must keep Root(foo.py) and drop Nested(foo.py) so foo.py is linted as the user requested.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/TaKO8Ki">@TaKO8Ki</a> reviewed on 2025-09-16 13:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/TaKO8Ki">@TaKO8Ki</a> on <code>crates/ruff_workspace/src/resolver.rs</code>:538 on 2025-09-16 13:28</div>
+            <div class="timeline-body"><p>I have added this explanation to the comment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @TaKO8Ki on 2025-09-16 13:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_workspace/src/resolver.rs</code>:758 on 2025-09-16 14:46</div>
+            <div class="timeline-body"><p>I'm pretty sure this is equivalent to the implementation that would be derived, unless I'm missing some subtlety here. Could we replace the manual <code>Ord</code> and <code>PartialOrd</code> implementations with <code>derive(Ord, PartialOrd)</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_workspace/src/resolver.rs</code>:552 on 2025-09-16 14:48</div>
+            <div class="timeline-body"><p>I think this is also nearly the same as the derived <code>PartialOrd</code> implementation for <code>Result</code>, except that we consider any errors equal. It seems okay to me just to call <code>files.sort()</code> and use the default implementation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-09-16 14:53</div>
+            <div class="timeline-body"><p>Thanks, I just had a couple more potential simplification suggestions. I'm also still interested in deduplicating the files as we traverse the file system instead of sorting and filtering at the end, as I mentioned in https://github.com/astral-sh/ruff/pull/20105#discussion_r2308327043, but if Micha is happy with this then I am too! This is probably the easier approach if it's not too expensive.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/TaKO8Ki">@TaKO8Ki</a> reviewed on 2025-09-16 15:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/TaKO8Ki">@TaKO8Ki</a> on <code>crates/ruff_workspace/src/resolver.rs</code>:552 on 2025-09-16 15:26</div>
+            <div class="timeline-body"><p>I also think it's ideal, but we cannot use <code>files.sort()</code> here since <code>ignore::Error</code> does not implement <code>Ord</code>.</p>
+<pre><code>type ResolvedFiles = Vec&lt;Result&lt;ResolvedFile, ignore::Error&gt;&gt;;
+</code></pre>
+<pre><code>the trait bound `ignore::Error: std::cmp::Ord` is not satisfied
+the trait `std::cmp::Ord` is implemented for `std::result::Result&lt;T, E&gt;`
+required for `std::result::Result&lt;resolver::ResolvedFile, ignore::Error&gt;` to implement `std::cmp::Ord`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/TaKO8Ki">@TaKO8Ki</a> on <code>crates/ruff_workspace/src/resolver.rs</code>:543 on 2025-09-16 15:40</div>
+            <div class="timeline-body"><p>I will try using FxHashMap for local_files and confirm if it does not cause any side effects.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/TaKO8Ki">@TaKO8Ki</a> reviewed on 2025-09-16 15:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-09-16 16:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_workspace/src/resolver.rs</code>:552 on 2025-09-16 16:01</div>
+            <div class="timeline-body"><p>Ahh okay, thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/TaKO8Ki">@TaKO8Ki</a> on <code>crates/ruff_workspace/src/resolver.rs</code>:758 on 2025-09-16 16:07</div>
+            <div class="timeline-body"><p>I have added <code>derive(Ord, PartialOrd)</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/TaKO8Ki">@TaKO8Ki</a> reviewed on 2025-09-16 16:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/TaKO8Ki">@TaKO8Ki</a> on 2025-09-16 16:24</div>
+            <div class="timeline-body"><p>@ntBre</p>
+<blockquote>
+<p>I'm also still interested in deduplicating the files as we traverse the file system instead of sorting and filtering at the end, as I mentioned in https://github.com/astral-sh/ruff/pull/20105#discussion_r2308327043, but if Micha is happy with this then I am too! This is probably the easier approach if it's not too expensive.</p>
+</blockquote>
+<p>I tested the approach and confirmed it seems feasible to implement. However, changing the type of <code>local_files</code> would directly affect <code>python_files_in_path</code>, which is used by various commands, so the impact area is fairly large. It’s possible to contain the change within <code>PythonFilesVisitorBuilder</code>, but doing so would require modifying the current implementation to discard the <code>ignore::Error</code> that’s currently passed to <code>python_files_in_path</code>. Given the scope, this looks like a significant change—would it be alright if I handle it in a separate follow-up pull request?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ntBre by @TaKO8Ki on 2025-09-17 16:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_workspace/src/resolver.rs</code>:1027 on 2025-09-17 17:18</div>
+            <div class="timeline-body"><p>I think we could probably drop this test now that we have CLI tests covering the same code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff/tests/lint.rs</code>:276 on 2025-09-17 17:19</div>
+            <div class="timeline-body"><p>Could we add an exclusion to one of these to show the <code>Root</code> vs <code>Nested</code> behavior?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-09-17 17:23</div>
+            <div class="timeline-body"><p>Thank you for looking into the other approach! I think this version is probably fine then, no need to follow up as long as it's okay with @MichaReiser too. Avoiding the work of checking the same files multiple times should more than offset the sorting, I would guess.</p>
+<p>I just had two more small suggestions about tests, but I think this is good to go otherwise.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/TaKO8Ki">@TaKO8Ki</a> reviewed on 2025-09-18 14:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/TaKO8Ki">@TaKO8Ki</a> on <code>crates/ruff_workspace/src/resolver.rs</code>:1027 on 2025-09-18 14:28</div>
+            <div class="timeline-body"><p>I've removed it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/TaKO8Ki">@TaKO8Ki</a> on <code>crates/ruff/tests/lint.rs</code>:276 on 2025-09-18 14:28</div>
+            <div class="timeline-body"><p>I've added exclude option to the test case for lint.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/TaKO8Ki">@TaKO8Ki</a> reviewed on 2025-09-18 14:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ntBre by @TaKO8Ki on 2025-09-18 14:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> approved on 2025-09-19 18:33</div>
+            <div class="timeline-body"><p>Thank you! I tried out my hash map idea locally, and I think I agree with you that this is a nicer way to go.</p>
+<p>I think we could get around the <code>local_files</code> type issues (https://github.com/astral-sh/ruff/pull/20105#issuecomment-3299500183) by using some kind of wrapper type (either wrapping a <code>Vec</code> or converting to a <code>Vec</code> at the end). I was playing with something like this locally:</p>
+<pre><code class="language-rust">struct LocalFiles(Vec&lt;Result&lt;ResolvedFile, ignore::Error&gt;&gt;);
+</code></pre>
+<p>and doing the deduplication in <code>LocalFiles::push</code>, but the validation is still tricky. I think what you have is good for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-09-19 18:39</div>
+            <div class="timeline-body"><p>I updated the summary to close https://github.com/astral-sh/ruff/issues/19395 too!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[`ruff`] Deduplicate input paths" to "Deduplicate input paths" by @ntBre on 2025-09-19 18:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ntBre on 2025-09-19 18:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-09-19 18:40</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:40:52 UTC
+    </footer>
+</body>
+</html>

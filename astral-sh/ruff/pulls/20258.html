@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ruff] Treat panics as fatal diagnostics, sort panics last - astral-sh/ruff #20258</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ruff] Treat panics as fatal diagnostics, sort panics last</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/20258">#20258</a>
+        opened by <a href="https://github.com/amyreese">@amyreese</a>
+        on 2025-09-05 00:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/amyreese">@amyreese</a> on 2025-09-05 00:08</div>
+            <div class="timeline-body"><ul>
+<li>Convert panics to diagnostics with id <code>Panic</code>, severity <code>Fatal</code>, and the error as the diagnostic message, annotated with a <code>Span</code> with empty code block and no range.</li>
+<li>Updates the post-linting message diagnostic handling to track the maximum severity seen, and then prints the &quot;report a bug in ruff&quot; message only if the max severity was <code>Fatal</code></li>
+</ul>
+<p>This depends on the sorting changes since it creates diagnostics with no range specified.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @amyreese on 2025-09-05 18:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @amyreese on 2025-09-05 18:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @amyreese on 2025-09-05 18:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @amyreese on 2025-09-05 18:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-09-05 18:58</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-09-05 19:23</div>
+            <div class="timeline-body"><p>Thanks!</p>
+<p>I still think it could make sense to try to follow ty's diagnostic model a bit more closely, as I mentioned on https://github.com/astral-sh/ruff/pull/20252. Did you have any luck trying to add a test showing the message? That might be a nice way to play around with different message formats. Let me know if you want me to take a look, it sounded like it might be trickier than I expected in https://github.com/astral-sh/ruff/pull/20252#issuecomment-3255784376.</p>
+<p>I also don't think we can land this without auditing our usage of <code>Diagnostic::expect_range</code> more fully. I took another look at its references just now, and I think this call chain would cause a panic in diagnostic rendering:</p>
+<p>https://github.com/astral-sh/ruff/blob/16d674e63264acdf640349c81ec6263e813a3234/crates/ruff_linter/src/message/github.rs#L22-L24</p>
+<p>https://github.com/astral-sh/ruff/blob/16d674e63264acdf640349c81ec6263e813a3234/crates/ruff_db/src/diagnostic/mod.rs#L459</p>
+<p>If we try to render a new panic diagnostic with the GitHub output format, it will call <code>Diagnostic::expect_ruff_start_location</code>, which calls <code>Diagnostic::expect_range</code>.</p>
+<p>Feel free to spin this off into a separate PR, but I'd feel better introducing diagnostics without ranges if we can remove <code>Diagnostic::expect_range</code> entirely first.</p>
+<p>I tested this out locally to make sure I wasn't off base:</p>
+<pre><code class="language-shell"> &gt; ./target/debug/ruff check --no-cache tmp/foo.py
+panic: Panicked while linting tmp/foo.py:
+panicked at crates/ruff_linter/src/rules/pyflakes/rules/unused_import.rs:430:17:
+brent's panic
+run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+--&gt; tmp/foo.py:1:1
+ |
+ |
+
+Found 1 error.
+error: Panic during linting indicates a bug in Ruff. If you could open an issue at:
+
+https://github.com/astral-sh/ruff/issues/new?title=%5BLinter%20panic%5D
+
+...with the relevant file contents, the `pyproject.toml` settings, and the stack trace above, we'd be very appreciative!
+
+&gt; ./target/debug/ruff check --no-cache tmp/foo.py --output-format github
+
+error: Ruff crashed. If you could open an issue at:
+
+    https://github.com/astral-sh/ruff/issues/new?title=%5BPanic%5D
+
+...quoting the executed command, along with the relevant file contents and `pyproject.toml` settings, we'd be very appreciative!
+
+
+thread 'main' panicked at crates/ruff_db/src/diagnostic/mod.rs:499:22:
+Expected a range for the primary span
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @carljm removed by @carljm on 2025-09-05 21:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/amyreese">@amyreese</a> on 2025-09-06 00:18</div>
+            <div class="timeline-body"><p>Check-pointed where I got to with trying to get a test rule — will look at teasing out the <code>expect_range</code> parts on Monday.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Better handling for panics during linting" to "[ruff] Better handling for panics during linting" by @amyreese on 2025-09-12 22:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">diagnostics</span> added by @amyreese on 2025-09-12 22:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/tests/lint.rs</code>:5989 on 2025-09-15 13:48</div>
+            <div class="timeline-body"><p>We try to avoid multiline content in diagnostic messages because it can break rendering for some output formats (as seen here).</p>
+<p>You can see how we accomplish this in ty here:</p>
+<p>https://github.com/astral-sh/ruff/blob/b3cc733f068c93166dd58c01240b862b400ccc89/crates/ty_project/src/lib.rs#L669-L746</p>
+<p>The downside of ty's approach is that we only show the &quot;Please open an issue&quot; part if a user uses <code>output-format=&quot;full&quot;</code> (or any other format that renders sub diagnostics).</p>
+<p>I don't feel strongly about this but I thought it was worth mentioning in case this wasn't an intentional design decision.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/tests/lint.rs</code>:5935 on 2025-09-15 13:49</div>
+            <div class="timeline-body"><p>I think I sort of prefer the old rendering where this message was next to the panic-diagnostic. As a user, it's now less clear to me what I have to report (imagine a few 100 diagnostics).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/diagnostic/mod.rs</code>:502 on 2025-09-15 13:51</div>
+            <div class="timeline-body"><p>We could consider comparing by severity here (in reverse order)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/test_rules.rs</code>:498 on 2025-09-15 13:52</div>
+            <div class="timeline-body"><p>Nice way of testing this (we don't have this in ty)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-09-15 13:53</div>
+            <div class="timeline-body"><p>This looks great to me but I'll defer to @ntBre to do the final review as he's more up to date with what you discussed</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/amyreese">@amyreese</a> reviewed on 2025-09-15 15:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/amyreese">@amyreese</a> on <code>crates/ruff/tests/lint.rs</code>:5935 on 2025-09-15 15:46</div>
+            <div class="timeline-body"><p>Part of the change was making sure that panics always sort to the bottom of the diagnostics, so other than being on stderr, to an interactive user it should always render &quot;next to&quot; the actual panic messages, which should always render after all of the non-fatal diagnostics.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-09-15 17:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff/tests/lint.rs</code>:5989 on 2025-09-15 17:26</div>
+            <div class="timeline-body"><p>The PR looks great to me overall too! I think this is the main thing I'd find interesting to try out (plus the full severity sort). It looks like we can also clean up the message a bit since the diagnostic infrastructure already adds the filename automatically. Something like:</p>
+<pre><code>[TMP]/panic.py: panic: Panicked while linting
+</code></pre>
+<p>instead of the current</p>
+<pre><code>[TMP]/panic.py: panic: Panicked while linting [TMP]/panic.py:
+</code></pre>
+<p><code>panic: Panicked</code> also seems a bit redundant, but I think <code>panic: while linting</code> would also be awkward.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/amyreese">@amyreese</a> on <code>crates/ruff_db/src/diagnostic/mod.rs</code>:502 on 2025-09-15 19:54</div>
+            <div class="timeline-body"><p>As a user I still prefer having them sorted by file/lineno, because that lets me visually go through the list without jumping back and forth between different files or different parts of a single file. Eg, all of the lints for a single function or class would always be together in the final output.</p>
+<p>But because panics trigger Ruff to discard all other diagnostics for a file, there's currently nothing for them to be grouped with, so I think it's reasonable to sort those at the end so that it's more obvious to the user.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/amyreese">@amyreese</a> reviewed on 2025-09-15 19:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/amyreese">@amyreese</a> reviewed on 2025-09-15 23:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/amyreese">@amyreese</a> on <code>crates/ruff/tests/lint.rs</code>:5989 on 2025-09-15 23:26</div>
+            <div class="timeline-body"><p>Moved the full error/backtrace into a subdiagnostic, and made the main diagnostic message a single line like <code>fatal error while linting: &lt;panic summary&gt;</code>.  I've left the &quot;please open an issue&quot; as a separate log to stderr, so that it would appear even in output formats like <code>concise</code>, but presumably shouldn't affect ability to process output on stdout.</p>
+<p>The alternate is moving that message into a second subdiagnostic, but then it would be repeated for every single panic rather than just once at the end, and would also end up being hidden in <code>concise</code> output (or we make the main message more verbose? 😐).</p>
+<p>As-is, in <code>concise</code> and <code>full</code> output format, it now looks like:</p>
+<pre><code>amethyst@lunatone ~/workspace/ruff amy/panic-diagnostics+ » cargo run -p ruff -- check crates/ruff_linter/resources/test/fixtures/flake8_async/ASYNC25*.py --no-cache --preview --select ASYNC --output-format=concise
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.10s
+     Running `target/debug/ruff check crates/ruff_linter/resources/test/fixtures/flake8_async/ASYNC250.py crates/ruff_linter/resources/test/fixtures/flake8_async/ASYNC251.py --no-cache --preview --select ASYNC --output-format=concise`
+crates/ruff_linter/resources/test/fixtures/flake8_async/ASYNC251.py:6:5: ASYNC251 Async functions should not call `time.sleep`
+crates/ruff_linter/resources/test/fixtures/flake8_async/ASYNC250.py: panic: Fatal error while linting: fake panic
+Found 2 errors.
+error: Panic during linting indicates a bug in Ruff. If you could open an issue at:
+
+https://github.com/astral-sh/ruff/issues/new?title=%5BLinter%20panic%5D
+
+...with the relevant file contents, the `pyproject.toml` settings, and the stack trace above, we'd be very appreciative!
+
+&gt; [2]
+
+amethyst@lunatone ~/workspace/ruff amy/panic-diagnostics+ » cargo run -p ruff -- check crates/ruff_linter/resources/test/fixtures/flake8_async/ASYNC25*.py --no-cache --preview --select ASYNC --output-format=full
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.10s
+     Running `target/debug/ruff check crates/ruff_linter/resources/test/fixtures/flake8_async/ASYNC250.py crates/ruff_linter/resources/test/fixtures/flake8_async/ASYNC251.py --no-cache --preview --select ASYNC --output-format=full`
+ASYNC251 Async functions should not call `time.sleep`
+ --&gt; crates/ruff_linter/resources/test/fixtures/flake8_async/ASYNC251.py:6:5
+  |
+5 | async def func():
+6 |     time.sleep(1)  # ASYNC251
+  |     ^^^^^^^^^^
+  |
+
+panic: Fatal error while linting: fake panic
+--&gt; crates/ruff_linter/resources/test/fixtures/flake8_async/ASYNC250.py:1:1
+ |
+ |
+info: panicked at crates/ruff_linter/src/rules/flake8_async/rules/blocking_input.rs:50:13:
+fake panic
+run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+Found 2 errors.
+error: Panic during linting indicates a bug in Ruff. If you could open an issue at:
+
+https://github.com/astral-sh/ruff/issues/new?title=%5BLinter%20panic%5D
+
+...with the relevant file contents, the `pyproject.toml` settings, and the stack trace above, we'd be very appreciative!
+
+&gt; [2]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-09-16 07:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/tests/lint.rs</code>:5935 on 2025-09-16 07:18</div>
+            <div class="timeline-body"><p>Oh I see, it might be worth adding an inline comment explaining that this is the intended behavior as it wasn't obvious to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-09-16 07:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_db/src/diagnostic/mod.rs</code>:502 on 2025-09-16 07:25</div>
+            <div class="timeline-body"><blockquote>
+<p>As a user I still prefer having them sorted by file/lineno, because that lets me visually go through the list without jumping back and forth between different files or different parts of a single file. Eg, all of the lints for a single function or class would always be together in the final output.</p>
+</blockquote>
+<p>That makes sense and is consistent with what we have in ty: https://github.com/astral-sh/ruff/blob/b6a740f86a8372f45d24fb3b28e8f3148472bf11/crates/ruff_db/src/diagnostic/mod.rs#L534-L565</p>
+<p>The only difference is that ty only compares by severity if the file doesn't have a range and fatal errors come first rather than last and ty prints an extra warning as part of the summary if there were any panics (to avoid users missing them).</p>
+<p>I don't have a strong preference towards either approach and using <code>is_fatal</code> here seems fine after reading your reasoning.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-09-16 07:25</div>
+            <div class="timeline-body"><p>This looks good to me</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff/src/commands/check.rs</code>:208 on 2025-09-16 14:35</div>
+            <div class="timeline-body"><p>I think we might want to call <code>set_file_level(true)</code> on this <code>Annotation</code> to avoid the empty snippet (<code>|</code> lines) in the diagnostic from your example:</p>
+<pre><code>--&gt; crates/ruff_linter/resources/test/fixtures/flake8_async/ASYNC250.py:1:1
+ |
+ |
+info: panicked at crates/ruff_linter/src/rules/flake8_async/rules/blocking_input.rs:50:13:
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> approved on 2025-09-16 14:36</div>
+            <div class="timeline-body"><p>Looks good to me too! Just one small suggestion about the diagnostic</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @amyreese on 2025-09-16 18:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[ruff] Better handling for panics during linting" to "[ruff] Treat panics as fatal diagnostics, sort panics last" by @amyreese on 2025-09-16 18:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @amyreese on 2025-09-16 18:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @amyreese on 2025-09-16 18:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-09-16 18:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-09-17 07:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/commands/check.rs</code>:208 on 2025-09-17 07:12</div>
+            <div class="timeline-body"><p>If you're interested in removing the need for <code>set_file_level</code>, this is listed as a potential improvement in your welcome document:</p>
+<blockquote>
+<p>This task is related to the one above. Ruff currently uses an empty text range at position 0 (start of the file) for diagnostics that apply to the entire file. We need the range for suppression comments to work, but we don’t want to render a code frame for those. Brent added a flag for annotations (the diagnostic system renders code snippets for each annotation) so that they can be marked as file-level, in which case the code snippets aren’t rendered....</p>
+</blockquote>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:40:52 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Improve disambiguation of class names in diagnostics - astral-sh/ruff #20603</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Improve disambiguation of class names in diagnostics</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/20603">#20603</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-09-27 19:14
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-09-27 19:14</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Currently we'll use the fully qualified name of a class in <em>some</em> cases when reporting instances where one class was expected but another one was found and the two classes have the same name. But there are still many cases where we won't do that -- e.g. in https://github.com/astral-sh/ruff/pull/20368, this is one of the new diagnostics:</p>
+<pre><code>error[invalid-return-type] Return type does not match returned value: expected `Iterable[Model]`, found `Iterable[Model]`
+</code></pre>
+<p>This PR switches the <code>DisplaySettings::from_possibly_ambiguous_type_pair()</code> function to use a <code>TypeVisitor</code> implementation, so that we can be confident it will deeply recurse into a pair of types and identify possibly ambiguous type names wherever they might be hiding.</p>
+<h2>Test Plan</h2>
+<p>Mdtests</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-09-27 19:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "alex/invalid returns generic disambiguate" to "[ty] Improve disambiguation of class names in diagnostics" by @AlexWaygood on 2025-09-27 19:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-09-27 19:16</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-09-27 19:17</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">pandera (https://github.com/pandera-dev/pandera)
+- tests/pandas/test_dtypes.py:170:1: error[invalid-assignment] Object of type `list[Unknown | tuple[dict[Unknown | &lt;class 'int'&gt; | &lt;class 'Int'&gt; | &lt;class 'Int8'&gt; | &lt;class 'Int16'&gt; | &lt;class 'Int32'&gt; | &lt;class 'Int64'&gt; | &lt;class 'signedinteger[_8Bit]'&gt; | &lt;class 'signedinteger[_16Bit]'&gt; | &lt;class 'signedinteger[_32Bit]'&gt; | &lt;class 'signedinteger[_64Bit]'&gt;, Unknown | str], list[Unknown | int]] | tuple[dict[Unknown | &lt;class 'INT8'&gt; | &lt;class 'INT16'&gt; | &lt;class 'INT32'&gt; | &lt;class 'INT64'&gt;, Unknown | str], list[Unknown | int | None]] | tuple[dict[Unknown | &lt;class 'UInt'&gt; | &lt;class 'UInt8'&gt; | &lt;class 'UInt16'&gt; | &lt;class 'UInt32'&gt; | &lt;class 'UInt64'&gt;, Unknown | str], list[Unknown | int]] | tuple[dict[Unknown | &lt;class 'UINT8'&gt; | &lt;class 'UINT16'&gt; | &lt;class 'UINT32'&gt; | &lt;class 'UINT64'&gt;, Unknown | str], list[Unknown | int | None]] | tuple[dict[Unknown | &lt;class 'float'&gt; | &lt;class 'Float'&gt; | &lt;class 'Float16'&gt; | &lt;class 'Float32'&gt; | &lt;class 'Float64'&gt; | &lt;class 'float64'&gt;, Unknown | str], list[Unknown | float]] | tuple[dict[Unknown | &lt;class 'complex'&gt; | &lt;class 'Complex'&gt; | &lt;class 'Complex64'&gt; | &lt;class 'Complex128'&gt;, Unknown | str], list[Unknown | complex]] | tuple[dict[Unknown | &lt;class 'bool'&gt; | &lt;class 'Bool'&gt; | &lt;class 'bool'&gt;, Unknown | str], list[Unknown | bool]] | tuple[dict[Unknown | &lt;class 'BooleanDtype'&gt; | &lt;class 'BOOL'&gt;, Unknown | str], list[Unknown | bool | None]] | tuple[dict[Unknown | &lt;class 'str'&gt; | &lt;class 'String'&gt; | &lt;class 'str_'&gt;, Unknown | str], list[Unknown | str]] | tuple[dict[Unknown | &lt;class 'object'&gt; | &lt;class 'object_'&gt;, Unknown | str], list[Unknown | str]] | tuple[dict[Unknown | &lt;class 'StringDtype'&gt;, Unknown | str], list[Unknown | int | None]] | tuple[dict[Unknown | &lt;class 'Category'&gt; | Category | CategoricalDtype, Unknown | str | CategoricalDtype], list[Unknown | int | None]] | tuple[dict[Unknown | &lt;class 'datetime'&gt; | &lt;class 'datetime64'&gt; | &lt;class 'Timestamp'&gt; | DatetimeTZDtype | &lt;class 'DateTime'&gt; | DateTime, Unknown | str], Unknown] | tuple[dict[Unknown | PeriodDtype, Unknown | str], Unknown] | tuple[dict[Unknown | &lt;class 'SparseDtype'&gt; | SparseDtype, Unknown | SparseDtype], Series[Any]] | tuple[dict[Unknown | IntervalDtype, Unknown | str], Series[Any]]]` is not assignable to `list[tuple[dict[Unknown, Unknown], list[Unknown]]]`
++ tests/pandas/test_dtypes.py:170:1: error[invalid-assignment] Object of type `list[Unknown | tuple[dict[Unknown | &lt;class 'int'&gt; | &lt;class 'Int'&gt; | &lt;class 'Int8'&gt; | &lt;class 'Int16'&gt; | &lt;class 'Int32'&gt; | &lt;class 'Int64'&gt; | &lt;class 'signedinteger[_8Bit]'&gt; | &lt;class 'signedinteger[_16Bit]'&gt; | &lt;class 'signedinteger[_32Bit]'&gt; | &lt;class 'signedinteger[_64Bit]'&gt;, Unknown | str], list[Unknown | int]] | tuple[dict[Unknown | &lt;class 'INT8'&gt; | &lt;class 'INT16'&gt; | &lt;class 'INT32'&gt; | &lt;class 'INT64'&gt;, Unknown | str], list[Unknown | int | None]] | tuple[dict[Unknown | &lt;class 'UInt'&gt; | &lt;class 'UInt8'&gt; | &lt;class 'UInt16'&gt; | &lt;class 'UInt32'&gt; | &lt;class 'UInt64'&gt;, Unknown | str], list[Unknown | int]] | tuple[dict[Unknown | &lt;class 'UINT8'&gt; | &lt;class 'UINT16'&gt; | &lt;class 'UINT32'&gt; | &lt;class 'UINT64'&gt;, Unknown | str], list[Unknown | int | None]] | tuple[dict[Unknown | &lt;class 'float'&gt; | &lt;class 'Float'&gt; | &lt;class 'Float16'&gt; | &lt;class 'Float32'&gt; | &lt;class 'Float64'&gt; | &lt;class 'float64'&gt;, Unknown | str], list[Unknown | float]] | tuple[dict[Unknown | &lt;class 'complex'&gt; | &lt;class 'Complex'&gt; | &lt;class 'Complex64'&gt; | &lt;class 'Complex128'&gt;, Unknown | str], list[Unknown | complex]] | tuple[dict[Unknown | &lt;class 'builtins.bool'&gt; | &lt;class 'Bool'&gt; | &lt;class 'numpy.bool'&gt;, Unknown | str], list[Unknown | builtins.bool]] | tuple[dict[Unknown | &lt;class 'BooleanDtype'&gt; | &lt;class 'BOOL'&gt;, Unknown | str], list[Unknown | builtins.bool | None]] | tuple[dict[Unknown | &lt;class 'str'&gt; | &lt;class 'String'&gt; | &lt;class 'str_'&gt;, Unknown | str], list[Unknown | str]] | tuple[dict[Unknown | &lt;class 'object'&gt; | &lt;class 'object_'&gt;, Unknown | str], list[Unknown | str]] | tuple[dict[Unknown | &lt;class 'StringDtype'&gt;, Unknown | str], list[Unknown | int | None]] | tuple[dict[Unknown | &lt;class 'Category'&gt; | Category | CategoricalDtype, Unknown | str | CategoricalDtype], list[Unknown | int | None]] | tuple[dict[Unknown | &lt;class 'datetime'&gt; | &lt;class 'datetime64'&gt; | &lt;class 'Timestamp'&gt; | DatetimeTZDtype | &lt;class 'DateTime'&gt; | DateTime, Unknown | str], Unknown] | tuple[dict[Unknown | PeriodDtype, Unknown | str], Unknown] | tuple[dict[Unknown | &lt;class 'SparseDtype'&gt; | SparseDtype, Unknown | SparseDtype], Series[Any]] | tuple[dict[Unknown | IntervalDtype, Unknown | str], Series[Any]]]` is not assignable to `list[tuple[dict[Unknown, Unknown], list[Unknown]]]`
+
+mongo-python-driver (https://github.com/mongodb/mongo-python-driver)
+- pymongo/client_options.py:145:16: error[invalid-return-type] Return type does not match returned value: expected `tuple[SSLContext | None, bool]`, found `tuple[SSLContext | SSLContext | Unknown, Any]`
++ pymongo/client_options.py:145:16: error[invalid-return-type] Return type does not match returned value: expected `tuple[pymongo.pyopenssl_context.SSLContext | None, bool]`, found `tuple[pymongo.pyopenssl_context.SSLContext | ssl.SSLContext | Unknown, Any]`
+
+setuptools (https://github.com/pypa/setuptools)
+- setuptools/_distutils/dist.py:979:20: error[invalid-return-type] Return type does not match returned value: expected `Command`, found `(str &amp; Command) | (Command &amp; Command) | Unknown`
++ setuptools/_distutils/dist.py:979:20: error[invalid-return-type] Return type does not match returned value: expected `setuptools._distutils.cmd.Command`, found `(str &amp; distutils.cmd.Command) | (setuptools._distutils.cmd.Command &amp; distutils.cmd.Command) | Unknown`
+- setuptools/_distutils/dist.py:989:16: error[invalid-return-type] Return type does not match returned value: expected `Command`, found `(str &amp; Command) | (Command &amp; Command) | Unknown`
++ setuptools/_distutils/dist.py:989:16: error[invalid-return-type] Return type does not match returned value: expected `setuptools._distutils.cmd.Command`, found `(str &amp; distutils.cmd.Command) | (setuptools._distutils.cmd.Command &amp; distutils.cmd.Command) | Unknown`
+
+bokeh (https://github.com/bokeh/bokeh)
+- src/bokeh/model/model.py:496:16: error[invalid-return-type] Return type does not match returned value: expected `set[Model]`, found `set[Model]`
++ src/bokeh/model/model.py:496:16: error[invalid-return-type] Return type does not match returned value: expected `set[src.bokeh.model.model.Model]`, found `set[src.bokeh.model.model.Model]`
+
+jax (https://github.com/google/jax)
+- jax/_src/mesh_utils.py:552:12: error[invalid-return-type] Return type does not match returned value: expected `builtins.bool`, found `numpy.bool[bool]`
++ jax/_src/mesh_utils.py:552:12: error[invalid-return-type] Return type does not match returned value: expected `builtins.bool`, found `numpy.bool[builtins.bool]`
+- jax/_src/mesh_utils.py:582:12: error[invalid-return-type] Return type does not match returned value: expected `builtins.bool`, found `numpy.bool[bool]`
++ jax/_src/mesh_utils.py:582:12: error[invalid-return-type] Return type does not match returned value: expected `builtins.bool`, found `numpy.bool[builtins.bool]`
+
+</code></pre>
+</details>
+No memory usage changes detected ✅
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @AlexWaygood on 2025-09-27 19:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @AlexWaygood on 2025-09-27 19:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @AlexWaygood on 2025-09-27 19:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @AlexWaygood on 2025-09-27 19:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">diagnostics</span> added by @AlexWaygood on 2025-09-27 19:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-09-29 07:04</div>
+            <div class="timeline-body"><pre><code class="language-diff">- src/bokeh/model/model.py:496:16: error[invalid-return-type] Return type does not match returned value: expected `set[Model]`, found `set[Model]`
++ src/bokeh/model/model.py:496:16: error[invalid-return-type] Return type does not match returned value: expected `set[src.bokeh.model.model.Model]`, found `set[src.bokeh.model.model.Model]`
+</code></pre>
+<p>obviously not related to your PR, but it looks like something is wrong here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types/display.rs</code>:83 on 2025-09-29 07:18</div>
+            <div class="timeline-body"><p>Probably not worth the additional work, but instead of allocating a hash set of all discovered <code>ClassLiteral</code>s with that name, you could introduce an <code>Option</code>-like enum</p>
+<pre><code class="language-rs">enum AmbiguityState&lt;'db&gt; {
+    Unambiguous(ClassLiteral&lt;'db&gt;),
+    Ambiguous,
+}
+</code></pre>
+<p>When you discover the first class literal, you start with <code>AmbiguityState::Unambiguous(first_literal)</code>. And as soon as you discover <em>another</em> class literal, you simply flip the state to <code>AmbiguityState::Ambiguous</code>. At that point, we're not interested anymore in which exact class literals contributed to the ambiguity.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> approved on 2025-09-29 07:19</div>
+            <div class="timeline-body"><p>Thank you very much. Slightly unfortunate that we gain <code>.clone</code>s in multiple places now, but this is probably not performance-critical.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-09-29 10:15</div>
+            <div class="timeline-body"><blockquote>
+<pre><code class="language-diff">- src/bokeh/model/model.py:496:16: error[invalid-return-type] Return type does not match returned value: expected `set[Model]`, found `set[Model]`
++ src/bokeh/model/model.py:496:16: error[invalid-return-type] Return type does not match returned value: expected `set[src.bokeh.model.model.Model]`, found `set[src.bokeh.model.model.Model]`
+</code></pre>
+<p>obviously not related to your PR, but it looks like something is wrong here?</p>
+</blockquote>
+<p>Yes, definitely (multiple things, in fact...) -- but at least we now know that this specific case isn't solved by printing the fully qualified name in the diagnostics 😆</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-09-29 10:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/display.rs</code>:83 on 2025-09-29 10:15</div>
+            <div class="timeline-body"><p>Ahh, that's a great suggestion, thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-09-29 10:19</div>
+            <div class="timeline-body"><blockquote>
+<p>Slightly unfortunate that we gain <code>.clone</code>s in multiple places now, but this is probably not performance-critical.</p>
+</blockquote>
+<p>Yes, I didn't love this, but couldn't see an easy way to get around it. I think <code>DisplaySettings</code> should be fairly cheap to clone, though, since it uses an <code>Rc&lt;HashSet&gt;</code> internally rather than a <code>HashSet</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2025-09-29 10:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-09-29 10:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-09-29 10:43</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:40:54 UTC
+    </footer>
+</body>
+</html>

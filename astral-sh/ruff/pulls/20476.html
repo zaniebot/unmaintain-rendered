@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Use type context for inference of generic function calls - astral-sh/ruff #20476</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Use type context for inference of generic function calls</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/20476">#20476</a>
+        opened by <a href="https://github.com/ibraheemdev">@ibraheemdev</a>
+        on 2025-09-18 20:57
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2025-09-18 20:57</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Part of https://github.com/astral-sh/ty/issues/168. This PR allows widening the type of a generic function call based on a type annotation, e.g.,</p>
+<pre><code class="language-py">def f[T](x: T) -&gt; list[T]:
+    return [x]
+
+v: list[int] = f(True)
+reveal_type(v)  # list[int]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @ibraheemdev on 2025-09-18 20:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @ibraheemdev on 2025-09-18 20:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @ibraheemdev on 2025-09-18 20:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @ibraheemdev on 2025-09-18 20:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @ibraheemdev on 2025-09-18 20:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-09-18 20:59</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a></h2>
+<details>
+<summary>Changes were detected when running ty on typing conformance tests</summary>
+
+<pre><code class="language-diff">--- old-output.txt	2025-09-19 17:26:52.715647243 +0000
++++ new-output.txt	2025-09-19 17:26:55.828672752 +0000
+@@ -240,8 +240,8 @@
+ dataclasses_transform_class.py:119:18: error[unknown-argument] Argument `id` does not match any known parameter of bound method `__init__`
+ dataclasses_transform_class.py:119:24: error[unknown-argument] Argument `name` does not match any known parameter of bound method `__init__`
+ dataclasses_transform_converter.py:25:6: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `T@model_field`
+-dataclasses_transform_converter.py:48:31: error[invalid-argument-type] Argument to function `model_field` is incorrect: Expected `(Unknown, /) -&gt; Unknown`, found `def bad_converter1() -&gt; int`
+-dataclasses_transform_converter.py:49:31: error[invalid-argument-type] Argument to function `model_field` is incorrect: Expected `(Unknown, /) -&gt; Unknown`, found `def bad_converter2(*, x: int) -&gt; int`
++dataclasses_transform_converter.py:48:31: error[invalid-argument-type] Argument to function `model_field` is incorrect: Expected `(Unknown, /) -&gt; int`, found `def bad_converter1() -&gt; int`
++dataclasses_transform_converter.py:49:31: error[invalid-argument-type] Argument to function `model_field` is incorrect: Expected `(Unknown, /) -&gt; int`, found `def bad_converter2(*, x: int) -&gt; int`
+ dataclasses_transform_converter.py:107:5: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 6
+ dataclasses_transform_converter.py:108:5: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 6
+ dataclasses_transform_converter.py:109:5: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 6
+@@ -251,7 +251,7 @@
+ dataclasses_transform_converter.py:116:1: error[invalid-assignment] Object of type `Literal[b&quot;f6&quot;]` is not assignable to attribute `field3` of type `ConverterClass`
+ dataclasses_transform_converter.py:119:1: error[invalid-assignment] Object of type `Literal[1]` is not assignable to attribute `field3` of type `ConverterClass`
+ dataclasses_transform_converter.py:121:11: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 7
+-dataclasses_transform_converter.py:130:31: error[invalid-argument-type] Argument to function `model_field` is incorrect: Expected `(Literal[1], /) -&gt; Unknown`, found `def converter_simple(s: str) -&gt; int`
++dataclasses_transform_converter.py:130:31: error[invalid-argument-type] Argument to function `model_field` is incorrect: Expected `(Literal[1], /) -&gt; int`, found `def converter_simple(s: str) -&gt; int`
+ dataclasses_transform_field.py:49:43: error[invalid-return-type] Function always implicitly returns `None`, which is not assignable to return type `(...) -&gt; @Todo(unsupported type[X] special form)`
+ dataclasses_transform_field.py:75:16: error[too-many-positional-arguments] Too many positional arguments: expected 0, got 1
+ dataclasses_transform_func.py:53:8: error[missing-argument] No arguments provided for required parameters `id`, `name`
+@@ -270,7 +270,7 @@
+ dataclasses_usage.py:51:28: error[invalid-argument-type] Argument is incorrect: Expected `int | float`, found `Literal[&quot;price&quot;]`
+ dataclasses_usage.py:52:36: error[too-many-positional-arguments] Too many positional arguments: expected 3, got 4
+ dataclasses_usage.py:83:13: error[too-many-positional-arguments] Too many positional arguments: expected 1, got 2
+-dataclasses_usage.py:88:5: error[invalid-assignment] Object of type `dataclasses.Field[Literal[&quot;&quot;]]` is not assignable to `int`
++dataclasses_usage.py:88:14: error[no-matching-overload] No overload of function `field` matches arguments
+ dataclasses_usage.py:127:8: error[too-many-positional-arguments] Too many positional arguments: expected 1, got 2
+ dataclasses_usage.py:130:1: error[missing-argument] No argument provided for required parameter `y` of bound method `__init__`
+ dataclasses_usage.py:179:6: error[too-many-positional-arguments] Too many positional arguments to bound method `__init__`: expected 1, got 2
+@@ -619,7 +619,7 @@
+ literals_literalstring.py:120:22: error[invalid-argument-type] Argument to function `literal_identity` is incorrect: Argument type `str` does not satisfy upper bound `LiteralString` of type variable `TLiteral`
+ literals_literalstring.py:130:5: error[invalid-assignment] Object of type `Container[str]` is not assignable to `Container[LiteralString]`
+ literals_literalstring.py:134:51: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Argument type `str` does not satisfy upper bound `LiteralString` of type variable `T`
+-literals_literalstring.py:138:1: error[invalid-assignment] Object of type `list[str]` is not assignable to `list[LiteralString]`
++literals_literalstring.py:138:1: error[invalid-assignment] Object of type `list[Unknown | str]` is not assignable to `list[LiteralString]`
+ literals_literalstring.py:167:1: error[type-assertion-failure] Argument does not have asserted type `A`
+ literals_literalstring.py:171:5: error[invalid-assignment] Object of type `list[LiteralString]` is not assignable to `list[str]`
+ literals_parameterizations.py:41:15: error[invalid-type-form] Type arguments for `Literal` must be `None`, a literal value (int, bool, str, or bytes), or an enum member
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2025-09-18 21:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/ty_python_semantic/resources/mdtest/assignment/annotations.md</code>:267 on 2025-09-18 21:06</div>
+            <div class="timeline-body"><p>Ideally we would infer the RHS without the type context if it is not assignable to the type annotation, like we do for collection literals. However, this is a little difficult as we also want the type annotation to be the first type that we use for inference, so that the inferred type more closely matches the type annotation.</p>
+<p>I think the only way this can work is if we perform inference twice, first without the type context, and then again with it only if the unannotated inferred type is assignable to the type annotation. However, I'm not sure that's worth the extra work for this specific error message.</p>
+<p>Maybe we could instead generalize this to performing type inference on the RHS directly when emitting the diagnostic?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-09-18 21:17</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">attrs (https://github.com/python-attrs/attrs)
+- tests/dataclass_transform_example.py:21:13: info[revealed-type] Revealed type: `(self: DefineConverter, with_converter: int = Unknown) -&gt; None`
++ tests/dataclass_transform_example.py:21:13: info[revealed-type] Revealed type: `(self: DefineConverter, with_converter: int = int) -&gt; None`
++ tests/test_next_gen.py:379:14: error[unresolved-attribute] Type `int` has no attribute `validator`
+- Found 564 diagnostics
++ Found 565 diagnostics
+
+anyio (https://github.com/agronholm/anyio)
++ src/anyio/_backends/_asyncio.py:2530:13: error[invalid-argument-type] Argument to bound method `run` is incorrect: Expected `(...) -&gt; Future[T_Retval@run_async_from_thread]`, found `def run_coroutine_threadsafe[_T](coro: Coroutine[Any, Any, _T@run_coroutine_threadsafe], loop: AbstractEventLoop) -&gt; Future[_T@run_coroutine_threadsafe]`
++ src/anyio/from_thread.py:448:19: error[no-matching-overload] No overload of function `field` matches arguments
+- Found 225 diagnostics
++ Found 227 diagnostics
+
+kornia (https://github.com/kornia/kornia)
++ kornia/config.py:68:36: error[no-matching-overload] No overload of function `field` matches arguments
+- Found 783 diagnostics
++ Found 784 diagnostics
+
+boostedblob (https://github.com/hauntsaninja/boostedblob)
++ boostedblob/request.py:25:33: error[no-matching-overload] No overload of function `field` matches arguments
++ boostedblob/request.py:29:34: error[no-matching-overload] No overload of function `field` matches arguments
++ boostedblob/request.py:76:33: error[no-matching-overload] No overload of function `field` matches arguments
++ boostedblob/request.py:80:34: error[no-matching-overload] No overload of function `field` matches arguments
++ boostedblob/request.py:85:51: error[no-matching-overload] No overload of function `field` matches arguments
+- Found 71 diagnostics
++ Found 76 diagnostics
+
+paasta (https://github.com/yelp/paasta)
+- paasta_tools/utils.py:594:9: error[invalid-assignment] Object of type `list[dict[@Todo(dict literal key type), @Todo(dict literal value type)]]` is not assignable to `list[DockerParameter]`
++ paasta_tools/utils.py:594:9: error[invalid-assignment] Object of type `list[Unknown | dict[@Todo(dict literal key type), @Todo(dict literal value type)]]` is not assignable to `list[DockerParameter]`
+
+pip (https://github.com/pypa/pip)
++ src/pip/_vendor/rich/progress.py:980:20: error[no-matching-overload] No overload of function `field` matches arguments
+- Found 434 diagnostics
++ Found 435 diagnostics
+
+porcupine (https://github.com/Akuli/porcupine)
+- porcupine/plugins/longlinemarker.py:56:17: error[invalid-assignment] Object of type `list[str]` is not assignable to `list[Literal[&quot;bgcolor&quot;, &quot;color&quot;, &quot;border&quot;]]`
++ porcupine/plugins/longlinemarker.py:56:17: error[invalid-assignment] Object of type `list[Unknown | str]` is not assignable to `list[Literal[&quot;bgcolor&quot;, &quot;color&quot;, &quot;border&quot;]]`
+
+rich (https://github.com/Textualize/rich)
++ rich/progress.py:980:20: error[no-matching-overload] No overload of function `field` matches arguments
+- Found 309 diagnostics
++ Found 310 diagnostics
+
+pytest (https://github.com/pytest-dev/pytest)
++ src/_pytest/python.py:1064:39: error[no-matching-overload] No overload of function `field` matches arguments
+- Found 478 diagnostics
++ Found 479 diagnostics
+
+pydantic (https://github.com/pydantic/pydantic)
+- pydantic/_internal/_generate_schema.py:126:1: error[invalid-assignment] Object of type `list[typing.Tuple | &lt;class 'tuple'&gt;]` is not assignable to `list[type]`
++ pydantic/_internal/_generate_schema.py:126:1: error[invalid-assignment] Object of type `list[Unknown | typing.Tuple | &lt;class 'tuple'&gt;]` is not assignable to `list[type]`
+- pydantic/_internal/_generate_schema.py:127:1: error[invalid-assignment] Object of type `list[typing.List | &lt;class 'list'&gt; | &lt;class 'MutableSequence'&gt;]` is not assignable to `list[type]`
++ pydantic/_internal/_generate_schema.py:127:1: error[invalid-assignment] Object of type `list[Unknown | typing.List | &lt;class 'list'&gt; | &lt;class 'MutableSequence'&gt;]` is not assignable to `list[type]`
+- pydantic/_internal/_generate_schema.py:128:1: error[invalid-assignment] Object of type `list[typing.Set | &lt;class 'set'&gt; | &lt;class 'MutableSet'&gt;]` is not assignable to `list[type]`
++ pydantic/_internal/_generate_schema.py:128:1: error[invalid-assignment] Object of type `list[Unknown | typing.Set | &lt;class 'set'&gt; | &lt;class 'MutableSet'&gt;]` is not assignable to `list[type]`
+- pydantic/_internal/_generate_schema.py:129:1: error[invalid-assignment] Object of type `list[typing.FrozenSet | &lt;class 'frozenset'&gt; | &lt;class 'AbstractSet'&gt;]` is not assignable to `list[type]`
++ pydantic/_internal/_generate_schema.py:129:1: error[invalid-assignment] Object of type `list[Unknown | typing.FrozenSet | &lt;class 'frozenset'&gt; | &lt;class 'AbstractSet'&gt;]` is not assignable to `list[type]`
+- pydantic/_internal/_generate_schema.py:130:1: error[invalid-assignment] Object of type `list[typing.Dict | &lt;class 'dict'&gt;]` is not assignable to `list[type]`
++ pydantic/_internal/_generate_schema.py:130:1: error[invalid-assignment] Object of type `list[Unknown | typing.Dict | &lt;class 'dict'&gt;]` is not assignable to `list[type]`
+- pydantic/_internal/_generate_schema.py:134:1: error[invalid-assignment] Object of type `list[typing.Type | &lt;class 'type'&gt;]` is not assignable to `list[type]`
++ pydantic/_internal/_generate_schema.py:134:1: error[invalid-assignment] Object of type `list[Unknown | typing.Type | &lt;class 'type'&gt;]` is not assignable to `list[type]`
+- pydantic/_internal/_generate_schema.py:155:1: error[invalid-assignment] Object of type `list[&lt;class 'deque'&gt; | typing.Deque]` is not assignable to `list[type]`
++ pydantic/_internal/_generate_schema.py:155:1: error[invalid-assignment] Object of type `list[Unknown | &lt;class 'deque'&gt; | typing.Deque]` is not assignable to `list[type]`
+
+sphinx (https://github.com/sphinx-doc/sphinx)
+- sphinx/domains/python/__init__.py:672:42: error[index-out-of-bounds] Index 0 is out of bounds for string `Literal[&quot;&quot;]` with length 0
+- Found 518 diagnostics
++ Found 517 diagnostics
+
+schemathesis (https://github.com/schemathesis/schemathesis)
++ src/schemathesis/auths.py:127:37: error[no-matching-overload] No overload of function `field` matches arguments
+- Found 270 diagnostics
++ Found 271 diagnostics
+
+Expression (https://github.com/cognitedata/Expression)
+- tests/test_array.py:137:5: error[invalid-assignment] Object of type `TypedArray[Literal[42]]` is not assignable to `TypedArray[int]`
+- tests/test_array.py:307:38: error[invalid-argument-type] Argument to function `reduce` is incorrect: Expected `(Literal[0], int, /) -&gt; Literal[0]`, found `def folder(x: int, y: int) -&gt; int`
+- tests/test_block.py:274:38: error[invalid-argument-type] Argument to function `reduce` is incorrect: Expected `(Literal[0], int, /) -&gt; Literal[0]`, found `def folder(x: int, y: int) -&gt; int`
+- tests/test_result.py:491:21: error[invalid-argument-type] Argument to bound method `or_else` is incorrect: Expected `Result[Literal[42], Any]`, found `Result[Literal[0], Any]`
+- tests/test_result.py:509:21: error[invalid-argument-type] Argument to bound method `or_else` is incorrect: Expected `Result[Any, Literal[&quot;original error&quot;]]`, found `Result[Any, Literal[&quot;new error&quot;]]`
+- tests/test_try.py:13:5: error[invalid-assignment] Object of type `Try[Literal[10]]` is not assignable to `Try[int]`
+- tests/test_try.py:34:5: error[invalid-assignment] Object of type `Try[Literal[10]]` is not assignable to `Try[int]`
+- Found 230 diagnostics
++ Found 223 diagnostics
+
+pandera (https://github.com/pandera-dev/pandera)
+- tests/pandas/test_dtypes.py:170:1: error[invalid-assignment] Object of type `list[tuple[dict[@Todo(dict literal key type), @Todo(dict literal value type)], list[Unknown | int]] | tuple[dict[@Todo(dict literal key type), @Todo(dict literal value type)], list[Unknown | int | None]] | tuple[dict[@Todo(dict literal key type), @Todo(dict literal value type)], list[Unknown | float]] | @Todo(starred expression) | tuple[dict[@Todo(dict literal key type), @Todo(dict literal value type)], list[Unknown | complex]] | tuple[dict[@Todo(dict literal key type), @Todo(dict literal value type)], list[Unknown | bool]] | tuple[dict[@Todo(dict literal key type), @Todo(dict literal value type)], list[Unknown | bool | None]] | tuple[dict[@Todo(dict literal key type), @Todo(dict literal value type)], list[Unknown | str]] | tuple[dict[@Todo(dict literal key type), @Todo(dict literal value type)], Unknown] | tuple[dict[@Todo(dict literal key type), @Todo(dict literal value type)], Series[Any]]]` is not assignable to `list[tuple[dict[Unknown, Unknown], list[Unknown]]]`
++ tests/pandas/test_dtypes.py:170:1: error[invalid-assignment] Object of type `list[Unknown | tuple[dict[@Todo(dict literal key type), @Todo(dict literal value type)], list[Unknown | int]] | tuple[dict[@Todo(dict literal key type), @Todo(dict literal value type)], list[Unknown | int | None]] | tuple[dict[@Todo(dict literal key type), @Todo(dict literal value type)], list[Unknown | float]] | tuple[dict[@Todo(dict literal key type), @Todo(dict literal value type)], list[Unknown | complex]] | tuple[dict[@Todo(dict literal key type), @Todo(dict literal value type)], list[Unknown | bool]] | tuple[dict[@Todo(dict literal key type), @Todo(dict literal value type)], list[Unknown | bool | None]] | tuple[dict[@Todo(dict literal key type), @Todo(dict literal value type)], list[Unknown | str]] | tuple[dict[@Todo(dict literal key type), @Todo(dict literal value type)], Unknown] | tuple[dict[@Todo(dict literal key type), @Todo(dict literal value type)], Series[Any]]]` is not assignable to `list[tuple[dict[Unknown, Unknown], list[Unknown]]]`
+
+trio (https://github.com/python-trio/trio)
++ src/trio/_core/_entry_queue.py:45:43: error[invalid-argument-type] Argument to function `Factory` is incorrect: Expected `() -&gt; RLock`, found `&lt;class 'RLock'&gt;`
+- Found 673 diagnostics
++ Found 674 diagnostics
+
+strawberry (https://github.com/strawberry-graphql/strawberry)
++ strawberry/types/base.py:272:63: error[no-matching-overload] No overload of function `field` matches arguments
+- Found 377 diagnostics
++ Found 378 diagnostics
+
+scikit-build-core (https://github.com/scikit-build/scikit-build-core)
++ src/scikit_build_core/build/_wheelfile.py:51:22: error[no-matching-overload] No overload of function `field` matches arguments
++ src/scikit_build_core/settings/skbuild_docs_sphinx.py:27:36: error[no-matching-overload] No overload of function `field` matches arguments
++ src/scikit_build_core/settings/skbuild_docs_sphinx.py:43:30: error[no-matching-overload] No overload of function `field` matches arguments
+- Found 42 diagnostics
++ Found 45 diagnostics
+
+setuptools (https://github.com/pypa/setuptools)
+- setuptools/command/bdist_egg.py:328:1: error[invalid-assignment] Object of type `dict[LiteralString, Any | None]` is not assignable to `dict[str, None]`
+- Found 775 diagnostics
++ Found 774 diagnostics
+
+meson (https://github.com/mesonbuild/meson)
+- mesonbuild/modules/_qt.py:941:9: error[invalid-assignment] Object of type `list[str | bool]` is not assignable to `list[str | Literal[False]]`
++ mesonbuild/modules/_qt.py:941:9: error[invalid-assignment] Object of type `list[Unknown | bool]` is not assignable to `list[str | Literal[False]]`
+
+prefect (https://github.com/PrefectHQ/prefect)
++ src/integrations/prefect-shell/prefect_shell/commands.py:265:9: error[invalid-argument-type] Argument to function `PrivateAttr` is incorrect: Expected `() -&gt; AsyncExitStack[bool | None]`, found `&lt;class 'AsyncExitStack'&gt;`
++ src/prefect/tasks.py:1673:13: error[invalid-argument-type] Argument to function `emit_task_run_state_change_event` is incorrect: Expected `State[Any]`, found `State[Any] | None`
+- Found 3037 diagnostics
++ Found 3039 diagnostics
+
+dd-trace-py (https://github.com/DataDog/dd-trace-py)
++ ddtrace/internal/rate_limiter.py:203:29: error[no-matching-overload] No overload of function `field` matches arguments
+- Found 6664 diagnostics
++ Found 6665 diagnostics
+
+jax (https://github.com/google/jax)
++ jax/_src/pallas/mosaic/interpret.py:403:26: error[no-matching-overload] No overload of function `field` matches arguments
++ jax/_src/pallas/mosaic/interpret.py:419:26: error[no-matching-overload] No overload of function `field` matches arguments
++ jax/_src/pallas/mosaic/interpret.py:582:26: error[no-matching-overload] No overload of function `field` matches arguments
+- jax/_src/traceback_util.py:30:1: error[invalid-assignment] Object of type `list[str | None]` is not assignable to `list[str]`
++ jax/_src/traceback_util.py:30:1: error[invalid-assignment] Object of type `list[Unknown | str | None]` is not assignable to `list[str]`
+- Found 2243 diagnostics
++ Found 2246 diagnostics
+
+pandas (https://github.com/pandas-dev/pandas)
+- pandas/core/frame.py:13971:5: error[invalid-assignment] Object of type `list[str]` is not assignable to `list[Literal[&quot;index&quot;, &quot;columns&quot;]]`
++ pandas/core/frame.py:13971:5: error[invalid-assignment] Object of type `list[Unknown | str]` is not assignable to `list[Literal[&quot;index&quot;, &quot;columns&quot;]]`
+
+core (https://github.com/home-assistant/core)
++ homeassistant/helpers/service_info/ssdp.py:39:39: error[no-matching-overload] No overload of function `field` matches arguments
+- Found 13448 diagnostics
++ Found 13449 diagnostics
+
+CPython (Argument Clinic) (https://github.com/python/cpython)
++ Lib/_pyrepl/_threading_handler.py:35:32: error[no-matching-overload] No overload of function `field` matches arguments
+- Found 23904 diagnostics
++ Found 23905 diagnostics
+
+CPython (cases_generator) (https://github.com/python/cpython)
++ Lib/_pyrepl/_threading_handler.py:35:32: error[no-matching-overload] No overload of function `field` matches arguments
+- Found 23904 diagnostics
++ Found 23905 diagnostics
+
+CPython (peg_generator) (https://github.com/python/cpython)
++ Lib/_pyrepl/_threading_handler.py:35:32: error[no-matching-overload] No overload of function `field` matches arguments
+- Found 23903 diagnostics
++ Found 23904 diagnostics
+
+</code></pre>
+</details>
+No memory usage changes detected ✅
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2025-09-18 21:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/ty_python_semantic/resources/mdtest/assignment/annotations.md</code>:279 on 2025-09-18 21:23</div>
+            <div class="timeline-body"><p>This works because we ignore specialization errors on the return type. pyright also infers <code>bool</code> here, but mypy interestingly still infers <code>int | str</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/resources/mdtest/assignment/annotations.md</code>:267 on 2025-09-18 21:25</div>
+            <div class="timeline-body"><p>Yeah, I think what would make sense here is to re-infer the RHS without context if we are emitting a diagnostic. Some extra cost is fine, if it's only paid when actually emitting a diagnostic.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-09-18 21:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/call/bind.rs</code>:124 on 2025-09-18 21:41</div>
+            <div class="timeline-body"><p>Not sure if I'm understanding this comment right, but the wording doesn't quite make sense to me. By &quot;return type annotation&quot; I would generally mean the <code>-&gt; T</code> in <code>def f[T](x: T) -&gt; T:</code>. But <code>return_tcx</code> here is not that, it's the annotated type context of the entire call expression, which would be used to help infer the type of <code>T</code>.</p>
+<p>If I'm getting this right, I think I would name the argument <code>call_expression_tcx</code> not <code>return_tcx</code> (though I understand the rationale for the latter name, since it's the return type which will become the type of the entire call expression), and would reword this comment to something like</p>
+<pre><code class="language-suggestion">    /// The type context of the call expression is also used to infer the specialization of generic calls.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-09-18 21:43</div>
+            <div class="timeline-body"><p>Nice! Have you done any analysis of the ecosystem results?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @ibraheemdev on 2025-09-18 22:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-09-18 22:12</div>
+            <div class="timeline-body"><!-- generated-comment ty ecosystem-analyzer -->
+
+<h2><code>ecosystem-analyzer</code> results</h2>
+<p>| Lint rule | Added | Removed | Changed |
+|-----------|------:|--------:|--------:|
+| <code>no-matching-overload</code> | 19 | 0 | 0 |
+| <code>invalid-assignment</code> | 0 | 4 | 13 |
+| <code>invalid-argument-type</code> | 4 | 4 | 0 |
+| <code>index-out-of-bounds</code> | 0 | 1 | 0 |
+| <code>unresolved-attribute</code> | 1 | 0 | 0 |
+| <strong>Total</strong> | <strong>24</strong> | <strong>9</strong> | <strong>13</strong> |</p>
+<p><strong><a href="https://ibraheem-bidirectional-infer.ecosystem-663.pages.dev/diff">Full report with detailed diff</a></strong></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2025-09-19 00:50</div>
+            <div class="timeline-body"><p>There seems to be a common ecosystem error where we fail to type-check calls to <code>dataclasses.field</code>. This can be minimized to:</p>
+<pre><code class="language-py">class X: ...
+
+def field[T](default_factory: Callable[[], T]) -&gt; T:
+    return default_factory()
+
+# error[invalid-argument-type] Argument to function `field` is incorrect: Expected `() -&gt; X`, found `&lt;class 'X'&gt;`
+x: X = field(X)
+</code></pre>
+<p>However, without the type annotation, we currently infer <code>Unknown</code> for <code>x</code>, so I'm not sure if the issue is related to this PR?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-09-19 16:10</div>
+            <div class="timeline-body"><p>The fact that we can't infer this typevar is https://github.com/astral-sh/ty/issues/500, which we closed as duplicate of the new constraint solver.</p>
+<p>It's a bit strange to me that we display the callable as <code>() -&gt; X</code> and think the class <code>X</code> is not assignable to that; I'm not clear what's going on there. I do think it's probably not directly related to this PR, but clearly this PR is introducing the false positives in this case, and I think these are probably important false positives to understand and fix. Maybe the new constraint solver will just take care of this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2025-09-19 17:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/ty_python_semantic/src/types/infer.rs</code>:226 on 2025-09-19 17:02</div>
+            <div class="timeline-body"><p>Don't love the name here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2025-09-19 17:24</div>
+            <div class="timeline-body"><blockquote>
+<p>It's a bit strange to me that we display the callable as <code>() -&gt; X</code> and think the <code>class X</code> is not assignable to that; I'm not clear what's going on there. I do think it's probably not directly related to this PR, but clearly this PR is introducing the false positives in this case, and I think these are probably important false positives to understand and fix. Maybe the new constraint solver will just take care of this?</p>
+</blockquote>
+<p>It looks like we correctly infer the type variable now due to the type annotation, but the issue remains without any generics, so I think this is unrelated:</p>
+<pre><code class="language-py">class X:
+    ...
+
+def f(callable: Callable[[], X]) -&gt; X:
+    return callable()
+
+# error[invalid-argument-type]: Argument to function `f` is incorrect
+x = f(X)
+</code></pre>
+<p>It seems to work if I add an explicit <code>__new__</code> or <code>__init__</code> method to <code>X</code>, I'm not sure if there's an open issue about this.</p>
+<p>Edit: Opened https://github.com/astral-sh/ty/issues/1210.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> removed by @ibraheemdev on 2025-09-19 19:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ecosystem-analyzer</span> added by @ibraheemdev on 2025-09-19 19:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2025-09-19 20:39</div>
+            <div class="timeline-body"><p>There's another issue here with:</p>
+<pre><code class="language-py">def f[T](callable: Callable[[], T]) -&gt; T:
+    return callable()
+
+# Expected `() -&gt; Mapping[str, str]`, found `&lt;class 'dict'&gt;`
+x: Mapping[str, str] = f(dict)
+</code></pre>
+<p>After this PR, we infer <code>T</code> to be <code>Mapping[str, str]</code> based on the type annotation, and so expect a <code>Callable[[], Mapping[str, str]]</code>. This one should be fixed by https://github.com/astral-sh/ty/issues/500, because we should also account for the return type of the provided callable (i.e. <code>dict</code>).</p>
+<p>Given that both of those issues are unrelated to the changes here, I think this PR should be good to merge.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ibraheemdev on 2025-09-19 21:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ibraheemdev on 2025-09-19 21:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-09-19 21:00</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:40:54 UTC
+    </footer>
+</body>
+</html>

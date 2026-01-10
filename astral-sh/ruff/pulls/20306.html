@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Use partial-order-friendly representation of typevar constraints - astral-sh/ruff #20306</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Use partial-order-friendly representation of typevar constraints</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/20306">#20306</a>
+        opened by <a href="https://github.com/dcreager">@dcreager</a>
+        on 2025-09-08 15:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dcreager">@dcreager</a> on 2025-09-08 15:03</div>
+            <div class="timeline-body"><p>The constraint representation that we added in #19997 was subtly wrong, in that it didn't correctly model that type assignability is a <em>partial</em> order — it's possible for two types to be incomparable, with neither a subtype of the other. That means the negation of a constraint like <code>T ≤ t</code> (typevar <code>T</code> must be a subtype of <code>t</code>) is <strong><em>not</em></strong> <code>t &lt; T</code>, but rather <code>t &lt; T ∨ T ≁ t</code> (using ≁ to mean &quot;not comparable to&quot;).</p>
+<p>That means we need to update our constraint representation to be an enum, so that we can track both <em>range</em> constraints (upper/lower bound on the typevar), and these new <em>incomparable</em> constraints.</p>
+<p>Since we need an enum now, that also lets us simplify how we were modeling range constraints. Before, we let the lower/upper bounds be either open (&lt;) or closed (≤). Now, range constraints are always closed, and we add a third kind of constraint for <em>not equivalent</em> (≠). We can translate an open upper bound <code>T &lt; t</code> into <code>T ≤ t ∧ T ≠ t</code>.</p>
+<p>We already had the logic for doing adding <em>clauses</em> to a <em>set</em> by doing a pairwise simplification. We copy that over to where we add <em>constraints</em> to a <em>clause</em>. To calculate the intersection or union of two constraints, the new enum representation makes it easy to break down all of the possibilities into a small number of cases: intersect range with range, intersect range with not-equivalent, etc. I've done the math <a href="https://dcreager.net/theory/constraints/">here</a> to show that the simplifications for each of these cases is correct.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @dcreager on 2025-09-08 15:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @dcreager on 2025-09-08 15:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @dcreager on 2025-09-08 15:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @dcreager on 2025-09-08 15:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @dcreager on 2025-09-08 15:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-09-08 15:05</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-09-08 15:09</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅
+No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:90 on 2025-09-08 21:32</div>
+            <div class="timeline-body"><p>Doesn't this exposition still ignore the possibility that <code>V</code> is not comparable to <code>B</code> (or to <code>Never</code>, though in the particular case of <code>Never</code> that's impossible, all types are comparable to the bottom type by definition.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:478 on 2025-09-08 21:44</div>
+            <div class="timeline-body"><p>There are still many references to &quot;atomic constraint&quot; in doc comments, here and throughout (including on methods of <code>ConstrainedTypeVar</code> itself.) Is this language you want to keep using? I don't have a better idea, but maybe at some point it should be clarified that by &quot;atomic constraint&quot; you mean &quot;ConstrainedTypeVar&quot;?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:1062 on 2025-09-08 21:58</div>
+            <div class="timeline-body"><p>I think more can be checked here? If we have the range constraint <code>L &lt;: T &lt;: U</code> and the not-comparable constraint <code>T nc X</code> (is there a standard symbol for not-comparable? doesn't seem like it), then if <code>U &lt;: X</code> or <code>X &lt;: L</code>, by transitivity of subtyping <code>T &lt;: X</code> or <code>X &lt;: T</code>, meaning the intersection is never satisfiable.</p>
+<p>IOW I think the <code>is_equivalent_to</code> checks here should be <code>is_subtype_of</code> checks instead.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:1034 on 2025-09-08 22:01</div>
+            <div class="timeline-body"><p>What about the case where <code>other.ty</code> is neither a supertype of <code>self.lower</code> nor a subtype of <code>self.upper</code> -- therefore it's outside the range, and the intersection can simplify to just the range?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-09-08 22:10</div>
+            <div class="timeline-body"><p>Looks reasonable!</p>
+<p>I'm sure if I tell you that all this math seems well-suited to a nice unit test suite, it won't be the first you've thought of it ;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @AlexWaygood removed by @AlexWaygood on 2025-09-08 22:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-09-09 13:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:1062 on 2025-09-09 13:12</div>
+            <div class="timeline-body"><blockquote>
+<p>is there a standard symbol for not-comparable? doesn't seem like it</p>
+</blockquote>
+<p>I've been using ≁ (<code>\u2241</code>). I have a pretty <a href="https://github.com/dcreager/dotfiles-public/blob/d98071250a4328504c6b6ed3275c157608b5e535/.XCompose.symlink#L25">heavily customized</a> Compose key on my linux boxes; not sure how to type that ergonomically on macos</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:1062 on 2025-09-09 13:26</div>
+            <div class="timeline-body"><p>Yes, good catch! This was bad copy/pasta from the method above, I had subtype checks as you suggest when I did this in the math! [<a href="https://dcreager.net/theory/constraints/intersect-lower-ncmp/">lower bound</a>, <a href="https://dcreager.net/theory/constraints/intersect-upper-ncmp/">upper bound</a>]</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:1034 on 2025-09-09 13:55</div>
+            <div class="timeline-body"><p>Nice! It <a href="https://dcreager.net/theory/constraints/intersect-range-neq/#Case-2">actually works</a> if <em>either</em> <code>L ⊈ X</code> or <code>X ⊈ U</code>. Updated</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:478 on 2025-09-09 14:03</div>
+            <div class="timeline-body"><p>Reworded to use &quot;individual constraint&quot;, which I was using in a couple of places already</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/ty_python_semantic/src/types/constraints.rs</code>:90 on 2025-09-09 14:03</div>
+            <div class="timeline-body"><p>Yes, good catch! I had updated this to remove the open/closed distinction.  Added text about incomparable</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-09-09 14:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-09-09 18:11</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm sure if I tell you that all this math seems well-suited to a nice unit test suite, it won't be the first you've thought of it ;)</p>
+</blockquote>
+<p>I'm tackling this in a separate PR, https://github.com/astral-sh/ruff/pull/20319</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-09-09 18:40</div>
+            <div class="timeline-body"><p>🚀</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dcreager on 2025-09-09 19:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dcreager on 2025-09-09 19:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-09-09 19:54</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:40:53 UTC
+    </footer>
+</body>
+</html>

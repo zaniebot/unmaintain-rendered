@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Add LSP debug information command - astral-sh/ruff #20379</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Add LSP debug information command</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/20379">#20379</a>
+        opened by <a href="https://github.com/Guillaume-Fgt">@Guillaume-Fgt</a>
+        on 2025-09-14 18:20
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/Guillaume-Fgt">@Guillaume-Fgt</a> on 2025-09-14 18:20</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title? (Please prefix with `[ty]` for ty pull
+  requests.)
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>I implemented a Debug command for the ty_server in response to issue https://github.com/astral-sh/ty/issues/974.</p>
+<p>I took inspiration from the Ruff server mechanism. The command can be executed with  <code>ty.printDebugInformation</code>. It accepts three different arguments: &quot;short&quot;, &quot;full&quot; and &quot;mypy_primer&quot;.</p>
+<h2>Test Plan</h2>
+<p>I wrote tests for the command with the three different possible arguments. I also used it with Nvim with this configuration in my lua:</p>
+<pre><code>--command to trigger ty debug command for information about the session.
+vim.api.nvim_create_autocmd('FileType', {
+  pattern = 'python',
+  callback = function()
+    vim.keymap.set('n', '&lt;leader&gt;td', function()
+      local clients = vim.lsp.get_active_clients({ bufnr = 0 })
+      for _, client in ipairs(clients) do
+        if client.name == &quot;ty&quot; then
+          client.request(&quot;workspace/executeCommand&quot;, {
+            command = &quot;ty.printDebugInformation&quot;,
+            arguments = {&quot;short&quot;}
+          }, function(err, result)
+            if err then
+              vim.notify(&quot;Error: &quot; .. err.message, vim.log.levels.ERROR)
+            else
+              vim.notify(&quot;Debug info: &quot; .. vim.inspect(result), vim.log.levels.INFO)
+            end
+          end)
+          break
+        end
+      end
+    end, { buffer = true, desc = &quot;Print Ty Debug Information&quot; })
+  end,
+})
+</code></pre>
+<p>This is the result in action:</p>
+<p>https://github.com/user-attachments/assets/07d9a070-86c8-4723-84d8-f082d966c99a</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @Guillaume-Fgt on 2025-09-14 18:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @Guillaume-Fgt on 2025-09-14 18:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @Guillaume-Fgt on 2025-09-14 18:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @Guillaume-Fgt on 2025-09-14 18:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @AlexWaygood on 2025-09-14 19:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-09-14 19:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-09-14 19:29</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-09-14 19:32</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">scikit-build-core (https://github.com/scikit-build/scikit-build-core)
+- src/scikit_build_core/build/_wheelfile.py:51:22: error[no-matching-overload] No overload of function `field` matches arguments
+- Found 45 diagnostics
++ Found 44 diagnostics
+
+</code></pre>
+</details>
+No memory usage changes detected ✅
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @sharkdp removed by @sharkdp on 2025-09-15 07:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-09-16 07:14</div>
+            <div class="timeline-body"><p>I plan to look into this but I'm not sure if I get to it before the end of the week (I'm still catching up after my PTO)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @MichaReiser by @MichaReiser on 2025-09-16 07:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/server/api/requests/execute_command.rs</code>:59 on 2025-09-19 07:50</div>
+            <div class="timeline-body"><p>I think it's fine if this command only supports the <code>full</code> output format. It's a debug command and too much output isn't really an issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/server/api/requests/execute_command.rs</code>:45 on 2025-09-19 08:08</div>
+            <div class="timeline-body"><p>It would be great to show the memory usage for all databases rather than just the first. I think there's also some additional information that's useful to show, like the resolved settings.</p>
+<p>This is untested, but maybe something like this</p>
+<pre><code class="language-rust">    let mut buffer = String::new();
+
+    writeln!(buffer, &quot;Client capabilities: {:#?}&quot;, session.client_capabilities());
+    writeln!(buffer, &quot;Position encoding: {:#?}&quot;, session.position_encoding());
+    writeln!(buffer, &quot;Global settings: {:#?}&quot;, session.global_settings());
+    writeln!(buffer, &quot;Open text documents: {}&quot;, session.text_document_keys().count());
+
+    for (root, workspace) in session.workspaces() {
+        writeln!(buffer, &quot;Workspace {root} ({})&quot;, workspace.url())?;
+        writeln!(buffer, &quot;  Settings:\n\n{:#?}&quot;, workspace.settings())?;
+        writeln!(buffer, &quot;\n&quot;)?;
+    }
+
+    let mut first_db = true;
+
+    for db in session.project_dbs() {
+        writeln!(buffer, &quot;\n&quot;)?;
+
+        first_db = false;
+
+        writeln!(buffer, &quot;Project at {}&quot;, db.project().root(db))?;
+        writeln!(buffer, &quot;  Settings:\n{:#?}&quot;, db.project().settings(db))?;
+        writeln!(buffer, &quot;  Memory report:\n{}&quot;, db.salsa_memory_dump().display_full())?;
+    }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/tests/e2e/commands.rs</code>:99 on 2025-09-19 08:15</div>
+            <div class="timeline-body"><p>This is great that you added tests.</p>
+<p>I do think we'll need to redact the snapshot to prevent the test from becoming noisy.</p>
+<p>The easiest could be to simply omit the memory usage if <code>session.in_test</code> is true (you might need to expose the field with a <code>pub(crate)</code> method.</p>
+<p>The alternative (and somewhat nicer) approach is to use insta's filter feature. We could add a filter that replaces all <code>[0-9]+.[0-9]+MB</code> with (<code>&lt;X.XXMB&gt;</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-09-19 08:17</div>
+            <div class="timeline-body"><p>Thank you. I left a few comments on how we can make the command even more useful.</p>
+<p>Are you also interested in contributing the necessary VS code changes:</p>
+<ol>
+<li>Adding the command in the <code>package.json</code> (<a href="https://github.com/astral-sh/ruff-vscode/blob/67f5c516ae2175a32a468aaaa05a614344230ad0/package.json#L447-L451">source</a>)</li>
+<li>Add a handler that automatically opens a window in VS code (<a href="https://github.com/astral-sh/ruff-vscode/blob/67f5c516ae2175a32a468aaaa05a614344230ad0/src/common/commands.ts#L1-L124">source</a>)</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @MichaReiser on 2025-09-20 10:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[ty] add mem usage report to LSP" to "[ty] Add LSP debug information command" by @MichaReiser on 2025-09-20 11:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-09-20 11:02</div>
+            <div class="timeline-body"><p>This is great. Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @AlexWaygood removed by @AlexWaygood on 2025-09-20 11:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2025-09-20 11:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-09-20 11:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Guillaume-Fgt">@Guillaume-Fgt</a> on 2025-09-20 11:32</div>
+            <div class="timeline-body"><p>Hi Micha, I was planning to make detailed explanations of my code modifications but my commits automatically triggered review apparently, I wasn't expected that. Thanks you for your comments on the code, it helped me a lot as I am still discovering the repo.</p>
+<blockquote>
+<p>Are you also interested in contributing the necessary VS code changes:</p>
+<pre><code>1. Adding the command in the `package.json` ([source](https://github.com/astral-sh/ruff-vscode/blob/67f5c516ae2175a32a468aaaa05a614344230ad0/package.json#L447-L451))
+
+2. Add a handler that automatically opens a window in VS code ([source](https://github.com/astral-sh/ruff-vscode/blob/67f5c516ae2175a32a468aaaa05a614344230ad0/src/common/commands.ts#L1-L124))</code></pre>
+</blockquote>
+<p>I am less familiar with VS code but I am interested. I will work on it and open a PR or an issue if I need help 👍.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-09-20 11:35</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:40:54 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] no more diverging query cycles in type expressions - astral-sh/ruff #20359</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] no more diverging query cycles in type expressions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/20359">#20359</a>
+        opened by <a href="https://github.com/carljm">@carljm</a>
+        on 2025-09-12 01:41
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/carljm">@carljm</a> on 2025-09-12 01:41</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Use <code>Type::Divergent</code> to short-circuit diverging types in type expressions. This avoids panicking in a wide variety of cases of recursive type expressions.</p>
+<p>Avoids many panics (but not yet all -- I'll be tracking down the rest) from https://github.com/astral-sh/ty/issues/256 by falling back to Divergent. For many of these recursive type aliases, we'd like to support them properly (i.e. really understand the recursive nature of the type, not just fall back to Divergent) but that will be future work.</p>
+<p>This switches <code>Type::has_divergent_type</code> from using <code>any_over_type</code> to a custom set of visit methods, because <code>any_over_type</code> visits more than we need to visit, and exercises some lazy attributes of type, causing significantly more work. This change means this diff doesn't regress perf; it even reclaims some of the perf regression from https://github.com/astral-sh/ruff/pull/20333.</p>
+<h2>Test Plan</h2>
+<p>Added mdtest for recursive type alias that panics on main.</p>
+<p>Verified that we can now type-check <code>packaging</code> (and projects depending on it) without panic; this will allow moving a number of mypy-primer projects from <code>bad.txt</code> to <code>good.txt</code> in a subsequent PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @carljm on 2025-09-12 01:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-09-12 01:45</div>
+            <div class="timeline-body"><!-- generated-comment typing_conformance_diagnostics_diff -->
+
+<h2>Diagnostic diff on <a href="https://github.com/python/typing/tree/d4f39b27a4a47aac8b6d4019e1b0b5b3156fabdc/conformance">typing conformance tests</a></h2>
+<p>No changes detected when running ty on typing conformance tests ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-09-12 01:48</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅
+No memory usage changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-09-12 01:56</div>
+            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+
+<!-- __CODSPEED_WALLTIME_PERFORMANCE_REPORT_COMMENT__ -->
+
+<h2><a href="https://codspeed.io/astral-sh/ruff/branches/cjm%2Fdivergent-generic?runnerMode=WallTime">CodSpeed WallTime Performance Report</a></h2>
+<h3>Merging #20359 will <strong>improve performances by 5.89%</strong></h3>
+<p><sub>Comparing <code>cjm/divergent-generic</code> (814c42d) with <code>main</code> (c3f2187)</sub></p>
+<h3>Summary</h3>
+<p><code>⚡ 1</code> improvement<br />
+<code>✅ 7</code> untouched</p>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Benchmark | <code>BASE</code> | <code>HEAD</code> | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| ⚡ | <code>small[tanjun]</code> | 1.7 s | 1.6 s | +5.89% |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @carljm on 2025-09-12 02:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @carljm on 2025-09-12 02:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @carljm on 2025-09-12 02:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @carljm on 2025-09-12 02:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-09-12 02:05</div>
+            <div class="timeline-body"><p>@mtshiba I can't request you as reviewer, but would be happy for you to take a look at this PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/mtshiba">@mtshiba</a> on <code>crates/ty_python_semantic/src/types/infer.rs</code>:122 on 2025-09-12 04:39</div>
+            <div class="timeline-body"><p>This approach (sets an upper limit on cycles and falls back to inference to set the cycle initial value to <code>Divergent</code> instead of <code>Never</code> when it is detected that the cycle is &quot;not likely to converge&quot;) seems to have already been adopted in #20333, but I think it isn't the best.
+For example, suppose a divergent function has <code>n+m</code> branches for its return values, of which <code>m(&gt;1)</code> are divergent. After the 10th cycle, the size of the return type will be <code>n(m^10 - 1)/(m-1)</code> (10th value of <code>size(n) = m size(n-1) + n; size(1) = n</code>).
+Although cases where <code>m</code> is large are likely to be rare, if they do occur, it will become a bottleneck.</p>
+<pre><code>1st: T1 | T2 | ... | Tn (| list[Never] | tuple[Never])
+2nd: T1 | T2 | ... | | Tn | list[T1 | T2 | ... | Tn] | tuple[T1 | T2 | ... | Tn]
+3rd: T1 | T2 | ... | Tn | list[T1 | T2 | ... | Tn | list[T1 | T2 | ... | Tn] | tuple[T1 | T2 | ... | Tn]] | tuple[T1 | T2 | ... | Tn | list[T1 | T2 | ... | Tn] | tuple[T1 | T2 | ... | Tn]]
+...
+</code></pre>
+<p>In fact, while working on #17371, I also felt it would be nice for salsa to do multi-cycle convergence checks even in fallbacks, but finally decided it wasn't necessary in this case.</p>
+<p>I think that in this kind of inference, the initial cycle value should be set to the <code>Divergent</code> type from the beginning.
+<code>Divergent</code> has the identity property with respect to union, like <code>Never</code>. So <code>Divergent</code> will not appear in the result type if the recursive inference is not actually divergent.</p>
+<pre><code>int | Divergent = int | (int | (int | ...)) = int
+</code></pre>
+<p>This means that we should add special rules for <code>Divergent</code> to the union type reduction rules. They have already been discussed <a href="https://github.com/astral-sh/ruff/pull/17371#issuecomment-3279706332">here</a>.
+I plan to split #17371 again so we can use the rules here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mtshiba">@mtshiba</a> reviewed on 2025-09-12 04:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-09-12 12:44</div>
+            <div class="timeline-body"><blockquote>
+<p>For many of these recursive type aliases, we'd like to support them properly (i.e. really understand the recursive nature of the type, not just fall back to Divergent) but that will be future work.</p>
+</blockquote>
+<p>Will it still be easy to identify type aliases in user code that we don't properly support, if they no longer cause us to panic? The panics are obviously really bad UX, but the nice thing about them is it makes it very easy for us to spot where we have bugs</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-09-12 16:50</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>For many of these recursive type aliases, we'd like to support them properly (i.e. really understand the recursive nature of the type, not just fall back to Divergent) but that will be future work.</p>
+</blockquote>
+<p>Will it still be easy to identify type aliases in user code that we don't properly support, if they no longer cause us to panic? The panics are obviously really bad UX, but the nice thing about them is it makes it very easy for us to spot where we have bugs</p>
+</blockquote>
+<p>I agree this is a potential downside, but a) I think it's outweighed by the value of eliminating the cycles ASAP, and b) I'm not that worried about it. We already know the core recursive-alias cases that we need to support, and if there are a few edge-case bugs hiding, if they matter to anyone we'll discover them.</p>
+<p>It's also quite easy to temporarily remove the <code>Type::Divergent</code> fallback, if we want to do that and run it on ecosystem projects as a bug-finding tool.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-09-12 16:56</div>
+            <div class="timeline-body"><p>Sounds good!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-09-12 17:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/infer.rs</code>:122 on 2025-09-12 17:02</div>
+            <div class="timeline-body"><p>I agree that the arbitrary choice of 10 cycles before falling back is not ideal. I think in practice it will be unlikely to be a problem, though.</p>
+<p>I think the idea that we could make <code>Divergent</code> behave sufficiently similarly to <code>Never</code> that we could use it as the initial iteration type is interesting, but I'm not confident it will be able to handle all cases correctly.</p>
+<p>For the moment I plan to continue pushing forward on addressing existing panics with this approach, but I'll be very interested to take a look if you propose a PR that can improve this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/resources/mdtest/implicit_type_aliases.md</code>:27 on 2025-09-15 09:23</div>
+            <div class="timeline-body"><p>Should we maybe add a reveal-type assertion here to &quot;get notified&quot; when this changes?</p>
+<pre><code class="language-suggestion">Recursive = list[Union[&quot;Recursive&quot;, None]]
+
+def _(r: Recursive):
+    reveal_type(r)  # revealed: list[Divergent]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/resources/mdtest/implicit_type_aliases.md</code>:38 on 2025-09-15 09:24</div>
+            <div class="timeline-body"><p>Similar here?</p>
+<pre><code class="language-suggestion">Recursive = list[&quot;Recursive&quot; | None]
+
+def f(r: Recursive):
+    reveal_type(r)  # revealed: list[Divergent]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types.rs</code>:6555 on 2025-09-15 09:25</div>
+            <div class="timeline-body"><p>It's not immediately clear to me why descending into e.g. typevar bounds/constraints is not necessary. Could the reason be explained in this comment?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/ty_python_semantic/src/types.rs</code>:6545 on 2025-09-15 09:38</div>
+            <div class="timeline-body"><p>Have you thought about implementing <code>has_divergent_type</code> using a custom <code>TypeVisitor</code> (similar to what <code>any_over_type</code> does), that would overwrite selected methods like <code>visit_bound_type_var_type</code> in order to skip visiting the parts that this needs/wants to skip?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> approved on 2025-09-15 09:39</div>
+            <div class="timeline-body"><p>Thank you very much!</p>
+<p>Very much looking forward to fewer panics related to these.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/marcelroed">@marcelroed</a> on 2025-09-15 19:53</div>
+            <div class="timeline-body"><p>Here's an unhandled cycle using the latest commit:</p>
+<pre><code class="language-python">from typing import Generic, TypeVar
+
+AT = TypeVar(&quot;AT&quot;, bound=&quot;A&quot;)
+BT = TypeVar(&quot;BT&quot;, bound=&quot;B&quot;)
+
+class A(Generic[BT]):
+    ...
+
+class B(Generic[AT]):
+    ...
+</code></pre>
+<p>This is from an ML modeling library where type A (model configs) need to be able to construct type B (model instances) and type B (model instances) need to be able to return type A (model configs). Feel free to delete/hide this comment if it should be a part of a separate issue instead.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-09-15 19:58</div>
+            <div class="timeline-body"><p>@marcelroed Yes, thanks -- I'm aware this PR doesn't fix all the cases in https://github.com/astral-sh/ty/issues/256. Your case is already mentioned in https://github.com/astral-sh/ty/issues/256#issuecomment-3140776680, so it will be addressed before we close that issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-09-16 02:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types.rs</code>:6555 on 2025-09-16 02:28</div>
+            <div class="timeline-body"><p>It's because they are lazy/deferred (not part of the core identity of the type), which means they won't cause a query cycle in type inference, and we don't want to trigger their inference unnecessarily.</p>
+<p>Currently this is actually only true for PEP 695 type vars, but it should become true for all typevars; that's on my roadmap.</p>
+<p>Added a comment about this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types.rs</code>:6545 on 2025-09-16 23:31</div>
+            <div class="timeline-body"><p>Thanks for the prompt. I tried this but was slightly unhappy with how many types the visitor needed to acquire detailed knowledge of the internals of in order to correctly implement visiting types without visiting lazily-inferred type attributes. So I ended up creating a general visitor flag for this, so that each type's <code>walk_</code> function can implement this distinction internally.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-09-16 23:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @carljm on 2025-09-16 23:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-09-16 23:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-09-16 23:44</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 17:40:53 UTC
+    </footer>
+</body>
+</html>
